@@ -3,13 +3,22 @@
 * [About This Document](./DesktopAdvanced0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./DesktopAdvanced0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./DesktopAdvanced0Introduction/0.02.CourseResources.md)
-* [Advanced Parameter Use](./DesktopAdvanced1Parameters/1.00.xxxx.md)
-    * [xxx](./DesktopAdvanced1Parameters/1.01.xxxx.md)
 
-    * [Module Review](./DesktopAdvanced1Parameters/1.99.ModuleReview.md)
-    * [Q+A Answers](./DesktopAdvanced1Parameters/1.99.QuestionAnswers.md)
-    * [Exercise: xxxx](./DesktopAdvanced1Parameters/1.ExerciseX.md)
-
+* [Advanced Parameter Use](./DesktopAdvanced1Parameters/1.00.AdvancedParameterUse.md)
+	* [FME Parameters](./DesktopAdvanced1Parameters/1.01.FMEParameters.md)
+	* [User Parameters](./DesktopAdvanced1Parameters/1.02.UserParameters.md)
+	* [Exercise: Metadata Writer Parameterizing](./DesktopAdvanced1Parameters/1.Exercise1.md)
+	* [Parameter Types](./DesktopAdvanced1Parameters/1.03.ParameterTypes.md)
+	* [Linking Parameters](./DesktopAdvanced1Parameters/1.04.LinkingParameters.md)
+	* [Pre-Linked Parameters](./DesktopAdvanced1Parameters/1.05.PreLinkedParameters.md)
+	* [Exercise: Data Translation Code Review](./DesktopAdvanced1Parameters/1.Exercise2.md)
+	* [Shared Parameters](./DesktopAdvanced1Parameters/1.06.SharedParameters.md)
+	* [Parameter Settings](./DesktopAdvanced1Parameters/1.07.ParameterSettings.md)
+	* [Specialist Parameters](./DesktopAdvanced1Parameters/1.08.SpecialistParameters.md)
+	* [Exercise: Data Translation Code Review pt2](./DesktopAdvanced1Parameters/1.Exercise3.md)
+	* [Module Review](./DesktopAdvanced1Parameters/1.09.ModuleReview.md)
+	* [Q+A Answers](./DesktopAdvanced1Parameters/1.10.QuestionAnswers.md)
+    
 * [Performance Considerations](./DesktopAdvanced2Performance/2.00.xxxx.md)
     * [xxxx](./DesktopAdvanced2Performance/2.01.xxxx.md)
 
