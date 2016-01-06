@@ -26,13 +26,28 @@
     * [Q+A Answers](./DesktopAdvanced2Performance/2.99.QuestionAnswers.md)
     * [Exercise: xxxx](./DesktopAdvanced2Performance/2.ExerciseX.md)
 
-* [Custom Transformers](./DesktopAdvanced3CustomTransformers/3.00.xxxx.md)
-    * [xxxx](./DesktopAdvanced3CustomTransformers/3.01.xxxx.md)
+* [Custom Transformers](./DesktopAdvanced3CustomTransformers/3.00.CustomTransformers.md)
+    * [Creating Custom Transformers](./DesktopAdvanced3CustomTransformers/3.01.UsingCustomTransformers.md)
+    * [Exercise: Creating a Custom Transformer](./DesktopAdvanced3CustomTransformers/3.Exercise1.md)
+    * [Input and Output Ports](./DesktopAdvanced3CustomTransformers/3.02.InputOutputPorts.md)
+    * [Exercise: Editing a Custom Transformer](./DesktopAdvanced3CustomTransformers/3.Exercise2.md)
+    * [Schema Handling](./DesktopAdvanced3CustomTransformers/3.03.SchemaHandling.md)
+    * [Automatic Schema Handling](./DesktopAdvanced3CustomTransformers/3.04.SchemaHandlingAutomatic.md)
+    * [Editing Schema](./DesktopAdvanced3CustomTransformers/3.05.SchemaHandlingPostAuto.md)
+    * [Exercise: Published Parameters](./DesktopAdvanced3CustomTransformers/3.Exercise3.md)
+    * [Custom Transformer Types](./DesktopAdvanced3CustomTransformers/3.06.CustomTransformerTypes.md)
+    * [Creating Linked Transformers](./DesktopAdvanced3CustomTransformers/3.07.CreatingLinkedTransformers.md)
+    * [Switching Transformer Type](./DesktopAdvanced3CustomTransformers/3.08.SwitchingTransformerType.md)
+    * [Custom Transformer Versioning](./DesktopAdvanced3CustomTransformers/3.09.CustomTransformerVersioning.md)
+    * [Exercise: Custom Transformer Modes](./DesktopAdvanced3CustomTransformers/3.Exercise4.md)
+    * [Parallel Processing](./DesktopAdvanced3CustomTransformers/3.10.ParallelProcessing.md)
+    * [Exercise: Parallel Processing](./DesktopAdvanced3CustomTransformers/3.Exercise5.md)
+    * [Looping](./DesktopAdvanced3CustomTransformers/3.11.CustomTransformerLoops.md)
+    * [Exercise: Looping](./DesktopAdvanced3CustomTransformers/3.Exercise6.md)
+    * [Q+A Answers](./DesktopAdvanced3CustomTransformers/3.99.QuestionAnswers.md)
 
     * [Module Review](./DesktopAdvanced3CustomTransformers/3.99.ModuleReview.md)
-    * [Q+A Answers](./DesktopAdvanced3CustomTransformers/3.99.QuestionAnswers.md)
-    * [Exercise: xxxx](./DesktopAdvanced3CustomTransformers/3.ExerciseX.md)
-
+    
 * [Advanced Readers and Writers](./DesktopAdvanced4AdvancedR+W/4.00.xxxx.md)
 	* [xxxx](./DesktopAdvanced4AdvancedR+W/4.01.xxxx.md)
 
