@@ -108,7 +108,7 @@
 	* [Q+A Answers](./DesktopBasic4Components/4.22.QuestionAnswers.md)
 	* [Exercise: Elevation Model Updates](./DesktopBasic4Components/4.Exercise8.md)
 * [Practical Transformer Use](./DesktopBasic5Transformers/5.00.PracticalTransformerUse.md)
-	* [The Transformer Gallery](./DesktopBasic5Transformers/5.01.TransformerSearching.md)
+	* [The Transformer Gallery](./DesktopBasic5Transformers/5.01.TransformerGallery.md)
 	* [Transformer Searching](./DesktopBasic5Transformers/5.02.TransformerSearching.md)
 	* [Most Valuable Transformers](./DesktopBasic5Transformers/5.03.MostValuableTransformers.md)
 	* [Managing Attributes](./DesktopBasic5Transformers/5.04.ManagingAttributes.md)
