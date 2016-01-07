@@ -103,6 +103,22 @@ This is text as spoken by a person from the city of Interopolis
 </tr>
 </table>
 
+The list of persons currently used in the training is:
+
+- Judge GIS
+- FireFighter Mapp
+- Miss Vector
+- Police Chief Webb-Mapp
+- Chef Bimm
+- Mr Flibble
+- Ms. Analyst
+- First-Officer Transformer
+- Mr. Statistics-Calculator
+- Mr. E. Dict, (Attorney of FME Law)
+- Dr. Workbench
+- Aunt Interop
+- Sister Intuitive
+
 ---
 
 <!--Exercise Section-->
