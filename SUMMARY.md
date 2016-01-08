@@ -87,7 +87,7 @@
 	* [Exercise: Fundraising Walk - Adding Readers](./DesktopBasic4Components/4.Exercise2.md)
 	* [Reader Feature Types](./DesktopBasic4Components/4.07.ReaderFeatureTypes.md)
 	* [Importing Reader Feature Types](./DesktopBasic4Components/4.08.ImportingReaderFeatureTypes.md)
-	* [Importing Reader Feature Types](./DesktopBasic4Components/4.09.UpdatingReaderFeatureTypes.md)
+	* [Updating Reader Feature Types](./DesktopBasic4Components/4.09.UpdatingReaderFeatureTypes.md)
 	* [Reader Feature Type Parameters](./DesktopBasic4Components/4.10.ReaderFeatureTypeParameters.md)
 	* [Exercise: Fundraising Walk - Reader Feature Types](./DesktopBasic4Components/4.Exercise3.md)
 	* [Managing Reader Datasets](./DesktopBasic4Components/4.11.ManagingReaderDatasets.md)
