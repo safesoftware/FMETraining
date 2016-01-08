@@ -202,10 +202,11 @@ This is text to describe an advanced exercise
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
-<br><br><li>Here is a list of achievements
-<br><li>This uses a font awesome icon (this won't show in PDF)
-<br><li>The text is a serif font, italic.
-<br><li>It is in a table with an orange border
+<br>
+<ul><li>Here is a list of achievements</li>
+<li>This uses a font awesome icon (this won't show in PDF)</li>
+<li>The text is a serif font, italic.</li>
+<li>It is in a table with an orange border</li></ul>
 </span>
 </td>
 </tr>
