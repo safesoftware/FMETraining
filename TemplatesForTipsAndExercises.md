@@ -105,7 +105,6 @@ This is text as spoken by a person from the city of Interopolis
 
 The list of persons currently used in the training is:
 
-- Judge GIS
 - FireFighter Mapp
 - Miss Vector
 - Police Chief Webb-Mapp
