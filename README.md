@@ -20,4 +20,4 @@ The full course is made up of five main sections. These sections are:
 - Performance
 - Custom Transformers
 - Advanced Reading/Writing
-- Advanced Transformation
+- Advanced Attribute Handling
