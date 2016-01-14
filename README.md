@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # FME Desktop Advanced Training Manual #
 
 This is the manual for the advanced-level training course for Safe Software’s FME Desktop application.
