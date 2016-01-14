@@ -4,13 +4,9 @@ This is the manual for the advanced-level training course for Safe Software’s 
 
 <!--This file duplicates a little of the content to follow, but is added here because the content of this file is used for the landing page on GitBook-->
 
-# FME Desktop Basic Training Manual #
-
-This is the manual for the introductory-level training course for Safe Software’s FME Desktop application.
-
 ![](./DesktopBasic0Introduction/Images/Img0.0.FMEAboutScreen.png)
 
-The training will introduce basic concepts and terminology, help students become efficient users of FME, and direct you to resources to help apply the product to your own needs.
+The training builds upon basic training to cover functionality that is important to all FME users wishing to take their skills to the next level.
 
 ## Course Structure ##
 
