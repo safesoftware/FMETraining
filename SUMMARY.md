@@ -22,7 +22,7 @@
     * [64-Bit FME](./DesktopAdvanced2Performance/2.02.64bitFME.md)
     * [Logfile Interpretation](./DesktopAdvanced2Performance/2.03.LogFileInterpretation.md)
     * [Reader and Writer Optimization](./DesktopAdvanced2Performance/2.04.ReaderWriterOptimization.md)
-    * [Transformer Optimization](./DesktopAdvanced2Performance/2.05.TransformationOptimization.mdd)
+    * [Transformer Optimization](./DesktopAdvanced2Performance/2.05.TransformationOptimization.md)
     * [Database Optimization](./DesktopAdvanced2Performance/2.06.DatabaseOptimization.md)
     * [Parallel Processing](./DesktopAdvanced2Performance/2.07.ParallelProcessing.md)
     * [Server and Cloud Performance](./DesktopAdvanced2Performance/2.08.FMEServerFMECloud.md)
