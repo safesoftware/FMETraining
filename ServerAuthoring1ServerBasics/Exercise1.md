@@ -1,71 +1,145 @@
-Follow these steps to log into the FME Server web user interface and examine the available functionality.
+<!--Instructor Notes-->
+<!--This exercise uses a basic amount of FME Workbench as a test for students-->
+<!--If students have problems now, it is unlikely they will have much success at further exercises-->
 
-**1) Connect to Server**
+<!--Exercise Section-->
+<!--NB: In GitBook world we don't give a number to exercises-->
 
-In your web browser, enter the address to your FME Server.
-
-<table style="border-spacing: 0px">
+<table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+<td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise</span>
+</td>
+<td style="border: 2px solid darkorange;background-color:darkorange;color:white">
+<span style="color:white;font-size:x-large;font-weight: bold">Earthquake Processing</span>
 </td>
 </tr>
 
 <tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-When FME Server is installed on either physical or virtual hardware, the address is
-http://<servername>/fmeserver
-If you are using FME Cloud, then the address is:
-http://<server name>.fmecloud.com/fmeserver
-</span>
-</td>
+<td style="border: 1px solid darkorange; font-weight: bold">Data</td>
+<td style="border: 1px solid darkorange">Earthquakes (GeoJSON)</td>
 </tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process earthquake data and publish it to FME Server</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
+<td style="border: 1px solid darkorange">Publishing a workspace to FME Server</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
+<td style="border: 1px solid darkorange">None</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
+<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoringBasics-Ex1-Complete.fmw</td>
+</tr>
+
 </table>
 
-This will open the web user interface login screen for the FME Server being used. Bookmark this web address, since you will use this link quite often.
+---
 
-**2) Log In to Server**
+You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
 
-In the User Login dialog, enter a username and password for your FME Server account. A common username/password combination for a training installation is admin/admin
+Within minutes of installing FME Server the building starts to shake. You deduce that the two events are not related and in fact a (very minor) earthquake is taking place.
 
-Click the Arrow button.
+Because of this, and because emergency preparedness is a big topic, you start to wonder if there is anything you can do with FME Server on the subject of earthquakes.
 
-**3) Examine User Interface.**
 
-Examine the user interface. This is your primary method for interacting with FME Server. Notice that the bottom-left corner shows which version and build of FME Server is being used by this instance:
 
-**4) Examine Repositories**
+<br>**1) Inspect Feed**
+<br>A colleague informs you about a feed of earthquake data at: [http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson](http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson "USGS Earthquake Feed")
 
-Let's look first at the system's repositories. Click the Run Workspace button.
+Click on that link (or copy/paste it into your web browser) to view the raw data in the feed. It will look something like this:
 
-This will open a page that shows a list of the available FME Server workspace repositories. A repository is a method for storing and categorizing workspaces. It holds a number of workspaces in the same way that a folder holds a number of files.
+![](./Images/Img1.6.Ex1.EarthquakeFeed.png)
 
-In this case there will be a repository for Samples and one for Utilities.
-Click on the Samples repository. A list of workspaces in that repository is shown. These are workspaces that have been loaded into FME Server and are available to run.
+OK. That looks like something we could handle in FME.
 
-**5) Examine Jobs**
 
-Now click Manage, then Jobs. This tool shows you a list of jobs that have been run on the system, as well as jobs that are currently queued or currently running.
+<br>**2) Start FME Workbench**
+<br>Start FME Workbench by selecting it from the Windows start menu. You’ll find it under Start &gt; All Programs &gt; FME Desktop 2016.0 &gt; FME Workbench 2016.0.
 
-Jobs and Repositories are the two items that you will use for basic FME Server use and administration.
+Once started, select Readers &gt; Add Reader to start adding a Reader to the workspace. When prompted, enter the following details:
 
-<table style="border-spacing: 0px">
+<table style="border: 0px">
+
 <tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says…</span>
-</td>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">GeoJSON (Geographic JavaScript Object Notation)</td>
 </tr>
 
 <tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-“You might have noticed that the start menu has a tool for adding
-sample workspaces; but if you used the express installation then
-you don’t need to use this – everything is installed automatically.
-</span>
-</td>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson</td>
 </tr>
+
 </table>
+
+Click OK to add the Reader to the workspace.
+
+
+<br>**3) Inspect Source Data**
+<br>Click on the Reader feature type in Workbench and choose the option to Inspect the data:
+
+![](./Images/Img1.7.Ex1.ReaderFeatureTypeInspect.png)
+
+This will open up the source data in the FME Data Inspector and allow you to inspect it:
+
+![](./Images/Img1.8.Ex1.SourceDataInDI.png)
+<br><span style="font-style:italic;font-size:x-small">Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a></span>
+
+
+<br>**4) Add StatisticsCalculator**
+<br>Let's calculate some statistics about the earthquakes we are reading. Place a StatisticsCalculator transformer and connect it after the Reader feature type.
+
+Open the parameters dialog. The first thing to do is set Group By to group-by the type attribute:
+
+![](./Images/Img1.9.Ex1.StatsCalcGroupBy.png)
+
+Type represents the type of event measured. Not only are there earthquakes, but also explosions and quarry blasts (browse the data in the Data Inspector if you want to see if there are any).
+
+Next set mag as the attribute to analyze:
+
+![](./Images/Img1.10.Ex1.StatsCalcAttrToAnalyze.png)
+
+This will analyze the magnitude of the events and calculate statistics about them. The final step here is to specify which statistics we want. To do so set:
+
+<table>
+<tr><td>Minimum Attribute</td><td>Min Magnitude</td></tr>
+<tr><td>Maximum Attribute</td><td>Max Magnitude</td></tr>
+<tr><td>Numeric Count Attribute</td><td>Number of Events</td></tr>
+<tr><td>Mean Attribute</td><td>Average Magnitude</td></tr>
+</table>
+
+Empty all other fields, as we don't need those statistics:
+
+![](./Images/Img1.11.Ex1.StatsCalcAttrToCalculate.png)
+
+
+<br>**5) Add AttributeRounder**
+<br>Let's make sure those statistics are in a readable format. After the StatisticsCalculator place an AttributeRounder transformer. It should be connected to the StatisticsCalculator:Summary output port:
+
+![](./Images/Img1.12.Ex1.AttrRounderConnected.png)
+
+Open the parameters dialog. Set up the transformer to round *Min Magnitude*, *Max Magnitude*, and *Average Magnitude* to 1 decimal place. 
+
+
+<br>**6) Add Output**
+<br>The final task in FME Workbench is to get the calculations out of the workspace. To do so, while we are just testing this exercise, add a Logger transformer after the AttributeRounder.
+
+This will cause the results to be written to the FME log file.
+
+
+<br>**7) Publish to Server**
+<br>Here comes the Server part of the process. In FME Workbench, choose File &gt; Publish to FME Server from the menubar. 
+
+
+
+ 
