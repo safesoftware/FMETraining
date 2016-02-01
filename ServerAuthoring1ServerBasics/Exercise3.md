@@ -81,62 +81,44 @@ This will open the web user interface login screen for the FME Server being used
 <br>**2) Log In to Server**
 <br>In the User Login dialog, enter a username and password for your FME Server account. A common username/password combination for a training installation is admin/admin
 
-![](./Images/Img1.51.Ex2.LoginWindow.png)
-
 Click the Login button.
 
 
 
-<br>**3) Select Workspace**
-<br>Examine the user interface. This is your primary method for interacting with FME Server.
 
-The first thing we should do is make sure FME Server is running correctly (the fact that we could log in is a good sign) and that we are licensed and have engines running.
 
-Click Manage &gt; Administration &gt; Engines & Licensing on the menu of the interface. This will open up the licensing section. You should see a message informing you that FME Server is licensed and a list of the engines available:
 
-![](./Images/Img1.52.Ex2.LicensingInfo.png)
 
----
+Check engines
 
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
-</td>
-</tr>
 
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-If your machine is unlicensed, or is missing engines, then check with your instructor for troubleshooting tips
-</span>
-</td>
-</tr>
-</table>
 
----
 
-<br>**4) Select Workspace**
-<br>Click the Home button on the menubar (or the FME icon in the top-left) to return to the Server interface home page. Notice that the workspace created in the previous exercise is listed under Last Published Workspaces:
 
-![](./Images/Img1.47.Ex2.RecentWorkspaces.png)
+
+
+
+
+<br>**12) Select Workspace**
+<br>Examine the user interface. This is your primary method for interacting with FME Server. Notice that your workspace will be listed under Last Published Workspaces:
+
+![](./Images/Img1.47.Ex1.RecentWorkspaces.png)
 
 Click on this entry to open the web page for this workspace.
 
 
-<br>**5) Run Workspace**
+<br>**13) Run Workspace**
 <br>The workspace page shows very few options, because this workspace did not have many published parameters:
 
-![](./Images/Img1.48.Ex2.RunWorkspaceDialog.png)
+![](./Images/Img1.48.Ex1.RunWorkspaceDialog.png)
 
 So, simply click the Run button to run the workspace. The workspace will run to completion.
 
 
-<br>**6) Examine Jobs Page**
+<br>**14) Examine Jobs Page**
 <br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
 
-![](./Images/Img1.49.Ex2.JobsDialog.png)
+![](./Images/Img1.49.Ex1.JobsDialog.png)
 
 Click on your job to inspect the results in more detail. You will be able to see the job ID number; the different times at which it was submitted, queued, and run; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
 
@@ -163,7 +145,12 @@ Remember, this workspace did not write any data, only sent it to the Logger. So,
 
 ---
 
-Well done. You have now run a workspace on FME Server. But there are some more parts of the interface we should look into. 
+
+Check resources
+
+Check cleanup tools
+
+
 
 ---
 
@@ -180,7 +167,7 @@ Well done. You have now run a workspace on FME Server. But there are some more p
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have time, carry out the following steps to explore the FME Server web interface in a little more detail.
+Were you logged in an an administrator when you created the training repository? If so, maybe we should check the security settings for that?
 </span>
 </td>
 </tr>
@@ -188,41 +175,21 @@ If you have time, carry out the following steps to explore the FME Server web in
 
 ---
 
-<br>**7) Open Resources Page**
-<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
 
+**Advanced Task**
 
+<br>**14) Examine Jobs Page**
+<br>Click Manage &gt; Administration &gt; Security on the FME Server web interface menu. This will open the security parameters dialog (assuming your account has permission to do so).
 
-<br>**8) Check Cleanup Tools**
-<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
+Click on the Object Policies tab:
 
+![](./Images/Img1.50.Ex1.SecurityObjectPolicies.png)
 
+Locate the Training repository in the list of security objects. You should see that the roles allowed to make use of it is restricted to the one(s) to which the publisher's account belongs.
 
+If you were an administrator, then this repository will be associated only with the fmeadmin role; therefore only an administrator will be able to make use of that repository.
 
----
+Click on the repository object to open its security policies. Click on the drop-down list of roles and add all other roles so that users with a user, author, or guest account can access this repository.
 
-<!--Exercise Congratulations Section--> 
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-thumbs-o-up fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">CONGRATULATIONS</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-By completing this exercise you have learned how to:
-<br>
-<ul><li>Log in to FME Server and check that it is running and licensed</li>
-<li>Locate a workspace using the Last Published list</li>
-<li>Run a workspace and inspect the job history to confirm it ran correctly</li>
-<li>Find and upload resources to FME Server</li></ul>
-<li>Check the parameters for cleanup tools</li></ul>
-</span>
-</td>
-</tr>
-</table>
+Click OK to accept the changes.
 
