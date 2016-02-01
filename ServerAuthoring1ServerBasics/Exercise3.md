@@ -9,7 +9,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise2 </span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3 </span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Earthquake Processing</span>
@@ -28,7 +28,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Examining the FME Server interface and running a workspace</td>
+<td style="border: 1px solid darkorange">Scheduling a translation in FME Server</td>
 </tr>
 
 <tr>
@@ -47,72 +47,18 @@
 
 You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
 
-After creating a workspace to read a feed of earthquake data, and publishing it to FME Server, you now wish to log in to Server to run that workspace. 
+You have already published a workspace that processes a feed of earthquake data, published it to FME Server, and ran it. However... what happens if there is an earthquake in the night, when you are not at your post? Who will run it then?
+
+The simplest method is to simply set up the translation to run on an automatic schedule. 
 
 
 <br>**1) Connect to Server**
-<br>To log in to the server interface either select the Web User Interface option from the start menu or - in your web browser - enter the address to your FME Server.
-
----
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-When FME Server is installed on either physical or virtual hardware, the address is http://&lt;servername&gt;/fmeserver
-<br><br>If you are using FME Cloud, then the address is: http://&lt;server name&gt;.fmecloud.com/fmeserver
-</span>
-</td>
-</tr>
-</table>
-
----
-
-This will open the web user interface login screen for the FME Server being used. Bookmark this web address, since you will use this link quite often.
-
-
-<br>**2) Log In to Server**
-<br>In the User Login dialog, enter a username and password for your FME Server account. A common username/password combination for a training installation is admin/admin
-
-Click the Login button.
+<br>Open the FME Server interface, either through the Web User Interface option on the start menu or directly in your web browser, and log in.
 
 
 
+Create test schedule 
 
-
-
-
-Check engines
-
-
-
-
-
-
-
-
-
-<br>**12) Select Workspace**
-<br>Examine the user interface. This is your primary method for interacting with FME Server. Notice that your workspace will be listed under Last Published Workspaces:
-
-![](./Images/Img1.47.Ex1.RecentWorkspaces.png)
-
-Click on this entry to open the web page for this workspace.
-
-
-<br>**13) Run Workspace**
-<br>The workspace page shows very few options, because this workspace did not have many published parameters:
-
-![](./Images/Img1.48.Ex1.RunWorkspaceDialog.png)
-
-So, simply click the Run button to run the workspace. The workspace will run to completion.
 
 
 <br>**14) Examine Jobs Page**
@@ -122,74 +68,30 @@ So, simply click the Run button to run the workspace. The workspace will run to 
 
 Click on your job to inspect the results in more detail. You will be able to see the job ID number; the different times at which it was submitted, queued, and run; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
 
+
+Create actual schedule
+
+
 ---
 
-<!--Person X Says Section-->
+<!--Exercise Congratulations Section--> 
 
 <table style="border-spacing: 0px">
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<i class="fa fa-thumbs-o-up fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">CONGRATULATIONS</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Remember, this workspace did not write any data, only sent it to the Logger. So, for now, to view any results search for them in the log file.
+By completing this exercise you have learned how to:
+<br>
+<ul><li>Schedule a translation in FME Server</li>
+<li>Check the job history to ensure the scheduled translation took place</li></ul>
 </span>
 </td>
 </tr>
 </table>
-
----
-
-
-Check resources
-
-Check cleanup tools
-
-
-
----
-
-<!--Advanced Exercise Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Advanced Exercise</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-Were you logged in an an administrator when you created the training repository? If so, maybe we should check the security settings for that?
-</span>
-</td>
-</tr>
-</table>
-
----
-
-
-**Advanced Task**
-
-<br>**14) Examine Jobs Page**
-<br>Click Manage &gt; Administration &gt; Security on the FME Server web interface menu. This will open the security parameters dialog (assuming your account has permission to do so).
-
-Click on the Object Policies tab:
-
-![](./Images/Img1.50.Ex1.SecurityObjectPolicies.png)
-
-Locate the Training repository in the list of security objects. You should see that the roles allowed to make use of it is restricted to the one(s) to which the publisher's account belongs.
-
-If you were an administrator, then this repository will be associated only with the fmeadmin role; therefore only an administrator will be able to make use of that repository.
-
-Click on the repository object to open its security policies. Click on the drop-down list of roles and add all other roles so that users with a user, author, or guest account can access this repository.
-
-Click OK to accept the changes.
-

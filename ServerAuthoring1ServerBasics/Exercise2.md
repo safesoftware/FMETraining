@@ -9,7 +9,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise2 </span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2 </span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Earthquake Processing</span>
@@ -189,15 +189,40 @@ If you have time, carry out the following steps to explore the FME Server web in
 ---
 
 <br>**7) Open Resources Page**
-<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
+<br>Click Manage &gt; Resources on the menu. This opens the Resources page. Feel free to explore the different folders. In particular inspect the Engine folder, which is the location for custom tools that you might want to include in a translation:
 
+![](./Images/Img1.53.Ex2.ResourcesEngine.png)
+
+Also check the data folder and, if you wish, upload some files from the C:\FMEData2016 folder.
 
 
 <br>**8) Check Cleanup Tools**
-<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
+<br>Click Manage &gt; Administration &gt; System Cleanup on the menu. This opens the dialog where all automated cleanup tasks are defined. 
 
+![](./Images/Img1.54.Ex2.CleanupResources.png)
 
+Take a look at the different cleanup tasks that are available. Note that the times are all specified in seconds. 
 
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms. Analyst says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you change one of these parameters, don't expect it to take effect immediately. For example, if you change the job logs time to be 1 second, they won't all disappear within a second. FME Server only runs these tasks every hour, so it could be up to 60 minutes before the changes have any effect.
+</span>
+</td>
+</tr>
+</table>
 
 ---
 
@@ -219,10 +244,9 @@ By completing this exercise you have learned how to:
 <ul><li>Log in to FME Server and check that it is running and licensed</li>
 <li>Locate a workspace using the Last Published list</li>
 <li>Run a workspace and inspect the job history to confirm it ran correctly</li>
-<li>Find and upload resources to FME Server</li></ul>
+<li>Find and upload resources to FME Server</li>
 <li>Check the parameters for cleanup tools</li></ul>
 </span>
 </td>
 </tr>
 </table>
-
