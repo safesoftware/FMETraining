@@ -62,6 +62,28 @@ Click on that link (or copy/paste it into your web browser) to view the raw data
 
 OK. That looks like something we could handle in FME.
 
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 7
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 <br>**2) Start FME Workbench**
 <br>Start FME Workbench by selecting it from the Windows start menu. You’ll find it under Start &gt; All Programs &gt; FME Desktop 2016.0 &gt; FME Workbench 2016.0.
@@ -137,9 +159,168 @@ Open the parameters dialog. Set up the transformer to round *Min Magnitude*, *Ma
 This will cause the results to be written to the FME log file.
 
 
-<br>**7) Publish to Server**
-<br>Here comes the Server part of the process. In FME Workbench, choose File &gt; Publish to FME Server from the menubar. 
+<br>**7) Publish to Server (Step 1)**
+<br>Here comes the Server part of the process. In FME Workbench, choose File &gt; Publish to FME Server from the menubar (or select the same tool on the toolbar).
+
+In the first dialog of the wizard you are prompted to enter connection parameters to FME Server.
+
+Enter the parameters provided by your training instructor.
+
+In most cases the parameters will be as follows:
+
+- **FME Server URL:** http://localhost
+- **Username:** admin
+- **Password:** admin
+
+![](./Images/Img1.44.Ex1.PublishWizard1.png)
+
+You may or may not (probably not) need to enter a port number with the hostname, depending on how the system is set up. 
+
+Click Next to continue. If the credentials are correct a connection will be made and you will move on to the next dialog in the wizard.
 
 
+<br>**8) Publish to Server (Step 2)**
+<br>The next dialog prompts you to choose a repository in which to store the workspace.
 
- 
+For this exercise we’ll create a new repository by clicking the New button. When prompted enter the name Training.
+
+Click OK to close the Create New Repository dialog. Enter a name for the workspace such as Basics-Ex1-Complete.fmw. The Upload Data Files option should be greyed out, because we aren't using any source files in this case.
+
+![](./Images/Img1.45.Ex1.PublishWizard2.png)
+
+Then click Next to continue the wizard.
+
+
+<br>**9) Publish to Server (Step 3)**
+<br>In the final screen of the wizard we can register the workspace for use with various services.
+
+Select the Job Submitter service as this is the only service we are using for now and click Publish to complete publishing the workspace.
+
+![](./Images/Img1.46.Ex1.PublishWizard3.png)
+
+After a workspace is transferred to Server, the log window displays a message reporting which workspace has been published to which repository and for which services.
+
+
+<br>**10) Connect to Server**
+<br>Now let's log in to the server interface. Either select the Web User Interface option from the start menu, or - in your web browser - enter the address to your FME Server.
+
+---
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+When FME Server is installed on either physical or virtual hardware, the address is http://&lt;servername&gt;/fmeserver
+<br><br>If you are using FME Cloud, then the address is: http://&lt;server name&gt;.fmecloud.com/fmeserver
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+This will open the web user interface login screen for the FME Server being used. Bookmark this web address, since you will use this link quite often.
+
+
+<br>**11) Log In to Server**
+<br>In the User Login dialog, enter a username and password for your FME Server account. A common username/password combination for a training installation is admin/admin
+
+Click the Login button.
+
+
+<br>**12) Select Workspace**
+<br>Examine the user interface. This is your primary method for interacting with FME Server. Notice that your workspace will be listed under Last Published Workspaces:
+
+![](./Images/Img1.47.Ex1.RecentWorkspaces.png)
+
+Click on this entry to open the web page for this workspace.
+
+
+<br>**13) Run Workspace**
+<br>The workspace page shows very few options, because this workspace did not have many published parameters:
+
+![](./Images/Img1.48.Ex1.RunWorkspaceDialog.png)
+
+So, simply click the Run button to run the workspace. The workspace will run to completion.
+
+
+<br>**14) Examine Jobs Page**
+<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
+
+![](./Images/Img1.49.Ex1.JobsDialog.png)
+
+Click on your job to inspect the results in more detail. You will be able to see the job ID number; the different times at which it was submitted, queued, and run; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
+
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Remember, this workspace did not write any data, only sent it to the Logger. So, for now, to view any results search for them in the log file.
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+Congratulations, you have now created a workspace, published it to FME Server, ran it on FME Server, and checked the job history to make sure it ran correctly.
+
+---
+
+<!--Advanced Exercise Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Advanced Exercise</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Were you logged in an an administrator when you created the training repository? If so, maybe we should check the security settings for that?
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+
+**Advanced Task**
+
+<br>**14) Examine Jobs Page**
+<br>Click Manage &gt; Administration &gt; Security on the FME Server web interface menu. This will open the security parameters dialog (assuming your account has permission to do so).
+
+Click on the Object Policies tab:
+
+![](./Images/Img1.50.Ex1.SecurityObjectPolicies.png)
+
+Locate the Training repository in the list of security objects. You should see that the roles allowed to make use of it is restricted to the one(s) to which the publisher's account belongs.
+
+If you were an administrator, then this repository will be associated only with the fmeadmin role; therefore only an administrator will be able to make use of that repository.
+
+Click on the repository object to open its security policies. Click on the drop-down list of roles and add all other roles so that users with a user, author, or guest account can access this repository.
+
+Click OK to accept the changes.
+
