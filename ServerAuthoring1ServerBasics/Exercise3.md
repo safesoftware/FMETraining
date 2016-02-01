@@ -53,24 +53,51 @@ The simplest method is to simply set up the translation to run on an automatic s
 
 
 <br>**1) Connect to Server**
-<br>Open the FME Server interface, either through the Web User Interface option on the start menu or directly in your web browser, and log in.
+<br>Open the FME Server interface, either through the Web User Interface option on the start menu or directly in your web browser, and log in. Select Manage &gt; Schedules from the menu.
+
+
+<br>**2) Create Test Schedule**
+<br>Just to confirm that scheduling does work, let's set up a test schedule. Click the New button to start this process. Set a name of Test Schedule and add it to a Training category:
+
+![](./Images/Img1.55.Ex3.CreateTestSchedule.png)
+
+Under Workspace Settings, select the Training repository and from within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
+
+![](./Images/Img1.56.Ex3.CreateTestScheduleWorkspace.png) 
+
+There are no user parameters we need to change for this workspace, so any can be ignored.
+
+
+<br>**3) Set Test Schedule**
+<br>Now let's set some times for this schedule.
+
+Set it to start immediately and run every 15 seconds. Set the end date to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on for ever!)
+
+![](./Images/Img1.57.Ex3.CreateTestScheduleTimes.png)
+
+Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM.
+
+Now click OK to add the new schedule.
 
 
 
-Create test schedule 
+<br>**4) Examine Jobs Page**
+<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open. You will find (if it was set up correctly) that there will be jobs running to schedule:
+
+![](./Images/Img1.58.Ex3.CreateTestScheduleJobHistory.png)
 
 
+<br>**5) Create Actual Schedule**
+<br>Now we are confident that we know how to use the interface, let's set up an actual schedule. We want the workspace to run, say, every two hours, each day of the week. There should also be no end date.
 
-<br>**14) Examine Jobs Page**
-<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
+So, return to the Schedules page. You may now either:
 
-![](./Images/Img1.49.Ex1.JobsDialog.png)
+- Click on the Test schedule and edit it to the required values
+- Delete the test schedule and create a new one with the required values
 
-Click on your job to inspect the results in more detail. You will be able to see the job ID number; the different times at which it was submitted, queued, and run; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
+![](./Images/Img1.59.Ex3.CreateRealSchedule.png)
 
-
-Create actual schedule
-
+You may wish to check back periodically during this training to ensure the workspace runs as expected.
 
 ---
 
