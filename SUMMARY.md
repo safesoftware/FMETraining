@@ -35,7 +35,7 @@
    * [Temporary Uploads](ServerAuthoring2RunningWorkspaces/2.04.TemporaryUploads.md)
    * [Resource Filesystem](ServerAuthoring2RunningWorkspaces/2.05.ResourceManagement.md)
    * [Troubleshooting for Administrators](ServerAuthoring2RunningWorkspaces/2.96.TroubleshootingForAdministrators.md)
-   * [Module Review](ServerAuthoring2RunningWorkspaces/2.97.ModuleReview2.md)
+   * [Module Review](ServerAuthoring2RunningWorkspaces/2.97.ModuleReview.md)
    * [Q+A Answers](ServerAuthoring2RunningWorkspaces/2.98.QuestionAnswers.md)
 * [Self-Serve with FME Server](self-serve_with_fme_server.md)
    * [Self-Serve with FME Server](self-serve_with_fme_server2.md)
