@@ -13,7 +13,7 @@ The training will introduce basic concepts and terminology, help students become
 The full course is made up of five main sections. These sections are:
 
 - Data Translation Basics
-- Readers and Writers
 - Data Transformation
-- Practical Transformer Use
 - FME Best Practice
+- Readers and Writers
+- Practical Transformer Use
