@@ -38,7 +38,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoringBasics-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Basics-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
