@@ -16,17 +16,17 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange"></td>
+<td style="border: 1px solid darkorange">Cycle Paths (Esri Shapefile)<br>Drinking Fountains (CSV (Comma Separated Value))</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange"></td>
+<td style="border: 1px solid darkorange">Create an FME Server-hosted workspace to identify drinking fountains with 20 metres of a cycle path</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange"></td>
+<td style="border: 1px solid darkorange">Publishing source data and making temporary data uploads</td>
 </tr>
 
 <tr>
@@ -48,6 +48,27 @@ You're a technical analyst in the GIS department of your local city. You have pl
 Today's task for you is to use two datasets - cycle paths and drinking fountains - to figure out which drinking fountains are close (within 20 metres) of a cycle route. The output is to be written as a KML dataset.
 
 You can easily do this using FME Desktop, and decide to publish it to FME Server too so that users can upload their own set of cycle paths.
+
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 7
+</span>
+</td>
+</tr>
+</table>
 
 ---
 
