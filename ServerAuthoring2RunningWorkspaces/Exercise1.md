@@ -214,7 +214,104 @@ If the workspace fails with the error <span style="font-weight:bold;color:red">K
 
 ---
 
-ddddddddddddddddddddddddddddddddddd
+<br>**7) Publish to Server**
+<br>Now we should publish the workspace to Server. We'll experiment by publishing one dataset with the workspace and uploading one through the web interface when we run the workspace.
+
+So, start the FME Server publishing wizard (File &gt; Publish to Server).
+
+Specify the connection parameters as usual. Choose Training as the repository to upload to, but then check the Upload Data Files box and click the Select Files button:
+
+![](./Images/Img2.39.Ex1.PublishToServerRepository.png)
+
+In the Select Files dialog, deselect the five files belonging to the Shape dataset, and leave only the CSV file selected:
+
+![](./Images/Img2.40.Ex1.PublishToServerData.png)
+
+You will receive a warning about the lack of Shape data, but that can be ignored. Finish the publishing process by registering the workspace with the Job Submitter and Data Download services.
+
+
+<br>**8) Run On Server**
+<br>Now open the FME Server web interface and select the workspace we just published (if you visit the home page it will be in the Last Published Workspaces section). 
+
+Firstly make sure the Service parameter is set to Data Download.
+
+Next check the Published Parameters section. The source CSV is set to be read from the dataset published with the workspace. For the Shape dataset click the browse button:
+
+![](./Images/Img2.41.Ex1.RunWorkspacePublishedParams.png) 
+
+In the dialog that opens, make sure it is on the Temporary Uploads tab, then click the Upload button:
+
+![](./Images/Img2.41.Ex1.RunWorkspaceDataUpload1.png)
+
+Browse to and select the five files in the Shape dataset and click OK to upload them:
+
+![](./Images/Img2.43.Ex1.RunWorkspaceDataUpload2.png)
+
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms. Analyst says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you set Single Merged Feature Type when you added the Shape Reader to the workspace, you should be able to select any of the Shapefile datasets here - or even all of them!
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+Click the "garbage can" icon to remove the currently chosen dataset:
+
+![](./Images/Img2.44.Ex1.RunWorkspaceDataUpload3.png)
+
+Now click the .shp file you uploaded (you only need to select the .shp file now, not all five files), then click the add button to add it as the newly chosen dataset:
+
+![](./Images/Img2.45.Ex1.RunWorkspaceDataUpload4.png)
+
+Click OK to close the dialog. Click the Run Workspace button to run the workspace.
+
+The workspace runs using a mixture of published data and a temporary upload of Shape data. 
+
+
+<br>**9) Check Logs**
+<br>If you had correctly selected the Data Download service, running the workspace would have returned a link through which to download a dataset of the output. For now, don't click that.
+
+Click the Home button instead, and then click the translation just carried out in the Last Run Workspaces section:
+
+![](./Images/Img2.46.Ex1.LastRunWorkspaces.png)
+
+This will open the job summary page for the workspace. Notice that you can view the FME log file, but also download the result of the translation, as the URL to access it is also recorded here.
+
+---
+
+<!--New Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">NEW</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+The listing of the data download URL in this window is new for FME2016. Previously you had no way of finding this link to the output data once you left the Run Workspace page!
+</span>
+</td>
+</tr>
+</table>
 
 ---
 
@@ -233,10 +330,10 @@ ddddddddddddddddddddddddddddddddddd
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a workspace using a GeoJSON feed as the source</li>
-<li>Publish a workspace to FME Server using the Publishing Wizard</li>
-<li>Create a repository on FME Server using the Publishing Wizard</li>
-<li>Register a workspace with the Job Submitter service using the Publishing Wizard</li></ul>
+<ul><li>Create a using two Readers and find features within X radius of another</li>
+<li>Publish a workspace to FME Server and include source data</li>
+<li>Select a source dataset to upload temporarily at run-time</li>
+<li>Locate a data download result through a workspace summary page</li></ul>
 </span>
 </td>
 </tr>
