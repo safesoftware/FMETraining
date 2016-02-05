@@ -199,10 +199,45 @@ So, click the parameters button on the Writer feature type PostalAddress. In the
 <br>Before we start adjusting the dataset paths for use on FME Server, run the workspace to ensure it produces the correct output; i.e. that each address now has a division attribute. 
 
 
+<br>**10) Create Resources**
+<br>We'll also handle the input and output of this workspace using the resources folders on FME Server. 
+
+Firstly, we can upload a File Geodatabase as a folder/file only if we're using the Chrome web browser. Just in case you aren't, locate the File Geodatabase in your file system and compress it into a single zip file:
+
+![](./Images/Img2.59.Ex3.Workspace2ZipAddresses.png)
 
 
+Next, log in to the FME Server web interface and navigate to Manage &gt; Resources &gt; Data &gt; Voting
+
+Upload the zipped address file to that folder:
+
+![](./Images/Img2.60.Ex3.Workspace2UploadedZipAddresses.png)
 
 
+<br>**11) Edit Workspace to use Resources**
+<br>Back in FME Workbench delete the two existing published parameters. They should be called SourceDataset&#95;FILEGDB, SourceDataset&#95;SPATIALITE, and DestDataset&#95;SPATIALITE
+
+Next set the source and destination datasets as follows:
+
+<table>
+<tr><td>Geodatabase Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Voting\Addresses.gdb.zip</td></tr>
+<tr><td>SpatiaLite Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Voting\VotingDivisions.sl3</td></tr>
+<tr><td>Geodatabase Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Voting\NewAddresses.gdb.zip</td></tr>
+</table>
+
+One final tweak: change the Writer parameter Overwrite Geodatabase to Yes
+
+![](./Images/Img2.61.Ex3.Workspace2Parameters.png)
+
+
+<br>**12) Save, Publish, and Run Workspace**
+<br>Save the workspace (remember the filename, it will be important later) and publish it to FME Server. It should be registered with the Job Submitter service. 
+
+Locate the workspace in the Server web interface and run it to make sure it runs to completion. The evidence will be the log and a zipped geodatabase file in the resources folder.
+
+![](./Images/Img2.62.Ex3.Workspace2DownloadWrittenData.png)
+
+You may wish to download the newly created dataset to inspect it and make sure the output is correct.
 
 
 
