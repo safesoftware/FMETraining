@@ -135,7 +135,7 @@ You can view the CSV data as a table only, or you can set the Schema Attributes 
 </tr>
 
 <tr>
-<td style="font-weight: bold">Reader Dataset</td>
+<td style="font-weight: bold">Writer Dataset</td>
 <td style="">C:\FMEData2016\Output\DrinkingFountains.kml</td>
 </tr>
 

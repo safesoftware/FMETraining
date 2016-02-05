@@ -145,9 +145,9 @@ So, start FME Workbench and open the workspace from exercise 1 (or the begin wor
 <br>Now, in turn, double-click the source and destination dataset parameters and change them to:
 
 <table>
-<tr><td>CSV Reader</td><td>$(FME_SHAREDRESOURCE_DATA)\Cycling\DrinkingFountains.csv</td></tr>
-<tr><td>Shape Reader</td><td>$(FME_SHAREDRESOURCE_DATA)\Cycling\BikePaths_L.shp</td></tr>
-<tr><td>KML Writer</td><td>$(FME_SHAREDRESOURCE_DATA)\Cycling\Output\BikePaths_L.shp</td></tr>
+<tr><td>CSV Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\DrinkingFountains.csv</td></tr>
+<tr><td>Shape Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\BikePaths&#95;L.shp</td></tr>
+<tr><td>KML Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\Output\DrinkingFountains.kml</td></tr>
 </table>
 
 ![](./Images/Img2.51.Ex2.DatasetParametersSet.png)
