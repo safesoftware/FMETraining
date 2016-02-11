@@ -83,7 +83,7 @@ In this step we'll give the end-user control over format and coordinate system.
 
 </table>
 
-Your workspace will now look like this:
+The MIME type setting doesn't apply for a Data Download service, but we'll set it anyway. It can't hurt. Your workspace will now look like this:
 
 ![](./Images/Img3.45.Ex3.NewGenericWriter.png)
 
@@ -159,9 +159,78 @@ When prompted select the OutputFormat parameter that we just created:
 The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it any more and, since it is used nowhere else, will remove it.
 
 
+<br>**6) Create User Parameter**
+<br>The next parameter required is to give control over output coordinate system. The process is very similar to that of format. In the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter.
+
+Set the parameter values as follows:
+
+<table>
+<tr><td style="font-weight: bold">Type</td><td>Choice with Alias</td></tr>
+<tr><td style="font-weight: bold">Name</td><td>OutputCoordSys</td></tr>
+<tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
+<tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
+<tr><td style="font-weight: bold">Prompt</td><td>Select the Output Coordinate System</td></tr>
+</table>
+
+For the configuration field, click the [...] browse button. In the dialog that opens, click on Import &gt; Coordinate System(s). This opens a list of FME coordinate systems. Choose a few simple systems that will apply to this part of Canada, such as LL84, BCALB-83, and UTM83-10. 
+
+Click OK to close the dialog and return to the previous one:
+
+![](./Images/Img3.50.Ex3.ImportedCoordSys.png)
+
+Click OK and OK again to close these dialogs and create the parameter.
 
 
+<br>**7) Apply User Parameter**
+<br>Once more, now we've create a user parameter, we have to apply it.
+
+Locate the Generic Writer in the Navigator window, and this time look for the parameter called Coordinate System:
+
+![](./Images/Img3.51.Ex3.GenericCoordSysParam.png)
+
+Right-click on this parameter and choose Link to User Parameter. When prompted, select the published parameter called OutputCoordSys that we just created.
+
+If you now use the Run button in Workbench you'll see that both these parameters are now published.
+
+
+<br>**8) Publish to FME Server**
+<br>Save the workspace and publish it to FME Server. **However!** When you register it with the Data Download service be sure to click the Edit button to edit the service properties. In that dialog you MUST change the writer from "Output [JPEG]" to "Output [GENERIC]".
+
+![](./Images/Img3.53.Ex3.PublishDataDownloadParams.png)
+
+If you don't do that, then the Data Download will consist of the output of the JPEG Writer. Since that is not connected, there will be no output and so no zip file!
+
+Once published locate the workspace in the FME Server web interface and run it.
+
+![](./Images/Img3.52.Ex3.FormatCoordSysParamsServer.png)
+
+Choose different options for output format and coordinate system to see what happens in the output.
  
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms Analyst says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Right now I imagine you have some questions!
+<br><br><strong>Q) Why didn't we delete the original JPEG Writer when we added the Generic Writer?</strong>
+<br>A) It's because we have a parameter published for JPEG compression. If we deleted the JPEG Writer we would no longer have access to that parameter.
+<br><br><strong>Q) But we're not even using the JPEG Writer any more, so how would that parameter work?</strong>
+<br>A) Because the Generic Writer picks up parameters for the format it is writing from any Writer of that format! So you could add a dummy PNG format Writer and the Generic Writer would use the dummy's parameters when writing PNG.
+</span>
+</td>
+</tr>
+</table>
+
 ---
 
 <!--Exercise Congratulations Section--> 
@@ -179,13 +248,11 @@ The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically del
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create an integer user parameter and apply it to two transformer parameters</li>
-<li>Create a choice user parameter and apply it to a Writer feature type parameter</li>
-<li>Publish a workspace and use published parameters</li></ul>
+<ul><li>Add a Generic Writer and set up its format and MIME type parameters</li>
+<li>Create an output format user parameter and apply it to a Generic Writer</li>
+<li>Create an output coordinate system user parameter and apply it to a Generic Writer</li>
+<li>Apply a parameter from a dummy Writer to the generic Writer</li></ul>
 </span>
 </td>
 </tr>
 </table>   
-
-
-
