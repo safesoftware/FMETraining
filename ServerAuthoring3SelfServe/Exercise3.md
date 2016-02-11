@@ -57,109 +57,110 @@ In this step we'll give the end-user control over format and coordinate system.
 
 
 <br>**2) Add Writer**
-<br>xxxx
+<br>To give control over format needs a Generic format writer. Select Writers &gt; Add Writer from the menubar. When prompted enter these parameters:
 
+<table style="border: 0px">
 
+<tr>
+<td style="font-weight: bold">Writer Format</td>
+<td style="">Generic (Any Format)</td>
+</tr>
 
+<tr>
+<td style="font-weight: bold">Writer Dataset</td>
+<td style="">C:\FMEData2016\Output</td>
+</tr>
 
+<tr>
+<td style="font-weight: bold">Writer Parameters</td>
+<td style="">Output Format: JPEG (Joint Photographic Experts Group)<br>MIME Type: img/jpeg</td>
+</tr>
 
+<tr>
+<td style="font-weight: bold">Add Feature Types</td>
+<td style="">Copy From Reader</td>
+</tr>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter: 
-
-![](./Images/Img3.39.Ex2.CreateParameter.png)
-
-The dialog that opens allows us to create a new parameter. Create one using the following parameters:
-
-<table>
-<tr><td style="font-weight: bold">Type</td><td>Integer</td></tr>
-<tr><td style="font-weight: bold">Name</td><td>CellSpacing</td></tr>
-<tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
-<tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
-<tr><td style="font-weight: bold">Prompt</td><td>Enter Resolution (1-50)</td></tr>
-<tr><td style="font-weight: bold">Default Value</td><td>50</td></tr>
 </table>
 
+Your workspace will now look like this:
 
-![](./Images/Img3.40.Ex2.CreateParameterDialog.png)
+![](./Images/Img3.45.Ex3.NewGenericWriter.png)
 
-Click OK to close the dialog.
+The upper (unconnected) feature type belongs to the Generic Writer.
 
 
-<br>**3) Apply User Parameter**
-<br>Currently we've created a user parameter, but not applied it to anywhere. 
+<br>**3) Switch Feature Types**
+<br>We want to write to the Generic Writer, not the JPEG Writer, so switch the connection from the JPEG feature type to the Generic feature type. They are both labelled "GEOTIFF" so be sure to open the properties dialog to check if you need to.
 
-Open the parameters dialog for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing
-
-Do the same for the Y Cell Spacing parameter. The dialog will now look like this:
-
-![](./Images/Img3.41.Ex2.RasterResamplerParametersPublished.png)
-
-Notice that we're using the same values for the X and Y cell sizes. That's OK. Although we could use rectangular raster cells, for this exercise we'll stick with square.
+Don't delete the JPEG Writer though, or its feature type. We'll need those for reasons to be explained shortly.
 
 
 <br>**4) Create User Parameter**
-<br>Another setting we might give control of to the user is file compression. This is not defined in a transformer, but in the Writer feature type. However, we can still create a published parameter in the same way.
+<br>To give control over format requires a published parameter. So in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter.
 
-So, right-click on User Parameters in the Navigator window and choose Add Parameter again.
-
-This time we'll do this a little bit differently. Compression can be a value from zero to one hundred, but we'll present the user with the choice of None, Low, Medium, and High.
-
-So create a parameter with the following:
+Set the parameter values as follows:
 
 <table>
 <tr><td style="font-weight: bold">Type</td><td>Choice with Alias</td></tr>
-<tr><td style="font-weight: bold">Name</td><td>Compression</td></tr>
+<tr><td style="font-weight: bold">Name</td><td>OutputFormat</td></tr>
 <tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
 <tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
-<tr><td style="font-weight: bold">Prompt</td><td>Select Compression Level</td></tr>
+<tr><td style="font-weight: bold">Prompt</td><td>Select the Output Format</td></tr>
 </table>
 
-For the configuration field, click the [...] browse button. In the dialog that opens, set the following:
+For the configuration field, click the [...] browse button. In the dialog that opens, click on Import &gt; Writer Format(s):
 
-<table>
-<tr><th>Display Name</th><th>Value</th></tr>
-<tr><td>None</td><td>0</td></tr>
-<tr><td>Low</td><td>25</td></tr>
-<tr><td>Medium</td><td>50</td></tr>
-<tr><td>High</td><td>75</td></tr>
+![](./Images/Img3.46.Ex3.ImportWriterFormat.png)
+
+This will open a list of FME-supported formats. Choose a few simple raster formats such as JPEG, PNG, and GeoTIFF. Click OK to close the dialog and return to the previous one:
+
+![](./Images/Img3.47.Ex3.ImportedWriterFormat.png)
+
+---
+
+<!--Warning Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">WARNING</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Be sure to use the PNG format called PNGRASTER. Don't select the format called PNG Rasterizer (PNG) as that is for rasterizing vector data, not writing raster data.
+</span>
+</td>
+</tr>
 </table>
 
-![](./Images/Img3.42.Ex2.CreateParameterChoiceDialog.png)
+---
 
 Click OK and OK again to close these dialogs and create the parameter.
 
 
 <br>**5) Apply User Parameter**
-<br>To apply the parameter, click the cogwheel button for the JPEG feature type to open its properties dialog. Click the Format Parameters tab. Set the compression parameter to User Parameter &gt; Compression
+<br>Now we've create a user parameter, we have to apply it.
 
-![](./Images/Img3.43.Ex2.SetFeatureTypeCompression.png)
+Locate the Generic Writer in the Navigator window, expand its parameters and locate the parameter called Output Format. This is already linked to a published parameter that FME created automatically, but we want to ignore that and use our own.
 
-Click OK to close the dialog. If you press the run button now - with the prompt option set - you'll see that there are now two new prompts for cell size and compression.
+So, right-click on Output Format and choose the option to Link to User Parameter:
+
+![](./Images/Img3.48.Ex3.GenericLinkOption.png)
+
+When prompted select the OutputFormat parameter that we just created:
+
+![](./Images/Img3.49.Ex3.GenericLinkingToParameter.png)
+
+The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it any more and, since it is used nowhere else, will remove it.
 
 
-<br>**6) Publish and Run Workspace**
-<br>Now publish the workspace to FME Server again. As before, register it with the Data Download service. 
 
-Locate the workspace through the FME Server web interface and run it. This time you will be prompted to set the cell size and compression.
 
-![](./Images/Img3.44.Ex2.RunWorkspacePrompts.png)
-
-Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect.
  
 ---
 
