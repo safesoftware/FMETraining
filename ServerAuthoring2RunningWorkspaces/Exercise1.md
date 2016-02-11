@@ -351,7 +351,7 @@ The listing of the data download URL in this window is new for FME2016. Previous
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a using two Readers and find features within X radius of another</li>
+<ul><li>Create a workspace using two Readers and find features within X radius of another</li>
 <li>Publish a workspace to FME Server and include source data</li>
 <li>Select a source dataset to upload temporarily at run-time</li>
 <li>Locate a data download result through a workspace summary page</li></ul>

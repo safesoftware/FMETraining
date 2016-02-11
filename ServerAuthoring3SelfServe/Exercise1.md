@@ -153,7 +153,39 @@ Now open the RasterMosaicker parameters dialog. You can check the parameters but
 
 
 <br>**6) Publish Workspace**
-<br>Now let's publish the workspace to FME Server.
+<br>Now publish the workspace to FME Server. Register it with the Data Download service. If you are working on a remote server, such as an FME Cloud instance, you'll need to either publish the data with the workspace or upload it to an FME Server Resources folder.
+
+
+<br>**7) Run Workspace**
+<br>Log in to FME Server, locate the workspace, and run it. 
+
+The workspace will run and you will be presented with a hyperlink to a zip file of the output dataset:
+
+![](./Images/Img3.38.Ex1.DataDownloadResults.png)
+
+---
+
+<!--Exercise Congratulations Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-thumbs-o-up fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">CONGRATULATIONS</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+By completing this exercise you have learned how to:
+<br>
+<ul><li>Create a workspace to read and write raster data</li>
+<li>Publish and run a workspace using the Data Download service</li></ul>
+</span>
+</td>
+</tr>
+</table>   
 
 
 
