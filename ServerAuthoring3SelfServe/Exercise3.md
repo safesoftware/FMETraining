@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold"></span>
@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\SelfServe-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\SelfServe-Ex3-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\SelfServe-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\SelfServe-Ex3-Complete.fmw</td>
 </tr>
 
 </table>
@@ -45,19 +45,39 @@
 
 As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
 
-So far you have created a simple workspace to translate orthophotos to jpeg format, and published it to a Data Download service on FME Server.
+So far you have created a simple workspace to translate orthophotos to jpeg format, added published parameters for transformation, and published it to a Data Download service on FME Server.
 
-Now you need to start customizing the workspace to allow the end-users to have a degree of control over the output.
+Now you need to give the end-users control over the output format and output coordinate system.
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 1, or the starting workspace listed above. You can see that it consists of a Reader, a Writer, and two transformers.
+<br>Open the workspace from exercise 2, or the begin workspace listed above. You can see that it consists of a Reader, a Writer, and two transformers, plus some published parameters.
 
-In this step we'll give the end-user control over the transformation stages.
+In this step we'll give the end-user control over format and coordinate system.
 
 
-<br>**2) Create User Parameter**
-<br>If you look at the parameters for the RasterResampler transformer you'll see parameters for X Cell Spacing and Y Cell Spacing. We should let the end user choose what spacing they want.
+<br>**2) Add Writer**
+<br>xxxx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter: 
 
