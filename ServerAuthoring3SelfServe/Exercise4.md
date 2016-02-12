@@ -53,11 +53,11 @@ One of the frequent requests you get when you translate orthophoto data is to ad
 <br>**1) Open Workspace**
 <br>Open the workspace from exercise 3, or the begin workspace listed above. You can see that it consists of a Reader, a Writer, and two transformers, plus some published parameters.
 
-In this step we'll give the end-user control over output layers.
+To add - for example - road features to the raster output first requires a Reader for those road features, so that is the first step...
 
 
 <br>**2) Add Reader**
-<br>To add - for example - road features to the raster output first requires a Reader for those road features. So select Readers &gt; Add Reader and use the following setup:
+<br>Select Readers &gt; Add Reader and use the following setup:
 
 <table style="border: 0px">
 
@@ -168,34 +168,34 @@ It's just a small thing but will help with the end user experience.
 
 ![](./Images/Img3.60.Ex4.FTTRTranslationPrompt.png)
 
+Check that the output includes whatever roads you selected. 
+
 
 <br>**7) Clean User Parameters**
 <br>If your workspace is like mine, there are a number of extra published parameters we don't really need right now. Plus the order of parameters is not good. Let's take this opportunity to clean it up.
 
 Locate and delete the following published parameters:
 
+- FEATURE_TYPES
 - SourceDataset_DGNV8
-- SourceDataset_GEOTIFF
 - DestDataset_JPEG
 - DestDataset_GENERIC
 
-With that we remove the ability to select source raster tiles. We'll add that back in and also add the ability to select which files to process.
+Optionally you can now edit the parameter SourceDataset_GEOTIFF and change the prompt to "Orthophotos to Read".
 
-So, locate the GeoTIFF Reader's source dataset parameter:
+Finally, let's change the order of parameters. You can do this by dragging one above the other in the Navigator window. So do this and put the parameters in the order that seems best to you:
 
-![](./Images/Img3.61.Ex4.SourceGeotiffParameter.png)
+![](./Images/Img3.61.Ex4.SortedUserParameters.png) 
 
-Double-click it to set it. Browse to the folder C:\FMEData2016\Data\Orthophotos and in there select all of the .tif files.
-
-Now locate the GeoTIFF Reader's Feature Types to Read parameter. Open its definition dialog. It's 
-
+Now run the workspace again to check on our improved parameters dialog.
 
 
 <br>**8) Publish to FME Server**
-<br>Save the workspace and publish it to FME Server. **However!** When you register it with the Data Download service be sure to click the Edit button to edit the service properties. In that dialog you MUST change the writer from "Output [JPEG]" to "Output [GENERIC]".
+<br>Save the workspace and publish it to FME Server. Remember to make sure the Data Download service is using the "Output [GENERIC]" writer.
 
+Run the workspace, taking time to admire the new, cleaner set of parameters that are available:
 
- 
+![](./Images/Img3.62.Ex4.NewParametersOnServer.png)
 
 ---
 
@@ -214,10 +214,11 @@ Now locate the GeoTIFF Reader's Feature Types to Read parameter. Open its defini
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Add a Generic Writer and set up its format and MIME type parameters</li>
-<li>Create an output format user parameter and apply it to a Generic Writer</li>
-<li>Create an output coordinate system user parameter and apply it to a Generic Writer</li>
-<li>Apply a parameter from a dummy Writer to the generic Writer</li></ul>
+<ul><li>Add vector data onto raster</li>
+<li>Use the Feature Types to Read parameter in automatic mode</li>
+<li>Edit the Feature Types to Read parameter to create a manual list</li>
+<li>Edit the Feature Types to Read parameter to create a grouped manual list</li>
+<li>Clean up unnecessary user parameters and change the display order</li></ul>
 </span>
 </td>
 </tr>
