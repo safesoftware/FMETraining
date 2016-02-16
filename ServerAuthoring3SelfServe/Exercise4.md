@@ -151,7 +151,7 @@ So, under the Display Name, enter values to match as follows:
 <tr><td>Other Roads</td><td>Other</td></tr>
 </table>
 
-The list will sort itself and look like this:
+The list will sort itself by display name and look like this:
 
 ![](./Images/Img3.58.Ex4.EditingFTTR2.png)
 
@@ -176,24 +176,42 @@ Check that the output includes whatever roads you selected.
 
 Locate and delete the following published parameters:
 
-- FEATURE_TYPES
+- SourceDataset_GEOTIFF
 - SourceDataset_DGNV8
 - DestDataset_JPEG
 - DestDataset_GENERIC
-
-Optionally you can now edit the parameter SourceDataset_GEOTIFF and change the prompt to "Orthophotos to Read".
 
 Finally, let's change the order of parameters. You can do this by dragging one above the other in the Navigator window. So do this and put the parameters in the order that seems best to you:
 
 ![](./Images/Img3.61.Ex4.SortedUserParameters.png) 
 
+
+<br>**8) Raster User Parameters**
+<br>Now let's do something with the source raster. We want the user to be able to select the files to read, without having to upload them. Locate the Reader in the Navigator window and double-click the Source GeoTIFF File(s) parameter. When prompted, select all of the GeoTIFF files in the Orthophotos folder.
+
+![](./Images/Img3.65.Ex4.RasterSelectAllDatasets.png)
+
+This would normally mean that all files would get read into the translation; but the Feature Types to Read parameter will let the user actually choose which ones to read. We do, however, need to make some edits.
+
+Open the definition of the GeoTIFF Feature Types to Read parameter. Click the option for a Fixed List. To list all of the available tiles select List &gt; Add From Current Dataset and select all the files.
+
+Finally change the prompt to something sensible like "Raster Tiles to Read".
+
+![](./Images/Img3.64.Ex4.RasterFeatureTypesToRead.png)
+
 Now run the workspace again to check on our improved parameters dialog.
 
 
-<br>**8) Publish to FME Server**
-<br>Save the workspace and publish it to FME Server. Remember to make sure the Data Download service is using the "Output [GENERIC]" writer.
+<br>**9) Publish to FME Server**
+<br>Save the workspace and publish it to FME Server. There are two things to note.
 
-Run the workspace, taking time to admire the new, cleaner set of parameters that are available:
+Firstly, because we removed the Source Dataset parameters FME will suggest we upload the data. If your data is on the same computer as FME Server (or on a path otherwise accessible to the Server), then you don't need to do this and can uncheck that box:
+
+![](./Images/Img3.63.Ex4.PublishToServerNoUpload.png)
+
+Secondly, remember to make sure the Data Download service is using the "Output [GENERIC]" writer.
+
+In the FME Server web interface, run the workspace, taking time to admire the new, cleaner set of parameters that are available:
 
 ![](./Images/Img3.62.Ex4.NewParametersOnServer.png)
 

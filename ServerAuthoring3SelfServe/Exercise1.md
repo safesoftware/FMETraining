@@ -90,6 +90,11 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 </tr>
 
 <tr>
+<td style="font-weight: bold">Reader Parameters</td>
+<td style="">Feature Type Name(s): From File Name(s)</td>
+</tr>
+
+<tr>
 <td style="font-weight: bold">Workflow Options</td>
 <td style="">Single Merged Feature Type</td>
 </tr>
@@ -97,6 +102,8 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 </table>
 
 It's important to use the Single Merged Feature Type option because there are many source tiles of data, and we may want to read any of them without having to add them as individual feature types.
+
+The Feature Type Name parameter is important because it will help us later allowing the user to select which layers to read.
 
 
 <br>**2) Add Writer**
