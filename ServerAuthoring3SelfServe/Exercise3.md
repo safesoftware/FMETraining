@@ -26,7 +26,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Creating published parameters for user control in Data Download</td>
+<td style="border: 1px solid darkorange">Controlling output format and coordinate system in Data Download</td>
 </tr>
 
 <tr>
