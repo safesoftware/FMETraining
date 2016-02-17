@@ -51,7 +51,7 @@ One of the frequent requests you get when you translate orthophoto data is to ad
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 3, or the begin workspace listed above. You can see that it consists of a Reader, a Writer, and two transformers, plus some published parameters.
+<br>Open the workspace from exercise 3, or the begin workspace listed above. You can see that it consists of a Reader, two Writers, and two transformers, plus some published parameters.
 
 To add - for example - road features to the raster output first requires a Reader for those road features, so that is the first step...
 
@@ -214,6 +214,8 @@ Secondly, remember to make sure the Data Download service is using the "Output [
 In the FME Server web interface, run the workspace, taking time to admire the new, cleaner set of parameters that are available:
 
 ![](./Images/Img3.62.Ex4.NewParametersOnServer.png)
+
+Outside of a training environment we might want to order the raster tiles into groups, but we'll live with it as-is for now.
 
 ---
 
