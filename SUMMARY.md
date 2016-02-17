@@ -44,7 +44,7 @@
    * [Module Review](ServerAuthoring2RunningWorkspaces/2.10.ModuleReview.md)
    * [Q+A Answers](ServerAuthoring2RunningWorkspaces/2.11.QuestionAnswers.md)
 * [Self-Serve with FME Server](ServerAuthoring3SelfServe/3.00.SelfServe.md)
-   * [What is Self-Serve?](ServerAuthoring3SelfServe3.01.WhatIsSelfServe.md)
+   * [What is Self-Serve?](ServerAuthoring3SelfServe/3.01.WhatIsSelfServe.md)
    * [FME Server Services](ServerAuthoring3SelfServe/3.02.FMEServerServices.md)
    * [Data Uploads](ServerAuthoring3SelfServe/3.03.DataUploads.md)
    * [Data Download Service](ServerAuthoring3SelfServe/3.04.DataDownloads.md)
