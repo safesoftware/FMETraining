@@ -293,7 +293,7 @@ Save the workspace and publish it back to Server. You'll need to use the full pu
 
 
 <br>**17) Adjust Master Workspace**
-<br>Now open the master workspace in FME Server. 
+<br>Now open the master workspace in FME Desktop. 
 
 Open the wizard for the first FMEServerJobSubmitter transformer. This time set the Output Data Location parameter to *Temporary Folder*.
 
