@@ -279,7 +279,7 @@ Notice that the timestamps will be very similar for the two datasets; the Voting
 <br>**16) Adjust Child Workspace**
 <br>Now we have three workspaces on our FME Server. The first two can be run, by themselves, at any time that is required. We also have a master workspace that can run the two in sequence.
 
-However, the thought occurs... what is someone edited the first workspace to change the name of the output dataset? Then the second workspace would fail in my chain because it would not know how to find the data.
+However, the thought occurs... what if someone edited the first workspace to change the name of the output dataset? Then the second workspace would fail in my chain because it would not know how to find the data.
 
 Can we work around that? Yes, we can.
 
