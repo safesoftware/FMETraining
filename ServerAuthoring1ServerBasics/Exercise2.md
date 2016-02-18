@@ -87,8 +87,8 @@ Click the Login button.
 
 
 
-<br>**3) Select Workspace**
-<br>Examine the user interface. This is your primary method for interacting with FME Server.
+<br>**3) Examine the User Interface**
+<br>This is your primary method for interacting with FME Server.
 
 The first thing we should do is make sure FME Server is running correctly (the fact that we could log in is a good sign) and that we are licensed and have engines running.
 
