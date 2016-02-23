@@ -95,6 +95,7 @@
    * [What is Message Streaming?](ServerAuthoring5MessageStreams/5.01.WhatIsMessageStreaming.md)
    * [Elements of a Message Stream](ServerAuthoring5MessageStreams/5.02.ElementsOfAMessageStream.md)
    * [Message Streaming Architecture](ServerAuthoring5MessageStreams/5.03.MessageStreamingArchitecture.md)
+   * [Exercise: Handling Emergency Phone Call Streams](ServerAuthoring5MessageStreams/Exercise1.md)
    * [Module Review](ServerAuthoring5MessageStreams/5.04.ModuleReview.md)
    * [Q+A Answers](ServerAuthoring5MessageStreams/5.05.QuestionAnswers.md)
 * [Course Wrap-Up](ServerAuthoring6WrapUp/6.00.CourseWrapup.md)
