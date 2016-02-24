@@ -77,8 +77,6 @@ Next click the Edit button for the Data Streaming service. Ensure that service i
 
 ![](./Images/Img3.74.Ex6.WebInterfaceService.png)
 
-***Comment to Tester: I tried to run the developer URL here and it didn't work! Can you try it?!***
- 
 The result of this translation is not a streamed jpeg file. Instead, the translation returns a zip file:
 
 ![](./Images/Img3.75.Ex6.StreamedZip.png)
