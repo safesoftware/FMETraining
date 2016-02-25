@@ -80,6 +80,7 @@
 	   * [Email Publications: SMTP](ServerAuthoring4RealTime/4.10.SMTPPublications.md)
 	   * [Email Publications: IMAP](ServerAuthoring4RealTime/4.11.IMAPPublications.md)
 	   * [Email Subscriptions](ServerAuthoring4RealTime/4.12.EmailSubscriptions.md)
+   * [Exercise: Notification Topics and Email Publications](ServerAuthoring4RealTime/Exercise1.md)
    * [Notifications and Workspaces](ServerAuthoring4RealTime/4.13.NotificationsAndWorkspaces.md)
    * [Workspace Subscriptions](ServerAuthoring4RealTime/4.14.WorkspaceSubscriptions.md)
 	   * [Incoming Message Handling](ServerAuthoring4RealTime/4.15.IncomingMessageHandling.md)

@@ -60,8 +60,8 @@ As a technical analyst in the GIS department a recent project involved setting u
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-For this exercise you may use either the SMTP or IMAP protocol for email. 
-<br>For SMTP, this requires your FME Server to have a DNS record and SMTP configured. 
+This exercise uses either the SMTP or IMAP protocol for email. To carry out this exercise you will need access to at least one email account in one of these types.
+<br><br>For SMTP, this requires your FME Server to have a DNS record and SMTP configured. 
 <br>For IMAP this requires access to an email server that supports the IMAP protocol. Gmail, Outlook, and Yahoo! all are acceptable web-based solutions. 
 </td>
 </tr>
@@ -70,38 +70,51 @@ For this exercise you may use either the SMTP or IMAP protocol for email.
 ---
 
 <br>**1) Create Topic**
-<br>The first step is to create a topic that will be triggered by the email. So log in to the FME Server web interface and click on the menu item labelled Manage &gt; Notifications.
+<br>The first step is to create a publication and topic that will be triggered by the email. So log in to the FME Server web interface and click on the menu item labelled Manage &gt; Notifications.
 
-Click the tab labelled Topics and click the button labelled New. When prompted enter a topic name such as ImagesIncomingRequest. Enter a description such as “Topic used to trigger an image processing workspace”:
+Click the Publications tab and then click the New button.
+
+Enter EmailReceiver as the new publication's name. Then click in the text box under Topics to Publish To. Type in ImagesIncomingRequest and click on "Click to Add". This will create a new topic and assign it to this publication. 
 
 ![](./Images/Img4.35.Ex1.CreateIncomingTopic.png)
 
-Click OK to close the dialog and create the Topic.
+The new publication can be created to use either the Email protocol or the IMAP protocol. 
 
-
-
-<br>**2) Add Email Publication**
-<br>In the same Notifications page, click the Publications tab and then click the New button.
-
-The new publication can be created to use either the Email protocol or the IMAP protocol.
+SMTP is easier to set up but FME Server must reside on a server with a proper DNS record (all FME Cloud machines will have this). IMAP is necessary where FME Server resides on an internal network.
 
 ---
 
 ***Email Protocol***
 
-Enter Email Receiver as the new publication’s name. Then click in the text box labelled Click to Select under Topics to Publish To. Select the newly created ImageProcessing topic from the drop-down list.
+To use the Email protocol select Email (SMTP) as the Publication Protocol. This will open the Email User Name parameter. Enter a name for receiving email, for example *fmeimageprocessing*
 
-Now select Email (SMTP) as the Publication Protocol. This will open the Email User Name parameter. Enter a name for receiving email, for example in the format FirstnameLastname
+![](./Images/Img4.36.Ex1.CreateSMTPPublication.png)
 
-This will create an email address <name>@<hostname> The hostname is assumed, so you don’t need to enter it yourself.
+Clicking OK will create an email address *fmeimageprocessing@&lt;hostname&gt;* The hostname is assumed, so you don’t need to enter it yourself.
 
-Now all emails sent to that address will trigger the ImageProcessing topic.
+Now all emails sent to that address will trigger the ImagesIncomingRequest topic.
 
 ---
 
 ***IMAP Protocol***
 
-IMAP is the easier way to handle incoming email where computers might not have a proper DNS record, such as on an internal network.
+To use the IMAP protocol select Email (IMAP) as the Publication Protocol. This will open a number of other parameters. Enter them according to your email account.
+
+In case it is of use, the server information for Gmail is as follows:
+
+- IMAP Server Host: imap.gmail.com
+- IMAP Server Port: 993
+- Connection Security: SSL
+- Verify SSL Certificate: Yes
+
+You will also need to check the settings in your Gmail account to make sure IMAP is turned on (by default it is not). Regardless of the email provider, you should set these parameters as follows:
+
+- Poll Interval: 1 minute
+- Emails to Fetch: New Emails Only.
+
+Select a Resource Folder for attachments to be saved to and click OK to close the dialog and create the new Publication.
+
+---
 
 <table style="border-spacing: 0px">
 <tr>
@@ -114,32 +127,45 @@ IMAP is the easier way to handle incoming email where computers might not have a
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you don’t have access to a web-based email account, use fmeserver2014@gmail.com with the password lizardisland.
+For IMAP, if you don’t have access to a web-based email account, use <strong>fmeimageprocessing@gmail.com</strong> with the password <strong>FMENotifications</strong>.
 </span>
 </td>
 </tr>
 </table>
 
-Enter IMAP Email as the new publication’s name.
+---
 
-Next, click in the text box labelled Click to Select under Topics to Publish To. Select the newly created ImageProcessing topic from the drop-down list.
+<br>**2) Test Publication**
+<br>Now let's test the publication. In the Notifications page on FME Server, click the tab marked Topic Monitoring. Select *ImagesIncomingRequest* as the topic to monitor:
 
-Now select Email (IMAP) as the Publication Protocol. This will open a number of other parameters. Enter them according to your email account:
+![](./Images/Img4.37.Ex1.MonitorTopic.png)
 
-In case it is of use, the usual server information is as follows:
+Now send an email to the address selected for the new publication. When the email is received by FME Server (SMPT) or FME Server fetches it (IMAP) the topic will be triggered with a message:
 
-Set the Poll Interval to 60 seconds and Emails to Fetch to New Emails Only.
+![](./Images/Img4.38.Ex1.MonitorTopicResult.png)
 
-Select a Resource Folder for attachments to be saved to and click OK to close the dialog and create the new Publication.
-xxxx
+Remember, an IMAP publication only checks for an email every 60 seconds, so the result might not be immediate.
 
+---
 
-<br>**3) Create Workspace**
-<br>xxxx
+<!--Person X Says Section-->
 
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms Analyst says...</span>
+</td>
+</tr>
 
-<br>**4) Publish Workspaces**
-<br>xxxx
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+In a training course more than one student might be using the IMAP account fmeimageprocessing@gmail.com, so don't be surprised by multiple messages arriving!
+</span>
+</td>
+</tr>
+</table>
 
 
  
@@ -160,14 +186,10 @@ xxxx
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Send and receive messages via WebSockets</li>
-<li>Publish and run message-streaming workspaces</li>
-<li>Cancel message-streaming workspaces and check their log files</li>
-<li>Extract attributes from JSON messages</li>
-<li>Use transformers to transform and filter a message according to its content</li>
-<li>Set up workspaces to handle group-based transformers in a real-time scenario</li>
-<li>Record incoming messages into a database</li>
-<li>Set up a hybrid system with message streaming <strong>and</strong> notifications</li></ul>
+<ul><li>Create a new Publication</li>
+<li>Create a new Topic as part of the Create Publication process</li>
+<li>Use incoming email to trigger topics/notifications</li>
+<li>Test a publication/topic using Topic Monitoring</li></ul>
 </span>
 </td>
 </tr>
