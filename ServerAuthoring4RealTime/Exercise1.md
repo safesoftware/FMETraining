@@ -90,9 +90,15 @@ To use the Email protocol select Email (SMTP) as the Publication Protocol. This 
 
 ![](./Images/Img4.36.Ex1.CreateSMTPPublication.png)
 
-Clicking OK will create an email address *fmeimageprocessing@&lt;hostname&gt;* The hostname is assumed, so you don’t need to enter it yourself.
+Clicking OK will create an email address *fmeimageprocessing@&lt;hostname&gt;* - for example: 
 
-Now all emails sent to that address will trigger the ImagesIncomingRequest topic.
+<table>
+<tr><th>Host</th><th>Example Email Address</th></tr>
+<tr><td>FME Cloud</td><td>fmeimageprocessing@myfmeserver.fmecloud.com</td></tr>
+<tr><td>Amazon AWS</td><td>fmeimageprocessing@ec1-23-456-789-012.compute-1.amazonaws.com</td></tr>
+</table>
+
+Now all emails sent to that address will trigger the ImagesIncomingRequest topic. 
 
 ---
 
