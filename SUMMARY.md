@@ -102,6 +102,6 @@
    * [Product Information and Resources](ServerAuthoring6WrapUp/6.01.ProductInfo.md)
    * [Community Information and Resources](ServerAuthoring6WrapUp/6.02.CommunityInfo.md)
    * [Course Feedback](ServerAuthoring6WrapUp/6.03.CourseFeedback.md)
-   * [Thanks You](ServerAuthoring6WrapUp/6.04.ThankYou.md)
+   * [Thank You](ServerAuthoring6WrapUp/6.04.ThankYou.md)
    * [A Pointless Quiz](ServerAuthoring6WrapUp/6.05.Pointless.md)
 
