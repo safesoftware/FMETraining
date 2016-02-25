@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department a recent project involved setting up a Data Download solution for users to serve orthophoto data to themselves. Having read up about notifications in FME Server, you think that it should be possible to set up a system that uses email-based automation.
+As a technical analyst in the GIS department a recent project involved setting up a Data Download solution for users to serve orthophoto data to themselves. Having read up about notifications in FME Server, you think that it should be possible to also set up a system that uses email-based automation.
 
 ---
 

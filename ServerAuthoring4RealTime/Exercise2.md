@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department a recent project involved setting up a Data Download solution for users to serve orthophoto data to themselves. Having read up about notifications in FME Server, you think that it should be possible to set up a system that uses email-based automation.
+As a technical analyst in the GIS department a recent project involved setting up a Data Download solution for users to serve orthophoto data to themselves. Having read up about notifications in FME Server, you think that it should also be possible to set up a system that uses email-based automation.
 
 So far you have set up a system for incoming email notifications to be registered by FME Server. Now you must create a workspace to process these and publish it to FME Server. The workspace must then be triggered by a notification topic.
 
@@ -74,7 +74,7 @@ This exercise continues where exercise 1 left off. You must have completed exerc
 
 ![](./Images/Img4.39.Ex2.InitialWorkspace.png)
 
-This will give us a workspace to run in response to an email; albeit one that doesn’t do much yet.
+This will give us a workspace to run in response to an email; albeit one that doesn’t do much yet. We're just creating this to check that we can get the setup to work.
 
 
 <br>**2) Save and Publish Workspace**
