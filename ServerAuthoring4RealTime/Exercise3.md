@@ -26,7 +26,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Running a workspace in response to a notification</td>
+<td style="border: 1px solid darkorange">Processing an incoming email message</td>
 </tr>
 
 <tr>
