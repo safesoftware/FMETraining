@@ -10,7 +10,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold"></span>
+<span style="color:white;font-size:x-large;font-weight: bold">Orthophoto Notification System</span>
 </td>
 </tr>
 
@@ -26,26 +26,28 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Sending an email response to the user</td>
+<td style="border: 1px solid darkorange">Processing an incoming email message</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex3-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex3-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-As a technical analyst in the GIS department you are setting up a solution to deliver raster imagery that is triggered by email. 
+As a technical analyst in the GIS department a recent project involved setting up a Data Download solution for users to serve orthophoto data to themselves. Having read up about notifications in FME Server, you think that it should be possible to set up a system that uses email-based automation.
 
-So far you have set up a system for incoming email notifications to be registered by FME Server and triggered a workspace to run in response and process the email content. Now let's send a response to the users to let them know their data is ready to download.
+So far you have set up a system for incoming email notifications to be registered by FME Server and proved that you can use that to trigger a workspace. Now you must actually edit the workspace to process the incoming email. 
+
+One part of the Data Download project clipped raster features to the boundary of a neighborhood. It should be possible to set up the workspace to have extract the neighborhood name from the subject line of the incoming email. 
 
 ---
 
@@ -69,98 +71,89 @@ This exercise continues where exercise 3 left off. You must have completed exerc
 
 ---
 
-<br>**1) Add Subscription**
-<br>Open the FME Server web interface and navigate to the Notification management page. Click the Subscriptions tab and then click New to create a new Subscription. This will be an email service through which a response will be sent.
+<br>**1) Open Workspace**
+<br>Start FME Workbench and open the workspace: C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex4-Begin.fmw (you should open this workspace, even if you created one in exercise 3):
 
-Give the subscription a name like Send Image Response and create a new topic for it such as ImagesOutgoingResponse (it's important to use a different topic than the incoming message).
+![](./Images/Img4.43.Ex3.InitialWorkspace.png)
 
-Set the protocol to Email and set up your SMTP email server parameters.
+This workspace is a cut-down version of the one used for your Data Download project. Notice raster data is read and clipped to the boundary of a chosen neighborhood.
 
----
 
-<table style="border-spacing: 0px">
+<br>**2) Add Reader**
+<br>We now need to add a new Reader, which is what we'll use to obtain the content of the email message.
+
+Select Readers > Add Reader from the menubar. When prompted set the parameters as follows: 
+
+<table style="border: 0px">
+
 <tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">InteropGeek68 says …</span>
-</td>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">Text File</td>
 </tr>
 
 <tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-If you don’t have access to an email server, use <strong>fmeimageprocessing@gmail.com</strong> with the password <strong>FMENotifications</strong>.
-</span>
-</td>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2016\readme.txt</td>
 </tr>
+
+<tr>
+<td style="font-weight: bold">Reader Parameters</td>
+<td style="">Read Whole File at Once: Yes</td>
+</tr>
+
 </table>
 
----
-
-In case it is of use, the server information for Gmail is as follows:
-
-- SMTP Server: smtp.gmail.com
-- IMAP Server Port: 465
-- Connection Security: SSL
-
-Regardless of the email provider, you should set these parameters as follows:
-
-- Email From: Your account name (for example fmeimageprocessing@gmail.com)
-- Email Subject: "Your Data is Ready"
-
-Most of the general settings (Email To, Email Template, etc.) will be set by the content we are going to provide.  
+It doesn't really matter what text file we use as the source, it won't be used anyway. It will be replaced by the content of the incoming email. The Read Whole File at Once parameter is important. With it we'll receive the email content as a single chunk of text. Without it we'll receive the content as lots of lines of text, which would be much harder to parse.
 
 
-<br>**2) Edit Workspace**
-<br>Open the workspace from exercise 3 (or the begin workspace listed above). Add two new transformers - the FMEServerEmailGenerator (a custom transformer) and an FMEServerNotifier - as a separate stream of data:
+<br>**3) Add JSONFlattener**
+<br>Now add a JSONFlattener transformer to the workspace, after the Text File Reader:
 
-![](./Images/Img4.50.Ex4.WorkspaceWithEmailGeneration.png)
+![](./Images/Img4.44.Ex3.JSONFlattener.png)
+
+Open the parameters dialog. In there select *text&#95;line&#95;data* as the source of the JSON content. Under Attributes to Expose manually enter *imap&#95;publisher&#95;subject* and *email&#95;publisher&#95;subject* - this will provide us with the email subject line whether we are using IMAP or SMTP.
+
+![](./Images/Img4.45.Ex3.JSONFlattenerParameters.png)
+
+There are other components of the incoming email we could expose, but these are all we need for now.
+
+
+<br>**4) Add FeatureMerger**
+<br>Now we need to filter the flow of neighborhood features to include only the neighborhood defined in our email attribute. There are various ways of doing this - maybe the ChangeDetector or Matcher would work - but here we'll use the FeatureMerger combined with the existing Tester.
+
+So, add a FeatureMerger transformer. The Neighborhood features are the Requestor, the JSONFlattener output the Supplier. The best way is to tidy the canvas to look like this:
+
+![](./Images/Img4.46.Ex3.FeatureMergerCanvas.png)
+
+Open the FeatureMerger parameters dialog. Set the requestor and supplier join values to two identical constant values, like so:
+
+![](./Images/Img4.47.Ex3.FeatureMergerParameters.png)
+
+This means that the JSON attributes will be copied onto ALL neighborhood features.
+
+
+<br>**5) Edit Tester**
+<br>Now open the Tester transformer's parameters dialog. You need to set up two test clauses: one to test if NeighborhoodName = email&#95;publisher&#95;subject and one to test if NeighborhoodName = imap&#95;publisher&#95;subject - the test should be an OR:
+
+![](./Images/Img4.48.Ex3.TesterParameters.png)
+
+Now the feature will pass if it exists in the email subject line - regardless of whether we use the IMAP or SMTP email protocol.
   
 
-<br>**3) Edit JSONFlattener**
-<br>To send an email back to the same person who sent the incoming email, we need to expose an attribute with that account name. So, open the properties dialog for the JSONFlattener and in the Attributes to Expose parameter, add *email&#95;publisher&#95;from* and *imap&#95;publisher&#95;from* 
-
-![](./Images/Img4.51.Ex4.ExposeSourceAccountAttr.png)
-
-
-<br>**4) Edit Clipper**
-<br>We need the exposed attributes in the two transformers we placed earlier, but currently it's unlikely such attributes make it past the Clipper transformer. So, open the Clipper parameters dialog and check the box labelled Merge Attributes:
-
-![](./Images/Img4.52.Ex4.ClipperMergeAttributes.png)
-
-
-<br>**5) Edit FMEServerEmailGenerator**
-<br>Now open the parameters dialog for the FMEServerEmailGenerator. We could just set the To parameter to one of the attributes we've exposed, depending on what incoming protocol we are using. However, a better solution is to set up the workspace to work regardless of protocol.
-
-So, click the drop-down arrow to the right of the To parameter and choose Conditional Value. Double-click the first row (where it says "If") and a dialog will open in which to enter a test condition. Set up a test where *email&#95;publisher&#95;from* "Has Value". Set the output value to the *email&#95;publisher&#95;from* attribute: 
-
-![](./Images/Img4.53.Ex4.ConditionalToField1.png)
-
-In other words, if *email&#95;publisher&#95;from* has a value then use it for the To field. Click OK to close that dialog.
-
-Now, back in the previous dialog, double-click in the Else &gt; Output Value field and select Attribute &gt; *imap&#95;publisher&#95;from* from the attribute list:
-
-![](./Images/Img4.54.Ex4.ConditionalToField2.png)
-
-In other words, if *email&#95;publisher&#95;from* has a value then use it for the To field, else use *imap&#95;publisher&#95;from*
-
-Close this dialog and in the other fields of the FMEServerEmailGenerator, enter a Subject and Message (such as "Your Data is Ready"):
-
-![](./Images/Img4.55.Ex4.FMEServerEmailGeneratorParameters.png)
-
-Click OK to close the dialog and we have an email ready to send. 
-
-
-<br>**6) Edit FMEServerNotifier**
-<br>Now edit the parameters for the FMEServerNotifier transformer. In the first dialog enter the connection parameters. In the second dialog pick the topic created earlier (ImagesOutgoingResponse) and for the content select the attribute text_line_data (this is what was created by the FMEServerEmailGenerator):
-
-![](./Images/Img4.56.Ex4.FMEServerNotifierParameters.png)
-  
-
-<br>**7) Publish to FME Server**
+<br>**6) Publish to FME Server**
 <br>Publish the workspace to FME Server. You may (or may not) need to also upload the source raster and KML datasets (depending on whether your FME Server can access the files on your authoring system). Simply register the workspace with the Job Submitter service. 
 
-If the workspace you publish has a different name to that in exercise 3, be sure to navigate to the workspace subscription (Process Images Request) and change it to point to the correct workspace.
+
+<br>**7) Update Subscription**
+<br>The subscription created in the previous exercise was for a different workspace. Therefore navigate to that subscription in the FME Server interface and change it to run the workspace published in the previous step. 
+
+On choosing the workspace you should get the option to set a couple of more parameters, including where you want the data to be written to. Choose to write it to Resources &gt; Data &gt; Output (creating the Output folder if it doesn't already exist).
+
+Also - vitally - you get to choose where to send the incoming message. Choose the published parameter for the text file Reader:
+
+![](./Images/Img4.49.Ex3.NotificationMessageMapping.png)
+
+This is how the text file Reader knows where to read the incoming JSON email message from.
 
 
 <br>**8) Test Workspace**
@@ -173,7 +166,28 @@ If the workspace you publish has a different name to that in exercise 3, be sure
 - Strathcona
 - West End
 
-You should receive an email in return, alerting you to when your data is ready to collect. If there is no return email, remember to check to ensure the workspace is triggered and run (in the Topic Monitoring and/or Jobs pages) and then look for the output dataset in Resources &gt; Data &gt; Output 
+Check to ensure the workspace is triggered and run (in the Topic Monitoring and/or Jobs pages) and then look for the output dataset in Resources &gt; Data &gt; Output 
+
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms Analyst says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If the output dataset is missing, check the FME log to see what might have gone wrong. You can return to the workspace and add Logger transformers at strategic places and try again, giving the log file a bit more information to help debug problems.
+</span>
+</td>
+</tr>
+</table>
 
 ---
 
@@ -192,9 +206,10 @@ You should receive an email in return, alerting you to when your data is ready t
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Set up an outgoing email subscription</li>
-<li>Set up email content within an FME workspace</li>
-<li>Trigger an email subscription through the FMEServerNotifier transformer</li></ul>
+<ul><li>Set up a workspace to read and process an incoming JSON message</li>
+<li>Filter data in a workspace depending on the value of an incoming message</li>
+<li>Update a workspace Subscription to specify where to write output</li>
+<li>Update a workspace Subscription to specify where to receive input from</li></ul>
 </span>
 </td>
 </tr>
