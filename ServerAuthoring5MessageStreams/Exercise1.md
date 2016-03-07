@@ -45,7 +45,7 @@
 
 As a technical analyst in the GIS department you deal with spatial data. Sometimes you need to process that data in real-time and sometimes that data can arrive in great quantities and at great speed.
 
-In once such case, the city has been given access to the monitoring systems of emergency services. That means the ability to access in real-time information about all emergency calls. 
+In one such case, the city has been given access to the monitoring systems of emergency services. That means the ability to access in real-time information about all emergency calls. 
 
 *By emergency calls we mean the equivalent of 911 calls in North America, 999 in the UK, 112 in most of Europe, and 000 in Australia.* 
 
