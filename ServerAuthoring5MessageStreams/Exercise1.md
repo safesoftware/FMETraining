@@ -261,7 +261,7 @@ Secondly, add a PointOnAreaOverlayer to assess whether an emergency falls inside
 
 ![](./Images/Img5.09.Ex1.WorkspaceWithBufferAndOverlay.png)
 
-At the moment there is one big problem that stop this working. The PointOnAreaOverlayer transformer is a Group-Based transformer, sometimes called a "blocker". It will hold on to features until it has finished being fed them, before outputting any data. In our case we want to make it Feature-Based; i.e. it will process each message at once.
+At the moment there is one big problem that stops this from working. The PointOnAreaOverlayer transformer is a Group-Based transformer, sometimes called a "blocker". It will hold on to features until it has finished being fed them, before outputting any data. In our case we want to make it Feature-Based; i.e. it will process each message at once.
 
 So, open the PointOnAreaOverlayer parameters and set Areas First to Yes:
 
