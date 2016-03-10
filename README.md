@@ -28,7 +28,7 @@ The status of each chapter is:
 - Chapter 1: Complete content and exercises
 - Chapter 2: Content and exercises to be completed
 - Chapter 3: Complete content and exercises
-- Chapter 4: Complete content. Exercises to be completed
+- Chapter 4: Complete content and exercises
 - Chapter 5: Complete content. Exercises to be completed
 - Chapter 6: Complete content. No exercises
  
