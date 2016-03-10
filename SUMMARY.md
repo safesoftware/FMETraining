@@ -68,6 +68,7 @@
 		* [Dynamic Geometry](./DesktopAdvanced4AdvancedR+W/4.14.DynamicGeometryHandling.md)
 	* [Exercise: Creating a new Community Map Dataset](./DesktopAdvanced4AdvancedR+W/4.Exercise4.md)
 	* [Advanced Dynamic Schemas](./DesktopAdvanced4AdvancedR+W/4.15.AdvancedDynamicSchemas.md)
+	* [Exercise: Creating a table-driven Community Map Dataset](./DesktopAdvanced4AdvancedR+W/4.Exercise5.md)
 	* [Module Review](./DesktopAdvanced4AdvancedR+W/4.16.ModuleReview.md)
 	* [Q+A Answers](./DesktopAdvanced4AdvancedR+W/4.17.QuestionAnswers.md)
 * [Advanced Attribute Handling](./DesktopAdvanced5Attributes/5.00.AdvancedAttributes.md)
