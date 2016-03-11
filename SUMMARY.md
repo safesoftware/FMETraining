@@ -77,6 +77,7 @@
 	* [FME Functions](./DesktopAdvanced5Attributes/5.03.FMEFunctions.md)
 	* [Conditional Values](./DesktopAdvanced5Attributes/5.04.ConditionalValues.md)
 	* [Multiple Feature Attributes](./DesktopAdvanced5Attributes/5.05.MultipleFeatureAttributes.md)
+	* [Exercise: Precipitation Data Processing](./DesktopAdvanced5Attributes/5.Exercise3.md)
 	* [Null Attributes](./DesktopAdvanced5Attributes/5.06.NullAttributes.md)
 		* [Handling Null Attributes](./DesktopAdvanced5Attributes/5.07.HandlingNullAttributes.md)
 		* [Setting Null Attributes](./DesktopAdvanced5Attributes/5.08.SettingNullAttributes.md)
