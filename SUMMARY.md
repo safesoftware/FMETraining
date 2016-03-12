@@ -75,6 +75,7 @@
 	* [Constructing Values](./DesktopAdvanced5Attributes/5.01.ConstructingValues.md)
 	* [Editor Dialogs](./DesktopAdvanced5Attributes/5.02.EditorDialogs.md)
 	* [FME Functions](./DesktopAdvanced5Attributes/5.03.FMEFunctions.md)
+	* [Exercise: Taxation Report Project](./DesktopAdvanced5Attributes/5.Exercise1.md)
 	* [Conditional Values](./DesktopAdvanced5Attributes/5.04.ConditionalValues.md)
 	* [Exercise: Flood Risk Assessment](./DesktopAdvanced5Attributes/5.Exercise2.md)
 		* [Exercise: Flood Risk Assessment: Simple Filtering](./DesktopAdvanced5Attributes/5.Exercise2a.md)
