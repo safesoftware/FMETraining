@@ -21,7 +21,7 @@ The full course is made up of five main sections. These sections are:
 
 ## Current Status ##
 
-The current status of this manual is: **INCOMPLETE**: this manual should **not** be used for training. It is currently under review.
+The current status of this manual is: **COMPLETE**: this manual **can** be used for training.
 
 The status of each chapter is:
 
