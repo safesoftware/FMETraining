@@ -39,7 +39,7 @@
    * [Exercise: FME Server Resources](ServerAuthoring2RunningWorkspaces/Exercise2.md)
    * [Running with a URL](ServerAuthoring2RunningWorkspaces/2.07.RunningWithURL.md)
    * [Authoring Job Chains](ServerAuthoring2RunningWorkspaces/2.08.AuthoringJobChains.md)
-   * [Exercise: Authoring Workspaces Chains](ServerAuthoring2RunningWorkspaces/Exercise3.md)
+   * [Exercise: Authoring Workspace Chains](ServerAuthoring2RunningWorkspaces/Exercise3.md)
    * [Troubleshooting for Administrators](ServerAuthoring2RunningWorkspaces/2.09.TroubleshootingForAdministrators.md)
    * [Module Review](ServerAuthoring2RunningWorkspaces/2.10.ModuleReview.md)
    * [Q+A Answers](ServerAuthoring2RunningWorkspaces/2.11.QuestionAnswers.md)
