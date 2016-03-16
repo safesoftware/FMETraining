@@ -1,26 +1,31 @@
 # What's New #
 This file documents major changes made to training materials in 2016
 
-## Desktop Basic ##
+## Server Authoring ##
 
 
-### Data Translation Basics ###
+### Introduction to FME Server ###
+- Reworked and expanded. 
+- Includes content on workspaces and publishing to FME Server
+- Includes revised content for the overview of web interface
+- Includes jobs and job history
+- Includes content (from previous automation chapter) on scheduling jobs
+- New exercises
 
+### Running Workspace ###
+- Reworked. Generally reduced in size (some content moved to Introduction chapter)
+- Includes content (from previous automation chapter) on job chains
 
-### Data Transformation ###
+### Self Serve ###
+- Mostly unchanged
 
+### Real Time ###
+- Reorganized but otherwise mostly unchanged
+- Moved message streams from here into its own chapter
 
-### Best Practice ###
-- The data used for the "I love bridges" debugging exercise has been cleaned up so that it is in the correct position
-- Includes a new exercise called "Design Patterns"
-- Removed the way-too-simple exercise on templates
-
-### Translation Components ###
-- All previous exercises have been replaced by new ones centred around a fundraising walk scenario. These use a new GPS trail dataset
-
-### Practical Transformer Use ###
-- The wrapping-up exercise (HTML property report) has been dropped and the prior exercise (data joins with crime data) promoted to take its place
-- The Attribute section has been restructured on a task-basis, rather than transformer-by-transformer. That structure better accommodates the new AttributeManager transformer 
+### Message Streams ###
+- This chapter is comprised of content extracted from the previous Real-Time chapter
+- This chapter replaces the automation section, the content of which has been moved into other chapters
 
 ### General ###
 - Exercises are now numbered 1,2,3,etc within their particular chapter. A name (rather than number) denotes the chapter. This is because chapter numbers do not match the numbers GitBook assigns
