@@ -21,11 +21,13 @@ This file documents major changes made to training materials in 2016
 
 ### Real Time ###
 - Reorganized but otherwise mostly unchanged
+- Some new exercises
 - Moved message streams from here into its own chapter
 
 ### Message Streams ###
 - This chapter is comprised of content extracted from the previous Real-Time chapter
 - This chapter replaces the automation section, the content of which has been moved into other chapters
+- Completely new exercise
 
 ### General ###
 - Exercises are now numbered 1,2,3,etc within their particular chapter. A name (rather than number) denotes the chapter. This is because chapter numbers do not match the numbers GitBook assigns
