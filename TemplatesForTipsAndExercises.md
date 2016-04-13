@@ -81,6 +81,30 @@ This is a marker for a feature new to this release
 
 ---
 
+<!--Updated Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+This is a marker for a feature updated since the .0 release
+<br>It uses a font awesome icon (this won't show in PDF)
+<br>The text is a serif font, italic.
+<br>It is in a table with an orange border
+</span>
+</td>
+</tr>
+</table>
+
+---
+
 <!--Person X Says Section-->
 
 <table style="border-spacing: 0px">
