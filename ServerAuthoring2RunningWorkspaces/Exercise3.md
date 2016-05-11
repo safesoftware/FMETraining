@@ -215,7 +215,7 @@ Upload the zipped address file to that folder:
 
 
 <br>**11) Edit Workspace to use Resources**
-<br>Back in FME Workbench delete the two existing published parameters. They should be called SourceDataset&#95;FILEGDB, SourceDataset&#95;SPATIALITE, and DestDataset&#95;SPATIALITE
+<br>Back in FME Workbench delete the three existing published parameters. They should be called SourceDataset&#95;FILEGDB, SourceDataset&#95;SPATIALITE, and DestDataset&#95;SPATIALITE
 
 Next set the source and destination datasets as follows:
 
