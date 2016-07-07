@@ -41,6 +41,7 @@ These changes are for the FME Desktop Basic Training Course.
 - There are many more Q+A questions, all of which have the answers as the final section of their particular chapter
 - Removed the update date from the course introduction page, as it cannot be easily kept up-to-date
 - Changed text/screenshot to reflect renaming from Community Answers to Q&A Forum 
+- Added useful links to Safe blog articles where related to the content
 
 ---
 
