@@ -150,6 +150,29 @@ So, start FME Workbench and open the workspace from exercise 1 (or the begin wor
 <tr><td>KML Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\Output\DrinkingFountains.kml</td></tr>
 </table>
 
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms Analyst says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Remember, you can also obtain these file paths by locating the files in the FME Server web interface, right-clicking, and choosing Properties.
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+The result will look like this:
+
 ![](./Images/Img2.51.Ex2.DatasetParametersSet.png)
 
 
