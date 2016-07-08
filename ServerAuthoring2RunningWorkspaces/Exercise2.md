@@ -179,7 +179,7 @@ This time you won't be able to test-run the workspace in FME Workbench, because 
 ---
 
 <br>**8) Re-Run Workspace**
-<br>Now run the workspace on FME Server. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used in the resources folders just the same.
+<br>Now run the workspace on FME Server. Be sure to use the Job Submitter service (not Data Download) so the output is written to the required file. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used in the resources folders just the same.
 
 ![](./Images/Img2.52.Ex2.FinalOutputInResources.png)
 
