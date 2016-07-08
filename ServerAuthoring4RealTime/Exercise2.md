@@ -62,7 +62,7 @@ As a technical analyst in the GIS department a recent project involved setting u
 <span style="font-family:serif; font-style:italic; font-size:larger">
 This exercise uses either the SMTP or IMAP protocol for email. To carry out this exercise you will need access to at least one email account in one of these types.
 <br><br>For SMTP, this requires your FME Server to have a DNS record and SMTP configured. 
-<br>For IMAP this requires access to an email server that supports the IMAP protocol. Gmail, Outlook, and Yahoo! all are acceptable web-based solutions. 
+<br><br>For IMAP this requires access to an email server that supports the IMAP protocol. Gmail, Outlook, and Yahoo! all are acceptable web-based solutions. However, be aware that IMAP connections to a Gmail account can often be blocked as "less secure" leading FME Server to report the account credentials were invalid. See <strong><a href="https://support.google.com/accounts/answer/6010255?hl=en">this Google Support article</a></strong> for more information and a solution to this problem. Additionally, be aware that this solution won't work for accounts set up with 2-step verification, which need an application-specific password for less-secure apps to access the account.
 </td>
 </tr>
 </table>
