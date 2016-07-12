@@ -201,6 +201,30 @@ Finally change the prompt to something sensible like "Raster Tiles to Read".
 
 Now run the workspace again to check on our improved parameters dialog.
 
+---
+
+<!--Warning Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">WARNING</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+At this point you might find, on running the workspace, that no filenames appear. Instead all you get is a single option called "Geotiff" in the file prompt.
+<br><br>The reason for that is you made a mistake way back in exercise 1, step 1. You missed out setting the parameter "Feature Type Name(s)" to "From file name(s)".
+<br><br>The only solution to this is to delete the GeoTIFF reader, and re-add it, this time being sure to set that parameter! 
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 <br>**9) Publish to FME Server**
 <br>Save the workspace and publish it to FME Server. There are two things to note.

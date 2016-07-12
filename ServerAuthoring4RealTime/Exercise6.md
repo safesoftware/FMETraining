@@ -171,12 +171,12 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 </tr>
 
 <tr>
-<td style="font-weight: bold">Reader Dataset</td>
+<td style="font-weight: bold">Writer Dataset</td>
 <td style="">C:\FMEData2016\Output\Contours.sl3</td>
 </tr>
 
 <tr>
-<td style="font-weight: bold">Reader Parameters</td>
+<td style="font-weight: bold">Writer Parameters</td>
 <td style="">Overwrite Existing Database: No<br>Drop Existing Tables: No</td>
 </tr>
 

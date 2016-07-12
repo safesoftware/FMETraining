@@ -100,7 +100,7 @@ If you don’t have access to an email server, use <strong>fmeimageprocessing@gm
 In case it is of use, the server information for Gmail is as follows:
 
 - SMTP Server: smtp.gmail.com
-- IMAP Server Port: 465
+- SMTP Server Port: 465
 - Connection Security: SSL
 
 Regardless of the email provider, you should set these parameters as follows:

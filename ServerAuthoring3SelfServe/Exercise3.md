@@ -144,7 +144,7 @@ Click OK and OK again to close these dialogs and create the parameter.
 
 
 <br>**5) Apply User Parameter**
-<br>Now we've create a user parameter, we have to apply it.
+<br>Now we've created a user parameter, we have to apply it.
 
 Locate the Generic Writer in the Navigator window, expand its parameters and locate the parameter called Output Format. This is already linked to a published parameter that FME created automatically, but we want to ignore that and use our own.
 
