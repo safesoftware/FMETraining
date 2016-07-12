@@ -117,6 +117,7 @@ The list of persons currently used in the training is:
 - Dr. Workbench
 - Aunt Interop
 - Sister Intuitive
+- Professor Spatial F.M.E., E.T.L.
 
 ---
 
