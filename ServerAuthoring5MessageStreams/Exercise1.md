@@ -60,6 +60,29 @@ Open the workspace C:\FMEData2016\Workspaces\ServerAuthoring\DataStream-Ex1-begi
 
 ![](./Images/Img5.02.Ex1.MessageGeneratingWorkspace.png)
 
+---
+
+<!--Updated Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+The Cloner transformer gained a Rejected port in FME2016.1
+</span>
+</td>
+</tr>
+</table>
+
+---
+
 Notice that the workspace generates a stream of events. A random number of events are generated, at random times, and at random locations. Additionally random severity and event type attributes are generated. 
 
 Each event is wrapped up into a JSON format message. All that we need to do is push that message out as a stream.
@@ -260,6 +283,29 @@ Firstly, add a Bufferer transformer to the TransitStation feature type and buffe
 Secondly, add a PointOnAreaOverlayer to assess whether an emergency falls inside one of these buffers. The workspace will now look like this:
 
 ![](./Images/Img5.09.Ex1.WorkspaceWithBufferAndOverlay.png)
+
+---
+
+<!--Updated Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+The Bufferer transformer gained a Rejected port in FME2016.1
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 At the moment there is one big problem that stops this from working. The PointOnAreaOverlayer transformer is a Group-Based transformer, sometimes called a "blocker". It will hold on to features until it has finished being fed them, before outputting any data. In our case we want to make it Feature-Based; i.e. it will process each message at once.
 

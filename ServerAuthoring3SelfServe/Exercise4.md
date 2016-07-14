@@ -93,6 +93,28 @@ We'll use the Single Merged Feature Type option here because there are multiple 
 
 You can check the parameters for this transformer but, for now at least, we'll leave them as they are.
 
+---
+
+<!--Updated Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+The VectorOnrRasterOverlayer transformer gained a Rejected port in FME2016.1
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 <br>**4) Create User Parameter**
 <br>Now we have some source data we can create a parameter to control which layers in that data should be read.
