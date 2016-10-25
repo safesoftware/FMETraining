@@ -1,37 +1,7 @@
 <!--This file duplicates a little of the content to follow, but is added here because the content of this file is used for the landing page on GitBook-->
 
-# FME Desktop Basic Training Manual #
+# FME Desktop Training Manuals #
 
-This is the manual for the introductory-level training course for Safe Software’s FME Desktop application.
+This repository contains the manuals for FME Desktop and FME Server training.
 
-![](./DesktopBasic0Introduction/Images/Img0.0.FMEAboutScreen.png)
-
-The training will introduce basic concepts and terminology, help students become efficient users of FME, and direct you to resources to help apply the product to your own needs.
-
-## Course Structure ##
-
-The full course is made up of five main sections. These sections are:
-
-- Data Translation Basics
-- Data Transformation
-- FME Best Practice
-- Readers and Writers
-- Practical Transformer Use
- 
-## Current Status ##
-
-The current status of this manual is: **COMPLETE**: this manual **can** be used for training. 
-
-It is valid for both **FME2016.0** and **FME2016.1**
-
-The status of each chapter is:
-
-- Chapter 0: Complete content. No exercises
-- Chapter 1: Complete content and exercises
-- Chapter 2: Complete content and exercises
-- Chapter 3: Complete content and exercises
-- Chapter 4: Complete content and exercises
-- Chapter 5: Complete content and exercises
-- Chapter 6: Complete content. No exercises
- 
-***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
+Notice that each different manual is held in a different branch, and only periodically merged into the master branch. Therefore do not use the master branch as the source for training content (it may not be up to date) or to push updates to (the manuals are not built from the master branch). 
