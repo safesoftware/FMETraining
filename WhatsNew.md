@@ -7,6 +7,7 @@ This file documents major changes made to training materials in 2016
 These changes are for the FME Desktop Basic Training Course.
 
 ### Data Translation Basics ###
+- Added Parameter Editor window as a new Workbench component. Only show components that are there by default
 - xxxx
 
 ### Data Transformation ###
