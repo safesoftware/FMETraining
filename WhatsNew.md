@@ -6,10 +6,13 @@ This file documents major changes made to training materials in 2016
 ## Desktop Basic ##
 These changes are for the FME Desktop Basic Training Course.
 
+### General ###
+- All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All screenshots have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+ 
 ### Data Translation Basics ###
 - Added Parameter Editor window as a new Workbench component. Only show components that are there by default
 - Added that F11 now won't close floating windows
-- xxxx
 
 ### Data Transformation ###
 - xxxx
@@ -23,13 +26,14 @@ These changes are for the FME Desktop Basic Training Course.
 ### Practical Transformer Use ###
 - xxxx
 
-### General ###
-- All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
-
 ---
 
 ## Desktop Advanced ##
 These changes are for the FME Desktop Advanced Training Course.
+
+### General ###
+- All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All screenshots have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
 
 ### User Parameters ###
 - xxxx
@@ -46,31 +50,30 @@ These changes are for the FME Desktop Advanced Training Course.
 ### Advanced Attribute Handling ###
 - xxxx
 
-### General ###
-- All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
-
 ---
 
 ## Server Authoring ##
 These changes are for the FME Server Authoring Training Course.
 
-### xxxx ###
-- xxxx
-
-### xxxx ###
-- xxxx
-
-### xxxx ###
-- xxxx
-
-### xxxx ###
-- xxxx
-
-### xxxx ###
-- xxxx
 
 ### General ###
 - All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All screenshots have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
 
 ---
 
