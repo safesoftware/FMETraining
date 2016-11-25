@@ -8,6 +8,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### Data Translation Basics ###
 - Added Parameter Editor window as a new Workbench component. Only show components that are there by default
+- Added that F11 now won't close floating windows
 - xxxx
 
 ### Data Transformation ###
