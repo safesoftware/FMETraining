@@ -14,6 +14,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Added Parameter Editor window as a new Workbench component. Only show components that are there by default
 - Added that F11 now won't close floating windows
 - Creating Translation/New Workspace/Running Workspace - all screenshots updated to show same translation (Geodatabase to GML)
+- Changes to Table View window in Data Inspector (now need to select table to view it)
 
 ### Data Transformation ###
 - xxxx
