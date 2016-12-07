@@ -16,6 +16,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Creating Translation/New Workspace/Running Workspace - all screenshots updated to show same translation (Geodatabase to GML)
 - Changes to Table View window in Data Inspector (now need to select table to view it)
 - Addition of clickable feature counts in the Data Inspector (plus pop-up tooltips) 
+- Update to feature counts when a filter is applied
 
 ### Data Transformation ###
 - xxxx
