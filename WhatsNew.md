@@ -22,7 +22,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### Data Transformation ###
 - Renumbered images to 3 digits (eg Img2.001.xxxx.png)
-- xxxx
+- New layout of reader/writer feature type dialogs
 
 ### Best Practice ###
 - xxxx
