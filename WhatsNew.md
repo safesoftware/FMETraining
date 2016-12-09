@@ -21,6 +21,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Update to feature counts when a filter is applied
 
 ### Data Transformation ###
+- Renumbered images to 3 digits (eg Img2.001.xxxx.png)
 - xxxx
 
 ### Best Practice ###
