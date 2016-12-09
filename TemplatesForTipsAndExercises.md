@@ -145,7 +145,6 @@ The list of persons currently used in the training is:
 ---
 
 <!--Exercise Section-->
-<!--NB: In GitBook world we don't give a number to exercises-->
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
@@ -239,3 +238,16 @@ By completing this exercise you have learned how to:
 <!--Alternative message for end-of-chapter exercise:-->
 
 By completing this exercise you proved you know how to:
+
+---
+
+<!--Map Acknowledgement Section--> 
+
+**Map Acknowledgements**
+
+Be sure to include the BR tag.
+
+<br><span style="font-style:italic;font-size:x-small">Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a></span> 
+
+<br><span style="font-style:italic;font-size:x-small">Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC-BY-3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>.
+
