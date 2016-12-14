@@ -19,6 +19,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Changes to Table View window in Data Inspector (now need to select table to view it)
 - Addition of clickable feature counts in the Data Inspector (plus pop-up tooltips) 
 - Update to feature counts when a filter is applied
+- Moved up section on using shift/control keys in Data Inspector to earlier in the manual
+- Moved back the section on background maps to later in the manual
 
 ### Data Transformation ###
 - Renumbered images to 3 digits (eg Img2.001.xxxx.png)
