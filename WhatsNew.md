@@ -28,6 +28,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Parameter Editor Window for Transformers
 
 ### Best Practice ###
+- Renumbered images to 3 digits (eg Img3.001.xxxx.png)
+- Switched the order of User and Summary annotation
 - xxxx
 
 ### Translation Components ###
