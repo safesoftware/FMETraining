@@ -8,6 +8,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### General ###
 - All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
 - All screenshots have been updated from FME2016 to FME2017
 - All screenshots have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
  
