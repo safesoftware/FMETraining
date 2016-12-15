@@ -32,7 +32,12 @@ These changes are for the FME Desktop Basic Training Course.
 - Renumbered images to 3 digits (eg Img3.001.xxxx.png)
 - Switched the order of User and Summary annotation
 - More emphasis on bookmark properties dialog (introduced in 2016.1)
-- xxxx
+- General Style section now split into two parts:
+	- Object Layout (includes newly restored Autolayout tool)
+	- Connection Style (includes new connection style functionality)
+	- Transformer renaming moved to Transformer Methodology
+	- Workspace Properties moved to ....?
+- Added back Autolayout information
 
 ### Translation Components ###
 - xxxx
