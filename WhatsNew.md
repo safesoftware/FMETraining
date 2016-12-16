@@ -38,6 +38,7 @@ These changes are for the FME Desktop Basic Training Course.
 	- Transformer renaming moved to Transformer Methodology
 	- Workspace Properties moved to Projects (may move it again)
 - Added back Autolayout information
+- Reorganized chapter. Brought forward organizational parts into Methodology section
 
 ### Translation Components ###
 - xxxx
