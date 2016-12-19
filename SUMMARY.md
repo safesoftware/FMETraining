@@ -63,7 +63,7 @@
     * [Prototyping](./DesktopBasic3BestPractice/3.10.Prototyping.md)
     * [Reusing Resources](./DesktopBasic3BestPractice/3.11.ReusingResources.md)
 	* [Templates](./DesktopBasic3BestPractice/3.12.Templates.md)
-	* [Format Best Practices](./DesktopBasic3BestPractice/3.13.FormatBestOractices.md)
+	* [Format Best Practices](./DesktopBasic3BestPractice/3.13.FormatBestPractices.md)
     * [Transformer Best Practices](./DesktopBasic3BestPractice/3.14.TransformerBestPractices.md)
     * [Exercise: Design Patterns](./DesktopBasic3BestPractice/3.Exercise2.md)
     * [Debugging](./DesktopBasic3BestPractice/3.15.Debugging.md)
