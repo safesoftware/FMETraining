@@ -39,6 +39,7 @@ These changes are for the FME Desktop Basic Training Course.
 	- Workspace Properties moved to Projects (may move it again)
 - Added back Autolayout information
 - Reorganized chapter. Brought forward organizational parts into Methodology section
+- Created a "prototyping" section.
 
 ### Translation Components ###
 - xxxx
