@@ -39,7 +39,9 @@ These changes are for the FME Desktop Basic Training Course.
 	- Workspace Properties moved to Projects (may move it again)
 - Added back Autolayout information
 - Reorganized chapter. Brought forward organizational parts into Methodology section
-- Created a "prototyping" section.
+- Created a "prototyping" section
+- Removed paragraph on "Single Feature Counts" as I can find no evidence this is still possible!
+- Expanded on ways to get incorrect feature counts.
 
 ### Translation Components ###
 - xxxx
