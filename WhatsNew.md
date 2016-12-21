@@ -44,6 +44,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Expanded on ways to get incorrect feature counts.
 
 ### Translation Components ###
+- Renumbered images to 3 digits (eg Img4.001.xxxx.png)
 - Updated workspaces section as Workspace Parameters now includes Workspace Properties
 - xxxx
 
