@@ -44,6 +44,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Expanded on ways to get incorrect feature counts.
 
 ### Translation Components ###
+- Updated workspaces section as Workspace Parameters now includes Workspace Properties
 - xxxx
 
 ### Practical Transformer Use ###
