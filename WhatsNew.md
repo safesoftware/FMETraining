@@ -46,7 +46,9 @@ These changes are for the FME Desktop Basic Training Course.
 ### Translation Components ###
 - Renumbered images to 3 digits (eg Img4.001.xxxx.png)
 - Updated workspaces section as Workspace Parameters now includes Workspace Properties
-- xxxx
+- The Advanced Browser is now renamed (Select Multiple Files/Folders)
+- Added info on the ability to read data directly from a web connection
+- x 
 
 ### Practical Transformer Use ###
 - xxxx
