@@ -48,7 +48,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Updated workspaces section as Workspace Parameters now includes Workspace Properties
 - The Advanced Browser is now renamed (Select Multiple Files/Folders)
 - Added info on the ability to read data directly from a web connection
-- Feature Type parameters dialog updated. Also parameters appear in Parameter Editor window 
+- Feature Type parameters dialog updated. Also parameters appear in Parameter Editor window
+- Made a note of Unexpected Input not working for CAD files any more 
 
 ### Practical Transformer Use ###
 - xxxx
