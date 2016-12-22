@@ -10,7 +10,7 @@ These changes are for the FME Desktop Basic Training Course.
 - All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
 - All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
 - All screenshots have been updated from FME2016 to FME2017
-- All screenshots have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+- All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
  
 ### Data Translation Basics ###
 - Added Parameter Editor window as a new Workbench component. Only show components that are there by default
@@ -48,7 +48,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Updated workspaces section as Workspace Parameters now includes Workspace Properties
 - The Advanced Browser is now renamed (Select Multiple Files/Folders)
 - Added info on the ability to read data directly from a web connection
-- x 
+- Feature Type parameters dialog updated. Also parameters appear in Parameter Editor window 
 
 ### Practical Transformer Use ###
 - xxxx
