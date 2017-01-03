@@ -42,6 +42,9 @@ These changes are for the FME Desktop Basic Training Course.
 - Created a "prototyping" section
 - Removed paragraph on "Single Feature Counts" as I can find no evidence this is still possible!
 - Expanded on ways to get incorrect feature counts.
+- Move "workspace searching" from Debugging to Methodology. Made it more generic.
+- Renamed "Testing Isolated Sections" to "Workspace Testing" and made more generic.
+- Added a section on debugging Writer output
 
 ### Translation Components ###
 - Renumbered images to 3 digits (eg Img4.001.xxxx.png)
