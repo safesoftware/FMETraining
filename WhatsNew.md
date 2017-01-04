@@ -55,7 +55,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Made a note of Unexpected Input not working for CAD files any more 
 
 ### Practical Transformer Use ###
-- xxxx
+- New transformer categorization
 
 
 ### Course Wrap Up ###
