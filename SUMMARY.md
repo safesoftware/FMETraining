@@ -136,4 +136,4 @@
 	* [Community Information and Resources](./DesktopBasic6WrapUp/6.02.CommunityInfo.md)
 	* [Feedback and Certificates](./DesktopBasic6WrapUp/6.03.CourseFeedback.md)
 	* [Thank You](./DesktopBasic6WrapUp/6.04.ThankYou.md)
-	* [Exercise: A Pointless Quiz!](./DesktopBasic6WrapUp/6.05.Pointless.md)
+	* [Exercise: A Fun Challenge!](./DesktopBasic6WrapUp/6.05.Challenge.md)

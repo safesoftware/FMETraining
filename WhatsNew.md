@@ -57,6 +57,10 @@ These changes are for the FME Desktop Basic Training Course.
 ### Practical Transformer Use ###
 - xxxx
 
+
+### Course Wrap Up ###
+- Updated screenshots for web sites and - of course - created a new challenge!
+
 ---
 
 ## Desktop Advanced ##
