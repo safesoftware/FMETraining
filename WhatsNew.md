@@ -56,6 +56,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### Practical Transformer Use ###
 - New transformer categorization
+- Updated Top 25 list of transformers according to order on web site
 
 
 ### Course Wrap Up ###
