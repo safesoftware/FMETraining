@@ -49,14 +49,20 @@ These changes are for the FME Desktop Basic Training Course.
 ### Translation Components ###
 - Renumbered images to 3 digits (eg Img4.001.xxxx.png)
 - Updated workspaces section as Workspace Parameters now includes Workspace Properties
+- Quick Add Readers and Writers
 - The Advanced Browser is now renamed (Select Multiple Files/Folders)
 - Added info on the ability to read data directly from a web connection
 - Feature Type parameters dialog updated. Also parameters appear in Parameter Editor window
 - Made a note of Unexpected Input not working for CAD files any more 
 
 ### Practical Transformer Use ###
-- New transformer categorization
+- Renumbered images to 3 digits (eg Img5.001.xxxx.png)
+- New transformer categorization (includes Q+A question updates)
+- FME Store renamed to FME Hub
 - Updated Top 25 list of transformers according to order on web site
+- More consistent examples for Tester/TestFilter
+- Q+A Question - 4 filters in Top25, not 3
+- Renamed Joiner to DatabaseJoiner
 
 
 ### Course Wrap Up ###
