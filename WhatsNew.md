@@ -3,6 +3,17 @@ This file documents major changes made to training materials in 2016
 
 ---
 
+## FMEData ##
+These changes are for the FMEData dataset that accompanies FME training
+
+- Added a dataset of Parking Meters (MapInfo TAB, FMEData\Data\Transportation\ParkingMeters)
+- Building Footprints dataset converted from AutoCAD Map 3D to plain AutoCAD DWG
+- Building Footprints user attributes cleaned up and renamed
+- Resources folders all restructured
+- Roads dataset updated to include information about one-way streets (instead of being a separate dataset)
+
+---
+
 ## Desktop Basic ##
 These changes are for the FME Desktop Basic Training Course.
 
