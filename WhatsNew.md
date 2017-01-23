@@ -39,6 +39,7 @@ These changes are for the FME Desktop Basic Training Course.
 - New layout of reader/writer feature type dialogs
 - Parameter Editor Window for Transformers
 - Exercise 4: Added a StringConcatenator in place of the in-dialog editor of the LabelPointReplacer (the logic being that one transformer is not much of a parallel stream, plus in-dialog editors come later)
+- Exercise 6: Added the advanced task to use a Reprojector transformer instead of the Navigator coordinate system parameters
 
 ### Best Practice ###
 - Renumbered images to 3 digits (eg Img3.001.xxxx.png)
