@@ -38,6 +38,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Renumbered images to 3 digits (eg Img2.001.xxxx.png)
 - New layout of reader/writer feature type dialogs
 - Parameter Editor Window for Transformers
+- Exercise 4: Added a StringConcatenator in place of the in-dialog editor of the LabelPointReplacer (the logic being that one transformer is not much of a parallel stream, plus in-dialog editors come later)
 
 ### Best Practice ###
 - Renumbered images to 3 digits (eg Img3.001.xxxx.png)
