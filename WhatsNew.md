@@ -12,6 +12,7 @@ These changes are for the FMEData dataset that accompanies FME training
 - Resources folders all restructured
 - Roads dataset updated to include information about one-way streets (instead of being a separate dataset)
 - Added an "Event" field to the AddressSchema.xsd resource file
+- Updated and cleaned up crime data
 
 ---
 
@@ -77,7 +78,8 @@ These changes are for the FME Desktop Basic Training Course.
 - More consistent examples for Tester/TestFilter
 - Q+A Question - 4 filters in Top25, not 3
 - Renamed Joiner to DatabaseJoiner
-- Updated exercises 1 and 2 to be part of one larger project
+- Updated exercises 1, 2, and 3 to be part of one larger project
+- Dropped the advanced part of exercise 3
 
 
 ### Course Wrap Up ###
