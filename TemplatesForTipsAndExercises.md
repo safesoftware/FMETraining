@@ -33,6 +33,29 @@ This is a tip that provides information and advice
 
 ---
 
+<!--Tip Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+This is a tip that has a screenshot inside it.
+<br><br><img src="./DesktopBasic1Basics/Images/Img1.07.WorkbenchInterfaceMenuToolbar.png">
+<br><br>Notice the use of br tags to create spacing.
+</span>
+</td>
+</tr>
+</table>
+
+---
+
 <!--Warning Section--> 
 
 <table style="border-spacing: 0px">
@@ -94,7 +117,7 @@ This is a marker for a feature new to this release
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This is a marker for a feature updated since the .0 release
+This is a marker for a feature updated since the original release (eg .0 to .1)
 <br>It uses a font awesome icon (this won't show in PDF)
 <br>The text is a serif font, italic.
 <br>It is in a table with an orange border
