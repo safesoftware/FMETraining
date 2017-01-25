@@ -60,6 +60,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Move "workspace searching" from Debugging to Methodology. Made it more generic.
 - Renamed "Testing Isolated Sections" to "Workspace Testing" and made more generic.
 - Added a section on debugging Writer output
+- Exercise 1 now includes section on setting FME Options (inc new colour blindness theme)
+- Exercise 1 now includes two completed workspaces, with different layouts for different connection styles
 
 ### Translation Components ###
 - Renumbered images to 3 digits (eg Img4.001.xxxx.png)
