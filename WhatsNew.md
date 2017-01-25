@@ -62,6 +62,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Added a section on debugging Writer output
 - Exercise 1 now includes section on setting FME Options (inc new colour blindness theme)
 - Exercise 1 now includes two completed workspaces, with different layouts for different connection styles
+- Exercise 2 changed from fixing workspace to constructing it properly in the first place
 
 ### Translation Components ###
 - Renumbered images to 3 digits (eg Img4.001.xxxx.png)
