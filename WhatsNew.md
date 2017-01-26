@@ -72,6 +72,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Added info on the ability to read data directly from a web connection
 - Feature Type parameters dialog updated. Also parameters appear in Parameter Editor window
 - Made a note of Unexpected Input not working for CAD files any more 
+- Exercise 3: Switched Import and Delete actions to add a second table before deleting the first
 
 ### Practical Transformer Use ###
 - Renumbered images to 3 digits (eg Img5.001.xxxx.png)
