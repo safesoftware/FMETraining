@@ -83,6 +83,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Renamed Joiner to DatabaseJoiner
 - Updated exercises 1, 2, and 3 to be part of one larger project
 - Dropped the advanced part of exercise 3
+- Exercise 4 is reworked by having one-way streets flagged as an attribute in the roads data
+- Exercise 4 also fixed a logic error in the ShortestPathFinder where distance wasn't factored into the result
 
 
 ### Course Wrap Up ###
