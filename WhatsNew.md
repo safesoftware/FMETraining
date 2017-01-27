@@ -44,6 +44,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 6: Added the advanced task to use a Reprojector transformer instead of the Navigator coordinate system parameters
 
 ### Best Practice ###
+- MOVED BEST PRACTICE TO FINAL CHAPTER IN MANUAL
 - Renumbered images to 3 digits (eg Img3.001.xxxx.png)
 - Switched the order of User and Summary annotation
 - More emphasis on bookmark properties dialog (introduced in 2016.1)
