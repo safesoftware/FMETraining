@@ -36,7 +36,7 @@
    * [Publishing Data](ServerAuthoring2RunningWorkspaces/2.04.PublishingData.md)
    * [Temporary Uploads](ServerAuthoring2RunningWorkspaces/2.05.TemporaryUploads.md)
    * [Exercise: Publishing Source Data](ServerAuthoring2RunningWorkspaces/Exercise1.md)
-   * [Resource Filesystem](ServerAuthoring2RunningWorkspaces/2.06.ResourceManagement.md)
+   * [Resource Filesystem](ServerAuthoring2RunningWorkspaces/2.06.ResourceFilesystem.md)
    * [Authoring for Resources](ServerAuthoring2RunningWorkspaces/2.07.AuthoringForResources.md)
    * [Exercise: FME Server Resources](ServerAuthoring2RunningWorkspaces/Exercise2.md)
    * [Running with a URL](ServerAuthoring2RunningWorkspaces/2.08.RunningWithURL.md)
