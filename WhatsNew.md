@@ -37,7 +37,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Moved back the section on background maps to later in the manual
 
 ### Data Transformation ###
-- Renumbered images to 3 digits (eg Img2.001.xxxx.png)
+- Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
 - New layout of reader/writer feature type dialogs
 - Parameter Editor Window for Transformers
 - Exercise 4: Added a StringConcatenator in place of the in-dialog editor of the LabelPointReplacer (the logic being that one transformer is not much of a parallel stream, plus in-dialog editors come later)
@@ -45,7 +45,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### Best Practice ###
 - MOVED BEST PRACTICE TO FINAL CHAPTER IN MANUAL
-- Renumbered images to 3 digits (eg Img3.001.xxxx.png)
+- Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
 - Switched the order of User and Summary annotation
 - More emphasis on bookmark properties dialog (introduced in 2016.1)
 - General Style section now split into two parts:
@@ -66,7 +66,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 2 changed from fixing workspace to constructing it properly in the first place
 
 ### Translation Components ###
-- Renumbered images to 3 digits (eg Img4.001.xxxx.png)
+- Renumbered image filenames to 3 digits (eg Img4.001.xxxx.png)
 - Updated workspaces section as Workspace Parameters now includes Workspace Properties
 - Quick Add Readers and Writers
 - The Advanced Browser is now renamed (Select Multiple Files/Folders)
@@ -76,7 +76,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 3: Switched Import and Delete actions to add a second table before deleting the first
 
 ### Practical Transformer Use ###
-- Renumbered images to 3 digits (eg Img5.001.xxxx.png)
+- Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
 - New transformer categorization (includes Q+A question updates)
 - FME Store renamed to FME Hub
 - Updated Top 25 list of transformers according to order on web site
