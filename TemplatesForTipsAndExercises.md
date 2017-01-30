@@ -268,7 +268,7 @@ By completing this exercise you proved you know how to:
 
 **Map Acknowledgements**
 
-Be sure to include the BR tag.
+For when a screenshot of a Data Inspector background map is used. Be sure to include the BR tag.
 
 <br><span style="font-style:italic;font-size:x-small">Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a></span> 
 
