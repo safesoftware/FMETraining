@@ -3,7 +3,7 @@
 <!--If students have problems now, it is unlikely they will have much success at further exercises-->
 
 <!--Exercise Section-->
-<!--NB: In GitBook world we don't give a number to exercises-->
+
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>

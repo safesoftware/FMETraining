@@ -57,7 +57,7 @@
    * [Exercise: Published Parameters in a Data Download Service](ServerAuthoring3SelfServe/Exercise2.md)
    * [Format and Coordinate System Selection](ServerAuthoring3SelfServe/3.08.FormatsAndCoordSys.md)
    * [Exercise: Format and Coordinate Systems in a Data Download Service](ServerAuthoring3SelfServe/Exercise3.md)
-   * [Layer Selection and Handling](ServerAuthoring3SelfServe/3.09.Layers.md)
+   * [Layer Selection and Handling](ServerAuthoring3SelfServe/3.09.LayerSelectionAndHandling.md)
    * [Exercise: Layers in a Data Download Service](ServerAuthoring3SelfServe/Exercise4.md)
    * [Geographic Selection](ServerAuthoring3SelfServe/3.10.Geographic.md)
 	   * [Geographic Selection by Bounding Box](ServerAuthoring3SelfServe/3.11.BoundingBoxAreas.md)

@@ -122,7 +122,7 @@ The list of persons currently used in the training is:
 ---
 
 <!--Exercise Section-->
-<!--NB: In GitBook world we don't give a number to exercises-->
+
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
