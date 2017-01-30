@@ -1,35 +1,38 @@
 # What's New #
 This file documents major changes made to training materials in 2016
 
+---
+
 ## Server Authoring ##
+
+### General ###
+- All screenshots have been updated from FME2016 to FME2017
+- All screenshots and wording are based on a Windows Server 2016 OS (equivalent to Windows 10)
+- All Desktop operations, etc are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
 
 
 ### Introduction to FME Server ###
-- Reworked and expanded. 
-- Includes content on workspaces and publishing to FME Server
-- Includes revised content for the overview of web interface
-- Includes jobs and job history
-- Includes content (from previous automation chapter) on scheduling jobs
-- New exercises
+- Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
+- Restructured to include content previous in Chapter 2 
+- Workbench and Server renamed to Workspaces and Server
+- "Workspace Management" section incorporated into "Workspaces And Server"
+- New ability to create Server Connections
 
-### Running Workspace ###
-- Reworked. Generally reduced in size (some content moved to Introduction chapter)
-- Includes content (from previous automation chapter) on job chains
 
-### Self Serve ###
-- Mostly unchanged
+### Self Serve 1 ###
+- Self-serve content now split into two chapters
+
+
+### Self Serve 2 ###
+- Self-serve content now split into two chapters
+
 
 ### Real Time ###
-- Reorganized but otherwise mostly unchanged
-- Some new exercises
-- Moved message streams from here into its own chapter
+- Reincorporated content from Message Streams chapter
 
-### Message Streams ###
-- This chapter is comprised of content extracted from the previous Real-Time chapter
-- This chapter replaces the automation section, the content of which has been moved into other chapters
-- Completely new exercise
 
-### General ###
-- Exercises are now numbered 1,2,3,etc within their particular chapter. A name (rather than number) denotes the chapter. This is because chapter numbers do not match the numbers GitBook assigns
-- Improved (I hope) exercise descriptions and scenarios
-- There are many more Q+A questions, all of which have the answers as the final section of their particular chapter
+### Server Projects ###
+- A new chapter on FME Server Projects
+
+
