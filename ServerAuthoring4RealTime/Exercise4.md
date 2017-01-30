@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex4-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Notifications-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex4-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Notifications-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
@@ -72,7 +72,7 @@ This exercise continues where exercise 3 left off. You must have completed exerc
 ---
 
 <br>**1) Open Workspace**
-<br>Start FME Workbench and open the workspace: C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex4-Begin.fmw (you should open this workspace, even if you created one in exercise 3):
+<br>Start FME Workbench and open the workspace: C:\FMEData2017\Workspaces\ServerAuthoring\Notifications-Ex4-Begin.fmw (you should open this workspace, even if you created one in exercise 3):
 
 ![](./Images/Img4.43.Ex3.InitialWorkspace.png)
 
@@ -93,7 +93,7 @@ Select Readers > Add Reader from the menubar. When prompted set the parameters a
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\readme.txt</td>
+<td style="">C:\FMEData2017\readme.txt</td>
 </tr>
 
 <tr>

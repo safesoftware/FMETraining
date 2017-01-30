@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Running-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Running-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -72,7 +72,7 @@ Next double-click on Cycling and within that folder create another new one calle
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\Data\Transportation\Cycling\BikePaths_L.shp</td>
+<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
 </tr>
 
 </table>
@@ -85,7 +85,7 @@ Also upload into that folder, the source data for the drinking fountains:
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\Data\Engineering\DrinkingFountains.csv</td>
+<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
 </tr>
 
 </table>

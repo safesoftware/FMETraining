@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Notifications-Ex6-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Notifications-Ex6-Complete.fmw</td>
 </tr>
 
 </table>
@@ -81,7 +81,7 @@ Select Readers &gt; Add Reader from the menubar. When prompted set the parameter
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\readme.txt</td>
+<td style="">C:\FMEData2017\readme.txt</td>
 </tr>
 
 <tr>
@@ -119,7 +119,7 @@ Click OK to create the Subscription.
 
 
 <br>**5) Test Topic**
-<br>Locate the source Shape datasets in C:\FMEData2016\Data\ElevationModel\Contours - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 1).
+<br>Locate the source Shape datasets in C:\FMEData2017\Data\ElevationModel\Contours - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 1).
 
 Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours) or using the web interface. 
 
@@ -172,7 +172,7 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2016\Output\Contours.sl3</td>
+<td style="">C:\FMEData2017\Output\Contours.sl3</td>
 </tr>
 
 <tr>

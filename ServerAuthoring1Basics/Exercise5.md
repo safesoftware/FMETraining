@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2016\Workspaces\ServerAuthoring\Running-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
@@ -84,7 +84,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\Data\Transportation\Cycling\BikePaths_L.shp</td>
+<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
 </tr>
 
 </table>
@@ -98,7 +98,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\Data\Engineering\DrinkingFountains.csv</td>
+<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
 </tr>
 
 </table>
@@ -121,7 +121,7 @@ You can view the CSV data as a table only, or you can set the Schema Attributes 
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\Data\Engineering\DrinkingFountains.csv</td>
+<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
 </tr>
 
 <tr>
@@ -136,7 +136,7 @@ You can view the CSV data as a table only, or you can set the Schema Attributes 
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2016\Output\DrinkingFountains.kml</td>
+<td style="">C:\FMEData2017\Output\DrinkingFountains.kml</td>
 </tr>
 
 </table>
@@ -160,7 +160,7 @@ Select Readers &gt; Add Reader from the menubar. When prompted select the source
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2016\Data\Transportation\Cycling\BikePaths_L.shp</td>
+<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
 </tr>
 
 <tr>

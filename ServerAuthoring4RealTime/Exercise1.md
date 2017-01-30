@@ -81,7 +81,7 @@ Click OK to create the new publication.
 
 
 <br>**5) Test Topic**
-<br>Now let's test the topic. Locate the source Shape datasets in C:\FMEData2016\Data\ElevationModel\Contours - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them.
+<br>Now let's test the topic. Locate the source Shape datasets in C:\FMEData2017\Data\ElevationModel\Contours - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them.
 
 Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours) or using the web interface. If you use the web interface, open a new window or tab, so as not to stop the topic monitoring.
 

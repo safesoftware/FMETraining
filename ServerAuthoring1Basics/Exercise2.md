@@ -193,7 +193,7 @@ If you have time, carry out the following steps to explore the FME Server web in
 
 ![](./Images/Img1.53.Ex2.ResourcesEngine.png)
 
-Also check the data folder and, if you wish, upload some files from the C:\FMEData2016 folder.
+Also check the data folder and, if you wish, upload some files from the C:\FMEData2017 folder.
 
 
 <br>**8) Check Cleanup Tools**
