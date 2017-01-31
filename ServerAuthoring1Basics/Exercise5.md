@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold"></span>
@@ -26,17 +26,17 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Publishing source data and making temporary data uploads</td>
+<td style="border: 1px solid darkorange">Uploading data to a resources folder and authoring a workspace to make use of it</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -47,7 +47,60 @@ You're a technical analyst in the GIS department of your local city. You have pl
 
 Today's task for you is to use two datasets - cycle paths and drinking fountains - to figure out which drinking fountains are close (within 20 metres) of a cycle route. The output is to be written as a KML dataset.
 
-You can easily do this using FME Desktop, and decide to publish it to FME Server too so that users can upload their own set of cycle paths.
+So far you have created the workspace and published it to FME Server along with a set of data. However, it would be better practice to upload the source data to the FME Server Resources file system. That way the data could be used not only for this project, but any other that wished to use it.
+
+We could also ensure that the output data is written to the resources folders too.
+
+---
+
+<br>**1) Open FME Server Web Interface**
+<br>Open and log in to the FME Server web interface. Choose Manage &gt; Resources on the menubar to navigate to the resources management pages.
+
+
+<br>**2) Create Folder**
+<br>Most data should go under the Data folder, so double-click on Data in the dialog to open that folder. To avoid mixing datasets our data should go into its own subfolder. So click on the New Folder button and create a folder called Cycling:
+
+![](./Images/Img2.47.Ex2.NewResourcesFolder.png)
+
+Next double-click on Cycling and within that folder create another new one called Output.
+
+
+<br>**3) Upload Cycle Path Data**
+<br>Now, within the cycling folder, click the upload button and upload the five files for the cycling dataset:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
+</tr>
+
+</table>
+
+![](./Images/Img2.48.Ex2.UploadedData.png)
+
+Also upload into that folder, the source data for the drinking fountains:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
+</tr>
+
+</table>
+
+So we now have both source datasets and a folder to write the output data to.
+
+
+<br>**4) Run Workspace**
+<br>Now locate and run the workspace published in exercise 1 (or else open the workspace listed above and publish it to FME Server).
+
+In the published parameters for the workspace be sure to click the browse button, navigate to the resources folder Cycling, and select the appropriate files:
+
+![](./Images/Img2.49.Ex2.PublishedParameters.png)
+
+Click Run Workspace to finish running the workspace.
 
 ---
 
@@ -64,7 +117,7 @@ You can easily do this using FME Desktop, and decide to publish it to FME Server
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 7
+You should also set the output location to the Cycling/Output folder - though of course there won't be an output folder location if you run this using the Data Download service!
 </span>
 </td>
 </tr>
@@ -72,201 +125,58 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 ---
 
-<br>**1) Inspect Source Data**
-<br>The first task in any new project is to inspect the source data, so let's do that. Use the FME Data Inspector to open these two datasets:
+<br>**5) Open Workspace for Editing**
+<br>Although the workspace ran correctly, and used the data in the resources folder, that's only because we selected that data at run time. It is not a permanent feature of the workspace.
 
-<table style="border: 0px">
+For example, if I downloaded the workspace into FME Workbench, it would point to the original (local) data files, not the resources folder.
 
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">Esri Shapefile</td>
-</tr>
+It would be much better if the workspace was programmed to look into the resources folders automatically.
 
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
-</tr>
+So, start FME Workbench and open the workspace from exercise 1 (or the begin workspace listed above).
 
+
+<br>**6) Delete Published Parameters**
+<br>If we do set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window locate the  three parameters for source and destination datasets and delete them:
+
+![](./Images/Img2.50.Ex2.PublishedParametersToDelete.png)
+
+
+<br>**7) Set Source/Destination Parameters**
+<br>Now, in turn, double-click the source and destination dataset parameters and change them to:
+
+<table>
+<tr><td>CSV Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\DrinkingFountains.csv</td></tr>
+<tr><td>Shape Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\BikePaths&#95;L.shp</td></tr>
+<tr><td>KML Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\Output\DrinkingFountains.kml</td></tr>
 </table>
 
-<table style="border: 0px">
+<!--Person X Says Section-->
 
+<table style="border-spacing: 0px">
 <tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">CSV (Comma Separated Value)</td>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
+</td>
 </tr>
 
 <tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Remember, you can also obtain these file paths by locating the files in the FME Server web interface, right-clicking, and choosing Properties.
+</span>
+</td>
 </tr>
-
 </table>
 
-You can view the CSV data as a table only, or you can set the Schema Attributes (in the parameters dialog) to ensure the X/Y coordinate fields are interpreted as coordinate values. The data will look like this:
-
-
-![](./Images/Img2.33.Ex1.SourceData.png)
-
-
-<br>**2) Create Workspace**
-<br>Having seen what the data looks like, let's create a workspace to process it. Start FME Workbench and select the Generate Workspace tool. When prompted create the workspace with these parameters:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">CSV (Comma Separated Value)</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Parameters</td>
-<td style="">Coordinate System: utm83-10<br>Schema Attributes: x_coord, type = x_coordinate<br>Schema Attributes: y_coord, type = y_coordinate<br><br><img src="./Images/Img2.34.Ex1.SourceDataCSVParameters.png"></td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Writer Format</td>
-<td style="">Google KML</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Output\DrinkingFountains.kml</td>
-</tr>
-
-</table>
-
-
-<br>**3) Add Cycle Path Reader**
-<br>The workspace, at this point, looks like this:
-
-![](./Images/Img2.35.Ex1.SourceDataInitialWorkspace.png)
-
-You'll notice that the reason we created the workspace with the CSV data is because it contains the attributes we want on the output. But now we should also add the cycle path data.
-
-Select Readers &gt; Add Reader from the menubar. When prompted select the source data as follows:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">Esri Shapefile</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Workflow Option</td>
-<td style="">Single Merged Feature Type</td>
-</tr>
-
-</table>
-
-Click OK to add the Reader to the workspace. The reason we selected the Merged Feature Type option is because there are other cycle path datasets in that folder that we may wish to read in the future, and this option will allow each data file to pass into the workspace. 
-
-
-<br>**4) Add Transformers**
-<br>There are various ways we could find the closest water fountains to the cycle paths, but the simplest is perhaps to buffer the cycle paths, overlay the two datasets, and then check for overlaps. 
-
-To do this requires three transformers: a GeographicBufferer, a PointOnAreaOverlayer, and a Tester. Place one instance of each transformer and connect them up in this configuration:
-
-![](./Images/Img2.36.Ex1.SourceDataWorkspaceWithTransformers.png)
-
-- CSV Reader &gt; PointOnAreaOverlayer:Point
-- Cycle Reader &gt; GeographicBufferer:Input
-- GeographicBuffer:Output &gt; PointOnAreaOverlayer:Area
-- PointOnAreaOverlayer:Point &gt; Tester
-- Tester:Passed &gt; KML Writer 
-
-
-<br>**5) Set Transformer Parameters**
-<br>Now the transformers are placed, let's set the parameters. 
-
-- GeographicBufferer: Units=Metres, Distance=20
-- PointOnAreaOverlayer: None
-- Tester: Test Clause: _overlaps >= 1
-
-![](./Images/Img2.37.Ex1.SourceDataWorkspaceTesterParams.png)
-
-These parameters will ensure we create a 20m buffer around each cycle path, count the number of times a drinking fountain overlaps the buffer, and filter through only drinking fountains with a count of 1 or greater.
- 
-
-<br>**6) Set Writer Schema**
-<br>The only last thing to do is clean up the writer schema. We don't need to write out the x_coord or y_coord attributes in the output, and we don't need to see the kml attributes that have been exposed. Plus the feature type name for the output should be something other than "CSV".
-
-So open the feature type properties for the KML Writer feature type.
-
-In the general tab change the name from CSV to CyclePathFountains. In the user attributes tab remove the x_coord and y_coord attribute and any other kml attributes that have been added.
+---
 
 The result will look like this:
 
-![](./Images/Img2.38.Ex1.SourceDataWorkspaceEditedFT.png)
-
-Save the workspace and run it to make sure the output looks correct.
-
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-If the workspace fails with the error <span style="font-weight:bold;color:red">KML: Feature does not have a coordinate system specified</span> then you did not set the coordinate system when you generated the workspace. Find the Reader coordinate system parameter in the Navigator window, set it to utm83-10, and try again!
-</span>
-</td>
-</tr>
-</table>
-
----
-
-<br>**7) Publish to Server**
-<br>Now we should publish the workspace to Server. We'll experiment by publishing one dataset with the workspace and uploading one through the web interface when we run the workspace.
-
-So, start the FME Server publishing wizard (File &gt; Publish to Server).
-
-Specify the connection parameters as usual. Choose Training as the repository to upload to, but then check the Upload Data Files box and click the Select Files button:
-
-![](./Images/Img2.39.Ex1.PublishToServerRepository.png)
-
-In the Select Files dialog, deselect the five files belonging to the Shape dataset, and leave only the CSV file selected:
-
-![](./Images/Img2.40.Ex1.PublishToServerData.png)
-
-You will receive a warning about the lack of Shape data, but that can be ignored. Finish the publishing process by registering the workspace with the Job Submitter and Data Download services.
+![](./Images/Img2.51.Ex2.DatasetParametersSet.png)
 
 
-<br>**8) Run On Server**
-<br>Now open the FME Server web interface and select the workspace we just published (if you visit the home page it will be in the Last Published Workspaces section). 
-
-Firstly make sure the Service parameter is set to Data Download.
-
-Next check the Published Parameters section. The source CSV is set to be read from the dataset published with the workspace. For the Shape dataset click the browse button:
-
-![](./Images/Img2.41.Ex1.RunWorkspacePublishedParams.png) 
-
-In the dialog that opens, make sure it is on the Temporary Uploads tab, then click the Upload button:
-
-![](./Images/Img2.41.Ex1.RunWorkspaceDataUpload1.png)
-
-Browse to and select the five files in the Shape dataset and click OK to upload them:
-
-![](./Images/Img2.43.Ex1.RunWorkspaceDataUpload2.png)
+Save the workspace and publish it back to FME Server.
 
 ---
 
@@ -283,7 +193,7 @@ Browse to and select the five files in the Shape dataset and click OK to upload 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you set Single Merged Feature Type when you added the Shape Reader to the workspace, you should be able to select any of the Shapefile datasets here - or even all of them!
+This time you won't be able to test-run the workspace in FME Workbench, because it won't recognize the shared resource parameter. Only FME Server will return a value for that parameter.
 </span>
 </td>
 </tr>
@@ -291,48 +201,10 @@ If you set Single Merged Feature Type when you added the Shape Reader to the wor
 
 ---
 
-Click the "garbage can" icon to remove the currently chosen dataset:
+<br>**8) Re-Run Workspace**
+<br>Now run the workspace on FME Server. Be sure to use the Job Submitter service (not Data Download) so the output is written to the required file. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used in the resources folders just the same.
 
-![](./Images/Img2.44.Ex1.RunWorkspaceDataUpload3.png)
-
-Now click the .shp file you uploaded (you only need to select the .shp file now, not all five files), then click the add button to add it as the newly chosen dataset:
-
-![](./Images/Img2.45.Ex1.RunWorkspaceDataUpload4.png)
-
-Click OK to close the dialog. Click the Run Workspace button to run the workspace.
-
-The workspace runs using a mixture of published data and a temporary upload of Shape data. 
-
-
-<br>**9) Check Logs**
-<br>If you had correctly selected the Data Download service, running the workspace would have returned a link through which to download a dataset of the output. For now, don't click that.
-
-Click the Home button instead, and then click the translation just carried out in the Last Run Workspaces section:
-
-![](./Images/Img2.46.Ex1.LastRunWorkspaces.png)
-
-This will open the job summary page for the workspace. Notice that you can view the FME log file, but also download the result of the translation, as the URL to access it is also recorded here.
-
----
-
-<!--New Section--> 
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">NEW</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-The listing of the data download URL in this window is new for FME2016. Previously you had no way of finding this link to the output data once you left the Run Workspace page!
-</span>
-</td>
-</tr>
-</table>
+![](./Images/Img2.52.Ex2.FinalOutputInResources.png)
 
 ---
 
@@ -351,10 +223,10 @@ The listing of the data download URL in this window is new for FME2016. Previous
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a workspace using two Readers and find features within X radius of another</li>
-<li>Publish a workspace to FME Server and include source data</li>
-<li>Select a source dataset to upload temporarily at run-time</li>
-<li>Locate a data download result through a workspace summary page</li></ul>
+<ul><li>Create resources folders and upload data to them</li>
+<li>Run a workspace and select data from resources folders</li>
+<li>Edit a workspace to permanently use the resources folders</li>
+<li>Delete parameters to prevent the end-user changing them</li></ul>
 </span>
 </td>
 </tr>

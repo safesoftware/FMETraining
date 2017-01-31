@@ -20,6 +20,8 @@ This file documents major changes made to training materials in 2016
 - New ability to create Server Connections
 - Removed "FMEServerResources" and put any relevant content into AuthoringForResources
 - Removed "ServerDashboards" and "SystemCleanup" as being more relevant to the admin course
+- Removed "SecurityRoles", "SecurityPolicies", and related exercise as being more relevant to the admin course
+- Added a section on Sharing items
 
 
 ### Self Serve 1 ###
