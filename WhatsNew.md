@@ -18,6 +18,8 @@ This file documents major changes made to training materials in 2016
 - Workbench and Server renamed to Workspaces and Server
 - "Workspace Management" section incorporated into "Workspaces And Server"
 - New ability to create Server Connections
+- Removed "FMEServerResources" and put any relevant content into AuthoringForResources
+- Removed "ServerDashboards" and "SystemCleanup" as being more relevant to the admin course
 
 
 ### Self Serve 1 ###
