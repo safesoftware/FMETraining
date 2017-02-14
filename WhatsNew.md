@@ -1,80 +1,149 @@
 # What's New #
-This file documents major changes made to training materials in 2016
+This file documents major changes made to training materials in 2017
+
+---
+
+## FMEData ##
+These changes are for the FMEData dataset that accompanies FME training
+
+- Added a dataset of Parking Meters (MapInfo TAB, FMEData\Data\Transportation\ParkingMeters)
+- Building Footprints dataset converted from AutoCAD Map 3D to plain AutoCAD DWG
+- Building Footprints user attributes cleaned up and renamed
+- Resources folders all restructured
+- Roads dataset updated to include information about one-way streets (instead of being a separate dataset)
+- Added an "Event" field to the AddressSchema.xsd resource file
+- Updated and cleaned up crime data
 
 ---
 
 ## Desktop Basic ##
 These changes are for the FME Desktop Basic Training Course.
 
+### General ###
+- All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
+- All screenshots have been updated from FME2016 to FME2017
+- All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+ 
 ### Data Translation Basics ###
-- Split the "More Data Inspector Functionality" section into two parts
-- Added information on 2016.1 updates to Data Inspector styling
+- Added Parameter Editor window as a new Workbench component. Only show components that are there by default
+- Added that F11 now won't close floating windows (only docked ones)
+- Creating Translation/New Workspace/Running Workspace - all screenshots updated to show same translation (Geodatabase to GML)
+- Data Inspector - all screenshots updated to show same dataset (Geodatabase Community Map)
+- Changes to Table View window in Data Inspector (now need to select table to view it)
+- Addition of clickable feature counts in the Data Inspector (plus pop-up tooltips) 
+- Update to feature counts when a filter is applied
+- Moved up section on using shift/control keys in Data Inspector to earlier in the manual
+- Moved back the section on background maps to later in the manual
 
 ### Data Transformation ###
-- Transformer Ports: replaced Counter with 2DForcer as an example of single input/output port (as Counter got a rejected port in 2016.1)
-- Made note of other transformers with new rejected ports in 2016.1
+- Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
+- New layout of reader/writer feature type dialogs
+- Parameter Editor Window for Transformers
+- Exercise 4: Added a StringConcatenator in place of the in-dialog editor of the LabelPointReplacer (the logic being that one transformer is not much of a parallel stream, plus in-dialog editors come later)
+- Exercise 6: Added the advanced task to use a Reprojector transformer instead of the Navigator coordinate system parameters
 
 ### Best Practice ###
-- The data used for the "I love bridges" debugging exercise has been cleaned up so that it is in the correct position
-- Includes a new exercise called "Design Patterns"
-- Removed the way-too-simple exercise on templates
-- Made note of transformers with new rejected ports in 2016.1
-- Updated bookmark sections with new 2016.1 functionality
-- Added information on output port reordering in 2016.1
-- Added information on the new Junction transformer in 2016.1
-- Added information on the ability to hide connections in 2016.1
+- MOVED BEST PRACTICE TO FINAL CHAPTER IN MANUAL
+- Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
+- Switched the order of User and Summary annotation
+- More emphasis on bookmark properties dialog (introduced in 2016.1)
+- General Style section now split into two parts:
+	- Object Layout (includes newly restored Autolayout tool)
+	- Connection Style (includes new connection style functionality)
+	- Transformer renaming moved to Transformer Methodology
+	- Workspace Properties moved to Projects (may move it again)
+- Added back Autolayout information
+- Reorganized chapter. Brought forward organizational parts into Methodology section
+- Created a "prototyping" section
+- Removed paragraph on "Single Feature Counts" as I can find no evidence this is still possible!
+- Expanded on ways to get incorrect feature counts.
+- Move "workspace searching" from Debugging to Methodology. Made it more generic.
+- Renamed "Testing Isolated Sections" to "Workspace Testing" and made more generic.
+- Added a section on debugging Writer output
+- Exercise 1 now includes section on setting FME Options (inc new colour blindness theme)
+- Exercise 1 now includes two completed workspaces, with different layouts for different connection styles
+- Exercise 2 changed from fixing workspace to constructing it properly in the first place
 
 ### Translation Components ###
-- All previous exercises have been replaced by new ones centred around a fundraising walk scenario. These use a new GPS trail dataset
-- Made note of new design of Geodatabase (ArcObjects) parameters dialog in 2016.1
+- Renumbered image filenames to 3 digits (eg Img4.001.xxxx.png)
+- Updated workspaces section as Workspace Parameters now includes Workspace Properties
+- Quick Add Readers and Writers
+- The Advanced Browser is now renamed (Select Multiple Files/Folders)
+- Added info on the ability to read data directly from a web connection
+- Feature Type parameters dialog updated. Also parameters appear in Parameter Editor window
+- Made a note of Unexpected Input not working for CAD files any more 
+- Exercise 3: Switched Import and Delete actions to add a second table before deleting the first
 
 ### Practical Transformer Use ###
-- The wrapping-up exercise (HTML property report) has been dropped and the prior exercise (data joins with crime data) promoted to take its place
-- The Attribute section has been restructured on a task-basis, rather than transformer-by-transformer. That structure better accommodates the new AttributeManager transformer 
-- Noted Help window no longer automatically updates in 2016.1
-- Noted difference between Tester Regex operations in 2016.0 and 2016.1
-- Made note of transformers with new rejected ports in 2016.1
+- Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
+- New transformer categorization (includes Q+A question updates)
+- FME Store renamed to FME Hub
+- Updated Top 25 list of transformers according to order on web site
+- More consistent examples for Tester/TestFilter
+- Q+A Question - 4 filters in Top25, not 3
+- Renamed Joiner to DatabaseJoiner
+- Updated exercises 1, 2, and 3 to be part of one larger project
+- Dropped the advanced part of exercise 3
+- Exercise 4 is reworked by having one-way streets flagged as an attribute in the roads data
+- Exercise 4 also fixed a logic error in the ShortestPathFinder where distance wasn't factored into the result
 
-### General ###
-- Exercises are now numbered 1,2,3,etc within their particular chapter. A name (rather than number) denotes the chapter. This is because chapter numbers do not match the numbers GitBook assigns
-- Improved (I hope) exercise descriptions and scenarios
-- There are many more Q+A questions, all of which have the answers as the final section of their particular chapter
-- Removed the update date from the course introduction page, as it cannot be easily kept up-to-date
-- Changed text/screenshot to reflect renaming from Community Answers to Q&A Forum 
+
+### Course Wrap Up ###
+- Updated screenshots for web sites and - of course - created a new challenge!
 
 ---
 
 ## Desktop Advanced ##
 These changes are for the FME Desktop Advanced Training Course.
 
+### General ###
+- All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
+- All screenshots have been updated from FME2016 to FME2017
+- All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+
 ### User Parameters ###
-- Replaced 2015 exercise 1c (Simplifying Workspace) with a new exercise based on parameterizing the basic training Grounds Maintenance project workspace
+- xxxx
 
 ### Performance ###
-- Updated exercise from 2015 with a Cloner transformer to increase the amount of data being processed without increasing the size of the source dataset
-- Added option to run Exercise 4 using a PostGIS database as the source dataset
-- Changed (from 2015) one of the workspaces for the Parallel Processing exercise
-- Made note of transformers with new rejected ports in 2016.1
+- xxxx
 
 ### Custom Transformers ###
-- Dropped (from 2015) the section/exercise on manual schema editing
-- Changed (from 2015) the parallel processing exercise to something more realistic (in terms of technique)
-- Made note of new options (Hide Connections/Connect Junctions) on Workbench context menu in 2016.1
-- Made note of transformers with new rejected ports in 2016.1
-- Made note of bug in 2016.1 (resolved in 2016.1.1) that prevented exercise 3 from working correctly
-- Updated warning in exercise 5 to include not running it in Full Inspection mode (as well as debug mode)
+- xxxx
 
 ### Advanced Reading/Writing ###
-- Made note (in exercise 2) about fme_feature_type being exposed automatically for dynamic translations in 2016.1.1
+- xxxx
 
 ### Advanced Attribute Handling ###
-- Changed (from 2015) the first exercise on attribute/value construction
-- Made note (in exercise 2) about ability to connect multiple objects using Quick Add in 2016.1.1
+- xxxx
+
+---
+
+## Server Authoring ##
+These changes are for the FME Server Authoring Training Course.
+
 
 ### General ###
-- Exercises are now numbered 1,2,3,etc within their particular chapter. A name (rather than number) denotes the chapter. This is because chapter numbers do not match the numbers GitBook assigns
-- Improved (I hope) exercise descriptions and scenarios
-- There are many more Q+A questions, all of which have the answers as the final section of their particular chapter
-- Removed the update date from the course introduction page, as it cannot be easily kept up-to-date
-- Changed text/screenshot to reflect renaming from Community Answers to Q&A Forum 
-- Ran all exercises to confirm correct operation in FME2016.1.1 (used build 16601)
+- All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
+- All screenshots have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
+
+### xxxx ###
+- xxxx
+
+---
+
+## Server Administration ##
+This is a new course for 2017
