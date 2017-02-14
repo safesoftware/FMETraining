@@ -104,6 +104,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
 
 ### User Parameters ###
+- Ability to Copy/Paste user parameters
 - xxxx
 
 ### Performance ###
