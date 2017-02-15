@@ -105,7 +105,7 @@ These changes are for the FME Desktop Advanced Training Course.
 
 ### User Parameters ###
 - Ability to Copy/Paste user parameters
-- xxxx
+- Text parameters seem to now work better with encoded characters - but the recommendation is still to use text-multiline
 
 ### Performance ###
 - xxxx
