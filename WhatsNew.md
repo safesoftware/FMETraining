@@ -107,6 +107,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Ability to Copy/Paste user parameters
 - Text parameters seem to now work better with encoded characters - but the recommendation is still to use text-multiline
 - Changed the example in Linking Parameters (from TextFile BOM parameter to PostGIS Features per Transaction)
+- Scripted Parameters moved up to Shared/Embedded parameters. The last section is now about Attributes and parameters, and includes the new Attribute Assignment setting.
 
 ### Performance ###
 - xxxx
