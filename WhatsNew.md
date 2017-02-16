@@ -104,8 +104,9 @@ These changes are for the FME Desktop Advanced Training Course.
 - All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
 
 ### User Parameters ###
-- Ability to Copy/Paste user parameters
-- Text parameters seem to now work better with encoded characters - but the recommendation is still to use text-multiline
+- Renumbered image filenames to 3 digits (eg Img1.001.xxxx.png)
+- Added content on the new ability to Copy/Paste/Duplicate user parameters
+- Text parameters seem to now work better with encoded characters - so some content got removed - but the recommendation is still to use text-multiline
 - Changed the example in Linking Parameters (from TextFile BOM parameter to PostGIS Features per Transaction)
 - Scripted Parameters moved up to Shared/Embedded parameters. The last section is now about Attributes and parameters, and includes the new Attribute Assignment setting.
 

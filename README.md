@@ -27,7 +27,7 @@ It is valid for **FME2017.0**
 The status of each chapter is:
 
 - Chapter 0: Complete content. No exercises
-- Chapter 1: Incomplete content and exercises
+- Chapter 1: Complete content. Incomplete exercises
 - Chapter 2: Incomplete content and exercises
 - Chapter 3: Incomplete content and exercises
 - Chapter 4: Incomplete content and exercises
