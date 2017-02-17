@@ -114,7 +114,9 @@ These changes are for the FME Desktop Advanced Training Course.
 - xxxx
 
 ### Custom Transformers ###
-- xxxx
+- Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
+- Custom transformer input ports seem to need to be clicked twice before F2 (or any other keyboard command) works. Filed as PR#75968
+- Clarified a few parts of the Transformer Versioning section
 
 ### Advanced Reading/Writing ###
 - xxxx
