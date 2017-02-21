@@ -16,7 +16,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Orthophoto images (GeoTIFF)</td>
+<td style="border: 1px solid darkorange">Contour vector features (Esri Shapefile)</td>
 </tr>
 
 <tr>
