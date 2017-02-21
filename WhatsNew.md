@@ -122,7 +122,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - xxxx
 
 ### Advanced Attribute Handling ###
-- xxxx
+- Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
+- Added information about new Time/Date functions. Removed reference to @TimeStamp, to which @DateTimeNow is now preferred
 
 ---
 
