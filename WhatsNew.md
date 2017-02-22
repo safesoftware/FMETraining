@@ -125,7 +125,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
 - Added information about new Time/Date functions. Removed reference to @TimeStamp, to which @DateTimeNow is now preferred
 - Reworded content to refer to Null as a 'state' rather than a 'value'.
-- Improved wording and examples of when to convert null/missing/empty and what happens when data is written
+- Improved wording and examples of when to convert null/missing/empty and what happens when data is written.
+- Removed references to null handling prior to FME2014 (it's been long enough).
 
 ---
 
