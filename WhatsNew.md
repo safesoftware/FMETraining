@@ -119,7 +119,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Clarified a few parts of the Transformer Versioning section
 
 ### Advanced Reading/Writing ###
-- xxxx
+- Added a section on web-based datasets and how to read/write them
 
 ### Advanced Attribute Handling ###
 - Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
