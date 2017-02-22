@@ -119,6 +119,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Clarified a few parts of the Transformer Versioning section
 
 ### Advanced Reading/Writing ###
+- Expanded zip files to include reading (in case students haven't taken basic training)
 - Added a section on web-based datasets and how to read/write them
 
 ### Advanced Attribute Handling ###
