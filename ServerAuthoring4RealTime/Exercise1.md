@@ -51,7 +51,7 @@ As a technical analyst in the GIS department you want to start experimentiing wi
 
 Browse to the Data folder and create a new sub-folder called ShapeContours:
 
-![](./Images/Img4.58.Ex0.NewDataFolder.png)
+![](./Images/Img4.400.Ex1.NewDataFolder.png)
 
 <!--Person X Says Section-->
 
@@ -67,7 +67,7 @@ Browse to the Data folder and create a new sub-folder called ShapeContours:
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 This exercise utilizes the FME Server Resource folders, but there is also native support in FME Server to watch for new resources in Amazon S3 Buckets, Dropbox, and FTP.
-<br><br>Using the same concepts described here, you could use one of these protocols instead of Directory Watch.
+<br>Using the same concepts described here, you could use one of these protocols instead of Directory Watch.
 </td>
 </tr>
 </table>
@@ -78,37 +78,37 @@ This exercise utilizes the FME Server Resource folders, but there is also native
 
 Enter "Incoming Shape Datasets" as the new publication's name. Then click in the text box under Topics to Publish To. Type in ShapeIncomingFile and click on "Click to Add". This will create a new topic and assign it to this publication. 
 
-![](./Images/Img4.57.Ex0.NewPublicationDialog.png)
+![](./Images/Img4.401.Ex1.NewPublicationDialog.png)
 
 
 <br>**3) Create Publication**
 <br>Now select Directory Watch as the protocol for this publication. In the dialog that opens below select the newly created resources folder:
 
-![](./Images/Img4.59.Ex0.DirectoryToWatch.png)
+![](./Images/Img4.402.Ex1.DirectoryToWatch.png)
 
 Under the Filter setting, remove the Modify and Delete actions. All we really want to monitor are new files arriving, not old ones being removed:
 
-![](./Images/Img4.60.Ex0.DirectoryWatchFilters.png)
+![](./Images/Img4.403.Ex1.DirectoryWatchFilters.png)
 
-Click OK to create the new publication.
+Change the Poll Interval to 1 Minute and click OK to create the new publication.
 
 
 <br>**4) Monitor Topic**
-<br>Click on the tab for Topic Monitoring. Add the ShapeIncomingFile topic to the list being monitored:
+<br>Click on the tab for Topics. Select the ShapeIncomingFile topic and click Monitor. This will start Topic Monitoring:
 
-![](./Images/Img4.61.Ex0.DirectoryWatchTopicMonitoring.png)
+![](./Images/Img4.403.Ex1.DirectoryWatchTopicMonitoring.png)
 
 
 <br>**5) Test Topic**
 <br>Now let's test the topic. Locate the source Shape datasets in C:\FMEData2017\Data\ElevationModel\Contours - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them.
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours) or using the web interface. If you use the web interface, open a new window or tab, so as not to stop the topic monitoring.
+Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours) or using the FME Server Web UI. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
 
-![](./Images/Img4.62.Ex0.DirectoryWatchDataInFolder.png)
+![](./Images/Img4.404.Ex1.DirectoryWatchDataInFolder.png)
 
-Check back in the topic monitoring window and you will see that the topic has been triggered by the new file:
+Check back in the Topic Monitoring window and you will see that the topic has been triggered by the new file:
 
-![](./Images/Img4.63.Ex0.DirectoryWatchTopicMonitoringTriggered.png)
+![](./Images/Img4.405.Ex1.DirectoryWatchTopicMonitoringTriggered.png)
 
 Now we know how the Directory Watch notification works! We will see in subsequent exercises how to process this information.
  
