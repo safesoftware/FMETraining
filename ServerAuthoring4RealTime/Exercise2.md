@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Notifications-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\RealTime-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -74,7 +74,7 @@ This exercise continues where Exercise 1 left off. You must have completed Exerc
 <br>**1) Create Workspace**
 <br>Start FME Workbench and begin with an empty workspace. Simply add a Creator and Logger transformer:
 
-![](./Images/Img4.39.Ex2.InitialWorkspace.png)
+![](./Images/Img4.406.Ex2.InitialWorkspace.png)
 
 This will give us a workspace to run in response to new files; albeit one that doesn’t do much yet. We're just creating this to check that we can get the setup to work.
 
@@ -88,11 +88,11 @@ This will give us a workspace to run in response to new files; albeit one that d
 
 Call the subscription "Process Incoming Shape".  Subscribe to the topic ShapeIncomingFile:
 
-![](./Images/Img4.40.Ex2.CreateSubscription1.png)
+![](./Images/Img4.407.Ex2.CreateSubscription1.png)
 
 Now set the protocol to FME Workspace and select the workspace uploaded in the previous step:
 
-![](./Images/Img4.41.Ex2.CreateSubscription2.png)
+![](./Images/Img4.408.Ex2.CreateSubscription2.png)
 
 Click OK to create the subscription. This will cause the workspace to run every time an incoming Shape dataset triggers the ShapeIncomingFile topic.
 
@@ -102,7 +102,7 @@ Click OK to create the subscription. This will cause the workspace to run every 
 
 This time, instead of monitoring the topic (although it will appear there again), check the Jobs page. You should see that the workspace has been run in response to the new file:
 
-![](./Images/Img4.42.Ex2.JobLogShowingTriggeredWorkspace.png)
+![](./Images/Img4.409.Ex2.JobLogShowingTriggeredWorkspace.png)
 
 This proves that the workspace has run.
 
