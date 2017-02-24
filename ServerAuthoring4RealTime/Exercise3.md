@@ -36,15 +36,15 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Notifications-Ex3-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\RealTime-Ex3-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
->>>>REVISE
-Having carried out various notification tasks, your mind goes back to a Directory Watch project you started but didn't finish. It involved watching for Shape datasets representing contours. Let's see if we can put that start to a good use. 
+Now that you have learned how to run a workspace in response to a notification, it's time to take that basic workspace and adjust it for your overall goal: to provide real-time updates to your corporation's databases!
+Let's start off by extracting information from the notifications and configure 
 
 ---
 
@@ -61,7 +61,7 @@ Having carried out various notification tasks, your mind goes back to a Director
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where exercise 1 left off. You must have completed exercise 1 to carry out this exercise.
+This exercise continues where Exercise 2 left off. You must have completed Exercise 2 to carry out this exercise.
 </td>
 </tr>
 </table>
@@ -69,7 +69,7 @@ This exercise continues where exercise 1 left off. You must have completed exerc
 ---
 
 <br>**1) Create Workspace**
-<br>Start Workbench and begin with an empty workspace. 
+<br>Start FME Workbench and begin with an empty workspace. 
 
 Select Readers &gt; Add Reader from the menubar. When prompted set the parameters as follows: 
 
