@@ -111,7 +111,9 @@ These changes are for the FME Desktop Advanced Training Course.
 - Scripted Parameters moved up to Shared/Embedded parameters. The last section is now about Attributes and parameters, and includes the new Attribute Assignment setting.
 
 ### Performance ###
+- Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
 - Updated wording in log reports of memory (Address Space for 32-bit, vs Virtual Memory for 64-bit)
+- Mentioned Feature Tables and the possibility they will affect how logs can be interpreted
 
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
@@ -119,6 +121,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Clarified a few parts of the Transformer Versioning section
 
 ### Advanced Reading/Writing ###
+- Renumbered image filenames to 3 digits (eg Img4.001.xxxx.png)
 - Expanded zip files to include reading (in case students haven't taken basic training)
 - Added a section on web-based datasets and how to read/write them
 
@@ -131,7 +134,7 @@ These changes are for the FME Desktop Advanced Training Course.
 
 ### Course Wrap Up ###
 - Updated screenshots for web sites and - of course - created a new challenge!
-- 
+
 ---
 
 ## Server Authoring ##
