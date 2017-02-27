@@ -111,7 +111,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Scripted Parameters moved up to Shared/Embedded parameters. The last section is now about Attributes and parameters, and includes the new Attribute Assignment setting.
 
 ### Performance ###
-- xxxx
+- Updated wording in log reports of memory (Address Space for 32-bit, vs Virtual Memory for 64-bit)
 
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
