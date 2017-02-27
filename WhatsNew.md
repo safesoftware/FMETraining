@@ -129,6 +129,9 @@ These changes are for the FME Desktop Advanced Training Course.
 - Improved wording and examples of when to convert null/missing/empty and what happens when data is written.
 - Removed references to null handling prior to FME2014 (it's been long enough).
 
+### Course Wrap Up ###
+- Updated screenshots for web sites and - of course - created a new challenge!
+- 
 ---
 
 ## Server Authoring ##
