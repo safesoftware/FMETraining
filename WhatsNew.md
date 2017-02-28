@@ -114,6 +114,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
 - Updated wording in log reports of memory (Address Space for 32-bit, vs Virtual Memory for 64-bit)
 - Mentioned Feature Tables and the possibility they will affect how logs can be interpreted
+- Added a second method for assessing writer performance and added comparison of the two techniques
 
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
