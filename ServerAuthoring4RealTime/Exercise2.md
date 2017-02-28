@@ -16,7 +16,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Contour vector features (Esri Shapefile)</td>
+<td style="border: 1px solid darkorange">Building footprints (Esri Shapefile)</td>
 </tr>
 
 <tr>
@@ -86,7 +86,7 @@ This will give us a workspace to run in response to new files; albeit one that d
 <br>**3) Create Subscription**
 <br>Return to the FME Server Web UI and navigate to the Notifications page. Click on the Subscriptions tab and click New to create a new Subscription.
 
-Call the subscription "Process Incoming Shape".  Subscribe to the topic ShapeIncomingFile:
+Call the subscription "Process Building Updates".  Subscribe to the topic ShapeIncomingFile:
 
 ![](./Images/Img4.407.Ex2.CreateSubscription1.png)
 
