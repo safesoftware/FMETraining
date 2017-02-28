@@ -16,7 +16,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Contour vector features (Esri Shapefile)</td>
+<td style="border: 1px solid darkorange">Building footprints (Esri Shapefile)</td>
 </tr>
 
 <tr>
@@ -43,13 +43,13 @@
 
 ---
 
-As a technical analyst in the GIS department you want to start experimentiing with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users occasionally put Shape datasets for adding to the corporate database. 
+As a technical analyst in the GIS department you want to start experimenting with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to or updating the corporate database. 
 
 
 <br>**1) Create Resources Folder**
 <br>The first step is to create a Resources folder to copy the data to. Open the FME Server web interface and navigate to Manage &gt; Resources
 
-Browse to the Data folder and create a new sub-folder called ShapeContours:
+Browse to the Data folder and create a new subfolder called BuildingUpdates:
 
 ![](./Images/Img4.400.Ex1.NewDataFolder.png)
 
@@ -76,7 +76,7 @@ This exercise utilizes the FME Server Resource folders, but there is also native
 <br>**2) Create Topic**
 <br>Now to create a publication and topic that will be triggered by a new file. Navigate to Manage &gt; Notifications, click the Publications tab, and then click the New button.
 
-Enter "Incoming Shape Datasets" as the new publication's name. Then click in the text box under Topics to Publish To. Type in ShapeIncomingFile and click on "Click to Add". This will create a new topic and assign it to this publication. 
+Enter "Incoming Building Footprints" as the new publication's name. Then click in the text box under Topics to Publish To. Type in ShapeIncomingFile and click on "Click to Add". This will create a new topic and assign it to this publication. 
 
 ![](./Images/Img4.401.Ex1.NewPublicationDialog.png)
 
@@ -100,9 +100,9 @@ Change the Poll Interval to 1 Minute and click OK to create the new publication.
 
 
 <br>**5) Test Topic**
-<br>Now let's test the topic. Locate the source Shape datasets in C:\FMEData2017\Data\ElevationModel\Contours - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them.
+<br>Now let's test the topic. Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shapefiles (.dbf, .prj, .shp, .shx) and create a zip file out of them.
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours) or using the FME Server Web UI. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
+Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server Web UI. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
 
 ![](./Images/Img4.404.Ex1.DirectoryWatchDataInFolder.png)
 
