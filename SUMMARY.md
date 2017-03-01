@@ -78,7 +78,7 @@
    * [Notification Topics](ServerAuthoring4RealTime/4.06.NotificationTopics.md)
    * [Notification Protocols](ServerAuthoring4RealTime/4.07.NotificationProtocols.md)
 	   * [Protocol Details](ServerAuthoring4RealTime/4.08.NotificationProtocolDetails.md)
-   * [Exercise: Shape Dataset Processing: Directory Watch](ServerAuthoring4RealTime/Exercise1.md)
+   * [Exercise: Building Updates Notification Systems: Directory Watch](ServerAuthoring4RealTime/Exercise1.md)
    * [Email Notifications](ServerAuthoring4RealTime/4.09.EmailNotifications.md)
 	   * [Email Publications: SMTP](ServerAuthoring4RealTime/4.10.SMTPPublications.md)
 	   * [Email Publications: IMAP](ServerAuthoring4RealTime/4.11.IMAPPublications.md)
