@@ -10,7 +10,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Shape Dataset Processing</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
 </td>
 </tr>
 
@@ -44,6 +44,7 @@
 ---
 
 Now that you have learned how to run a workspace in response to a notification, it's time to take that basic workspace and adjust it for your overall goal: to provide real-time updates to your corporation's databases!
+
 The next step is to understand how to extract information from the notifications and configure an FME Workspace to process that incoming data.
 
 ---
