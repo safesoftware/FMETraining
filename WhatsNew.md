@@ -115,6 +115,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - Updated wording in log reports of memory (Address Space for 32-bit, vs Virtual Memory for 64-bit)
 - Mentioned Feature Tables and the possibility they will affect how logs can be interpreted
 - Added a second method for assessing writer performance and added comparison of the two techniques
+- Mentioned new Attributes to Read parameter as a means to improve performance
+- Removed some of the more extreme suggestions for performance improvements (license type, etc)
 
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
