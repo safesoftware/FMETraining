@@ -10,7 +10,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Shape Dataset Processing</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
 </td>
 </tr>
 
@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department you want to start experimenting with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to or updating the corporate database. 
+As a technical analyst in the GIS department you want to start experimenting with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to, or updating, the corporate database. 
 
 
 <br>**1) Create Resources Folder**
@@ -74,7 +74,7 @@ This exercise utilizes the FME Server Resource folders, but there is also native
 
 
 <br>**2) Create Topic**
-<br>Now to create a publication and topic that will be triggered by a new file. Navigate to Manage &gt; Notifications, click the Publications tab, and then click the New button.
+<br>Now to create a publication and topic that will be triggered by a new file. Navigate to the Notifications page, click the Publications tab, and then click the New button.
 
 Enter "Incoming Building Footprints" as the new publication's name. Then click in the text box under Topics to Publish To. Type in ShapeIncomingFile and click on "Click to Add". This will create a new topic and assign it to this publication. 
 
