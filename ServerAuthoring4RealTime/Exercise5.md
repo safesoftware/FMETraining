@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 5</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold"></span>
@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Complete.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Process-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Generate-Complete.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Process-Complete.fmw</td>
 </tr>
 
 </table>
@@ -58,28 +58,7 @@ Of course, these calls can arrive at a tremendous rate, and at unknown intervals
 
 Open the workspace C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw
 
-![](./Images/Img5.02.Ex1.MessageGeneratingWorkspace.png)
-
----
-
-<!--Updated Section--> 
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-The Cloner transformer gained a Rejected port in FME2016.1
-</span>
-</td>
-</tr>
-</table>
+![](./Images/Img4.450.Ex5.MessageGeneratingWorkspace.png)
 
 ---
 
@@ -141,7 +120,7 @@ Click OK to close the parameters dialog and then save the workspace.
 <br>**3) Create Workspace**
 <br>Now we have the ability to generate a stream of data we will create the workspace that is to process the data. Start Workbench and begin with a blank canvas (don't close the stream generator workspace, as we'll need that as well in a moment). 
 
-In the blank canvas add a Creator transformer and follow it with a WebSocketReceiver. Open the WebSocketReceiver's parameters dialog. Set the parameters as follows:
+In the blank canvas add a Creator transformer and follow it with a WebSocketReceiver. Open the WebSocketReceiver transformer parameters dialog. Set the parameters as follows:
 
 <table>
 <tr><td>WebSocket Server URL</td><td>ws://localhost:7078</td></tr>
@@ -170,25 +149,25 @@ Publish each workspace in turn. In both cases simply register it with the Job Su
 <br>**5) Run Workspace**
 <br>Log in to FME Server, locate the data stream generator workspace, and run it. The dialog in response will look like this:
 
-![](./Images/Img5.03.Ex1.MessageGeneratingWorkspaceRun.png)
+![](./Images/Img4.451.Ex5.MessageGeneratingWorkspaceRun.png)
 
-The workspace will run for a long time and we can leave it to do so. Click the Home button and locate the processing workspace. Now run that.
+The workspace will run for a long time and we can leave it to do so. Click the Run Workspace button and locate the processing workspace. Now run that.
 
-Again the workspace will run as report that it will continue to do so.
+Again the response will report that the workspace is running, and will continue to do so.
 
 
 <br>**6) Check Jobs and Cancel**
-<br>From the menu select Manage Jobs and click the tab labelled Running. You will see the two jobs:
+<br>Navigate to the Jobs page and click the tab labelled Running. You will see the two jobs:
 
-![](./Images/Img5.04.Ex1.RunningWorkspaces.png)
+![](./Images/Img4.452.Ex5.RunningWorkspaces.png)
 
 Let the jobs run for a minute or two. Then choose each of them and click the Cancel button to cancel them:
 
-![](./Images/Img5.05.Ex1.RunningWorkspacesCancel.png)
+![](./Images/Img4.453.Ex5.RunningWorkspacesCancel.png)
 
 Once cancelled, go to the Completed jobs tab. You'll see the two cancelled jobs:
 
-![](./Images/Img5.06.Ex1.CancelledWorkspaces.png)
+![](./Images/Img4.454.Ex5.CancelledWorkspaces.png)
 
 Click on the processing workspace job and check the log. You should see messages in the log like this:
 
@@ -239,7 +218,7 @@ Under Attributes to Expose manually enter:
 - EventSeverity
 - EventType
 
-![](./Images/Img5.07.Ex1.JSONFlattenerParameters.png)
+![](./Images/Img4.455.Ex5.JSONFlattenerParameters.png)
 
 You will now have the information from the message available as a set of attributes in the workspace.
 
@@ -248,7 +227,7 @@ You will now have the information from the message available as a set of attribu
 <br>**8) Add VertexCreator**
 <br>Now add a VertexCreator. Set it up to use the X/Y attributes to create a true point feature:
 
-![](./Images/Img5.08.Ex1.VertexCreatorParameters.png)
+![](./Images/Img4.456.Ex5.VertexCreatorParameters.png)
 
 With this we now have a true geographic feature and can process it as required.
 
@@ -272,56 +251,33 @@ Firstly we need the transit station data, so select Readers &gt; Add Reader and 
 
 </table>
 
-When prompted (or in the parameters dialog) ensure that only the TransitStation table is selected.
+When prompted (or in the parameters dialog) ensure that only the TransitStations table is selected.
   
 
 <br>**10) Filter Data**
 <br>Now let's filter the emergencies. 
 
-Firstly, add a Bufferer transformer to the TransitStation feature type and buffer the features by 200 metres.
+First, add a Bufferer transformer to the TransitStation feature type and buffer the features by 200 metres.
 
 Secondly, add a PointOnAreaOverlayer to assess whether an emergency falls inside one of these buffers. The workspace will now look like this:
 
-![](./Images/Img5.09.Ex1.WorkspaceWithBufferAndOverlay.png)
-
----
-
-<!--Updated Section--> 
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-The Bufferer transformer gained a Rejected port in FME2016.1
-</span>
-</td>
-</tr>
-</table>
-
----
+![](./Images/Img4.457.Ex5.WorkspaceWithBufferAndOverlay.png)
 
 At the moment there is one big problem that stops this from working. The PointOnAreaOverlayer transformer is a Group-Based transformer, sometimes called a "blocker". It will hold on to features until it has finished being fed them, before outputting any data. In our case we want to make it Feature-Based; i.e. it will process each message at once.
 
 So, open the PointOnAreaOverlayer parameters and set Areas First to Yes:
 
-![](./Images/Img5.10.Ex1.PointOnAreaParameters.png)
+![](./Images/Img4.458.Ex5.PointOnAreaParameters.png)
 
 This tells the transformer that all area features (buffered stations) will be first to arrive, therefore any point features (message locations) can be processed immediately. However, we have to ensure that the transit features will arrive first. Therefore open the Creator transformer parameters and set Create at End to Yes:
 
-![](./Images/Img5.11.Ex1.CreatorParameters.png)
+![](./Images/Img4.459.Ex5.CreatorParameters.png)
 
-Now, all being well, the transit features will arrive first at the PointOnAreaOverlayer
+Now, all being well, the transit features will arrive first at the PointOnAreaOverlayer transformer.
 
 Finally, add a Tester transformer after the PointOnAreaOverlayer. Set up the test to check for _overlaps > 0 (i.e. where the message location falls inside a transit station buffer). Connect some Logger transformers to the Tester output ports:
 
-![](./Images/Img5.12.Ex1.TesterToFilterMessages.png)
+![](./Images/Img4.460.Ex5.TesterToFilterMessages.png)
 
 Note that, if there were other parameters (for example the transit team were only interested in Event Types 7, 8, 9, and 10) you could add them to this Tester as well.
 
@@ -383,7 +339,7 @@ If you want to adjust the settings to get a result quicker, then go ahead. For e
 
 In the newly added feature type, change the name to events and close the dialog. Connect the feature type to the VertexCreator output port (i.e. we're recording all events, not just the filtered ones):
 
-![](./Images/Img5.13.Ex1.WriterFeatureTypeConnected.png)
+![](./Images/Img4.461.WriterFeatureTypeConnected.png)
 
 The attributes are added automatically, but include a few we don't need. So open up the properties dialog again for the feature type and click the User Attributes tab. Change it from Automatic to Manual and delete the attributes:
 
@@ -392,7 +348,7 @@ The attributes are added automatically, but include a few we don't need. So open
 - eventlocation_eventxcoord
 - eventlocation_eventycoord
 
-![](./Images/Img5.14.Ex1.WriterFeatureTypeAttributes.png)
+![](./Images/Img4.462.WriterFeatureTypeAttributes.png)
 
 Notice that the attributes were automatically renamed (to lower case and removing disallowed characters) to match SpatiaLite requirements.
 
@@ -404,35 +360,35 @@ If you publish and run the workspace now you should be able to see - while the w
 
 We could add another messaging transformer, such as the WebSocketSender, JMSSender, SQSSender, or even a Tweeter. That would make the processing workspace a "pure" messaging workspace.
 
-On the other hand, the outgoing messages are nothing like the same rate as the incoming messages. With the parameters as described in this exercise, there is only a transit message once every minute. So, we can create a "hybrid" solution by setting output messages to be sent via the notification service.
+On the other hand, the outgoing messages are nothing like the same rate as the incoming messages. With the parameters as described in this exercise, there is only a transit message once every minute. So, we can create a "hybrid" solution by setting output messages to be sent via the FME Server Notification Service.
 
-Go to the FME Server web interface and navigate to Manage &gt; Notifications.
+Go to the FME Server Web Ui and navigate to the Notifications page.
 
 Create a new Topic called EmergencyTransitMessages:
 
-![](./Images/Img5.15.Ex1.NotificationNewTopic.png)
+![](./Images/Img4.463.Ex5.NotificationNewTopic.png)
 
 Now create a new notification Subscription. There are various protocols we could realistically use for sending a message (email springs to mind) but for the purposes of this exercise use the Logger protocol. Set the Log Level parameter to High:
 
-![](./Images/Img5.16.Ex1.NotificationNewSubscription.png)
+![](./Images/Img4.464.NotificationNewSubscription.png)
  
 
 <br>**14) Add FMEServerNotifier Transformer**
 <br>Back in the processing workspace in Workbench, remove any Logger transformers at the end of the workspace. Add an FMEServerNotifier transformer connected to the Tester:Passed port:
 
-![](./Images/Img5.17.Ex1.FMEServerNotifierOnCanvas.png)
+![](./Images/Img4.465.Ex5.FMEServerNotifierOnCanvas.png)
 
 Open the parameters dialog and set it up to send a message to the EmergencyTransitMessages topic. Set the message content to be whatever you like. You could use the text editor dialog to create something out of the available attributes (it can be plain text, it doens't have to be JSON or XML).
 
 
 <br>**15) Publish and Run Workspaces**
-<br>Re-publish and set the workspaces running again. Click Manage &gt; Notifications and click on the Topic Monitoring tab. Set the EmergencyTransitMessages as the topic to monitor.
+<br>Re-publish and set the workspaces running again. Navigate to the Notifications page and click on the Topics tab. Enable Topic Monitoring to watch the EmergencyTransitMessages topic for incoming notifications.
 
 In a short while you will start to see emergency messages like this: 
 
-![](./Images/Img5.18.Ex1.TopicMonitoringResults.png)
+![](./Images/Img4.466.Ex5.TopicMonitoringResults.png)
 
-Visit Manage &gt; Resources &gt; Logs &gt; core &gt; current &gt; subscribers &gt; logger.log to find the results as recorded by the Logger protocol notification.
+Visit Resources &gt; Logs &gt; core &gt; current &gt; subscribers &gt; logger.log to find the results as recorded by the Logger protocol notification.
  
 ---
 
