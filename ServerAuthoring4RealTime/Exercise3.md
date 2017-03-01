@@ -16,7 +16,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Contour vector features (Esri Shapefile)</td>
+<td style="border: 1px solid darkorange">Building footprints (Esri Shapefile)</td>
 </tr>
 
 <tr>
@@ -44,7 +44,7 @@
 ---
 
 Now that you have learned how to run a workspace in response to a notification, it's time to take that basic workspace and adjust it for your overall goal: to provide real-time updates to your corporation's databases!
-Let's start off by extracting information from the notifications and configure 
+The next step is to understand how to extract information from the notifications and configure an FME Workspace to process that incoming data.
 
 ---
 
@@ -92,49 +92,70 @@ Select Readers &gt; Add Reader from the menubar. When prompted set the parameter
 
 </table>
 
-As you know by now, it doesn't really matter what text file we use as the source, it won't be used anyway. It will be replaced by the content of the incoming message.
+It doesn't matter what text file we use as the source right now; setting the source dataset in this step is only to satisfy the Text Reader requirements. The source dataset will be replaced by the content of the incoming message.
 
 
 <br>**2) Add JSONFlattener**
-<br>Now add a JSONFlattener transformer to the workspace, after the Text File Reader:
+<br>Now add a JSONFlattener transformer to the workspace, after the Text File Reader.
 
-Open the parameters dialog. In there select *text&#95;line&#95;data* as the source of the JSON content. Under Attributes to Expose manually enter *dirwatch_publisher_content*
+Open the parameters dialog and select *text&#95;line&#95;data* as the source of the JSON content.
 
-Add Logger transformers after the JSONFlattener
+Add Logger transformers after the JSONFlattener.
 
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Dr. Workbench says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Instead of a Text Reader &gt; JSONFlattener we could have used the JSON Reader. Why didn't we? The JSON Reader requires a source file with valid schema. At this stage in the exercise, we do not have this structure yet.
+</td>
+</tr>
+</table>
+
+---
 
 <br>**3) Publish to FME Server**
 <br>Publish the workspace to FME Server, registering it under the Job Submitter service. 
 
 
-<br>**4) Create Subscription**
-<br>Now log in to the FME Server web interface and navigate to Manage &gt; Notifications. 
+<br>**4) Update Subscription**
+<br>Now log in to the FME Server Web UI and navigate to the Notifications page. 
 
-Click on the Subscriptions tab and click New to create a new Subscription.
+Click on the Subscriptions tab and select the existing "Process Building Updates" Subscription to edit it.
 
-Call the subscription "Process Incoming Shape".  Subscribe to the topic ShapeIncomingFile
+Change the specified workspace to the one uploaded in the previous step. Next to the Source Text File field, select the checkbox for *Get Value from Topic Message*.
 
-Now set the protocol to Workspace and select the workspace uploaded in the previous step. Under Notification Message Mapping, select the published parameter for the Text File Reader source dataset.
+![](./Images/Img4.410.Ex3.ValueFromTopicMessage.png)
 
-Click OK to create the Subscription.
+Click OK to update the Subscription.
 
 
 <br>**5) Test Topic**
-<br>Locate the source Shape datasets in C:\FMEData2017\Data\ElevationModel\Contours - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 1).
+<br>Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 2).
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours) or using the web interface. 
+Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server Web UI. 
 
 
 <br>**6) Check Results**
-<br>Now Navigate to Manage &gt; Jobs. Under completed jobs should be the workspace you just caused to run. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
+<br>Open the Jobs page in the web interface. Under completed jobs should list the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
 
 <table>
 <tr><td>dirwatch_publisher_action</td><td>CREATE</td></tr>
-<tr><td>dirwatch_publisher_content</td><td>ENTRY_CREATE C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours\K11.zip</td></tr>
-<tr><td>dirwatch_publisher_path</td><td>C:\ProgramData\Safe Software\FME Server\resources\data\ShapeContours\K11.zip</td></tr>
+<tr><td>dirwatch_publisher_content</td><td>ENTRY_CREATE C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates\update002.zip</td></tr>
+<tr><td>dirwatch_publisher_path</td><td>C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates\update002.zip</td></tr>
 </table>
 
-So now we know what the data looks like and can process it accordingly.
+So now we know what the data looks like and can process it accordingly. You may recognize these attributes from the Topic Monitoring exercise - indeed you can view the same information there without adding any Logger transformers!
 
 
 <br>**7) Edit JSONFlattener Transformer**
@@ -142,9 +163,9 @@ So now we know what the data looks like and can process it accordingly.
 
 
 <br>**8) Add FeatureReader Transformer**
-<br>Now add a FeatureReader transformer in place of the Loggers:
+<br>Now remove the Logger transformers and add a FeatureReader transformer to the output of the JSONFlattener:
 
-![](./Images/Img4.64.Ex5.FeatureReaderInWorkspace.png)
+![](./Images/Img4.411.Ex3.FeatureReaderInWorkspace.png)
 
 This is a transformer that will let us read the contents of the dataset. Open the parameters dialog. Set:
 
@@ -154,13 +175,13 @@ This is a transformer that will let us read the contents of the dataset. Open th
 <tr><td><strong>Output Port</strong></td><td>Single Output Port</td></tr>
 </table>
 
-![](./Images/Img4.65.Ex5.FeatureReaderParameters.png)
+![](./Images/Img4.412.Ex3.FeatureReaderParameters.png)
 
 Click OK to close the dialog. You may receive a warning message, but it can be ignored.
 
 
 <br>**9) Add Writer**
-<br>Having read the data from Shape, we can now add it to our corporate database.
+<br>Having read the data from a Shapefile, we can now add it to our corporate database.
 
 Select Writers &gt; Add Writer from the menubar. When prompted set the parameters as follows: 
 
@@ -173,7 +194,7 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Output\Contours.sl3</td>
+<td style="">C:\FMEData2017\Data\Engineering\BuildingFootprints\building_footprints.sl3</td>
 </tr>
 
 <tr>
@@ -188,13 +209,13 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 
 </table>
 
-In the new feature type that is created, simply change the name to *contours*:
+In the new feature type that is created, simply change the name to *building_footprints*:
 
-![](./Images/Img4.66.Ex5.FeatureTypeName.png)
+![](./Images/Img4.413.Ex3.FeatureTypeName.png)
 
-Click OK to close the dialog and connect the new feature type to the FeatureReader transformer's &lt;Generic&gt; output port:
+Click OK to close the dialog and connect the new feature type to the FeatureReader transformer's &lt;Generic&gt; output port.
 
-![](./Images/Img4.67.Ex5.FinalWorkspace.png)
+![](./Images/Img4.414.Ex3.FinalWorkspace.png)
 
 
 <br>**10) Republish Workspace**
@@ -202,17 +223,15 @@ Click OK to close the dialog and connect the new feature type to the FeatureRead
 
 
 <br>**11) Adjust Subscription**
-<br>Navigate to Manage &gt; Notifications and open the Process Incoming Shape Subscription for editing. The settings should now include one for the output database. Change it to write the database in the Resources folder:
+<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The settings should now include one for the output database. Change it to write the database in the Resources folder:
 
-![](./Images/Img4.68.Ex5.OutputDatabaseSelection.png)
-
-Don't - for fairly obvious reasons - write it back to the same folder as the incoming Shape data!
+![](./Images/Img4.415.Ex3.OutputDatabaseSelection.png)
 
 
 <br>**12) Test Solution**
-<br>Now test the solution by putting more zipped Shape data into the directory watch folder. You will find that each dataset put into the folder is added to the SpatiaLite database:
+<br>Now test the solution by putting more zipped Shapefile data into the Directory Watch folder. You will find that each dataset put into the folder is added to the SpatiaLite database:
 
-![](./Images/Img4.69.Ex5.OutputInDataInspector.png)
+![](./Images/Img4.416.Ex3.ViewOutputInDataInspector.png)
 
 ---
 
