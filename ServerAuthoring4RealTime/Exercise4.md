@@ -31,7 +31,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw</td>
 </tr>
 
 <tr>
@@ -56,7 +56,7 @@ Of course, these calls can arrive at a tremendous rate, and at unknown intervals
 <br>**1) Open Workspace**
 <br>Unfortunately (I'm talking from a training point of view) we don't have access to a real-time stream of emergency phone calls, so we will have to generate our own.
 
-Open the workspace C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-begin.fmw
+Open the workspace C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw
 
 ![](./Images/Img5.02.Ex1.MessageGeneratingWorkspace.png)
 
