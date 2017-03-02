@@ -99,22 +99,45 @@ These changes are for the FME Desktop Advanced Training Course.
 
 ### General ###
 - All operations, descriptions, and exercises are updated to use the new Parameter Editor dialog in FME Workbench 2017
-- All screenshots have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+- All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
+- All screenshots have been updated from FME2016 to FME2017
+- All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
 
 ### User Parameters ###
-- xxxx
+- Renumbered image filenames to 3 digits (eg Img1.001.xxxx.png)
+- Added content on the new ability to Copy/Paste/Duplicate user parameters
+- Text parameters seem to now work better with encoded characters - so some content got removed - but the recommendation is still to use text-multiline
+- Changed the example in Linking Parameters (from TextFile BOM parameter to PostGIS Features per Transaction)
+- Scripted Parameters moved up to Shared/Embedded parameters. The last section is now about Attributes and parameters, and includes the new Attribute Assignment setting.
 
 ### Performance ###
-- xxxx
+- Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
+- Updated wording in log reports of memory (Address Space for 32-bit, vs Virtual Memory for 64-bit)
+- Mentioned Feature Tables and the possibility they will affect how logs can be interpreted
+- Added a second method for assessing writer performance and added comparison of the two techniques
+- Mentioned new Attributes to Read parameter as a means to improve performance
+- Removed some of the more extreme suggestions for performance improvements (license type, etc)
+- Expanded content and examples on parallel processing limits. Added link to recent Parallel Processing blog
 
 ### Custom Transformers ###
-- xxxx
+- Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
+- Custom transformer input ports seem to need to be clicked twice before F2 (or any other keyboard command) works. Filed as PR#75968
+- Clarified a few parts of the Transformer Versioning section
 
 ### Advanced Reading/Writing ###
-- xxxx
+- Renumbered image filenames to 3 digits (eg Img4.001.xxxx.png)
+- Expanded zip files to include reading (in case students haven't taken basic training)
+- Added a section on web-based datasets and how to read/write them
 
 ### Advanced Attribute Handling ###
-- xxxx
+- Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
+- Added information about new Time/Date functions. Removed reference to @TimeStamp, to which @DateTimeNow is now preferred
+- Reworded content to refer to Null as a 'state' rather than a 'value'.
+- Improved wording and examples of when to convert null/missing/empty and what happens when data is written.
+- Removed references to null handling prior to FME2014 (it's been long enough).
+
+### Course Wrap Up ###
+- Updated screenshots for web sites and - of course - created a new challenge!
 
 ---
 
