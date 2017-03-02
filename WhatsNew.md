@@ -109,6 +109,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Text parameters seem to now work better with encoded characters - so some content got removed - but the recommendation is still to use text-multiline
 - Changed the example in Linking Parameters (from TextFile BOM parameter to PostGIS Features per Transaction)
 - Scripted Parameters moved up to Shared/Embedded parameters. The last section is now about Attributes and parameters, and includes the new Attribute Assignment setting.
+- Exercise 1: Use ability to duplicate user parameter. Use of new Date/Time functions instead of @Timestamp()
 
 ### Performance ###
 - Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
