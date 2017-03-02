@@ -117,6 +117,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Added a second method for assessing writer performance and added comparison of the two techniques
 - Mentioned new Attributes to Read parameter as a means to improve performance
 - Removed some of the more extreme suggestions for performance improvements (license type, etc)
+- Expanded content and examples on parallel processing limits. Added link to recent Parallel Processing blog
 
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
