@@ -110,6 +110,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Changed the example in Linking Parameters (from TextFile BOM parameter to PostGIS Features per Transaction)
 - Scripted Parameters moved up to Shared/Embedded parameters. The last section is now about Attributes and parameters, and includes the new Attribute Assignment setting.
 - Exercise 1: Use ability to duplicate user parameter. Use of new Date/Time functions instead of @Timestamp()
+- Exercise 3: CSV writer parameters have changed slightly for 2017.
 
 ### Performance ###
 - Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
