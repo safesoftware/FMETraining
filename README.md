@@ -11,12 +11,11 @@ The training will introduce basic concepts and terminology, help students become
 ## Course Structure ##
 
 The full course is made up of five main sections. These sections are:
-
 - Data Translation Basics
 - Data Transformation
-- FME Best Practice
-- Readers and Writers
+- Translation Components
 - Practical Transformer Use
+- Best Practice
  
 ## Current Status ##
 
