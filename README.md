@@ -33,5 +33,7 @@ The status of each chapter is:
 - Chapter 4: Complete content. Incomplete exercises
 - Chapter 5: Complete content. Incomplete exercises
 - Chapter 6: Complete content. No exercises
+
+- Slides:    Incomplete
  
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
