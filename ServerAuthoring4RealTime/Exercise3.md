@@ -130,7 +130,7 @@ Instead of using Text Reader &gt; JSONFlattener we could have used the JSON Read
 
 
 <br>**4) Update Subscription**
-<br>Now log in to the FME Server Web UI and navigate to the Notifications page. 
+<br>Now log in to the FME Server web user interface and navigate to the Notifications page. 
 
 Click on the Subscriptions tab and select the existing "Process Building Updates" Subscription to edit it.
 
@@ -144,11 +144,11 @@ Click OK to update the Subscription.
 <br>**5) Test Topic**
 <br>Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 2).
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server Web UI. 
+Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web user interface. 
 
 
 <br>**6) Check Results**
-<br>Open the Jobs page in the web interface. Under completed jobs should list the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
+<br>Open the Jobs page in the web user interface. Under completed jobs should list the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
 
 <table>
 <tr><td>dirwatch_publisher_action</td><td>CREATE</td></tr>
@@ -156,11 +156,36 @@ Copy the zip file into the newly created Resources folder. You can do this throu
 <tr><td>dirwatch_publisher_path</td><td>C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates\update002.zip</td></tr>
 </table>
 
-So now we know what the data looks like and can process it accordingly. You may recognize these attributes from the Topic Monitoring exercise - indeed you can view the same information there without adding any Logger transformers!
+So now we know what the data looks like and can process it accordingly. 
+
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Mr. Flibble says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+You may recognize these attributes from the Topic Monitoring exercise - indeed you can view the same information there without going through this process of adding Logger transformers!
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+
 
 
 <br>**7) Edit JSONFlattener Transformer**
-<br>Back in FME Workbench open the JSONFlattener transformer parameters. Under Attribute to Expose add the attribute dirwatch&#95;publisher&#95;path
+<br>Back in FME Workbench open the JSONFlattener transformer parameters. Under Attribute to Expose add the attribute *dirwatch&#95;publisher&#95;path*
 
 
 <br>**8) Add FeatureReader Transformer**
@@ -168,7 +193,7 @@ So now we know what the data looks like and can process it accordingly. You may 
 
 ![](./Images/Img4.411.Ex3.FeatureReaderInWorkspace.png)
 
-This is a transformer that will let us read the contents of the dataset. Open the parameters dialog. Set:
+This is a transformer that will let us read the contents of the dataset into the workflow mid-translation. Open the parameters dialog and set the following values:
 
 <table>
 <tr><td><strong>Reader Format</strong></td><td>Esri Shapefile</td></tr>
@@ -176,13 +201,15 @@ This is a transformer that will let us read the contents of the dataset. Open th
 <tr><td><strong>Output Port</strong></td><td>Single Output Port</td></tr>
 </table>
 
+Select to have a Single Output Port:
+
 ![](./Images/Img4.412.Ex3.FeatureReaderParameters.png)
 
-Click OK to close the dialog. You may receive a warning message, but it can be ignored.
+Click OK to close the dialog. You may receive a warning message, but it can be safely ignored.
 
 
 <br>**9) Add Writer**
-<br>Having read the data from a Shapefile, we can now add it to our corporate database.
+<br>Having read the data from a Shapefile, we can now add it to the corporate database.
 
 Select Writers &gt; Add Writer from the menubar. When prompted set the parameters as follows: 
 
@@ -220,11 +247,13 @@ Click OK to close the dialog and connect the new feature type to the FeatureRead
 
 
 <br>**10) Republish Workspace**
-<br>Publish the workspace back to FME Server
+<br>Publish the workspace back to FME Server. If you have the same FME Workbench session open from the start of this exercise, you can use the Republish option on the toolbar or under the File menu.
+
+![](./Images/Img4.427.Ex3.RepublishWorkspace.png)
 
 
 <br>**11) Adjust Subscription**
-<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The settings should now include one for the output database. Change it to write the database in the Resources folder:
+<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The settings should now include one for the output database. Specify to write the database into the Resources > Output folder:
 
 ![](./Images/Img4.415.Ex3.OutputDatabaseSelection.png)
 
@@ -251,8 +280,8 @@ Click OK to close the dialog and connect the new feature type to the FeatureRead
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Use Loggers to identify what JSON attributes an incoming message provides</li>
-<li>Use a FeatureReader transformer to read the data added to a Directory Watch folder</li></ul>
+<ul><li>Identify JSON attributes on an incoming Topic Message</li>
+<li>Use a FeatureReader transformer to read the dataset added to watched folder</li></ul>
 </span>
 </td>
 </tr>
