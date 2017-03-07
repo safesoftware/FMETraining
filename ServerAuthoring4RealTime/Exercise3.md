@@ -43,9 +43,9 @@
 
 ---
 
-Now that you have learned how to run a workspace in response to a notification, it's time to take that basic workspace and adjust it for your overall goal: to provide real-time updates to your corporation's databases!
+Now that you have learned how to run a workspace in response to a notification, it's time to take that basic workspace and adjust it for your overall goal: to provide real-time updates to your corporate database.
 
-The next step is to understand how to extract information from the notifications and configure an FME Workspace to process that incoming data.
+The next step towards achieving this is understanding how to extract information from the notifications and configure an FME Workspace to process that incoming data.
 
 ---
 
@@ -93,11 +93,11 @@ Select Readers &gt; Add Reader from the menubar. When prompted set the parameter
 
 </table>
 
-It doesn't matter what text file we use as the source right now; setting the source dataset in this step is only to satisfy the Text Reader requirements. The source dataset will be replaced by the content of the incoming message.
+It doesn't matter what text file we use as the source right now; setting the source dataset in this step is only to satisfy the Text Reader requirements. At run time, the source dataset will be replaced by the content of the incoming message.
 
 
 <br>**2) Add JSONFlattener**
-<br>Now add a JSONFlattener transformer to the workspace, after the Text File Reader.
+<br>Now add a JSONFlattener transformer to the workspace, after the Text File Reader. The incoming message is formatted as JSON, and this transformer will expose attributes on the canvas - making them available to work with.
 
 Open the parameters dialog and select *text&#95;line&#95;data* as the source of the JSON content.
 
@@ -118,7 +118,7 @@ Add Logger transformers after the JSONFlattener.
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Instead of a Text Reader &gt; JSONFlattener we could have used the JSON Reader. Why didn't we? The JSON Reader requires a source file with valid schema. At this stage in the exercise, we do not have this structure yet.
+Instead of using Text Reader &gt; JSONFlattener we could have used the JSON Reader. Why didn't we? The JSON Reader requires a source file with valid schema. At this stage in the exercise, we do not have a file with this structure yet.
 </td>
 </tr>
 </table>
