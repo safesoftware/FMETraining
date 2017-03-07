@@ -86,7 +86,7 @@ This will give us a workspace to run in response to new files; albeit one that d
 <br>**3) Create Subscription**
 <br>Return to the FME Server Web UI and navigate to the Notifications page. Click on the Subscriptions tab and click New to create a new Subscription.
 
-Call the subscription "Process Building Updates".  Subscribe to the topic ShapeIncomingFile:
+Call the subscription "Process Building Updates". Subscribe to the topic ShapeIncomingFile:
 
 ![](./Images/Img4.407.Ex2.CreateSubscription1.png)
 
@@ -124,9 +124,9 @@ This proves that the workspace has run.
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a new Subscription</li>
-<li>Use the FME Workspace subscription to run a workspace in response to a topic</li>
-<li>Check the Job History to prove a workspace was triggered correctly</li></ul>
+<ul><li>Create a new FME Workspace Subscription</li>
+<li>Configure the Subscription to run an workspace in response to a Topic triggering</li>
+<li>Test the Notification system by verifying its success on the Completed Jobs page</li></ul>
 </span>
 </td>
 </tr>
