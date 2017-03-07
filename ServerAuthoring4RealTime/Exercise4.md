@@ -36,14 +36,16 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">RealTime-Ex4-Complete.fmw/td>
+<td style="border: 1px solid darkorange">RealTime-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-As a technical analyst in the GIS department you were involved in a recent project to set up a Directory Watch solution for users to automatically update the corporate database. Having learned that not all users are able to access the internal network where FME Server is hosted, you think that it should be possible to also set up a system that uses email-based automation to handle the same updates.
+As a technical analyst in the GIS department you were involved in a recent project to set up a Directory Watch solution for users to automatically update the corporate database. 
+
+Having learned that not all users are able to access the internal network where FME Server is hosted, you think that it should be possible to also set up a system that uses email-based automation to handle the same updates.
 
 ---
 
@@ -61,7 +63,7 @@ As a technical analyst in the GIS department you were involved in a recent proje
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 This exercise continues where Exercise 3 left off. You must have completed Exercise 3 to carry out this exercise.
-<br><br> Access to an SMTP Email Server is required for this exercise for sending email. Gmail, Outlook, and Yahoo! are examples acceptable web-based solutions if you do not have access to an internal email server.
+<br>Access to an SMTP Email Server is required for sending email in this exercise. Gmail, Outlook, and Yahoo! are examples acceptable web-based solutions if you do not have access to an internal email server.
 </td>
 </tr>
 </table>
@@ -69,15 +71,15 @@ This exercise continues where Exercise 3 left off. You must have completed Exerc
 ---
 
 <br>**1) Create Topic**
-<br>The first step is to create a topic that will be triggered by the email. Log in to the FME Server Web UI and navigate to the Notifications page.
+<br>The first step is to create a Topic that will be triggered by the email. Log in to the FME Server web user interface and navigate to the Notifications page.
 
-Click the Publications tab and then click the New button.
+Click the Publications tab and then select New.
 
-Enter "Email Receiver" as publication name. Then click in the text box under Topics to Publish To. Type in ShapeIncomingEmail and click on it to add. This will create a new topic and assign it to this publication. 
+Enter "Email Receiver" as the Name. Then click in the text box under Topics to Publish To. Type in *ShapeIncomingEmail* and click on it to add. This will create a new Topic and assign it to this Publication. 
 
 ![](./Images/Img4.417.Ex4.CreateIncomingTopic.png)
 
-The new publication can be created to use either the Email (SMTP) protocol or the Email (IMAP) protocol. 
+The new Publication can be created to use either the Email (SMTP) protocol or the Email (IMAP) protocol. 
 
 SMTP is easier to set up but FME Server must reside on a server with a proper DNS record (all FME Cloud and Training machines will have this). IMAP is necessary when FME Server resides on an internal network.
 
@@ -105,20 +107,42 @@ Now all emails sent to that address will trigger the ShapeIncomingEmail topic.
 
 To use the IMAP protocol select Email (IMAP) as the Publication Protocol. This will open a number of other parameters. Enter them according to your email account.
 
-In case it is of use, the server information for Gmail is as follows:
+In case it is of use, the server information for Gmail, Outlook, and Yahoo! are as follows:
 
-- IMAP Server Host: imap.gmail.com
-- IMAP Server Port: 993
-- Connection Security: SSL
-- Verify SSL Certificate: Yes
+<table style="border: 0px">
 
-You will also need to check the settings in your Gmail account to make sure IMAP is turned on (by default it is not). Regardless of the email provider, you should set these parameters as follows:
+<tr>
+<td style="font-weight: bold">IMAP Server Host</td>
+<td style="">imap.gmail.com</td>
+<td style="">imap-mail.outlook.com</td>
+<td style="">imap.mail.yahoo.com</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Server Port</td>
+<td style="">993</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Connection Security</td>
+<td style="">SSL</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Verify SSL Certificates</td>
+<td style="">Yes</td>
+</tr>
+
+</table>
+
+You will also need to check the settings in your email account to make sure IMAP is turned on. Regardless of the email provider, you should set these parameters as follows:
 
 - Poll Interval: 1 minute
 - Emails to Fetch: New Emails Only.
 
 Select a Resource Folder for attachments to be saved to and click OK to close the dialog and create the new Publication.
 
+---
 
 <br>**2) Test Publication**
 <br>Now let's test the publication. In the Notifications page on FME Server, click the tab marked Topics. Set up Topic Monitoring on the topic *ShapeIncomingEmail*:
