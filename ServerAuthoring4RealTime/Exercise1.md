@@ -131,8 +131,8 @@ By completing this exercise you have learned how to:
 <br>
 <ul><li>Create a new Publication</li>
 <li>Create a new Topic as part of the Create Publication process</li>
-<li>Use Directory Watch to trigger topics/notifications</li>
-<li>Test a publication/topic using Topic Monitoring</li></ul>
+<li>Use Directory Watch to trigger Topics and Notifications</li>
+<li>Test a Publication and Topic using Topic Monitoring</li></ul>
 </span>
 </td>
 </tr>
