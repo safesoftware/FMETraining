@@ -62,8 +62,7 @@ Having learned that not all users are able to access the internal network where 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where Exercise 3 left off. You must have completed Exercise 3 to carry out this exercise.
-<br>Access to an SMTP Email Server is required for sending email in this exercise. Gmail, Outlook, and Yahoo! are examples acceptable web-based solutions if you do not have access to an internal email server.
+Access to an SMTP Email Server is required for sending email in this exercise. Gmail, Outlook, and Yahoo! are examples acceptable web-based solutions if you do not have access to an internal email server.
 </td>
 </tr>
 </table>
@@ -121,15 +120,21 @@ In case it is of use, the server information for Gmail, Outlook, and Yahoo! are 
 <tr>
 <td style="font-weight: bold">Server Port</td>
 <td style="">993</td>
+<td style="">993</td>
+<td style="">993</td>
 </tr>
 
 <tr>
 <td style="font-weight: bold">Connection Security</td>
 <td style="">SSL</td>
+<td style="">SSL</td>
+<td style="">SSL</td>
 </tr>
 
 <tr>
 <td style="font-weight: bold">Verify SSL Certificates</td>
+<td style="">Yes</td>
+<td style="">Yes</td>
 <td style="">Yes</td>
 </tr>
 
@@ -142,30 +147,29 @@ You will also need to check the settings in your email account to make sure IMAP
 
 Select a Resource Folder for attachments to be saved to and click OK to close the dialog and create the new Publication.
 
----
 
 <br>**2) Test Publication**
-<br>Now let's test the publication. In the Notifications page on FME Server, click the tab marked Topics. Set up Topic Monitoring on the topic *ShapeIncomingEmail*:
+<br>Now let's test the publication. In the Notifications page on FME Server, click the tab marked Topics. Set up Topic Monitoring to watch the topic *ShapeIncomingEmail*:
 
 ![](./Images/Img4.419.Ex4.MonitorTopic.png)
 
-Now send an email *with an attachment* to the address selected for the new publication. When the email is received by FME Server (SMTP) or FME Server fetches it (IMAP) the topic will be triggered with a message. (Remember, an IMAP publication only checks for an email every 60 seconds, so the result might not be immediate!)
+Now send an email *with an attachment* to the address selected for the new publication. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the topic will be triggered with a message. (Remember that an IMAP publication only checks for an email every 60 seconds, so the result might not be immediate!)
 
 ![](./Images/Img4.420.Ex4.MonitorTopicResult.png)
 
-Recall that in the previous exercise you used the Logger Protocol and Logger transformers to record the JSON formatted notification message. The same information is displayed in the Topic Monitoring window - copy these text and place it into a new file for use later.
+Recall that in the previous exercise you used the Logger Protocol and Logger transformers to record the JSON formatted notification message. The same information is displayed in the Topic Monitoring window - copy this text and place it into a new file for use later in this exercise.
 
 ![](./Images/Img4.421.Ex4.JSONNotificationMessage.png)
 
 
 <br>**3) Update Workspace**
-<br>You already have a created a workspace in FME Workbench to handle incoming notifications from Directory Watch. Let's modify the workflow so that it can work with both Publications Protocols. Open the existing workspace C:\FMEData2017\Workspaces\ServerAuthoring\RealTime-Ex4-Begin.fmw in FME Workbench.
+<br>You already have a created a workspace in FME Workbench to handle incoming notifications from Directory Watch. Let's modify the workflow so that it can work with both Publication protocols. Open the existing workspace C:\FMEData2017\Workspaces\ServerAuthoring\RealTime-Ex4-Begin.fmw in FME Workbench.
 
-Open the JSONFlattener parameters, and add imap_publisher_attachment{0} and email_publisher_attachment{0} under Attributes to Expose:
+Open the JSONFlattener parameters, and add *imap_publisher_attachment{0}* and *email_publisher_attachment{0}* under Attributes to Expose:
 
 ![](./Images/Img4.422.Ex4.JSONFlattenerParameters.png)
 
----
+You can see these are two of the available attributes that are returned by the Topic Message.
 
 <!--Person X Says Section-->
 
@@ -180,17 +184,17 @@ Open the JSONFlattener parameters, and add imap_publisher_attachment{0} and emai
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Adding both imap_publisher_attachment and email_publisher_attachment modifies this workspace so that it will work with both Email (SMTP) and Email (IMAP) Publications!
+Adding both imap_publisher_attachment and email_publisher_attachment modifies this workspace so that it can work with both Email (SMTP) and Email (IMAP) Publications!
 </span>
 </td>
 </tr>
 </table>
 
----
+The next step is to insert a transformer that will determine where the data is coming from (Directory Watch or an Email Publication) - this is a task where conditional statements are invaluable.
 
-The next step is to insert a transformer that will determine where the data is coming from (Directory Watch or an Email Publication) - this is a task where conditional statements are invaluable! 
+Add an AttributeManager transformer in between the JSONFlattener and FeatureReader. Open the parameters and add *_dataset* as a new Output Attribute. 
 
-Add an AttributeManager transformer in between the JSONFlattener and FeatureReader. Open the parameters and add "_dataset" as a new Output Attribute. Set the Attribute Value as a Conditional Value:
+Set the Attribute Value as a Conditional Value:
 
 ![](./Images/Img4.423.Ex4.AttributeManagerParameters.png)
 
@@ -208,38 +212,23 @@ The workflow should now look like this:
 
 
 <br>**4) Publish Workspace**
-<br>Publish this workspace to FME Server
+<br>Publish this workspace to FME Server, registering it under the Notification service. When the Notification service is selected, it is highlighted in red indicating its parameters need to be configured. 
 
-Open the JSONFlattener parameters, and add imap_publisher_attachment{0} and email_publisher_attachment{0} under Attributes to Expose:
+Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topics" parameter. Set the "Parameter to Get Topic Message" as *Source Text File(s)*:
 
-![](./Images/Img4.427.png)
-
-
+![](./Images/Img4.427.Ex4.PublishWorkspaceNotificationService.png)
 
 
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms Analyst says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-In a training course more than one student might be using the IMAP account fmeimageprocessing@gmail.com, so don't be surprised by multiple messages arriving!
-</span>
-</td>
-</tr>
-</table>
+<br>**5) Update Directory Watch Subscription (Optional)**
+<br>If you have completed Exercise 3, using the FME Server web user interface you can set the "Process Building Updates" Subscription to point at this new workspace. 
 
 
- 
+<br>**6) Test Workspace**
+<br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
+
+You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources > Output in the FME Server web user interface.
+
+
 ---
 
 <!--Exercise Congratulations Section--> 
@@ -257,10 +246,10 @@ In a training course more than one student might be using the IMAP account fmeim
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a new Publication</li>
-<li>Create a new Topic as part of the Create Publication process</li>
-<li>Use incoming email to trigger topics/notifications</li>
-<li>Test a publication/topic using Topic Monitoring</li></ul>
+<ul><li>Create an Email Publication</li>
+<li>Create a new FME Workspace Subscription as part of the Publishing process</li>
+<li>Use incoming email to trigger Topics/Notifications</li>
+<li>Configure a workspace to handle triggers by multiple Publication types</li></ul>
 </span>
 </td>
 </tr>
