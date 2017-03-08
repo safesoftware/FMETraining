@@ -142,7 +142,7 @@ Click OK to update the Subscription.
 
 
 <br>**5) Test Topic**
-<br>Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shape files (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 2).
+<br>Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shapefiles (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 2).
 
 Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web user interface. 
 
@@ -180,8 +180,6 @@ You may recognize these attributes from the Topic Monitoring exercise - indeed y
 </table>
 
 ---
-
-
 
 
 <br>**7) Edit JSONFlattener Transformer**
