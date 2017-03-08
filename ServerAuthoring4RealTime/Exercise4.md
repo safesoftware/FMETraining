@@ -26,7 +26,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Email publications and subscriptions</td>
+<td style="border: 1px solid darkorange">Email publications and Notification service</td>
 </tr>
 
 <tr>
