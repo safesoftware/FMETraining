@@ -43,9 +43,9 @@
 
 ---
 
-As a technical analyst in the GIS department you were involved in a recent project to set up a Directory Watch solution for users to automatically update the corporate database. 
+After configuring FME Server to process building footprints updates with both the Directory Watch and Email Publications, your supervisor is wondering if they can receive an email whenever the corporate database is updated.
 
-Having learned that not all users are able to access the internal network where FME Server is hosted, you think that it should be possible to also set up a system that uses email-based automation to handle the same updates.
+Using an external email server, you think that it is possible configure another Notification in FME Server to satisfy this requirement.
 
 ---
 
@@ -70,83 +70,35 @@ This exercise continues where Exercise 4 left off. You must have completed Exerc
 
 ---
 
-<br>**1) Create Topic**
-<br>The first step is to create a Topic that will be triggered by the email. Log in to the FME Server web user interface and navigate to the Notifications page.
+<br>**1) Add Subscription**
+<br>Open the FME Server web user interface and navigate to the Notifications page. Click the Subscriptions tab and then click New to create a new Subscription. This will be an email service through which a response will be sent.
 
-Click the Publications tab and then select New.
+Give the subscription a name like *Send Building Update Email* and create a new topic for it such as *BuildingUpdateEmail* (it's important to use a different topic than from the previous exercises).
 
-Enter "Email Receiver" as the Name. Then click in the text box under Topics to Publish To. Type in *ShapeIncomingEmail* and click on it to add. This will create a new Topic and assign it to this Publication. 
+Set the protocol to Email and set up your SMTP email server parameters.
 
-![](./Images/Img4.417.Ex4.CreateIncomingTopic.png)
+In case it is of use, the server information for Gmail is as follows:
 
-The new Publication can be created to use either the Email (SMTP) protocol or the Email (IMAP) protocol. 
+- SMTP Server: smtp.gmail.com
+- SMTP Server Port: 465
+- Connection Security: SSL/TLS
 
-SMTP is easier to set up but FME Server must reside on a server with a proper DNS record (all FME Cloud and Training machines will have this). IMAP is necessary when FME Server resides on an internal network.
+Regardless of the email provider, you should set these parameters as follows:
 
----
+- Email To: An email address you have access to check
+- Email From: Your email account (for example fmeshapeprocessing@gmail.com)
+- Email Subject: "Building Footprints Database Updated"
+- Email
+- Email Template: 
+The Building Footprints database has been updated!
+<fmeblock type="optional"\>
+{NumFeaturesOutput} features were updated at {timeFinished}.
+Job {id} Log: {logUrl}
+</fmeblock\>
 
-***Email Protocol***
-
-To use the SMTP protocol select Email (SMTP) as the Publication Protocol. This will open the Email User Name parameter. Enter a name for receiving email, for example *fmeshapeprocessing*
-
-![](./Images/Img4.418.Ex4.CreateSMTPPublication.png)
-
-Clicking OK will create an email address *fmeshapeprocessing@&lt;hostname&gt;* - for example: 
-
-<table>
-<tr><th>Host</th><th>Example Email Address</th></tr>
-<tr><td>FME Cloud</td><td>fmeshapeprocessing@myfmeserver.fmecloud.com</td></tr>
-<tr><td>Amazon AWS</td><td>fmeshapeprocessing@ec1-23-456-789-012.compute-1.amazonaws.com</td></tr>
-</table>
-
-Now all emails sent to that address will trigger the ShapeIncomingEmail topic. 
-
----
-
-***IMAP Protocol***
-
-To use the IMAP protocol select Email (IMAP) as the Publication Protocol. This will open a number of other parameters. Enter them according to your email account.
-
-In case it is of use, the server information for Gmail, Outlook, and Yahoo! are as follows:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">IMAP Server Host</td>
-<td style="">imap.gmail.com</td>
-<td style="">imap-mail.outlook.com</td>
-<td style="">imap.mail.yahoo.com</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Server Port</td>
-<td style="">993</td>
-<td style="">993</td>
-<td style="">993</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Connection Security</td>
-<td style="">SSL</td>
-<td style="">SSL</td>
-<td style="">SSL</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Verify SSL Certificates</td>
-<td style="">Yes</td>
-<td style="">Yes</td>
-<td style="">Yes</td>
-</tr>
-
-</table>
-
-You will also need to check the settings in your email account to make sure IMAP is turned on. Regardless of the email provider, you should set these parameters as follows:
-
-- Poll Interval: 1 minute
-- Emails to Fetch: New Emails Only.
-
-Select a Resource Folder for attachments to be saved to and click OK to close the dialog and create the new Publication.
+  
+  
+  
 
 
 <br>**2) Test Publication**
@@ -230,6 +182,73 @@ Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topic
 You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources > Output in the FME Server web user interface.
 
 
+
+<br>**2) Edit Workspace**
+<br>Open the workspace from exercise 4 (or the begin workspace listed above). Add two new transformers - the FMEServerEmailGenerator (a custom transformer) and an FMEServerNotifier - as a separate stream of data:
+
+![](./Images/Img4.50.Ex4.WorkspaceWithEmailGeneration.png)
+  
+
+<br>**3) Edit JSONFlattener**
+<br>To send an email back to the same person who sent the incoming email, we need to expose an attribute with that account name. So, open the properties dialog for the JSONFlattener and in the Attributes to Expose parameter, add *email&#95;publisher&#95;from* and *imap&#95;publisher&#95;from* 
+
+![](./Images/Img4.51.Ex4.ExposeSourceAccountAttr.png)
+
+
+<br>**4) Edit Clipper**
+<br>We need the exposed attributes in the two transformers we placed earlier, but currently it's unlikely such attributes make it past the Clipper transformer. So, open the Clipper parameters dialog and check the box labelled Merge Attributes:
+
+![](./Images/Img4.52.Ex4.ClipperMergeAttributes.png)
+
+
+<br>**5) Edit FMEServerEmailGenerator**
+<br>Now open the parameters dialog for the FMEServerEmailGenerator. We could just set the To parameter to one of the attributes we've exposed, depending on what incoming protocol we are using. However, a better solution is to set up the workspace to work regardless of protocol.
+
+So, click the drop-down arrow to the right of the To parameter and choose Conditional Value. Double-click the first row (where it says "If") and a dialog will open in which to enter a test condition. Set up a test where *email&#95;publisher&#95;from* "Has Value". Set the output value to the *email&#95;publisher&#95;from* attribute: 
+
+![](./Images/Img4.53.Ex4.ConditionalToField1.png)
+
+In other words, if *email&#95;publisher&#95;from* has a value then use it for the To field. Click OK to close that dialog.
+
+Now, back in the previous dialog, double-click in the Else &gt; Output Value field and select Attribute &gt; *imap&#95;publisher&#95;from* from the attribute list:
+
+![](./Images/Img4.54.Ex4.ConditionalToField2.png)
+
+In other words, if *email&#95;publisher&#95;from* has a value then use it for the To field, else use *imap&#95;publisher&#95;from*
+
+Close this dialog and in the other fields of the FMEServerEmailGenerator, enter a Subject and Message (such as "Your Data is Ready"):
+
+![](./Images/Img4.55.Ex4.FMEServerEmailGeneratorParameters.png)
+
+Click OK to close the dialog and we have an email ready to send. 
+
+
+<br>**6) Edit FMEServerNotifier**
+<br>Now edit the parameters for the FMEServerNotifier transformer. In the first dialog enter the connection parameters. In the second dialog pick the topic created earlier (ImagesOutgoingResponse) and for the content select the attribute text_line_data (this is what was created by the FMEServerEmailGenerator):
+
+![](./Images/Img4.56.Ex4.FMEServerNotifierParameters.png)
+  
+
+<br>**7) Publish to FME Server**
+<br>Publish the workspace to FME Server. You may (or may not) need to also upload the source raster and KML datasets (depending on whether your FME Server can access the files on your authoring system). Simply register the workspace with the Job Submitter service. 
+
+If the workspace you publish has a different name to that in exercise 3, be sure to navigate to the workspace subscription (Process Images Request) and change it to point to the correct workspace.
+
+
+<br>**8) Test Workspace**
+<br>Test the workspace by sending an email to the Publication email address. Be sure to make the subject line one of the neighborhoods in Vancouver:
+
+- Downtown
+- Fairview
+- Kitsilano
+- Mount Pleasant
+- Strathcona
+- West End
+
+You should receive an email in return, alerting you to when your data is ready to collect. If there is no return email, remember to check to ensure the workspace is triggered and run (in the Topic Monitoring and/or Jobs pages) and then look for the output dataset in Resources &gt; Data &gt; Output 
+
+
+
 ---
 
 <!--Exercise Congratulations Section--> 
@@ -251,6 +270,31 @@ By completing this exercise you have learned how to:
 <li>Create a new FME Workspace Subscription as part of the Publishing process</li>
 <li>Use incoming email to trigger Topics/Notifications</li>
 <li>Configure a workspace to handle triggers by multiple Publication types</li></ul>
+</span>
+</td>
+</tr>
+</table>   
+
+---
+
+<!--Exercise Congratulations Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-thumbs-o-up fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">CONGRATULATIONS</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+By completing this exercise you have learned how to:
+<br>
+<ul><li>Set up an outgoing email subscription</li>
+<li>Set up email content within an FME workspace</li>
+<li>Trigger an email subscription through the FMEServerNotifier transformer</li></ul>
 </span>
 </td>
 </tr>
