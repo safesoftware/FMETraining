@@ -13,15 +13,15 @@ This training provides a framework for authoring workspaces for FME Server. We h
 The full course is made up of five main sections. These sections are:
 
 - Introduction to FME Server
-- Running Workspaces on FME Server
-- Self-Serve with FME Server
+- Self-Serve with FME Server: Part1
+- Self-Serve with FME Server: Part2
 - Real-Time with FME Server
-- Automation with FME Server
+- FME Server Projects
 
 
 ## Current Status ##
 
-The current status of this manual is: **INCOMPLETE**: this manual should **NOT** be used for training.
+The current status of this manual is: **INCOMPLETE**. This manual should **NOT** be used for training.
 
 This manual is for **FME2017**
 
