@@ -4,7 +4,7 @@
 
 This is the manual for the training course Workspace Authoring for FME Server.
 
-![](./ServerAuthoring0Introduction/Images/0.0.ServerHomeScreen.png)
+![](./ServerAuthoring0Introduction/Images/0.000.ServerHomeScreen.png)
 
 This training provides a framework for authoring workspaces for FME Server. We hope that you will learn all the tools upon which to base your work, and go home with many new FME ideas!
 
