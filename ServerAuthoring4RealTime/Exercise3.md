@@ -247,7 +247,7 @@ Click OK to close the dialog and connect the new feature type to the FeatureRead
 <br>**10) Republish Workspace**
 <br>Publish the workspace back to FME Server. If you have the same FME Workbench session open from the start of this exercise, you can use the Republish option on the toolbar or under the File menu.
 
-![](./Images/Img4.427.Ex3.RepublishWorkspace.png)
+![](./Images/Img4.428.Ex3.RepublishWorkspace.png)
 
 
 <br>**11) Adjust Subscription**
