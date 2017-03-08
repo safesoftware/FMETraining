@@ -47,8 +47,6 @@ As a technical analyst in the GIS department you have realized the overheard ass
 
 So far you have set up a system for added file notifications to be registered by FME Server. Now you must create a workspace to process these and publish it to FME Server. The workspace must then be triggered by a notification topic.
 
-
-
 ---
 
 <!--Person X Says Section-->
@@ -84,7 +82,7 @@ This will give us a workspace to run in response to new files; albeit one that d
 
 
 <br>**3) Create Subscription**
-<br>Return to the FME Server Web UI and navigate to the Notifications page. Click on the Subscriptions tab and click New to create a new Subscription.
+<br>Return to the FME Server web user interface and navigate to the Notifications page. Click on the Subscriptions tab and click New to create a new Subscription.
 
 Call the subscription "Process Building Updates". Subscribe to the topic ShapeIncomingFile:
 
