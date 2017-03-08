@@ -1,5 +1,5 @@
 # What's New #
-This file documents major changes made to training materials in 2016
+This file documents major changes made to training materials in 2017
 
 ---
 
@@ -13,7 +13,7 @@ This file documents major changes made to training materials in 2016
 
 
 ### Introduction to FME Server ###
-- Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
+- Renumbered image filenames to 3 digits (e.g. Img2.001.xxxx.png)
 - Restructured to include content previous in Chapter 2 
 - Workbench and Server renamed to Workspaces and Server
 - "Workspace Management" section incorporated into "Workspaces And Server"
@@ -24,19 +24,22 @@ This file documents major changes made to training materials in 2016
 - Added a section on Sharing items
 
 
-### Self Serve 1 ###
+### Self-Serve with FME Server: Part1 ###
 - Self-serve content now split into two chapters
 
 
-### Self Serve 2 ###
+### Self-Serve with FME Server: Part2 ###
 - Self-serve content now split into two chapters
 
 
-### Real Time ###
+### Real-Time with FME Server ###
 - Reincorporated content from Message Streams chapter
+- Redesigned exercises to focus on Directory Watch
+- Email Publication exercise redesigned as an "Advanced Exercise"
+- Email Subscription exercise simplified
 
 
-### Server Projects ###
+### FME Server Projects ###
 - A new chapter on FME Server Projects
 
 
