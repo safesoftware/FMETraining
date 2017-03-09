@@ -170,7 +170,9 @@ Adding both imap_publisher_attachment and email_publisher_attachment modifies th
 </tr>
 </table>
 
-The next step is to insert a transformer that will determine where the data is coming from (Directory Watch or an Email Publication) - this is a task where conditional statements are invaluable.
+
+<br>**4) Add AttributeManager**
+<br>The next step is to insert a transformer that will determine where the data is coming from (Directory Watch or an Email Publication) - this is a task where conditional statements are invaluable.
 
 Add an AttributeManager transformer in between the JSONFlattener and FeatureReader. Open the parameters and add *_dataset* as a new Output Attribute. 
 
@@ -191,7 +193,15 @@ The workflow should now look like this:
 ![](./Images/Img4.426.Ex4.FinalWorkspace.png)
 
 
-<br>**4) Publish Workspace**
+<br>**5) Edit User Parameter** 
+<br>As with Exercise 3, specify the output datatset to be written into the FME Server Resources Folder.
+
+Open the DestDataset_SPATIALITE User Parameter and enter *$(FME_SHAREDRESOURCE_DATA)\/Output\/building_footprints.sl3*:
+
+![](./Images/Img4.431.Ex4.DestinationDatasetUserParameter.png)
+
+
+<br>**6) Publish Workspace**
 <br>Publish this workspace to FME Server, registering it under the Notification service. When the Notification service is selected, it is highlighted in red indicating its parameters need to be configured. 
 
 Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topics" parameter. Set the "Parameter to Get Topic Message" as *Source Text File(s)*:
@@ -199,11 +209,11 @@ Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topic
 ![](./Images/Img4.427.Ex4.PublishWorkspaceNotificationService.png)
 
 
-<br>**5) Update Directory Watch Subscription (Optional)**
+<br>**6) Update Directory Watch Subscription (Optional)**
 <br>If you have completed Exercise 3, using the FME Server web user interface you can set the "Process Building Updates" Subscription to point at this new workspace. 
 
 
-<br>**6) Test Workspace**
+<br>**7) Test Workspace**
 <br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
 
 You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources > Output in the FME Server web user interface.
