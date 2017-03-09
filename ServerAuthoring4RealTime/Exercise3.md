@@ -250,7 +250,7 @@ Click OK to close the dialog and connect the new feature type to the FeatureRead
 ![](./Images/Img4.428.Ex3.RepublishWorkspace.png)
 
 
-<br>**11) Adjust Subscription**
+<br>**11) Edit Subscription**
 <br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The settings should now include one for the output database. Specify to write the database into the Resources > Output folder:
 
 ![](./Images/Img4.415.Ex3.OutputDatabaseSelection.png)
