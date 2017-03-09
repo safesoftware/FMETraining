@@ -85,11 +85,35 @@ In case it is of use, the server information for Gmail is as follows:
 
 Regardless of the email provider, you should set these parameters as follows:
 
-- Email To: An email address you have access to check
-- Email From: Your email account (for example fmeshapeprocessing@gmail.com)
+- Email From: (Your account name - for example fmeshapeprocessing@gmail.com)
 - Email Subject: "Building Footprints Database Updated"
-- Email
-- Email Template: 
+
+Most of the general settings (Email To, Email Template, etc.) will be set by the content we are going to provide.  
+
+
+<br>**2) Edit Workspace**
+<br>Open the workspace from Exercise 4 (or the Start Workspace listed above). Add two new transformers - the FMEServerEmailGenerator (a custom transformer) and an FMEServerNotifier - as a separate stream of data:
+
+![](./Images/Img4.429.Ex5.WorkspaceWithNotifier.png)
+
+
+<br>**3) Edit FMEServerEmailGenerator**
+<br>Now open the parameters dialog for the FMEServerEmailGenerator. This transformer can be used to override the configurations in the Email Subscription created in Step 1.
+
+Each field can also accept attributes allowing the email to be dynamically configured. For our purposes in the training course, set the following parameters manually:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">To</td>
+<td style="font-weight: bold">Subject</td>
+<td style="font-weight: bold">Content</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">(An email you have access to check)</td>
+<td style="font-weight: bold">Building Footprints Database Updated</td>
+<td style="font-weight: bold">
 <pre>
 The Building Footprints database has been updated!
 <fmeblock type="optional"\>
@@ -97,23 +121,25 @@ The Building Footprints database has been updated!
 Job {id} Log: {logUrl}
 </fmeblock\>
 </pre>
+</td>
+</tr>
+
+</table>
+
+The {tags} inside the Content text field will be automatically set when the workspace is run.
 
 
-<br>**2) Edit Workspace**
-<br>Open the workspace from Exercise 4 (or the begin workspace listed above). Add an FMEServerNotifier transformer, connecting it as a separate stream of data after the FeatureReader.
+<br>**4) Edit FMEServerNotifier**
+<br>Now edit the parameters for the FMEServerNotifier transformer. Set FME Server Connection parameters, pick the Topic created earlier (BuildingUpdateEmail) and for the Content select the attribute *text_line_data* (this attribute is created by the FMEServerEmailGenerator):
 
-![](./Images/Img4.428.Ex5.xxx.png)
-
-Configure the FMEServerNotifier to post to the Topic *BuildingUpdateEmail*:
-
-![](./Images/Img4.429.Ex5.xxx.png)
+![](./Images/Img4.430.Ex5.FMEServerNotifierParameters.png)
 
 
-<br>**3) Publish Workspace**
-<br>If the workspace you publish has a different name to that in Exercise 4, be sure to navigate to the FME Workspace Subscription that was automatically created (XXXXXXXXX) and change it to point to the correct workspace.
+<br>**5) Publish Workspace**
+<br>If the workspace you publish has a different name to that in Exercise 4, be sure to navigate to the FME Workspace Subscription that was automatically created when registering with the Notification Service in the previous exercise and change it to point to the correct workspace (the Subscription name will be similar to admin.Training.Ex4Workspace).
 
 
-<br>**4) Test Workspace**
+<br>**6) Test Workspace**
 <br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
 
 If the workflow was successful, you should receive an email!
