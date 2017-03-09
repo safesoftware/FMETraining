@@ -92,7 +92,9 @@ Most of the general settings (Email To, Email Template, etc.) will be set by the
 
 
 <br>**2) Edit Workspace**
-<br>Open the workspace from Exercise 4 (or the Start Workspace listed above). Add two new transformers - the FMEServerEmailGenerator (a custom transformer) and an FMEServerNotifier - as a separate stream of data:
+<br>Open the workspace from Exercise 4 (or the Start Workspace listed above). 
+
+Add two new transformers - the FMEServerEmailGenerator (a custom transformer) and an FMEServerNotifier - as a separate stream of data, connected to the <Initiator\> Output Port of the FeatureReader:
 
 ![](./Images/Img4.429.Ex5.WorkspaceWithNotifier.png)
 
@@ -106,31 +108,27 @@ Each field can also accept attributes allowing the email to be dynamically confi
 
 <tr>
 <td style="font-weight: bold">To</td>
-<td style="font-weight: bold">Subject</td>
-<td style="font-weight: bold">Content</td>
+<td style="">(An email you have access to check)</td>
 </tr>
 
 <tr>
-<td style="font-weight: bold">(An email you have access to check)</td>
-<td style="font-weight: bold">Building Footprints Database Updated</td>
-<td style="font-weight: bold">
-<pre>
-The Building Footprints database has been updated!
-<fmeblock type="optional"\>
-{NumFeaturesOutput} features were updated at {timeFinished}.
-Job {id} Log: {logUrl}
-</fmeblock\>
-</pre>
-</td>
+<td style="font-weight: bold">Subject</td>
+<td style="">Building Footprints Database Updated</td>
+
+</tr>
+
+<tr>
+<td style="font-weight: bold">Content</td>
+<td style="">The Building Footprints database has been updated!</td>
 </tr>
 
 </table>
 
-The {tags} inside the Content text field will be automatically set when the workspace is run.
-
 
 <br>**4) Edit FMEServerNotifier**
-<br>Now edit the parameters for the FMEServerNotifier transformer. Set FME Server Connection parameters, pick the Topic created earlier (BuildingUpdateEmail) and for the Content select the attribute *text_line_data* (this attribute is created by the FMEServerEmailGenerator):
+<br>Now edit the parameters for the FMEServerNotifier transformer. 
+
+Set FME Server Connection parameters, pick the Topic created earlier (BuildingUpdateEmail), and for the Content select the attribute *text_line_data* (this attribute is created by the FMEServerEmailGenerator):
 
 ![](./Images/Img4.430.Ex5.FMEServerNotifierParameters.png)
 
