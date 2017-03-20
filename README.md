@@ -31,7 +31,7 @@ The status of each chapter is:
 - Chapter 2: Complete content. Incomplete exercises
 - Chapter 3: Content and exercises complete
 - Chapter 4: Complete content. Incomplete exercises
-- Chapter 5: Complete content. Incomplete exercises
+- Chapter 5: Content and exercises complete
 - Chapter 6: Complete content. No exercises
 - Slides:    Incomplete
 - FMEData:   Incomplete
