@@ -130,6 +130,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Renumbered image filenames to 3 digits (eg Img4.001.xxxx.png)
 - Expanded zip files to include reading (in case students haven't taken basic training)
 - Added a section on web-based datasets and how to read/write them
+- Exercise 5: Provided updated version of Excel spreadsheet as a new resource
 
 ### Advanced Attribute Handling ###
 - Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
