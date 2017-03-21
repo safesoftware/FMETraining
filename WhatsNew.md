@@ -120,6 +120,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Mentioned new Attributes to Read parameter as a means to improve performance
 - Removed some of the more extreme suggestions for performance improvements (license type, etc)
 - Expanded content and examples on parallel processing limits. Added link to recent Parallel Processing blog
+- Exercise 3: Removed advanced section using Point Cloud method of CSV processing
 
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
