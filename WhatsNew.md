@@ -88,7 +88,6 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 4 is reworked by having one-way streets flagged as an attribute in the roads data
 - Exercise 4 also fixed a logic error in the ShortestPathFinder where distance wasn't factored into the result
 
-
 ### Course Wrap Up ###
 - Updated screenshots for web sites and - of course - created a new challenge!
 
