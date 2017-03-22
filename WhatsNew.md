@@ -102,6 +102,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
 - All screenshots have been updated from FME2016 to FME2017
 - All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+- Created PowerPoint slides for the Desktop Advanced course
+- Updated Q+A questions to be interactive (as in the Basic Desktop course)
 
 ### User Parameters ###
 - Renumbered image filenames to 3 digits (eg Img1.001.xxxx.png)
