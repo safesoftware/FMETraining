@@ -121,6 +121,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Removed some of the more extreme suggestions for performance improvements (license type, etc)
 - Expanded content and examples on parallel processing limits. Added link to recent Parallel Processing blog
 - Exercise 3: Removed advanced section using Point Cloud method of CSV processing
+- Exercise 4: Garbage Schedule workspace updated to use new HTML tools 
 
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
