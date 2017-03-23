@@ -275,3 +275,26 @@ For when a screenshot of a Data Inspector background map is used. Be sure to inc
 
 <br><span style="font-style:italic;font-size:x-small">Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC-BY-3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>.
 
+---
+
+<!--Example of Table-->
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Item 1</td>
+<td style="">Value 1</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Item 2</td>
+<td style="">Value 2</td>
+
+</tr>
+
+<tr>
+<td style="font-weight: bold">Item 3</td>
+<td style="">Value 3</td>
+</tr>
+
+</table>
+
