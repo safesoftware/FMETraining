@@ -18,7 +18,7 @@
 	* [CORS](./ServerAdmin2Connectivity/2.03.CORS.md)
 * [Chapter 3: FME Server Security](./ServerAdmin6Security/6.00.FMEServerSecurity.md)
 	* [Role- and User-Based Access](./ServerAdmin6Security/6.01.RoleAndUserBasedAccess.md)
-	* * [Exercise: Creating A New User](./ServerAdmin6Security/6.02.Exercise_CreatingANewUser.md)
+	* [Exercise: Creating A New User](./ServerAdmin6Security/6.02.Exercise_CreatingANewUser.md)
 	* [Running Services without Authentication](./ServerAdmin6Security/6.02.RunningServicesWithoutAuthentication.md)
 	* [Running FME System Services under Different Accounts](./ServerAdmin6Security/6.03.RunningFMESystemServicesUnderDifferentAccounts.md)
 	* [Configuring Active Directory/LDAP](./ServerAdmin6Security/6.04.ConfiguringActiveDirectoryLDAP.md)
