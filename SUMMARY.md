@@ -14,7 +14,7 @@
 * [Chapter 2: FME Server Connectivity](./ServerAdmin2Connectivity/2.00.FMEServerConnectivity.md)
 	* [Firewalls and Ports](./ServerAdmin2Connectivity/2.01.FirewallsAndPorts.md)
 	* [DNS](./ServerAdmin2Connectivity/2.02.DNS.md)
-	* [CORS](./ServerAdmin2Connectivity/2.02.CORS.md)
+	* [CORS](./ServerAdmin2Connectivity/2.03.CORS.md)
 * [Chapter 3: FME Server Security](./ServerAdmin6Security/6.00.FMEServerSecurity.md)
 	* [Role- and User-Based Access](./ServerAdmin6Security/6.01.RoleAndUserBasedAccess.md)
 	* [Running FME System Services without Authentication](./ServerAdmin6Security/6.02.RunningFMESystemServicesWithoutAuthentication.md)
