@@ -156,7 +156,7 @@ The list of persons currently used in the training is:
 - Miss Vector
 - Police Chief Webb-Mapp
 - Chef Bimm
-- Mr Flibble
+- Mr. Flibble
 - Ms. Analyst
 - First-Officer Transformer
 - Mr. Statistics-Calculator
