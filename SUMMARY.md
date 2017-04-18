@@ -11,7 +11,7 @@
     * [Disaster Recovery](./ServerAdmin1Installation/1.05.DisasterRecovery.md)
     * [Security Updates](./ServerAdmin1Installation/1.06.SecurityUpdates.md)
     * [Licensing](./ServerAdmin1Installation/1.07.Licensing.md)
-    * [Exercise 1: Licensing](./ServerAdmin1Installation/1.08.Exercise_Licensing.md)
+    * [Exercise 1: Licensing FME Server](./ServerAdmin1Installation/Exercise1.md)
 * [Chapter 2: FME Server Connectivity](./ServerAdmin2Connectivity/2.00.FMEServerConnectivity.md)
 	* [Firewalls and Ports](./ServerAdmin2Connectivity/2.01.FirewallsAndPorts.md)
 	* [DNS](./ServerAdmin2Connectivity/2.02.DNS.md)
