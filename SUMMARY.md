@@ -3,7 +3,7 @@
 * [About This Document](./ServerAdmin0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./ServerAdmin0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./ServerAdmin0Introduction/0.02.CourseResources.md)
-* [Chapter 1: Planning an FME Server Installation](./ServerAdmin1Installation/1.00.PlanninganFMEServerInstallation.md)
+* [Chapter 1: Planning an FME Server Installation](./ServerAdmin1Installation/1.00.PlanningAnFMEServerInstallation.md)
     * [Requirements for FME Workspaces](./ServerAdmin1Installation/1.01.RequirementsForFMEWorkspaces.md)
     * [Installation Types](./ServerAdmin1Installation/1.02.InstallationTypes.md)
     * [FME Server Architecture](./ServerAdmin1Installation/1.03.FMEServerArchitecture.md)
