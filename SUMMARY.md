@@ -6,7 +6,7 @@
 * [Advanced Parameter Use](./DesktopAdvanced1Parameters/1.00.AdvancedParameterUse.md)
 	* [FME Parameters](./DesktopAdvanced1Parameters/1.01.FMEParameters.md)
 	* [User Parameters](./DesktopAdvanced1Parameters/1.02.UserParameters.md)
-	* [Exercise: Metadata Writer Parameterizing](./DesktopAdvanced1Parameters/1.Exercise1.md)
+	* [Exercise: Parameterize a Metadata Writer](./DesktopAdvanced1Parameters/1.Exercise1.md)
 	* [Parameter Types](./DesktopAdvanced1Parameters/1.03.ParameterTypes.md)
 	* [Linking Parameters](./DesktopAdvanced1Parameters/1.04.LinkingParameters.md)
 	* [Pre-Linked Parameters](./DesktopAdvanced1Parameters/1.05.PreLinkedParameters.md)
