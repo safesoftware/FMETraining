@@ -113,4 +113,4 @@
 	* [Community Information and Resources](./DesktopAdvanced6WrapUp/6.02.CommunityInfo.md)
 	* [Feedback and Certificates](./DesktopAdvanced6WrapUp/6.03.CourseFeedback.md)
 	* [Thank You](./DesktopAdvanced6WrapUp/6.04.ThankYou.md)
-	* [Exercise: A Pointless Quiz!](./DesktopAdvanced6WrapUp/6.05.Pointless.md)
+	* [Exercise: A Fun Challenge!](./DesktopAdvanced6WrapUp/6.05.Challenge.md)
