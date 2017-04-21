@@ -12,7 +12,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Earthquake Processing</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates</span>
 </td>
 </tr>
 
@@ -23,7 +23,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create a workspace to read and process earthquake data and publish it to FME Server</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
 </tr>
 
 <tr>
@@ -45,22 +45,13 @@
 
 ---
 
-You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
 
-Within minutes of installing FME Server the building starts to shake. You deduce that the two events are not related and in fact a (very minor) earthquake is taking place.
+There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single, corporate database.
 
-Because of this, and because emergency preparedness is a big topic, you start to wonder if there is anything you can do with FME Server on the subject of earthquakes.
+Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
 
-
-
-<br>**1) Inspect Feed**
-<br>A colleague informs you about a feed of earthquake data at: [http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson](http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson "USGS Earthquake Feed")
-
-Click on that link (or copy/paste it into your web browser) to view the raw data in the feed. It will look something like this:
-
-![](./Images/Img1.6.Ex1.EarthquakeFeed.png)
-
-OK. That looks like something we could handle in FME.
+One of the reasons for purchasing FME Server is to automate this procedure, so let's start implementing that.
 
 ---
 
@@ -77,7 +68,7 @@ OK. That looks like something we could handle in FME.
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 7
+If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 8
 </span>
 </td>
 </tr>
@@ -85,81 +76,198 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 ---
 
-<br>**2) Start FME Workbench**
-<br>Start FME Workbench by selecting it from the Windows start menu. You’ll find it under Start &gt; All Programs &gt; FME Desktop 2016.0 &gt; FME Workbench 2016.0.
-
-Once started, select Readers &gt; Add Reader to start adding a Reader to the workspace. When prompted, enter the following details:
+<br>**1) Inspect Source Data**
+<br>For the sake of simplicity - and because this course is about Server, not Desktop - we'll just use a few datasets. These are:
 
 <table style="border: 0px">
 
 <tr>
 <td style="font-weight: bold">Reader Format</td>
-<td style="">GeoJSON (Geographic JavaScript Object Notation)</td>
+<td style="">GML (Geography Markup Language)</td>
 </tr>
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson</td>
+<td style="">C:\FMEData2017\Data\Emergency\FireHalls.gml</td>
 </tr>
 
 </table>
 
-Click OK to add the Reader to the workspace.
+<table style="border: 0px">
 
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">MapInfo TAB (MITAB)</td>
+</tr>
 
-<br>**3) Inspect Source Data**
-<br>Click on the Reader feature type in Workbench and choose the option to Inspect the data:
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Parks\Parks.tab<br>C:\FMEData2017\Data\Zoning\Zones.tab</td>
+</tr>
 
-![](./Images/Img1.7.Ex1.ReaderFeatureTypeInspect.png)
-
-This will open up the source data in the FME Data Inspector and allow you to inspect it:
-
-![](./Images/Img1.8.Ex1.SourceDataInDI.png)
-<br><span style="font-style:italic;font-size:x-small">Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a></span>
-
-
-<br>**4) Add StatisticsCalculator**
-<br>Let's calculate some statistics about the earthquakes we are reading. Place a StatisticsCalculator transformer and connect it after the Reader feature type.
-
-Open the parameters dialog. The first thing to do is set Group By to group-by the type attribute:
-
-![](./Images/Img1.9.Ex1.StatsCalcGroupBy.png)
-
-Type represents the type of event measured. Not only are there earthquakes, but also explosions and quarry blasts (browse the data in the Data Inspector if you want to see if there are any).
-
-Next set mag as the attribute to analyze:
-
-![](./Images/Img1.10.Ex1.StatsCalcAttrToAnalyze.png)
-
-This will analyze the magnitude of the events and calculate statistics about them. The final step here is to specify which statistics we want. To do so set:
-
-<table>
-<tr><td>Minimum Attribute</td><td>Min Magnitude</td></tr>
-<tr><td>Maximum Attribute</td><td>Max Magnitude</td></tr>
-<tr><td>Numeric Count Attribute</td><td>Number of Events</td></tr>
-<tr><td>Mean Attribute</td><td>Average Magnitude</td></tr>
 </table>
 
-Empty all other fields, as we don't need those statistics:
+<table style="border: 0px">
 
-![](./Images/Img1.11.Ex1.StatsCalcAttrToCalculate.png)
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">Google KML</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Boundaries\VancouverNeighborhoods.kml</td>
+</tr>
+
+</table>
+
+So start the FME Data Inspector by selecting it from the Windows start menu. Inspect all of the source data to become familiar with it. The VancouverNeighborhoods has a different coordinate system than the other datasets so be careful and turn on a background map if you want to view all the data together.
+
+The goal of our translation will be to convert the Firehall, Parks, and Zoning datasets to a Geodatabase, dividing the data up into a separate table per neighborhood.
 
 
-<br>**5) Add AttributeRounder**
-<br>Let's make sure those statistics are in a readable format. After the StatisticsCalculator place an AttributeRounder transformer. It should be connected to the StatisticsCalculator:Summary output port:
+<br>**2) Start FME Workbench**
+<br>Start FME Workbench by selecting it from the Windows start menu. Begin with an empty canvas by closing any existing workspace (if necessary) and clicking on the Main tab.
 
-![](./Images/Img1.12.Ex1.AttrRounderConnected.png)
+Now select Readers &gt; Add Reader to start adding a reader to the workspace. When prompted, enter the following details for the Firehalls dataset:
 
-Open the parameters dialog. Set up the transformer to round *Min Magnitude*, *Max Magnitude*, and *Average Magnitude* to 1 decimal place. 
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">GML (Geography Markup Language)</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Emergency\FireHalls.gml</td>
+</tr>
+
+</table>
+
+Click OK to add the Reader to the workspace, which will now look like this:
+
+![](./Images/Img1.200.Ex1.AddedReader.png)
 
 
-<br>**6) Add Output**
-<br>The final task in FME Workbench is to get the calculations out of the workspace. To do so, while we are just testing this exercise, add a Logger transformer after the AttributeRounder.
+<br>**3) Add MapInfo Data**
+<br>Now repeat the process of adding a reader to add in the MapInfo datasets:
 
-This will cause the results to be written to the FME log file.
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">MapInfo TAB (MITAB)</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Parks\Parks.tab<br>C:\FMEData2017\Data\Zoning\Zones.tab</td>
+</tr>
+
+</table>
+
+To be able to select two datasets stored in differently located files, instead of choosing the browse button, click the drop-down arrow and choose Select Multiple Folders/Files: 
+
+![](./Images/Img1.201.Ex1.AdvancedBrowser.png)
+
+This will open an advanced dialog in which you can separately select two datasets to add with the same reader:
+
+![](./Images/Img1.202.Ex1.AdvancedBrowserSelect.png)
+
+After adding this reader the workspace will look like this:
+
+![](./Images/Img1.203.Ex1.NewReaders.png)
 
 
-<br>**7) Publish to Server (Step 1)**
+<br>**4) Add KML Data**
+<br>Now repeat the process one more time to add a reader for the KML dataset:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">Google KML</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Boundaries\VancouverNeighborhoods.kml</td>
+</tr>
+
+</table>
+
+While adding the dataset you'll be prompted which feature types (layers) to add to the workspace. The only one we need is called Neighborhoods:
+
+![](./Images/Img1.204.Ex1.KMLFTSelection.png)
+
+
+<br>**5) Add Writer**
+<br>Now use Writers &gt; Add Writer on the menubar to add a writer to our workspace. Set up the following parameters:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Writer Format</td>
+<td style="">Esri Geodatabase (File Geodb API)</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Writer Dataset</td>
+<td style="">C:\FMEData2017\Output\Training\DepartmentData.gdb</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Feature Class or Table Definition</td>
+<td style="">Copy from Reader...</td>
+</tr>
+
+</table>
+
+![](./Images/Img1.205.Ex1.AddWriterDialog.png)
+
+Before clicking OK, open the parameters dialog and put a checkmark in the box labelled Overwrite Existing Geodatabase.  
+
+Click OK and OK again. When prompted, select Firehalls, Zones, and Parks as the feature types to add:
+
+![](./Images/Img1.206.Ex1.AddWriterSelectFTs.png)
+
+Don't select the Neighborhoods data. We want to use that to split up the other data, but don't need to write it.
+
+The workspace will now look like this:
+
+![](./Images/Img1.207.Ex1.WorkspaceWithReadersWriters.png)
+
+
+<br>**6) Add Reprojector Transformer**
+<br>Add a Reprojector transformer to the workspace. You can do this by simply clicking on the canvas and starting to type Reprojector. Connect it to the Neighborhoods feature type:
+
+![](./Images/Img1.208.Ex1.WorkspaceConnectedReprojector.png)
+
+Check the transformer's parameters and set the Destination Coordinate System to UTM83-10:
+
+![](./Images/Img1.209.Ex1.ReprojectorParameters.png)
+
+This will ensure the neighborhoods data is in the same coordinate system as the rest of the data.
+
+
+<br>**7) Add Clipper Transformer**
+<br>Add a Clipper transformer to the workspace. You can do this by simply clicking on the canvas and starting to type Clipper. 
+
+The Clipper will be used to divide up the data into separate outputs per neighborhood. 
+
+Connect the Firehalls, Parks, and Zones feature types to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections:
+
+![](./Images/Img1.210.Ex1.WorkspaceConnectedClipper.png)
+
+Check the parameters for the Clipper transformer to ensure the Clipper Type is set to Multiple Clippers. That's because there are multiple neighborhood features to act as a clipper feature.
+
+
+<br>**8) xxxx**
+<br>Here comes the Server part of the process. In FME Workbench, choose File &gt; Publish to FME Server from the 
+
+
+<br>**XXX) Publish to Server (Step 1)**
 <br>Here comes the Server part of the process. In FME Workbench, choose File &gt; Publish to FME Server from the menubar (or select the same tool on the toolbar).
 
 In the first dialog of the wizard you are prompted to enter connection parameters to FME Server.
@@ -179,7 +287,7 @@ You may or may not (probably not) need to enter a port number with the hostname,
 Click Next to continue. If the credentials are correct a connection will be made and you will move on to the next dialog in the wizard.
 
 
-<br>**8) Publish to Server (Step 2)**
+<br>**9) Publish to Server (Step 2)**
 <br>The next dialog prompts you to choose a repository in which to store the workspace.
 
 For this exercise we’ll create a new repository by clicking the New button. When prompted enter the name Training.
@@ -191,7 +299,7 @@ Click OK to close the Create New Repository dialog. Enter a name for the workspa
 Then click Next to continue the wizard.
 
 
-<br>**9) Publish to Server (Step 3)**
+<br>**10) Publish to Server (Step 3)**
 <br>In the final screen of the wizard we can register the workspace for use with various services.
 
 Select the Job Submitter service as this is the only service we are using for now and click Publish to complete publishing the workspace.

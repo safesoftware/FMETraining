@@ -47,7 +47,7 @@
 
 You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
 
-You have already published a workspace that processes a feed of earthquake data, published it to FME Server, and ran it. You plan to run it every day after work. However... what happens if you are not there, or leave early, or someone else stays late. Who will run it then?
+You have already published a workspace that processes a feed of earthquake data, published it to FME Server, and ran it. However... what happens if there is an earthquake in the night, when you are not at your post? Who will run it then?
 
 The simplest method is to simply set up the translation to run on an automatic schedule. 
 
