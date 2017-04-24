@@ -25,7 +25,7 @@
 	* [Running FME System Services under Different Accounts](./ServerAdmin3Security/3.04.RunningFMESystemServicesUnderDifferentAccounts.md)
 	* [Active Directory and FME Server](./ServerAdmin3Security/3.05.ActiveDirectoryFMEServer.md)
 	* [Exercise 2: Configuring Active Directory/LDAP](./ServerAdmin3Security/Exercise2_ConfiguringActiveDirectoryLDAP.md)
-	* [HTTPS/SSL and FME Server](./ServerAdmin3Security/3.06.ConfiguringHTTPS.md)
+	* [HTTPS/SSL and FME Server](./ServerAdmin3Security/3.06.FMEServerHTTPS.md)
 	* [Exercise 3: Configuring for HTTPS](./ServerAdmin3Security/Exercise3_ConfiguringForHTTPS.md)
 	* [Chapter Review](./ServerAdmin3Security/3.07.ChapterReview.md)
 * [Chapter 4: Scalability and Performance](./ServerAdmin4Scalability/4.00.ScalabilityAndPerformance.md)
