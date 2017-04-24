@@ -27,8 +27,8 @@ This manual is for **FME2017**
 
 The status of each chapter is:
 
-- Chapter 0: Incomplete content; No exercises.
-- Chapter 1: Incomplete content and exercises.
+- Chapter 0: Complete content; No exercises.
+- Chapter 1: Complete content. Exercises not yet complete.
 - Chapter 2: Incomplete content and exercises.
 - Chapter 3: Incomplete content and exercises.
 - Chapter 4: Content and exercises complete.
