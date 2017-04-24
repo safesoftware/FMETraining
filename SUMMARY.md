@@ -26,7 +26,7 @@
 	* [Configuring Active Directory/LDAP](./ServerAdmin3Security/3.05.ConfiguringActiveDirectoryLDAP.md)
 	* [Exercise 2: Configuring Active Directory/LDAP](./ServerAdmin3Security/Exercise2_ConfiguringActiveDirectoryLDAP.md)
 	* [Exercise 3: Configuring for HTTPS](./ServerAdmin3Security/Exercise3_ConfiguringForHTTPS.md)
-	* [Chapter Review](./ServerAdmin3Security/3.08.ChapterReview.md)
+	* [Chapter Review](./ServerAdmin3Security/3.06.ChapterReview.md)
 * [Chapter 4: Scalability and Performance](./ServerAdmin4Scalability/4.00.ScalabilityAndPerformance.md)
 	* [Job Routing](./ServerAdmin4Scalability/4.01.JobRouting.md)
 	* [Exercise 4: Job Routing](./ServerAdmin4Scalability/4.02.Exercise1_JobRouting.md)
