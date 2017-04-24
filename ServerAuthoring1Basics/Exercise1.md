@@ -107,7 +107,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 So start the FME Data Inspector by selecting it from the Windows start menu. Inspect all of the source data to become familiar with it. The VancouverNeighborhoods has a different coordinate system than the other dataset so be careful and turn on a background map if you want to view all the data together.
 
-The goal of our translation will be to convert the Firehalls and Neighborhoods to a Geodatabase, dividing the firehalls data up into a separate table per neighborhood.
+The goal of our translation is to convert the Firehalls and Neighborhoods to a database, dividing the firehalls data up into a separate table per neighborhood.
 
 
 <br>**2) Start FME Workbench**
@@ -173,18 +173,13 @@ This will ensure the neighborhoods data is in the same coordinate system as the 
 
 
 <br>**5) Add Writer**
-<br>Now use Writers &gt; Add Writer on the menubar to add a writer to our workspace. Set up the following parameters:
+<br>Now we should add a writer to the workspace. For now we'll just set up a dummy writer until we are more familiar with FME Server. So select Writers &gt; Add Writer on the menubar to add a writer and set it up with the following parameters:
 
 <table style="border: 0px">
 
 <tr>
 <td style="font-weight: bold">Writer Format</td>
-<td style="">Esri Geodatabase (File Geodb API)</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Output\Training\DepartmentData.gdb</td>
+<td style="">NULL (Nothing)</td>
 </tr>
 
 <tr>
@@ -195,8 +190,6 @@ This will ensure the neighborhoods data is in the same coordinate system as the 
 </table>
 
 ![](./Images/Img1.205.Ex1.AddWriterDialog.png)
-
-Before clicking OK, open the parameters dialog and put a checkmark in the box labelled Overwrite Existing Geodatabase.  
 
 Click OK and OK again. When prompted, select both Firehalls and Neighborhoods as the feature types to add:
 
@@ -224,19 +217,15 @@ Connect the Clipper:Inside port to the Firehalls feature type on the writer. Als
 
 
 <br>**7) Set Firehall Feature Type Name**
-<br>Finally, let's set the Feature Class/Table Name for the Firehalls writer feature type.
+<br>Finally, let's set the Feature Type Name for the Firehalls writer feature type.
 
-Inspect its parameters and under Feature Class or Table Name either enter:
+Inspect its parameters and under Feature Type Name either enter:
 
 <pre>
 FireHalls-@Value(NeighborhoodName)
 </pre>
 
-Or click the dropdown and use the text editor dialog to enter that value. This will cause firehalls in each different neighborhood to be written to a different table.
-
-Inspect the parameters for the Neighborhoods feature type. We don't need to split it up by neighborhood (what would be the point?) but we should check the allowed Geometry type and set it to geodb_polygon if it is not already:
-
-![](./Images/Img1.210.Ex1.SetPolyGeomType.png)
+...or click the dropdown and use the text editor dialog to enter that value. This will cause firehalls in each different neighborhood to be written to a different table/layer.
 
 Save the workspace.
 
@@ -246,7 +235,7 @@ Save the workspace.
 
 The first step, one which is very important, is to run the workspace. If the workspace won't run on FME Desktop then it is not likely to run on FME Server.
 
-Run the workspace. Inspect the output. You should get six tables of firehalls and one of neighborhoods:
+Run the workspace. Inspect the log. You should get six tables of firehalls and one of neighborhoods:
 
 ![](./Images/Img1.211.Ex1.WorkspaceOutput.png)
 
@@ -313,7 +302,9 @@ After a workspace is transferred to Server, the log window displays a message re
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a workspace converting data to Geodatabase</li>
+<ul><li>Create a workspace converting data to a Null (dummy) format</li>
+<li>Use a Clipper to transfer attribute values from one feature to another</li>
+<li>Rename output layers according to the value of an attribute</li>
 <li>Publish a workspace to FME Server using the Publishing Wizard</li>
 <li>Create a repository on FME Server using the Publishing Wizard</li>
 <li>Register a workspace with the Job Submitter service using the Publishing Wizard</li></ul>

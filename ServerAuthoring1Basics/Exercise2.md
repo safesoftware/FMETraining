@@ -9,7 +9,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates</span>
@@ -175,7 +175,7 @@ Click on your job to inspect the results in more detail. You will be able to see
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Remember, this workspace did not write any data, only sent it to the Logger. So, for now, to view any results search for them in the log file.
+Remember, this workspace did not write any data, only sent it to a Null writer. So, for now, to view any results search for the summary in the log file.
 </span>
 </td>
 </tr>
