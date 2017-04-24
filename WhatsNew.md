@@ -23,6 +23,7 @@ This file documents major changes made to training materials in 2017
 - Removed "SecurityRoles", "SecurityPolicies", and related exercise as being more relevant to the admin course
 - Added a section on Sharing items
 - Exercise 1: Changed from Earthquake to Daily Database Update
+- Exercise 2: Add workspace to new favourites list
 
 
 ### Self-Serve with FME Server: Part1 ###

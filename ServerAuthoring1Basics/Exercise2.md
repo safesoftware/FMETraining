@@ -9,21 +9,21 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2 </span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Earthquake Processing</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Earthquakes (GeoJSON)</td>
+<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create a workspace to read and process earthquake data and publish it to FME Server</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
 </tr>
 
 <tr>
@@ -33,21 +33,25 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">N/A</td>
+<td style="border: 1px solid darkorange">None</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">N/A</td>
+<td style="border: 1px solid darkorange">None</td>
 </tr>
 
 </table>
 
 ---
 
-You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
 
-After creating a workspace to read a feed of earthquake data, and publishing it to FME Server, you now wish to log in to Server to run that workspace. 
+There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single, corporate database.
+
+Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
+
+After creating a workspace to carry out this translation, and publishing it to FME Server, you now wish to log in to Server to run that workspace. 
 
 
 <br>**1) Connect to Server**
@@ -81,20 +85,29 @@ This will open the web user interface login screen for the FME Server being used
 <br>**2) Log In to Server**
 <br>In the User Login dialog, enter a username and password for your FME Server account. A common username/password combination for a training installation is admin/admin
 
-![](./Images/Img1.51.Ex2.LoginWindow.png)
+![](./Images/Img1.217.Ex2.LogInWindow.png)
 
 Click the Login button.
-
 
 
 <br>**3) Examine the User Interface**
 <br>This is your primary method for interacting with FME Server.
 
-The first thing we should do is make sure FME Server is running correctly (the fact that we could log in is a good sign) and that we are licensed and have engines running.
+Notice that one of the windows is labelled as Last Published Workspaces. Here you should be able to find the workspace published in Exercise 1:
 
-Click Manage &gt; Administration &gt; Engines & Licensing on the menu of the interface. This will open up the licensing section. You should see a message informing you that FME Server is licensed and a list of the engines available:
+![](./Images/Img1.218.Ex2.StarWorkspace.png)
 
-![](./Images/Img1.52.Ex2.LicensingInfo.png)
+Clicking the star icon will set this workspace as a favourite, making it available under the list of favourites panel:
+
+![](./Images/Img1.219.Ex2.StarredWorkspace.png)
+
+We'll run the workspace shortly, but perhaps first we should make sure FME Server is running correctly (the fact that we could log in is a good sign) and that we are licensed and have engines running.
+
+
+<br>**4) Examine the User Interface**
+<br>Click Engines & Licensing on the ADMIN part of the interface menu. This will open up the licensing section. You should see a message informing you that FME Server is licensed and a list of the engines available:
+
+![](./Images/Img1.220.Ex2.LicensingInfo.png)
 
 ---
 
@@ -117,28 +130,35 @@ If your machine is unlicensed, or is missing engines, then check with your instr
 
 ---
 
-<br>**4) Select Workspace**
-<br>Click the Home button on the menubar (or the FME icon in the top-left) to return to the Server interface home page. Notice that the workspace created in the previous exercise is listed under Last Published Workspaces:
-
-![](./Images/Img1.47.Ex2.RecentWorkspaces.png)
-
-Click on this entry to open the web page for this workspace.
-
-
 <br>**5) Run Workspace**
-<br>The workspace page shows very few options, because this workspace did not have many published parameters:
+<br>Click the FME Server button in the very top-left of the interface. This will return you to the Server interface home page.
 
-![](./Images/Img1.48.Ex2.RunWorkspaceDialog.png)
+Click on the published workspace in the Favourite Workspace panel to open the web page for this workspace.
 
-So, simply click the Run button to run the workspace. The workspace will run to completion.
+The workspace page shows a few options, the first of which are for the repository, workspace, and service. These should already be filled in with values:
+
+![](./Images/Img1.221.Ex2.RunWorkspaceDialog.png)
+
+Because this workspace has a few published parameters, they are also listed; but we can ignore these for now (we'll deal with source datasets and the like shortly). 
+
+So, simply click the Run button to run the workspace. The workspace will run to completion and a message to that effect will appear:
+
+![](./Images/Img1.222.Ex2.RanWorkspace.png)
 
 
 <br>**6) Examine Jobs Page**
-<br>Click Manage &gt; Jobs on the menu. A list of previously run jobs will open, including the one we just ran:
+<br>Click Jobs on the main menu. A list of previously run jobs will open, including the one we just ran:
 
-![](./Images/Img1.49.Ex2.JobsDialog.png)
+![](./Images/Img1.223.Ex2.JobsWindow.png)
 
-Click on your job to inspect the results in more detail. You will be able to see the job ID number; the different times at which it was submitted, queued, and run; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
+Notice some interesting points of the interface:
+
+1. There are links to show Completed jobs (the default), Queued Jobs, and Running Jobs.
+2. There is a drop-down list that allows you to filter whose jobs are being shown.
+3. Jobs that are successful and which fail are differentiated using a different icon.
+4. The jobs are displayed in the chronological order in which they were started.
+
+Click on your job to inspect the results in more detail. You will be able to see details about the job including the time at which it was submitted, queued, started, finished, and delivered; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
 
 ---
 
@@ -163,10 +183,6 @@ Remember, this workspace did not write any data, only sent it to the Logger. So,
 
 ---
 
-Well done. You have now run a workspace on FME Server. But there are some more parts of the interface we should look into. 
-
----
-
 <!--Advanced Exercise Section-->
 
 <table style="border-spacing: 0px">
@@ -180,45 +196,9 @@ Well done. You have now run a workspace on FME Server. But there are some more p
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have time, carry out the following steps to explore the FME Server web interface in a little more detail.
-</span>
-</td>
-</tr>
-</table>
-
----
-
-<br>**7) Open Resources Page**
-<br>Click Manage &gt; Resources on the menu. This opens the Resources page. Feel free to explore the different folders. In particular inspect the Engine folder, which is the location for custom tools that you might want to include in a translation:
-
-![](./Images/Img1.53.Ex2.ResourcesEngine.png)
-
-Also check the data folder and, if you wish, upload some files from the C:\FMEData2017 folder.
-
-
-<br>**8) Check Cleanup Tools**
-<br>Click Manage &gt; Administration &gt; System Cleanup on the menu. This opens the dialog where all automated cleanup tasks are defined. 
-
-![](./Images/Img1.54.Ex2.CleanupResources.png)
-
-Take a look at the different cleanup tasks that are available. Note that the times are all specified in seconds. 
-
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Police Chief Webb-Mapp says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-If you change one of these parameters, don't expect it to take effect immediately. For example, if you change the job logs time to be 1 second, they won't all disappear within a second. FME Server only runs these tasks every hour, so it could be up to 60 minutes before the changes have any effect.
+If you want to see a job in a different state then we'll have to slow this workspace down some.
+<br><br>Open the workspace in FME Workbench and add a Decelerator transformer (say, before the Reprojector). Set it to delay the workspace by five (5) seconds per feature. Publish the workspace back to FME Server and re-run it.
+<br><br>Now the workspace will take 30+ seconds to run and you should be able to find it under the Running state. Also, if you run it three or four times in quick succession, then you will have more jobs than engines and be able to find some jobs in the Queued state.   
 </span>
 </td>
 </tr>
