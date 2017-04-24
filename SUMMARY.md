@@ -36,6 +36,7 @@
 	* [System Cleanup](./ServerAdmin3Scalability/4.06.SystemCleanup.md)
 	* [Chapter Review](./ServerAdmin3Scalability/4.06.ChapterReview.md)
 * [Chapter 5: FME Server Customisation/Enterprise](./ServerAdmin4Customization/5.00.Ch4FMEServerCustomisationEnterprise.md)
+	* [Server Dashboards](./ServerAdmin4Customization/5.01.ServerDashboards.md)
 	* [32- and 64-bit Engines on Same Machine](./ServerAdmin4Customization/5.01.32And64BitEnginesOnSameMachine.md)
 	* [Configuring Custom Coordinate Systems/Grid Transformations](./ServerAdmin4Customization/5.02.ConfiguringCustomCoordinateSystemsGridTransformations.md)
 	* [Using Python with FME Server](./ServerAdmin4Customization/5.03.UsingPythonWithFMEServer.md)
