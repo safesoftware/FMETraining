@@ -18,7 +18,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Earthquakes (GeoJSON)</td>
+<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)</td>
 </tr>
 
 <tr>
@@ -68,7 +68,7 @@ One of the reasons for purchasing FME Server is to automate this procedure, so l
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 8
+If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 8.
 </span>
 </td>
 </tr>
@@ -77,7 +77,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 ---
 
 <br>**1) Inspect Source Data**
-<br>For the sake of simplicity - and because this course is about Server, not Desktop - we'll just use a few datasets. These are:
+<br>For the sake of simplicity - and because this course is about Server, not Desktop - we'll just use a couple of datasets. These are:
 
 <table style="border: 0px">
 
@@ -90,22 +90,6 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 <td style="font-weight: bold">Reader Dataset</td>
 <td style="">C:\FMEData2017\Data\Emergency\FireHalls.gml</td>
 </tr>
-
-</table>
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">MapInfo TAB (MITAB)</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Parks\Parks.tab<br>C:\FMEData2017\Data\Zoning\Zones.tab</td>
-</tr>
-
-</table>
 
 <table style="border: 0px">
 
@@ -121,9 +105,9 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 </table>
 
-So start the FME Data Inspector by selecting it from the Windows start menu. Inspect all of the source data to become familiar with it. The VancouverNeighborhoods has a different coordinate system than the other datasets so be careful and turn on a background map if you want to view all the data together.
+So start the FME Data Inspector by selecting it from the Windows start menu. Inspect all of the source data to become familiar with it. The VancouverNeighborhoods has a different coordinate system than the other dataset so be careful and turn on a background map if you want to view all the data together.
 
-The goal of our translation will be to convert the Firehall, Parks, and Zoning datasets to a Geodatabase, dividing the data up into a separate table per neighborhood.
+The goal of our translation will be to convert the Firehalls and Neighborhoods to a Geodatabase, dividing the firehalls data up into a separate table per neighborhood.
 
 
 <br>**2) Start FME Workbench**
@@ -150,37 +134,7 @@ Click OK to add the Reader to the workspace, which will now look like this:
 ![](./Images/Img1.200.Ex1.AddedReader.png)
 
 
-<br>**3) Add MapInfo Data**
-<br>Now repeat the process of adding a reader to add in the MapInfo datasets:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">MapInfo TAB (MITAB)</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Parks\Parks.tab<br>C:\FMEData2017\Data\Zoning\Zones.tab</td>
-</tr>
-
-</table>
-
-To be able to select two datasets stored in differently located files, instead of choosing the browse button, click the drop-down arrow and choose Select Multiple Folders/Files: 
-
-![](./Images/Img1.201.Ex1.AdvancedBrowser.png)
-
-This will open an advanced dialog in which you can separately select two datasets to add with the same reader:
-
-![](./Images/Img1.202.Ex1.AdvancedBrowserSelect.png)
-
-After adding this reader the workspace will look like this:
-
-![](./Images/Img1.203.Ex1.NewReaders.png)
-
-
-<br>**4) Add KML Data**
+<br>**3) Add KML Data**
 <br>Now repeat the process one more time to add a reader for the KML dataset:
 
 <table style="border: 0px">
@@ -199,7 +153,23 @@ After adding this reader the workspace will look like this:
 
 While adding the dataset you'll be prompted which feature types (layers) to add to the workspace. The only one we need is called Neighborhoods:
 
-![](./Images/Img1.204.Ex1.KMLFTSelection.png)
+![](./Images/Img1.201.Ex1.KMLFTSelection.png)
+
+The workspace should now look like this:
+
+![](./Images/Img1.202.Ex1.TwoReaders.png)
+
+
+<br>**4) Add Reprojector Transformer**
+<br>Add a Reprojector transformer to the workspace. You can do this by simply clicking on the canvas and starting to type Reprojector. Connect it to the Neighborhoods feature type:
+
+![](./Images/Img1.203.Ex1.WorkspaceConnectedReprojector.png)
+
+Check the transformer's parameters and set the Destination Coordinate System to UTM83-10:
+
+![](./Images/Img1.204.Ex1.ReprojectorParameters.png)
+
+This will ensure the neighborhoods data is in the same coordinate system as the rest of the data.
 
 
 <br>**5) Add Writer**
@@ -228,85 +198,103 @@ While adding the dataset you'll be prompted which feature types (layers) to add 
 
 Before clicking OK, open the parameters dialog and put a checkmark in the box labelled Overwrite Existing Geodatabase.  
 
-Click OK and OK again. When prompted, select Firehalls, Zones, and Parks as the feature types to add:
+Click OK and OK again. When prompted, select both Firehalls and Neighborhoods as the feature types to add:
 
 ![](./Images/Img1.206.Ex1.AddWriterSelectFTs.png)
-
-Don't select the Neighborhoods data. We want to use that to split up the other data, but don't need to write it.
 
 The workspace will now look like this:
 
 ![](./Images/Img1.207.Ex1.WorkspaceWithReadersWriters.png)
 
 
-<br>**6) Add Reprojector Transformer**
-<br>Add a Reprojector transformer to the workspace. You can do this by simply clicking on the canvas and starting to type Reprojector. Connect it to the Neighborhoods feature type:
+<br>**6) Add Clipper Transformer**
+<br>Add a Clipper transformer to the workspace. This will be used to divide the firehall data by neighborhood. Again, you can do this by simply clicking on the canvas and starting to type Clipper. 
 
-![](./Images/Img1.208.Ex1.WorkspaceConnectedReprojector.png)
+Connect the Firehalls feature type to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections:
 
-Check the transformer's parameters and set the Destination Coordinate System to UTM83-10:
-
-![](./Images/Img1.209.Ex1.ReprojectorParameters.png)
-
-This will ensure the neighborhoods data is in the same coordinate system as the rest of the data.
-
-
-<br>**7) Add Clipper Transformer**
-<br>Add a Clipper transformer to the workspace. You can do this by simply clicking on the canvas and starting to type Clipper. 
-
-The Clipper will be used to divide up the data into separate outputs per neighborhood. 
-
-Connect the Firehalls, Parks, and Zones feature types to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections:
-
-![](./Images/Img1.210.Ex1.WorkspaceConnectedClipper.png)
+![](./Images/Img1.208.Ex1.WorkspaceConnectedClipper.png)
 
 Check the parameters for the Clipper transformer to ensure the Clipper Type is set to Multiple Clippers. That's because there are multiple neighborhood features to act as a clipper feature.
 
+Also put a check mark in the box labelled Merge Attributes, so that the neighborhood name is copied from the neighborhood features to the firehall features.
 
-<br>**8) xxxx**
-<br>Here comes the Server part of the process. In FME Workbench, choose File &gt; Publish to FME Server from the 
+Connect the Clipper:Inside port to the Firehalls feature type on the writer. Also make a connection from the Reprojected:Reprojected port to the Neighborhoods feature type:
+
+![](./Images/Img1.209.Ex1.WorkspaceAllConnected.png)
 
 
-<br>**XXX) Publish to Server (Step 1)**
-<br>Here comes the Server part of the process. In FME Workbench, choose File &gt; Publish to FME Server from the menubar (or select the same tool on the toolbar).
+<br>**7) Set Firehall Feature Type Name**
+<br>Finally, let's set the Feature Class/Table Name for the Firehalls writer feature type.
 
-In the first dialog of the wizard you are prompted to enter connection parameters to FME Server.
+Inspect its parameters and under Feature Class or Table Name either enter:
 
-Enter the parameters provided by your training instructor.
+<pre>
+FireHalls-@Value(NeighborhoodName)
+</pre>
 
-In most cases the parameters will be as follows:
+Or click the dropdown and use the text editor dialog to enter that value. This will cause firehalls in each different neighborhood to be written to a different table.
+
+Inspect the parameters for the Neighborhoods feature type. We don't need to split it up by neighborhood (what would be the point?) but we should check the allowed Geometry type and set it to geodb_polygon if it is not already:
+
+![](./Images/Img1.210.Ex1.SetPolyGeomType.png)
+
+Save the workspace.
+
+
+<br>**8) Run Workspace**
+<br>Here comes the Server part of the process. 
+
+The first step, one which is very important, is to run the workspace. If the workspace won't run on FME Desktop then it is not likely to run on FME Server.
+
+Run the workspace. Inspect the output. You should get six tables of firehalls and one of neighborhoods:
+
+![](./Images/Img1.211.Ex1.WorkspaceOutput.png)
+
+
+<br>**9) Publish to Server: Create Connection**
+<br>Now we have a workspace and know that it works correctly, let's publish it to FME Server.
+
+In FME Workbench, choose File &gt; Publish to FME Server from the menubar. As this is the first time we've connected to our FME Server we'll need to create a new connection, so select Add Web Connection from the dropdown menu.
+
+In the dialog that opens enter the parameters provided by your training instructor. In most cases the parameters will be as follows:
 
 - **FME Server URL:** http://localhost
 - **Username:** admin
 - **Password:** admin
 
-![](./Images/Img1.44.Ex1.PublishWizard1.png)
+![](./Images/Img1.212.Ex1.ServerConnection.png)
 
 You may or may not (probably not) need to enter a port number with the hostname, depending on how the system is set up. 
 
-Click Next to continue. If the credentials are correct a connection will be made and you will move on to the next dialog in the wizard.
+Click Authenticate to confirm the connection and return to the previous dialog. Make sure the newly defined connection is selected and click Next to continue.
 
 
-<br>**9) Publish to Server (Step 2)**
+<br>**10) Publish to Server: Repository Selection**
 <br>The next dialog prompts you to choose a repository in which to store the workspace.
 
 For this exercise we’ll create a new repository by clicking the New button. When prompted enter the name Training.
 
-Click OK to close the Create New Repository dialog. Enter a name for the workspace such as Basics-Ex1-Complete.fmw. The Upload Data Files option should be greyed out, because we aren't using any source files in this case.
+![](./Images/Img1.213.Ex1.NewRepository.png)
 
-![](./Images/Img1.45.Ex1.PublishWizard2.png)
+Click OK to close the Create New Repository dialog. Enter a name for the workspace if it doesn't already have one. Place a checkmark against the Upload Data Files option:
+
+![](./Images/Img1.214.Ex1.UploadData.png)
 
 Then click Next to continue the wizard.
 
 
-<br>**10) Publish to Server (Step 3)**
+<br>**11) Publish to Server: Select Service**
 <br>In the final screen of the wizard we can register the workspace for use with various services.
 
-Select the Job Submitter service as this is the only service we are using for now and click Publish to complete publishing the workspace.
+Select the Job Submitter service as this is the only service we are using for now:
 
-![](./Images/Img1.46.Ex1.PublishWizard3.png)
+![](./Images/Img1.215.Ex1.SelectService.png)
 
-After a workspace is transferred to Server, the log window displays a message reporting which workspace has been published to which repository and for which services.
+... and click Publish to complete publishing the workspace.
+
+After a workspace is transferred to Server, the log window displays a message reporting which workspace has been published to which repository and for which services. It will look something like this:
+
+![](./Images/Img1.216.Ex1.PublishLog.png)
 
 ---
 
@@ -325,7 +313,7 @@ After a workspace is transferred to Server, the log window displays a message re
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a workspace using a GeoJSON feed as the source</li>
+<ul><li>Create a workspace converting data to Geodatabase</li>
 <li>Publish a workspace to FME Server using the Publishing Wizard</li>
 <li>Create a repository on FME Server using the Publishing Wizard</li>
 <li>Register a workspace with the Job Submitter service using the Publishing Wizard</li></ul>
