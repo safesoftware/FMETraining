@@ -23,7 +23,7 @@
 	* [Exercise 1: Creating A New User](./ServerAdmin3Security/Exercise1_CreatingANewUser.md)
 	* [Running Services without Authentication](./ServerAdmin3Security/3.03.RunningServicesWithoutAuthentication.md)
 	* [Running FME System Services under Different Accounts](./ServerAdmin3Security/3.04.RunningFMESystemServicesUnderDifferentAccounts.md)
-	* [Active Directory and FME Server](./ServerAdmin3Security/3.05.ConfiguringActiveDirectoryLDAP.md)
+	* [Active Directory and FME Server](./ServerAdmin3Security/3.05.ActiveDirectoryFMEServer.md)
 	* [Exercise 2: Configuring Active Directory/LDAP](./ServerAdmin3Security/Exercise2_ConfiguringActiveDirectoryLDAP.md)
 	* [HTTPS/SSL and FME Server](./ServerAdmin3Security/3.06.ConfiguringHTTPS.md)
 	* [Exercise 3: Configuring for HTTPS](./ServerAdmin3Security/Exercise3_ConfiguringForHTTPS.md)
