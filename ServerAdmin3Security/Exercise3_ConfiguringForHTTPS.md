@@ -117,17 +117,17 @@ Verify that HTTPS was configured correctly for FME Server.
 1. To enable SSL for a service, open the FME Server Web User Interface, and select *Services*. 
 
 ![](./Images/3.404.ServicesButton.png)
-<br><br>
+
 2. On the *Services* page, click the desired service. For this exercise, let's select *Job Submitter*.
 
 ![](./Images/3.405.selectService.png)
-<br><br>
+
 3. The *Editing Service* page opens. In the *URL Pattern* field, change *HTTP* to *HTTPS*.
 
 ![](./Images/3.406.httpTOhttps.png)
-<br><br>
+
 4. Click **OK**.
-<br><br>
+
 5. Check on the *Services* page that your update worked.
 
 ![](./Images/3.407.checkItWorked.png)
