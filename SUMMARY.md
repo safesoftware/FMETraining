@@ -35,7 +35,7 @@
 	* [Changing Database Provider for FME Server Database](./ServerAdmin4Scalability/4.04.ChangingDatabaseProviderForFMEServerDatabase.md)
 	* [Exercise 5: Switiching to a PostgreSQL Database with Windows System](./ServerAdmin4Scalability/4.05.Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.md)
 	* [System Cleanup](./ServerAdmin4Scalability/4.06.SystemCleanup.md)
-	* [Chapter Review](./ServerAdmin4Scalability/4.06.ChapterReview.md)
+	* [Chapter Review](./ServerAdmin4Scalability/4.07.ChapterReview.md)
 * [Chapter 5: FME Server Customisation/Enterprise](./ServerAdmin4Customization/5.00.Ch4FMEServerCustomisationEnterprise.md)
 	* [Server Dashboards](./ServerAdmin4Customization/5.01.ServerDashboards.md)
 	* [32- and 64-bit Engines on Same Machine](./ServerAdmin4Customization/5.01.32And64BitEnginesOnSameMachine.md)
