@@ -1,6 +1,5 @@
 <!--Exercise Section-->
 
-
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
@@ -8,7 +7,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Sharing and Scheduling</span>
 </td>
 </tr>
 

@@ -1,32 +1,29 @@
-<!--Instructor Notes-->
-
 <!--Exercise Section-->
-
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4: Publishing Data</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold"></span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Cycle Paths (Esri Shapefile)<br>Drinking Fountains (CSV (Comma Separated Value))</td>
+<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create an FME Server-hosted workspace to identify drinking fountains with 20 metres of a cycle path</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Publishing source data and making temporary data uploads</td>
+<td style="border: 1px solid darkorange">Publishing source data and uploading temporary datasets</td>
 </tr>
 
 <tr>
@@ -36,7 +33,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">None</td>
 </tr>
 
 </table>

@@ -8,7 +8,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Running a Workspace</span>
 </td>
 </tr>
 
