@@ -58,6 +58,7 @@
 	* [Exercise 8: Backup and Migration](./ServerAdmin5Migration/6.04.Exercise_Migration.md)
 	* [Projects](./ServerAdmin5Migration/6.05.Projects.md)
 	* [Chapter Review](./ServerAdmin5Migration/6.06.ChapterReview.md)
+	* [Q&A Answers](./ServerAdmin5Migration/6.07.QuestionAnswers.md)
 * [Chapter 7: Troubleshooting](./ServerAdmin7Troubleshooting/7.00.Troubleshooting.md)
 	* [Troubleshooting](./ServerAdmin7Troubleshooting/7.01.Troubleshooting.md)
 * [Course Wrap-Up](./ServerAdmin8WrapUp/8.00.CourseWrapup.md)
