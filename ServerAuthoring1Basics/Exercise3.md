@@ -1,7 +1,3 @@
-<!--Instructor Notes-->
-<!--This exercise uses a basic amount of FME Workbench as a test for students-->
-<!--If students have problems now, it is unlikely they will have much success at further exercises-->
-
 <!--Exercise Section-->
 
 
