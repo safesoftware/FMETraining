@@ -113,69 +113,119 @@ The workspace now looks like this:
 
 
 <br>**4) Add VotingPlaces**
-<br>Now... 
+<br>Now select Readers &gt; Add Reader to start adding a reader to the workspace. When prompted, enter the following details for the VotingPlaces data:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">GML (Geography Markup Language)</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2017\Data\Elections\ElectionVoting.gml</td>
+</tr>
+
+</table>
+
+Click OK to add the Reader to the workspace. When prompted only select the VotingPlaces feature type, not VotingDivisions:
+
+![](./Images/Img1.236.Ex4.AddReaderFTTR.png)
 
 
----
+<br>**5) Add VotingPlaces to Writer**
+<br>To add VotingPlaces to the writer, right-click the newly placed reader feature type and choose Duplicate on 'NULL':
+
+![](./Images/Img1.237.Ex4.RightClickAddToWriter.png)
+
+There will now be a reader and writer feature type for the VotingPlaces dataset:
+
+![](./Images/Img1.238.Ex4.WorkspaceWithWriter.png)
+
+Change the connections to pass the VotingPlaces data through the Clipper transformer just as the FireHalls used to be:
+
+![](./Images/Img1.239.Ex4.WorkspaceWithConnectedWriter.png)
+
+
+<br>**6) Set VotingPlaces Feature Type Name**
+<br>Finally, as with the FireHalls, let's set the Feature Type Name for the VotingPlaces writer feature type.
+
+Inspect its parameters and under Feature Type Name either enter:
+
+<pre>
+VotingPlaces-@Value(NeighborhoodName)
+</pre>
+
+...or click the dropdown and use the text editor dialog to enter that value. This will cause voting places in each different neighborhood to be written to a different table/layer.
+
+Save the workspace. As already mentioned, make sure it has a different name to the first project.
+
 
 <br>**7) Publish to Server**
-<br>Now we should publish the workspace to Server. We'll experiment by publishing one dataset with the workspace and uploading one through the web interface when we run the workspace.
+<br>Publish the workspace to FME Server. This time you can simply choose the previously created FME Server connection, rather than having to enter parameters all over again.
 
-So, start the FME Server publishing wizard (File &gt; Publish to Server).
+For the repository select the previously created Training repository and enter a name for the workspace if it doesn't already have one. 
 
-Specify the connection parameters as usual. Choose Training as the repository to upload to, but then check the Upload Data Files box and click the Select Files button:
+This time, instead of simply checking the box to upload all the data files, click the Select Files button:
 
-![](./Images/Img2.39.Ex1.PublishToServerRepository.png)
+![](./Images/Img1.240.Ex4.PerformAQuirkafleeg.png)
 
-In the Select Files dialog, deselect the five files belonging to the Shape dataset, and leave only the CSV file selected:
+This dialog lists the files we are about to publish to the repository with the workspace. Technically the VancouverNeighborhoods dataset was already published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
 
-![](./Images/Img2.40.Ex1.PublishToServerData.png)
+![](./Images/Img1.241.Ex4.SelectAllFiles.png)
 
-You will receive a warning about the lack of Shape data, but that can be ignored. Finish the publishing process by registering the workspace with the Job Submitter and Data Download services.
+In the final dialog of the publishing wizard, once again choose the Job Submitter as the web service to register the workspace against.
 
 
-<br>**8) Run On Server**
-<br>Now open the FME Server web interface and select the workspace we just published (if you visit the home page it will be in the Last Published Workspaces section). 
+<br>**8) Examine Files**
+<br>If you have access to the FME Server computer itself, open a file browser and browse to the location that repository data is stored. Here it is C:\ProgramData\Safe Software\FME Server\repositories\Training:
 
-Firstly make sure the Service parameter is set to Data Download.
+![](./Images/Img1.242.Ex4.RepositoryFilesInFilesystem.png)
 
-Next check the Published Parameters section. The source CSV is set to be read from the dataset published with the workspace. For the Shape dataset click the browse button:
+You'll see that each workspace is saved to a separate folder. If you inspect the contents of a folder you'll see the uploaded datasets within it.
 
-![](./Images/Img2.41.Ex1.RunWorkspacePublishedParams.png) 
+This is how a workspace has access to files published with it. It can also, with some manual effort, access files stored with another workspace in the same repository.
 
-In the dialog that opens, make sure it is on the Temporary Uploads tab, then click the Upload button:
 
-![](./Images/Img2.41.Ex1.RunWorkspaceDataUpload1.png)
+<br>**9) Run Workspace**
+<br>Locate and run the workspace. In the Run dialog notice that the published parameters denoting the source data include an FME environment variable, FME_MF_DIR:
 
-Browse to and select the five files in the Shape dataset and click OK to upload them:
+![](./Images/Img1.243.Ex4.RepositoryFileSelection.png)
 
-![](./Images/Img2.43.Ex1.RunWorkspaceDataUpload2.png)
+This variable tells FME to look in the same folder as the workspace for the source data files. As you can see, it isn't particularly user friendly to handle data in this way, even though the workspace will run just fine.
 
+
+<br>**9) Upload Temporary Data**
+<br>Now let's pretend that the layer of VotingPlaces data has changed in some way. You can simulate that by simply opening a file browser and making a copy of the GML file.
+
+For example, rename C:\FMEData2017\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml
+
+***NB:** You don't also have to copy ElectionVoting.xsd - it's fine to use that schema file for the new GML dataset.*
+
+Now, in the FME Server web interface, log out of the admin account and log in as a user (user/user).
+
+So, as a user we wish to run the workspace with the new data. We can't publish the data because the user account doesn't have permission to write to that repository; and in any case, since the workspace hasn't changed in any way, we shouldn't have to go through the publish process.
+
+So, click Run Workspace and select the newly published workspace in the Training repository. However, to use the new dataset, click the browse button to the right of the Source GML prompt:
+
+![](./Images/Img1.244.Ex4.SelectSourceData.png)
+
+In the dialog that opens, click the Temporary Uploads tab and then on the Upload File button:
+
+![](./Images/Img1.245.Ex4.TempUploadButton.png)
+
+Select both the files NewElectionVoting.gml and ElectionVoting.xsd and click Open to upload them. Now - back in the prior dialog - click the X button to deselect the xsd file:
+
+![](./Images/Img1.246.Ex4.TempUnselectFile.png)
+
+The file needs to exist, but it doesn't need to be selected. Now click OK and then click the Run button.
+
+The workspace will now run to completion using the uploaded dataset. 
+
+However - and this is the important part - this was only a temporary upload. The workspace can be re-run immediately and the data will still appear in the temporary upload section, but it is not a permanent solution. The data is likely to be cleaned up automatically within 24 hours. 
 
 ---
-
-Click the "garbage can" icon to remove the currently chosen dataset:
-
-![](./Images/Img2.44.Ex1.RunWorkspaceDataUpload3.png)
-
-Now click the .shp file you uploaded (you only need to select the .shp file now, not all five files), then click the add button to add it as the newly chosen dataset:
-
-![](./Images/Img2.45.Ex1.RunWorkspaceDataUpload4.png)
-
-Click OK to close the dialog. Click the Run Workspace button to run the workspace.
-
-The workspace runs using a mixture of published data and a temporary upload of Shape data. 
-
-
-<br>**9) Check Logs**
-<br>If you had correctly selected the Data Download service, running the workspace would have returned a link through which to download a dataset of the output. For now, don't click that.
-
-Click the Home button instead, and then click the translation just carried out in the Last Run Workspaces section:
-
-![](./Images/Img2.46.Ex1.LastRunWorkspaces.png)
-
-This will open the job summary page for the workspace. Notice that you can view the FME log file, but also download the result of the translation, as the URL to access it is also recorded here.
-
 
 <!--Exercise Congratulations Section--> 
 
@@ -192,10 +242,10 @@ This will open the job summary page for the workspace. Notice that you can view 
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a workspace using two Readers and find features within X radius of another</li>
+<ul><li>Update a workspace with a new reader and a new writer feature type</li>
 <li>Publish a workspace to FME Server and include source data</li>
+<li>Locate source data on the FME Server filesystem</li>
 <li>Select a source dataset to upload temporarily at run-time</li>
-<li>Locate a data download result through a workspace summary page</li></ul>
 </span>
 </td>
 </tr>
