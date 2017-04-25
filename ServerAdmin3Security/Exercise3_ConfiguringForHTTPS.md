@@ -14,16 +14,21 @@ For any HTTPS (SSL) page, a certificate is required. For development and testing
 
 First, you must generate a keystore that contains a certificate chain using the Java Keytool from the Java Developer Kit (JDK).
 
-1. Open a command prompt and run as administrator.
-2. Navigate to the Java bin directory (*C:\Program Files\FMEServer\Utilities\jre\bin\\*)
-3. Run the following command to create a new keystone file:
+1) Open a command prompt and run as administrator.
+
+2) Navigate to the Java bin directory (*C:\Program Files\FMEServer\Utilities\jre\bin\\*)
+
+3) Run the following command to create a new keystone file:
 
 		keytool -genkey -alias tomcat -keylag RSA -keystore tomcat.keystore
  
-4. Set a password for the new keystore and specify the server domain name (for example, *fmeserver.example.org*) as your first and last name.
-5. When prompted for the password for the alias <tomcat\>, press RETURN.
-6. A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*.
-7. Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\Program Files\FMEServer\Utilities\tomcat\\*.
+4) Set a password for the new keystore and specify the server domain name (for example, *fmeserver.example.org*) as your first and last name.
+
+5) When prompted for the password for the alias <tomcat\>, press RETURN.
+
+6) A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*.
+
+7) Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\Program Files\FMEServer\Utilities\tomcat\\*.
 
 ![](./Images/3.401.ConfigureForHTTPS_createKeytool.png)
 
@@ -45,9 +50,11 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 
 **a) Configure *server.xml***
 
-1. Open the *server.xml* file in a text editor.
-2. Locate the *SSLEngine* setting in the *<Listener\>* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
-3. Locate the *<Connector\>* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
+1) Open the *server.xml* file in a text editor.
+
+2) Locate the *SSLEngine* setting in the *<Listener\>* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
+
+3) Locate the *<Connector\>* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
 
 		<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
 		port="443" minSpareThreads="5"
@@ -69,15 +76,16 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="443"/>
 		
-4. Make sure to exchange *<FMEServerDir\>* and *<your_password\>* with the install directory of FME Server and the password of the keystore that was specified in step 3 under *i. Create a Keystore File*.
+4) Make sure to exchange *<FMEServerDir\>* and *<your_password\>* with the install directory of FME Server and the password of the keystore that was specified in step 3 under *i. Create a Keystore File*.
 
-5. Save and close the *server.xml* file.
+5) Save and close the *server.xml* file.
 <br><br>
 
 **b) Configure *web.xml***
 
-1. Open the *web.xml* file in a text editor.
-2. Add the following code block to the end of the file, just before the closing *</web-app\>* element:
+1) Open the *web.xml* file in a text editor.
+
+2) Add the following code block to the end of the file, just before the closing *</web-app\>* element:
 
 		<security-constraint>
 		<web-resource-collection>
@@ -89,46 +97,49 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 		</user-data-constraint>
 		</security-constraint>
 
-3. Save and close the *web.xml* file.
+3) Save and close the *web.xml* file.
 <br><br>
 
 **c) Configure *context.xml***
 
-1. Open the *context.xml* file in a text editor.
-2. Add the following to the end of the file, just before the closing *</context\>* element:
+1) Open the *context.xml* file in a text editor.
+
+2) Add the following to the end of the file, just before the closing *</context\>* element:
 
 		<Valve className="org.apache.catalina.authenticator.SSLAuthenticator"
 		disableProxyCaching="false" />
 
-3. Save and close the *context.xml* file.
+3) Save and close the *context.xml* file.
 
 ### 2. Verify the Configuration ###
 
 Verify that HTTPS was configured correctly for FME Server.
 
-1. Restart the FME Server Application service.
-2. Open a browser and navigate to *https://localhost/*. 
-3. You should see the FME Server login page in a secured format.
+1) Restart the FME Server Application service.
+
+2) Open a browser and navigate to *https://localhost/*. 
+
+3) You should see the FME Server login page in a secured format.
 
 ![](./Images/3.403.verifyConfiguration.png)
 
 ### 3. Modify Service URLs to Use HTTPS ###
 
-1. To enable SSL for a service, open the FME Server Web User Interface, and select *Services*. 
+1) To enable SSL for a service, open the FME Server Web User Interface, and select *Services*. 
 
 ![](./Images/3.404.ServicesButton.png)
 
-2. On the *Services* page, click the desired service. For this exercise, let's select *Job Submitter*.
+2) On the *Services* page, click the desired service. For this exercise, let's select *Job Submitter*.
 
 ![](./Images/3.405.selectService.png)
 
-3. The *Editing Service* page opens. In the *URL Pattern* field, change *HTTP* to *HTTPS*.
+3) The *Editing Service* page opens. In the *URL Pattern* field, change *HTTP* to *HTTPS*.
 
 ![](./Images/3.406.httpTOhttps.png)
 
-4. Click **OK**.
+4) Click **OK**.
 
-5. Check on the *Services* page that your update worked.
+5) Check on the *Services* page that your update worked.
 
 ![](./Images/3.407.checkItWorked.png)
 
@@ -136,18 +147,24 @@ Verify that HTTPS was configured correctly for FME Server.
 
 The FME Server WebSocket Server supports insecure (ws://) or secure connections (wss://). This configuration is only required if the WebSocket capabilities of FME Server will be used.
 
-1. Open the *fmeWebSocketConfig.txt* file in your FME Server installation directory (*C:\Program Files\FMEServer\Server*).
-2. Set *WEBSOCKET\_SSL_ENABLED=true*.
-3. Uncomment the *WEBSOCKET\_KEYSTORE_FILE\_PATH* directive and set it to reference the keystore file you generated under *1. Enable SSL on the Web Application Server*. 
+1) Open the *fmeWebSocketConfig.txt* file in your FME Server installation directory (*C:\Program Files\FMEServer\Server*).
+
+2) Set *WEBSOCKET\_SSL_ENABLED=true*.
+
+3) Uncomment the *WEBSOCKET\_KEYSTORE_FILE\_PATH* directive and set it to reference the keystore file you generated under *1. Enable SSL on the Web Application Server*. 
 
 		WEBSOCKET_KEYSTORE_FILE_PATH=C:\Program Files\FMEServer\Utilities\tomcat\<your_keystore_filename>
-4. Uncomment the *WEBSOCKET\_KEYSTORE\_FILE_PASSWORD* directive and set it to reference the keystore file password you generated under *1. Enable SSL on the Web Application Server*.
-5. Specify the same settings for the *WEBSOCKET\_ENABLE\_SSL,* *WEBSOCKET\_KEYSTORE\_FILE\_PATH*, and *WEBSOCKET\_KEYSTORE\_FILE_PASSWORD* directives in the following files:
-	- *C:\Program Files\FMEServer\Server\config\subscribers\websocket.properties*
-	- *C:\Program Files\FMEServer\Server\config\publishers\websocket.properties*
-6. In the following files, update the protocol in the value property of the *PROPERTY* directive from “ws:” to “wss:”
-	- *C:\ProgramData\Safe Software\FME Server\localization\publishers\websocket\publisherProperties.xml*
-	- *C:\ProgramData\Safe Software\FME Server\localization\subscribers\websocket\subscriberProperties.xml*
+4) Uncomment the *WEBSOCKET\_KEYSTORE\_FILE_PASSWORD* directive and set it to reference the keystore file password you generated under *1. Enable SSL on the Web Application Server*.
+
+5) Specify the same settings for the *WEBSOCKET\_ENABLE\_SSL,* *WEBSOCKET\_KEYSTORE\_FILE\_PATH*, and *WEBSOCKET\_KEYSTORE\_FILE_PASSWORD* directives in the following files:
+
+- *C:\Program Files\FMEServer\Server\config\subscribers\websocket.properties*
+- *C:\Program Files\FMEServer\Server\config\publishers\websocket.properties*
+	
+6) In the following files, update the protocol in the value property of the *PROPERTY* directive from “ws:” to “wss:”
+
+- *C:\ProgramData\Safe Software\FME Server\localization\publishers\websocket\publisherProperties.xml*
+- *C:\ProgramData\Safe Software\FME Server\localization\subscribers\websocket\subscriberProperties.xml*
 
 
 ---
