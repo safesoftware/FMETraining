@@ -50,6 +50,7 @@
 	* [Web Connections](./ServerAdmin4Customization/5.08.WebConnections.md)
 	* [Exercise 7: Web Connections](./ServerAdmin4Customization/5.09.Exercise_WebConnections.md)
 	* [Chapter Review](./ServerAdmin4Customization/5.10.ChapterReview.md)
+	* [Q&A Answers](./ServerAdmin4Customization/5.11.QuestionAnswers.md)
 * [Chapter 6: Migration and Upgrades](./ServerAdmin5Migration/6.00.MigrationAndUpgrades.md)
 	* [Backup Configuration Files](./ServerAdmin5Migration/6.01.BackupConfigFiles.md)
 	* [Upgrading FME Server](./ServerAdmin5Migration/6.02.UpgradingFMEServer.md)
