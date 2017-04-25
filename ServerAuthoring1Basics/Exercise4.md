@@ -4,16 +4,16 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4: Publishing Data</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Publishing Data</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)</td>
+<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)<br>Election Voting (GML)</td>
 </tr>
 
 <tr>
@@ -28,23 +28,23 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department has just purchased FME Server.
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. 
 
-Today's task for you is to use two datasets - cycle paths and drinking fountains - to figure out which drinking fountains are close (within 20 metres) of a cycle route. The output is to be written as a KML dataset.
+You have already (Exercises 1, 2, and 3) created a workspace to carry out a translation, published it to FME Server, ran it to confirm it works, shared the repository, and set the workspace to run on a schedule.
 
-You can easily do this using FME Desktop, and decide to publish it to FME Server too so that users can upload their own set of cycle paths.
+Now you have a task to create a new workspace. One of the datasets it uses is the same as in the previous exercise, so we will try to have this second workspace use the data belonging to the first.
 
 ---
 
@@ -76,159 +76,45 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 <tr>
 <td style="font-weight: bold">Reader Format</td>
-<td style="">Esri Shapefile</td>
+<td style="">GML (Geography Markup Language)</td>
 </tr>
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
+<td style="">C:\FMEData2017\Data\Elections\ElectionVoting.gml</td>
 </tr>
 
 </table>
 
-<table style="border: 0px">
+You can turn off the layer of VotingDivisions. All we are interested in for this exercise are the point features designated as VotingPlaces:
 
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">CSV (Comma Separated Value)</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
-</tr>
-
-</table>
-
-You can view the CSV data as a table only, or you can set the Schema Attributes (in the parameters dialog) to ensure the X/Y coordinate fields are interpreted as coordinate values. The data will look like this:
-
-
-![](./Images/Img2.33.Ex1.SourceData.png)
+![](./Images/Img1.233.Ex4.SourceElectionData.png)
+<br><span style="font-style:italic;font-size:x-small">Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC-BY-3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>.
 
 
 <br>**2) Create Workspace**
-<br>Having seen what the data looks like, let's create a workspace to process it. Start FME Workbench and select the Generate Workspace tool. When prompted create the workspace with these parameters:
+<br>Open the starting workspace listed above. 
 
-<table style="border: 0px">
+You might notice that it's a copy of our previous project, since the requirements for this workspace as so similar. If you do choose to just carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
 
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">CSV (Comma Separated Value)</td>
-</tr>
+The workspace looks like this:
 
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Parameters</td>
-<td style="">Coordinate System: utm83-10<br>Schema Attributes: x_coord, type = x_coordinate<br>Schema Attributes: y_coord, type = y_coordinate<br><br><img src="./Images/Img2.34.Ex1.SourceDataCSVParameters.png"></td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Writer Format</td>
-<td style="">Google KML</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Output\DrinkingFountains.kml</td>
-</tr>
-
-</table>
+![](./Images/Img1.234.Ex4.StartingWorkspace.png)
 
 
-<br>**3) Add Cycle Path Reader**
-<br>The workspace, at this point, looks like this:
+<br>**3) Remove Firehalls**
+<br>For this project we need to process election data instead of firehalls, so firstly delete the writer feature type for the firehalls, and then the reader feature type.
 
-![](./Images/Img2.35.Ex1.SourceDataInitialWorkspace.png)
+When you delete the reader feature type, you will be asked if you wish to delete the entire reader. We could reuse it but, for the sake of simplicity, click yes.
 
-You'll notice that the reason we created the workspace with the CSV data is because it contains the attributes we want on the output. But now we should also add the cycle path data.
+The workspace now looks like this:
 
-Select Readers &gt; Add Reader from the menubar. When prompted select the source data as follows:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">Esri Shapefile</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Workflow Option</td>
-<td style="">Single Merged Feature Type</td>
-</tr>
-
-</table>
-
-Click OK to add the Reader to the workspace. The reason we selected the Merged Feature Type option is because there are other cycle path datasets in that folder that we may wish to read in the future, and this option will allow each data file to pass into the workspace. 
+![](./Images/Img1.235.Ex4.WorkspaceSansFirehalls.png)
 
 
-<br>**4) Add Transformers**
-<br>There are various ways we could find the closest water fountains to the cycle paths, but the simplest is perhaps to buffer the cycle paths, overlay the two datasets, and then check for overlaps. 
+<br>**4) Add VotingPlaces**
+<br>Now... 
 
-To do this requires three transformers: a GeographicBufferer, a PointOnAreaOverlayer, and a Tester. Place one instance of each transformer and connect them up in this configuration:
-
-![](./Images/Img2.36.Ex1.SourceDataWorkspaceWithTransformers.png)
-
-- CSV Reader &gt; PointOnAreaOverlayer:Point
-- Cycle Reader &gt; GeographicBufferer:Input
-- GeographicBuffer:Output &gt; PointOnAreaOverlayer:Area
-- PointOnAreaOverlayer:Point &gt; Tester
-- Tester:Passed &gt; KML Writer 
-
-
-<br>**5) Set Transformer Parameters**
-<br>Now the transformers are placed, let's set the parameters. 
-
-- GeographicBufferer: Units=Metres, Distance=20
-- PointOnAreaOverlayer: None
-- Tester: Test Clause: _overlaps >= 1
-
-![](./Images/Img2.37.Ex1.SourceDataWorkspaceTesterParams.png)
-
-These parameters will ensure we create a 20m buffer around each cycle path, count the number of times a drinking fountain overlaps the buffer, and filter through only drinking fountains with a count of 1 or greater.
- 
-
-<br>**6) Set Writer Schema**
-<br>The only last thing to do is clean up the writer schema. We don't need to write out the x_coord or y_coord attributes in the output, and we don't need to see the kml attributes that have been exposed. Plus the feature type name for the output should be something other than "CSV".
-
-So open the feature type properties for the KML Writer feature type.
-
-In the general tab change the name from CSV to CyclePathFountains. In the user attributes tab remove the x_coord and y_coord attribute and any other kml attributes that have been added.
-
-The result will look like this:
-
-![](./Images/Img2.38.Ex1.SourceDataWorkspaceEditedFT.png)
-
-Save the workspace and run it to make sure the output looks correct.
-
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-If the workspace fails with the error <span style="font-weight:bold;color:red">KML: Feature does not have a coordinate system specified</span> then you did not set the coordinate system when you generated the workspace. Find the Reader coordinate system parameter in the Navigator window, set it to utm83-10, and try again!
-</span>
-</td>
-</tr>
-</table>
 
 ---
 
@@ -265,26 +151,6 @@ Browse to and select the five files in the Shape dataset and click OK to upload 
 
 ![](./Images/Img2.43.Ex1.RunWorkspaceDataUpload2.png)
 
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-If you set Single Merged Feature Type when you added the Shape Reader to the workspace, you should be able to select any of the Shapefile datasets here - or even all of them!
-</span>
-</td>
-</tr>
-</table>
 
 ---
 
@@ -310,28 +176,6 @@ Click the Home button instead, and then click the translation just carried out i
 
 This will open the job summary page for the workspace. Notice that you can view the FME log file, but also download the result of the translation, as the URL to access it is also recorded here.
 
----
-
-<!--New Section--> 
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">NEW</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-The listing of the data download URL in this window is new for FME2016. Previously you had no way of finding this link to the output data once you left the Run Workspace page!
-</span>
-</td>
-</tr>
-</table>
-
----
 
 <!--Exercise Congratulations Section--> 
 
