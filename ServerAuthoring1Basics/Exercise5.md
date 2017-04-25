@@ -1,27 +1,24 @@
-<!--Instructor Notes-->
-
 <!--Exercise Section-->
-
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 5</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold"></span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Using Resources</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Cycle Paths (Esri Shapefile)<br>Drinking Fountains (CSV (Comma Separated Value))</td>
+<td style="border: 1px solid darkorange">Neighborhoods (KML)<br>Election Voting (GML)</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create an FME Server-hosted workspace to identify drinking fountains with 20 metres of a cycle path</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
 </tr>
 
 <tr>
@@ -31,150 +28,158 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex5-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex5-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department has just purchased FME Server.
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. 
 
-Today's task for you is to use two datasets - cycle paths and drinking fountains - to figure out which drinking fountains are close (within 20 metres) of a cycle route. The output is to be written as a KML dataset.
+You have already (Exercise 4) created a workspace to carry out a translation, and published it to FME Server; both with data and using data uploaded temporarily. 
 
-So far you have created the workspace and published it to FME Server along with a set of data. However, it would be better practice to upload the source data to the FME Server Resources file system. That way the data could be used not only for this project, but any other that wished to use it.
-
-We could also ensure that the output data is written to the resources folders too.
+However, such data management tools are not particularly suited to a long term project, so the task here is to upgrade the workspaces to use datasets stored in a Resources folder. There we can store source data and write destination data.
 
 ---
 
 <br>**1) Open FME Server Web Interface**
-<br>Open and log in to the FME Server web interface. Choose Manage &gt; Resources on the menubar to navigate to the resources management pages.
+<br>Log in to the FME Server web interface using an administrator account (such as admin/admin). Click Resources on the menubar to navigate to the resources management pages.
 
 
 <br>**2) Create Folder**
-<br>Most data should go under the Data folder, so double-click on Data in the dialog to open that folder. To avoid mixing datasets our data should go into its own subfolder. So click on the New Folder button and create a folder called Cycling:
+<br>In most cases data should be stored under the Data folder, so click on Data in the Resources dialog to open that folder. To avoid mixing datasets our data should go into its own subfolder. So click on the New Folder button and create a folder called Election:
 
-![](./Images/Img2.47.Ex2.NewResourcesFolder.png)
+![](./Images/Img1.247.Ex5.TempUnselectFile.png)
 
-Next double-click on Cycling and within that folder create another new one called Output.
+Next click on the Election folder and within there create subfolders called Input and Output.
 
 
-<br>**3) Upload Cycle Path Data**
-<br>Now, within the cycling folder, click the upload button and upload the five files for the cycling dataset:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Transportation\Cycling\BikePaths_L.shp</td>
-</tr>
-
-</table>
-
-![](./Images/Img2.48.Ex2.UploadedData.png)
-
-Also upload into that folder, the source data for the drinking fountains:
+<br>**3) Upload Source Datasets**
+<br>Browse to the Input folder and click the upload button. Upload the source datasets for the current translation: 
 
 <table style="border: 0px">
 
 <tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Engineering\DrinkingFountains.csv</td>
+<td style="font-weight: bold">Reader Datasets</td>
+<td style="">C:\FMEData2017\Data\Elections\ElectionVoting.gml<br>C:\FMEData2017\Data\Elections\ElectionVoting.xsd<br>C:\FMEData2017\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>
+
+![](./Images/Img1.248.Ex5.UploadedFiles.png)
 
 So we now have both source datasets and a folder to write the output data to.
 
 
-<br>**4) Run Workspace**
-<br>Now locate and run the workspace published in exercise 1 (or else open the workspace listed above and publish it to FME Server).
+<br>**4) Add Writer**
+<br>Up until now all of our workspaces have had only a NULL (dummy) writer. Now we know about Resources we can add a proper writer and point its output to the Resources Output folder.
 
-In the published parameters for the workspace be sure to click the browse button, navigate to the resources folder Cycling, and select the appropriate files:
+So, open the workspace listed above in FME Workbench and then select Writers &gt; Add Writer on the menubar and set up a new writer with the following parameters:
 
-![](./Images/Img2.49.Ex2.PublishedParameters.png)
+<table style="border: 0px">
 
-Click Run Workspace to finish running the workspace.
-
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
 <tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
-</td>
+<td style="font-weight: bold">Writer Format</td>
+<td style="">Esri Geodatabase (File Geodb API)</td>
 </tr>
 
 <tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-You should also set the output location to the Cycling/Output folder - though of course there won't be an output folder location if you run this using the Data Download service!
-</span>
-</td>
+<td style="font-weight: bold">Writer Dataset</td>
+<td style="">C:\FMEData2017\Output\Training\DepartmentData.gdb</td>
 </tr>
+
+<tr>
+<td style="font-weight: bold">Feature Class or Table Definition</td>
+<td style="">None (Advanced)</td>
+</tr>
+
 </table>
 
----
+The reason we want to add no feature types is that we can move the existing ones from the NULL writer. So when you click OK the workspace will look no different, but there will be a new writer in the Navigator window:
 
-<br>**5) Open Workspace for Editing**
+![](./Images/Img1.249.Ex5.AddedGeodatabaseWriter.png)
+
+
+<br>**5) Move Feature Types**
+<br>Inspect the parameters dialog for each writer feature type in turn. For each type move it from the NULL writer to the FILEGDB writer, like so: 
+
+![](./Images/Img1.250.Ex5.MoveAFeatureType.png)
+
+This will expose a number of extra parameters. The key one to set is Geometry. For the Neighborhoods they should be set to geodb_polygon:
+
+![](./Images/Img1.251.Ex5.TheBanyanTree.png)
+
+For the VotingPlaces feature type the Geometry parameter should be set to geodb_point.
+
+Now the two feature types belong to the Geodatabase writer, and the NULL writer can be deleted from the Navigator window if you wish.
+
+
+<br>**6) Set Geodatabase Parameter**
+<br>One (very quick) last thing to change: locate the Geodatabase writer in the Navigator window and expand its list of parameters. Double-click the parameter labelled Overwrite Existing Geodatabase and set it to Yes:
+
+![](./Images/Img1.253.Ex5.OverwriteGeodatabaseParameter.png)
+
+This ensures we aren't continually adding data to the same dataset if we run the workspace more than once.
+
+
+<br>**7) Run Workspace**
+<br>Test run the workspace in FME Desktop. Inspect the output. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
+
+![](./Images/Img1.252.Ex5.OutputTables.png)
+
+
+<br>**8) Publish and Run Workspace**
+<br>Publish the workspace to FME Server. Be sure not to check the button to upload any data. Register the workspace against the Job Submitter service as usual.
+
+Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog. Notice how the dataset paths are all hard-coded to the original file locations:
+
+![](./Images/Img1.254.Ex5.HardCodedParameters.png)
+
+Obviously this will be of no use where the Server does not have access to those files. However, because we already uploaded them to the Resources folders we can use those files.
+
+So, for each file, click the browse button, browse to the appropriate subfolder in the Resources folder, and select/set the file location. For the Geodatabase output location you'll need to type the file name manually:
+
+![](./Images/Img1.256.Ex5.SetGeodatabaseOutputAsAResource.png)
+
+Remember to remove any existing references to the incorrect files:
+
+![](./Images/Img1.255.Ex5.RemoveExistingReference.png)
+
+Now when the workspace is completed a Geodatabase file should appear in the folder Resources\Data\Election\Output:
+
+![](./Images/Img1.257.Ex5.OutputGeodatabaseInResourcesFolder.png)
+
+
+
+<br>**9) Apply FME Server Parameter**
 <br>Although the workspace ran correctly, and used the data in the resources folder, that's only because we selected that data at run time. It is not a permanent feature of the workspace.
-
-For example, if I downloaded the workspace into FME Workbench, it would point to the original (local) data files, not the resources folder.
 
 It would be much better if the workspace was programmed to look into the resources folders automatically.
 
-So, start FME Workbench and open the workspace from exercise 1 (or the begin workspace listed above).
+So, return to the workspace in FME Server. 
+
+If we do set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window locate the three parameters for source and destination datasets and delete them:
+
+![](./Images/Img1.258.Ex5.DeleteThePublishedParameters.png)
 
 
-<br>**6) Delete Published Parameters**
-<br>If we do set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window locate the  three parameters for source and destination datasets and delete them:
 
-![](./Images/Img2.50.Ex2.PublishedParametersToDelete.png)
-
-
-<br>**7) Set Source/Destination Parameters**
-<br>Now, in turn, double-click the source and destination dataset parameters and change them to:
+<br>**10) Set Source/Destination Parameters**
+<br>Now, in turn, locate the source and destination dataset parameters for the two readers and one writer. Double-click each in turn and change them to:
 
 <table>
-<tr><td>CSV Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\DrinkingFountains.csv</td></tr>
-<tr><td>Shape Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\BikePaths&#95;L.shp</td></tr>
-<tr><td>KML Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Cycling\Output\DrinkingFountains.kml</td></tr>
+<tr><td>KML Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Input\VancouverNeighborhoods.kml</td></tr>
+<tr><td>GML Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Input\ElectionVoting.gml</td></tr>
+<tr><td>Geodatabase Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\DepartmentData.gdb</td></tr>
 </table>
 
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-Remember, you can also obtain these file paths by locating the files in the FME Server web interface, right-clicking, and choosing Properties.
-</span>
-</td>
-</tr>
-</table>
-
----
-
-The result will look like this:
-
-![](./Images/Img2.51.Ex2.DatasetParametersSet.png)
-
+![](./Images/Img1.259.Ex5.ResetDatasetParameters.png)
 
 Save the workspace and publish it back to FME Server.
 
@@ -201,10 +206,8 @@ This time you won't be able to test-run the workspace in FME Workbench, because 
 
 ---
 
-<br>**8) Re-Run Workspace**
+<br>**11) Re-Run Workspace**
 <br>Now run the workspace on FME Server. Be sure to use the Job Submitter service (not Data Download) so the output is written to the required file. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used in the resources folders just the same.
-
-![](./Images/Img2.52.Ex2.FinalOutputInResources.png)
 
 ---
 
@@ -224,6 +227,7 @@ This time you won't be able to test-run the workspace in FME Workbench, because 
 By completing this exercise you have learned how to:
 <br>
 <ul><li>Create resources folders and upload data to them</li>
+<li>Add a writer to a workspace and move feature types from another writer</li>
 <li>Run a workspace and select data from resources folders</li>
 <li>Edit a workspace to permanently use the resources folders</li>
 <li>Delete parameters to prevent the end-user changing them</li></ul>

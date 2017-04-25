@@ -28,7 +28,7 @@
    * [Exercise: Daily Database Updates: Publishing Data](ServerAuthoring2SelfServe1/Exercise4.md)
    * [Resource Filesystem](ServerAuthoring1Basics/1.18.ResourceFilesystem.md)
    * [Authoring for Resources](ServerAuthoring1Basics/1.19.AuthoringForResources.md)
-   * [Exercise: FME Server Resources](ServerAuthoring1Basics/Exercise5.md)
+   * [Exercise: Daily Database Updates: Using Resources](ServerAuthoring1Basics/Exercise5.md)
    * [Running the Job Submitter using a URL](ServerAuthoring1Basics/1.20.RunningWithURL.md)
    * [Authoring Job Chains](ServerAuthoring1Basics/1.21.AuthoringJobChains.md)
    * [Exercise: Authoring Workspace Chains](ServerAuthoring1Basics/Exercise6.md)

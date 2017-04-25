@@ -13,7 +13,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)<br>Election Voting (GML)</td>
+<td style="border: 1px solid darkorange">Neighborhoods (KML)<br>Election Voting (GML)</td>
 </tr>
 
 <tr>
@@ -169,7 +169,7 @@ For the repository select the previously created Training repository and enter a
 
 This time, instead of simply checking the box to upload all the data files, click the Select Files button:
 
-![](./Images/Img1.240.Ex4.PerformAQuirkafleeg.png)
+![](./Images/Img1.240.Ex4.WeMustPerformAQuirkafleeg.png)
 
 This dialog lists the files we are about to publish to the repository with the workspace. Technically the VancouverNeighborhoods dataset was already published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
 
