@@ -1,4 +1,34 @@
-# Exercise - Configuring for HTTPS #
+<!--Exercise Section-->
+
+<table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
+<tr>
+<td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
+</td>
+<td style="border: 2px solid darkorange;background-color:darkorange;color:white">
+<span style="color:white;font-size:x-large;font-weight: bold">Configuring FME Server for HTTPS</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Data</td>
+<td style="border: 1px solid darkorange">N/A</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
+<td style="border: 1px solid darkorange">Change access to the FME Server Web User Interface to HTTPS</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
+<td style="border: 1px solid darkorange">Creating a self-signed certificate and importing into the FME Server keystore</td>
+</tr>
+
+</table>
+
+---
 
 Your company is expanding rapidly and hiring many new employees. Now, instead of having everyone able to access to FME Server, you have set up logins so only trusted personnel have access. You also want to set up extra precautions to keep the login information secure.
 
@@ -30,7 +60,7 @@ First, you must generate a keystore that contains a certificate chain using the 
 
 7) Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\Program Files\FMEServer\Utilities\tomcat\\*.
 
-![](./Images/3.401.ConfigureForHTTPS_createKeytool.png)
+![](./Images/3.404.ConfigureForHTTPS_createKeytool.png)
 
 #### ii. Working with the Certificate ####
 
@@ -42,7 +72,7 @@ The new keystore must be imported into the FME Server keystore for trusted certi
 
 You will be prompted to enter two passwords. One for the destination keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in step 3 above.
 
-![](./Images/3.402.ConfigureForHTTPS_selfSignedCertificate.png)
+![](./Images/3.405.ConfigureForHTTPS_selfSignedCertificate.png)
 
 #### iii. Configure Tomcat ####
 
@@ -121,51 +151,27 @@ Verify that HTTPS was configured correctly for FME Server.
 
 3) You should see the FME Server login page in a secured format.
 
-![](./Images/3.403.verifyConfiguration.png)
+![](./Images/3.406.verifyConfiguration.png)
 
 ### 3. Modify Service URLs to Use HTTPS ###
 
 1) To enable SSL for a service, open the FME Server Web User Interface, and select *Services*. 
 
-![](./Images/3.404.ServicesButton.png)
+![](./Images/3.407.ServicesButton.png)
 
 2) On the *Services* page, click the desired service. For this exercise, let's select *Job Submitter*.
 
-![](./Images/3.405.selectService.png)
+![](./Images/3.408.selectService.png)
 
 3) The *Editing Service* page opens. In the *URL Pattern* field, change *HTTP* to *HTTPS*.
 
-![](./Images/3.406.httpTOhttps.png)
+![](./Images/3.409.httpTOhttps.png)
 
 4) Click **OK**.
 
 5) Check on the *Services* page that your update worked.
 
-![](./Images/3.407.checkItWorked.png)
-
-### 4. Enable SSL on the WebSocket Server (Optional) ###
-
-The FME Server WebSocket Server supports insecure (ws://) or secure connections (wss://). This configuration is only required if the WebSocket capabilities of FME Server will be used.
-
-1) Open the *fmeWebSocketConfig.txt* file in your FME Server installation directory (*C:\Program Files\FMEServer\Server*).
-
-2) Set *WEBSOCKET\_SSL_ENABLED=true*.
-
-3) Uncomment the *WEBSOCKET\_KEYSTORE_FILE\_PATH* directive and set it to reference the keystore file you generated under *1. Enable SSL on the Web Application Server*. 
-
-		WEBSOCKET_KEYSTORE_FILE_PATH=C:\Program Files\FMEServer\Utilities\tomcat\<your_keystore_filename>
-4) Uncomment the *WEBSOCKET\_KEYSTORE\_FILE_PASSWORD* directive and set it to reference the keystore file password you generated under *1. Enable SSL on the Web Application Server*.
-
-5) Specify the same settings for the *WEBSOCKET\_ENABLE\_SSL,* *WEBSOCKET\_KEYSTORE\_FILE\_PATH*, and *WEBSOCKET\_KEYSTORE\_FILE_PASSWORD* directives in the following files:
-
-- *C:\Program Files\FMEServer\Server\config\subscribers\websocket.properties*
-- *C:\Program Files\FMEServer\Server\config\publishers\websocket.properties*
-	
-6) In the following files, update the protocol in the value property of the *PROPERTY* directive from “ws:” to “wss:”
-
-- *C:\ProgramData\Safe Software\FME Server\localization\publishers\websocket\publisherProperties.xml*
-- *C:\ProgramData\Safe Software\FME Server\localization\subscribers\websocket\subscriberProperties.xml*
-
+![](./Images/3.410.checkItWorked.png)
 
 ---
 
@@ -182,10 +188,12 @@ The FME Server WebSocket Server supports insecure (ws://) or secure connections 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-You have now successfully configured your FME Server for HTTPS!
+By completing this exercise you have learned how to:
+<br>
+<ul><li>Create a self-signed certificate</li>
+<li>Import a certificate in the FME Server Java keystore</li>
+<li>Change FME Server Web Services to use HTTPS URLs</li></ul>
 </span>
 </td>
 </tr>
 </table>
-
----
