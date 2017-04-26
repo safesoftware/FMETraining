@@ -48,7 +48,7 @@
 	* [Database Connections](./ServerAdmin4Customization/5.07.DatabaseConnections.md)
 	* [Web Connections](./ServerAdmin4Customization/5.08.WebConnections.md)
 	* [Exercise 1: Web Connections](./ServerAdmin4Customization/Exercise1_WebConnections.md)
-	* [Chapter Review](./ServerAdmin4Customization/5.19.ChapterReview.md)
+	* [Chapter Review](./ServerAdmin4Customization/5.09.ChapterReview.md)
 	* [Q&A Answers](./ServerAdmin4Customization/5.10.QuestionAnswers.md)
 * [Chapter 6: Migration and Upgrades](./ServerAdmin5Migration/6.00.MigrationAndUpgrades.md)
 	* [Backup and Migration](./ServerAdmin5Migration/6.01.BackupAndMigration.md)
