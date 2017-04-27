@@ -53,7 +53,7 @@
 * [Chapter 6: Migration and Upgrades](./ServerAdmin6Migration/6.00.MigrationAndUpgrades.md)
 	* [Backup and Migration](./ServerAdmin6Migration/6.01.BackupAndMigration.md)
 	* [Backup Configuration Files](./ServerAdmin6Migration/6.02.BackupConfigFiles.md)
-	* [Exercise 1: Backup and Migration](./ServerAdmin6Migration/6.03.Exercise_Migration.md)
+	* [Exercise 1: Backup and Migration](./ServerAdmin6Migration/Exercise_Migration.md)
 	* [Upgrading FME Server](./ServerAdmin6Migration/6.04.UpgradingFMEServer.md)
 	* [Projects](./ServerAdmin6Migration/6.05.Projects.md)
 	* [Chapter Review](./ServerAdmin6Migration/6.06.ChapterReview.md)
