@@ -32,15 +32,17 @@ Save these files to with your backup configuration file to easily find during a 
 
 **4) Log Files**
 
-Like configuration files, Log Files are not automatically migrated with FME Server.
+Like configuration files, Log Files are not automatically backed up with FME Server.
 
-If you want to migrate your log files to your new FME Server, you will need to manually backup and restore them. FME Server log files can be found on the *Resources* page of the Web User Interface in the *Logs* folder.
+ FME Server log files can be found on the *Resources* page of the Web User Interface in the *Logs* folder.
 
-For this exercise we will migrate only a couple of the log files. Go to **Resources &gt; Logs &gt; core &gt; current** and place a checkmark in the boxes beside *fmeconfiguration.log*, *fmeconnection.log*, and *fmeprocessmonitorcore.log*.
+For this exercise we will backup only a couple of the log files. Go to **Resources &gt; Logs &gt; core &gt; current** and place a checkmark in the boxes beside *fmeconfiguration.log*, *fmeconnection.log*, and *fmeprocessmonitorcore.log*.
 
 ![](./Images/6.403.SelectLogFiles.png)
 
 Download and save these log files to where you saved your **BackupFMEServer** configuration and your configuration files.
+
+Log files from a previous FME Server instance can be backed up but cannot be restored to a new instance of FME Server. It is a good idea to backup log files in case you need to reference them later on. If you do not backup your log files, they disappear when you install your new FME Server.
 
 **5) Switch to your new FME Server**
 
@@ -94,11 +96,6 @@ just before the closing &lt;/web-app&gt; element.
 You would then have both files open in a text editor and can edit the new *web.xml* file to be configured to allow for encrypted web connections.
 
 Remember, it is strongly suggested to go through each configuration file instead of simply copying the old configuration file to the new FME Server directory; file structures may change between releases!
-
-**8) Restoring Log Files**
-
-UPLOAD TO FME SERVER RESOURCE FOLDERS??
-
 
 ---
 
