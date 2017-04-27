@@ -24,9 +24,11 @@ Click the **Download** button to download and save the file to your computer.
 
 It is also a good idea to manually back up any FME Server configuration files you have altered to a location outside of your FME Server installation directory for reference later on. Certain configurations are not included in the primary backup procedure and you will need to configure the old files with the new files.
 
-In this training course, we have altered *server.xml*, *web.xml*, *context.xml*, and created a tomcat.keystore file in *Configuring FME Server for HTTPS* exercise, and *pg_hba.conf*, and *fmeCommonConfig.txt* in the *Switching to a PostgreSQL Database* exercise. 
+In this training course, we have altered *server.xml*, *web.xml*, *context.xml*, *cacerts* and created a tomcat.keystore file in *Configuring FME Server for HTTPS* exercise, and *pg_hba.conf*, and *fmeCommonConfig.txt* in the *Switching to a PostgreSQL Database* exercise. 
 
-Copy these files to where you saved your **BackupFMEServer** configuration.
+So if we were trying to migrate our current FME Server configurations, these are the files that we would want to have copies of for reference later on when restoring FME Server configurations.
+
+Save these files to with your backup configuration file to easily find during a restore.
 
 **4) Log Files**
 
@@ -42,7 +44,7 @@ Download and save these log files to where you saved your **BackupFMEServer** co
 
 **5) Switch to your new FME Server**
 
-This is the step where you would install your new FME Server. 
+This is when you would install your new FME Server. For the purposes of this exercise, we will instead go over how you would verify proper migration of your old FME Server configurations.
 
 **6) Restoring the BackupFMEServer Configuration**
 
@@ -53,7 +55,7 @@ On the Web User Interface, go to the **Backup & Restore &gt; Restore**.
 Set the *Configure Restore* parameters as follows:
 
 - Check the box for **Overwrite Existing Items** 
-- **Restore From**: Upload.
+- **Restore From:** Upload.
 
 ![](./Images/6.404.RestoreBackupFile.png)
 
@@ -67,51 +69,15 @@ Once the **BackupFMEServer** configurations are restored, you will see this mess
 
 ![](./Images/6.406.RestoreConfiguration.png)
 
+indicating a successful restore of your old *BackupFMEServer.fsconfig* file.
+
 **7) Restoring the Configuration Files**
 
-For the *Configuring for HTTPS* exercise, we created a keystore file (tomcat.keystore). This file needs to be placed into *C:\Program Files\FMEServer\Utilities\tomcat\\* and *C:\Program Files\FMEServer\Utilities\jre\bin\\*.
+After restoring your *BackupFMEServer.fsconfig* file, the next step is to go through the old configuration files that you manually saved, and the new FME Server instance's configuration files and altering them as needed.
 
-You will also have to import the keystore again through the command prompt with:
+For example, if you configured your FME Server for HTTPS, the *keystore*, *cacerts*, *server.xml*, *web.xml*, and *context.xml* files would need to be altered. The best practice is to go through each file and alter the sections that you have changed.
 
-	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore "C:\Program Files\FMEServer\Utilities\jre\lib\security\cacerts"
-
-Remember, password #1 is **changeit** and password #2 is the password you specified when creating the keystore.
-
-We also altered the *server.xml*, *web.xml*, and *context.xml* files. Go to *C:\Program Files\FMEServer\Utilities\tomcat\conf\\* and open up *server.xml* in a text editor.
-
-Remember, we changed the *"on"* value to *"off"* for the *&lt;Listener&gt;* element that included *className="org.apache.catalina.core.AprLifecycleListener"*
-
-and we added
-
-		<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
-		port="443" minSpareThreads="5"
-		enableLookups="true" disableUploadTimeout="true"
-		acceptCount="100" maxThreads="200"
-		scheme="https" secure="true" SSLEnabled="true"
-		keystoreFile="<FMEServerDir>\Utilities\tomcat\tomcat.keystore"
-		keystorePass="<your_password>"
-		clientAuth="false" sslEnabledProtocols="TLSv1,TLSv1.1,TLSv1.2"
-		sslImplementationName="org.apache.tomcat.util.net.jsse.JSSEImplementation"
-		ciphers="TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-		TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-		TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,
-		TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,
-		TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,
-		SSL_RSA_WITH_3DES_EDE_CBC_SHA"
-		URIEncoding="UTF8" />
- 
-		<Connector port="80" protocol="HTTP/1.1"
-		redirectPort="443"/>
-
-at the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"*. Change the new *server.xml* file to match the old *server.xml*.
-
-Don't forget that we also changed the &lt;FMEServerDir&gt; and &lt;your_password&gt;.
-
-Save and close the new *server.xml* file.
-
-Open the *web.xml* file in a text editor and change it to match the old *web.xml*.
-
-Remember, we added
+For instance, in the *web.xml* file we added:
 
 		<security-constraint>
 		<web-resource-collection>
@@ -125,23 +91,41 @@ Remember, we added
 
 just before the closing &lt;/web-app&gt; element.
 
-Save and close the new *web.xml* file.
+You would then have both files open in a text editor and can edit the new *web.xml* file to be configured to allow for encrypted web connections.
 
-Open the *context.xml* file in a text editor and change it to match the old *context.xml*.
+Remember, it is strongly suggested to go through each configuration file instead of simply copying the old configuration file to the new FME Server directory; file structures may change between releases!
 
-Remember, we added
+**8) Restoring Log Files**
 
-		<Valve className="org.apache.catalina.authenticator.SSLAuthenticator"
-		disableProxyCaching="false" />
+UPLOAD TO FME SERVER RESOURCE FOLDERS??
 
-just before the closing &lt;/context&gt; element.
 
-Restart the FME Server Application service.
+---
 
-Open a web browser and go to *http://localhost/* to check that you have successfully transferred the HTTPS configuration of your old FME Server instance.
+<!--Exercise Congratulations Section--> 
 
-You should see the FME Server login screen in a secured format.
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-thumbs-o-up fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">CONGRATULATIONS!</span>
+</td>
+</tr>
 
-![](./Images/6.407.HTTPS.png)
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+By completing this exercise you have learned how to:
+<br>
+<ul><li>Backup your FME Server instance</li>
+<li>Backup additional configuration files</li>
+<li>Backup log files</li>
+<li>Restore .fsconfig files</li>
+<li>Restore backup configuration files</li>
+<li>Restore log files</li></ul>
+</span>
+</td>
+</tr>
+</table>
 
-For the *Switching to a PostgreSQL Database* exercise, we altered the *pg_hba.conf*, and *fmeCommonConfig.txt* files.
+---
