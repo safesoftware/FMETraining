@@ -130,7 +130,7 @@ Instead of using Text Reader &gt; JSONFlattener we could have used the JSON Read
 
 
 <br>**4) Update Subscription**
-<br>Now log in to the FME Server web user interface and navigate to the Notifications page. 
+<br>Now log in to the FME Server web interface and navigate to the Notifications page. 
 
 Click on the Subscriptions tab and select the existing "Process Building Updates" Subscription to edit it.
 
@@ -144,11 +144,11 @@ Click OK to update the Subscription.
 <br>**5) Test Topic**
 <br>Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shapefiles (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 2).
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web user interface. 
+Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web interface. 
 
 
 <br>**6) Check Results**
-<br>Open the Jobs page in the web user interface. Under completed jobs should list the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
+<br>Open the Jobs page in the web interface. Under completed jobs should list the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
 
 <table>
 <tr><td>dirwatch_publisher_action</td><td>CREATE</td></tr>

@@ -71,7 +71,7 @@ This exercise continues where Exercise 4 left off. You must have completed Exerc
 ---
 
 <br>**1) Add Subscription**
-<br>Open the FME Server web user interface and navigate to the Notifications page. Click the Subscriptions tab and then click New to create a new Subscription. This will be an email service through which a response will be sent.
+<br>Open the FME Server web interface and navigate to the Notifications page. Click the Subscriptions tab and then click New to create a new Subscription. This will be an email service through which a response will be sent.
 
 Give the subscription a name like *Send Building Update Email* and create a new topic for it such as *BuildingUpdateEmail* (it's important to use a different topic than from the previous exercises).
 

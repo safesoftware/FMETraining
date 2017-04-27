@@ -82,7 +82,7 @@ This will give us a workspace to run in response to new files; albeit one that d
 
 
 <br>**3) Create Subscription**
-<br>Return to the FME Server web user interface and navigate to the Notifications page. Click on the Subscriptions tab and click New to create a new Subscription.
+<br>Return to the FME Server web interface and navigate to the Notifications page. Click on the Subscriptions tab and click New to create a new Subscription.
 
 Call the subscription "Process Building Updates". Subscribe to the topic ShapeIncomingFile:
 

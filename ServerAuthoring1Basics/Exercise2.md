@@ -51,7 +51,7 @@ After creating a workspace to carry out this translation, and publishing it to F
 
 
 <br>**1) Connect to Server**
-<br>To log in to the server interface either select the Web User Interface option from the start menu or - in your web browser - enter the address to your FME Server.
+<br>To log in to the server interface either select the Web Interface option from the start menu or - in your web browser - enter the address to your FME Server.
 
 ---
 
@@ -75,7 +75,7 @@ When FME Server is installed on either physical or virtual hardware, the address
 
 ---
 
-This will open the web user interface login screen for the FME Server being used. Bookmark this web address, since you will use this link quite often.
+This will open the web interface login screen for the FME Server being used. Bookmark this web address, since you will use this link quite often.
 
 
 <br>**2) Log In to Server**

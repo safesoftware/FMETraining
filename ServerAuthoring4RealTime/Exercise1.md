@@ -47,7 +47,7 @@ As a technical analyst in the GIS department you want to start experimenting wit
 
 
 <br>**1) Create Resources Folder**
-<br>The first step is to create a Resources folder to copy the data to. Open the FME Server web user interface and navigate to Manage &gt; Resources
+<br>The first step is to create a Resources folder to copy the data to. Open the FME Server web interface and navigate to Manage &gt; Resources
 
 Browse to the Data folder and create a new subfolder called BuildingUpdates:
 
@@ -102,7 +102,7 @@ Change the Poll Interval to 1 Minute and click OK to create the new publication.
 <br>**5) Test Topic**
 <br>Now let's test the topic. Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shapefiles (.dbf, .prj, .shp, .shx) and create a zip file out of them.
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web user interface. If you use the web user interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
+Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web interface. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
 
 ![](./Images/Img4.404.Ex1.DirectoryWatchDataInFolder.png)
 

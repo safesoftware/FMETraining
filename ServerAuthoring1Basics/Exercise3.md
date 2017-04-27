@@ -54,7 +54,7 @@ Firstly you should ensure other users have access to the workspace to run it, bu
 
 
 <br>**1) Connect to Server**
-<br>Browse to the log in page of the FME Server interface, either starting it through the Web User Interface option on the start menu or by logging out if you are already logged in.
+<br>Browse to the log in page of the FME Server interface, either starting it through the Web Interface option on the start menu or by logging out if you are already logged in.
 
 This time log in using the generic user account that is a default account on any FME Server installation. The username is ***user*** and the password is ***user*** as well!
 

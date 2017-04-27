@@ -50,7 +50,7 @@ Having learned that not all users are able to access the internal network where 
 ---
 
 <br>**1) Create Topic**
-<br>The first step is to create a Topic that will be triggered by the email. Log in to the FME Server web user interface and navigate to the Notifications page.
+<br>The first step is to create a Topic that will be triggered by the email. Log in to the FME Server web interface and navigate to the Notifications page.
 
 Click the Publications tab and then select New.
 
@@ -212,13 +212,13 @@ Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topic
 
 
 <br>**8) Update Directory Watch Subscription (Optional)**
-<br>If you have completed Exercise 3, using the FME Server web user interface you can set the "Process Building Updates" Subscription to point at this new workspace. 
+<br>If you have completed Exercise 3, using the FME Server web interface you can set the "Process Building Updates" Subscription to point at this new workspace. 
 
 
 <br>**9) Test Workspace**
 <br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
 
-You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources > Output in the FME Server web user interface.
+You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources > Output in the FME Server web interface.
 
 
 ---
