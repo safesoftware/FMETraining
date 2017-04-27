@@ -54,7 +54,7 @@ First, you must generate a keystore that contains a certificate chain using the 
  
 4) Set a password for the new keystore and specify the server domain name (for example, *fmeserver.example.org*) as your first and last name.
 
-5) When prompted for the password for the alias <tomcat\>, press RETURN.
+5) When prompted for the password for the alias &lt;tomcat&gt;, press RETURN.
 
 6) A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*.
 
@@ -82,9 +82,9 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 
 1) Open the *server.xml* file in a text editor.
 
-2) Locate the *SSLEngine* setting in the *<Listener\>* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
+2) Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
 
-3) Locate the *<Connector\>* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
+3) Locate the &lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
 
 		<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
 		port="443" minSpareThreads="5"
@@ -106,7 +106,7 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="443"/>
 		
-4) Make sure to exchange *<FMEServerDir\>* and *<your_password\>* with the install directory of FME Server and the password of the keystore that was specified in step 3 under *i. Create a Keystore File*.
+4) Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 3 under *i. Create a Keystore File*.
 
 5) Save and close the *server.xml* file.
 <br><br>
@@ -115,7 +115,7 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 
 1) Open the *web.xml* file in a text editor.
 
-2) Add the following code block to the end of the file, just before the closing *</web-app\>* element:
+2) Add the following code block to the end of the file, just before the closing *&lt;/web-app&gt;* element:
 
 		<security-constraint>
 		<web-resource-collection>
@@ -134,7 +134,7 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 
 1) Open the *context.xml* file in a text editor.
 
-2) Add the following to the end of the file, just before the closing *</context\>* element:
+2) Add the following to the end of the file, just before the closing *&lt;/context&gt;* element:
 
 		<Valve className="org.apache.catalina.authenticator.SSLAuthenticator"
 		disableProxyCaching="false" />
