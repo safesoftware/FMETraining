@@ -84,7 +84,7 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 
 2) Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
 
-3) Locate the &lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
+3) Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
 
 		<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
 		port="443" minSpareThreads="5"
