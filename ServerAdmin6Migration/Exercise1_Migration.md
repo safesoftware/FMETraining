@@ -28,7 +28,7 @@ In this training course, we have altered *server.xml*, *web.xml*, *context.xml*,
 
 So if we were trying to migrate our current FME Server configurations, these are the files that we would want to have copies of for reference later on when restoring FME Server configurations.
 
-Save these files to with your backup configuration file to easily find during a restore.
+Save these files with your backup configuration file to easily find during a restore.
 
 **4) Log Files**
 
@@ -71,7 +71,7 @@ Once the **BackupFMEServer** configurations are restored, you will see this mess
 
 ![](./Images/6.406.RestoreConfiguration.png)
 
-indicating a successful restore of your old *BackupFMEServer.fsconfig* file.
+... indicating a successful restore of your old *BackupFMEServer.fsconfig* file.
 
 **7) Restoring the Configuration Files**
 
