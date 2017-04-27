@@ -93,15 +93,15 @@ Select Readers &gt; Add Reader from the menubar. When prompted set the parameter
 
 </table>
 
-It doesn't matter what text file we use as the source right now; setting the source dataset in this step is only to satisfy the Text Reader requirements. At run time, the source dataset will be replaced by the content of the incoming message.
+It doesn't matter what text file we use as the source right now; setting the source dataset in this step is only to satisfy the text file reader requirements. At run time, the source dataset will be replaced by the content of the incoming message.
 
 
 <br>**2) Add JSONFlattener**
 <br>Now add a JSONFlattener transformer to the workspace, after the Text File Reader. The incoming message is formatted as JSON, and this transformer will expose attributes on the canvas - making them available to work with.
 
-Open the parameters dialog and select *text&#95;line&#95;data* as the source of the JSON content.
+Inspect the transformer parameters and - under the JSON Document parameter - select the attribute *text&#95;line&#95;data* as the source of the JSON content.
 
-Add Logger transformers after the JSONFlattener.
+Add a Logger transformer to each output port on the JSONFlattener.
 
 ---
 
@@ -134,7 +134,9 @@ Instead of using Text Reader &gt; JSONFlattener we could have used the JSON Read
 
 Click on the Subscriptions tab and select the existing "Process Building Updates" Subscription to edit it.
 
-Change the specified workspace to the one uploaded in the previous step. Next to the Source Text File field, select the checkbox for *Get Value from Topic Message*.
+Change the specified workspace, from the one created in Exercise 2, to the one uploaded in the previous step. 
+
+The change of workspace will cause a Source Text File parameter to appear. Here just select the checkbox to the right for *Get Value from Topic Message*.
 
 ![](./Images/Img4.410.Ex3.ValueFromTopicMessage.png)
 
@@ -142,13 +144,15 @@ Click OK to update the Subscription.
 
 
 <br>**5) Test Topic**
-<br>Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shapefiles (.dbf, .prj, .shp, .shx) and create a zip file out of them (as you did in Exercise 2).
+<br>Once more (as in exercises 1 and 2) locate the source Shapefile datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints and create a compressed (zip) file from a set of Shapefiles (.dbf, .prj, .shp, .shx).
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web interface. 
+Be sure to give the zip file a different name to any used previously.
+
+Copy the zip file into the Resources folder data\BuildingUpdates. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web interface. 
 
 
 <br>**6) Check Results**
-<br>Open the Jobs page in the web interface. Under completed jobs should list the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
+<br>Open the Jobs page in the web interface. The completed jobs list should include the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON, and a number of attributes extracted from the JSON. 
 
 <table>
 <tr><td>dirwatch_publisher_action</td><td>CREATE</td></tr>
@@ -183,7 +187,7 @@ You may recognize these attributes from the Topic Monitoring exercise - indeed y
 
 
 <br>**7) Edit JSONFlattener Transformer**
-<br>Back in FME Workbench open the JSONFlattener transformer parameters. Under Attribute to Expose add the attribute *dirwatch&#95;publisher&#95;path*
+<br>Back in FME Workbench inspect the JSONFlattener transformer parameters once more. Under Attribute to Expose add the attribute *dirwatch&#95;publisher&#95;path* by clicking the browse button and then manually typing its name.
 
 
 <br>**8) Add FeatureReader Transformer**
@@ -191,7 +195,7 @@ You may recognize these attributes from the Topic Monitoring exercise - indeed y
 
 ![](./Images/Img4.411.Ex3.FeatureReaderInWorkspace.png)
 
-This is a transformer that will let us read the contents of the dataset into the workflow mid-translation. Open the parameters dialog and set the following values:
+This is a transformer that will let us read the contents of the dataset into the workflow mid-translation. Inspect the transformer's parameters and set the following values:
 
 <table>
 <tr><td><strong>Reader Format</strong></td><td>Esri Shapefile</td></tr>
@@ -203,7 +207,7 @@ Select to have a Single Output Port:
 
 ![](./Images/Img4.412.Ex3.FeatureReaderParameters.png)
 
-Click OK to close the dialog. You may receive a warning message, but it can be safely ignored.
+You may receive a warning message, but it can be safely ignored.
 
 
 <br>**9) Add Writer**
@@ -225,7 +229,7 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 
 <tr>
 <td style="font-weight: bold">Writer Parameters</td>
-<td style="">Overwrite Existing Database: No<br>Drop Existing Tables: No</td>
+<td style="">Overwrite Existing Database: No</td>
 </tr>
 
 <tr>
@@ -235,11 +239,11 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 
 </table>
 
-In the new feature type that is created, simply change the name to *building_footprints*:
+In the new feature type that is created, change the Table Name parameter to *building_footprints*:
 
 ![](./Images/Img4.413.Ex3.FeatureTypeName.png)
 
-Click OK to close the dialog and connect the new feature type to the FeatureReader transformer's &lt;Generic&gt; output port.
+Ensure that the Table Handling is set to "Create if Needed". Click OK to close the dialog and then connect the new feature type to the FeatureReader transformer's &lt;Generic&gt; output port.
 
 ![](./Images/Img4.414.Ex3.FinalWorkspace.png)
 
@@ -251,9 +255,11 @@ Click OK to close the dialog and connect the new feature type to the FeatureRead
 
 
 <br>**11) Edit Subscription**
-<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The settings should now include one for the output database. Specify to write the database into the Resources > Output folder:
+<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The parameters should now include one for the output database. Use the browse button to write the database into a Resources &gt; Output folder (create the folder by manually typing the output field as shown below, if it doesn't yet exist):
 
 ![](./Images/Img4.415.Ex3.OutputDatabaseSelection.png)
+
+Click OK to save the changes.
 
 
 <br>**12) Test Solution**
