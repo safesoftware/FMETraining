@@ -47,11 +47,13 @@ As a technical analyst in the GIS department you want to start experimenting wit
 
 
 <br>**1) Create Resources Folder**
-<br>The first step is to create a Resources folder to copy the data to. Open the FME Server web interface and navigate to Manage &gt; Resources
+<br>The first step is to create a Resources folder to copy the data to. Open the FME Server web interface and navigate to the Resources page.
 
 Browse to the Data folder and create a new subfolder called BuildingUpdates:
 
 ![](./Images/Img4.400.Ex1.NewDataFolder.png)
+
+---
 
 <!--Person X Says Section-->
 
@@ -72,21 +74,24 @@ This exercise utilizes the FME Server Resource folders, but there is also native
 </tr>
 </table>
 
+---
 
-<br>**2) Create Topic**
+<br>**2) Create Publication**
 <br>Now to create a publication and topic that will be triggered by a new file. Navigate to the Notifications page, click the Publications tab, and then click the New button.
 
-Enter "Incoming Building Footprints" as the new publication's name. Then click in the text box under Topics to Publish To. Type in ShapeIncomingFile and click on "Click to Add". This will create a new topic and assign it to this publication. 
+Enter "Incoming Building Footprints" as the new publication's name. 
+
+Next click in the text box besides Topics to Publish To. Type in ShapeIncomingFile and click on the entry with that name that appears in the drop-down list. This will create a new topic and assign it to this publication. 
 
 ![](./Images/Img4.401.Ex1.NewPublicationDialog.png)
 
 
-<br>**3) Create Publication**
-<br>Now select Directory Watch as the protocol for this publication. In the dialog that opens below select the newly created resources folder:
+<br>**3) Set Publication Protocol**
+<br>Now select Directory Watch from the drop-down list as the protocol for this publication. In the dialog that appears click the browse button for the Directory to Watch parameter and select the newly created resources folder:
 
 ![](./Images/Img4.402.Ex1.DirectoryToWatch.png)
 
-Under the Filter setting, remove the Modify and Delete actions. All we really want to monitor are new files arriving, not old ones being removed:
+Back in the publication definition, for the Filter parameter remove the MODIFY and DELETE actions. All we really want to monitor are new files arriving, not old ones being removed:
 
 ![](./Images/Img4.403.Ex1.DirectoryWatchFilters.png)
 
@@ -94,21 +99,47 @@ Change the Poll Interval to 1 Minute and click OK to create the new publication.
 
 
 <br>**4) Monitor Topic**
-<br>Click on the tab for Topics. Select the ShapeIncomingFile topic and click Monitor. This will start Topic Monitoring:
+<br>Click on the tab for Topics. The ShapeIncomingFile topic should now be listed in the list of topics. There is also a Topic Monitoring dialog to the upper-right of the page.
+
+In the drop-down box for Topic Monitoring, select the ShapeIncomingFile topic and click the green "run" button. This will start Topic Monitoring:
 
 ![](./Images/Img4.403.Ex1.DirectoryWatchTopicMonitoring.png)
 
 
 <br>**5) Test Topic**
-<br>Now let's test the topic. Locate the source Shape datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints - select a set of Shapefiles (.dbf, .prj, .shp, .shx) and create a zip file out of them.
+<br>Now let's test the topic. Locate the source Shapefile datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) for one dataset and create a compressed zip file out of them (right-click &gt; Send to &gt; Compressed (zipped) folder).
 
-Copy the zip file into the newly created Resources folder. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web interface. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
+Now upload the zip file into the newly created Resources folder. There are two ways to do this.
+
+You can use the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
 
 ![](./Images/Img4.404.Ex1.DirectoryWatchDataInFolder.png)
 
 Check back in the Topic Monitoring window and you will see that the topic has been triggered by the new file:
 
 ![](./Images/Img4.405.Ex1.DirectoryWatchTopicMonitoringTriggered.png)
+
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Remember, the Publication is set up to check the folder only once per minute - so if the Topic Monitoring doesn't immediately show a result, don't panic! Be patient and it will appear shortly.
+</td>
+</tr>
+</table>
+
+---
 
 Now we know how the Directory Watch notification works! We will see in subsequent exercises how to process this information.
  
