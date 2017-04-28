@@ -48,11 +48,11 @@ Your GIS department is all onboard with FME Server and translating jobs with the
 
 To configure a Job Routing Tag, use the [FME Server REST API V3](https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html). Click on the API link for the interactive page where you can try each method live:
 
-![](./Images/3.401.RESTAPI_pageLink.png)
+![](./Images/4.401.RESTAPI_pageLink.png)
 
 Select **transformations: Transformation Manager** to see the related methods. Click on the **POST** option of **/transformations/jobroutes/tags**:
 
-![](./Images/3.402.JobRouting_APIPost.png)
+![](./Images/4.402.JobRouting_APIPost.png)
 
 This is where we will specify the tag we want to create.
 
@@ -60,7 +60,7 @@ This is where we will specify the tag we want to create.
 
 Under Parameters, fill in **name** with the unique name of the tag you want to create, for example *JobRouting2017*:
 
-![](./Images/3.403.JobRouting_APIPostParameters.png)
+![](./Images/4.403.JobRouting_APIPostParameters.png)
 
 ---
 
@@ -91,7 +91,7 @@ Fill in the name of one of your engines found in the *Engines & Licensing* tab o
 
 Next, click the button **Try it out!** located at the bottom of the form:
 
-![](./Images/3.404.JobRouting_APIPost1.png)
+![](./Images/4.404.JobRouting_APIPost1.png)
 
 **3) Generate a Token**
 
@@ -99,7 +99,7 @@ You will be prompted for a Username and Password to acquire a Token. A token is 
 
 In this case, your Username and Password are the username and password of your FME Server Administrator’s account.
 
-![](./Images/3.405.JobRouting_APIGetParameters2.png)
+![](./Images/4.405.JobRouting_APIGetParameters2.png)
 
 Click **Lookup Existing Token** and then **Generate Token** to authorize the token request.
 
@@ -107,7 +107,7 @@ Click **Try it out!** once more to run the method now that your token is registe
 
 A Response Code value of 201 means you have successfully created your tag!
 
-![](./Images/3.406.JobRouting_APIPostPrintOut.png)
+![](./Images/4.406.JobRouting_APIPostPrintOut.png)
 
 Now you can use the tag to route jobs through the specified engine.
 
@@ -119,7 +119,7 @@ Open FME Workbench and create a new Blank Workspace.
 
 Add a **Creator** transformer and connect it to a **Logger** transformer.
 
-![](./Images/3.407.jobRouting_workspace1.png)
+![](./Images/4.407.jobRouting_workspace1.png)
 
 Now we have a job that we can route.
 
@@ -127,7 +127,7 @@ Now we have a job that we can route.
 
 Publish the workspace to FME Server from the file menu in FME Workbench:
 
-![](./Images/3.408.publishToServer.png)
+![](./Images/4.408.publishToServer.png)
 
 When prompted, publish the workspace to:
 
@@ -139,17 +139,17 @@ When prompted, publish the workspace to:
 
 Once you have a published to FME Server, you can run the **JobRouting_Job** workspace and utilize the Job Routing option.
 
-![](./Images/3.409.RunJob.png)
+![](./Images/4.409.RunJob.png)
 
 In *Run Workspace*, fill out the repository with **testing**, the workspace name with **JobRouting_Job**: 
 
-![](./Images/3.410.runWorkspace.png)
+![](./Images/4.410.runWorkspace.png)
 
 **7) Advanced Options**
 
 If you then expanded the *Advanced* options, there is the *Job Routing Tag* which can be used to associate the scheduled job with a specific FME Engine by specifying the name of the job routing tag associated with that engine. Enter *JobRouter2017* (the name of the tag that you created from the FME Server REST API).:
 
-![](./Images/3.411.runWorkspaceAdvancedOptions.png)
+![](./Images/4.411.runWorkspaceAdvancedOptions.png)
 
 Click **Run**.
 
@@ -157,19 +157,19 @@ Click **Run**.
 
 Check your jobs completed:
 
-![](./Images/3.412.Job_Completed_area.png)
+![](./Images/4.412.Job_Completed_area.png)
 
 Select the workspace that you just ran to open the job details.
 
 In the *Request Data* section you can see your tag name that the job was routed through: 
 
-![](./Images/3.413.jobRouting_finalCheck.png)
+![](./Images/4.413.jobRouting_finalCheck.png)
 
 **9) Resubmit the Job**
 
 Click the *Resubmit Job* button at the top of the page:
 
-![](./Images/3.414.JobRouting_resubmitButton.png)
+![](./Images/4.414.JobRouting_resubmitButton.png)
 
 Click the *Resubmit Job* button several times; we want to make sure that every time we run the workspace with the Job Routing Tag that it is sending the job to the correct engine.
 
@@ -177,7 +177,7 @@ Click the *Resubmit Job* button several times; we want to make sure that every t
 
 Go back to the completed jobs section to verify that the job was always sent to the correct engine.
 
-![](./Images/3.415.JobRouting_engineCheck.png)
+![](./Images/4.415.JobRouting_engineCheck.png)
 
 ---
 
