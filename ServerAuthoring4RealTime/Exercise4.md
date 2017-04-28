@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4 (Advanced)</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
@@ -106,9 +106,9 @@ In case it is of use, the server information for Gmail, Outlook, and Yahoo! are 
 
 <tr>
 <td style="font-weight: bold">Connection Security</td>
-<td style="">SSL</td>
-<td style="">SSL</td>
-<td style="">SSL</td>
+<td style="">SSL/TLS</td>
+<td style="">SSL/TLS</td>
+<td style="">SSL/TLS</td>
 </tr>
 
 <tr>
@@ -122,10 +122,32 @@ In case it is of use, the server information for Gmail, Outlook, and Yahoo! are 
 
 You will also need to check the settings in your email account to make sure IMAP is turned on. Regardless of the email provider, you should set these parameters as follows:
 
-- Poll Interval: 1 minute
-- Emails to Fetch: New Emails Only.
+<table style="border: 0px">
 
-Select a Resource Folder for attachments to be saved to and click OK to close the dialog and create the new Publication.
+<tr>
+<th style="font-weight: bold">Parameter</th>
+<th style="">Value</th>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Poll Interval</td>
+<td style="">1 Minute</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Emails to Fetch</td>
+<td style="">New Emails Only</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Download Attachments To</td>
+<td style="">A Resource folder of your choice</td>
+</tr>
+
+</table>
+
+
+You may select any Resource folder for attachments to be saved to; but (if you have already completed exercise 1-3) don't choose the BuildingUpdates folder, else you'll cause the previous topics to be triggered by each email attachment!
 
 
 <br>**2) Test Publication**
@@ -137,7 +159,7 @@ Now send an email *with an attachment* to the address selected for the new publi
 
 ![](./Images/Img4.420.Ex4.MonitorTopicResult.png)
 
-Recall that in the previous exercise you used the Logger Protocol and Logger transformers to record the JSON formatted notification message. The same information is displayed in the Topic Monitoring window - copy this text and place it into a new file for use later in this exercise.
+Recall that in the previous exercise you used the Logger Protocol and Logger transformers to record the JSON formatted notification message. The same information is displayed in the Topic Monitoring window. So copy the text from the Topic Monitoring window and paste it into a text editor for use later in this exercise.
 
 ![](./Images/Img4.421.Ex4.JSONNotificationMessage.png)
 
@@ -145,7 +167,7 @@ Recall that in the previous exercise you used the Logger Protocol and Logger tra
 <br>**3) Update Workspace**
 <br>You already have a created a workspace in FME Workbench to handle incoming notifications from Directory Watch. Let's modify the workflow so that it can work with both Publication protocols. Open the existing workspace C:\FMEData2017\Workspaces\ServerAuthoring\RealTime-Ex4-Begin.fmw in FME Workbench.
 
-Open the JSONFlattener parameters, and add *imap_publisher_attachment{0}* and *email_publisher_attachment{0}* under Attributes to Expose:
+Open the JSONFlattener parameters, and add *imap&#95;publisher&#95;attachment{0}* and *email&#95;publisher&#95;attachment{0}* under Attributes to Expose:
 
 ![](./Images/Img4.422.Ex4.JSONFlattenerParameters.png)
 
@@ -164,7 +186,7 @@ You can see these are two of the available attributes that are returned by the T
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Adding both imap_publisher_attachment and email_publisher_attachment modifies this workspace so that it can work with both Email (SMTP) and Email (IMAP) Publications!
+Adding both imap&#95;publisher&#95;attachment and email&#95;publisher&#95;attachment modifies this workspace so that it can work with both Email (SMTP) and Email (IMAP) Publications!
 </span>
 </td>
 </tr>
@@ -174,9 +196,9 @@ Adding both imap_publisher_attachment and email_publisher_attachment modifies th
 <br>**4) Add AttributeManager**
 <br>The next step is to insert a transformer that will determine where the data is coming from (Directory Watch or an Email Publication) - this is a task where conditional statements are invaluable.
 
-Add an AttributeManager transformer in between the JSONFlattener and FeatureReader. Open the parameters and add *_dataset* as a new Output Attribute. 
+Add an AttributeManager transformer in between the JSONFlattener and FeatureReader. Open the parameters and add *&#95;dataset* as a new Output Attribute. 
 
-Set the Attribute Value as a Conditional Value:
+Select, from the drop-down menu, the option to set the attribute as a Conditional Value:
 
 ![](./Images/Img4.423.Ex4.AttributeManagerParameters.png)
 
@@ -184,9 +206,45 @@ Configure the Conditional Value as follows:
 
 ![](./Images/Img4.424.Ex4.ConditionalDefinition.png)
 
+<table style="border: 0px">
+
+<tr>
+<th style="">Attribute</th>
+<th style="">Test</th>
+<th style="">Set &#95;dataset To</th>
+</tr>
+
+<tr>
+<td style="">dirwatch&#95;publisher&#95;path</td>
+<td style="">Attribute has a value</td>
+<td style="">dirwatch&#95;publisher&#95;path</td>
+</tr>
+
+<tr>
+<td style="">email&#95;publisher&#95;attachment{0}</td>
+<td style="">Attribute has a value</td>
+<td style="">email&#95;publisher&#95;attachment{0}</td>
+</tr>
+
+<tr>
+<td style="">imap&#95;publisher&#95;attachment{0}</td>
+<td style="">Attribute has a value</td>
+<td style="">imap&#95;publisher&#95;attachment{0}</td>
+</tr>
+
+</table>
+
+In other words:
+
+- If *dirwatch&#95;publisher&#95;path* has a value, then copy that value into the *&#95;dataset* attribute. 
+- Else, if *email&#95;publisher&#95;attachment{0}* has a value, then copy that value into the *&#95;dataset* attribute. 
+- Else, if *imap&#95;publisher&#95;attachment{0}* has a value, then copy that value into the *&#95;dataset* attribute. 
+
+So *&#95;dataset* gets the location of the data to be processed, whether it comes from the directory watch notification, or an email notification of either type.
+
 
 <br>**5) Edit FeatureReader**
-<br>The final step is to change the Dataset in the FeatureReader to point at the new _dataset attribute:
+<br>The final step is to change the Dataset parameter in the FeatureReader transformer. Instead of pointing to dirwatch&#95;publisher&#95;path, it should be changed to point at the new &#95;dataset attribute:
 
 ![](./Images/Img4.425.Ex4.FeatureReaderParameters.png)
 
@@ -198,7 +256,9 @@ The workflow should now look like this:
 <br>**6) Edit User Parameter** 
 <br>As with Exercise 3, specify the output datatset to be written into the FME Server Resources Folder.
 
-Open the DestDataset_SPATIALITE User Parameter and enter *$(FME_SHAREDRESOURCE_DATA)\/Output\/building_footprints.sl3*:
+Locate the user parameter DestDataset&#95;SPATIALITE (under User Parameters &gt; Published Parameters in the Navigator window) and double-click it to open an editor dialog.
+
+In that dialog enter *$(FME&#95;SHAREDRESOURCE&#95;DATA)/Output/building&#95;footprints.sl3*
 
 ![](./Images/Img4.431.Ex4.DestinationDatasetUserParameter.png)
 
@@ -218,7 +278,7 @@ Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topic
 <br>**9) Test Workspace**
 <br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
 
-You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources > Output in the FME Server web interface.
+You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources &gt; Data &gt; Output in the FME Server web interface.
 
 
 ---
