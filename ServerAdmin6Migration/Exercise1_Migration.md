@@ -1,6 +1,6 @@
 # Exercise: Backup and Migration #
 
-Your organization has decided to upgrade FME Server to the just released new version. You want to make sure all the configurations, settings, and resources you have made to your current FME Server transfer over to the new FME Server. By backing up your current FME Server and then migrating the configurations and settings to the new version you will save lots of time not making all those changes manually.
+Your organization has decided to upgrade FME Server to the just released new version. You want to make sure all the configurations, settings, and resources you have made to your current FME Server transfer over to the new FME Server. By backing up your current FME Server and then migrating the configurations and settings to the new version you will save lots of time.
 
 **1) Connect to FME Server**
 <br>
@@ -14,7 +14,10 @@ On the Web User Interface, click **Backup & Restore**.
 
 ![](./Images/6.401.Backup&Restore.png)
 
-On the *Backup* page, enter a file name (such as BackupFMEServer) and select the *Backup To* method to be **Download**.
+On the *Backup* page, fill out the parameters as follows:
+
+- **Filename:** BackupFMEServer
+- **Backup To:** Download
 
 ![](./Images/6.402.BackupFile.png)
 
@@ -24,7 +27,7 @@ Click the **Download** button to download and save the file to your computer.
 
 It is also a good idea to manually back up any FME Server configuration files you have altered to a location outside of your FME Server installation directory for reference later on. Certain configurations are not included in the primary backup procedure and you will need to configure the old files with the new files.
 
-In this training course, we have altered *server.xml*, *web.xml*, *context.xml*, *cacerts* and created a tomcat.keystore file in *Configuring FME Server for HTTPS* exercise, and *pg_hba.conf*, and *fmeCommonConfig.txt* in the *Switching to a PostgreSQL Database* exercise. 
+In this training course, we have altered *server.xml*, *web.xml*, *context.xml*, *cacerts*, and created a *tomcat.keystore* file in *Configuring FME Server for HTTPS* exercise, and *pg_hba.conf*, and *fmeCommonConfig.txt* in the *Switching to a PostgreSQL Database* exercise. 
 
 So if we were trying to migrate our current FME Server configurations, these are the files that we would want to have copies of for reference later on when restoring FME Server configurations.
 
@@ -40,9 +43,9 @@ For this exercise we will backup only a couple of the log files. Go to **Resourc
 
 ![](./Images/6.403.SelectLogFiles.png)
 
-Download and save these log files to where you saved your **BackupFMEServer** configuration and your configuration files.
+Click **Download** and save these log files in the same location where you saved your **BackupFMEServer** configuration and your configuration files.
 
-Log files from a previous FME Server instance can be backed up but cannot be restored to a new instance of FME Server. It is a good idea to backup log files in case you need to reference them later on. If you do not backup your log files, they disappear when you install your new FME Server.
+Log files from a previous FME Server instance can be backed up but cannot be restored to a new instance of FME Server. However, it is still a good idea to backup log files in case you need to reference them later on. If you do not backup your log files, they disappear when you install your new FME Server.
 
 **5) Switch to your new FME Server**
 
@@ -50,7 +53,7 @@ This is when you would install your new FME Server. For the purposes of this exe
 
 **6) Restoring the BackupFMEServer Configuration**
 
-First we will upload the **BackupFMEServer** configuration file.
+To upload the **BackupFMEServer** configuration file, login to the FME Server Web User Interface. (http://localhost/fmeserver with username and password *admin*)
 
 On the Web User Interface, go to the **Backup & Restore &gt; Restore**.
 
@@ -75,7 +78,7 @@ Once the **BackupFMEServer** configurations are restored, you will see this mess
 
 **7) Restoring the Configuration Files**
 
-After restoring your *BackupFMEServer.fsconfig* file, the next step is to go through the old configuration files that you manually saved, and the new FME Server instance's configuration files and altering them as needed.
+After restoring your *BackupFMEServer.fsconfig* file, the next step is to go through the old configuration files that you manually saved, and the new FME Server instance's configuration files, altering them as needed.
 
 For example, if you configured your FME Server for HTTPS, the *keystore*, *cacerts*, *server.xml*, *web.xml*, and *context.xml* files would need to be altered. The best practice is to go through each file and alter the sections that you have changed.
 
@@ -95,7 +98,7 @@ just before the closing &lt;/web-app&gt; element.
 
 You would then have both files open in a text editor and can edit the new *web.xml* file to be configured to allow for encrypted web connections.
 
-Remember, it is strongly suggested to go through each configuration file instead of simply copying the old configuration file to the new FME Server directory; file structures may change between releases!
+Remember, it is strongly suggested to go through each configuration file instead of simply copying the old configuration file into the new FME Server directory; file structures may change between releases!
 
 ---
 
@@ -118,8 +121,7 @@ By completing this exercise you have learned how to:
 <li>Backup additional configuration files</li>
 <li>Backup log files</li>
 <li>Restore .fsconfig files</li>
-<li>Restore backup configuration files</li>
-<li>Restore log files</li></ul>
+<li>Restore backup configuration files</li></ul>
 </span>
 </td>
 </tr>
