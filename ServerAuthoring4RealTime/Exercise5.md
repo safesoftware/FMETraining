@@ -79,16 +79,43 @@ Set the protocol to Email and set up your SMTP email server parameters.
 
 In case it is of use, the server information for Gmail is as follows:
 
-- SMTP Server: smtp.gmail.com
-- SMTP Server Port: 465
-- Connection Security: SSL/TLS
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">SMTP Server Host</td>
+<td style="">smtp.gmail.com</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Server Port</td>
+<td style="">465</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Connection Security</td>
+<td style="">SSL/TLS</td>
+</tr>
+
+</table>
+
 
 Regardless of the email provider, you should set these parameters as follows:
 
-- Email From: (Your account name - for example fmeshapeprocessing@gmail.com)
-- Email Subject: "Building Footprints Database Updated"
+<table style="border: 0px">
 
-Most of the general settings (Email To, Email Template, etc.) will be set by the content we are going to provide.  
+<tr>
+<th style="font-weight: bold">Email From</th>
+<th style="">Your account name (for example fmeshapeprocessing@gmail.com)</th>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Email Subject</td>
+<td style="">Building Footprints Database Updated</td>
+</tr>
+
+</table>
+
+Most of the general settings (Email To, Email Template, etc.) will be set by the content we are going to provide, so once the above is set, click OK to save the Subscription.
 
 
 <br>**2) Edit Workspace**
@@ -100,7 +127,7 @@ Add two new transformers - the FMEServerEmailGenerator (a custom transformer) an
 
 
 <br>**3) Edit FMEServerEmailGenerator**
-<br>Now open the parameters dialog for the FMEServerEmailGenerator. This transformer can be used to override the configurations in the Email Subscription created in Step 1.
+<br>Inspect the parameters for the FMEServerEmailGenerator. This transformer can be used to override the configurations in the Email Subscription created in Step 1.
 
 Each field can also accept attributes allowing the email to be dynamically configured. For our purposes in the training course, set the following parameters manually:
 
@@ -128,19 +155,27 @@ Each field can also accept attributes allowing the email to be dynamically confi
 <br>**4) Edit FMEServerNotifier**
 <br>Now edit the parameters for the FMEServerNotifier transformer. 
 
-Set FME Server Connection parameters, pick the Topic created earlier (BuildingUpdateEmail), and for the Content select the attribute *text_line_data* (this attribute is created by the FMEServerEmailGenerator):
+Set FME Server Connection parameters, pick the Topic created earlier (BuildingUpdateEmail), and for the Content select the attribute *text&#95;line&#95;data* (this attribute is created by the FMEServerEmailGenerator):
 
 ![](./Images/Img4.430.Ex5.FMEServerNotifierParameters.png)
 
 
 <br>**5) Publish Workspace**
-<br>If the workspace you publish has a different name to that in Exercise 4, be sure to navigate to the FME Workspace Subscription that was automatically created when registering with the Notification Service in the previous exercise and change it to point to the correct workspace (the Subscription name will be similar to admin.Training.Ex4Workspace).
+<br>Save and publish the workspace.
+
+If the workspace name is different to that used in the Exercise 4 workspace, an update will need to be made as follows.
+
+Navigate to the FME Workspace Subscriptions page. Notice that a Subscription will have been automatically created when registering the workspace with the Notification Service in the previous exercise. For example, if the workspace was called RealTime4, the Subscription name will be something like admin.Training.RealTime4:
+
+![](./Images/Img4.432.Ex5.RescueEsmerelda.png)
+
+Click on this notification to change its parameters, and set/ensure that the Workspace parameter is pointing to the workspace just published.
 
 
 <br>**6) Test Workspace**
 <br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
 
-If the workflow was successful, you should receive an email!
+If the workflow was successful, you should receive an email back with a response!
 
 
 ---
