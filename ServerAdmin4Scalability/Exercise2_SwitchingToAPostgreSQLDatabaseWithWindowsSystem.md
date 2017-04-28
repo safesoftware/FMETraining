@@ -39,7 +39,7 @@ Backing up your current FME Server instance is important before altering your cu
 
 You can save your current configuration settings by going to Backup & Restore:
 
-![](./Images/3.416.Backup&Restore.png)
+![](./Images/4.416.Backup&Restore.png)
 
 … and then downloading the configuration files onto the computer. 
 
@@ -48,7 +48,7 @@ Set the *Configure Backup* parameters as:
 - **Filename:** Backup2017
 - **Backup To:** Download
 
-![](./Images/3.417.ConfigureDownload.png)
+![](./Images/4.417.ConfigureDownload.png)
 
 Next step is to configure the new database server. Run the necessary database configuration scripts and post-configuration scripts for your new database provider.
 
@@ -99,11 +99,11 @@ From the SQL prompt, run the *postgresql\_createDB.sql* script by entering the f
 
 By default, the provided SQL creates an FME Server database name *fmeserver* and grants all privileges on the database to the user *fmeserver*.
 
-![](./Images/3.418.ConfigureSettings3.png)
+![](./Images/4.418.ConfigureSettings3.png)
 <br><br>
 5) Quit psql and log on as the FME Server database user.
 
-![](./Images/3.419.fmeUserLogIn.png)
+![](./Images/4.419.fmeUserLogIn.png)
 <br>
 <br>
 6) Create the FME Server database schema as follows:
@@ -159,11 +159,11 @@ Since we did a backup of the last FME Server instance, we can now restore that s
 
 Click *Backup & Restore* back on the Web User Interface, and select the *Restore* option:
 
-![](./Images/3.423.restoreButton.png)
+![](./Images/4.423.restoreButton.png)
 
 Upload your saved backup configuration file from the beginning of this exercise. Grab the **Backup2017** file from where you downloaded it and drag and drop it into the *Drop file to upload* area:
 
-![](./Images/3.424.RestoreConfiguration.png)
+![](./Images/4.424.RestoreConfiguration.png)
 
 ---
 
