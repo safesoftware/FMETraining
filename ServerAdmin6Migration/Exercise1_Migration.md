@@ -55,7 +55,7 @@ This is when you would install your new FME Server. For the purposes of this exe
 
 To upload the **BackupFMEServer** configuration file, login to the FME Server Web User Interface. (http://localhost/fmeserver with username and password *admin*)
 
-On the Web User Interface, go to the **Backup & Restore &gt; Restore**.
+Go to **Backup & Restore &gt; Restore**.
 
 Set the *Configure Restore* parameters as follows:
 
