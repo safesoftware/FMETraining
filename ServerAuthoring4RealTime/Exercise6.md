@@ -10,7 +10,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 6</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold"></span>
+<span style="color:white;font-size:x-large;font-weight: bold">Message Streaming: Handling Emergency Phone Call Streams</span>
 </td>
 </tr>
 
@@ -90,7 +90,7 @@ This workspace is just generating "events". Those events could be lightning stri
 ---
 
 <br>**2) Add WebSocketSender Transformer**
-<br>Add a WebSocketSender transformer after the JSONTemplater. Open the parameters dialog. Set the parameters as follows:
+<br>Add a WebSocketSender transformer after the JSONTemplater. Inspect the parameters and set them as follows:
 
 <table>
 <tr><td>WebSocket Server URL</td><td>ws://localhost:7078</td></tr>
@@ -114,13 +114,13 @@ This workspace is just generating "events". Those events could be lightning stri
 
 </table>
 
-Click OK to close the parameters dialog and then save the workspace.
+As you can see, these parameters open a WebSocket connection (to an EmergencyEvents stream) and send information (the EventMessage attribute). Save the parameters and then save the workspace.
 
 
 <br>**3) Create Workspace**
 <br>Now we have the ability to generate a stream of data we will create the workspace that is to process the data. Start Workbench and begin with a blank canvas (don't close the stream generator workspace, as we'll need that as well in a moment). 
 
-In the blank canvas add a Creator transformer and follow it with a WebSocketReceiver. Open the WebSocketReceiver transformer parameters dialog. Set the parameters as follows:
+In the blank canvas add a Creator transformer and follow it with a WebSocketReceiver. Inspect the WebSocketReceiver transformer parameters and set them as follows:
 
 <table>
 <tr><td>WebSocket Server URL</td><td>ws://localhost:7078</td></tr>
@@ -137,7 +137,7 @@ In the blank canvas add a Creator transformer and follow it with a WebSocketRece
 
 </table>
 
-Close the dialog and add a Logger transformer after the WebSocketSender.
+Save the changes and add a Logger transformer after the WebSocketSender.
 
 
 <br>**4) Publish Workspaces**
@@ -147,11 +147,11 @@ Publish each workspace in turn. In both cases simply register it with the Job Su
 
 
 <br>**5) Run Workspace**
-<br>Log in to FME Server, locate the data stream generator workspace, and run it. The dialog in response will look like this:
+<br>Log in to the FME Server web interface, locate the data stream generator workspace, and run it. The dialog in response will look like this:
 
 ![](./Images/Img4.451.Ex6.MessageGeneratingWorkspaceRun.png)
 
-The workspace will run for a long time and we can leave it to do so. Click the Run Workspace button and locate the processing workspace. Now run that.
+The workspace will run for a long time and we can leave it to do so. Leave this page by clicking the Run Workspace button on the main menu and - within the Run Workspace page - locate the processing workspace. Now run that.
 
 Again the response will report that the workspace is running, and will continue to do so.
 
@@ -208,7 +208,9 @@ You've proved that you can create a workspace to process a message stream, which
 ---
 
 <br>**7) Add JSONFlattener**
-<br>The first thing to do with incoming messages is to extract information as attributes. Because the incoming data is JSON format, add a JSONFlattener transformer to the processing workspace. Open the parameters dialog and set the attribute IncomingMessage as the JSON Document to process.
+<br>The first thing to do with incoming messages is to extract information as attributes. Because the incoming data is JSON format, add a JSONFlattener transformer to the processing workspace, after the WebSocketReceiver. 
+
+Inspect the JSONFlattener's parameters and set the attribute IncomingMessage as the JSON Document to process.
 
 Under Attributes to Expose manually enter:
 
@@ -225,7 +227,7 @@ You will now have the information from the message available as a set of attribu
 
 
 <br>**8) Add VertexCreator**
-<br>Now add a VertexCreator. Set it up to use the X/Y attributes to create a true point feature:
+<br>Now add a VertexCreator transformer. Set it up to use the X/Y attributes to create a true point feature:
 
 ![](./Images/Img4.456.Ex6.VertexCreatorParameters.png)
 
@@ -265,17 +267,19 @@ Secondly, add a PointOnAreaOverlayer to assess whether an emergency falls inside
 
 At the moment there is one big problem that stops this from working. The PointOnAreaOverlayer transformer is a Group-Based transformer, sometimes called a "blocker". It will hold on to features until it has finished being fed them, before outputting any data. In our case we want to make it Feature-Based; i.e. it will process each message at once.
 
-So, open the PointOnAreaOverlayer parameters and set Areas First to Yes:
+So, inspect the PointOnAreaOverlayer parameters and set Areas First to Yes:
 
 ![](./Images/Img4.458.Ex6.PointOnAreaParameters.png)
 
-This tells the transformer that all area features (buffered stations) will be first to arrive, therefore any point features (message locations) can be processed immediately. However, we have to ensure that the transit features will arrive first. Therefore open the Creator transformer parameters and set Create at End to Yes:
+This tells the transformer that all area features (buffered stations) will be first to arrive, therefore any point features (message locations) can be processed immediately. 
+
+However, we have to ensure that the transit features will arrive first. Therefore inspect the transformer parameters for the Creator transformer and set Create at End to Yes:
 
 ![](./Images/Img4.459.Ex6.CreatorParameters.png)
 
 Now, all being well, the transit features will arrive first at the PointOnAreaOverlayer transformer.
 
-Finally, add a Tester transformer after the PointOnAreaOverlayer. Set up the test to check for _overlaps > 0 (i.e. where the message location falls inside a transit station buffer). Connect some Logger transformers to the Tester output ports:
+Finally, add a Tester transformer after the PointOnAreaOverlayer. Set up the test to check for &#95;overlaps &gt; 0 (i.e. where the message location falls inside a transit station buffer). Connect some Logger transformers to the Tester output ports:
 
 ![](./Images/Img4.460.Ex6.TesterToFilterMessages.png)
 
@@ -302,7 +306,7 @@ Once stopped, check the logs and you should see that messages falling within 200
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you want to adjust the settings to get a result quicker, then go ahead. For example, you might set the buffer size to 500 metres instead of 200, or you might reduce the interval time on the message generator. Feel free to make whatever parameter changes you like to test the setup. You could even bypass the Decelerator transformer altogether to see how fast FME can deal with the incoming messages! But if you do that, be sure to start the processing workspace first, else the generator might finish by the time you do get the processor started!
+If you want to adjust the settings to get a result quicker, then go ahead. For example, you might set the buffer size to 500 metres instead of 200, or you might reduce the interval time on the message generator. Feel free to make whatever parameter changes you like to test the setup. You could even bypass the Decelerator transformer (in the data-stream creation workspace) to see how fast FME can deal with the incoming messages! But if you do that, be sure to start the processing workspace first, else the generator might finish by the time you do get the processor started!
 </span>
 </td>
 </tr>
@@ -311,7 +315,7 @@ If you want to adjust the settings to get a result quicker, then go ahead. For e
 ---
 
 <br>**12) Add Writer**
-<br>The messages that are being received are not all being used by the transit team, but we should probably keep a record of them. So select Writers &gt; Add Writer from the menubar. Use the following parameters to add a database Writer:
+<br>The messages that are being received are not all being used by the transit team, but we should probably keep a record of them. So - back in FME Workbench - select Writers &gt; Add Writer from the menubar. Use the following parameters to add a database Writer to the processing workspace:
 
 <table style="border: 0px">
 
@@ -327,7 +331,7 @@ If you want to adjust the settings to get a result quicker, then go ahead. For e
 
 <tr>
 <td style="font-weight: bold">Writer Parameters</td>
-<td style="">Advanced : Transaction Interval = 1</td>
+<td style="">Advanced : Features Per Transaction = 1</td>
 </tr>
 
 <tr>
@@ -337,7 +341,7 @@ If you want to adjust the settings to get a result quicker, then go ahead. For e
 
 </table>
 
-In the newly added feature type, change the name to events and close the dialog. Connect the feature type to the VertexCreator output port (i.e. we're recording all events, not just the filtered ones):
+In the newly added feature type, change the name to *events* and close the dialog. Connect the feature type to the VertexCreator output port (i.e. we're recording all events, not just the filtered ones):
 
 ![](./Images/Img4.461.Ex6.WriterFeatureTypeConnected.png)
 
@@ -352,7 +356,7 @@ The attributes are added automatically, but include a few we don't need. So open
 
 Notice that the attributes were automatically renamed (to lower case and removing disallowed characters) to match SpatiaLite requirements.
 
-If you publish and run the workspace now you should be able to see - while the workspace is still running - the results being added to the database. You can inspect the file in the FME Data Inspector to prove this.
+If you publish and run the workspace (you may need to set the SpatiaLite database output to be written to a Resources folder) now you should be able to see - while the workspace is still running - the results being added to the database. You can inspect the file in the FME Data Inspector to prove this.
 
 
 <br>**13) Create Notification**
@@ -368,7 +372,7 @@ Create a new Topic called EmergencyTransitMessages:
 
 ![](./Images/Img4.463.Ex6.NotificationNewTopic.png)
 
-Now create a new notification Subscription. There are various protocols we could realistically use for sending a message (email springs to mind) but for the purposes of this exercise use the Logger protocol. Set the Log Level parameter to High:
+Now create a new notification Subscription tied to that topic. There are various protocols we could realistically use for sending a message (email springs to mind) but for the purposes of this exercise use the Logger protocol. Set the Log Level parameter to High:
 
 ![](./Images/Img4.464.Ex6.NotificationNewSubscription.png)
  
@@ -378,7 +382,7 @@ Now create a new notification Subscription. There are various protocols we could
 
 ![](./Images/Img4.465.Ex6.FMEServerNotifierOnCanvas.png)
 
-Open the parameters dialog and set it up to send a message to the EmergencyTransitMessages topic. Set the message content to be whatever you like. You could use the text editor dialog to create something out of the available attributes (it can be plain text, it doens't have to be JSON or XML).
+Inspect the transformer parameters and set it up to send a message to the EmergencyTransitMessages topic. Set the message content to be whatever you like. You could use the text editor dialog to create something out of the available attributes (it can be plain text, it doesn't have to be JSON or XML).
 
 
 <br>**15) Publish and Run Workspaces**
