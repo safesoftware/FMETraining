@@ -143,7 +143,7 @@ When prompted, publish the workspace to:
 
 - **Repository Name:** testing
 - **Workspace Name:** JobRouting_Job.fmw
-- **Service:** Job Sumbitter
+- **Service:** Job Submitter
 
 **7) Connect to FME Server**
 
