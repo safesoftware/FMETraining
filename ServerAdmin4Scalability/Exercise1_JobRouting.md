@@ -46,7 +46,7 @@ Your GIS department is all onboard with FME Server and translating jobs with the
 <br>
 **1) Create a Job Routing Tag**
 
-To configure a Job Routing Tag, use the [FME Server REST API V3](https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html). Click on the API link for the interactive page where you can try each method live:
+To configure a Job Routing Tag, use the [FME Server REST API V3](https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html). Click **API** for the interactive page where you can try each method live:
 
 ![](./Images/4.401.RESTAPI_pageLink.png)
 
@@ -135,17 +135,25 @@ When prompted, publish the workspace to:
 - **Workspace Name:** JobRouting_Job.fmw
 - **Service:** Job Sumbitter
 
-**6) Run the Workspace in FME Server**
+**6) Connect to FME Server**
+
+Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+
+**7) Run the Workspace**
 
 Once you have a published to FME Server, you can run the **JobRouting_Job** workspace and utilize the Job Routing option.
 
 ![](./Images/4.409.RunJob.png)
 
-In *Run Workspace*, fill out the repository with **testing**, the workspace name with **JobRouting_Job**: 
+In *Run Workspace*, fill out the parameters as follows:
+
+- **Repository:** testing
+- **Workspace:** JobRouting_Job
+- **Service:** Job Submitter 
 
 ![](./Images/4.410.runWorkspace.png)
 
-**7) Advanced Options**
+**8) Advanced Options**
 
 If you then expanded the *Advanced* options, there is the *Job Routing Tag* which can be used to associate the scheduled job with a specific FME Engine by specifying the name of the job routing tag associated with that engine. Enter *JobRouter2017* (the name of the tag that you created from the FME Server REST API).:
 
@@ -153,9 +161,9 @@ If you then expanded the *Advanced* options, there is the *Job Routing Tag* whic
 
 Click **Run**.
 
-**8) Ensure the Job Routed correctly**
+**9) Ensure the Job Routed correctly**
 
-Check your jobs completed:
+Check **Jobs &gt; Completed**:
 
 ![](./Images/4.412.Job_Completed_area.png)
 
@@ -165,7 +173,7 @@ In the *Request Data* section you can see your tag name that the job was routed 
 
 ![](./Images/4.413.jobRouting_finalCheck.png)
 
-**9) Resubmit the Job**
+**10) Resubmit the Job**
 
 Click the *Resubmit Job* button at the top of the page:
 
@@ -173,7 +181,7 @@ Click the *Resubmit Job* button at the top of the page:
 
 Click the *Resubmit Job* button several times; we want to make sure that every time we run the workspace with the Job Routing Tag that it is sending the job to the correct engine.
 
-**10) Verify the Subsequent Jobs Routed Correctly**
+**11) Verify the Subsequent Jobs Routed Correctly**
 
 Go back to the completed jobs section to verify that the job was always sent to the correct engine.
 
