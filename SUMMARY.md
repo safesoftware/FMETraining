@@ -68,4 +68,3 @@
 	* [Community Information and Resources](./ServerAdmin8WrapUp/8.02.CommunityInfo.md)
 	* [Feedback and Certificates](./ServerAdmin8WrapUp/8.03.CourseFeedback.md)
 	* [Thank You](./ServerAdmin8WrapUp/8.04.ThankYou.md)
-	* [Exercise: A Fun Challenge!](./ServerAdmin8WrapUp/8.05.Challenge.md)
