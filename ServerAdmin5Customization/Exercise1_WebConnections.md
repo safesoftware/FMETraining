@@ -143,7 +143,7 @@ On the *Edit* page, click the **Authorize** button:
 
 If a window opens with the login screen for Dropbox, then you have successfully added a web connection to FME Server!
 
-![](./Images/5.412.LoginDropbox.png)
+![](./Images/5.412.LoginWindow.png)
 
 ---
 
