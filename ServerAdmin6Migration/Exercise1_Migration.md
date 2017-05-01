@@ -1,4 +1,34 @@
-# Exercise: Backup and Migration #
+<!--Exercise Section-->
+
+<table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
+<tr>
+<td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+</td>
+<td style="border: 2px solid darkorange;background-color:darkorange;color:white">
+<span style="color:white;font-size:x-large;font-weight: bold">Backup and Migration</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Data</td>
+<td style="border: 1px solid darkorange">N/A</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
+<td style="border: 1px solid darkorange">Backup current FME Server configurations and restore them to a new FME Server installation</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
+<td style="border: 1px solid darkorange">Backing up and restoring automatic and manual FME Server configurations</td>
+</tr>
+
+</table>
+
+---
 
 Your organization has decided to upgrade FME Server to the just released new version. You want to make sure all the configurations, settings, and resources you have made to your current FME Server transfer over to the new FME Server. By backing up your current FME Server and then migrating the configurations and settings to the new version you will save lots of time.
 
