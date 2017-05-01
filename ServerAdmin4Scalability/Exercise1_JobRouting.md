@@ -46,6 +46,8 @@ Your GIS department is all onboard with FME Server and translating jobs with the
 <br>
 **1) Create a Job Routing Tag**
 
+A job routing tag is how you assign a job to a specific FME Engine. Tags are not automatically assigned to engines so we will first have to create a tag and assign it.
+
 To configure a Job Routing Tag, use the [FME Server REST API V3](https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html). Click **API** for the interactive page where you can try each method live:
 
 ![](./Images/4.401.RESTAPI_pageLink.png)
@@ -69,7 +71,7 @@ Under Parameters, fill in **name** with the unique name of the tag you want to c
 <table style="border-spacing: 0px">
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
 <span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
 </td>
 </tr>
@@ -85,9 +87,9 @@ Parameters documented in boldface are required while parameters in normal font a
 
 ---
 
-You also have the option to specify which engine(s) you want this tag to be associated with, the repository assignments for the tag, and a description of the tag if you so desire.
+You also have the option to specify a description of the tag, which engine(s) you want this tag to be associated with, and the repository assignments for the tag.
 
-Fill in the name of one of your engines found in the *Engines & Licensing* tab of FME Server.
+For now let's fill in **name** with the name of one of your engines found in the *Engines & Licensing* tab of FME Server. This is the engine that will be associated with the tag and that we will route a job through.
 
 Next, click the button **Try it out!** located at the bottom of the form:
 
@@ -105,7 +107,7 @@ Click **Lookup Existing Token** and then **Generate Token** to authorize the tok
 
 Click **Try it out!** once more to run the method now that your token is registered
 
-A Response Code value of 201 means you have successfully created your tag!
+A Response Code value of **201** means you have successfully created your tag!
 
 ![](./Images/4.406.JobRouting_APIPostPrintOut.png)
 
@@ -117,13 +119,21 @@ Now we will create a workspace in FME Workbench so that we have a job to test ou
 
 Open FME Workbench and create a new Blank Workspace.
 
+For this exercise we do not need a complicated workspace, just a job that will run.
+
 Add a **Creator** transformer and connect it to a **Logger** transformer.
 
 ![](./Images/4.407.jobRouting_workspace1.png)
 
-Now we have a job that we can route.
+**5) Run the Workspace**
 
-**5) Publish to FME Server**
+Test that the workspace does run correctly by clicking the run button:
+
+![](./Images/4.431.RunButton.png)
+
+Translation was successful, and now we have a job that we can route. 
+
+**6) Publish to FME Server**
 
 Publish the workspace to FME Server from the file menu in FME Workbench:
 
@@ -135,11 +145,11 @@ When prompted, publish the workspace to:
 - **Workspace Name:** JobRouting_Job.fmw
 - **Service:** Job Sumbitter
 
-**6) Connect to FME Server**
+**7) Connect to FME Server**
 
 Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
 
-**7) Run the Workspace**
+**8) Run the Workspace**
 
 Once you have a published to FME Server, you can run the **JobRouting_Job** workspace and utilize the Job Routing option.
 
@@ -153,7 +163,7 @@ In *Run Workspace*, fill out the parameters as follows:
 
 ![](./Images/4.410.runWorkspace.png)
 
-**8) Advanced Options**
+**9) Advanced Options**
 
 If you then expanded the *Advanced* options, there is the *Job Routing Tag* which can be used to associate the scheduled job with a specific FME Engine by specifying the name of the job routing tag associated with that engine. Enter *JobRouter2017* (the name of the tag that you created from the FME Server REST API).:
 
@@ -161,7 +171,9 @@ If you then expanded the *Advanced* options, there is the *Job Routing Tag* whic
 
 Click **Run**.
 
-**9) Ensure the Job Routed correctly**
+**10) Ensure the Job Routed correctly**
+
+You want to make sure the job was routed to the correct engine and not just the first available engine.
 
 Check **Jobs &gt; Completed**:
 
@@ -173,7 +185,7 @@ In the *Request Data* section you can see your tag name that the job was routed 
 
 ![](./Images/4.413.jobRouting_finalCheck.png)
 
-**10) Resubmit the Job**
+**11) Resubmit the Job**
 
 Click the *Resubmit Job* button at the top of the page:
 
@@ -181,11 +193,13 @@ Click the *Resubmit Job* button at the top of the page:
 
 Click the *Resubmit Job* button several times; we want to make sure that every time we run the workspace with the Job Routing Tag that it is sending the job to the correct engine.
 
-**11) Verify the Subsequent Jobs Routed Correctly**
+**12) Verify the Subsequent Jobs Routed Correctly**
 
-Go back to the completed jobs section to verify that the job was always sent to the correct engine.
+Go back to **Jobs &gt; Completed** to verify that the job was always sent to the correct engine.
 
 ![](./Images/4.415.JobRouting_engineCheck.png)
+
+If, under *Engine*, you see a list of the correct engine for each time you ran **JobRouting_Job**, then you have successfully routed the job!
 
 ---
 
