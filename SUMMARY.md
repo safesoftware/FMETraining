@@ -109,15 +109,16 @@
    * [Q+A Answers](ServerAuthoring4RealTime/4.25.QuestionAnswers.md)
    
 * [FME Server Projects](ServerAuthoring5Projects/5.00.FMEServerProjects.md)
-   * [What are Projects?](ServerAuthoring5Projects/5.01.Projects.md)
-   * [Creating Projects](ServerAuthoring5Projects/5.02.CreatingProjects.md)
+   * [Creating Projects](ServerAuthoring5Projects/5.01.CreatingAProject.md)
    * [Exercise: Creating a Project](ServerAuthoring5Projects/Exercise1.md)
-   * [Importing Projects](ServerAuthoring5Projects/5.03.ImportingProjects.md)
-   * [Migrating Projects](ServerAuthoring5Projects/5.04.MigratingProjects.md)
+   * [Sharing a Project](ServerAuthoring5Projects/5.02.SharingAProject.md)
+   * [Exporting Projects](ServerAuthoring5Projects/5.03.ExportingProjects.md)
+   * [Removing Projects](ServerAuthoring5Projects/5.04.RemovingProjects.md)
+   * [Importing Projects](ServerAuthoring5Projects/5.05.ImportingProjects.md)
    * [Exercise: Migrating a Project](ServerAuthoring5Projects/Exercise2.md)
-   * [Troubleshooting for Administrators](ServerAuthoring5Projects/5.0.TroubleshootingForAdministrators.md)
-   * [Module Review](ServerAuthoring5Projects/5.0.ModuleReview.md)
-   * [Q+A Answers](ServerAuthoring5Projects/5.0.QuestionAnswers.md)
+   * [Troubleshooting for Administrators](ServerAuthoring5Projects/5.06.TroubleshootingForAdministrators.md)
+   * [Module Review](ServerAuthoring5Projects/5.07.ModuleReview.md)
+   * [Q+A Answers](ServerAuthoring5Projects/5.08.QuestionAnswers.md)
    
    
 * [Course Wrap-Up](ServerAuthoring6WrapUp/6.00.CourseWrapup.md)
