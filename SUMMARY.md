@@ -126,5 +126,5 @@
    * [Community Information and Resources](ServerAuthoring6WrapUp/6.02.CommunityInfo.md)
    * [Course Feedback](ServerAuthoring6WrapUp/6.03.CourseFeedback.md)
    * [Thank You](ServerAuthoring6WrapUp/6.04.ThankYou.md)
-   * [A Pointless Quiz](ServerAuthoring6WrapUp/6.05.Pointless.md)
+   * [Exercise: A Fun Challenge!](ServerAuthoring6WrapUp/6.05.Challenge.md)
 
