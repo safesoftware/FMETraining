@@ -10,7 +10,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold"></span>
+<span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Workspace Creation</span>
 </td>
 </tr>
 
