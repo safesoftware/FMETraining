@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe1-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe1-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -51,7 +51,7 @@ Now you need to start customizing the workspace to allow the end-users to have a
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 1, or the starting workspace listed above. You can see that it consists of a Reader, a Writer, and two transformers.
+<br>Open the workspace from exercise 1, or the starting workspace listed above. You can see that it consists of a reader, a writer, and two transformers.
 
 In this step we'll give the end-user control over the transformation stages.
 
@@ -61,21 +61,22 @@ In this step we'll give the end-user control over the transformation stages.
 
 So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter: 
 
-![](./Images/Img3.39.Ex2.CreateParameter.png)
+![](./Images/Img2.205.Ex2.CreateParameter.png)
 
 The dialog that opens allows us to create a new parameter. Create one using the following parameters:
 
 <table>
-<tr><td style="font-weight: bold">Type</td><td>Integer</td></tr>
+<tr><td style="font-weight: bold">Type</td><td>Number</td></tr>
 <tr><td style="font-weight: bold">Name</td><td>CellSpacing</td></tr>
 <tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
 <tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
 <tr><td style="font-weight: bold">Prompt</td><td>Enter Resolution (1-50)</td></tr>
+<tr><td style="font-weight: bold">Configuration</td><td>Lower Limit: Greater than value: 0<br>Upper Limit: Less than value:51<br>Decimal places of precision: 0</td></tr>
 <tr><td style="font-weight: bold">Default Value</td><td>50</td></tr>
 </table>
 
 
-![](./Images/Img3.40.Ex2.CreateParameterDialog.png)
+![](./Images/Img2.206.Ex2.CreateParameterDialog.png)
 
 Click OK to close the dialog.
 
@@ -83,17 +84,17 @@ Click OK to close the dialog.
 <br>**3) Apply User Parameter**
 <br>Currently we've created a user parameter, but not applied it to anywhere. 
 
-Open the parameters dialog for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing
+Inspect the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing
 
 Do the same for the Y Cell Spacing parameter. The dialog will now look like this:
 
-![](./Images/Img3.41.Ex2.RasterResamplerParametersPublished.png)
+![](./Images/Img2.207.Ex2.PublishedRasterResamplerParams.png)
 
-Notice that we're using the same values for the X and Y cell sizes. That's OK. Although we could use rectangular raster cells, for this exercise we'll stick with square.
+Notice that we're using the same values for the X and Y cell sizes. That's OK. Although we could use rectangular (oblong) raster cells, for this exercise we'll stick with square.
 
 
 <br>**4) Create User Parameter**
-<br>Another setting we might give control of to the user is file compression. This is not defined in a transformer, but in the Writer feature type. However, we can still create a published parameter in the same way.
+<br>Another setting we might give control of to the user is file compression. This is not defined in a transformer, but in the writer feature type. However, we can still create a published parameter in the same way.
 
 So, right-click on User Parameters in the Navigator window and choose Add Parameter again.
 
@@ -119,15 +120,15 @@ For the configuration field, click the [...] browse button. In the dialog that o
 <tr><td>High</td><td>75</td></tr>
 </table>
 
-![](./Images/Img3.42.Ex2.CreateParameterChoiceDialog.png)
+![](./Images/Img2.208.Ex2.CreateChoiceParam.png)
 
 Click OK and OK again to close these dialogs and create the parameter.
 
 
 <br>**5) Apply User Parameter**
-<br>To apply the parameter, click the cogwheel button for the JPEG feature type to open its properties dialog. Click the Format Parameters tab. Set the compression parameter to User Parameter &gt; Compression
+<br>To apply the parameter, inspect the parameters for the JPEG feature type. Expand the Compression parameters (if necessary) and set the Compression Level parameter to User Parameter &gt; Compression
 
-![](./Images/Img3.43.Ex2.SetFeatureTypeCompression.png)
+![](./Images/Img2.209.Ex2.SetFTCompression.png)
 
 Click OK to close the dialog. If you press the run button now - with the prompt option set - you'll see that there are now two new prompts for cell size and compression.
 
@@ -137,9 +138,9 @@ Click OK to close the dialog. If you press the run button now - with the prompt 
 
 Locate the workspace through the FME Server web interface and run it. This time you will be prompted to set the cell size and compression.
 
-![](./Images/Img3.44.Ex2.RunWorkspacePrompts.png)
+![](./Images/Img2.210.Ex2.RunWorkspace.png)
 
-Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect.
+Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect. The size of the output file is a good indicator that the process is working correctly.
  
 ---
 
@@ -159,7 +160,7 @@ Run the workspace a few times, varying the cell size and compression, to confirm
 By completing this exercise you have learned how to:
 <br>
 <ul><li>Create an integer user parameter and apply it to two transformer parameters</li>
-<li>Create a choice user parameter and apply it to a Writer feature type parameter</li>
+<li>Create a choice user parameter and apply it to a writer feature type parameter</li>
 <li>Publish a workspace and use published parameters</li></ul>
 </span>
 </td>
