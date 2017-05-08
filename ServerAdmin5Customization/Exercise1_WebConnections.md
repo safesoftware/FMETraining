@@ -18,7 +18,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Authenticate a web conection for FME Server</td>
+<td style="border: 1px solid darkorange">Authenticate a web connection for FME Server</td>
 </tr>
 
 <tr>
@@ -137,11 +137,11 @@ Fill out the parameters as follows:
 
 - **Client Id:** efsdwkfh71l7da1
 - **Client Secret:** e4ycoikcun58uoz
-- **Redirect Uri:** http://localhost
+- **Redirect Uri:** https://localhost
 
 The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explain in more detail about web service app creation.
 
-The Client Id and Client Secret above are meant for this exercise only, and you should generate your own Id and Secret codes when applying your own web connections.
+Note: The Client Id and Client Secret above are meant for this exercise only, and you should generate your own Id and Secret codes when applying your own web connections.
 
 The Redirect Uri is where you will be redirected after authorization has been completed.
 
