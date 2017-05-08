@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe-Ex5-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe2-Ex1-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe-Ex5-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\SelfServe2-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
@@ -49,9 +49,9 @@ You've implemented a lot of different options for transformation, format, coordi
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 4, or the begin workspace listed above. You can see that it consists of a Reader, two Writers, three transformers, and various published parameters.
+<br>Open the begin workspace listed above. You can see that it consists of a reader, two writers, three transformers, and various published parameters.
 
-To clip data to a particular neighborhood first requires a Reader for those neighborhood features, so that is the first step...
+To clip data to a particular neighborhood first requires a reader for those neighborhood features, so that is the first step...
 
 
 <br>**2) Add Reader**
@@ -73,7 +73,7 @@ To clip data to a particular neighborhood first requires a Reader for those neig
 
 When prompted, select only the feature type for Neighborhoods:
 
-![](./Images/Img3.66.Ex5.KMLFeatureTypesToAdd.png)
+![](./Images/Img3.200.Ex1.NeighborhoodFT.png)
 
 Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt to user to select this dataset. 
 
@@ -106,13 +106,13 @@ Notice that this parameter is optional. The user should not have to select a val
 <br>**4) Add Tester**
 <br>Now we need to filter the neighborhood data by the user's choice. So add a Tester transformer to the workspace, connected to the Neighborhood feature type:
 
-![](./Images/Img3.67.Ex5.NeighborhoodTester.png)
+![](./Images/Img3.201.Ex1.TesterTransformer.png)
 
-Open the parameters dialog and set up the parameters to test where NeighborhoodName = the neighborhood published parameter:
+Inspect its parameters and set them up to test where NeighborhoodName = the neighborhood published parameter:
 
-![](./Images/Img3.68.Ex5.NeighborhoodTesterParameters.png)
+![](./Images/Img3.202.Ex1.TesterTransformerDialog.png)
 
-Click OK to close the dialog.
+Save the parameter changes.
 
 
 <br>**5) Add CsmapReprojector**
@@ -120,7 +120,7 @@ Click OK to close the dialog.
 
 So, place a CsmapReprojector transformer after the Tester, connected to the Tester:Passed port. Set it up to reproject to UTM83-10
 
-![](./Images/Img3.69.Ex5.CSMapReprojectorTransformer.png)
+![](./Images/Img3.203.Ex1.CSMapReprojector.png)
 
 ---
 
@@ -148,15 +148,17 @@ Why does the CsmapReprojector come after the Tester? Because it has less work to
 <br>**6) Add Clipper**
 <br>Now to clip the raster data. Add a Clipper transformer to the workspace. Connect the CsmapReprojector to the the Clipper:Clipper port. Connect the output from the VectorOnRasterOverlayer to the Clipper:Clippee port:
 
-![](./Images/Img3.70.Ex5.ClipperTransformer.png)
+![](./Images/Img3.204.Ex1.DrJonesWillNeverBelieveThis.png)
 
-Check the parameters. The only parameter to change is one specifically related to raster data: Preserve Clippee Extents. Set this parameter to No and click OK to close the dialog.
+Check the parameters. The only parameter to really check is one specifically related to raster data: Preserve Clippee Extents. Set this parameter to No if it is not already.
 
 
 <br>**7) Publish to FME Server**
-<br>Save the workspace, publish it to FME Server, and run it. You should now be able to choose all source tiles and clip them to a chosen neighborhood, like so (here, the Downtown neighborhood):
+<br>Save the workspace and publish it to FME Server. Register it with the Data Download service, being sure to click the Edit button to edit the service properties. In that dialog set the writer to "Output [GENERIC]" (not "Output [JPEG]").
 
-![](./Images/Img3.71.Ex5.OutputResults.png)
+Run the workspace on FME Server. You should now be able to choose all source tiles and clip them to a chosen neighborhood, like so (here, the Downtown neighborhood):
+
+![](./Images/Img3.205.Ex1.OutputResults.png)
 
 ---
 
