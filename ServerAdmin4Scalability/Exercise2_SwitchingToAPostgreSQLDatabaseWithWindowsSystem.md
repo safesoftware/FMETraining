@@ -79,7 +79,7 @@ C:\Program Files\FMEServer is used in the following steps to indicate the path f
 
 **Using the Command Prompt:**
 
-Go to the directory where your postgreSQL files are stored (*C:\Program Files\FMEServer\database\postgresql\\*).
+Go to the directory where your postgreSQL files are stored (*C:\Program Files\FMEServer\Server\database\postgresql\\*).
 
 Open psql and log on as a user with the appropriate privileges. 
 

@@ -48,11 +48,15 @@ Your GIS department is all onboard with FME Server and translating jobs with the
 
 A job routing tag is how you assign a job to a specific FME Engine. Tags are not automatically assigned to engines so we will first have to create a tag and assign it.
 
-To configure a Job Routing Tag, use the [FME Server REST API V3](https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html). Click **API** for the interactive page where you can try each method live:
+To configure a Job Routing Tag, we must go to the FME Server REST API V3 interactive page where you can try each method live.
+
+Login to the FME Server Web User Interface either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+
+Click **Developers &gt; REST API &gt; API &gt; transformations: Transformation Manager &gt; /transformations/jobroutes/tags**
+
+![](./Images/4.432.DevelopersRestAPI.png)
 
 ![](./Images/4.401.RESTAPI_pageLink.png)
-
-Select **transformations: Transformation Manager** to see the related methods. Click on the **POST** option of **/transformations/jobroutes/tags**:
 
 ![](./Images/4.402.JobRouting_APIPost.png)
 
