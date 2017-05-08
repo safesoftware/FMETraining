@@ -50,15 +50,17 @@ First, you must generate a keystore that contains a certificate chain using the 
 
 3) Run the following command to create a new keystone file:
 
-		keytool -genkey -alias tomcat -keylag RSA -keystore tomcat.keystore
+		keytool -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore
  
 4) Set a password for the new keystore and specify the server domain name (for example, *fmeserver.example.org*) as your first and last name.
 
-5) When prompted for the password for the alias &lt;tomcat&gt;, press RETURN.
+5) Enter yes when prompted if inputs are correct.
 
-6) A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*.
+6) When prompted for the password for the alias &lt;tomcat&gt;, press RETURN.
 
-7) Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\Program Files\FMEServer\Utilities\tomcat\\*.
+7) A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*.
+
+8) Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\Program Files\FMEServer\Utilities\tomcat\\*.
 
 ![](./Images/3.404.ConfigureForHTTPS_createKeytool.png)
 
@@ -70,7 +72,7 @@ The new keystore must be imported into the FME Server keystore for trusted certi
 
 	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore "C:\Program Files\FMEServer\Utilities\jre\lib\security\cacerts"
 
-You will be prompted to enter two passwords. One for the destination keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in step 3 above.
+You will be prompted to enter two passwords. One for the destination keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in step 4 above.
 
 ![](./Images/3.405.ConfigureForHTTPS_selfSignedCertificate.png)
 
@@ -80,7 +82,7 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 
 **a) Configure *server.xml***
 
-1) Open the *server.xml* file in a text editor.
+1) Open the *server.xml* file in a text editor in administrator mode.
 
 2) Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
 
@@ -106,14 +108,14 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="443"/>
 		
-4) Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 3 under *i. Create a Keystore File*.
+4) Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 4 under *i. Create a Keystore File*.
 
 5) Save and close the *server.xml* file.
 <br><br>
 
 **b) Configure *web.xml***
 
-1) Open the *web.xml* file in a text editor.
+1) Open the *web.xml* file in a text editor in administrator mode.
 
 2) Add the following code block to the end of the file, just before the closing *&lt;/web-app&gt;* element:
 
@@ -132,7 +134,7 @@ In the next steps, we modify three configuration files of Apache Tomcat. All thr
 
 **c) Configure *context.xml***
 
-1) Open the *context.xml* file in a text editor.
+1) Open the *context.xml* file in a text editor in administrator mode.
 
 2) Add the following to the end of the file, just before the closing *&lt;/context&gt;* element:
 

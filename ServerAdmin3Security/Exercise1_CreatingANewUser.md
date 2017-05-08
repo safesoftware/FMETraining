@@ -74,7 +74,7 @@ Select **OK** at the bottom to create the user.
 
 
 <br>**4) Test the New User Account**
-<br>It's important to verify the the options we set have been honored.
+<br>It's important to verify the options we set have been honored.
 
 Either logout of the admin account or open a new private browsing window, and login using the credentials for the new user account we just created.
 
