@@ -69,9 +69,14 @@ To clip data to a particular neighborhood first requires a reader for those neig
 <td style="">C:\FMEData2017\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
+<tr>
+<td style="font-weight: bold">Workflow</td>
+<td style="">Individual Feature Types</td>
+</tr>
+
 </table>
 
-When prompted, select only the feature type for Neighborhoods:
+Be sure to set the workflow option if you carried out the previous exercise, as it might default to a different value. Click OK and, when prompted, select only the feature type for Neighborhoods:
 
 ![](./Images/Img3.200.Ex1.NeighborhoodFT.png)
 
