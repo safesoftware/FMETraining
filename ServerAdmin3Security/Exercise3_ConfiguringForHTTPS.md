@@ -81,6 +81,8 @@ The new keystore must be imported into the FME Server keystore for trusted certi
 
 In the next steps, we modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\Program Files\FMEServer\Utilities\tomcat\conf\\* .
 
+It is a good idea to make copies of any files you will be changing and hold them in a separate directory until you have verified that the edits are working successfully.
+
 11) Configure *server.xml*
 
 Open the *server.xml* file in a text editor in administrator mode.
@@ -112,7 +114,6 @@ Open the *server.xml* file in a text editor in administrator mode.
 14) Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 4 under *i. Create a Keystore File*.
 
 15) Save and close the *server.xml* file.
-<br><br>
 
 16) Configure *web.xml*
 
@@ -131,7 +132,6 @@ Open the *web.xml* file in a text editor in administrator mode.
 		</security-constraint>
 
 18) Save and close the *web.xml* file.
-<br><br>
 
 19) Configure *context.xml*
 
