@@ -39,6 +39,7 @@ This file documents major changes made to training materials in 2017
 - Redesigned exercises to focus on Directory Watch
 - Email Publication exercise redesigned as an "Advanced Exercise"
 - Email Subscription exercise simplified
+- Removed FMEImageProcessing gmail account (most folk have an account they can use and having an open one like this just resulted in more problems than benefits)
 
 
 ### FME Server Projects ###
