@@ -153,7 +153,7 @@ Fill in the *Client Information* parameters as follows:
 
 - **Client Id:** efsdwkfh71l7da1
 - **Client Secret:** e4ycoikcun58uoz
-- **Redirect Uri:** https://localhost
+- **Redirect Uri:** https://localhost (or http://localhost if you have not configured your FME Server for HTTPS)
 
 The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explain in more detail about web service app creation.
 
