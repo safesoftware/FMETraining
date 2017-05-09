@@ -127,13 +127,29 @@ When prompted, publish the workspace to:
 - **Repository Name:** testing
 - **Workspace Name:** DropboxWebConnection
 
-At *Upload Connections*, make sure there is a check mark beside your connection and click **Add Service...**.
+At *Upload Connections*, make sure there is a check mark beside your connection and click **Next**. We will authorize our web connection on the FME Server Web User Interface.
 
-![](./Images/5.408.UploadConnection.png)
+Make sure **Job Submitter** has a check mark beside it. Click **Publish**.
 
-The *Add Dropbox Service to FME Server* dialog box opens.
+**5) Login to FME Server**
 
-Fill out the parameters as follows:
+Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+
+**6) Manage Web Services**
+
+Go to **Connections &gt; Web Connections**.
+
+![](./Images/5.409.WebConnectionsPage.png)
+
+Click **Manage Web Services**.
+
+![](./Images/5.416.ManageServices.png)
+
+Click **Dropbox**. The *Editing Web Service "Dropbox"* page opens.
+
+![](./Images/5.417.EditingWebServices.png)
+
+Fill in the *Client Information* parameters as follows:
 
 - **Client Id:** efsdwkfh71l7da1
 - **Client Secret:** e4ycoikcun58uoz
@@ -145,23 +161,13 @@ Note: The Client Id and Client Secret above are meant for this exercise only, an
 
 The Redirect Uri is where you will be redirected after authorization has been completed.
 
-![](./Images/5.410.IdAndSecret.png)
-
-Click **OK**.
-
-Click **Next**
-
-Make sure **Job Submitter** has a check mark beside it. Click **Publish**.
-
-**5) Login to FME Server**
-
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+Click **OK** to save these updates.
 
 **6) Authorize Web Connection**
 
-Go to **Connections &gt; Web Connections**
+Go back to **Connections &gt; Web Connections**
 
-![](./Images/5.409.WebConnectionsPage.png)
+
 
 Click **DropboxWebConnection** in your list of Web Connections.
 
