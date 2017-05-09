@@ -111,7 +111,7 @@ Open the *server.xml* file in a text editor in administrator mode.
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="443"/>
 		
-14) Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 4 under *i. Create a Keystore File*.
+14) Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 4.
 
 15) Save and close the *server.xml* file.
 
