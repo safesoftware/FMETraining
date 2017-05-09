@@ -27,12 +27,12 @@ This manual is for **FME2017**
 
 The status of each chapter is:
 
-- Chapter 0: Complete content; No exercises.
+- Chapter 0: Content complete. No exercises.
 - Chapter 1: Content and exercises complete.
 - Chapter 2: Content and exercises complete.
-- Chapter 3: Content complete. Exercises incomplete.
+- Chapter 3: Content and exercises complete.
 - Chapter 4: Content and exercises complete.
 - Chapter 5: Content complete. Exercises incomplete.
-- Chapter 6: Complete content; No exercises.
+- Chapter 6: Content complete. No exercises.
  
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
