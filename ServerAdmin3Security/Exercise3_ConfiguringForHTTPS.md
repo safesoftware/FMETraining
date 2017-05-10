@@ -148,7 +148,7 @@ Open the *context.xml* file in a text editor in administrator mode.
 
 Restart the FME Server Application service.
 
-23) Open a browser and navigate to *https://localhost/*. 
+23) Open a browser and navigate to *https://localhost:8443/*. 
 
 You should see the FME Server login page in a secured format.
 
