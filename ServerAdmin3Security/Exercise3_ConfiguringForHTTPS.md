@@ -154,6 +154,12 @@ You should see the FME Server login page in a secured format.
 
 ![](./Images/3.406.verifyConfiguration.png)
 
+Note: If a self-signed certificate is used for testing, your browser may report the page as not secure:
+
+![](./Images/3.411.ConnectionNotSecure_Warning.png)
+
+For self-signed certificates, click the **Advanced** button and add an exception for *https://localhost/*
+
 24) Modify Service URLs to Use HTTPS 
 
 To enable SSL for a service, open the FME Server Web User Interface, and select *Services*. 
