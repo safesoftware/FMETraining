@@ -92,7 +92,7 @@ Open the *server.xml* file in a text editor in administrator mode.
 13) Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
 
 		<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
-		port="443" minSpareThreads="5"
+		port="8443" minSpareThreads="5"
 		enableLookups="true" disableUploadTimeout="true"
 		acceptCount="100" maxThreads="200"
 		scheme="https" secure="true" SSLEnabled="true"
@@ -109,7 +109,7 @@ Open the *server.xml* file in a text editor in administrator mode.
 		URIEncoding="UTF8" />
  
 		<Connector port="80" protocol="HTTP/1.1"
-		redirectPort="443"/>
+		redirectPort="8443"/>
 		
 14) Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 4.
 
