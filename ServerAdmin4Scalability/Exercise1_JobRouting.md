@@ -190,7 +190,7 @@ In *Run Workspace*, fill out the parameters as follows:
 
 **9) Advanced Options**
 
-If you then expanded the *Advanced* options, there is the *Job Routing Tag* which can be used to associate the scheduled job with a specific FME Engine by specifying the name of the job routing tag associated with that engine. Enter *JobRouter2017* (the name of the tag that you created from the FME Server REST API).:
+If you then expanded the *Advanced* options, there is the *Job Routing Tag* which can be used to associate the scheduled job with a specific FME Engine by specifying the name of the job routing tag associated with that engine. Enter *JobRouter2017* (the name of the tag that you created from the FME Server REST API):
 
 ![](./Images/4.411.runWorkspaceAdvancedOptions.png)
 
