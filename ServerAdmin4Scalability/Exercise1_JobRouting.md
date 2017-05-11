@@ -75,7 +75,7 @@ To configure a Job Routing Tag, we must go to the FME Server REST API V3 interac
 
 Login to the FME Server Web User Interface either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
 
-Click **Developers &gt; REST API &gt; API &gt; transformations: Transformation Manager &gt; /transformations/jobroutes/tags**
+On the left hand table of contents, click **Developers &gt; REST API &gt; API &gt; transformations: Transformation Manager &gt; /transformations/jobroutes/tags**
 
 ![](./Images/4.432.DevelopersRestAPI.png)
 
@@ -87,7 +87,7 @@ This is where we will specify the tag we want to create.
 
 **2) Name Your Tag**
 
-Under Parameters, fill in **name** with the unique name of the tag you want to create, for example *JobRouting2017*:
+Under Parameters, fill in **name** with the unique name of the tag you want to create, for example *JobRouting2017* and **engines** with the name of one of your engines found on the *Engines & Licensing* tab of FME Server. This is the engine that will be associated with the tag and that we will route a job through.
 
 ![](./Images/4.403.JobRouting_APIPostParameters.png)
 
@@ -114,9 +114,7 @@ Parameters documented in boldface are required while parameters in normal font a
 
 ---
 
-You also have the option to specify a description of the tag, which engine(s) you want this tag to be associated with, and the repository assignments for the tag.
-
-For now let's fill in **name** with the name of one of your engines found in the *Engines & Licensing* tab of FME Server. This is the engine that will be associated with the tag and that we will route a job through.
+You also have the option to specify a description of the tag, and the repository assignments for the tag.
 
 Next, click the button **Try it out!** located at the bottom of the form:
 
@@ -130,7 +128,7 @@ In this case, your Username and Password are the username and password of your F
 
 ![](./Images/4.405.JobRouting_APIGetParameters2.png)
 
-Click **Lookup Existing Token** and then **Generate Token** to authorize the token request.
+Click **Lookup Existing Token** and then **Generate Token** to authorize the token request if a token does not  already exist. Close the Token dialog box.
 
 Click **Try it out!** once more to run the method now that your token is registered
 
