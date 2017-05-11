@@ -51,7 +51,7 @@ Run the following command to create a new keystone file:
 
 	keytool -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore
  
-Set a password for the new keystore and specify the server domain name (for example, *fmeserver.example.org*) as your first and last name.
+Set a password for the new keystore and specify the server domain name (for example, *localhost*) as your first and last name.
 
 Enter yes when prompted if inputs are correct.
 
@@ -70,7 +70,7 @@ Copy the new keystore file to the tomcat directory in the FME Server installatio
 
 The new keystore must be imported into the FME Server keystore for trusted certificates. In the command prompt, enter the following command:
 
-	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore "C:\apps\FMEServer\Utilities\jre\lib\security\cacerts"
+	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore C:\apps\FMEServer\Utilities\jre\lib\security\cacerts
 
 You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in step 1 above.
 
@@ -168,15 +168,13 @@ To enable SSL for a service, login to the FME Server Web User Interface (usernam
 
 ![](./Images/3.407.ServicesButton.png)
 
-On the *Services* page, click the desired service. For this exercise, let's select *Job Submitter*.
+On the *Services* page, you can update specific services or all services at once. Let's update all services. Click **Change All Hosts**
 
-![](./Images/3.408.selectService.png)
+![](./Images/3.413.ChangeAllHosts.png)
 
-The *Editing Service* page opens. In the *URL Pattern* field, change *HTTP* to *HTTPS*.
+The *Change All Hosts* dialog opens. Make sure *Host* is set to *https://localhost:8443* and click **OK**.
 
-![](./Images/3.409.httpTOhttps.png)
-
-Click **OK**.
+![](./Images/3.414.ChangeAllHosts2.png)
 
 Check on the *Services* page that your update worked.
 
