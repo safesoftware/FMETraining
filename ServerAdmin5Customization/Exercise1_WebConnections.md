@@ -157,7 +157,7 @@ Make sure **Job Submitter** has a check mark beside it. Click **Publish**.
 
 **5) Login to FME Server**
 
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
 
 **6) Manage Web Services**
 
