@@ -164,7 +164,7 @@ For self-signed certificates, click the **Advanced** button and add an exception
 
 **7) Modify Service URLs to Use HTTPS** 
 
-To enable SSL for a service, login to the FME Server Web User Interface (username and password *admin*), and select *Services* on the left hand side table of contents. 
+To enable SSL for a service, login to the FME Server Web User Interface (username and password *admin*), and select *Services* on the left sidebar. 
 
 ![](./Images/3.407.ServicesButton.png)
 

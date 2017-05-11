@@ -75,7 +75,7 @@ To configure a Job Routing Tag, we must go to the FME Server REST API V3 interac
 
 Login to the FME Server Web User Interface either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
 
-On the left hand table of contents, click **Developers &gt; REST API &gt; API &gt; transformations: Transformation Manager &gt; /transformations/jobroutes/tags**
+On the left sidebar, click **Developers &gt; REST API &gt; API &gt; transformations: Transformation Manager &gt; /transformations/jobroutes/tags**
 
 ![](./Images/4.432.DevelopersRestAPI.png)
 
@@ -178,7 +178,7 @@ Open the FME Server Web User Interface, either through the Web User Interface op
 
 Once you have a published to FME Server, you can run the **JobRouting_Job** workspace and utilize the Job Routing option.
 
-Click *Run Workspace* on the left hand side table of contents.
+Click *Run Workspace* on the left sidebar.
 
 ![](./Images/4.409.RunJob.png)
 

@@ -164,7 +164,7 @@ Save and close the *fmeCommonConfig.txt* file.
 
 Since we did a backup of the last FME Server instance, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
 
-Login to the FME Server Web User Interface and on the table of contents click **Backup & Restore &gt; Restore**.
+Login to the FME Server Web User Interface (*http:/localhost*)and on the table of contents click **Backup & Restore &gt; Restore**.
 
 ![](./Images/4.423.restoreButton.png)
 
