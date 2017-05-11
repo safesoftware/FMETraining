@@ -45,11 +45,11 @@ First, you must generate a keystore that contains a certificate chain using the 
 
 Open a command prompt and run as administrator.
 
-Navigate to the Java bin directory (*C:\Program Files\FMEServer\Utilities\jre\bin\\*)
+Navigate to the Java bin directory (*C:\apps\FMEServer\Utilities\jre\bin\\*)
 
 Run the following command to create a new keystone file:
 
-		keytool -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore
+	keytool -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore
  
 Set a password for the new keystore and specify the server domain name (for example, *fmeserver.example.org*) as your first and last name.
 
@@ -57,9 +57,9 @@ Enter yes when prompted if inputs are correct.
 
 When prompted for the password for the alias &lt;tomcat&gt;, press RETURN.
 
-A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*.
+A new keystore is created in *C:\apps\FMEServer\Utilities\jre\bin\\*.
 
-Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\Program Files\FMEServer\Utilities\tomcat\\*.
+Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\apps\FMEServer\Utilities\tomcat\\*.
 
 ![](./Images/3.404.ConfigureForHTTPS_createKeytool.png)
 
@@ -68,18 +68,18 @@ Copy the new keystore file to the tomcat directory in the FME Server installatio
 
 **Using a self-signed certificate:**
 
-The new keystore must be imported into the FME Server keystore for trusted certificates with the following command:
+The new keystore must be imported into the FME Server keystore for trusted certificates. In the command prompt, enter the following command:
 
-	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore "C:\Program Files\FMEServer\Utilities\jre\lib\security\cacerts"
+	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore "C:\apps\FMEServer\Utilities\jre\lib\security\cacerts"
 
-You will be prompted to enter two passwords. One for the destination keystore. The password for the destination keystore is **changeit**. And one password for the source keystore. The password for the source keystore is the password that was specified in step 4 above.
+You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in step 1 above.
 
 ![](./Images/3.405.ConfigureForHTTPS_selfSignedCertificate.png)
 
 <br><br>
 **Configure Tomcat** 
 
-In the next steps, we modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\Program Files\FMEServer\Utilities\tomcat\conf\\* .
+In the next steps, we modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\* .
 
 It is a good idea to make copies of any files you will be changing and hold them in a separate directory until you have verified that the edits are working successfully.
 
@@ -111,7 +111,7 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="8443"/>
 		
-Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 4.
+Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 1.
 
 Save and close the *server.xml* file.
 
@@ -164,7 +164,7 @@ For self-signed certificates, click the **Advanced** button and add an exception
 
 **7) Modify Service URLs to Use HTTPS** 
 
-To enable SSL for a service, open the FME Server Web User Interface, and select *Services*. 
+To enable SSL for a service, login to the FME Server Web User Interface (username and password *admin*), and select *Services* on the left hand side table of contents. 
 
 ![](./Images/3.407.ServicesButton.png)
 
