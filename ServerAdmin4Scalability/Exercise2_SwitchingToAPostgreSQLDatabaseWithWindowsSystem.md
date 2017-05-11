@@ -32,6 +32,30 @@
 
 Your company has an Express Installation of FME Server already installed but your Database Administrator has just informed you that you that the company will be switching its database providers from the default FME Database to a PostgreSQL database to allow for more control over database security.
 
+---
+
+<!--Miss Vector says...--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you completed the Configure for HTTPS exercise in chapter 3, remember: 
+<br><br>the URL to connect to FME Server is </span><span style="font-family:serif; font-style:italic; font-weight:bold; font-size:larger">https://localhost:8443</span><span style="font-family:serif; font-style:italic; font-size:larger"> NOT http://localhost!
+</span>
+</td>
+</tr>
+</table>
+
+---
+
 
 ## 1. Backup your FME Server configuration ##
 

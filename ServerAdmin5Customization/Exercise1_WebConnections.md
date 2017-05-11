@@ -44,6 +44,30 @@ Your GIS department is working with several other organizations on one big proje
 
 There are many web services that have already been created and are accessible to you or you can create your own if a web service you want to utilize is not currently offered by FME. The Dropbox web service, for instance, has already been created. Therefore, instead of creating a new web service, we will use the already created one for this exercise.
 
+---
+
+<!--Miss Vector says...--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you completed the Configure for HTTPS exercise in chapter 3, remember: 
+<br><br>the URL to connect to FME Server is </span><span style="font-family:serif; font-style:italic; font-weight:bold; font-size:larger">https://localhost:8443</span><span style="font-family:serif; font-style:italic; font-size:larger"> NOT http://localhost!
+</span>
+</td>
+</tr>
+</table>
+
+---
+
 **1) Create a workspace**
 
 The first step in adding a web connection is to create a workspace to run. Open FME Workbench and create a new Blank Workspace.
@@ -87,8 +111,8 @@ The *Web Service Authentication* dialog box opens.
 
 Enter the following:
 
-- Email: fmeserver2017@gmail.com
-- Password: fme_server
+- **Email:** fmeserver2017@gmail.com
+- **Password:** fme_server
 
 		Note: The above email and password are used solely for this exercise. This is where you would add your own web service account login information.
 
@@ -110,7 +134,7 @@ Click **OK** to close the dialog box.
 
 It is good to run the workspace in FME Desktop before uploading it to FME Server. If the workspace does not run in FME Desktop than it will not run in FME Server.
 
-Click the Run button to make sure you have properly configured the workspace.
+Click **Run** to make sure you have properly configured the workspace.
 
 ![](./Images/5.406.RunButton.png)
 
@@ -153,7 +177,7 @@ Fill in the *Client Information* parameters as follows:
 
 - **Client Id:** efsdwkfh71l7da1
 - **Client Secret:** e4ycoikcun58uoz
-- **Redirect Uri:** https://localhost (or http://localhost if you have not configured your FME Server for HTTPS)
+- **Redirect Uri:** http://localhost 
 
 The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explain in more detail about web service app creation.
 
