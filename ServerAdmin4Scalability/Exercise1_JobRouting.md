@@ -73,7 +73,7 @@ A job routing tag is how you assign a job to a specific FME Engine. Tags are not
 
 To configure a Job Routing Tag, we must go to the FME Server REST API V3 interactive page where you can try each method live.
 
-Login to the FME Server Web User Interface either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+Login to the FME Server Web User Interface either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
 
 On the left hand table of contents, click **Developers &gt; REST API &gt; API &gt; transformations: Transformation Manager &gt; /transformations/jobroutes/tags**
 
@@ -172,11 +172,13 @@ When prompted, publish the workspace to:
 
 **7) Connect to FME Server**
 
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
 
 **8) Run the Workspace**
 
 Once you have a published to FME Server, you can run the **JobRouting_Job** workspace and utilize the Job Routing option.
+
+Click *Run Workspace* on the left hand side table of contents.
 
 ![](./Images/4.409.RunJob.png)
 
@@ -200,7 +202,7 @@ Click **Run**.
 
 You want to make sure the job was routed to the correct engine and not just the first available engine.
 
-Check **Jobs &gt; Completed**:
+From the table of contents select **Jobs &gt; Completed**:
 
 ![](./Images/4.412.Job_Completed_area.png)
 
