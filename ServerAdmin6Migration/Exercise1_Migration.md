@@ -58,13 +58,13 @@ If you completed the Configure for HTTPS exercise in chapter 3, remember:
 
 **1) Connect to FME Server**
 <br>
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
 
 **2) Backup FME Server**
 <br>
 When migrating FME Server, you need to back up your current FME Server configurations.
 
-On the Web User Interface, click **Backup & Restore**.
+On the left sidebar, click **Backup & Restore**.
 
 ![](./Images/6.401.Backup&Restore.png)
 
@@ -81,7 +81,7 @@ Click the **Download** button to download and save the file to your computer.
 
 It is also a good idea to manually back up any FME Server configuration files you have altered to a location outside of your FME Server installation directory for reference later on. Certain configurations are not included in the primary backup procedure and you will need to configure the old files with the new files.
 
-In this training course, we have altered *server.xml*, *web.xml*, *context.xml*, *cacerts*, and created a *tomcat.keystore* file in *Configuring FME Server for HTTPS* exercise, and *pg_hba.conf*, and *fmeCommonConfig.txt* in the *Switching to a PostgreSQL Database* exercise. 
+In this training course, we have altered *server.xml*, *web.xml*, *context.xml*, *cacerts*, and created a *tomcat.keystore* file in the *Configuring FME Server for HTTPS* exercise, and *pg_hba.conf*, and *fmeCommonConfig.txt* in the *Switching to a PostgreSQL Database* exercise. 
 
 So if we were trying to migrate our current FME Server configurations, these are the files that we would want to have copies of for reference later on when restoring FME Server configurations.
 
@@ -101,13 +101,13 @@ Click **Download** and save these log files in the same location where you saved
 
 Log files from a previous FME Server instance can be backed up but cannot be restored to a new instance of FME Server. However, it is still a good idea to backup log files in case you need to reference them later on. If you do not backup your log files, they disappear when you install your new FME Server.
 
-**5) Switch to your new FME Server**
+**5) Switch to your New FME Server**
 
 This is when you would install your new FME Server. For the purposes of this exercise, we will instead go over how you would verify proper migration of your old FME Server configurations.
 
 **6) Restoring the BackupFMEServer Configuration**
 
-To upload the **BackupFMEServer** configuration file, login to the FME Server Web User Interface. (http://localhost/fmeserver with username and password *admin*)
+To upload the **BackupFMEServer** configuration file, login to the FME Server Web User Interface. (http://localhost/ with username and password *admin*)
 
 Go to **Backup & Restore &gt; Restore**.
 
