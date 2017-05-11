@@ -114,7 +114,7 @@ Enter the following:
 - **Email:** fmeserver2017@gmail.com
 - **Password:** fme_server
 
-		Note: The above email and password are used solely for this exercise. This is where you would add your own web service account login information.
+		Note: The above email and password should be used solely for this exercise. This is where you would add your own web service account login information.
 
 ... and then click **Sign in**
 
@@ -161,7 +161,7 @@ Open the FME Server Web User Interface, either through the Web User Interface op
 
 **6) Manage Web Services**
 
-Go to **Connections &gt; Web Connections**.
+From the left sidebar go to **Connections &gt; Web Connections**.
 
 ![](./Images/5.409.WebConnectionsPage.png)
 
@@ -191,8 +191,6 @@ Click **OK** to save these updates.
 
 Go back to **Connections &gt; Web Connections**
 
-
-
 Click **DropboxWebConnection** in your list of Web Connections.
 
 On the *Edit* page, click the **Authorize** button:
@@ -206,9 +204,9 @@ A window opens with the login screen for Dropbox. Sign in with:
 
 ![](./Images/5.412.LoginWindow.png)
 
-You will be prompted to allow access to your Dropbox web service. Click **Allow**.
+The window closes and a message pops up:
 
-![](./Images/5.413.AllowAccess.png)
+![](./Images/5.418.AuthorizedCorrectly.png)
 
 You have now successfully authorized a Dropbox web connection to FME Server for you to use in the future!
 
