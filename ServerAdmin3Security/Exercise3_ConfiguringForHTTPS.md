@@ -30,62 +30,58 @@
 
 ---
 
-Your company is expanding rapidly and hiring many new employees. Now, instead of having everyone able to access to FME Server, you have set up logins so only trusted personnel have access. You also want to set up extra precautions to keep the login information secure.
+Your company is rapidly expanding and hiring many new employees. Now, instead of having everyone able to access to FME Server, you have set up logins so only trusted personnel have access. You also want to set up extra precautions to keep the transferred information secure.
 
 HTTPS ensures that communication between the client and the server is encrypted, so that if it is intercepted, the third party cannot easily view or use the information. For FME Server, you can use HTTPS to ensure that sensitive login information is not exposed.
 
 
-### Enable SSL on the Web Application Server ###
+## Enable SSL on the Web Application Server ##
 
 For any HTTPS (SSL) page, a certificate is required. For development and testing purposes, self-signed certificates are supported. For production use, we recommend that you use SSL certificates from a verified SSL certificate authority (CA).
 
-**1) Create a Keystore File**
+<br>**1) Create a Keystore File**
+<br>First, you must generate a keystore that contains a certificate chain using the Java Keytool from the Java Developer Kit (JDK).
 
-First, you must generate a keystore that contains a certificate chain using the Java Keytool from the Java Developer Kit (JDK).
-
-Open a command prompt and run as administrator.
+Open a **Command Prompt** and run as administrator.
 
 Navigate to the Java bin directory (*C:\apps\FMEServer\Utilities\jre\bin\\*)
 
-Run the following command to create a new keystone file:
+Run the following command to create a new keystore file:
 
 	keytool -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore
  
 Set a password for the new keystore and specify the server domain name (for example, *localhost*) as your first and last name.
 
-Enter yes when prompted if inputs are correct.
+Enter *yes* when prompted if inputs are correct.
 
 When prompted for the password for the alias &lt;tomcat&gt;, press RETURN.
 
-A new keystore is created in *C:\apps\FMEServer\Utilities\jre\bin\\*.
+A new keystore is created in *C:\apps\FMEServer\Utilities\jre\bin\\*
 
-Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\apps\FMEServer\Utilities\tomcat\\*.
+Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\apps\FMEServer\Utilities\tomcat\\*
 
 ![](./Images/3.404.ConfigureForHTTPS_createKeytool.png)
 
-<br><br>
-**2) Working with the Certificate** 
 
-**Using a self-signed certificate:**
-
-The new keystore must be imported into the FME Server keystore for trusted certificates. In the command prompt, enter the following command:
+<br>**2) Working with the Certificate** 
+<br>The new keystore must be imported into the FME Server keystore for trusted certificates. In the command prompt, enter the following command:
 
 	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore C:\apps\FMEServer\Utilities\jre\lib\security\cacerts
 
-You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in step 1 above.
+You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in Step 1 above.
 
 ![](./Images/3.405.ConfigureForHTTPS_selfSignedCertificate.png)
 
-<br><br>
-**Configure Tomcat** 
 
-In the next steps, we modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\* .
+##Configure Tomcat##
+
+In the next steps, we need to modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\* 
 
 It is a good idea to make copies of any files you will be changing and hold them in a separate directory until you have verified that the edits are working successfully.
 
-**3) Configure *server.xml***
 
-Open the *server.xml* file in a text editor in administrator mode.
+<br>**3) Configure server.xml**
+<br>Open the *server.xml* file in a text editor in administrator mode.
 
 Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
 
@@ -111,13 +107,13 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="8443"/>
 		
-Make sure to exchange *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in step 1.
+Make sure to change *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in Step 1.
 
 Save and close the *server.xml* file.
 
-**4) Configure *web.xml***
 
-Open the *web.xml* file in a text editor in administrator mode.
+<br>**4) Configure web.xml**
+<br>Open the *web.xml* file in a text editor in administrator mode.
 
 Add the following code block to the end of the file, just before the closing *&lt;/web-app&gt;* element:
 
@@ -133,9 +129,9 @@ Add the following code block to the end of the file, just before the closing *&l
 
 Save and close the *web.xml* file.
 
-**5) Configure *context.xml***
 
-Open the *context.xml* file in a text editor in administrator mode.
+<br>**5) Configure context.xml**
+<br>Open the *context.xml* file in a text editor in administrator mode.
 
 Add the following to the end of the file, just before the closing *&lt;/context&gt;* element:
 
@@ -144,11 +140,11 @@ Add the following to the end of the file, just before the closing *&lt;/context&
 
 Save and close the *context.xml* file.
 
-**6) Verify the Configuration** 
 
-Now that we have made our changes, we want to verify that HTTPS was configured correctly for FME Server.
+<br>**6) Verify the Configuration** 
+<br>Now that we have made our changes, we want to verify that HTTPS was configured correctly for FME Server.
 
-Restart the FME Server Application service.
+**Restart the FME Server Application service.**
 
 Open a browser and navigate to *https://localhost:8443/*. 
 
@@ -160,11 +156,11 @@ Note: If a self-signed certificate is used for testing, your browser may report 
 
 ![](./Images/3.411.ConnectionNotSecure_Warning.png)
 
-For self-signed certificates, click the **Advanced** button and add an exception for *https://localhost:8443/*
+For self-signed certificates, click the **Advanced** button and add an exception for *https://localhost:8443/*.
 
-**7) Modify Service URLs to Use HTTPS** 
 
-To enable SSL for a service, login to the FME Server Web User Interface (username and password *admin*), and select *Services* on the left sidebar. 
+<br>**7) Modify Service URLs to Use HTTPS** 
+<br>To enable SSL for a service, login to the FME Server Web User Interface (username and password *admin*), and select **Services** on the left sidebar. 
 
 ![](./Images/3.407.ServicesButton.png)
 
@@ -172,7 +168,7 @@ On the *Services* page, you can update specific services or all services at once
 
 ![](./Images/3.413.ChangeAllHosts.png)
 
-The *Change All Hosts* dialog opens. Make sure *Host* is set to *https://localhost:8443* and click **OK**.
+The *Change All Hosts* dialog opens. Make sure **Host** is set to *https://localhost:8443* and click **OK**.
 
 ![](./Images/3.414.ChangeAllHosts2.png)
 
