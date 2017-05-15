@@ -141,20 +141,20 @@ Add a **Creator** transformer and connect it to a **Logger** transformer.
 ![](./Images/4.404.JobRouting_Workspace.png)
 
 
-<br>**5) Run the Workspace**
-<br>Test that the workspace does run correctly by clicking the run button:
+<br>**5) Test the Workspace**
+<br>Test that the translation completes successfully by clicking the Run button in the toolbar of FME Workbench:
 
-![](./Images/4.431.RunButton.png)
+![](./Images/4.405.RunButton.png)
 
-Translation was successful, and now we have a job that we can route. 
+The Translation Log indicates running this workspace was successful, and now we have a job that we can route.
 
 
 <br>**6) Publish to FME Server**
-<br>Publish the workspace to FME Server from the file menu in FME Workbench:
+<br>Publish the workspace to FME Server by selecting **Publish to FME Server** from the File menu in FME Workbench:
 
-![](./Images/4.408.publishToServer.png)
+![](./Images/4.406.PublishToServer.png)
 
-When prompted, publish the workspace to:
+When prompted in the Publish to FME Server Wizard, publish the workspace to:
 
 - **Repository Name:** testing
 - **Workspace Name:** JobRouting_Job.fmw
@@ -162,45 +162,37 @@ When prompted, publish the workspace to:
 
 
 <br>**7) Connect to FME Server**
-<br>Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
+<br>Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
 
 
-<br>**8) Run the Workspace**
+<br>**8) Run the Workspace with Job Routing**
 <br>Once you have a published to FME Server, you can run the **JobRouting_Job** workspace and utilize the Job Routing option.
 
 Click *Run Workspace* on the left sidebar.
 
-![](./Images/4.409.RunJob.png)
-
-In *Run Workspace*, fill out the parameters as follows:
+On Run Workspace page, fill out the parameters as follows:
 
 - **Repository:** testing
 - **Workspace:** JobRouting_Job
 - **Service:** Job Submitter 
 
-![](./Images/4.410.runWorkspace.png)
+Next, expand the **Advanced** options on the Run Workspace page. There is the *Job Routing Tag* parameter which can be used to associate the selected job with a specific FME Engine. Enter *JobRouting2017* (the name of the tag created in Step 2):
 
-
-<br>**9) Advanced Options**
-<br>If you then expanded the *Advanced* options, there is the *Job Routing Tag* which can be used to associate the scheduled job with a specific FME Engine by specifying the name of the job routing tag associated with that engine. Enter *JobRouter2017* (the name of the tag that you created from the FME Server REST API):
-
-![](./Images/4.411.runWorkspaceAdvancedOptions.png)
+![](./Images/4.407.RunWorkspaceAdvancedOptions.png)
 
 Click **Run**.
 
 
-<br>**10) Ensure the Job Routed correctly**
+<br>**10) Verify Job Routing Configuration**
 <br>You want to make sure the job was routed to the correct engine and not just the first available engine.
 
-From the table of contents select **Jobs &gt; Completed**:
+In the left sidebar of the FME Server Web User Interface select **Jobs &gt; Completed**.
 
-![](./Images/4.412.Job_Completed_area.png)
+Select the workspace that just ran to open the Job Details page.
 
-Select the workspace that you just ran to open the job details.
+Scroll down to view the *Request Data* section you can see your tag name that the job was routed through: 
 
-In the *Request Data* section you can see your tag name that the job was routed through: 
-
-![](./Images/4.413.jobRouting_finalCheck.png)
+![](./Images/4.408.JobRouting_Verify.png)
 
 
 <br>**11) Resubmit the Job**
