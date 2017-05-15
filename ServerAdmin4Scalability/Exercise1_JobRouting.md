@@ -116,39 +116,29 @@ Parameters documented in boldface are required while parameters in normal font a
 
 
 <br>**3) Generate a Token**
-<br>
-Next, click the button **Try it out!** located at the bottom of the form:
+<br>The FME Server REST API uses token-based authentication. In order to invoke this command to create a new Job Routing Tag on FME Server, we need to obtain a valid token.
 
+Click the button **Try it out!** located at the bottom of the form. You will be prompted for a Username and Password to acquire a Token. This must be provided with every request, and can be specified in a header or querystring or form parameter.
 
-
-<br>**3) Generate a Token**
-<br>You will be prompted for a Username and Password to acquire a Token. A token is required to access the REST API. This must be provided with every request, and can be specified in a header or querystring or form parameter.
+![](./Images/4.403.JobRouting_APIGetParameters.png)
 
 In this case, your Username and Password are the username and password of your FME Server Administrator’s account.
 
-![](./Images/4.405.JobRouting_APIGetParameters2.png)
+Click **Lookup Existing Token**. If no token is found, or if an existing token has expired, select *Generate Token*. Close the Token dialog box.
 
-Click **Lookup Existing Token** and then **Generate Token** to authorize the token request if a token does not  already exist. Close the Token dialog box.
+Click **Try it out!** once more to execute the REST API call now that your token is registered.
 
-Click **Try it out!** once more to run the method now that your token is registered
-
-A Response Code value of **201** means you have successfully created your tag!
-
-![](./Images/4.406.JobRouting_APIPostPrintOut.png)
-
-Now you can use the tag to route jobs through the specified engine.
+A Response Code value of *201* means you have successfully created your tag! Now you can use the tag to route jobs through the specified engine.
 
 
 <br>**4) Create a Workspace**
-<br>Now we will create a workspace in FME Workbench so that we have a job to test our Job Routing Tag with.
+<br>Now we will create a workspace in FME Workbench so that we have a job to test our Job Routing Tag with. For this exercise we do not need a complicated workspace, just a job that will run.
 
 Open FME Workbench and create a new Blank Workspace.
 
-For this exercise we do not need a complicated workspace, just a job that will run.
-
 Add a **Creator** transformer and connect it to a **Logger** transformer.
 
-![](./Images/4.407.jobRouting_workspace1.png)
+![](./Images/4.404.JobRouting_Workspace.png)
 
 
 <br>**5) Run the Workspace**
