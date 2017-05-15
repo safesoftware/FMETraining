@@ -180,7 +180,7 @@ Next, expand the **Advanced** options on the Run Workspace page. There is the *J
 
 ![](./Images/4.407.RunWorkspaceAdvancedOptions.png)
 
-Click **Run**.
+Click *Run*.
 
 
 <br>**10) Verify Job Routing Configuration**
@@ -194,21 +194,9 @@ Scroll down to view the *Request Data* section you can see your tag name that th
 
 ![](./Images/4.408.JobRouting_Verify.png)
 
+Go back to **Jobs &gt; Completed** to verify that the job was always sent to the correct engine. When testing, you may consider submitting the job multiple times for an added verification step, and piece of mind, but this isn't necessary of course!
 
-<br>**11) Resubmit the Job**
-<br>Click the *Resubmit Job* button at the top of the page:
-
-![](./Images/4.414.JobRouting_resubmitButton.png)
-
-Click the *Resubmit Job* button several times; we want to make sure that every time we run the workspace with the Job Routing Tag that it is sending the job to the correct engine.
-
-
-<br>**12) Verify the Subsequent Jobs Routed Correctly**
-<br>Go back to **Jobs &gt; Completed** to verify that the job was always sent to the correct engine.
-
-![](./Images/4.415.JobRouting_engineCheck.png)
-
-If, under *Engine*, you see a list of the correct engine for each time you ran **JobRouting_Job**, then you have successfully routed the job!
+![](./Images/4.409.JobRouting_EngineCheck.png)
 
 ---
 
