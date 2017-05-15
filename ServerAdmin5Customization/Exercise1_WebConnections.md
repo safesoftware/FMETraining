@@ -68,7 +68,7 @@ If you completed the Configure for HTTPS exercise in chapter 3, remember:
 
 ---
 
-**1) Create a workspace**
+**1) Create a Workspace**
 
 The first step in adding a web connection is to create a workspace to run. Open FME Workbench and create a new Blank Workspace.
 
@@ -114,15 +114,12 @@ Enter the following:
 - **Email:** fmeserver2017@gmail.com
 - **Password:** fme_server
 
-		Note: The above email and password should be used solely for this exercise. This is where you would add your own web service account login information.
-
 ... and then click **Sign in**
 
-![](./Images/5.403.Login.png)
+	Note: The above email and password should be used solely for this exercise. This is where you would add your own web service account login information.
+
 
 Click **Allow** to allow FME to access the Dropbox account.
-
-![](./Images/5.404.FMEAccess.png)
 
 Your *HTTPCaller Parameters* dialog box should now look like the following:
 
@@ -195,8 +192,6 @@ A window opens with the login screen for Dropbox. Sign in with:
 
 - **Email:** fmeserver2017@gmail.com 
 - **Password:** fme_server
-
-![](./Images/5.412.LoginWindow.png)
 
 The window closes and a message pops up:
 
