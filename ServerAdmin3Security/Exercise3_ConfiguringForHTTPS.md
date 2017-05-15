@@ -34,10 +34,8 @@ Your company is rapidly expanding and hiring many new employees. Now, instead of
 
 HTTPS ensures that communication between the client and the server is encrypted, so that if it is intercepted, the third party cannot easily view or use the information. For FME Server, you can use HTTPS to ensure that sensitive login information is not exposed.
 
-
-## Enable SSL on the Web Application Server ##
-
 For any HTTPS (SSL) page, a certificate is required. For development and testing purposes, self-signed certificates are supported. For production use, we recommend that you use SSL certificates from a verified SSL certificate authority (CA).
+
 
 <br>**1) Create a Keystore File**
 <br>First, you must generate a keystore that contains a certificate chain using the Java Keytool from the Java Developer Kit (JDK).
@@ -72,13 +70,14 @@ You will be prompted to enter two passwords. One for the destination keystore an
 
 ![](./Images/3.405.ConfigureForHTTPS_selfSignedCertificate.png)
 
+---
 
-##Configure Tomcat##
-
-In the next steps, we need to modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\* 
+<br>**Configuring Tomcat**
+<br>In the next steps, we need to modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\* 
 
 It is a good idea to make copies of any files you will be changing and hold them in a separate directory until you have verified that the edits are working successfully.
 
+---
 
 <br>**3) Configure server.xml**
 <br>Open the *server.xml* file in a text editor in administrator mode.
