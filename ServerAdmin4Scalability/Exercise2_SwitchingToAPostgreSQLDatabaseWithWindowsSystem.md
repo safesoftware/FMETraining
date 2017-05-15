@@ -54,71 +54,46 @@ If you have completed the Configure for HTTPS exercise, remember that the URL to
 </table>
 
 
-<br>**1) Backup FME Server**
+<br>1) Backup FME Server
+<br>Backing up your current FME Server instance is an important step before performing any post-installation configurations. Once you have changed the database provider, you can restore FME Server configurations all at once instead of having to go through the process of manually changing any settings, republishing workspaces, etc.
 
-Backing up your current FME Server instance is important before altering your current FME Server so that once you have reinstalled your new database, you can restore your past FME Server configurations all at once instead of having to go through the process of manually changing the configurations settings afterwards.
+Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
 
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
+Find **Backup & Restore** in left sidebar, under the Admin heading in the FME Server Web User Interface, and click to open this page.
 
-You can save your current configuration settings by going to **Backup & Restore** in the table of contents:
-
-![](./Images/4.416.Backup&Restore.png)
-
-… and then downloading the configuration files onto the computer. 
-
-Set the *Configure Backup* parameters as:
-
-- **Filename:** Backup2017
-- **Backup To:** Download
-
-![](./Images/4.417.ConfigureDownload.png)
-
-Next step is to configure the new database server. Run the necessary database configuration scripts and post-configuration scripts for your new PostgreSQL database as follows.
+Select *Download* to save a backup file of FME Server - this can be thought of as a "snapshot". It will take a short time to run processes in the background to compile the FME Server backup, and once this is complete it will automatically save to your local downloads folder.
 
 
-**2) Database Configuration**
+<br>2) Initial Database Configuration
+<br>For the purposes of this exercise, a separate PostgreSQL database has been installed to the Training Machines. 
 
-Using the Command Prompt:
+The next step is to configure this database. From the Windows Start Menu, select **PostgreSQL &gt; SQL Shell** to open the psql command prompt. Login using the username and password *postgres* - this is the root user for the database.
 
-Go to the directory where your postgreSQL files are stored (*C:\apps\FMEServer\Server\database\postgresql\\*).
-
-Open psql and log on as a user with the appropriate privileges. 
-
-Create an FME Server database user as follows:
-<br>
-From the SQL prompt, run the *postgresql\_createUser.sql* script by entering the following command:
+First, create a new user to assign ownership of the FME Server database. From the psql prompt, run the *postgresql\_createUser.sql* script by entering the following command:
 		
 	\i 'C:/apps/FMEServer/Server/database/postgresql/postgresql_createUser.sql'
-
+	
 By default, the provided SQL script creates an FME Server database user named *fmeserver* with the password *fmeserver*.
 
-Create an FME Server database as follows:
-<br>
-From the SQL prompt, run the *postgresql\_createDB.sql* script by entering the following command:
+Next, create the FME Server database by running the *postgresql\_createDB.sql* script in the psql command prompt:
 
 	\i 'C:/apps/FMEServer/Server/database/postgresql/postgresql_createDB.sql'
 
-By default, the provided SQL creates an FME Server database name *fmeserver* and grants all privileges on the database to the user *fmeserver*.
+This SQL script creates the FME Server database and grants all privileges on the database to the user *fmeserver*.
 
-![](./Images/4.418.ConfigureSettings3.png)
-<br><br>
-Quit psql and log on as the FME Server database user. (Username and password *fmeserver*)
 
-![](./Images/4.419.fmeUserLogIn.png)
-<br>
-<br>
-Create the FME Server database schema as follows:
-<br>
-From the SQL prompt, run the *postgresql\_createSchema.sql* script by entering the following command:
+<br>3) Create the FME Server Database Schema
+<br>Exit the psql command prompt to end the current session. Open a new session (Windows Start Menu &gt; PostgreSQL &gt; SQL Shell) and now login as the FME Server database user - using the username and password *fmeserver*.
+
+From the command prompt, run the *postgresql\_createSchema.sql* script by entering the following command:
 
 	\i ‘C:/apps/FMEServer/Server/database/postgresql/postgresql_createSchema.sql'
 	
 By default, the provided SQL script creates all FME Server related tables, indexes, views, and triggers.
 
 
-**3) Post-Configuration**
-
-Ensure that FME Server is running in the Windows Services desktop app. 
+<br>4) Post-Configuration
+<br>Ensure that FME Server is running in the Windows Services desktop app. 
 
 **Start &gt; apps &gt; Services** and scroll until you come to the FME Server services.
  
@@ -144,9 +119,8 @@ Restart the FME Server Database service.
 On the machine on which the FME Server Core is installed (primary and failover), open *C:\apps\FMEServer\Utilities\\*, and run *runPostInstall.bat* by right-clicking the file and selecting *Run as administrator*.
 
 
-**4) Configure the Database Connection**
-
-Open the *fmeCommonConfig.txt* file, located in your *C:\apps\FMEServer\Server\\* directory in a text editor in administrator mode.
+<br>5) Configure the Database Connection
+<br>Open the *fmeCommonConfig.txt* file, located in your *C:\apps\FMEServer\Server\\* directory in a text editor in administrator mode.
 
 Under the heading *FME SERVER SETTINGS START*, locate the section titled *Database Connection* and update the parameters for the database you want to use for your repository. In this case we will update the section for a postgreSQL database:
 
@@ -161,9 +135,8 @@ Under the heading *FME SERVER SETTINGS START*, locate the section titled *Databa
 Save and close the *fmeCommonConfig.txt* file.
 
 
-**5) Restore Your FME Server Configuration**
-
-Since we did a backup of the last FME Server instance, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
+<br>6) Restore Your FME Server Configuration
+<br>Since we did a backup of the last FME Server instance, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
 
 Login to the FME Server Web User Interface (*http:/localhost*)and on the table of contents click **Backup & Restore &gt; Restore**.
 
