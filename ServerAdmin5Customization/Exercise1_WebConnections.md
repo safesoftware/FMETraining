@@ -178,7 +178,7 @@ The Redirect Uri is where you will be redirected after authorization has been co
 
 Click **OK** to save these updates.
 
-**6) Authorize Web Connection**
+**7) Authorize Web Connection**
 
 Go back to **Connections &gt; Web Connections**
 
