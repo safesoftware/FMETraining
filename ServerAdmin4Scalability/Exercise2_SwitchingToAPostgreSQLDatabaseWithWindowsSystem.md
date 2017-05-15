@@ -92,59 +92,48 @@ From the command prompt, run the *postgresql\_createSchema.sql* script by enteri
 By default, the provided SQL script creates all FME Server related tables, indexes, views, and triggers.
 
 
-<br>**4) Post-Configuration**
-<br>Ensure that FME Server is running in the Windows Services desktop app. 
+<br>**4) Post-Configuration Script**
+<br>Navigate to *C:\Program Files\PostgreSQL\9.6\data\pg_hba.conf* and open this file in a text editor in administrator mode.
 
-**Start &gt; apps &gt; Services** and scroll until you come to the FME Server services.
- 
-On the machine on which the FME Server database server is installed, open *C:\Program Files\PostgreSQL\9.6\data\pg_hba.conf* in a text editor in administrator mode.
-<br>
 Change the following lines:
-
 
 	host	all		all		127.0.0.1/32	md5
 	host	all		all		::1/128		md5
 
-To:
-
+to:
 
 	host	all		all 	0.0.0.0/0	md5
 	host	all		all		::/0	md5
 
 Save and close the *pg_hba.conf* file.
 
-Restart the FME Server Database service. 
-<br>**Start &gt; apps &gt; Services**. Right-click FME Server Database and click **Restart**
+In order for these changes to take effect, restart the PostgreSQL Database service. Open the Services application by using the *Windows Start Menu* and typing in 'Services'. In this application, right-click **postgresql-x64-9.6** and select *Restart*.
 
-On the machine on which the FME Server Core is installed (primary and failover), open *C:\apps\FMEServer\Utilities\\*, and run *runPostInstall.bat* by right-clicking the file and selecting *Run as administrator*.
+Finally, open *C:\apps\FMEServer\Utilities\\*, and run *runPostInstall.bat* by right-clicking the file and selecting *Run as administrator*.
 
 
 <br>**5) Configure the Database Connection**
-<br>Open the *fmeCommonConfig.txt* file, located in your *C:\apps\FMEServer\Server\\* directory in a text editor in administrator mode.
+<br>Open the *fmeCommonConfig.txt* file, located in the *C:\apps\FMEServer\Server\\* directory, using a text editor in administrator mode.
 
-Under the heading *FME SERVER SETTINGS START*, locate the section titled *Database Connection* and update the parameters for the database you want to use for your repository. In this case we will update the section for a postgreSQL database:
+Under the heading *FME SERVER SETTINGS START*, locate the section titled *Database Connection* and update the **DB_JDBC_URL** parameter for the PostgreSQL database:
 
-	DB_TYPE=postgresql
-	DB_DRIVER=org.postgresql.Driver
-	DB_JDBC_URL=jdbc:postgresql://localhost:7082/fmeserver
-	DB_USERNAME=fmeserver
-	DB_PASSWORD=fmeserver
-	DB_CONNECT_EXPIRY=60
-	DB_SQLSTMTS_PATH=C:/Apps/FMEServer/Server/database
+	DB_JDBC_URL=jdbc:postgresql://localhost:5432/fmeserver
 
-Save and close the *fmeCommonConfig.txt* file.
+Save and close the *fmeCommonConfig.txt* file, and then **Restart FME Server**.
 
 
 <br>**6) Restore Your FME Server Configuration**
-<br>Since we did a backup of the last FME Server instance, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
+<br>Since a backup of FME Server was created in Step 1, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
 
-Login to the FME Server Web User Interface (*http:/localhost*)and on the table of contents click **Backup & Restore &gt; Restore**.
+Login to the FME Server Web User Interface and select **Backup & Restore &gt; Restore** from the left sidebar.
 
-![](./Images/4.423.restoreButton.png)
+Upload your saved backup configuration file from the beginning of this exercise. Navigate to *C:\Users\Administrator\Downloads\\* and locate the FME Server backup file (Hint: It has *.fsconfig* extension!). Drag-and-drop this file onto the FME Server Restore page:
 
-Upload your saved backup configuration file from the beginning of this exercise. Grab the **Backup2017** file from where you downloaded it and drag and drop it into the *Drop file to upload* area:
+![](./Images/4.410.RestoreConfiguration.png)
 
-![](./Images/4.424.RestoreConfiguration.png)
+The FME Server Web User Interface will report if the restore is successful. If it is not, the log file is easily accessible from this page if further investigation is needed.
+
+![](./Images/4.411.RestoreSuccess.png)
 
 ---
 
