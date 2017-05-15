@@ -101,8 +101,8 @@ Either logout of the admin account or open a new private browsing window, and lo
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Connect FME Server to an existing Active Directory configuration/li>
-<li>Import Users and Groups from Active Directory</li>
+<ul><li>Connect FME Server to an existing Active Directory configuration</li>
+<li>Import Users and Groups from Active Directory</li></ul>
 </span>
 </td>
 </tr>
