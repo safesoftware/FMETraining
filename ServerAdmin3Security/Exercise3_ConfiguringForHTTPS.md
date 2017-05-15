@@ -75,7 +75,7 @@ You will be prompted to enter two passwords. One for the destination keystore an
 <br>**Configuring Tomcat**
 <br>In the next steps, we need to modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\* 
 
-It is a good idea to make copies of any files you will be changing and hold them in a separate directory until you have verified that the edits are working successfully.
+It is a good idea to make copies of any files you will be changing and place them in a separate directory until you have verified that the edits are working successfully.
 
 ---
 
