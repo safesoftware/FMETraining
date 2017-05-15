@@ -140,8 +140,6 @@ Translation was successful and we are now ready to publish the workspace to FME 
 
 **4) Publish to FME Server**
 
-Publish the workspace to FME Server.
-
 When prompted, publish the workspace to:
 
 - **Repository Name:** testing
