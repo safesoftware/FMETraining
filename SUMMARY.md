@@ -34,7 +34,7 @@
 	* [Exercise 1: Job Routing](./ServerAdmin4Scalability/Exercise1_JobRouting.md)
 	* [Adding FME Engines on a Separate Machine](./ServerAdmin4Scalability/4.02.AddingFMEEnginesOnASeparateMachine.md)
 	* [Changing Database Provider for FME Server Database](./ServerAdmin4Scalability/4.03.ChangingDatabaseProviderForFMEServerDatabase.md)
-	* [Exercise 2: Switiching the FME Server Database](./ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.md)
+	* [Exercise 2: Changing the FME Server Database Provider](./ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.md)
 	* [System Cleanup](./ServerAdmin4Scalability/4.04.SystemCleanup.md)
 	* [Chapter Review](./ServerAdmin4Scalability/4.05.ChapterReview.md)
 	* [Q&A Answers](./ServerAdmin4Scalability/4.06.QuestionAnswers.md)
