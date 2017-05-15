@@ -136,15 +136,11 @@ It is good to run the workspace in FME Desktop before uploading it to FME Server
 
 Click **Run** to make sure you have properly configured the workspace.
 
-![](./Images/5.406.RunButton.png)
-
 Translation was successful and we are now ready to publish the workspace to FME Server.
 
 **4) Publish to FME Server**
 
-Publish the workspace to FME Server from the file menu in FME Workbench:
-
-![](./Images/5.407.publishToServer.png)
+Publish the workspace to FME Server.
 
 When prompted, publish the workspace to:
 
