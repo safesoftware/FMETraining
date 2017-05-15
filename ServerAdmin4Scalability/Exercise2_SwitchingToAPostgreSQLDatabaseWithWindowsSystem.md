@@ -7,7 +7,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Switching to a PostgreSQL Database with Windows System</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Changing the FME Server Database Provider</span>
 </td>
 </tr>
 
@@ -18,12 +18,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Change your current database configuration to a PostgreSQL database</td>
+<td style="border: 1px solid darkorange">Change the database provider for FME Server</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Backing up your FME Server configurations, configuring a PostgreSQL database, and restoring the old FME Server configurations</td>
+<td style="border: 1px solid darkorange">Configuring a new PostgreSQL database</td>
 </tr>
 
 </table>
@@ -47,19 +47,15 @@ Your company has an Express Installation of FME Server already installed but you
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you completed the Configure for HTTPS exercise in chapter 3, remember: 
-<br><br>the URL to connect to FME Server is </span><span style="font-family:serif; font-style:italic; font-weight:bold; font-size:larger">https://localhost:8443</span><span style="font-family:serif; font-style:italic; font-size:larger"> NOT http://localhost!
+If you have completed the Configure for HTTPS exercise, remember that the URL to connect to FME Server is now </span><span style="font-family:serif; font-style:italic; font-weight:bold; font-size:larger">https://localhost:8443</span><span style="font-family:serif; font-style:italic; font-size:larger"> and NOT http://localhost!
 </span>
 </td>
 </tr>
 </table>
 
----
 
-
-## 1. Backup your FME Server configuration ##
-
-Backing up your current FME Server instance is important before altering your current FME Server so that once you have reinstalled your new database, you can restore your past FME Server configurations all at once instead of having to go through the process of manually changing the configurations settings afterwards.
+<br>1) Backup FME Server
+<br>Backing up your current FME Server instance is important before altering your current FME Server so that once you have reinstalled your new database, you can restore your past FME Server configurations all at once instead of having to go through the process of manually changing the configurations settings afterwards.
 
 Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
 
@@ -78,9 +74,9 @@ Set the *Configure Backup* parameters as:
 
 Next step is to configure the new database server. Run the necessary database configuration scripts and post-configuration scripts for your new PostgreSQL database as follows.
 
-## 2. Database Configuration ##
 
-**Using the Command Prompt:**
+<br>2) Database Configuration
+<br>**Using the Command Prompt:**
 
 Go to the directory where your postgreSQL files are stored (*C:\apps\FMEServer\Server\database\postgresql\\*).
 
@@ -117,10 +113,11 @@ From the SQL prompt, run the *postgresql\_createSchema.sql* script by entering t
 	
 By default, the provided SQL script creates all FME Server related tables, indexes, views, and triggers.
 
-## 3. Post-Configuration ##
 
-Ensure that FME Server is running in the Windows Services desktop app. 
-<br>**Start &gt; apps &gt; Services** and scroll until you come to the FME Server services.
+<br>3) Post-Configuration
+<br>Ensure that FME Server is running in the Windows Services desktop app. 
+
+**Start &gt; apps &gt; Services** and scroll until you come to the FME Server services.
  
 On the machine on which the FME Server database server is installed, open *C:\Program Files\PostgreSQL\9.6\data\pg_hba.conf* in a text editor in administrator mode.
 <br>
@@ -144,9 +141,8 @@ Restart the FME Server Database service.
 On the machine on which the FME Server Core is installed (primary and failover), open *C:\apps\FMEServer\Utilities\\*, and run *runPostInstall.bat* by right-clicking the file and selecting *Run as administrator*.
 
 
-## 4. Configure the Database Connection ##
-
-Open the *fmeCommonConfig.txt* file, located in your *C:\apps\FMEServer\Server\\* directory in a text editor in administrator mode.
+<br>4. Configure the Database Connection
+<br>Open the *fmeCommonConfig.txt* file, located in your *C:\apps\FMEServer\Server\\* directory in a text editor in administrator mode.
 
 Under the heading *FME SERVER SETTINGS START*, locate the section titled *Database Connection* and update the parameters for the database you want to use for your repository. In this case we will update the section for a postgreSQL database:
 
@@ -160,9 +156,9 @@ Under the heading *FME SERVER SETTINGS START*, locate the section titled *Databa
 
 Save and close the *fmeCommonConfig.txt* file.
 
-## 5. Restore Your FME Server Configuration ##
 
-Since we did a backup of the last FME Server instance, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
+<br>5. Restore Your FME Server Configuration
+<br>Since we did a backup of the last FME Server instance, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
 
 Login to the FME Server Web User Interface (*http:/localhost*)and on the table of contents click **Backup & Restore &gt; Restore**.
 
@@ -187,11 +183,10 @@ Upload your saved backup configuration file from the beginning of this exercise.
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-You have successfully changed your FME Server Database provider!
+By completing this exercise you have learned how to:
+<br>
+<ul><li>Change the Database for FME Server</li></ul>
 </span>
 </td>
 </tr>
 </table>
-
----
-
