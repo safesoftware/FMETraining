@@ -38,7 +38,7 @@
 	* [System Cleanup](./ServerAdmin4Scalability/4.04.SystemCleanup.md)
 	* [Chapter Review](./ServerAdmin4Scalability/4.05.ChapterReview.md)
 	* [Q&A Answers](./ServerAdmin4Scalability/4.06.QuestionAnswers.md)
-* [Chapter 5: FME Server Customization/Enterprise](./ServerAdmin5Customization/5.00.FMEServerCustomization.md)
+* [Chapter 5: FME Server Customization](./ServerAdmin5Customization/5.00.FMEServerCustomization.md)
 	* [Server Dashboards](./ServerAdmin5Customization/5.01.ServerDashboards.md)
 	* [32- and 64-bit Engines on Same Machine](./ServerAdmin5Customization/5.02.32And64BitEnginesOnSameMachine.md)
 	* [Configuring Custom Coordinate Systems/Grid Transformations](./ServerAdmin5Customization/5.03.ConfiguringCustomCoordinateSystemsGridTransformations.md)
