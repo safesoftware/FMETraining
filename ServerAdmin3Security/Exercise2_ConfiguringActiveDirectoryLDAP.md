@@ -68,12 +68,12 @@ A notification will appear in the top right of the web browser window to indicat
 <br>**4) Configure Role Permissions** 
 <br>After the Active Directory group is imported to FME Server, you must configure the permissions of the new Role.
 
-Select Security > **Roles** under the Admin heading on the left sidebar of the FME Server Web User Interface. Click on the **FMEUC Users** Role that was just created to open the Edit Permissions page.
+Select Security &gt; **Roles** under the Admin heading on the left sidebar of the FME Server Web User Interface. Click on the **FMEUC Users** Role that was just created to open the Edit Permissions page.
 
 To verify that the logins will work, give the Role some basic permissions allowing its users to login to the FME Server Web User Interface and run a job. Select the following permissions:
 
 - **Run Workspace:** Access
-- **Repositories > Samples:** Can Run (under the *Summary*)
+- **Repositories &gt; Samples:** Can Run (under the *Summary*)
 
 
 <br>**5) Test the New User Account**
