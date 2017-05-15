@@ -73,9 +73,7 @@ Login to the FME Server Web User Interface either through the Web User Interface
 
 On the left sidebar, click **Developers &gt; REST API** to open the FME Server REST API V3 page.
 
-![](./Images/4.432.DevelopersRestAPI.png)
-
-This FME Server REST API opens on the *Overview* page. Select **API** from the menu options to display the various REST API calls that FME Server supports.
+This opens the FME Server REST API on the *Overview* page. Select **API** from the menu options to display the various REST API calls that FME Server supports.
 
 Click on **transformations: Transformation Manager** to expand this section. Scroll down to the **POST /transformations/jobroutes/tags** REST API endpoint and select to expand this method.
 
