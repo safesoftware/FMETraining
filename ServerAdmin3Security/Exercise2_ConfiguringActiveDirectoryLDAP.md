@@ -50,7 +50,7 @@ Enter the following information:
 - **Host:** dc.fmeuc.com
 - **Port:** 389
 - **Domain Search User:** DC\Administrator
-- **Domain Search Password:** *<distributed_during_course>*
+- **Domain Search Password:** *&lt;distributed_during_course&gt;*
 
 Click **OK** to save the new Active Directory connection. You will be returned to the Active Directory page. Wait for the Status to change from Yellow to Green, indicating that the connection was successful.
 
