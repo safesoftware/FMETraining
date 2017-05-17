@@ -192,7 +192,7 @@ Scroll down to view the *Request Data* section you can see your tag name that th
 
 ![](./Images/4.408.JobRouting_Verify.png)
 
-Go back to **Jobs &gt; Completed** to verify that the job was always sent to the correct engine. When testing, you may consider submitting the job multiple times for an added verification step, and piece of mind, but this isn't necessary of course!
+Go back to **Jobs &gt; Completed** to verify that the job was sent to the correct engine. When testing, you may consider submitting the job multiple times for an added verification step, and piece of mind, but this isn't necessary of course!
 
 ![](./Images/4.409.JobRouting_EngineCheck.png)
 
