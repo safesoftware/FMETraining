@@ -143,7 +143,7 @@ Save and close the *context.xml* file.
 <br>**6) Verify the Configuration** 
 <br>Now that we have made our changes, we want to verify that HTTPS was configured correctly for FME Server.
 
-**Restart the FME Server Application service.**
+Restart the FME Server Application service from the **Start menu &gt; FME Server 2017.1 &gt; Restart FME Server**.
 
 Open a browser and navigate to *https://localhost:8443/*. 
 
