@@ -83,7 +83,7 @@ This SQL script creates the FME Server database and grants all privileges on the
 
 
 <br>**3) Create the FME Server Database Schema**
-<br>Exit the psql command prompt to end the current session. Open a new session (Windows Start Menu &gt; PostgreSQL &gt; SQL Shell) and now login as the FME Server database user - using the username and password *fmeserver*.
+<br>Exit the psql command prompt to end the current session. Open a new session (Windows Start Menu &gt; PostgreSQL &gt; SQL Shell) and now login to the database *fmeserver* as the FME Server database user - using the username and password *fmeserver*.
 
 From the command prompt, run the *postgresql\_createSchema.sql* script by entering the following command:
 
