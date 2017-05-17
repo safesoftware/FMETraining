@@ -40,9 +40,7 @@
 
 ---
 
-Your GIS department is working with several other organizations on one big project. It is a lot to organize, so whenever there are additional files to be shared, each organization drops the file into the shared Dropbox for easy access for all organization members. You want to use FME Server to access the Dropbox. To do this you must first create a Dropbox web connection.
-
-There are many web services that have already been created and are accessible to you or you can create your own if a web service you want to utilize is not currently offered by FME. The Dropbox web service, for instance, has already been created. Therefore, instead of creating a new web service, we will use the already created one for this exercise.
+Your GIS department is working with several other organizations on one big project. It is a lot to organize, so whenever there are additional files to be shared, each organization drops the file into the shared Dropbox for easy access for all organization members. Your task is to configure FME Server to access the Dropbox.
 
 ---
 
@@ -59,39 +57,33 @@ There are many web services that have already been created and are accessible to
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you completed the Configure for HTTPS exercise in chapter 3, remember: 
-<br><br>the URL to connect to FME Server is </span><span style="font-family:serif; font-style:italic; font-weight:bold; font-size:larger">https://localhost:8443</span><span style="font-family:serif; font-style:italic; font-size:larger"> NOT http://localhost!
+If you have completed the Configure for HTTPS exercise, remember that the URL to connect to FME Server is now </span><span style="font-family:serif; font-style:italic; font-weight:bold; font-size:larger">https://localhost:8443</span><span style="font-family:serif; font-style:italic; font-size:larger"> and NOT http://localhost!
 </span>
 </td>
 </tr>
 </table>
 
----
 
-**1) Create a Workspace**
+<br>**1) Create a Workspace**
+<br>You must first create a Dropbox web connection. The first step in creating this web connection is to have a workspace to run! Open FME Workbench and create a new Blank Workspace.
 
-The first step in adding a web connection is to create a workspace to run. Open FME Workbench and create a new Blank Workspace.
-
-The **HTTPCaller** transformer accesses a URL via HTTP or HTTPS, performing a GET, PUT, POST, DELETE, HEAD, PATCH or OPTIONS operation. Since we are accessing Dropbox through the web, we will utilize an **HTTPCaller** for this workspace.
+The **HTTPCaller** transformer can access a URL via HTTP or HTTPS, and perform GET, PUT, POST, DELETE, HEAD, PATCH or OPTIONS operations. Since we are accessing Dropbox through the web, we will utilize an **HTTPCaller** for this workspace.
 
 Add a **Creator** transformer, and an **HTTPCaller** transformer to the workspace. Join the **Creator** to the **HTTPCaller**. Right-click **HTTPCaller** and select *Connect Loggers*.
 
 ![](./Images/5.401.WebConnectionsWorkbench.png)
 
-**2) HTTPCaller Parameters**
 
-You'll notice the **HTTPCaller** has a red cog wheel meaning it has required parameters to be filled in.
+<br>**2) Configure HTTPCaller and Create Web Connection**
+<br>You'll notice the HTTPCaller has a red cog wheel meaning it has required parameters to be filled in. Click the red cog on the HTTPCaller transformer to open the parameters.
 
-Click the red cog on the **HTTPCaller** transformer to open the parameters.
+Fill in the *HTTPCaller Parameters* dialog box as follows:
 
-Fill in the *HTTPCaller parameters* dialog box as follows:
-
-- **Request URL:** https://dropbox.com
-
-		The Request URL identifies what URL will be accessed by the transformer.
+- **Request URL:** https://dropbox.com	
 - **HTTP Method:** GET
 
-		The HTTP Method identifies the HTTP method which will be used to access the server. In our case we will be GETting information from the server.
+The Request URL identifies what URL will be accessed by the transformer and the HTTP Method identifies the HTTP method which will be used to access the server. In our case we will be GETting information from the server.
+
 - Check the box **Use Authentication**.
 - Click the drop down arrow for **Authentication Method** and select *Web Connection*.
 - Click the drop down arrow for **Web Connection** and select *Add Web Connection...*
@@ -112,77 +104,70 @@ The *Web Service Authentication* dialog box opens.
 Enter the following:
 
 - **Email:** fmeserver2017@gmail.com
-- **Password:** fme_server
+- **Password:** *&lt;distributed_during_course&gt;*
 
 ... and then click **Sign in**
 
-	Note: The above email and password should be used solely for this exercise. This is where you would add your own web service account login information.
-
+Note: The above email and password should be used solely for this exercise. This is where you would add your own web service account login information, but for this course we have provided an account to use.
 
 Click **Allow** to allow FME to access the Dropbox account.
 
 Your *HTTPCaller Parameters* dialog box should now look like the following:
 
-![](./Images/5.405.HTTPCallerParameters.png)
+![](./Images/5.403.HTTPCallerParameters.png)
 
 Click **OK** to close the dialog box.
 
-**3) Run the Workspace**
 
-It is good to run the workspace in FME Desktop before uploading it to FME Server. If the workspace does not run in FME Desktop than it will not run in FME Server.
+<br>**3) Run the Workspace**
+<br>It is a best practice to first run the workspace in FME Desktop before uploading it to FME Server. If the workspace does not run in FME Desktop, than it will not run in FME Server!
 
 Click **Run** to make sure you have properly configured the workspace.
 
 Translation was successful and we are now ready to publish the workspace to FME Server.
 
-**4) Publish to FME Server**
 
-When prompted, publish the workspace to:
+<br>**4) Publish to FME Server**
+<br>Select *Publish to FME Server* under the File Menu. When prompted, publish the workspace with these parameters:
 
 - **Repository Name:** testing
 - **Workspace Name:** DropboxWebConnection
 
-At *Upload Connections*, make sure there is a check mark beside your connection and click **Next**. We will authorize our web connection on the FME Server Web User Interface.
+At *Upload Connections*, make sure there is a check mark beside your connection and click **Next**. We will authorize our web connection using the FME Server Web User Interface.
 
 Make sure **Job Submitter** has a check mark beside it. Click **Publish**.
 
-**5) Login to FME Server**
 
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
+<br>**5) Login to FME Server**
+<br>Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/), and log in using the username and password *admin*.
 
-**6) Manage Web Services**
 
-From the left sidebar go to **Connections &gt; Web Connections**.
+<br>**6) Configure the Dropbox Web Service**
+<br>From the left sidebar go to **Connections &gt; Web Connections**.
 
-![](./Images/5.409.WebConnectionsPage.png)
+Click **Manage Web Services** on the Web Connections page.
 
-Click **Manage Web Services**.
-
-![](./Images/5.416.ManageServices.png)
+![](./Images/5.404.ManageServices.png)
 
 Click **Dropbox**. The *Editing Web Service "Dropbox"* page opens.
-
-![](./Images/5.417.EditingWebServices.png)
 
 Fill in the *Client Information* parameters as follows:
 
 - **Client Id:** efsdwkfh71l7da1
-- **Client Secret:** e4ycoikcun58uoz
+- **Client Secret:** *&lt;distributed_during_course&gt;*
 - **Redirect Uri:** http://localhost 
 
-The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explain in more detail about web service app creation.
+The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explains in more detail about web service app creation.
 
-Note: The Client Id and Client Secret above are meant for this exercise only, and you should generate your own Id and Secret codes when applying your own web connections.
-
-The Redirect Uri is where you will be redirected after authorization has been completed.
+Note: The Client Id and Client Secret above are meant for this exercise only, and you should generate your own Id and Secret when applying your own web connections.
 
 Click **OK** to save these updates.
 
-**7) Authorize Web Connection**
 
-Go back to **Connections &gt; Web Connections**
+<br>**7) Authorize Web Connection**
+<br>Go back to **Connections &gt; Web Connections**
 
-Click **DropboxWebConnection** in your list of Web Connections.
+Click *DropboxWebConnection* in your list of Web Connections.
 
 On the *Edit* page, click the **Authorize** button:
 
@@ -191,13 +176,13 @@ On the *Edit* page, click the **Authorize** button:
 A window opens with the login screen for Dropbox. Sign in with: 
 
 - **Email:** fmeserver2017@gmail.com 
-- **Password:** fme_server
+- **Password:** *&lt;distributed_during_course&gt;*
 
 The window closes and a message pops up:
 
 ![](./Images/5.418.AuthorizedCorrectly.png)
 
-You have now successfully authorized a Dropbox web connection to FME Server for you to use in the future!
+You have now successfully authorized a Dropbox web connection to FME Server for you to use in your workspaces!
 
 ---
 
@@ -218,11 +203,10 @@ By completing this exercise you have learned how to:
 <br>
 <ul><li>Access a web service</li>
 <li>Publish a web connection to FME Server</li>
+<li>Configure a web service in FME Server</li>
 <li>Authorize a web connection on FME Server</li>
 </ul>
 </span>
 </td>
 </tr>
 </table>
-
----
