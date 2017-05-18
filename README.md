@@ -1,4 +1,4 @@
-<!--This file duplicates a little of the content to follow, but is added here because the content of this file is used for the landing page on GitBook-->
+<!--This file duplicates a little of the content to follow but is added here because the content of this file is used for the landing page on GitBook-->
 
 # FME Desktop Training Manuals #
 
