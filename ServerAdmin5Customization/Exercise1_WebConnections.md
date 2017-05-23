@@ -154,7 +154,7 @@ Click **Dropbox**. The *Editing Web Service "Dropbox"* page opens.
 Fill in the *Client Information* parameters as follows:
 
 - **Client Id:** efsdwkfh71l7da1
-- **Client Secret:** *&lt;distributed_during_course&gt;*
+- **Client Secret:** e4ycoikcun58uoz
 - **Redirect Uri:** http://localhost 
 
 The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explains in more detail about web service app creation.
@@ -171,7 +171,7 @@ Click *DropboxWebConnection* in your list of Web Connections.
 
 On the *Edit* page, click the **Authorize** button:
 
-![](./Images/5.411.Authorize.png)
+![](./Images/5.405.Authorize.png)
 
 A window opens with the login screen for Dropbox. Sign in with: 
 
@@ -180,7 +180,7 @@ A window opens with the login screen for Dropbox. Sign in with:
 
 The window closes and a message pops up:
 
-![](./Images/5.418.AuthorizedCorrectly.png)
+![](./Images/5.406.AuthorizedCorrectly.png)
 
 You have now successfully authorized a Dropbox web connection to FME Server for you to use in your workspaces!
 
