@@ -25,7 +25,7 @@
    * [Web Connections](ServerAuthoring1Basics/1.15.WebConnections.md)
    * [Publishing Data](ServerAuthoring1Basics/1.16.PublishingData.md)
    * [Temporary Uploads](ServerAuthoring1Basics/1.17.TemporaryUploads.md)
-   * [Exercise: Daily Database Updates: Publishing Data](ServerAuthoring2SelfServe1/Exercise4.md)
+   * [Exercise: Daily Database Updates: Publishing Data](ServerAuthoring1Basics/Exercise4.md)
    * [Resource Filesystem](ServerAuthoring1Basics/1.18.ResourceFilesystem.md)
    * [Authoring for Resources](ServerAuthoring1Basics/1.19.AuthoringForResources.md)
    * [Exercise: Daily Database Updates: Using Resources](ServerAuthoring1Basics/Exercise5.md)
