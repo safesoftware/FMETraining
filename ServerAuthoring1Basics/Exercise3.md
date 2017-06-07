@@ -104,9 +104,9 @@ For the time settings, set the schedule to start immediately and run every 30 se
 
 ![](./Images/Img1.229.Ex3.NewScheduleSetSchedule.png)
 
-Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM.
+Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine FME Server is installed to.
 
-Under Workspace Settings, select the Training repository and from within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
+Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
 
 ![](./Images/Img1.230.Ex3.NewScheduleWorkspace.png) 
 
@@ -154,7 +154,7 @@ You may wish to check back periodically during this training to ensure the works
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Shared a repository in FME Server and tested to ensure it is available to the right users</li>
+<ul><li>Share a repository in FME Server and tested to ensure it is available to the right users</li>
 <li>Schedule a translation in FME Server</li>
 <li>Check the job history to ensure the scheduled translation took place</li></ul>
 </span>
