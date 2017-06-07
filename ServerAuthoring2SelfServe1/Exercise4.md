@@ -45,7 +45,7 @@
 
 As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
 
-So far you have created a simple workspace to translate orthophotos to jpeg format. To this you have added published parameters for transformation, format, and coordinate system. The workspace was published it to a Data Download service on FME Server.
+So far you have created a simple workspace to translate orthophotos to JPEG format. To this you have added published parameters for transformation, format, and coordinate system. The workspace was published to a Data Download service on FME Server.
 
 One of the frequent requests you get when you translate orthophoto data is to add vector data as an overlay on the raster. This is very simple in FME with the VectorOnRasterOverlayer transformer. However, to deploy this on FME Server means you need to give the end-users control over which vector layers are included.
 
