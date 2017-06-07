@@ -118,7 +118,7 @@ We'll run the workspace shortly, but perhaps first we should make sure FME Serve
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If your machine is unlicensed, or is missing engines, then check with your instructor for troubleshooting tips
+If your machine is unlicensed, or is missing engines, then check with your instructor for troubleshooting tips.
 </span>
 </td>
 </tr>
@@ -152,7 +152,7 @@ Notice some interesting points of the interface:
 1. There are links to show Completed jobs (the default), Queued Jobs, and Running Jobs.
 2. There is a drop-down list that allows you to filter whose jobs are being shown.
 3. Jobs that are successful and which fail are differentiated using a different icon.
-4. The jobs are displayed in the chronological order in which they were started.
+4. The jobs are displayed in the chronological order in which they finished (whether successful or not).
 
 Click on your job to inspect the results in more detail. You will be able to see details about the job including the time at which it was submitted, queued, started, finished, and delivered; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
 
