@@ -61,7 +61,7 @@ Now you have a task to create a new workspace. One of the datasets it uses is th
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the workspace listed in the header above and skip to step 7
+If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the end workspace listed in the header above and skip to step 7
 </span>
 </td>
 </tr>
@@ -95,7 +95,7 @@ You can turn off the layer of VotingDivisions. All we are interested in for this
 <br>**2) Create Workspace**
 <br>Open the starting workspace listed above. 
 
-You might notice that it's a copy of our previous project, since the requirements for this workspace as so similar. If you do choose to just carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
+You might notice that it's a copy of our previous project, since the requirements for this workspace are so similar. If you do choose to just carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
 
 The workspace looks like this:
 
