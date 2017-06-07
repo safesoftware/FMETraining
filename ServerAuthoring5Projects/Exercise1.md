@@ -21,7 +21,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Import and Export an FME Server Project</td>
+<td style="border: 1px solid darkorange">Set Up an FME Server Project</td>
 </tr>
 
 <tr>
@@ -94,9 +94,46 @@ Click Projects on the menu again, and select the recently imported project. You 
 Use the menu options to check the Repository, Notifications, and Resources pages to ensure that the imported components do really exist.
 
 
+<br>**5) Test Project**
+<br>Now let's send an email to your FME Server to test the project. This assumes that you are using a server that has a public name, domain, or address.
 
-![](./Images/
+For FME Server on one of Safe's training computers, the public IP address is shown on the top-right of the desktop, or within the readme file obtained when you started the computer:
 
+![](./Images/Img5.018.Ex1.ServerIPAddress.png)
+
+The email address will be BestPractice@xxxx, where xxxx is the IP address:
+
+![](./Images/Img5.017.Ex1.EmailTest.png)
+
+Set a subject line and attach a workspace file. Click the Send button. In response (it may take a minute or two) you will receive an email report about the best practices used in that workspace:
+
+![](./Images/Img5.019.Ex1.BPReport.png)
+
+This demonstrates that the project has been imported and set up correctly.
+
+
+<br>**6) Clean Up Project**
+<br>One part of the project that is not needed is a user account.
+
+So, return to the project contents, select the iMark account, and remove it.
+
+![](./Images/Img5.020.Ex1.RemoveAccount.png)
+
+Since the project has been imported, the account will also exist on the machine (the above only removed it from the project). So also visit the security pages and remove that user.
+
+Send another email to confirm that the project is still working.
+
+
+<br>**7) Export Project**
+<br>Now the project has been updated, export it so that it can be imported in its proper form elsewhere.
+
+To do so, browse to the Projects page, select the project (using the checkbox on the left), and click the Export button.
+
+In the dialog that opens you can choose whether to save the project file to a download or a resources folder. Once complete the following message will appear:
+
+![](./Images/Img5.021.Ex1.ProjectExported.png)
+
+---
 
 <!--Exercise Congratulations Section--> 
 
@@ -113,10 +150,10 @@ Use the menu options to check the Repository, Notifications, and Resources pages
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a new Publication</li>
-<li>Create a new Topic as part of the Create Publication process</li>
-<li>Use Directory Watch to trigger Topics and Notifications</li>
-<li>Test a Publication and Topic using Topic Monitoring</li></ul>
+<ul><li>Import a Project</li>
+<li>Check the log and confirm a Project was successfully imported</li>
+<li>Edit a Project's contents</li>
+<li>Export a Project</li></ul>
 </span>
 </td>
 </tr>
