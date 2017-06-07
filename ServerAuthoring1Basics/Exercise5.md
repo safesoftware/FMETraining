@@ -143,7 +143,11 @@ Return to the FME Server web interface. Locate the workspace under the Run Works
 
 Obviously this will be of no use where the Server does not have access to those files. However, because we already uploaded them to the Resources folders we can use those files.
 
-So, for each file, click the browse button, browse to the appropriate subfolder in the Resources folder, and select/set the file location. For the Geodatabase output location you'll need to type the file name manually:
+So, for each file, click the browse button, browse to the appropriate subfolder in the Resources folder, and select/set the file location. For the Geodatabase output location you'll need to type the file name manually:\
+
+<pre>
+$(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb
+</pre>
 
 ![](./Images/Img1.256.Ex5.SetGeodatabaseOutputAsAResource.png)
 
