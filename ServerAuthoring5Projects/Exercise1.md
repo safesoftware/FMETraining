@@ -10,23 +10,23 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Best Practice Workspace Analysis Project</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Building footprints (Esri Shapefile)</td>
+<td style="border: 1px solid darkorange">Workspace Files</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Trigger notification for new files</td>
+<td style="border: 1px solid darkorange">Import and Export an FME Server Project</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Notification topics and Directory Watch publications</td>
+<td style="border: 1px solid darkorange">FME Server Projects</td>
 </tr>
 
 <tr>
@@ -43,107 +43,60 @@
 
 ---
 
-As a technical analyst in the GIS department you want to start experimenting with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to, or updating, the corporate database. 
+Best Practice is a very important concept for FME workspaces. To encourage colleagues to carry out best practices you wish to install a project that allows workspaces to be analyzed.
 
 
-<br>**1) Create Resources Folder**
-<br>The first step is to create a Resources folder to copy the data to. Open the FME Server web interface and navigate to the Resources page.
+<br>**1) Browse To Projects**
+<br>Open the FME Server web interface and log in with an account that has administrator privileges.
 
-Browse to the Data folder and create a new subfolder called BuildingUpdates:
+Select Projects on the main menu to browse to the Projects page:
 
-![](./Images/Img4.400.Ex1.NewDataFolder.png)
-
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise utilizes the FME Server Resource folders, but there is also native support in FME Server to watch for new resources in Amazon S3 Buckets, Dropbox, and FTP.
-<br>Using the same concepts described here, you could use one of these protocols instead of Directory Watch.
-</td>
-</tr>
-</table>
-
----
-
-<br>**2) Create Publication**
-<br>Now to create a publication and topic that will be triggered by a new file. Navigate to the Notifications page, click the Publications tab, and then click the New button.
-
-Enter "Incoming Building Footprints" as the new publication's name. 
-
-Next click in the text box besides Topics to Publish To. Type in ShapeIncomingFile and click on the entry with that name that appears in the drop-down list. This will create a new topic and assign it to this publication. 
-
-![](./Images/Img4.401.Ex1.NewPublicationDialog.png)
+![](./Images/Img5.012.Ex1,ProjectsMenu.png)
 
 
-<br>**3) Set Publication Protocol**
-<br>Now select Directory Watch from the drop-down list as the protocol for this publication. In the dialog that appears click the browse button for the Directory to Watch parameter and select the newly created resources folder:
+<br>**2) Import Project**
+<br>Click on the Import button to open the Configure Import dialogs:
 
-![](./Images/Img4.402.Ex1.DirectoryToWatch.png)
+![](./Images/Img5.013.Ex1.ImportButton.png)
 
-Back in the publication definition, for the Filter parameter remove the MODIFY and DELETE actions. All we really want to monitor are new files arriving, not old ones being removed:
+In the Configure Import section, be sure to set the import to be by an upload:
 
-![](./Images/Img4.403.Ex1.DirectoryWatchFilters.png)
+![](./Images/Img5.014.Ex1.ImportConfig.png)
 
-Change the Poll Interval to 1 Minute and click OK to create the new publication.
+*Overwrite Existing Items* is less important because the project should not yet exist for items to need overwriting. Similarly, *Pause Notifications System* is not important because it's very unlikely the notifications in the project will be triggered immediately (they are for handling incoming emails).
 
+Click the Upload File button and browse to/select the file C:\FMEData2017\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
 
-<br>**4) Monitor Topic**
-<br>Click on the tab for Topics. The ShapeIncomingFile topic should now be listed in the list of topics. There is also a Topic Monitoring dialog to the upper-right of the page.
+The project will very quickly be imported:
 
-In the drop-down box for Topic Monitoring, select the ShapeIncomingFile topic and click the green "run" button. This will start Topic Monitoring:
-
-![](./Images/Img4.403.Ex1.DirectoryWatchTopicMonitoring.png)
+![](./Images/Img5.015.Ex1.ImportComplete.png)  
 
 
-<br>**5) Test Topic**
-<br>Now let's test the topic. Locate the source Shapefile datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) for one dataset and create a compressed zip file out of them (right-click &gt; Send to &gt; Compressed (zipped) folder).
+<br>**3) Check Log**
+<br>Click the View Log button in order to examine the Backup/Restore log (which is where project imports are documented). A successful import will look something like this (some columns removed for brevity):
 
-Now upload the zip file into the newly created Resources folder. There are two ways to do this.
+<pre>
+Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Received a configuration package for import.
+Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Unzipping configuration package...
+Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Upgrading configuration package schema version...
+Wed-07-Jun-2017 01:38:29 PM INFORM: (Migration) Importing configuration package content to server...
+Wed-07-Jun-2017 01:38:33 PM INFORM: (Migration) Imported configuration package successfully.
+</pre>
 
-You can use the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
 
-![](./Images/Img4.404.Ex1.DirectoryWatchDataInFolder.png)
+<br>**4) Check Components**
+<br>Now let's check for some of the components that should have been imported.
 
-Check back in the Topic Monitoring window and you will see that the topic has been triggered by the new file:
+Click Projects on the menu again, and select the recently imported project. You should now see a list of the imported contents:
 
-![](./Images/Img4.405.Ex1.DirectoryWatchTopicMonitoringTriggered.png)
+![](./Images/Img5.016.Ex1.ProjectContents.png)
 
----
+Use the menu options to check the Repository, Notifications, and Resources pages to ensure that the imported components do really exist.
 
-<!--Person X Says Section-->
 
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
-</td>
-</tr>
 
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-Remember, the Publication is set up to check the folder only once per minute - so if the Topic Monitoring doesn't immediately show a result, don't panic! Be patient and it will appear shortly.
-</td>
-</tr>
-</table>
+![](./Images/
 
----
-
-Now we know how the Directory Watch notification works! We will see in subsequent exercises how to process this information.
- 
----
 
 <!--Exercise Congratulations Section--> 
 
