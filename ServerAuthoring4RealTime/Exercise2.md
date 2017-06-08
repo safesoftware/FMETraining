@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department you have realized the overheard assoicated with pushing manual updates to your corporate database. Having read up about notifications in FME Server, you think that it should be possible to set up a system that automates this process.
+As a technical analyst in the GIS department you have realized the overhead associated with pushing manual updates to your corporate database. Having read up about notifications in FME Server, you think that it should be possible to set up a system that automates this process.
 
 So far you have set up a system for added file notifications to be registered by FME Server. Now you must create a workspace to process these and publish it to FME Server. The workspace must then be triggered by a notification topic.
 

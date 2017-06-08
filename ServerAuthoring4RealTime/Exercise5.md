@@ -45,7 +45,7 @@
 
 After configuring FME Server to process building footprints updates with both the Directory Watch and Email Publications, your supervisor is wondering if they can receive an email whenever the corporate database is updated.
 
-Using an external email server, you think that it is possible configure another Notification in FME Server to satisfy this requirement.
+Using an external email server, you think that it is possible to configure another Notification in FME Server to satisfy this requirement.
 
 ---
 
@@ -121,7 +121,7 @@ Most of the general settings (Email To, Email Template, etc.) will be set by the
 <br>**2) Edit Workspace**
 <br>Open the workspace from Exercise 4 (or the Start Workspace listed above). 
 
-Add two new transformers - the FMEServerEmailGenerator (a custom transformer) and an FMEServerNotifier - as a separate stream of data, connected to the <Initiator\> Output Port of the FeatureReader:
+Add two new transformers - the [FMEServerEmailGenerator](https://hub.safe.com/transformers/fmeserveremailgenerator) (a custom transformer) and an FMEServerNotifier - as a separate stream of data, connected to the <Initiator\> Output Port of the FeatureReader:
 
 ![](./Images/Img4.429.Ex5.WorkspaceWithNotifier.png)
 

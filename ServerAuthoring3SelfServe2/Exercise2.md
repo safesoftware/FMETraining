@@ -77,11 +77,11 @@ The result of this translation is not a streamed jpeg file. Instead, the transla
 
 ![](./Images/Img3.209.Ex2.StreamedZipFile.png)
 
-If you open the zip file you'll see that it includes both a jpeg file and a wld file. That's why FME returned a zip file. It will zip the results of a Data Streaming service whenever the result is multiple files.
+If you open the zip file you'll see that it includes both a jpeg file and a wld (World) file. That's why FME returned a zip file. It will zip the results of a Data Streaming service whenever the result is multiple files.
 
 
-<br>**4) Turn off wld File Creation**
-<br>To really stream the data we should turn off the wld file creation in the workspace. Check the properties for the JPEG Writer's feature type and set the Generate World File parameter to No:
+<br>**4) Turn off World File Creation**
+<br>To really stream the data we should turn off the world file creation in the workspace. Check the properties for the JPEG Writer's feature type and set the Generate World File parameter to No:
 
 ![](./Images/Img3.210.Ex2.TurnOffWorldFile.png)
 

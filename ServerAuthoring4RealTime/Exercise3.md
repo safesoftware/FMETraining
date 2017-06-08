@@ -148,7 +148,7 @@ Click OK to update the Subscription.
 
 Be sure to give the zip file a different name to any used previously.
 
-Copy the zip file into the Resources folder data\BuildingUpdates. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or using the FME Server web interface. 
+Copy the zip file into the Resources folder data\BuildingUpdates. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or by using the FME Server web interface. 
 
 
 <br>**6) Check Results**

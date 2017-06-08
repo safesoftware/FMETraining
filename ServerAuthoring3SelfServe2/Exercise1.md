@@ -80,7 +80,7 @@ Be sure to set the workflow option if you carried out the previous exercise, as 
 
 ![](./Images/Img3.200.Ex1.NeighborhoodFT.png)
 
-Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt to user to select this dataset. 
+Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt the user to select this dataset. 
 
 
 <br>**3) Add Published Parameter**
@@ -151,7 +151,7 @@ Why does the CsmapReprojector come after the Tester? Because it has less work to
 ---
 
 <br>**6) Add Clipper**
-<br>Now to clip the raster data. Add a Clipper transformer to the workspace. Connect the CsmapReprojector to the the Clipper:Clipper port. Connect the output from the VectorOnRasterOverlayer to the Clipper:Clippee port:
+<br>Now to clip the raster data. Add a Clipper transformer to the workspace. Connect the CsmapReprojector to the  Clipper:Clipper port. Connect the output from the VectorOnRasterOverlayer to the Clipper:Clippee port:
 
 ![](./Images/Img3.204.Ex1.DrJonesWillNeverBelieveThis.png)
 

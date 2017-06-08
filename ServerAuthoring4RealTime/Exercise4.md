@@ -254,7 +254,7 @@ The workflow should now look like this:
 
 
 <br>**6) Edit User Parameter** 
-<br>As with Exercise 3, specify the output datatset to be written into the FME Server Resources Folder.
+<br>As with Exercise 3, specify the output dataset to be written into the FME Server Resources Folder.
 
 Locate the user parameter DestDataset&#95;SPATIALITE (under User Parameters &gt; Published Parameters in the Navigator window) and double-click it to open an editor dialog.
 
