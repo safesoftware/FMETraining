@@ -166,7 +166,7 @@ Now when the workspace is completed a Geodatabase file should appear in the fold
 
 It would be much better if the workspace was programmed to look into the resources folders automatically.
 
-So, return to the workspace in FME Server. 
+So, return to the workspace in FME Workbench. 
 
 If we do set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window locate the three parameters for source and destination datasets and delete them:
 
