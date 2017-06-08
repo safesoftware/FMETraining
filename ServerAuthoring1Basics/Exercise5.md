@@ -141,9 +141,9 @@ Return to the FME Server web interface. Locate the workspace under the Run Works
 
 ![](./Images/Img1.254.Ex5.HardCodedParameters.png)
 
-Obviously this will be of no use where the Server does not have access to those files. However, because we already uploaded them to the Resources folders we can use those files.
+Obviously this will be of no use if the Server does not have access to those files. However, because we already uploaded them to the Resources folders we can use those files.
 
-So, for each file, click the browse button, browse to the appropriate subfolder in the Resources folder, and select/set the file location. For the Geodatabase output location you'll need to type the file name manually:\
+So, for each file, click the browse button, browse to the appropriate subfolder in the Resources folder, and select/set the file location. For the Geodatabase output location you'll need to type the file name manually:
 
 <pre>
 $(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb
@@ -211,7 +211,7 @@ This time you won't be able to test-run the workspace in FME Workbench, because 
 ---
 
 <br>**11) Re-Run Workspace**
-<br>Now run the workspace on FME Server. Be sure to use the Job Submitter service (not Data Download) so the output is written to the required file. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used in the resources folders just the same.
+<br>Now run the workspace on FME Server. Be sure to use the Job Submitter service (not Data Download) so the output is written to the required file. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used from the resources folders just the same.
 
 ---
 
