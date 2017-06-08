@@ -49,7 +49,7 @@ Sometimes the end-users download data as JPEG just to open it in a browser or im
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 2, or the begin workspace listed above. You can see that it consists of various readers, writers, transformers, and other functionality. Most importantly there is an unconnected JPEG Writer that could be used to stream data.
+<br>Open the workspace from exercise 1, or the begin workspace listed above. You can see that it consists of various readers, writers, transformers, and other functionality. Most importantly there is an unconnected JPEG Writer that could be used to stream data.
 
 Currently the JPEG Writer is disconnected, so connect it back into the workspace, this time to the Clipper:Inside output port:
 
@@ -73,11 +73,11 @@ Next click the Edit button for the Data Streaming service. Ensure that service i
 
 ![](./Images/Img3.208.Ex2.SelectStreamingService.png)
 
-The result of this translation is not a streamed jpeg file. Instead, the translation returns a zip file:
+The result of this translation is not a streamed JPEG file. Instead, the translation returns a zip file:
 
 ![](./Images/Img3.209.Ex2.StreamedZipFile.png)
 
-If you open the zip file you'll see that it includes both a jpeg file and a wld (World) file. That's why FME returned a zip file. It will zip the results of a Data Streaming service whenever the result is multiple files.
+If you open the zip file you'll see that it includes both a JPEG file and a wld (World) file. That's why FME returned a zip file. It will zip the results of a Data Streaming service whenever the result is multiple files.
 
 
 <br>**4) Turn off World File Creation**
@@ -87,7 +87,7 @@ If you open the zip file you'll see that it includes both a jpeg file and a wld 
 
 
 <br>**5) Publish and Run Workspace**
-<br>Re-publish the workspace and run it on FME Server. You should find that the results of the translation are returned as a streamed jpeg file. Most likely it will open directly in your web browser:
+<br>Re-publish the workspace and run it on FME Server. You should find that the results of the translation are returned as a streamed JPEG file. Most likely it will open directly in your web browser:
 
 ![](./Images/Img3.211.Ex2.JPEGOpenedInBrowser.png)
 
@@ -109,7 +109,7 @@ If you open the zip file you'll see that it includes both a jpeg file and a wld 
 By completing this exercise you have learned how to:
 <br>
 <ul><li>Set up a workspace for use in a Data Streaming service</li>
-<li>Published a workspace to the Data Streaming service</li></ul>
+<li>Publish a workspace to the Data Streaming service</li></ul>
 </span>
 </td>
 </tr>
