@@ -95,7 +95,7 @@ You can check the parameters for this transformer but, for now at least, we'll l
 
 
 <br>**4) Create User Parameter**
-<br>Now we have some source data we can create a parameter to control which layers in that data should be read.
+<br>Now that we have some source data we can create a parameter to control which layers in that data should be read.
 
 In the Navigator window find the DGN Reader's parameters, expand the Features to Read section, and locate the parameter called Feature Types to Read. You will see that it is already published - a result of us using the Single Merged Feature Type:
 
