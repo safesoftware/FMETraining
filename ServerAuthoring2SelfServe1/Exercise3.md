@@ -45,7 +45,7 @@
 
 As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
 
-So far you have created a simple workspace to translate orthophotos to jpeg format, added published parameters for transformation, and published it to a Data Download service on FME Server.
+So far you have created a simple workspace to translate orthophotos to JPEG format, added published parameters for transformation, and published it to a Data Download service on FME Server.
 
 Now you need to give the end-users control over the output format and output coordinate system.
 
@@ -144,7 +144,7 @@ Click OK and OK again to close these dialogs and create the parameter.
 
 
 <br>**5) Apply User Parameter**
-<br>Now we've created a user parameter, we have to apply it.
+<br>Now that we've created a user parameter, we have to apply it.
 
 Locate the Generic Writer in the Navigator window, expand its parameters and locate the parameter called Output Format. This is already linked to a published parameter that FME created automatically, but we want to ignore that and use our own.
 
@@ -184,7 +184,7 @@ Click OK and OK again to close these dialogs and create the parameter.
 
 
 <br>**7) Apply User Parameter**
-<br>Once more, now we've created a user parameter, we have to apply it.
+<br>Once more, now that we've created a user parameter, we have to apply it.
 
 Locate the Generic Writer in the Navigator window, and this time look for the parameter called Coordinate System:
 
