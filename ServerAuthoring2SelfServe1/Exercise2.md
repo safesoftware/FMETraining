@@ -45,7 +45,7 @@
 
 As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
 
-So far you have created a simple workspace to translate orthophotos to jpeg format, and published it to a Data Download service on FME Server.
+So far you have created a simple workspace to translate orthophotos to JPEG format, and published it to a Data Download service on FME Server.
 
 Now you need to start customizing the workspace to allow the end-users to have a degree of control over the output.
 
@@ -71,7 +71,7 @@ The dialog that opens allows us to create a new parameter. Create one using the 
 <tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
 <tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
 <tr><td style="font-weight: bold">Prompt</td><td>Enter Resolution (1-50)</td></tr>
-<tr><td style="font-weight: bold">Configuration</td><td>Lower Limit: Greater than value: 0<br>Upper Limit: Less than value:51<br>Decimal places of precision: 0</td></tr>
+<tr><td style="font-weight: bold">Configuration</td><td>Lower Limit: Greater than value: 0<br>Upper Limit: Less than value: 51<br>Decimal places of precision: 0</td></tr>
 <tr><td style="font-weight: bold">Default Value</td><td>50</td></tr>
 </table>
 
