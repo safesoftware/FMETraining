@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex3-CompleteA.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex3-CompleteB.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\Running-Ex3-CompleteMaster.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex6-CompleteA.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex6-CompleteB.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex6-CompleteMaster.fmw</td>
 </tr>
 
 </table>
@@ -290,7 +290,7 @@ However, the thought occurs... what if someone edited the first workspace to cha
 
 Can we work around that? Yes, we can.
 
-Back in FME Workbench open child workspace number 2 (the one with the PointOnAreaOverlayer). Locate the source dataset parameter for the SpatiaLite Reader. Right-click on it and choose Create User Parameter:
+Back in FME Workbench open child workspace number 2 (Basic-Ex6-CompleteB.fmw - the one with the PointOnAreaOverlayer). Locate the source dataset parameter for the SpatiaLite Reader. Right-click on it and choose Create User Parameter:
 
 ![](./Images/Img1.275.Ex6.CreatingDatasetUserParameter.png)
 
@@ -302,13 +302,13 @@ Save the workspace and publish it back to Server. You'll need to use the full pu
 <br>**17) Adjust Master Workspace**
 <br>Now open the master workspace in FME Desktop. 
 
-Inspect the parameters for the second FMEServerJobSubmitter transformer and press the refesh button in the bottom-left of the dialog.
+Inspect the parameters for the second FMEServerJobSubmitter transformer and press the refresh button in the bottom-left of the dialog.
 
-Open the wizard for the second FMEServerJobSubmitter transformer. This time the Job Parameters dialog will include a parameter for the source dataset.
+Open the parameters for the second FMEServerJobSubmitter transformer. This time the Job Parameters dialog will include a parameter for the source dataset.
 
 Click the drop-down arrow and choose Attributes &gt; output_datasets{}.path:
 
-![](./Images/Img2.68.Ex3.Workspace3SelectAttrAsSource.png)
+![](./Images/Img1.276.Ex6.Workspace3SelectAttrAsSource.png)
 
 You'll be prompted to select a list number. Simply select 0 (zero).
 
