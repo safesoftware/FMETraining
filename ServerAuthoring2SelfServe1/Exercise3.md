@@ -184,7 +184,7 @@ Click OK and OK again to close these dialogs and create the parameter.
 
 
 <br>**7) Apply User Parameter**
-<br>Once more, now we've create a user parameter, we have to apply it.
+<br>Once more, now we've created a user parameter, we have to apply it.
 
 Locate the Generic Writer in the Navigator window, and this time look for the parameter called Coordinate System:
 
@@ -224,7 +224,7 @@ Choose different options for output format and coordinate system to see what hap
 Right now I imagine you have some questions!
 <br><br><strong>Q) Why didn't we delete the original JPEG Writer when we added the Generic Writer?</strong>
 <br>A) It's because we have a parameter published for JPEG compression. If we deleted the JPEG Writer we would no longer have access to that parameter.
-<br><br><strong>Q) But we're not even using the JPEG Writer any more, so how would that parameter work?</strong>
+<br><br><strong>Q) But we're not even using the JPEG Writer anymore, so how would that parameter work?</strong>
 <br>A) Because the Generic Writer picks up parameters for the format it is writing from any Writer of that format! So you could add a dummy PNG format Writer and the Generic Writer would use the dummy's parameters when writing PNG.
 </span>
 </td>
