@@ -125,7 +125,7 @@ This proves that the workspace has run.
 By completing this exercise you have learned how to:
 <br>
 <ul><li>Create a new FME Workspace Subscription</li>
-<li>Configure the Subscription to run an workspace in response to a Topic triggering</li>
+<li>Configure the Subscription to run a workspace in response to a Topic triggering</li>
 <li>Test the Notification system by verifying its success on the Completed Jobs page</li></ul>
 </span>
 </td>
