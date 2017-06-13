@@ -104,8 +104,8 @@ Regardless of the email provider, you should set these parameters as follows:
 <table style="border: 0px">
 
 <tr>
-<th style="font-weight: bold">Email From</th>
-<th style="">Your account name (for example fmeshapeprocessing@gmail.com)</th>
+<td style="font-weight: bold">Email From</td>
+<td style="">Your account name (for example fmeshapeprocessing@gmail.com)</td>
 </tr>
 
 <tr>
