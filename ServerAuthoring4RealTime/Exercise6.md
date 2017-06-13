@@ -137,7 +137,7 @@ In the blank canvas add a Creator transformer and follow it with a WebSocketRece
 
 </table>
 
-Save the changes and add a Logger transformer after the WebSocketSender.
+Save the changes and add a Logger transformer after the WebSocketReceiver.
 
 
 <br>**4) Publish Workspaces**
@@ -366,7 +366,7 @@ We could add another messaging transformer, such as the WebSocketSender, JMSSend
 
 On the other hand, the outgoing messages are nothing like the same rate as the incoming messages. With the parameters as described in this exercise, there is only a transit message once every minute. So, we can create a "hybrid" solution by setting output messages to be sent via the FME Server Notification Service.
 
-Go to the FME Server Web Ui and navigate to the Notifications page.
+Go to the FME Server web interface and navigate to the Notifications page.
 
 Create a new Topic called EmergencyTransitMessages:
 
