@@ -57,7 +57,7 @@ In this step we'll give the end-user control over format and coordinate system.
 
 
 <br>**2) Add Writer**
-<br>To give control over format needs a Generic format writer. Select Writers &gt; Add Writer from the menubar. When prompted enter these parameters:
+<br>To give control over format you need a Generic format writer. Select Writers &gt; Add Writer from the menubar. When prompted enter these parameters:
 
 <table style="border: 0px">
 
