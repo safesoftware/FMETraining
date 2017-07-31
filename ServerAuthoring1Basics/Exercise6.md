@@ -131,7 +131,7 @@ Open Workbench if necessary and generate a new workspace with these parameters:
 
 <tr>
 <td style="font-weight: bold">Reader Format</td>
-<td style="">Esri Geodatabase (File Geodb API)</td>
+<td style="">Esri Geodatabase (File Geodb Open API)</td>
 </tr>
 
 <tr>
@@ -141,7 +141,7 @@ Open Workbench if necessary and generate a new workspace with these parameters:
 
 <tr>
 <td style="font-weight: bold">Writer Format</td>
-<td style="">Esri Geodatabase (File Geodb API)</td>
+<td style="">Esri Geodatabase (File Geodb Open API)</td>
 </tr>
 
 <tr>
@@ -282,40 +282,6 @@ Don't worry that FME reports zero features written. That only refers to the mast
 
 Notice that the date/timestamps will be very similar for the two datasets; the VotingDivisions.sl3 file should be created first and then NewAddresses.gdb.zip shortly after.
 
-
-<br>**16) Adjust Child Workspace**
-<br>Now we have three workspaces on our FME Server. The first two can be run, by themselves, at any time that is required. We also have a master workspace that can run the two in sequence.
-
-However, the thought occurs... what if someone edited the first workspace to change the name of the output dataset? Then the second workspace would fail in my chain because it would not know how to find the data.
-
-Can we work around that? Yes, we can.
-
-Back in FME Workbench open child workspace number 2 (Basic-Ex6-CompleteB.fmw - the one with the PointOnAreaOverlayer). Locate the source dataset parameter for the SpatiaLite Reader. Right-click on it and choose Create User Parameter:
-
-![](./Images/Img1.275.Ex6.CreatingDatasetUserParameter.png)
-
-In the dialog that opens simply click OK to accept the default values. We have now replaced the source dataset parameter that used to be published.
-
-Save the workspace and publish it back to Server. You'll need to use the full publish tool - republish won't work for what we have changed.
-
-
-<br>**17) Adjust Master Workspace**
-<br>Now open the master workspace in FME Desktop. 
-
-Inspect the parameters for the second FMEServerJobSubmitter transformer and press the refresh button in the bottom-left of the dialog.
-
-Open the parameters for the second FMEServerJobSubmitter transformer. This time the Job Parameters dialog will include a parameter for the source dataset.
-
-Click the drop-down arrow and choose Attributes &gt; output_datasets{}.path:
-
-![](./Images/Img1.276.Ex6.Workspace3SelectAttrAsSource.png)
-
-You'll be prompted to select a list number. Simply select 0 (zero).
-
-What we have done is told the second FMEServerJobSubmitter to use as its input the name of the dataset output by the first FMEServerJobSubmitter. So if the first child workspace ever changes its output dataset name, it will be passed on to the second child workspace automatically.
-
-Publish the master workspace back to FME Server and run it to make sure all is still working correctly.
-
 ---
 
 <!--Person X Says Section-->
@@ -332,7 +298,6 @@ Publish the master workspace back to FME Server and run it to make sure all is s
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 As already mentioned there are many ways to set up chains and this is just one of them. The drawback of writing data to a fixed location (like here) is that someone might change the first workspace to write data to a different location, causing the second workspace to fail.
-<br><br>The solution in that scenario is to keep the published parameters. The master workspace would then pass the output file location to the first workspace, and therefore know where the second workspace should read data from.
 </span>
 </td>
 </tr>
