@@ -243,7 +243,7 @@ Firstly we need the transit station data, so select Readers &gt; Add Reader and 
 
 <tr>
 <td style="font-weight: bold">Reader Format</td>
-<td style="">Esri Geodatabase (File Geodb API)</td>
+<td style="">Esri Geodatabase (File Geodb Open API)</td>
 </tr>
 
 <tr>
