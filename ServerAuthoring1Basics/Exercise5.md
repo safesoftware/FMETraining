@@ -101,6 +101,25 @@ So, open the workspace listed above in FME Workbench and then select Writers &gt
 
 </table>
 
+<!--Updated Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Note that Esri Geodatabase format was renamed from *File Geodb API* to *File Geodb **Open** API* in FME 2017.1!
+</span>
+</td>
+</tr>
+</table>
+
 The reason we want to add no feature types is that we can move the existing ones from the NULL writer. So when you click OK the workspace will look no different, but there will be a new writer in the Navigator window:
 
 ![](./Images/Img1.249.Ex5.AddedGeodatabaseWriter.png)
