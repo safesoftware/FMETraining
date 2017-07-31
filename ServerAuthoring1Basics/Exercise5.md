@@ -86,7 +86,7 @@ So, open the workspace listed above in FME Workbench and then select Writers &gt
 
 <tr>
 <td style="font-weight: bold">Writer Format</td>
-<td style="">Esri Geodatabase (File Geodb API)</td>
+<td style="">Esri Geodatabase (File Geodb Open API)</td>
 </tr>
 
 <tr>
