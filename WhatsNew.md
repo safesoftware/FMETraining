@@ -14,6 +14,11 @@ These changes are for the FMEData dataset that accompanies FME training
 - Added an "Event" field to the AddressSchema.xsd resource file
 - Updated and cleaned up crime data
 
+**2017.1**
+
+- Added two GML copies of OSM data (amenity.gml and highway.gml) for Desktop Basic Components exercises
+- Added additional workspaces for 2017.1 Desktop Basic Components exercises (exercises 4 to 7)
+
 ---
 
 ## Desktop Basic ##
@@ -24,6 +29,13 @@ These changes are for the FME Desktop Basic Training Course.
 - All 2016.1 additions have been moved from a separate box to the main content (where appropriate)
 - All screenshots have been updated from FME2016 to FME2017
 - All screenshots and wording have been updated from Windows 7 to Windows Server 2016 (equivalent to Windows 10)
+
+**2017.1**
+
+- All updates for 2017.1 have been added as comments throughout the manual
+- Tried to remove horizontal whitespace from screenshots and shrink images where possible to reduce manual size
+- Hopefully finished changing all references from Reader (title case) to reader (lower case) (except where capitalization is required)
+
  
 ### Data Translation Basics ###
 - Added Parameter Editor window as a new Workbench component. Only show components that are there by default
@@ -36,12 +48,22 @@ These changes are for the FME Desktop Basic Training Course.
 - Moved up section on using shift/control keys in Data Inspector to earlier in the manual
 - Moved back the section on background maps to later in the manual
 
+**2017.1**
+
+- Polygon features in the Data Inspector are now semi-transparent automatically (see Exercise 3)
+- Esri Geodatabase (File Geodb API) is now renamed to Esri Geodatabase (File Geodb Open API) (see Exercise 4)
+
+
 ### Data Transformation ###
 - Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
 - New layout of reader/writer feature type dialogs
 - Parameter Editor Window for Transformers
 - Exercise 4: Added a StringConcatenator in place of the in-dialog editor of the LabelPointReplacer (the logic being that one transformer is not much of a parallel stream, plus in-dialog editors come later)
 - Exercise 6: Added the advanced task to use a Reprojector transformer instead of the Navigator coordinate system parameters
+
+**2017.1**
+
+- Quick Add help window contents are now simplified (see Exercise 2)
 
 ### Best Practice ###
 - MOVED BEST PRACTICE TO FINAL CHAPTER IN MANUAL
@@ -75,6 +97,13 @@ These changes are for the FME Desktop Basic Training Course.
 - Made a note of Unexpected Input not working for CAD files any more 
 - Exercise 3: Switched Import and Delete actions to add a second table before deleting the first
 
+**2017.1**
+
+- The Help button on Add Reader/Writer dialogs now has two options (see Section 4.04.Readers)
+- Readers/Writers now have an update capability (see Section 4.04.Readers, 4.09.UpdatingReaderFeatureTypes, and 4.14.Writers) 
+- Exercises 4 to 7 have been updated to use GML instead of OSM data (the OSM reader was changed for .1 in a way that is not compatible with what we're trying to demonstrate)
+
+
 ### Practical Transformer Use ###
 - Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
 - New transformer categorization (includes Q+A question updates)
@@ -87,6 +116,15 @@ These changes are for the FME Desktop Basic Training Course.
 - Dropped the advanced part of exercise 3
 - Exercise 4 is reworked by having one-way streets flagged as an attribute in the roads data
 - Exercise 4 also fixed a logic error in the ShortestPathFinder where distance wasn't factored into the result
+- Added information on date/time functions in the String editor
+
+**2017.1**
+
+- The Help button on Add Reader/Writer dialogs now has two options (see Section 5.02.TransformerSearching)
+- The date/time functions in the String editor now include Time Zone functions (see 5.06.ConstructingAttributes)
+- The Timestamp function is now deprecated (see 5.06.ConstructingAttributes and Exercise 1)
+- Esri Geodatabase (File Geodb API) is now renamed to Esri Geodatabase (File Geodb Open API) (see Exercise 1)
+- Feature Type selection dialogs now have extra icons (see Exercise 1)
 
 
 ### Course Wrap Up ###
