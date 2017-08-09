@@ -181,11 +181,22 @@ These changes are for the FME Desktop Advanced Training Course.
 - Custom transformer input ports seem to need to be clicked twice before F2 (or any other keyboard command) works. Filed as PR#75968
 - Clarified a few parts of the Transformer Versioning section
 
+**2017.1**
+
+- Esri Geodatabase (File Geodb API) is now renamed to Esri Geodatabase (File Geodb Open API) (see Exercise 6)
+
+
 ### Advanced Reading/Writing ###
 - Renumbered image filenames to 3 digits (eg Img4.001.xxxx.png)
 - Expanded zip files to include reading (in case students haven't taken basic training)
 - Added a section on web-based datasets and how to read/write them
 - Exercise 5: Provided updated version of Excel spreadsheet as a new resource
+
+
+**2017.1**
+
+- Esri Geodatabase (File Geodb API) is now renamed to Esri Geodatabase (File Geodb Open API) (see Exercises 2, 3, 4)
+
 
 ### Advanced Attribute Handling ###
 - Renumbered image filenames to 3 digits (eg Img5.001.xxxx.png)
