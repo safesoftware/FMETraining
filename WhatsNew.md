@@ -163,6 +163,7 @@ These changes are for the FME Desktop Advanced Training Course.
 **2017.1**
 
 - User parameters can now be copied/pasted en masse (see Section 1.02.UserParameters)
+- Add Parameter option renamed to Create User Parameter (see Exercises 1 and 2)
 
 ### Performance ###
 - Renumbered image filenames to 3 digits (eg Img2.001.xxxx.png)
