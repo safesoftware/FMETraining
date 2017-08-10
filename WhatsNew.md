@@ -177,6 +177,11 @@ These changes are for the FME Desktop Advanced Training Course.
 - Exercise 4: Garbage Schedule workspace updated to use new HTML tools 
 - Exercise 5a: Fixed workspace, which I don't think ever worked properly because of a coordsys mismatch
 
+**2017.1**
+
+- Mentioned Log Debug persists with the workspace (see 2.03.LogFileInterpretation). Not new for .1 but worth knowing about.
+
+
 ### Custom Transformers ###
 - Renumbered image filenames to 3 digits (eg Img3.001.xxxx.png)
 - Custom transformer input ports seem to need to be clicked twice before F2 (or any other keyboard command) works. Filed as PR#75968
