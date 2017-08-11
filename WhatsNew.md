@@ -205,6 +205,8 @@ These changes are for the FME Desktop Advanced Training Course.
 
 **2017.1**
 
+- Mapzen is a new web service in 2017.1 (see 4.02.WebBasedDatasets)
+- Added table to help select combination of generic/dynamic/fanout (see 4.15.DynamicGeometryHandling)
 - Esri Geodatabase (File Geodb API) is now renamed to Esri Geodatabase (File Geodb Open API) (see Exercises 2, 3, 4)
 
 
