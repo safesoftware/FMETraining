@@ -18,6 +18,7 @@ These changes are for the FMEData dataset that accompanies FME training
 
 - Added two GML copies of OSM data (amenity.gml and highway.gml) for Desktop Basic Components exercises
 - Added additional workspaces for 2017.1 Desktop Basic Components exercises (exercises 4 to 7)
+- Added additional Planning folder and planning restrictions dataset (GeoPackage format). Not specific to anything used in 2017.1, but added for general and possible future uses
 
 ---
 
