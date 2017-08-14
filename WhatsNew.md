@@ -202,7 +202,6 @@ These changes are for the FME Desktop Advanced Training Course.
 - Added a section on web-based datasets and how to read/write them
 - Exercise 5: Provided updated version of Excel spreadsheet as a new resource
 
-
 **2017.1**
 
 - Mapzen is a new web service in 2017.1 (see 4.02.WebBasedDatasets)
@@ -216,6 +215,12 @@ These changes are for the FME Desktop Advanced Training Course.
 - Reworded content to refer to Null as a 'state' rather than a 'value'.
 - Improved wording and examples of when to convert null/missing/empty and what happens when data is written.
 - Removed references to null handling prior to FME2014 (it's been long enough).
+
+**2017.1**
+
+- Timestamp functionality deprecated in place of DateTimeNow. Also new TimeZone functions added (see 5.03.FMEFunctions)
+- Added note on performance effects of integrated FME functions (see 5.03.FMEFunctions) (not specifically .1)
+
 
 ### Course Wrap Up ###
 - Updated screenshots for web sites and - of course - created a new challenge!
