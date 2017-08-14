@@ -220,6 +220,7 @@ These changes are for the FME Desktop Advanced Training Course.
 
 - Timestamp functionality deprecated in place of DateTimeNow. Also new TimeZone functions added (see 5.03.FMEFunctions)
 - Added note on performance effects of integrated FME functions (see 5.03.FMEFunctions) (not specifically .1)
+- DateTimeNow function no longer adds time zone offset by default (see Exercise 1)
 
 
 ### Course Wrap Up ###
