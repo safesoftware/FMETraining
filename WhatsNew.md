@@ -200,6 +200,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Renumbered image filenames to 3 digits (eg Img4.001.xxxx.png)
 - Expanded zip files to include reading (in case students haven't taken basic training)
 - Added a section on web-based datasets and how to read/write them
+- Exercise 4: A format that allows any geometry type now has no dynamic geometry parameter, instead of a parameter that is greyed out (as it was in 2016)
 - Exercise 5: Provided updated version of Excel spreadsheet as a new resource
 
 **2017.1**
@@ -207,6 +208,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Mapzen is a new web service in 2017.1 (see 4.02.WebBasedDatasets)
 - Added table to help select combination of generic/dynamic/fanout (see 4.15.DynamicGeometryHandling)
 - Esri Geodatabase (File Geodb API) is now renamed to Esri Geodatabase (File Geodb Open API) (see Exercises 2, 3, 4)
+- Add Parameter option renamed to Create User Parameter (see Exercise 2)
 
 
 ### Advanced Attribute Handling ###
