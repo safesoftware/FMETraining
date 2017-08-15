@@ -193,6 +193,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - GeometryPropertySetter gained a rejected port (see 3.00.CustomTransformers)
 - Browse FME Hub option moved in Navigator (see 3.01.UsingCustomTransformers)
 - Converting multiple CTs from Embedded to Linked opens a dialog. In .1 the dialog title is tidied up
+- Add Parameter option renamed to Create User Parameter (see Exercise 3)
 - Esri Geodatabase (File Geodb API) is now renamed to Esri Geodatabase (File Geodb Open API) (see Exercise 6)
 
 
