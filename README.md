@@ -22,7 +22,7 @@ The full course is made up of five main sections. These sections are:
 
 The current status of this manual is: **COMPLETE**: this manual **can** be used for training. 
 
-This manual applies to **FME2017.0**
+This manual applies to **FME2017.0** and **FME2017.1**
 
 The status of each chapter is:
 
