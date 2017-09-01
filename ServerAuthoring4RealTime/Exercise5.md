@@ -125,7 +125,7 @@ Add two new transformers - the [FMEServerEmailGenerator](https://hub.safe.com/tr
 
 ![](./Images/Img4.429.Ex5.WorkspaceWithNotifier.png)
 
-***NB:** It's important to connect these two transformers to the &lt;Initiator&gt; port of the FeatureReader, where only one feature will emerge. If you connect them to the &lt;Generic&gt; output port then you will get an email for every feature in the Shapefile dataset!*
+***NB:*** *It's important to connect these two transformers to the &lt;Initiator&gt; port of the FeatureReader, where only one feature will emerge. If you connect them to the &lt;Generic&gt; output port then you will get an email for every feature in the Shapefile dataset!*
 
 
 <br>**3) Edit FMEServerEmailGenerator**
