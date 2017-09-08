@@ -98,7 +98,7 @@ Click OK to create the subscription. This will cause the workspace to run every 
 <br>**4) Test Subscription**
 <br>Test the subscription by uploading another Shapefile dataset.
 
-***NB:** Since we set the Directory Watch to watch only for new files, the Shapefile uploaded should be a different one - or at least have a different name - to the first.*
+***NB:*** *Since we set the Directory Watch to watch only for new files, the Shapefile uploaded should be a different one - or at least have a different name - to the first.*
 
 This time, instead of monitoring the topic (although it will appear there again), check the Jobs page. You should see that the workspace has been run in response to the new file:
 
