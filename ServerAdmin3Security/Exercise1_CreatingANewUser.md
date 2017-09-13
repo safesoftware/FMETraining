@@ -64,8 +64,8 @@ Configure permissions to match the following:
 
 - **Run Workspace:** Access
 - **Jobs:** Access
-- **Repositories:** Create
 - **Schedules:** Create
+- **Repositories:** Create
 - **Projects:** Create
 
 Notice how by selecting Create, the Access privilege is automatically granted.
