@@ -48,7 +48,7 @@ While FME Server provides a means to control access to its components and items 
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 Due to security requirements and restrictions it may not be possible to complete this exercise.<br>
-Instead, please watch this video demonstrating the exercise.
+Instead, please watch [this video demonstrating the exercise](https://drive.google.com/a/safe.com/file/d/0B9i4bX_jniydaThpUGZqOF9JVkk/view?usp=sharing).
 </span>
 </td>
 </tr>
