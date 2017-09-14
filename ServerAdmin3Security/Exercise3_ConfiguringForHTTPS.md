@@ -13,7 +13,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">N/A</td>
+<td style="border: 1px solid darkorange">C:\FMEData2017\Resources\ServerAdmin\server.xml<br>C:\FMEData2017\Resources\ServerAdmin\web.xml<br>C:\FMEData2017\Resources\ServerAdmin\context.xml</td>
 </tr>
 
 <tr>
@@ -40,23 +40,29 @@ For any HTTPS (SSL) page, a certificate is required. For development and testing
 <br>**1) Create a Keystore File**
 <br>First, you must generate a keystore that contains a certificate chain using the Java Keytool from the Java Developer Kit (JDK).
 
-Open a **Command Prompt** and run as administrator.
+Open a **Command Prompt** as an administrator.
 
-Navigate to the Java bin directory (*C:\apps\FMEServer\Utilities\jre\bin\\*)
+Navigate to the FME Server Java bin directory:
+	
+	cd C:\apps\FMEServer\Utilities\jre\bin\
 
 Run the following command to create a new keystore file:
 
 	keytool -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore
  
-Set a password for the new keystore and specify the server domain name (for example, *localhost*) as your first and last name.
+Set the following values when prompted:
 
-Enter *yes* when prompted if inputs are correct.
+- **Keystore Password:** tomcat
+- **First and Last Name:** localhost
+- ***&lt;Remaining Parameters&gt;:*** *&lt;leave_blank&gt;*
 
-When prompted for the password for the alias &lt;tomcat&gt;, press RETURN.
+Enter *yes* when prompted if the input is correct. When prompted for the key password for &lt;tomcat&gt;, press RETURN.
 
 A new keystore is created in *C:\apps\FMEServer\Utilities\jre\bin\\*
 
-Copy the new keystore file to the tomcat directory in the FME Server installation: *C:\apps\FMEServer\Utilities\tomcat\\*
+Copy the new keystore file to the tomcat directory in the FME Server installation: 
+
+	copy tomcat.keystore C:\apps\FMEServer\Utilities\tomcat\tomcat.keystore
 
 ![](./Images/3.404.ConfigureForHTTPS_createKeytool.png)
 
@@ -66,23 +72,25 @@ Copy the new keystore file to the tomcat directory in the FME Server installatio
 
 	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore C:\apps\FMEServer\Utilities\jre\lib\security\cacerts
 
-You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is the password that was specified in Step 1 above.
+You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is **tomcat**.
 
 ![](./Images/3.405.ConfigureForHTTPS_selfSignedCertificate.png)
 
 ---
 
-<br>**Configuring Tomcat**
+**Configuring Tomcat**
 <br>In the next steps, we need to modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\* 
 
 It is a good idea to make copies of any files you will be changing and place them in a separate directory until you have verified that the edits are working successfully.
 
 ---
 
-<br>**3) Configure server.xml**
-<br>Open the *server.xml* file in a text editor in administrator mode.
+**3) Configure server.xml**
+<br>Open *C:\apps\FMEServer\Utilities\tomcat\conf\server.xml* file in a text editor in administrator mode.
 
 Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
+
+		<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="off" />
 
 Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
 
@@ -91,8 +99,8 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
 		enableLookups="true" disableUploadTimeout="true"
 		acceptCount="100" maxThreads="200"
 		scheme="https" secure="true" SSLEnabled="true"
-		keystoreFile="<FMEServerDir>\Utilities\tomcat\tomcat.keystore"
-		keystorePass="<your_password>"
+		keystoreFile="C:\apps\FMEServer\Utilities\tomcat\tomcat.keystore"
+		keystorePass="tomcat"
 		clientAuth="false" sslEnabledProtocols="TLSv1,TLSv1.1,TLSv1.2"
 		sslImplementationName="org.apache.tomcat.util.net.jsse.JSSEImplementation"
 		ciphers="TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
@@ -106,7 +114,6 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="8443"/>
 		
-Make sure to change *&lt;FMEServerDir&gt;* and *&lt;your_password&gt;* with the install directory of FME Server and the password of the keystore that was specified in Step 1.
 
 Save and close the *server.xml* file.
 
@@ -145,7 +152,7 @@ Save and close the *context.xml* file.
 
 Restart the FME Server Application service from the **Start menu &gt; FME Server 2017.1 &gt; Restart FME Server**.
 
-Open a browser and navigate to *https://localhost:8443/*. 
+Open a browser and navigate to *https://localhost:8443/fmeserver*. 
 
 You should see the FME Server login page in a secured format.
 
@@ -159,7 +166,7 @@ For self-signed certificates, click the **Advanced** button and add an exception
 
 
 <br>**7) Modify Service URLs to Use HTTPS** 
-<br>To enable SSL for a service, login to the FME Server Web User Interface (username and password *admin*), and select **Services** on the left sidebar. 
+<br>To enable SSL for FME Server Services, login to the FME Server Web User Interface (username and password *admin*), and select **Services** on the left sidebar. 
 
 ![](./Images/3.407.ServicesButton.png)
 
@@ -171,9 +178,9 @@ The *Change All Hosts* dialog opens. Make sure **Host** is set to *https://local
 
 ![](./Images/3.414.ChangeAllHosts2.png)
 
-Check on the *Services* page that your update worked.
+The URLs will be updated to their new, correct values on the Services page.
 
-![](./Images/3.410.checkItWorked.png)
+![](./Images/3.410.NewServiceURLs.png)
 
 ---
 
