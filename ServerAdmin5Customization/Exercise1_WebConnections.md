@@ -110,9 +110,9 @@ Click **Run** to make sure the translation is successful. Now we are ready to pu
 
 
 <br>**4) Publish to FME Server**
-<br>Select *Publish to FME Server* under the File Menu. Use the Publish to FME Server Wizard to place the workspace in the *Training* repository – create one if it doesn't exist.
+<br>Select *Publish to FME Server* under the File Menu. Use the Publish to FME Server Wizard to place the workspace in the **Training** repository – create one if it doesn't exist.
 
-At *Upload Connections* step, make the DropboxWebConnection is selected and click **Next**. We will authorize our web connection using the FME Server Web User Interface.
+On the *Upload Connections* step, make the DropboxWebConnection is selected and click **Next**. We will authorize our web connection using the FME Server Web User Interface.
 
 ![](./Images/5.404.UploadConnections.png)
 
