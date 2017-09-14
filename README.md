@@ -23,7 +23,7 @@ The full course is made up of seven sections. These sections are:
  
 ## Current Status ##
 
-The current status of this manual is: **INCOMPLETE**: this manual **SHOULD NOT** be used for training. 
+The current status of this manual is: **INCOMPLETE**. this manual **SHOULD NOT** be used for training. 
 
 This manual applies to **FME2017.1**
 
@@ -34,7 +34,7 @@ The status of each chapter is:
 - Chapter 2: Complete content and exercises
 - Chapter 3: Complete content and exercises
 - Chapter 4: Complete content and **incomplete** exercises
-- Chapter 5: Complete content and **incomplete** exercises
+- Chapter 5: Complete content and exercises
 - Chapter 6: Complete content and exercises
 - Chapter 7: Complete content. No exercises
 - Chapter 8: Complete content. No exercises
