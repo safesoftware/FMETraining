@@ -71,7 +71,7 @@ Login to the FME Server web interface and select **Admin &gt; Engines & Licensin
 
 Scroll down to the *Job Queues* heading and select **Create Job Queue**.
 
-![](./Images/4.401.CreateJobQueue.png)
+![](./Images/4.401.Create_JobQueue.png)
 
 Give it the name *Quick Translations* and click OK.
 
@@ -138,7 +138,7 @@ Select the workspace that just ran to open the *Job Details* page.
 
 Click to expand the **Request Data** section. Next to the **queue** parameter you will see the name of the specified job queue: 
 
-![](./Images/4.406.VerifyJobQueueSuccess.png)
+![](./Images/4.406.VerifyJobQueue_Success.png)
 
 Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct engine. When testing, you may consider submitting the job multiple times for an added verification step, and piece of mind, but this isn't necessary of course!
 
