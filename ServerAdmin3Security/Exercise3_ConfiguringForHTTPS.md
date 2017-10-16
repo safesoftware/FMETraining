@@ -162,7 +162,7 @@ Note: If a self-signed certificate is used for testing, your browser may report 
 
 ![](./Images/3.411.ConnectionNotSecure_Warning.png)
 
-For self-signed certificates, click the **Advanced** button and add an exception for *https://localhost:8443/*.
+For self-signed certificates, some browsers will allow you to add an exception for *https://localhost:8443/*.
 
 
 <br>**7) Modify Service URLs to Use HTTPS** 
