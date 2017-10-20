@@ -254,15 +254,23 @@ Ensure that the Table Handling is set to "Create if Needed". Click OK to close t
 ![](./Images/Img4.428.Ex3.RepublishWorkspace.png)
 
 
-<br>**11) Edit Subscription**
-<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The parameters should now include one for the output database. Use the browse button to write the database into a Resources &gt; Output folder (create the folder by manually typing the output field as shown below, if it doesn't yet exist):
+<br>**11) Add Dataset to FME Server**
+<br>Since the purpose of this notification system is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources. 
+
+Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2017\Data\Engineering\BuildingFootprints\building_footprints.sl3
+
+![](./Images/Img4.500.Ex3.UploadDatabase.png)
+
+
+<br>**12) Edit Subscription**
+<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The parameters should now include one for the output database. Use the browse button to locate the database uploaded in the previous step:
 
 ![](./Images/Img4.415.Ex3.OutputDatabaseSelection.png)
 
 Click OK to save the changes.
 
 
-<br>**12) Test Solution**
+<br>**13) Test Solution**
 <br>Now test the solution by putting more zipped Shapefile data into the Directory Watch folder. You will find that each dataset put into the folder is added to the SpatiaLite database:
 
 ![](./Images/Img4.416.Ex3.ViewOutputInDataInspector.png)
