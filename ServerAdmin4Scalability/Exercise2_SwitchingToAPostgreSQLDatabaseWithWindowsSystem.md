@@ -59,9 +59,9 @@ If you have completed the Configuring for HTTPS exercise, remember that the URL 
 
 Note: If you have *already created an FME Server backup* you can use this existing .fsconfig file and continue to Step 2.
 
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
+Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
 
-Find **Backup & Restore** in left sidebar, under the Admin heading in the FME Server Web User Interface, and click to open this page.
+Find **Backup & Restore** in left sidebar, under the Admin heading in the FME Server web interface, and click to open this page.
 
 Select *Download* to save a backup file of FME Server - this can be thought of as a "snapshot". It will take a short time to run processes in the background to compile the FME Server backup, and once this is complete it will automatically save to your local downloads folder.
 
@@ -133,13 +133,13 @@ This script will take a couple of minutes to create the default FME Server Publi
 <br>**7) Restore Your FME Server Configuration**
 <br>Since a backup of FME Server was created in Step 1, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.
 
-Login to the FME Server Web User Interface and select **Backup & Restore &gt; Restore** from the left sidebar.
+Login to the FME Server web interface and select **Backup & Restore &gt; Restore** from the left sidebar.
 
 Upload your saved backup configuration file from the beginning of this exercise. Navigate to *C:\Users\Administrator\Downloads\\* and locate the FME Server backup file (Hint: It has *.fsconfig* extension!). Drag-and-drop this file onto the FME Server Restore page:
 
 ![](./Images/4.411.RestoreConfiguration.png)
 
-The FME Server Web User Interface will report if the restore is successful. If it is not, the log file is easily accessible from this page if further investigation is needed.
+The FME Server web interface will report if the restore is successful. If it is not, the log file is easily accessible from this page if further investigation is needed.
 
 ![](./Images/4.412.RestoreSuccess.png)
 

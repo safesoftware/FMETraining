@@ -40,7 +40,7 @@
 
 ---
 
-Your GIS department is all onboard with FME Server and translating jobs with the Web User Interface, but jobs are always being queued, even the quick translations. You are wondering if there is a way to set aside one of the FME Server engines for quick translations only so that you and your fellow technical analysts do not have to wait too long for your smaller jobs to complete. With job queues you can allocate specific engines to specific tasks.
+Your GIS department is all onboard with FME Server and translating jobs with the web interface, but jobs are always being queued, even the quick translations. You are wondering if there is a way to set aside one of the FME Server Engines for quick translations only so that you and your fellow technical analysts do not have to wait too long for your smaller jobs to complete. With job queues you can allocate specific engines to specific tasks.
 
 ---
 
@@ -109,7 +109,7 @@ When prompted in the Publish to FME Server Wizard, publish the workspace to:
 
 
 <br>**5) Connect to FME Server**
-<br>Open the FME Server web interace, either through the Web User Interface shortcut in the Windows Start Menu or directly in your web browser.
+<br>Open the FME Server web interface, either through the Web Interface shortcut in the Windows Start Menu or directly in your web browser.
 
 
 <br>**6) Assign and Run Workspace in Job Queue**

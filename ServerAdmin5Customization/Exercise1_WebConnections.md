@@ -112,7 +112,7 @@ Click **Run** to make sure the translation is successful. Now we are ready to pu
 <br>**4) Publish to FME Server**
 <br>Select *Publish to FME Server* under the File Menu. Use the Publish to FME Server Wizard to place the workspace in the **Training** repository – create one if it doesn't exist.
 
-On the *Upload Connections* step, make the DropboxWebConnection is selected and click **Next**. We will authorize our web connection using the FME Server Web User Interface.
+On the *Upload Connections* step, make the DropboxWebConnection is selected and click **Next**. We will authorize our web connection using the FME Server web interface.
 
 ![](./Images/5.404.UploadConnections.png)
 
@@ -120,7 +120,7 @@ Make sure that the workspace is registered with the **Job Submitter** FME Server
 
 
 <br>**5) Login to FME Server**
-<br>Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (https://localhost:8443/fmeserver), and log in using the username and password *admin*.
+<br>Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser (https://localhost:8443/fmeserver), and log in using the username and password *admin*.
 
 
 <br>**6) Configure the Dropbox Web Service**
