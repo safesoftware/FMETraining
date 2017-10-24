@@ -18,7 +18,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Change access to the FME Server Web User Interface to HTTPS</td>
+<td style="border: 1px solid darkorange">Change access to the FME Server web interface to HTTPS</td>
 </tr>
 
 <tr>
@@ -166,7 +166,7 @@ For self-signed certificates, some browsers will allow you to add an exception f
 
 
 <br>**7) Modify Service URLs to Use HTTPS** 
-<br>To enable SSL for FME Server Services, login to the FME Server Web User Interface (username and password *admin*), and select **Services** on the left sidebar. 
+<br>To enable SSL for FME Server Services, login to the FME Server web interface (username and password *admin*), and select **Services** on the left sidebar. 
 
 ![](./Images/3.407.ServicesButton.png)
 

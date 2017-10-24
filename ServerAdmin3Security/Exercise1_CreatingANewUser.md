@@ -18,7 +18,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create a new user with limited privileges in the FME Server Web User Interface</td>
+<td style="border: 1px solid darkorange">Create a new user with limited privileges in the FME Server web interface</td>
 </tr>
 
 <tr>
@@ -34,7 +34,7 @@ Your company has recently hired a new analyst who will be accessing FME Server. 
 
 
 <br>**1) Connect to FME Server** 
-<br>Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*. 
+<br>Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*. 
 
 Select the *Security* page, under the Admin heading on the left sidebar, to see a list of your current users.
 
@@ -106,5 +106,3 @@ By completing this exercise you have learned how to:
 </td>
 </tr>
 </table>
-
----

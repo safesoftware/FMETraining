@@ -56,7 +56,7 @@ If you have completed the Configure for HTTPS exercise, remember that the URL to
 
 <br>**1) Connect to FME Server**
 <br>
-Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
+Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
 
 
 <br>**2) Backup FME Server**
@@ -77,7 +77,7 @@ Click the **Download** button to start the FME Server backup process and save th
 <br>**3) Backup Configuration Files**
 <br>It is also a best practice to manually back up any FME Server configuration files you have altered to a safe location outside of the FME Server installation directory. Certain configurations are not included in the primary backup procedure and you may want to reference the changes made to these files.
 
-In this training course, if you have completed all exercises up until this point, we have modified *server.xml*, *web.xml*, *context.xml*, *cacerts*, and created a *tomcat.keystore* file in the Configuring FME Server for HTTPS exercise, and *pg_hba.conf*, and *fmeCommonConfig.txt* in the Changing the FME Server Database Provider exercise. 
+In this training course, if you have completed all exercises up until this point, we have modified *server.xml*, *web.xml*, *context.xml*, *cacerts*, and created a *tomcat.keystore* file in the Configuring FME Server for HTTPS exercise. 
 
 So if we were trying to migrate our current FME Server configurations, these are the files that we would want to have copies of for reference later on when restoring FME Server configurations.
 
@@ -87,7 +87,7 @@ Save these files with your backup configuration file to easily find during a res
 <br>**4) Backup Log Files**
 <br>Like configuration files, FME Server Log Files are not automatically backed up.
 
-FME Server log files can be found on the *Resources* page of the Web User Interface in the *Logs* folder.
+FME Server log files can be found on the *Resources* page of the web interface in the *Logs* folder.
 
 For this exercise, we will backup only a couple of the log files. Go to **Resources &gt; Logs &gt; core &gt; current** and place a checkmark in the boxes beside *fmeconfiguration.log*, *fmeconnection.log*, and *fmeprocessmonitorcore.log*.
 

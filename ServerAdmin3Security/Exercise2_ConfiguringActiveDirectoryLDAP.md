@@ -57,7 +57,7 @@ Instead, please watch <a href="https://drive.google.com/a/safe.com/file/d/0B9i4b
 ---
 
 <br>**1) Connect to FME Server** 
-<br>Open the FME Server Web User Interface, either through the Web User Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*. 
+<br>Open the FME Server web interface, either through the web interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*. 
 
 Click *Security*, under the Admin heading on the left sidebar, and then select **Active Directory**.
 
@@ -91,7 +91,7 @@ Note: If Miss Vector belonged to any Active Directory groups, we could have inst
 <br>**4) Configure User Permissions** 
 <br>After the Active Directory user is imported to FME Server, you must configure the permissions.
 
-Select Security &gt; **Users** under the Admin heading on the left sidebar of the FME Server Web User Interface. Click on the **Miss Vector** user that was just created to open the Edit User page.
+Select Security &gt; **Users** under the Admin heading on the left sidebar of the FME Server web interface. Click on the **Miss Vector** user that was just created to open the Edit User page.
 
 Click in the text box area for **Assigned Security Roles** and select **fmeauthor**. Notice all the inherited permissions from the fmeauthor Role that are now selected.
 
