@@ -173,7 +173,7 @@ When prompted, leave both source feature types (tables) selected.
 
 </table>
 
-***NB:** If you can't find that sl3 file, go back to step 4 and make sure you downloaded the result of the first workspace.*
+***NB:*** *If you can't find that sl3 file, go back to step 4 and make sure you downloaded the result of the first workspace.*
 
 When prompted, select only the source feature type (table) *votingdivisions*. 
 
