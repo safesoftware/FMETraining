@@ -26,6 +26,7 @@ It is valid for **FME2018.0**
 
 The status of each chapter is:
 
+<<<<<<< HEAD
 - Chapter 0: Incomplete content. No exercises
 - Chapter 1: Content and exercises incomplete
 - Chapter 2: Content and exercises incomplete
@@ -37,4 +38,17 @@ The status of each chapter is:
 - FMEData: Incomplete
 - Course Outline: Incomplete
 
+=======
+- Chapter 0: Complete content. No exercises
+- Chapter 1: Content and exercises complete
+- Chapter 2: Content and exercises complete
+- Chapter 3: Content and exercises complete
+- Chapter 4: Content and exercises complete
+- Chapter 5: Content and exercises complete
+- Chapter 6: Complete content. No exercises
+- Slides: Complete 
+- FMEData: Complete
+- Course Outline: Updated
+ 
+>>>>>>> origin/Desktop-Advanced-2018
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
