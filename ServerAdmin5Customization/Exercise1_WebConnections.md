@@ -13,7 +13,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Resources\ServerAdmin\DropboxWebConnection.xml</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Resources\ServerAdmin\DropboxWebConnection.xml</td>
 </tr>
 
 <tr>
@@ -33,7 +33,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAdmin\WebConnections-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\WebConnections-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
