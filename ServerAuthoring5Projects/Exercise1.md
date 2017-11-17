@@ -65,7 +65,7 @@ In the Configure Import section, be sure to set the import to be by an upload:
 
 *Overwrite Existing Items* is less important because the project should not yet exist for items to need overwriting. Similarly, *Pause Notifications System* is not important because it's very unlikely the notifications in the project will be triggered immediately (they are for handling incoming emails).
 
-Click the Upload File button and browse to/select the file C:\FMEData2017\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
+Click the Upload File button and browse to/select the file C:\FMEData2018\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
 
 The project will very quickly be imported:
 

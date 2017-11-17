@@ -28,12 +28,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex5-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex5-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex5-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex5-Complete.fmw</td>
 </tr>
 
 </table>
@@ -67,7 +67,7 @@ Next click on the Election folder and within there create subfolders called Inpu
 
 <tr>
 <td style="font-weight: bold">Reader Datasets</td>
-<td style="">C:\FMEData2017\Data\Elections\ElectionVoting.gml<br>C:\FMEData2017\Data\Elections\ElectionVoting.xsd<br>C:\FMEData2017\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml<br>C:\FMEData2018\Data\Elections\ElectionVoting.xsd<br>C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>
@@ -91,7 +91,7 @@ So, open the workspace listed above in FME Workbench and then select Writers &gt
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Output\Training\DepartmentData.gdb</td>
+<td style="">C:\FMEData2018\Output\Training\DepartmentData.gdb</td>
 </tr>
 
 <tr>

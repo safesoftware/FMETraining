@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex6-CompleteA.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex6-CompleteB.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex6-CompleteMaster.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex6-CompleteA.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex6-CompleteB.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex6-CompleteMaster.fmw</td>
 </tr>
 
 </table>
@@ -65,7 +65,7 @@ You realize that you can chain these two translations together to execute consec
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Elections\ElectionVoting.gml</td>
+<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
 </tr>
 
 <tr>
@@ -119,7 +119,7 @@ Select the sl3 dataset and click the button to download the file. This is import
 
 ![](./Images/Img1.263.Ex6.DownloadSpatialiteDB.png)
 
-Save the file to the Elections folder, so you will remember where it is; i.e. C:\FMEData2017\Data\Elections\VotingDivisions.sl3
+Save the file to the Elections folder, so you will remember where it is; i.e. C:\FMEData2018\Data\Elections\VotingDivisions.sl3
 
 
 <br>**5) Generate Workspace**
@@ -136,7 +136,7 @@ Open Workbench if necessary and generate a new workspace with these parameters:
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Addresses\Addresses.gdb</td>
+<td style="">C:\FMEData2018\Data\Addresses\Addresses.gdb</td>
 </tr>
 
 <tr>
@@ -146,7 +146,7 @@ Open Workbench if necessary and generate a new workspace with these parameters:
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Output\Training\NewAddresses.gdb</td>
+<td style="">C:\FMEData2018\Output\Training\NewAddresses.gdb</td>
 </tr>
 
 </table>
@@ -168,7 +168,7 @@ When prompted, leave both source feature types (tables) selected.
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Elections\VotingDivisions.sl3</td>
+<td style="">C:\FMEData2018\Data\Elections\VotingDivisions.sl3</td>
 </tr>
 
 </table>

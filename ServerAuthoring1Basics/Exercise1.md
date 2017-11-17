@@ -38,7 +38,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
@@ -88,7 +88,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Emergency\FireHalls.gml</td>
+<td style="">C:\FMEData2018\Data\Emergency\FireHalls.gml</td>
 </tr>
 
 <table style="border: 0px">
@@ -100,7 +100,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>
@@ -124,7 +124,7 @@ Now select Readers &gt; Add Reader to start adding a reader to the workspace. Wh
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Emergency\FireHalls.gml</td>
+<td style="">C:\FMEData2018\Data\Emergency\FireHalls.gml</td>
 </tr>
 
 </table>
@@ -146,7 +146,7 @@ Click OK to add the Reader to the workspace, which will now look like this:
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>

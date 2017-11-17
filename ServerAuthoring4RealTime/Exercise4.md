@@ -165,7 +165,7 @@ Recall that in the previous exercise you used the Logger Protocol and Logger tra
 
 
 <br>**3) Update Workspace**
-<br>You already have a created a workspace in FME Workbench to handle incoming notifications from Directory Watch. Let's modify the workflow so that it can work with both Publication protocols. Open the existing workspace C:\FMEData2017\Workspaces\ServerAuthoring\RealTime-Ex4-Begin.fmw in FME Workbench.
+<br>You already have a created a workspace in FME Workbench to handle incoming notifications from Directory Watch. Let's modify the workflow so that it can work with both Publication protocols. Open the existing workspace C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex4-Begin.fmw in FME Workbench.
 
 Open the JSONFlattener parameters, and add *imap&#95;publisher&#95;attachment{0}* and *email&#95;publisher&#95;attachment{0}* under Attributes to Expose:
 
@@ -276,7 +276,7 @@ Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topic
 
 
 <br>**9) Test Workspace**
-<br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
+<br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2018\Data\Engineering\BuildingFootprints to the email.
 
 You can verify if the workflow was successful by checking the Completed Jobs page and the timestamp of the SpatiaLite database in Resources &gt; Data &gt; Output in the FME Server web interface.
 

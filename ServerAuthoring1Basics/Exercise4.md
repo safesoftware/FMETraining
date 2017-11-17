@@ -28,12 +28,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex4-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\Basics-Ex4-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
@@ -81,7 +81,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Elections\ElectionVoting.gml</td>
+<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
 </tr>
 
 </table>
@@ -124,7 +124,7 @@ The workspace now looks like this:
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\Elections\ElectionVoting.gml</td>
+<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
 </tr>
 
 </table>
@@ -199,7 +199,7 @@ This variable tells FME to look in the same folder as the workspace for the sour
 <br>**9) Upload Temporary Data**
 <br>Now let's pretend that the layer of VotingPlaces data has changed in some way. You can simulate that by simply opening a file browser and making a copy of the GML file.
 
-For example, rename C:\FMEData2017\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml
+For example, rename C:\FMEData2018\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml
 
 ***NB:** You don't also have to copy ElectionVoting.xsd - it's fine to use that schema file for the new GML dataset.*
 

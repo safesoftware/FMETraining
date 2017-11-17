@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Generate-Complete.fmw<br>C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Process-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Generate-Complete.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Process-Complete.fmw</td>
 </tr>
 
 </table>
@@ -56,7 +56,7 @@ Of course, these calls can arrive at a tremendous rate, and at unknown intervals
 <br>**1) Open Workspace**
 <br>Unfortunately (I'm talking from a training point of view) we don't have access to a real-time stream of emergency phone calls, so we will have to generate our own.
 
-Open the workspace C:\FMEData2017\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw
+Open the workspace C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw
 
 ![](./Images/Img4.450.Ex6.MessageGeneratingWorkspace.png)
 
@@ -248,7 +248,7 @@ Firstly we need the transit station data, so select Readers &gt; Add Reader and 
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\Data\CommunityMapping\CommunityMap.gdb</td>
+<td style="">C:\FMEData2018\Data\CommunityMapping\CommunityMap.gdb</td>
 </tr>
 
 </table>
@@ -326,7 +326,7 @@ If you want to adjust the settings to get a result quicker, then go ahead. For e
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Output\EventMessages.sl3</td>
+<td style="">C:\FMEData2018\Output\EventMessages.sl3</td>
 </tr>
 
 <tr>

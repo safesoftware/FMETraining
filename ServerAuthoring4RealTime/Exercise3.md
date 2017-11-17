@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2017\Workspaces\ServerAuthoring\RealTime-Ex3-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex3-Complete.fmw</td>
 </tr>
 
 </table>
@@ -83,7 +83,7 @@ Select Readers &gt; Add Reader from the menubar. When prompted set the parameter
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2017\readme.txt</td>
+<td style="">C:\FMEData2018\readme.txt</td>
 </tr>
 
 <tr>
@@ -144,7 +144,7 @@ Click OK to update the Subscription.
 
 
 <br>**5) Test Topic**
-<br>Once more (as in exercises 1 and 2) locate the source Shapefile datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints and create a compressed (zip) file from a set of Shapefiles (.dbf, .prj, .shp, .shx).
+<br>Once more (as in exercises 1 and 2) locate the source Shapefile datasets in C:\FMEData2018\Data\Engineering\BuildingFootprints and create a compressed (zip) file from a set of Shapefiles (.dbf, .prj, .shp, .shx).
 
 Be sure to give the zip file a different name to any used previously.
 
@@ -224,7 +224,7 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2017\Data\Engineering\BuildingFootprints\building_footprints.sl3</td>
+<td style="">C:\FMEData2018\Data\Engineering\BuildingFootprints\building_footprints.sl3</td>
 </tr>
 
 <tr>
@@ -257,7 +257,7 @@ Ensure that the Table Handling is set to "Create if Needed". Click OK to close t
 <br>**11) Add Dataset to FME Server**
 <br>Since the purpose of this notification system is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources. 
 
-Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2017\Data\Engineering\BuildingFootprints\building_footprints.sl3
+Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2018\Data\Engineering\BuildingFootprints\building_footprints.sl3
 
 ![](./Images/Img4.500.Ex3.UploadDatabase.png)
 

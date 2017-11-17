@@ -175,7 +175,7 @@ Click on this notification to change its parameters, and set/ensure that the Wor
 
 
 <br>**6) Test Workspace**
-<br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2017\Data\Engineering\BuildingFootprints to the email.
+<br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2018\Data\Engineering\BuildingFootprints to the email.
 
 If the workflow was successful, you should receive an email back with a response!
 

@@ -107,7 +107,7 @@ In the drop-down box for Topic Monitoring, select the ShapeIncomingFile topic an
 
 
 <br>**5) Test Topic**
-<br>Now let's test the topic. Locate the source Shapefile datasets in C:\FMEData2017\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) for one dataset and create a compressed zip file out of them (right-click &gt; Send to &gt; Compressed (zipped) folder).
+<br>Now let's test the topic. Locate the source Shapefile datasets in C:\FMEData2018\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) for one dataset and create a compressed zip file out of them (right-click &gt; Send to &gt; Compressed (zipped) folder).
 
 Now upload the zip file into the newly created Resources folder. There are two ways to do this.
 
