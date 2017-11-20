@@ -1,141 +1,137 @@
+<!--Instructor Notes-->
+
 <!--Exercise Section-->
+
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Sharing and Scheduling</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Best Practice Workspace Analysis Project</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)</td>
+<td style="border: 1px solid darkorange">Workspace Files</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
+<td style="border: 1px solid darkorange">Set Up an FME Server Project</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Sharing and scheduling a translation in FME Server</td>
+<td style="border: 1px solid darkorange">FME Server Projects</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange">N/A</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange">N/A</td>
 </tr>
 
 </table>
 
 ---
 
-For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
-
-There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single, corporate database.
-
-Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
-
-You have already (Exercises 1 and 2) created a workspace to carry out this translation, published it to FME Server, and ran it to confirm it works.
-
-As a daily task, you plan to run the translation every day after work. However... what happens if you are not there, or leave early, or someone else stays late. Who will run it then?
-
-Firstly you should ensure other users have access to the workspace to run it, but you can also set it up to run on an automatic schedule. 
+Best Practice is a very important concept for FME workspaces. To encourage colleagues to carry out best practices you wish to install a project that allows workspaces to be analyzed.
 
 
-<br>**1) Connect to Server**
-<br>Browse to the log in page of the FME Server interface, either starting it through the Web Interface option on the start menu or by logging out if you are already logged in.
+<br>**1) Browse To Projects**
+<br>Open the FME Server web interface and log in with an account that has administrator privileges.
 
-This time log in using the generic user account that is a default account on any FME Server installation. The username is ***user*** and the password is ***user*** as well!
+Select Projects on the main menu to browse to the Projects page:
 
-The first thing you'll notice is that the menu and functionality is much more restricted for this account:
-
-![](./Images/Img1.224.Ex3.UserMenu.png)
-
-In fact, if you try to run a workspace you'll find that the only repository this account has access to is the Samples repository; not Training where the existing workspace resides.
+![](./Images/Img5.012.Ex1,ProjectsMenu.png)
 
 
-<br>**2) Share Repository**
-<br>Log out of the user account and log back in as an administrator (admin/admin). 
+<br>**2) Import Project**
+<br>Click on the Import button to open the Configure Import dialogs:
 
-Now you have the full set of menu entries, click Repositories on the menu. Under the list of repositories locate the Training repository. Click the Share icon to the right:
+![](./Images/Img5.013.Ex1.ImportButton.png)
 
-![](./Images/Img1.225.Ex3.ShareButton.png)
+In the Configure Import section, be sure to set the import to be by an upload:
 
-In the Sharing Options dialog, select fmeuser as the role to share with, and allow them to run the workspace: 
+![](./Images/Img5.014.Ex1.ImportConfig.png)
 
-![](./Images/Img1.226.Ex3.ShareDialog.png)
+*Overwrite Existing Items* is less important because the project should not yet exist for items to need overwriting. Similarly, *Pause Notifications System* is not important because it's very unlikely the notifications in the project will be triggered immediately (they are for handling incoming emails).
 
-By selecting the *fmeuser* role (rather than the single *user* account) we allow anyone who is tagged as a user to access the workspace; and by allowing them run capability only, we prevent them downloading and making edits to our workspace.
+Click the Upload File button and browse to/select the file C:\FMEData2018\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
 
+The project will very quickly be imported:
 
-<br>**3) Check Sharing**
-<br>Log out of the administrator account and log back into FME Server with the user account (user/user). 
-
-This time you should have access to the Training repository and be able to run the workspace successfully as a general user. Check the Jobs page and you'll see one entry for the workspace, when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs.
-
-Log out again and log back in as an administrator. Now in the Jobs window you should be able to see both the administrator's jobs and the user's jobs:
-
-![](./Images/Img1.227.Ex3.MultiUserJobsList.png)
-
-That's because the administrator group does have permission to view all jobs.
+![](./Images/Img5.015.Ex1.ImportComplete.png)  
 
 
-<br>**4) Create Test Schedule**
-<br>Now we've allowed other users to run the workspace on demand, but we should also set up the translation to run on a schedule.
+<br>**3) Check Log**
+<br>Click the View Log button in order to examine the Backup/Restore log (which is where project imports are documented). A successful import will look something like this (some columns removed for brevity):
 
-Firstly, just to confirm that scheduling does work, let's set up a test schedule. Click Schedules on the menu and in the Schedules window click the New button to start the process. 
-
-Set a name of Test Schedule and add it to a Training category by typing Training into the Category field:
-
-![](./Images/Img1.228.Ex3.NewScheduleAndCategory.png)
-
-For the time settings, set the schedule to start immediately and run every 30 seconds. Set the end date to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on for ever!)
-
-![](./Images/Img1.229.Ex3.NewScheduleSetSchedule.png)
-
-Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine FME Server is installed to.
-
-Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
-
-![](./Images/Img1.230.Ex3.NewScheduleWorkspace.png) 
-
-There are no user parameters we need to change for this workspace, so any can be ignored.
-
-Now click OK to add the new schedule.
+<pre>
+Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Received a configuration package for import.
+Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Unzipping configuration package...
+Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Upgrading configuration package schema version...
+Wed-07-Jun-2017 01:38:29 PM INFORM: (Migration) Importing configuration package content to server...
+Wed-07-Jun-2017 01:38:33 PM INFORM: (Migration) Imported configuration package successfully.
+</pre>
 
 
-<br>**5) Examine Jobs Page**
-<br>Open the Jobs page. A list of previously run jobs will open. You will find (if it was set up correctly) that there will be jobs running to schedule:
+<br>**4) Check Components**
+<br>Now let's check for some of the components that should have been imported.
 
-![](./Images/Img1.231.Ex3.NewScheduleJobs.png)
+Click Projects on the menu again, and select the recently imported project. You should now see a list of the imported contents:
 
-Notice that the username is set to admin; since that is the user who created the schedule, that is the username under which the job will be run.
+![](./Images/Img5.016.Ex1.ProjectContents.png)
+
+Use the menu options to check the Repository, Notifications, and Resources pages to ensure that the imported components do really exist.
 
 
-<br>**6) Create Actual Schedule**
-<br>Now we are confident that we know how to use the interface, let's set up an actual schedule. We want the workspace to run, say, every day of the week. There should also be no end date.
+<br>**5) Test Project**
+<br>Now let's send an email to your FME Server to test the project. This assumes that you are using a server that has a public name, domain, or address.
 
-So, return to the Schedules page. You may now either:
+For FME Server on one of Safe's training computers, the public IP address is shown on the top-right of the desktop, or within the readme file obtained when you started the computer:
 
-- Click on the Test schedule and edit it to the required values
-- Delete the test schedule and create a new one with the required values
+![](./Images/Img5.018.Ex1.ServerIPAddress.png)
 
-![](./Images/Img1.232.Ex3.UpdatedSchedule.png)
+The email address will be BestPractice@xxxx, where xxxx is the IP address:
 
-This setup will run the workspace at 8:00pm every day. Don't forget to click the OK button!
+![](./Images/Img5.017.Ex1.EmailTest.png)
 
-You may wish to check back periodically during this training to ensure the workspace runs as expected.
+Set a subject line and attach a workspace file. Click the Send button. In response (it may take a minute or two) you will receive an email report about the best practices used in that workspace:
+
+![](./Images/Img5.019.Ex1.BPReport.png)
+
+This demonstrates that the project has been imported and set up correctly.
+
+
+<br>**6) Clean Up Project**
+<br>One part of the project that is not needed is a user account.
+
+So, return to the project contents, select the iMark account, and remove it.
+
+![](./Images/Img5.020.Ex1.RemoveAccount.png)
+
+Since the project has been imported, the account will also exist on the machine (the above only removed it from the project). So also visit the security pages and remove that user.
+
+Send another email to confirm that the project is still working.
+
+
+<br>**7) Export Project**
+<br>Now the project has been updated, export it so that it can be imported in its proper form elsewhere.
+
+To do so, browse to the Projects page, select the project (using the checkbox on the left), and click the Export button.
+
+In the dialog that opens you can choose whether to save the project file to a download or a resources folder. Once complete the following message will appear:
+
+![](./Images/Img5.021.Ex1.ProjectExported.png)
 
 ---
 
@@ -154,10 +150,11 @@ You may wish to check back periodically during this training to ensure the works
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Share a repository in FME Server and tested to ensure it is available to the right users</li>
-<li>Schedule a translation in FME Server</li>
-<li>Check the job history to ensure the scheduled translation took place</li></ul>
+<ul><li>Import a Project</li>
+<li>Check the log and confirm a Project was successfully imported</li>
+<li>Edit a Project's contents</li>
+<li>Export a Project</li></ul>
 </span>
 </td>
 </tr>
-</table>
+</table>   

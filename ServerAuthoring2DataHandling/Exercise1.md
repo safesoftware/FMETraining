@@ -1,137 +1,229 @@
-<!--Instructor Notes-->
-
 <!--Exercise Section-->
-
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Best Practice Workspace Analysis Project</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Publishing Data</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Workspace Files</td>
+<td style="border: 1px solid darkorange">Neighborhoods (KML)<br>Election Voting (GML)</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Set Up an FME Server Project</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">FME Server Projects</td>
+<td style="border: 1px solid darkorange">Publishing source data and uploading temporary datasets</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">N/A</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">N/A</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-Best Practice is a very important concept for FME workspaces. To encourage colleagues to carry out best practices you wish to install a project that allows workspaces to be analyzed.
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. 
+
+You have already (Exercises 1, 2, and 3) created a workspace to carry out a translation, published it to FME Server, ran it to confirm it works, shared the repository, and set the workspace to run on a schedule.
+
+Now you have a task to create a new workspace. One of the datasets it uses is the same as in the previous exercise, so we will try to have this second workspace use the data belonging to the first.
+
+---
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the end workspace listed in the header above and skip to step 7
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+<br>**1) Inspect Source Data**
+<br>The first task in any new project is to inspect the source data, so let's do that. Use the FME Data Inspector to open these two datasets:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">GML (Geography Markup Language)</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
+</tr>
+
+</table>
+
+You can turn off the layer of VotingDivisions. All we are interested in for this exercise are the point features designated as VotingPlaces:
+
+![](./Images/Img1.233.Ex4.SourceElectionData.png)
+<br><span style="font-style:italic;font-size:x-small">Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC-BY-3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>.
 
 
-<br>**1) Browse To Projects**
-<br>Open the FME Server web interface and log in with an account that has administrator privileges.
+<br>**2) Create Workspace**
+<br>Open the starting workspace listed above. 
 
-Select Projects on the main menu to browse to the Projects page:
+You might notice that it's a copy of our previous project, since the requirements for this workspace are so similar. If you do choose to just carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
 
-![](./Images/Img5.012.Ex1,ProjectsMenu.png)
+The workspace looks like this:
 
-
-<br>**2) Import Project**
-<br>Click on the Import button to open the Configure Import dialogs:
-
-![](./Images/Img5.013.Ex1.ImportButton.png)
-
-In the Configure Import section, be sure to set the import to be by an upload:
-
-![](./Images/Img5.014.Ex1.ImportConfig.png)
-
-*Overwrite Existing Items* is less important because the project should not yet exist for items to need overwriting. Similarly, *Pause Notifications System* is not important because it's very unlikely the notifications in the project will be triggered immediately (they are for handling incoming emails).
-
-Click the Upload File button and browse to/select the file C:\FMEData2018\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
-
-The project will very quickly be imported:
-
-![](./Images/Img5.015.Ex1.ImportComplete.png)  
+![](./Images/Img1.234.Ex4.StartingWorkspace.png)
 
 
-<br>**3) Check Log**
-<br>Click the View Log button in order to examine the Backup/Restore log (which is where project imports are documented). A successful import will look something like this (some columns removed for brevity):
+<br>**3) Remove Firehalls**
+<br>For this project we need to process election data instead of firehalls, so firstly delete the writer feature type for the firehalls, and then the reader feature type.
+
+When you delete the reader feature type, you will be asked if you wish to delete the entire reader. We could reuse it but, for the sake of simplicity, click yes.
+
+The workspace now looks like this:
+
+![](./Images/Img1.235.Ex4.WorkspaceSansFirehalls.png)
+
+
+<br>**4) Add VotingPlaces**
+<br>Now select Readers &gt; Add Reader to start adding a reader to the workspace. When prompted, enter the following details for the VotingPlaces data:
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">GML (Geography Markup Language)</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
+</tr>
+
+</table>
+
+Click OK to add the Reader to the workspace. When prompted only select the VotingPlaces feature type, not VotingDivisions:
+
+![](./Images/Img1.236.Ex4.AddReaderFTTR.png)
+
+
+<br>**5) Add VotingPlaces to Writer**
+<br>To add VotingPlaces to the writer, right-click the newly placed reader feature type and choose Duplicate on 'NULL':
+
+![](./Images/Img1.237.Ex4.RightClickAddToWriter.png)
+
+There will now be a reader and writer feature type for the VotingPlaces dataset:
+
+![](./Images/Img1.238.Ex4.WorkspaceWithWriter.png)
+
+Change the connections to pass the VotingPlaces data through the Clipper transformer just as the FireHalls used to be:
+
+![](./Images/Img1.239.Ex4.WorkspaceWithConnectedWriter.png)
+
+
+<br>**6) Set VotingPlaces Feature Type Name**
+<br>Finally, as with the FireHalls, let's set the Feature Type Name for the VotingPlaces writer feature type.
+
+Inspect its parameters and under Feature Type Name either enter:
 
 <pre>
-Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Received a configuration package for import.
-Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Unzipping configuration package...
-Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Upgrading configuration package schema version...
-Wed-07-Jun-2017 01:38:29 PM INFORM: (Migration) Importing configuration package content to server...
-Wed-07-Jun-2017 01:38:33 PM INFORM: (Migration) Imported configuration package successfully.
+VotingPlaces-@Value(NeighborhoodName)
 </pre>
 
+...or click the dropdown and use the text editor dialog to enter that value. This will cause voting places in each different neighborhood to be written to a different table/layer.
 
-<br>**4) Check Components**
-<br>Now let's check for some of the components that should have been imported.
-
-Click Projects on the menu again, and select the recently imported project. You should now see a list of the imported contents:
-
-![](./Images/Img5.016.Ex1.ProjectContents.png)
-
-Use the menu options to check the Repository, Notifications, and Resources pages to ensure that the imported components do really exist.
+Save the workspace. As already mentioned, make sure it has a different name to the first project.
 
 
-<br>**5) Test Project**
-<br>Now let's send an email to your FME Server to test the project. This assumes that you are using a server that has a public name, domain, or address.
+<br>**7) Publish to Server**
+<br>Publish the workspace to FME Server. This time you can simply choose the previously created FME Server connection, rather than having to enter parameters all over again.
 
-For FME Server on one of Safe's training computers, the public IP address is shown on the top-right of the desktop, or within the readme file obtained when you started the computer:
+For the repository select the previously created Training repository and enter a name for the workspace if it doesn't already have one. 
 
-![](./Images/Img5.018.Ex1.ServerIPAddress.png)
+This time, instead of simply checking the box to upload all the data files, click the Select Files button:
 
-The email address will be BestPractice@xxxx, where xxxx is the IP address:
+![](./Images/Img1.240.Ex4.WeMustPerformAQuirkafleeg.png)
 
-![](./Images/Img5.017.Ex1.EmailTest.png)
+This dialog lists the files we are about to publish to the repository with the workspace. Technically the VancouverNeighborhoods dataset was already published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
 
-Set a subject line and attach a workspace file. Click the Send button. In response (it may take a minute or two) you will receive an email report about the best practices used in that workspace:
+![](./Images/Img1.241.Ex4.SelectAllFiles.png)
 
-![](./Images/Img5.019.Ex1.BPReport.png)
-
-This demonstrates that the project has been imported and set up correctly.
+In the final dialog of the publishing wizard, once again choose the Job Submitter as the web service to register the workspace against.
 
 
-<br>**6) Clean Up Project**
-<br>One part of the project that is not needed is a user account.
+<br>**8) Examine Files**
+<br>If you have access to the FME Server computer itself, open a file browser and browse to the location that repository data is stored. Here it is C:\ProgramData\Safe Software\FME Server\repositories\Training:
 
-So, return to the project contents, select the iMark account, and remove it.
+![](./Images/Img1.242.Ex4.RepositoryFilesInFilesystem.png)
 
-![](./Images/Img5.020.Ex1.RemoveAccount.png)
+You'll see that each workspace is saved to a separate folder. If you inspect the contents of a folder you'll see the uploaded datasets within it.
 
-Since the project has been imported, the account will also exist on the machine (the above only removed it from the project). So also visit the security pages and remove that user.
-
-Send another email to confirm that the project is still working.
+This is how a workspace has access to files published with it. It can also, with some manual effort, access files stored with another workspace in the same repository.
 
 
-<br>**7) Export Project**
-<br>Now the project has been updated, export it so that it can be imported in its proper form elsewhere.
+<br>**9) Run Workspace**
+<br>Locate and run the workspace. In the Run dialog notice that the published parameters denoting the source data include an FME environment variable, FME_MF_DIR:
 
-To do so, browse to the Projects page, select the project (using the checkbox on the left), and click the Export button.
+![](./Images/Img1.243.Ex4.RepositoryFileSelection.png)
 
-In the dialog that opens you can choose whether to save the project file to a download or a resources folder. Once complete the following message will appear:
+This variable tells FME to look in the same folder as the workspace for the source data files. As you can see, it isn't particularly user friendly to handle data in this way, even though the workspace will run just fine.
 
-![](./Images/Img5.021.Ex1.ProjectExported.png)
+
+<br>**9) Upload Temporary Data**
+<br>Now let's pretend that the layer of VotingPlaces data has changed in some way. You can simulate that by simply opening a file browser and making a copy of the GML file.
+
+For example, rename C:\FMEData2018\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml
+
+***NB:** You don't also have to copy ElectionVoting.xsd - it's fine to use that schema file for the new GML dataset.*
+
+Now, in the FME Server web interface, log out of the admin account and log in as a user (user/user).
+
+So, as a user we wish to run the workspace with the new data. We can't publish the data because the user account doesn't have permission to write to that repository; and in any case, since the workspace hasn't changed in any way, we shouldn't have to go through the publish process.
+
+So, click Run Workspace and select the newly published workspace in the Training repository. However, to use the new dataset, click the browse button to the right of the Source GML prompt:
+
+![](./Images/Img1.244.Ex4.SelectSourceData.png)
+
+In the dialog that opens, click the Temporary Uploads tab and then on the Upload File button:
+
+![](./Images/Img1.245.Ex4.TempUploadButton.png)
+
+Select both the files NewElectionVoting.gml and ElectionVoting.xsd and click Open to upload them. Now - back in the prior dialog - click the X button to deselect the xsd file:
+
+![](./Images/Img1.246.Ex4.TempUnselectFile.png)
+
+The file needs to exist, but it doesn't need to be selected. Now click OK and then click the Run button.
+
+The workspace will now run to completion using the uploaded dataset. 
+
+However - and this is the important part - this was only a temporary upload. The workspace can be re-run immediately and the data will still appear in the temporary upload section, but it is not a permanent solution. The data is likely to be cleaned up automatically within 24 hours. 
 
 ---
 
@@ -150,11 +242,11 @@ In the dialog that opens you can choose whether to save the project file to a do
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Import a Project</li>
-<li>Check the log and confirm a Project was successfully imported</li>
-<li>Edit a Project's contents</li>
-<li>Export a Project</li></ul>
+<ul><li>Update a workspace with a new reader and a new writer feature type</li>
+<li>Publish a workspace to FME Server and include source data</li>
+<li>Locate source data on the FME Server filesystem</li>
+<li>Select a source dataset to upload temporarily at run-time</li>
 </span>
 </td>
 </tr>
-</table>   
+</table>

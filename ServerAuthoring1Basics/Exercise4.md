@@ -4,16 +4,16 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Publishing Data</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Sharing and Scheduling</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Neighborhoods (KML)<br>Election Voting (GML)</td>
+<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)</td>
 </tr>
 
 <tr>
@@ -23,207 +23,119 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Publishing source data and uploading temporary datasets</td>
+<td style="border: 1px solid darkorange">Sharing and scheduling a translation in FME Server</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex4-Begin.fmw</td>
+<td style="border: 1px solid darkorange">None</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex4-Complete.fmw</td>
+<td style="border: 1px solid darkorange">None</td>
 </tr>
 
 </table>
 
 ---
 
-For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. 
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
 
-You have already (Exercises 1, 2, and 3) created a workspace to carry out a translation, published it to FME Server, ran it to confirm it works, shared the repository, and set the workspace to run on a schedule.
+There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single, corporate database.
 
-Now you have a task to create a new workspace. One of the datasets it uses is the same as in the previous exercise, so we will try to have this second workspace use the data belonging to the first.
+Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
 
----
+You have already (Exercises 1 and 2) created a workspace to carry out this translation, published it to FME Server, and ran it to confirm it works.
 
-<!--Person X Says Section-->
+As a daily task, you plan to run the translation every day after work. However... what happens if you are not there, or leave early, or someone else stays late. Who will run it then?
 
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
-</td>
-</tr>
+Firstly you should ensure other users have access to the workspace to run it, but you can also set it up to run on an automatic schedule. 
 
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-If you have lots of experience with FME Workbench - <strong>and if your instructor agrees</strong> - simply open the end workspace listed in the header above and skip to step 7
-</span>
-</td>
-</tr>
-</table>
 
----
+<br>**1) Connect to Server**
+<br>Browse to the log in page of the FME Server interface, either starting it through the Web Interface option on the start menu or by logging out if you are already logged in.
 
-<br>**1) Inspect Source Data**
-<br>The first task in any new project is to inspect the source data, so let's do that. Use the FME Data Inspector to open these two datasets:
+This time log in using the generic user account that is a default account on any FME Server installation. The username is ***user*** and the password is ***user*** as well!
 
-<table style="border: 0px">
+The first thing you'll notice is that the menu and functionality is much more restricted for this account:
 
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">GML (Geography Markup Language)</td>
-</tr>
+![](./Images/Img1.224.Ex3.UserMenu.png)
 
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
-</tr>
+In fact, if you try to run a workspace you'll find that the only repository this account has access to is the Samples repository; not Training where the existing workspace resides.
 
-</table>
 
-You can turn off the layer of VotingDivisions. All we are interested in for this exercise are the point features designated as VotingPlaces:
+<br>**2) Share Repository**
+<br>Log out of the user account and log back in as an administrator (admin/admin). 
 
-![](./Images/Img1.233.Ex4.SourceElectionData.png)
-<br><span style="font-style:italic;font-size:x-small">Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC-BY-3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>.
+Now you have the full set of menu entries, click Repositories on the menu. Under the list of repositories locate the Training repository. Click the Share icon to the right:
 
+![](./Images/Img1.225.Ex3.ShareButton.png)
 
-<br>**2) Create Workspace**
-<br>Open the starting workspace listed above. 
+In the Sharing Options dialog, select fmeuser as the role to share with, and allow them to run the workspace: 
 
-You might notice that it's a copy of our previous project, since the requirements for this workspace are so similar. If you do choose to just carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
+![](./Images/Img1.226.Ex3.ShareDialog.png)
 
-The workspace looks like this:
+By selecting the *fmeuser* role (rather than the single *user* account) we allow anyone who is tagged as a user to access the workspace; and by allowing them run capability only, we prevent them downloading and making edits to our workspace.
 
-![](./Images/Img1.234.Ex4.StartingWorkspace.png)
 
+<br>**3) Check Sharing**
+<br>Log out of the administrator account and log back into FME Server with the user account (user/user). 
 
-<br>**3) Remove Firehalls**
-<br>For this project we need to process election data instead of firehalls, so firstly delete the writer feature type for the firehalls, and then the reader feature type.
+This time you should have access to the Training repository and be able to run the workspace successfully as a general user. Check the Jobs page and you'll see one entry for the workspace, when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs.
 
-When you delete the reader feature type, you will be asked if you wish to delete the entire reader. We could reuse it but, for the sake of simplicity, click yes.
+Log out again and log back in as an administrator. Now in the Jobs window you should be able to see both the administrator's jobs and the user's jobs:
 
-The workspace now looks like this:
+![](./Images/Img1.227.Ex3.MultiUserJobsList.png)
 
-![](./Images/Img1.235.Ex4.WorkspaceSansFirehalls.png)
+That's because the administrator group does have permission to view all jobs.
 
 
-<br>**4) Add VotingPlaces**
-<br>Now select Readers &gt; Add Reader to start adding a reader to the workspace. When prompted, enter the following details for the VotingPlaces data:
+<br>**4) Create Test Schedule**
+<br>Now we've allowed other users to run the workspace on demand, but we should also set up the translation to run on a schedule.
 
-<table style="border: 0px">
+Firstly, just to confirm that scheduling does work, let's set up a test schedule. Click Schedules on the menu and in the Schedules window click the New button to start the process. 
 
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">GML (Geography Markup Language)</td>
-</tr>
+Set a name of Test Schedule and add it to a Training category by typing Training into the Category field:
 
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
-</tr>
+![](./Images/Img1.228.Ex3.NewScheduleAndCategory.png)
 
-</table>
+For the time settings, set the schedule to start immediately and run every 30 seconds. Set the end date to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on for ever!)
 
-Click OK to add the Reader to the workspace. When prompted only select the VotingPlaces feature type, not VotingDivisions:
+![](./Images/Img1.229.Ex3.NewScheduleSetSchedule.png)
 
-![](./Images/Img1.236.Ex4.AddReaderFTTR.png)
+Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine FME Server is installed to.
 
+Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
 
-<br>**5) Add VotingPlaces to Writer**
-<br>To add VotingPlaces to the writer, right-click the newly placed reader feature type and choose Duplicate on 'NULL':
+![](./Images/Img1.230.Ex3.NewScheduleWorkspace.png) 
 
-![](./Images/Img1.237.Ex4.RightClickAddToWriter.png)
+There are no user parameters we need to change for this workspace, so any can be ignored.
 
-There will now be a reader and writer feature type for the VotingPlaces dataset:
+Now click OK to add the new schedule.
 
-![](./Images/Img1.238.Ex4.WorkspaceWithWriter.png)
 
-Change the connections to pass the VotingPlaces data through the Clipper transformer just as the FireHalls used to be:
+<br>**5) Examine Jobs Page**
+<br>Open the Jobs page. A list of previously run jobs will open. You will find (if it was set up correctly) that there will be jobs running to schedule:
 
-![](./Images/Img1.239.Ex4.WorkspaceWithConnectedWriter.png)
+![](./Images/Img1.231.Ex3.NewScheduleJobs.png)
 
+Notice that the username is set to admin; since that is the user who created the schedule, that is the username under which the job will be run.
 
-<br>**6) Set VotingPlaces Feature Type Name**
-<br>Finally, as with the FireHalls, let's set the Feature Type Name for the VotingPlaces writer feature type.
 
-Inspect its parameters and under Feature Type Name either enter:
+<br>**6) Create Actual Schedule**
+<br>Now we are confident that we know how to use the interface, let's set up an actual schedule. We want the workspace to run, say, every day of the week. There should also be no end date.
 
-<pre>
-VotingPlaces-@Value(NeighborhoodName)
-</pre>
+So, return to the Schedules page. You may now either:
 
-...or click the dropdown and use the text editor dialog to enter that value. This will cause voting places in each different neighborhood to be written to a different table/layer.
+- Click on the Test schedule and edit it to the required values
+- Delete the test schedule and create a new one with the required values
 
-Save the workspace. As already mentioned, make sure it has a different name to the first project.
+![](./Images/Img1.232.Ex3.UpdatedSchedule.png)
 
+This setup will run the workspace at 8:00pm every day. Don't forget to click the OK button!
 
-<br>**7) Publish to Server**
-<br>Publish the workspace to FME Server. This time you can simply choose the previously created FME Server connection, rather than having to enter parameters all over again.
-
-For the repository select the previously created Training repository and enter a name for the workspace if it doesn't already have one. 
-
-This time, instead of simply checking the box to upload all the data files, click the Select Files button:
-
-![](./Images/Img1.240.Ex4.WeMustPerformAQuirkafleeg.png)
-
-This dialog lists the files we are about to publish to the repository with the workspace. Technically the VancouverNeighborhoods dataset was already published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
-
-![](./Images/Img1.241.Ex4.SelectAllFiles.png)
-
-In the final dialog of the publishing wizard, once again choose the Job Submitter as the web service to register the workspace against.
-
-
-<br>**8) Examine Files**
-<br>If you have access to the FME Server computer itself, open a file browser and browse to the location that repository data is stored. Here it is C:\ProgramData\Safe Software\FME Server\repositories\Training:
-
-![](./Images/Img1.242.Ex4.RepositoryFilesInFilesystem.png)
-
-You'll see that each workspace is saved to a separate folder. If you inspect the contents of a folder you'll see the uploaded datasets within it.
-
-This is how a workspace has access to files published with it. It can also, with some manual effort, access files stored with another workspace in the same repository.
-
-
-<br>**9) Run Workspace**
-<br>Locate and run the workspace. In the Run dialog notice that the published parameters denoting the source data include an FME environment variable, FME_MF_DIR:
-
-![](./Images/Img1.243.Ex4.RepositoryFileSelection.png)
-
-This variable tells FME to look in the same folder as the workspace for the source data files. As you can see, it isn't particularly user friendly to handle data in this way, even though the workspace will run just fine.
-
-
-<br>**9) Upload Temporary Data**
-<br>Now let's pretend that the layer of VotingPlaces data has changed in some way. You can simulate that by simply opening a file browser and making a copy of the GML file.
-
-For example, rename C:\FMEData2018\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml
-
-***NB:** You don't also have to copy ElectionVoting.xsd - it's fine to use that schema file for the new GML dataset.*
-
-Now, in the FME Server web interface, log out of the admin account and log in as a user (user/user).
-
-So, as a user we wish to run the workspace with the new data. We can't publish the data because the user account doesn't have permission to write to that repository; and in any case, since the workspace hasn't changed in any way, we shouldn't have to go through the publish process.
-
-So, click Run Workspace and select the newly published workspace in the Training repository. However, to use the new dataset, click the browse button to the right of the Source GML prompt:
-
-![](./Images/Img1.244.Ex4.SelectSourceData.png)
-
-In the dialog that opens, click the Temporary Uploads tab and then on the Upload File button:
-
-![](./Images/Img1.245.Ex4.TempUploadButton.png)
-
-Select both the files NewElectionVoting.gml and ElectionVoting.xsd and click Open to upload them. Now - back in the prior dialog - click the X button to deselect the xsd file:
-
-![](./Images/Img1.246.Ex4.TempUnselectFile.png)
-
-The file needs to exist, but it doesn't need to be selected. Now click OK and then click the Run button.
-
-The workspace will now run to completion using the uploaded dataset. 
-
-However - and this is the important part - this was only a temporary upload. The workspace can be re-run immediately and the data will still appear in the temporary upload section, but it is not a permanent solution. The data is likely to be cleaned up automatically within 24 hours. 
+You may wish to check back periodically during this training to ensure the workspace runs as expected.
 
 ---
 
@@ -242,10 +154,9 @@ However - and this is the important part - this was only a temporary upload. The
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Update a workspace with a new reader and a new writer feature type</li>
-<li>Publish a workspace to FME Server and include source data</li>
-<li>Locate source data on the FME Server filesystem</li>
-<li>Select a source dataset to upload temporarily at run-time</li>
+<ul><li>Share a repository in FME Server and tested to ensure it is available to the right users</li>
+<li>Schedule a translation in FME Server</li>
+<li>Check the job history to ensure the scheduled translation took place</li></ul>
 </span>
 </td>
 </tr>

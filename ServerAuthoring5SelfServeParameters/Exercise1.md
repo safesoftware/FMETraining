@@ -7,10 +7,10 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Geographic Selection</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Published Parameters</span>
 </td>
 </tr>
 
@@ -26,17 +26,17 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Handling selection by geographic area</td>
+<td style="border: 1px solid darkorange">Creating published parameters for user control in Data Download</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex1-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe1-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe1-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -45,126 +45,103 @@
 
 As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
 
-You've implemented a lot of different options for transformation, format, coordinate system, and layers to process. However, end-users also often ask for raster data for a particular neighborhood of the city, and that's easy to do using a Clipper transformer.
+So far you have created a simple workspace to translate orthophotos to JPEG format, and published it to a Data Download service on FME Server.
+
+Now you need to start customizing the workspace to allow the end-users to have a degree of control over the output.
 
 
 <br>**1) Open Workspace**
-<br>Open the begin workspace listed above. You can see that it consists of a reader, two writers, three transformers, and various published parameters.
+<br>Open the workspace from exercise 1, or the starting workspace listed above. You can see that it consists of a reader, a writer, and two transformers.
 
-To clip data to a particular neighborhood first requires a reader for those neighborhood features, so that is the first step...
-
-
-<br>**2) Add Reader**
-<br>Select Readers &gt; Add Reader and use the following setup:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">Google KML</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Workflow</td>
-<td style="">Individual Feature Types</td>
-</tr>
-
-</table>
-
-Be sure to set the workflow option if you carried out the previous exercise, as it might default to a different value. Click OK and, when prompted, select only the feature type for Neighborhoods:
-
-![](./Images/Img3.200.Ex1.NeighborhoodFT.png)
-
-Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt the user to select this dataset. 
+In this step we'll give the end-user control over the transformation stages.
 
 
-<br>**3) Add Published Parameter**
-<br>Currently the KML Reader will read all of the neighborhoods. However, we need the user to select one of these to clip the data with. To select the neighborhood we'll use a published parameter.
+<br>**2) Create User Parameter**
+<br>If you look at the parameters for the RasterResampler transformer you'll see parameters for X Cell Spacing and Y Cell Spacing. We should let the end user choose what spacing they want.
 
-So, add a new parameter. Set the parameter values as follows:
+So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter: 
+
+![](./Images/Img2.205.Ex2.CreateParameter.png)
+
+The dialog that opens allows us to create a new parameter. Create one using the following parameters:
 
 <table>
-<tr><td style="font-weight: bold">Type</td><td>Choice</td></tr>
-<tr><td style="font-weight: bold">Name</td><td>Neighborhood</td></tr>
+<tr><td style="font-weight: bold">Type</td><td>Number</td></tr>
+<tr><td style="font-weight: bold">Name</td><td>CellSpacing</td></tr>
 <tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
-<tr><td style="font-weight: bold">Optional</td><td>Yes</td></tr>
-<tr><td style="font-weight: bold">Prompt</td><td>Select the Neighborhood</td></tr>
+<tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
+<tr><td style="font-weight: bold">Prompt</td><td>Enter Resolution (1-50)</td></tr>
+<tr><td style="font-weight: bold">Configuration</td><td>Lower Limit: Greater than value: 0<br>Upper Limit: Less than value: 51<br>Decimal places of precision: 0</td></tr>
+<tr><td style="font-weight: bold">Default Value</td><td>50</td></tr>
 </table>
 
-For the configuration field, click the [...] browse button. In the dialog that opens, enter the names of the neighborhoods of Vancouver. These are:
 
-- Downtown
-- Fairview
-- Kitsilano
-- Mount Pleasant
-- Strathcona
-- West End
+![](./Images/Img2.206.Ex2.CreateParameterDialog.png)
 
-Notice that this parameter is optional. The user should not have to select a value if they don't want to. Also, this is a choice field alone; an alias is not needed because the proper values are clear enough.
+Click OK to close the dialog.
 
 
-<br>**4) Add Tester**
-<br>Now we need to filter the neighborhood data by the user's choice. So add a Tester transformer to the workspace, connected to the Neighborhood feature type:
+<br>**3) Apply User Parameter**
+<br>Currently we've created a user parameter, but not applied it to anywhere. 
 
-![](./Images/Img3.201.Ex1.TesterTransformer.png)
+Inspect the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing
 
-Inspect its parameters and set them up to test where NeighborhoodName = the neighborhood published parameter:
+Do the same for the Y Cell Spacing parameter. The dialog will now look like this:
 
-![](./Images/Img3.202.Ex1.TesterTransformerDialog.png)
+![](./Images/Img2.207.Ex2.PublishedRasterResamplerParams.png)
 
-Save the parameter changes.
+Notice that we're using the same values for the X and Y cell sizes. That's OK. Although we could use rectangular (oblong) raster cells, for this exercise we'll stick with square.
 
 
-<br>**5) Add CsmapReprojector**
-<br>One interesting part of the neighborhood dataset is that it is in a Latitude/Longitude coordinate system, whereas all other data is in UTM83-10. To be able to clip one with the other requires both datasets to be in the same coordinate space.
+<br>**4) Create User Parameter**
+<br>Another setting we might give control of to the user is file compression. This is not defined in a transformer, but in the writer feature type. However, we can still create a published parameter in the same way.
 
-So, place a CsmapReprojector transformer after the Tester, connected to the Tester:Passed port. Set it up to reproject to UTM83-10
+So, right-click on User Parameters in the Navigator window and choose Add Parameter again.
 
-![](./Images/Img3.203.Ex1.CSMapReprojector.png)
+This time we'll do this a little bit differently. Compression can be a value from zero to one hundred, but we'll present the user with the choice of None, Low, Medium, and High.
 
----
+So create a parameter with the following:
 
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Professor Spatial F.M.E., E.T.L. says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-Why does the CsmapReprojector come after the Tester? Because it has less work to do. If the data was reprojected first then we would be reprojecting data that is subsequently filtered out. It might only be a small difference here, but this is the type of detail that really helps workspace performance in larger projects. 
-</span>
-</td>
-</tr>
+<table>
+<tr><td style="font-weight: bold">Type</td><td>Choice with Alias</td></tr>
+<tr><td style="font-weight: bold">Name</td><td>Compression</td></tr>
+<tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
+<tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
+<tr><td style="font-weight: bold">Prompt</td><td>Select Compression Level</td></tr>
 </table>
 
----
+For the configuration field, click the [...] browse button. In the dialog that opens, set the following:
 
-<br>**6) Add Clipper**
-<br>Now to clip the raster data. Add a Clipper transformer to the workspace. Connect the CsmapReprojector to the  Clipper:Clipper port. Connect the output from the VectorOnRasterOverlayer to the Clipper:Clippee port:
+<table>
+<tr><th>Display Name</th><th>Value</th></tr>
+<tr><td>None</td><td>0</td></tr>
+<tr><td>Low</td><td>25</td></tr>
+<tr><td>Medium</td><td>50</td></tr>
+<tr><td>High</td><td>75</td></tr>
+</table>
 
-![](./Images/Img3.204.Ex1.DrJonesWillNeverBelieveThis.png)
+![](./Images/Img2.208.Ex2.CreateChoiceParam.png)
 
-Check the parameters. The only parameter to really check is one specifically related to raster data: Preserve Clippee Extents. Set this parameter to No if it is not already.
+Click OK and OK again to close these dialogs and create the parameter.
 
 
-<br>**7) Publish to FME Server**
-<br>Save the workspace and publish it to FME Server. Register it with the Data Download service, being sure to click the Edit button to edit the service properties. In that dialog set the writer to "Output [GENERIC]" (not "Output [JPEG]").
+<br>**5) Apply User Parameter**
+<br>To apply the parameter, inspect the parameters for the JPEG feature type. Expand the Compression parameters (if necessary) and set the Compression Level parameter to User Parameter &gt; Compression
 
-Run the workspace on FME Server. You should now be able to choose all source tiles and clip them to a chosen neighborhood, like so (here, the Downtown neighborhood):
+![](./Images/Img2.209.Ex2.SetFTCompression.png)
 
-![](./Images/Img3.205.Ex1.OutputResults.png)
+Click OK to close the dialog. If you press the run button now - with the prompt option set - you'll see that there are now two new prompts for cell size and compression.
 
+
+<br>**6) Publish and Run Workspace**
+<br>Now publish the workspace to FME Server again. As before, register it with the Data Download service. 
+
+Locate the workspace through the FME Server web interface and run it. This time you will be prompted to set the cell size and compression.
+
+![](./Images/Img2.210.Ex2.RunWorkspace.png)
+
+Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect. The size of the output file is a good indicator that the process is working correctly.
+ 
 ---
 
 <!--Exercise Congratulations Section--> 
@@ -182,9 +159,13 @@ Run the workspace on FME Server. You should now be able to choose all source til
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Set up a workspace for a user to select a specific area feature</li>
-<li>Clip data to a chosen area for use in a Data Download system</li></ul>
+<ul><li>Create an integer user parameter and apply it to two transformer parameters</li>
+<li>Create a choice user parameter and apply it to a writer feature type parameter</li>
+<li>Publish a workspace and use published parameters</li></ul>
 </span>
 </td>
 </tr>
 </table>   
+
+
+
