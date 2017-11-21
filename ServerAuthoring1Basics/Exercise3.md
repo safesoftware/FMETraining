@@ -51,7 +51,7 @@ Best Practice is a very important concept for FME workspaces. To encourage colle
 
 Select Projects on the main menu to browse to the Projects page:
 
-![](./Images/Img5.012.Ex1,ProjectsMenu.png)
+![](./Images/Img5.012.Ex1.ProjectsMenu.png)
 
 
 <br>**2) Import Project**
@@ -135,7 +135,7 @@ In the dialog that opens you can choose whether to save the project file to a do
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

@@ -13,10 +13,10 @@ This training provides a framework for authoring workspaces for FME Server. We h
 The full course is made up of five main sections. These sections are:
 
 - Introduction to FME Server
-- Self-Serve with FME Server: Part1
-- Self-Serve with FME Server: Part2
+- Data Handling and FME Server
+- Self-Serve Basics
 - Real-Time with FME Server
-- FME Server Projects
+- Self-Serve with Parameters
 
 
 ## Current Status ##
