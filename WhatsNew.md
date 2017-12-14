@@ -20,13 +20,12 @@ These changes are for the FME Desktop Basic Training Course.
 
  
 ### Data Translation Basics ###
-- 
+- Added a new introductory exercise to get 'hands-on' earlier.
+- Dropped the section on Translation Previews (new caching mode renders unnecessary)
 
 ### Data Transformation ###
 - 
 
-### Best Practice ###
-- 
 
 ### Translation Components ###
 - 
@@ -36,6 +35,11 @@ These changes are for the FME Desktop Basic Training Course.
 - 
 
 
-### Course Wrap Up ###
+### Best Practice ###
 - 
+
+
+### Course Wrap Up ###
+- Updated with new web site images
+- Mentioned podcast episodes on the blog
 
