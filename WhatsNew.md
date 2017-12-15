@@ -6,7 +6,7 @@ This file documents major changes made to training materials in 2018
 ## FMEData ##
 These changes are for the FMEData dataset that accompanies FME training
 
-- 
+- Updated Community Map Geodatabase with new URLs for libraries (also extended field size)
 
 
 ---
@@ -15,13 +15,15 @@ These changes are for the FMEData dataset that accompanies FME training
 These changes are for the FME Desktop Basic Training Course.
 
 ### General ###
-- 
+- FME version switched from 32-bit to 64-bit
 
 
  
 ### Data Translation Basics ###
 - Added a new introductory exercise to get 'hands-on' earlier.
 - Dropped the section on Translation Previews (new caching mode renders unnecessary)
+- Compressed What is FME and FME Data Model into one section
+- Compressed Introduction to Workbench and Workbench Components into one section
 
 ### Data Transformation ###
 - 
