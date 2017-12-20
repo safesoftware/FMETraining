@@ -27,6 +27,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Added information on Visual Preview/Data Inspection window into components sections
 - Dropped the section on Translation Previews (new caching mode renders unnecessary)
 - Compressed Introduction to Data Inspector and Data Inspector Components into one section
+- Changed Miscellaneous DI functionality section to purely focus on background maps
 
 
 ### Data Transformation ###
