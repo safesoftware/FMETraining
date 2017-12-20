@@ -26,6 +26,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Compressed Introduction to Workbench and Workbench Components into one section
 - Added information on Visual Preview/Data Inspection window into components sections
 - Dropped the section on Translation Previews (new caching mode renders unnecessary)
+- Compressed Introduction to Data Inspector and Data Inspector Components into one section
+
 
 ### Data Transformation ###
 - xxxx
