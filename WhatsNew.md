@@ -28,7 +28,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Dropped the section on Translation Previews (new caching mode renders unnecessary)
 - Compressed Introduction to Data Inspector and Data Inspector Components into one section
 - Changed Miscellaneous DI functionality section to purely focus on background maps
-
+- Exercise 2 (was 1) changed output format from DWG to GeoJSON (to get filled polygons and attributes in DI)
+- Exercise 4 (was 3) completely redesigned to be more interesting/relevant
 
 ### Data Transformation ###
 - xxxx
