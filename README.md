@@ -14,7 +14,7 @@ The full course is made up of five main sections. These sections are:
 
 - Data Translation Basics
 - Data Transformation
-- Translation Components
+- Workspace Design
 - Practical Transformer Use
 - Best Practice
  
@@ -26,8 +26,8 @@ This manual applies to **FME2018.0**
 
 The status of each chapter is:
 
-- Chapter 0: Incomplete content. No exercises
-- Chapter 1: Incomplete content and exercises
+- Chapter 0: Complete content. No exercises
+- Chapter 1: Complete content and exercises
 - Chapter 2: Incomplete content and exercises
 - Chapter 3: Incomplete content and exercises
 - Chapter 4: Incomplete content and exercises
