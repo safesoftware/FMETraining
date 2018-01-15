@@ -32,7 +32,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 4 (was 3) completely redesigned to be more relevant. Also introduces students to transformers
 
 ### Data Transformation ###
-- xxxx
+- Rewrote Structural Transformation to reinforce the nature of Readers, Writers, feature types
 
 
 ### Workspace Design ###
