@@ -21,7 +21,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Set Up an FME Server Project</td>
+<td style="border: 1px solid darkorange">Import an FME Server Project</td>
 </tr>
 
 <tr>
@@ -55,11 +55,11 @@ Select Projects on the main menu to browse to the Projects page:
 
 
 <br>**2) Import Project**
-<br>Click on the Import button to open the Configure Import dialogs:
+<br>Click on the Import button to open the Import page:
 
 ![](./Images/Img5.013.Ex1.ImportButton.png)
 
-In the Configure Import section, be sure to set the import to be by an upload:
+Under the Configure Import section, be sure to set the import to be from an upload:
 
 ![](./Images/Img5.014.Ex1.ImportConfig.png)
 
@@ -73,16 +73,11 @@ The project will very quickly be imported:
 
 
 <br>**3) Check Log**
-<br>Click the View Log button in order to examine the Backup/Restore log (which is where project imports are documented). A successful import will look something like this (some columns removed for brevity):
+<br>Click the View Details button in order to examine the Project Import log. A successful import will look something like this:
 
-<pre>
-Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Received a configuration package for import.
-Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Unzipping configuration package...
-Wed-07-Jun-2017 01:38:28 PM INFORM: (Migration) Upgrading configuration package schema version...
-Wed-07-Jun-2017 01:38:29 PM INFORM: (Migration) Importing configuration package content to server...
-Wed-07-Jun-2017 01:38:33 PM INFORM: (Migration) Imported configuration package successfully.
-</pre>
+**SCREENSHOT GOES HERE INSTEAD OF LOG SNIPPET**
 
+TIP - THE HISTORY PAGE UNDER PROJECTS WILL SHOW A FULL HISTORY OF ALL PROJECTS THAT HAVE BEEN IMPORTED TO THE SYSTEM
 
 <br>**4) Check Components**
 <br>Now let's check for some of the components that should have been imported.
@@ -115,11 +110,11 @@ This demonstrates that the project has been imported and set up correctly.
 <br>**6) Clean Up Project**
 <br>One part of the project that is not needed is a user account.
 
-So, return to the project contents, select the iMark account, and remove it.
+So, return to the project contents, select the marki User, and remove it.
 
 ![](./Images/Img5.020.Ex1.RemoveAccount.png)
 
-Since the project has been imported, the account will also exist on the machine (the above only removed it from the project). So also visit the security pages and remove that user.
+This will remove the account from the project, but since the project has already been imported, the account will also exist on the machine. So also visit the security pages and remove that user.
 
 Send another email to confirm that the project is still working.
 
@@ -151,7 +146,7 @@ In the dialog that opens you can choose whether to save the project file to a do
 By completing this exercise you have learned how to:
 <br>
 <ul><li>Import a Project</li>
-<li>Check the log and confirm a Project was successfully imported</li>
+<li>Check the Project History and confirm a Project was successfully imported</li>
 <li>Edit a Project's contents</li>
 <li>Export a Project</li></ul>
 </span>

@@ -46,17 +46,17 @@ There are many departments within the city, and one of your tasks is to take the
 
 Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
 
-You have already (Exercises 1 and 2) created a workspace to carry out this translation, published it to FME Server, and ran it to confirm it works.
+You have already (in Exercises 1 and 2) created a workspace to carry out this translation, published it to FME Server, and run it to confirm it works.
 
 As a daily task, you plan to run the translation every day after work. However... what happens if you are not there, or leave early, or someone else stays late. Who will run it then?
 
-Firstly you should ensure other users have access to the workspace to run it, but you can also set it up to run on an automatic schedule. 
+Firstly you should ensure other users have access to the workspace to run it, but you can also set it up to run on an automatic schedule.
 
 
 <br>**1) Connect to Server**
-<br>Browse to the log in page of the FME Server interface, either starting it through the Web Interface option on the start menu or by logging out if you are already logged in.
+<br>Browse to the log in page of the FME Server interface, either by starting it through the Web Interface option on the start menu or by logging out if you are already logged in.
 
-This time log in using the generic user account that is a default account on any FME Server installation. The username is ***user*** and the password is ***user*** as well!
+This time, log in using the generic user account that is a default account on any FME Server installation. The username is ***user*** and the password is ***user*** as well!
 
 The first thing you'll notice is that the menu and functionality is much more restricted for this account:
 
@@ -66,25 +66,25 @@ In fact, if you try to run a workspace you'll find that the only repository this
 
 
 <br>**2) Share Repository**
-<br>Log out of the user account and log back in as an administrator (admin/admin). 
+<br>Log out of the user account and log back in as an administrator (admin/admin).
 
 Now you have the full set of menu entries, click Repositories on the menu. Under the list of repositories locate the Training repository. Click the Share icon to the right:
 
 ![](./Images/Img1.225.Ex3.ShareButton.png)
 
-In the Sharing Options dialog, select fmeuser as the role to share with, and allow them to run the workspace: 
+In the Sharing Options dialog, select fmeuser as the role to share with, and allow them to run the workspace:
 
 ![](./Images/Img1.226.Ex3.ShareDialog.png)
 
-By selecting the *fmeuser* role (rather than the single *user* account) we allow anyone who is tagged as a user to access the workspace; and by allowing them run capability only, we prevent them downloading and making edits to our workspace.
+By selecting the *fmeuser* role (rather than the single *user* account) we allow anyone who is tagged as a user to access the workspace; and by allowing them only the run capability, we prevent them downloading and making edits to our workspace.
 
 
 <br>**3) Check Sharing**
-<br>Log out of the administrator account and log back into FME Server with the user account (user/user). 
+<br>Log out of the administrator account and log back into FME Server with the user account (user/user).
 
-This time you should have access to the Training repository and be able to run the workspace successfully as a general user. Check the Jobs page and you'll see one entry for the workspace, when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs.
+This time, you should have access to the Training repository and be able to run the workspace successfully as a general user. Check the Jobs page and you'll see one entry for the workspace, when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs.
 
-Log out again and log back in as an administrator. Now in the Jobs window you should be able to see both the administrator's jobs and the user's jobs:
+Log out again and log back in as an administrator. Now, in the Jobs window, you should be able to see both the administrator's jobs and the user's jobs:
 
 ![](./Images/Img1.227.Ex3.MultiUserJobsList.png)
 
@@ -94,21 +94,21 @@ That's because the administrator group does have permission to view all jobs.
 <br>**4) Create Test Schedule**
 <br>Now we've allowed other users to run the workspace on demand, but we should also set up the translation to run on a schedule.
 
-Firstly, just to confirm that scheduling does work, let's set up a test schedule. Click Schedules on the menu and in the Schedules window click the New button to start the process. 
+Firstly, just to confirm that scheduling does work, let's set up a test schedule. Click Schedules on the menu and, in the Schedules page, click the New button to start the process.
 
 Set a name of Test Schedule and add it to a Training category by typing Training into the Category field:
 
 ![](./Images/Img1.228.Ex3.NewScheduleAndCategory.png)
 
-For the time settings, set the schedule to start immediately and run every 30 seconds. Set the end date to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on for ever!)
+For the time settings, set the schedule to start immediately and run every 30 seconds. Uncheck the box beside Schedule Does Not Expire and set the end time to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on for ever!)
 
 ![](./Images/Img1.229.Ex3.NewScheduleSetSchedule.png)
 
-Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine FME Server is installed to.
+Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine on which you are running the web browser that is connected to FME Server. Keep this in mind if your FME Server is on a machine in a different timezone from the machine where you are accessing FME Server.
 
 Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
 
-![](./Images/Img1.230.Ex3.NewScheduleWorkspace.png) 
+![](./Images/Img1.230.Ex3.NewScheduleWorkspace.png)
 
 There are no user parameters we need to change for this workspace, so any can be ignored.
 
@@ -139,7 +139,7 @@ You may wish to check back periodically during this training to ensure the works
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

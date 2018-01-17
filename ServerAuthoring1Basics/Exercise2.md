@@ -47,11 +47,10 @@ There are many departments within the city, and one of your tasks is to take the
 
 Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
 
-After creating a workspace to carry out this translation, and publishing it to FME Server, you now wish to log in to Server to run that workspace. 
-
+After creating a workspace to carry out this translation, and publishing it to FME Server, you now wish to log in to Server to run that workspace.
 
 <br>**1) Connect to Server**
-<br>To log in to the server interface either select the Web Interface option from the start menu or - in your web browser - enter the address to your FME Server.
+<br>To log in to the server interface either select the Web Interface option from the start menu or - in your web browser - enter the address of your FME Server.
 
 ---
 
@@ -67,7 +66,7 @@ After creating a workspace to carry out this translation, and publishing it to F
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 When FME Server is installed on either physical or virtual hardware, the address is http://&lt;servername&gt;/fmeserver
-<br><br>If you are using FME Cloud, then the address is: http://&lt;server name&gt;.fmecloud.com/fmeserver
+<br><br>If you are using FME Cloud, then the address is: http://&lt;servername&gt;.fmecloud.com/fmeserver
 </span>
 </td>
 </tr>
@@ -129,13 +128,13 @@ If your machine is unlicensed, or is missing engines, then check with your instr
 <br>**5) Run Workspace**
 <br>Click the FME Server button in the very top-left of the interface. This will return you to the Server interface home page.
 
-Click on the published workspace in the Favourite Workspace panel to open the web page for this workspace.
+Click on the published workspace in the Favorite Workspaces panel to open the web page for this workspace.
 
 The workspace page shows a few options, the first of which are for the repository, workspace, and service. These should already be filled in with values:
 
 ![](./Images/Img1.221.Ex2.RunWorkspaceDialog.png)
 
-Because this workspace has a few published parameters, they are also listed; but we can ignore these for now (we'll deal with source datasets and the like shortly). 
+Because this workspace has a few published parameters, they are also listed; but we can ignore these for now (we'll deal with source datasets and the like shortly).
 
 So, simply click the Run button to run the workspace. The workspace will run to completion and a message to that effect will appear:
 
@@ -147,14 +146,16 @@ So, simply click the Run button to run the workspace. The workspace will run to 
 
 ![](./Images/Img1.223.Ex2.JobsWindow.png)
 
-Notice some interesting points of the interface:
+Notice some interesting parts of the interface:
 
-1. There are links to show Completed jobs (the default), Queued Jobs, and Running Jobs.
-2. There is a drop-down list that allows you to filter whose jobs are being shown.
+1. There are tabs to show Completed jobs (the default), Queued Jobs, and Running Jobs.
+2. There is a drop-down list that allows you to filter whose jobs are being shown. And another that allows you to filter based on the Job Status.
 3. Jobs that are successful and which fail are differentiated using a different icon.
 4. The jobs are displayed in the chronological order in which they finished (whether successful or not).
 
-Click on your job to inspect the results in more detail. You will be able to see details about the job including the time at which it was submitted, queued, started, finished, and delivered; the exact request made to FME Server; and the full results of the translation. You may also click the View Log button to inspect the FME translation log file.
+Click on your job to inspect the results in more detail. You'll see a summary at the top showing the number of features written as well as the time it started and finished. There are more timing details under the *STATUS* drop-down that include the time the job was submitted, queued, etc. Information about the exact request made to FME Server can be found under *REQUEST DATA*. And full results of the translation are under *RESULT DATA*.
+
+You may also inspect the FME translation log file on this page.
 
 ---
 
@@ -202,7 +203,7 @@ If you want to see a job in a different state then we'll have to slow this works
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -220,8 +221,6 @@ By completing this exercise you have learned how to:
 <ul><li>Log in to FME Server and check that it is running and licensed</li>
 <li>Locate a workspace using the Last Published list</li>
 <li>Run a workspace and inspect the job history to confirm it ran correctly</li>
-<li>Find and upload resources to FME Server</li>
-<li>Check the parameters for cleanup tools</li></ul>
 </span>
 </td>
 </tr>
