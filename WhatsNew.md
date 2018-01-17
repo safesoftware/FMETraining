@@ -34,6 +34,7 @@ These changes are for the FME Desktop Basic Training Course.
 ### Data Transformation ###
 - Rewrote Structural Transformation to reinforce the nature of readers, writers, feature types
 - Rewrote sections about transformation to reinforce tabular as being distinct (not just attrs for spatial)
+- Added a table of different combinations and outcomes for coordinate system reprojection
 
 
 ### Workspace Design ###
