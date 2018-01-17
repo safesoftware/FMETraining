@@ -16,8 +16,8 @@ These changes are for the FMEData dataset that accompanies FME training
 These changes are for the FME Desktop Basic Training Course.
 
 ### General ###
-- FME version switched from 32-bit to 64-bit
-
+- FME version used for developing materials switched from 32-bit to 64-bit 
+	- We suggest all training is now undertaken on 64-bit FME
 
  
 ### Data Translation Basics ###
@@ -32,7 +32,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 4 (was 3) completely redesigned to be more relevant. Also introduces students to transformers
 
 ### Data Transformation ###
-- Rewrote Structural Transformation to reinforce the nature of Readers, Writers, feature types
+- Rewrote Structural Transformation to reinforce the nature of readers, writers, feature types
+- Rewrote sections about transformation to reinforce tabular as being distinct (not just attrs for spatial)
 
 
 ### Workspace Design ###
