@@ -8,7 +8,8 @@ These changes are for the FMEData dataset that accompanies FME training
 
 - Updated Community Map Geodatabase with new URLs for libraries (also extended field size)
 - Updated libraries with more numeric information such as book count, circulation, user visits.
-
+- Updated parks with more numeric information such as tree count and visitor count
+	- Removed excess attributes from parks (NSStreet, EWStreet)
 
 ---
 
@@ -38,7 +39,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Rewrote Structural Transformation to reinforce the nature of readers, writers, feature types
 - Rewrote sections about transformation to reinforce tabular as being distinct (not just attrs for spatial)
 - Added a table of different combinations and outcomes for coordinate system reprojection
-
+- Exercise 1: Switched step 2 (now rename feature type) and 3 (now update attribute definitions)
+- Exercise 1: Added change of data type for VisitorCount column (smallint to integer)
 
 ### Workspace Design ###
 - Changed Translation Components chapter to one on Workspace Design
