@@ -28,8 +28,11 @@ These changes are for the FME Desktop Basic Training Course.
 - Dropped the section on Translation Previews (new caching mode renders unnecessary)
 - Compressed Introduction to Data Inspector and Data Inspector Components into one section
 - Changed Miscellaneous DI functionality section to purely focus on background maps
+- Added sections on Reader/Writer parameters (moved here from the redesigned chapter 3)
 - Exercise 2 (was 1) changed output format from DWG to GeoJSON (to get filled polygons and attributes in DI)
-- Exercise 4 (was 3) completely redesigned to be more relevant. Also introduces students to transformers
+- Exercise 4 (was 3) completely redesigned to be more relevant. 
+	- Introduces students to transformers
+	- Includes reader/writer parameters
 
 ### Data Transformation ###
 - Rewrote Structural Transformation to reinforce the nature of readers, writers, feature types
