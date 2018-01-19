@@ -19,6 +19,7 @@ These changes are for the FME Desktop Basic Training Course.
 ### General ###
 - FME version used for developing materials switched from 32-bit to 64-bit 
 	- We suggest all training is now undertaken on 64-bit FME
+- All screenshots now use Curved rather than Straight connections
 
  
 ### Data Translation Basics ###
@@ -41,6 +42,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Added a table of different combinations and outcomes for coordinate system reprojection
 - Exercise 1: Switched step 2 (now rename feature type) and 3 (now update attribute definitions)
 - Exercise 1: Added change of data type for VisitorCount column (smallint to integer)
+- Exercise 2: Changed advanced task to be simply adding a bookmark to introduce Best Practice
 
 ### Workspace Design ###
 - Changed Translation Components chapter to one on Workspace Design
