@@ -4,7 +4,6 @@
 
 <!--Exercise Section-->
 
-
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
@@ -80,24 +79,20 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 <br>For the sake of simplicity - and because this course is about Server, not Desktop - we'll just use a couple of datasets. These are:
 
 <table style="border: 0px">
-
 <tr>
 <td style="font-weight: bold">Reader Format</td>
 <td style="">GML (Geography Markup Language)</td>
 </tr>
-
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
 <td style="">C:\FMEData2018\Data\Emergency\FireHalls.gml</td>
 </tr>
 
 <table style="border: 0px">
-
 <tr>
 <td style="font-weight: bold">Reader Format</td>
 <td style="">Google KML</td>
 </tr>
-
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
 <td style="">C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
@@ -105,7 +100,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 </table>
 
-So start the FME Data Inspector by selecting it from the Windows start menu. Inspect all of the source data to become familiar with it. The VancouverNeighborhoods has a different coordinate system than the other dataset so be careful and turn on a background map if you want to view all the data together.
+Start the FME Data Inspector by selecting it from the Windows start menu. Inspect all of the source data to become familiar with it. The VancouverNeighborhoods has a different coordinate system than the other dataset so be careful and turn on a background map if you want to view all the data together.
 
 The goal of our translation is to convert the Firehalls and Neighborhoods to a database, dividing the firehalls data up into a separate table per neighborhood.
 
@@ -151,7 +146,7 @@ Click OK to add the Reader to the workspace, which will now look like this:
 
 </table>
 
-While adding the dataset you'll be prompted which feature types (layers) to add to the workspace. The only one we need is called Neighborhoods:
+While adding the dataset, you'll be prompted which feature types (layers) to add to the workspace. The only one we need is called Neighborhoods:
 
 ![](./Images/Img1.201.Ex1.KMLFTSelection.png)
 
@@ -201,7 +196,7 @@ The workspace will now look like this:
 
 
 <br>**6) Add Clipper Transformer**
-<br>Add a Clipper transformer to the workspace. This will be used to divide the firehall data by neighborhood. Again, you can do this by simply clicking on the canvas and starting to type Clipper. 
+<br>Add a Clipper transformer to the workspace. This will be used to divide the firehall data by neighborhood. Again, you can do this by simply clicking on the canvas and starting to type Clipper.
 
 Connect the Firehalls feature type to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections:
 
@@ -211,7 +206,7 @@ Check the parameters for the Clipper transformer to ensure the Clipper Type is s
 
 Also put a check mark in the box labelled Merge Attributes, so that the neighborhood name is copied from the neighborhood features to the firehall features.
 
-Connect the Clipper:Inside port to the Firehalls feature type on the writer. Also make a connection from the Reprojected:Reprojected port to the Neighborhoods feature type:
+Connect the Clipper:Inside port to the Firehalls feature type on the writer. Also make a connection from the Reprojector:Reprojected port to the Neighborhoods feature type:
 
 ![](./Images/Img1.209.Ex1.WorkspaceAllConnected.png)
 
@@ -221,9 +216,7 @@ Connect the Clipper:Inside port to the Firehalls feature type on the writer. Als
 
 Inspect its parameters and under Feature Type Name either enter:
 
-<pre>
-FireHalls-@Value(NeighborhoodName)
-</pre>
+`FireHalls-@Value(NeighborhoodName)`
 
 ...or click the dropdown and use the text editor dialog to enter that value. This will cause firehalls in each different neighborhood to be written to a different table/layer.
 
@@ -231,7 +224,7 @@ Save the workspace.
 
 
 <br>**8) Run Workspace**
-<br>Here comes the Server part of the process. 
+<br>Here comes the Server part of the process.
 
 The first step, one which is very important, is to run the workspace. If the workspace won't run on FME Desktop then it is not likely to run on FME Server.
 
@@ -253,7 +246,7 @@ In the dialog that opens enter the parameters provided by your training instruct
 
 ![](./Images/Img1.212.Ex1.ServerConnection.png)
 
-You may or may not (probably not) need to enter a port number with the hostname, depending on how the system is set up. 
+You may or may not (probably not) need to enter a port number with the hostname, depending on how the system is set up.
 
 Click Authenticate to confirm the connection and return to the previous dialog. Make sure the newly defined connection is selected and click Next to continue.
 
@@ -287,7 +280,7 @@ After a workspace is transferred to Server, the log window displays a message re
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
