@@ -43,13 +43,14 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 1: Switched step 2 (now rename feature type) and 3 (now update attribute definitions)
 - Exercise 1: Added change of data type for VisitorCount column (smallint to integer)
 - Exercise 2: Changed advanced task to be simply adding a bookmark to introduce Best Practice
+- Exercise 7: Changed to use FeatureJoiner instead of FeatureMerger
 
 ### Workspace Design ###
 - Changed Translation Components chapter to one on Workspace Design
 
 
 ### Practical Transformer Use ###
-- xxxx
+- Changed Top 25 transformers to Top 30
 
 
 ### Best Practice ###
