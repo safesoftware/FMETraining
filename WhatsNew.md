@@ -51,6 +51,8 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### Practical Transformer Use ###
 - Changed Top 25 transformers to Top 30
+- Removed AttributeRenamer and AttributeCopier from list of transformers that can set values
+	- They can set values, but only in limited circumstances, not in general
 
 
 ### Best Practice ###
