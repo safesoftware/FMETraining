@@ -54,6 +54,8 @@ These changes are for the FME Desktop Basic Training Course.
 - Removed AttributeRenamer and AttributeCopier from list of transformers that can set values
 	- They can set values, but only in limited circumstances, not in general
 - New AttributeManager ability to cut/copy/paste/duplicate rows 
+- Mentioned new Union alias for the Junction transformer
+- Replaced FeatureMerger with the FeatureJoiner
 
 
 ### Best Practice ###
