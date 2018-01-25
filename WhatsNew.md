@@ -55,7 +55,9 @@ These changes are for the FME Desktop Basic Training Course.
 	- They can set values, but only in limited circumstances, not in general
 - New AttributeManager ability to cut/copy/paste/duplicate rows 
 - Mentioned new Union alias for the Junction transformer
-- Replaced FeatureMerger with the FeatureJoiner
+- Renamed Attribute Joins to Key-Based Joins (and Spatial Joins to Spatially Based Joins)
+- Added new FeatureJoiner to Key-Based Joins, keeping the FeatureMerger
+- Added the InlineQuerier to Key-Based Joins
 
 
 ### Best Practice ###
