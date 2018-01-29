@@ -61,8 +61,9 @@ These changes are for the FME Desktop Basic Training Course.
 
 
 ### Best Practice ###
-- Correctly numbered Best Practice as chapter 5
+- Correctly numbered Best Practice files as chapter 5
 - Moved parts of Best Practice relating to design to Workspace Design chapter
+- Changed "Bookmarks for Sectioning" to "Bookmarks for Design" and included Collapsible Bookmarks
 
 
 ### Course Wrap Up ###
