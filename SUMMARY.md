@@ -105,7 +105,7 @@
     * [Style](./DesktopBasic5BestPractice/5.01.Style.md)
     * [Annotating Workspaces](./DesktopBasic5BestPractice/5.02.AnnotatingWorkspaces.md)
     * [Bookmarks](./DesktopBasic5BestPractice/5.03.Bookmarks.md)
-    	* [Bookmarks for Sectioning](./DesktopBasic5BestPractice/5.04.BookmarksForSectioning.md)
+    	* [Bookmarks for Design](./DesktopBasic5BestPractice/5.04.BookmarksForDesign.md)
     	* [Bookmarks for Access](./DesktopBasic5BestPractice/5.05.BookmarksForAccess.md)
     	* [Bookmarks for Editing](./DesktopBasic5BestPractice/5.06.BookmarksForEditing.md)
     * [Object Layout](./DesktopBasic5BestPractice/5.07.ObjectLayout.md)
