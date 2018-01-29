@@ -63,7 +63,10 @@ These changes are for the FME Desktop Basic Training Course.
 ### Best Practice ###
 - Correctly numbered Best Practice files as chapter 5
 - Moved parts of Best Practice relating to design to Workspace Design chapter
+- Dropped Header Annotation, since it no longer exists
 - Changed "Bookmarks for Sectioning" to "Bookmarks for Design" and included Collapsible Bookmarks
+- Dropped Magnet icon, since it no longer exists
+- Dropped Ms Analyst question about types of annotation
 
 
 ### Course Wrap Up ###
