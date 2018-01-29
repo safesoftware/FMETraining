@@ -12,11 +12,13 @@ The training builds upon basic training to cover functionality that is important
 
 The full course is made up of five main sections. These sections are:
 
-- User Parameters
-- Performance
-- Custom Transformers
-- Advanced Reading/Writing
 - Advanced Attribute Handling
+- Advanced Workspace Design
+- Advanced Reading/Writing
+- Advanced Parameter Use
+- Custom Transformers
+
+
 
 ## Current Status ##
 
