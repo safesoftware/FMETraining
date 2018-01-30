@@ -68,6 +68,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Changed "Bookmarks for Sectioning" to "Bookmarks for Design" and included Collapsible Bookmarks
 - Removed references to Magnet icon, since it no longer exists
 - Removed Ms Analyst question about types of annotation
+- Methodology section now divided by Maintenance and Performance, rather than Transformers/Formats
 
 
 ### Course Wrap Up ###
