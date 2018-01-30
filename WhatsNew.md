@@ -69,6 +69,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Removed references to Magnet icon, since it no longer exists
 - Removed Ms Analyst question about types of annotation
 - Methodology section now divided by Maintenance and Performance, rather than Transformers/Formats
+- Rewrote methodology sections to cover more information in a better way
 
 
 ### Course Wrap Up ###
