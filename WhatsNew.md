@@ -72,6 +72,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Rewrote methodology sections to cover more information in a better way
 - Merged the sections on Logging (options) and Interpreting the Log
 - Dropped Timestamp interpretation (it's more of an advanced task)
+- Rewrote most of the debugging section to concentrate on best debugging methodologies
 
 
 ### Course Wrap Up ###
