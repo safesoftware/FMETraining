@@ -71,6 +71,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Methodology section now divided by Maintenance and Performance, rather than Transformers/Formats
 - Rewrote methodology sections to cover more information in a better way
 - Merged the sections on Logging (options) and Interpreting the Log
+- Dropped Timestamp interpretation (it's more of an advanced task)
 
 
 ### Course Wrap Up ###
