@@ -47,6 +47,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### Workspace Design ###
 - Changed Translation Components chapter to one on Workspace Design
+- Chopped section on Dev/Testing/Acceptance/Production - more advanced than is required
 
 
 ### Practical Transformer Use ###
