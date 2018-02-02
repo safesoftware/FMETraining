@@ -55,7 +55,7 @@
 	* [Reading and Writing Workflows](./DesktopBasic3WorkspaceDesign/3.04.ReadingWriting.md)
 		* [Multiple Readers and Writers](./DesktopBasic3WorkspaceDesign/3.05.AddReadersWriters.md)
 		* [FeatureReader and FeatureWriter](./DesktopBasic3WorkspaceDesign/3.06.FeatureReadersWriters.md)
-		* [No Readers or Writers](./DesktopBasic3WorkspaceDesign/3.07.NoReadersWriters.md)
+		* [Read/Write with Integration Transformers](./DesktopBasic3WorkspaceDesign/3.07.NoReadersWriters.md)
 	* [Integrated Inspection](./DesktopBasic3WorkspaceDesign/3.08.IntegratedInspection.md)
 	* [Partial Runs](./DesktopBasic3WorkspaceDesign/3.09.PartialRuns.md)
 	* [Module Review](./DesktopBasic3WorkspaceDesign/3.10.ModuleReview.md)
