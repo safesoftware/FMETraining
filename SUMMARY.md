@@ -61,7 +61,6 @@
 		* [Partial Runs](./DesktopBasic3WorkspaceDesign/3.10.PartialRuns.md)
 	* [Module Review](./DesktopBasic3WorkspaceDesign/3.11.ModuleReview.md)
 	* [Q+A Answers](./DesktopBasic3WorkspaceDesign/3.12.QuestionAnswers.md)
-	* [BETA: Visual Previews](./DesktopBasic3WorkspaceDesign/3.99.VisualPreviewsBETA.md)
 * [Practical Transformer Use](./DesktopBasic4Transformers/4.00.PracticalTransformerUse.md)
 	* [The Transformer Gallery](./DesktopBasic4Transformers/4.01.TransformerGallery.md)
 	* [Transformer Searching](./DesktopBasic4Transformers/4.02.TransformerSearching.md)
