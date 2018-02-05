@@ -46,9 +46,9 @@ These changes are for the FME Desktop Basic Training Course.
 - Exercise 7: Changed to use FeatureJoiner instead of FeatureMerger
 
 ### Workspace Design ###
+- Completely new chapter.
 - Changed Translation Components chapter to one on Workspace Design
 - Chopped section on Dev/Testing/Acceptance/Production - more advanced than is required
-
 
 ### Practical Transformer Use ###
 - Changed Top 25 transformers to Top 30
