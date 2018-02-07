@@ -49,6 +49,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Completely new chapter.
 - Changed Translation Components chapter to one on Workspace Design
 - Chopped section on Dev/Testing/Acceptance/Production - more advanced than is required
+- New exercises - generating Garbage Collection areas
 
 ### Practical Transformer Use ###
 - Changed Top 25 transformers to Top 30
