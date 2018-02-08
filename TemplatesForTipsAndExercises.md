@@ -128,6 +128,52 @@ This is a marker for a feature updated since the original release (eg .0 to .1)
 
 ---
 
+<!-- Table for creating multi-column lists for condensing white space-->
+## Table-formatted Bullet List ##
+
+**Two-Column**
+
+<table style="width: 100%;">
+<tr>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> AAAA</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> BBBB</td>
+</tr>
+<tr>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> CCCC</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> DDDD</td>
+</tr>
+<tr>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> EEEE</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> FFFF</td>
+</tr>
+<tr>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> GGGG</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> HHHH</td>
+</tr>
+</table>
+
+**Three-Column**
+
+<table style="width: 100%;">
+<tr>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> AAAA</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> BBBB</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> CCCC</td>
+</tr>
+<tr>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> DDDD</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> EEEE</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> FFFF</td>
+</tr>
+<tr>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> GGGG</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> HHHH</td>
+    <td style="border: 1px solid white; background-color:white; padding:2"><strong>&bull;</strong> IIII</td>
+</tr>
+</table>
+
+---
+
 <!--Person X Says Section-->
 
 <table style="border-spacing: 0px">
