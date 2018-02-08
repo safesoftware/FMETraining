@@ -321,15 +321,3 @@ For when a screenshot of a Data Inspector background map is used. Be sure to inc
 <br><span style="font-style:italic;font-size:x-small">Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC-BY-3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>.
 
 
-
-<!--Template for putting a bulleted list into two columns --> 
-<table>
-<tr>
-    <td style="border: 1px solid white; background-color:white">&bull; AutodeskA360Connector</td>
-    <td style="border: 1px solid white; background-color:white">&bull; OneDriveConnector</td>
-</tr>
-<tr>
-    <td style="border: 1px solid white; background-color:white">&bull; BoxConnector</td>
-    <td style="border: 1px solid white; background-color:white">&bull; PintrestConnector</td>
-</tr>
-</table>
