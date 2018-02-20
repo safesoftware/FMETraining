@@ -29,8 +29,8 @@ It is valid for **FME2018.0**
 The status of each chapter is:
 
 <<<<<<< HEAD
-- Chapter 0: Incomplete content. No exercises
-- Chapter 1: Content and exercises incomplete
+- Chapter 0: Complete. No exercises
+- Chapter 1: Content and exercises complete
 - Chapter 2: Content and exercises incomplete
 - Chapter 3: Content and exercises incomplete
 - Chapter 4: Content and exercises incomplete
