@@ -21,7 +21,7 @@
 	* [Exercise: Parks Dataset Sorting](./DesktopAdvanced1Attributes/1.Exercise4.md)
 	* [Module Review](./DesktopAdvanced1Attributes/1.09.ModuleReview.md)
 	* [Q+A Answers](./DesktopAdvanced1Attributes/1.10.QuestionAnswers.md)
-* [Performance Considerations](./DesktopAdvanced2WorkspaceDesign/2.00.PerformanceConsiderations.md)
+* [Advanced Workspace Design](./DesktopAdvanced2WorkspaceDesign/2.00.PerformanceConsiderations.md)
     * [Performance and FME](./DesktopAdvanced2WorkspaceDesign/2.01.PerformanceAndFME.md)
     * [64-Bit FME](./DesktopAdvanced2WorkspaceDesign/2.02.64bitFME.md)
     * [Logfile Interpretation](./DesktopAdvanced2WorkspaceDesign/2.03.LogFileInterpretation.md)
