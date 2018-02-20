@@ -1,6 +1,6 @@
 # Summary
 
-* [About This Document](https://github.com/safesoftware/FMETraining/blob/Desktop-Advanced-2017/DesktopAdvanced0Introduction/0.00.CourseIntroduction.md)
+* [About This Document](../Desktop-Advanced-2017/DesktopAdvanced0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./DesktopBasic0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./DesktopBasic0Introduction/0.02.CourseResources.md)
 * [Data Translation Basics](./DesktopBasic1Basics/1.00.DataTranslationBasics.md)
