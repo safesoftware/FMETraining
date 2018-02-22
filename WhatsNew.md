@@ -60,6 +60,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Renamed Attribute Joins to Key-Based Joins (and Spatial Joins to Spatially Based Joins)
 - Added new FeatureJoiner to Key-Based Joins, keeping the FeatureMerger
 - Added the InlineQuerier to Key-Based Joins
+- A new exercise to add interaction at the start of the chapter
 
 
 ### Best Practice ###
