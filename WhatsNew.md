@@ -61,6 +61,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Added new FeatureJoiner to Key-Based Joins, keeping the FeatureMerger
 - Added the InlineQuerier to Key-Based Joins
 - A new exercise to add interaction at the start of the chapter
+- Attribute Handling Exercise: Now uses Excel template (not XML)
 
 
 ### Best Practice ###
