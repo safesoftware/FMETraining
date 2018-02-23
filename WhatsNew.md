@@ -7,9 +7,11 @@ This file documents major changes made to training materials in 2018
 These changes are for the FMEData dataset that accompanies FME training
 
 - Updated Community Map Geodatabase with new URLs for libraries (also extended field size)
-- Updated libraries with more numeric information such as book count, circulation, user visits.
+- Updated libraries with more numeric information such as book count, circulation, user visits
 - Updated parks with more numeric information such as tree count and visitor count
+	- Data is randomly generated, not from an official source
 	- Removed excess attributes from parks (NSStreet, EWStreet)
+- Renamed Crime2011.csv to Crime.csv
 
 ---
 
@@ -62,6 +64,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Added the InlineQuerier to Key-Based Joins
 - A new exercise to add interaction at the start of the chapter
 - Attribute Handling Exercise: Now uses Excel template (not XML)
+	- Also uses FeatureJoiner not FeatureMerger
 
 
 ### Best Practice ###
