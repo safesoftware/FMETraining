@@ -96,6 +96,7 @@
     		* [Bookmarks for Design](./DesktopBasic5BestPractice/5.04.BookmarksForDesign.md)
 	    	* [Bookmarks for Access](./DesktopBasic5BestPractice/5.05.BookmarksForAccess.md)
 	    	* [Bookmarks for Editing](./DesktopBasic5BestPractice/5.06.BookmarksForEditing.md)
+	    	* [Bookmarks for Performance](./DesktopBasic5BestPractice/5.06a.BookmarksForPerformance.md)
 	    * [Object Layout](./DesktopBasic5BestPractice/5.07.ObjectLayout.md)
 	    * [Connection Styles](./DesktopBasic5BestPractice/5.08.ConnectionStyles.md)
 	    * [Exercise: The FME Style Guide](./DesktopBasic5BestPractice/5.Exercise1.md)

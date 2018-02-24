@@ -73,6 +73,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Dropped sections on Templates, Reusing items, Workspace searching
 - Removed references to Header Annotation, since it no longer exists
 - Changed "Bookmarks for Sectioning" to "Bookmarks for Design" and included Collapsible Bookmarks
+- Added a new section on Bookmarks for Performance (related to Feature Caching)
 - Removed references to Magnet icon, since it no longer exists
 - Removed Ms Analyst question about types of annotation
 - Methodology section now divided by Maintenance and Performance, rather than Transformers/Formats
