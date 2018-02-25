@@ -81,7 +81,7 @@ These changes are for the FME Desktop Basic Training Course.
 - Merged the sections on Logging (options) and Interpreting the Log
 - Dropped Timestamp interpretation (it's more of an advanced task)
 - Rewrote most of the debugging section to concentrate on best debugging methodologies
-- Exercise 1: Changed from Parks Maintenance example to Vancouver Walkability
+- Exercises 1-3: Changed to Vancouver Walkability study
 
 
 ### Course Wrap Up ###
