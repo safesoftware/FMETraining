@@ -4,10 +4,9 @@
 	* [Course Overview](./2018Upgrade0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./2018Upgrade0Introduction/0.02.CourseResources.md)
 * [FME2018 Overview](./2018Upgrade1Overview/1.00.2018Overview.md)
-* [Partial Run](./2018Upgrade2PartialRun/2.00.DataTransformation.md)
-    * [What is Data Transformation](./2018Upgrade2PartialRun/2.01.WhatIsDataTransformation.md)
-	    * [Structural Transformation](./2018Upgrade2PartialRun/2.02.StructuralTransformation.md)
-	    * [Schema Editing](./2018Upgrade2PartialRun/2.03.SchemaEditing.md)
+* [Data Caching](./2018Upgrade2PartialRun/2.00.DataCaching.md)
+    * [Partial Runs](./2018Upgrade2PartialRun/2.01.ReusingCachedData.md)
+	* [Exercise: Data Caching and Partial Runs](./2018Upgrade2PartialRun/2.Exercise1.md)
 
 ---
 
