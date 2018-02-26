@@ -3,9 +3,11 @@
 * [About This Document](./2018Upgrade0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./2018Upgrade0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./2018Upgrade0Introduction/0.02.CourseResources.md)
-* [FME2018 Overview](./2018Upgrade1Overview/1.00.2018Overview.md)
-* [Data Caching](./2018Upgrade2PartialRun/2.00.DataCaching.md)
-    * [Partial Runs](./2018Upgrade2PartialRun/2.01.ReusingCachedData.md)
+* [FME2018 Overview](./2018Upgrade1Overview/1.00.2018OverviewTitle.md)
+	* [New Features in 2018](./2018Upgrade1Overview/1.01.2018Overview.md)
+* [Feature Caching](./2018Upgrade2PartialRun/2.00.FeatureCaching.md)
+	* [Caching Features](./2018Upgrade2PartialRun/2.01.CachingFeatures.md)
+    * [Partial Runs](./2018Upgrade2PartialRun/2.02.ReusingCachedData.md)
 	* [Exercise: Data Caching and Partial Runs](./2018Upgrade2PartialRun/2.Exercise1.md)
 
 ---
