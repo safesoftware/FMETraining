@@ -54,7 +54,7 @@ These changes are for the FME Desktop Basic Training Course.
 - New exercises - generating Garbage Collection areas
 
 ### Practical Transformer Use ###
-- Changed Top 25 transformers to Top 30
+- Changed Top 25 transformers to Top 30. Switched table to two-columns reading top-bottom
 - Removed AttributeRenamer and AttributeCopier from list of transformers that can set values
 	- They can set values, but only in limited circumstances, not in general
 - New AttributeManager ability to cut/copy/paste/duplicate rows 

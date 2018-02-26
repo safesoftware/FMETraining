@@ -110,7 +110,7 @@ This is a marker for a feature new to this release
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">20xx.1 UPDATE</span>
 </td>
 </tr>
 
