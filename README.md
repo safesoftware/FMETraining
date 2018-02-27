@@ -4,7 +4,7 @@
 
 This manual is a training course for users upgrading to the 2018 version of Safe Software’s FME Desktop application.
 
-![](./DesktopBasic0Introduction/Images/Img0.0.FMEAboutScreen.png)
+![](./2018Upgrade0Introduction/Images/Img0.0.FMEAboutScreen.png)
 
 The training will introduce new concepts and terminology, and help students become familiar with methodology that has changed since the previous release. 
 
