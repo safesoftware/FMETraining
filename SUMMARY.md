@@ -24,6 +24,7 @@
 * [FeatureJoiner](./2018Upgrade6FeatureJoiner/6.00.FeatureJoinerTitle.md)
 	* [FeatureJoiner Modes](./2018Upgrade6FeatureJoiner/6.01.WhatIsTheFeatureJoiner.md)
 	* [Multiple Join Matches](./2018Upgrade6FeatureJoiner/6.02.MultipleJoinMatches.md)
+	* [Crime Analysis Project](./2018Upgrade6FeatureJoiner/6.Exercise1.md)
 * [Course Wrap-Up](./2018Upgrade7WrapUp/7.00.CourseWrapup.md)
 	* [Product Information and Resources](./2018Upgrade7WrapUp/7.01.ProductInfo.md)
 	* [Community Information and Resources](./2018Upgrade7WrapUp/7.02.CommunityInfo.md)
