@@ -32,4 +32,3 @@
 	* [Community Information and Resources](./2018Upgrade7WrapUp/7.02.CommunityInfo.md)
 	* [Feedback and Certificates](./2018Upgrade7WrapUp/7.03.CourseFeedback.md)
 	* [Thank You](./2018Upgrade7WrapUp/7.04.ThankYou.md)
-	* [Exercise: A Fun Challenge!](./2018Upgrade7WrapUp/7.05.Challenge.md)
