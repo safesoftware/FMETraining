@@ -17,7 +17,7 @@
 * [Tolerance and Precision](./2018Upgrade4Tolerance/4.00.ToleranceTitle.md)
 	* [Tolerance Parameters](./2018Upgrade4Tolerance/4.01.ToleranceParameter.md)
 	* [Tolerance Examples](./2018Upgrade4Tolerance/4.02.ToleranceExamples.md)
-	* [Tolerance and Data Cleaning](./2018Upgrade4Tolerance/4.Exercise1.md)
+	* [Exercise: Tolerance and Data Cleaning](./2018Upgrade4Tolerance/4.Exercise1.md)
 * [Microsoft Formats](./2018Upgrade5Microsoft/5.00.MicrosoftTitle.md)
 	* [Formats and Transformers](./2018Upgrade5Microsoft/5.01.FormatsAndTransformers.md)
 	* [Microsoft Word](./2018Upgrade5Microsoft/5.02.MicrosoftWord.md)
