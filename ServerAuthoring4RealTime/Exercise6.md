@@ -45,11 +45,11 @@
 
 As a technical analyst in the GIS department you deal with spatial data. Sometimes you need to process that data in real-time and sometimes that data can arrive in great quantities and at great speed.
 
-In one such case, the city has been given access to the monitoring systems of emergency services. That means the ability to access in real-time information about all emergency calls. 
+In one such case, the city has been given access to the monitoring systems of emergency services. That means the ability to access in real-time information about all emergency calls.
 
-*By emergency calls we mean the equivalent of 911 calls in North America, 999 in the UK, 112 in most of Europe, and 000 in Australia.* 
+*By emergency calls we mean the equivalent of 911 calls in North America, 999 in the UK, 112 in most of Europe, and 000 in Australia.*
 
-Of course, these calls can arrive at a tremendous rate, and at unknown intervals. If the city wishes to respond to any of these, and even if they wish to just record a history of the calls, you must implement a message streaming setup in FME Server. 
+Of course, these calls can arrive at a tremendous rate, and at unknown intervals. If the city wishes to respond to any of these, and even if they wish to just record a history of the calls, you must implement a message streaming setup in FME Server.
 
 ---
 
@@ -62,7 +62,7 @@ Open the workspace C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Begi
 
 ---
 
-Notice that the workspace generates a stream of events. A random number of events are generated, at random times, and at random locations. Additionally random severity and event type attributes are generated. 
+Notice that the workspace generates a stream of events. A random number of events are generated, at random times, and at random locations. Additionally random severity and event type attributes are generated.
 
 Each event is wrapped up into a JSON format message. All that we need to do is push that message out as a stream.
 
@@ -81,7 +81,7 @@ Each event is wrapped up into a JSON format message. All that we need to do is p
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This workspace is just generating "events". Those events could be lightning strikes, vehicle locations, traffic accidents, or even UFO sightings! For this exercise, we'll pretend they are emergency phone calls. In real life you would be connecting to an existing stream of data, and wouldn't need to generate one in this way. 
+This workspace is just generating "events". Those events could be lightning strikes, vehicle locations, traffic accidents, or even UFO sightings! For this exercise, we'll pretend they are emergency phone calls. In real life you would be connecting to an existing stream of data, and wouldn't need to generate one in this way.
 </span>
 </td>
 </tr>
@@ -95,21 +95,22 @@ This workspace is just generating "events". Those events could be lightning stri
 <table>
 <tr><td>WebSocket Server URL</td><td>ws://localhost:7078</td></tr>
 <tr><td>Verify SSL Certificates</td><td>No</td></tr>
-<tr><td>Connection Preamble</td><td>
-<pre>
+<tr><td>Connection Preamble</td>
+<td>
+```
 {
     ws_op: "open",
     ws_stream_id: "EmergencyEvents"
 }
-</pre>
+```
 </td></tr>
 <tr><td>Data To Transmit</td><td>
-<pre>
+```
 {
     ws_op: 'send',
     ws_msg: '@Value(EventMessage)'
 }
-</pre>
+```
 </td></tr>
 
 </table>
@@ -118,7 +119,7 @@ As you can see, these parameters open a WebSocket connection (to an EmergencyEve
 
 
 <br>**3) Create Workspace**
-<br>Now we have the ability to generate a stream of data we will create the workspace that is to process the data. Start Workbench and begin with a blank canvas (don't close the stream generator workspace, as we'll need that as well in a moment). 
+<br>Now we have the ability to generate a stream of data we will create the workspace that is to process the data. Start Workbench and begin with a blank canvas (don't close the stream generator workspace, as we'll need that as well in a moment).
 
 In the blank canvas add a Creator transformer and follow it with a WebSocketReceiver. Inspect the WebSocketReceiver transformer parameters and set them as follows:
 
@@ -126,12 +127,12 @@ In the blank canvas add a Creator transformer and follow it with a WebSocketRece
 <tr><td>WebSocket Server URL</td><td>ws://localhost:7078</td></tr>
 <tr><td>Verify SSL Certificates</td><td>No</td></tr>
 <tr><td>Connection Preamble</td><td>
-<pre>
+```
 {
     ws_op: "open",
     ws_stream_id: "EmergencyEvents"
 }
-</pre>
+```
 </td></tr>
 <tr><td>Output Attribute</td><td>IncomingMessage</td></tr>
 
@@ -141,7 +142,7 @@ Save the changes and add a Logger transformer after the WebSocketReceiver.
 
 
 <br>**4) Publish Workspaces**
-<br>Let's test what we have by publishing the workspaces and running them on FME Server. 
+<br>Let's test what we have by publishing the workspaces and running them on FME Server.
 
 Publish each workspace in turn. In both cases simply register it with the Job Submitter service. There are no datasets or other parameters we need worry about.
 
@@ -175,10 +176,10 @@ Click on the processing workspace job and check the log. You should see messages
 |===========================================================================
 INFORM|WebSocketReceiver_Output: Feature is:
 INFORM|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-INFORM|Feature Type: `WebSocketReceiver_Output_LOGGED'
-INFORM|Attribute(encoded: utf-8): `IncomingMessage' has value `{ "EventID" : 6.....
-INFORM|Attribute(string)        : `fme_geometry' has value `fme_undefined'
-INFORM|Attribute(encoded: utf-8): `fme_type' has value `fme_no_geom'
+INFORM|Feature Type: 'WebSocketReceiver_Output_LOGGED'
+INFORM|Attribute(encoded: utf-8): 'IncomingMessage' has value '{ "EventID" : 6.....
+INFORM|Attribute(string)        : 'fme_geometry' has value 'fme_undefined'
+INFORM|Attribute(encoded: utf-8): 'fme_type' has value 'fme_no_geom'
 INFORM|Geometry Type: Unknown (0)
 </pre>
 
@@ -208,7 +209,7 @@ You've proved that you can create a workspace to process a message stream, which
 ---
 
 <br>**7) Add JSONFlattener**
-<br>The first thing to do with incoming messages is to extract information as attributes. Because the incoming data is JSON format, add a JSONFlattener transformer to the processing workspace, after the WebSocketReceiver. 
+<br>The first thing to do with incoming messages is to extract information as attributes. Because the incoming data is JSON format, add a JSONFlattener transformer to the processing workspace, after the WebSocketReceiver.
 
 Inspect the JSONFlattener's parameters and set the attribute IncomingMessage as the JSON Document to process.
 
@@ -254,10 +255,10 @@ Firstly we need the transit station data, so select Readers &gt; Add Reader and 
 </table>
 
 When prompted (or in the parameters dialog) ensure that only the TransitStations table is selected.
-  
+
 
 <br>**10) Filter Data**
-<br>Now let's filter the emergencies. 
+<br>Now let's filter the emergencies.
 
 First, add a Bufferer transformer to the TransitStation feature type and buffer the features by 200 metres.
 
@@ -271,7 +272,7 @@ So, inspect the PointOnAreaOverlayer parameters and set Areas First to Yes:
 
 ![](./Images/Img4.458.Ex6.PointOnAreaParameters.png)
 
-This tells the transformer that all area features (buffered stations) will be first to arrive, therefore any point features (message locations) can be processed immediately. 
+This tells the transformer that all area features (buffered stations) will be first to arrive, therefore any point features (message locations) can be processed immediately.
 
 However, we have to ensure that the transit features will arrive first. Therefore inspect the transformer parameters for the Creator transformer and set Create at End to Yes:
 
@@ -287,7 +288,7 @@ Note that, if there were other parameters (for example the transit team were onl
 
 
 <br>**11) Publish Workspaces**
-<br>Now publish the two workspaces again (you may or may not have to upload the TransitStation Geodatabase along with the workspace) and run them using the same process as before, but leave it for a few minutes longer, as it may take a while for one of the random events to fall inside a transit station buffer. 
+<br>Now publish the two workspaces again (you may or may not have to upload the TransitStation Geodatabase along with the workspace) and run them using the same process as before, but leave it for a few minutes longer, as it may take a while for one of the random events to fall inside a transit station buffer.
 
 Once stopped, check the logs and you should see that messages falling within 200 metres of a transit station are logged (with a different header).
 
@@ -360,7 +361,7 @@ If you publish and run the workspace (you may need to set the SpatiaLite databas
 
 
 <br>**13) Create Notification**
-<br>One last task (I promise). The filtered messages are important to the transit team, but at the moment they are going nowhere. We should set up a way to inform them. 
+<br>One last task (I promise). The filtered messages are important to the transit team, but at the moment they are going nowhere. We should set up a way to inform them.
 
 We could add another messaging transformer, such as the WebSocketSender, JMSSender, SQSSender, or even a Tweeter. That would make the processing workspace a "pure" messaging workspace.
 
@@ -375,7 +376,7 @@ Create a new Topic called EmergencyTransitMessages:
 Now create a new notification Subscription tied to that topic. There are various protocols we could realistically use for sending a message (email springs to mind) but for the purposes of this exercise use the Logger protocol. Set the Log Level parameter to High:
 
 ![](./Images/Img4.464.Ex6.NotificationNewSubscription.png)
- 
+
 
 <br>**14) Add FMEServerNotifier Transformer**
 <br>Back in the processing workspace in Workbench, remove any Logger transformers at the end of the workspace. Add an FMEServerNotifier transformer connected to the Tester:Passed port:
@@ -388,15 +389,15 @@ Inspect the transformer parameters and set it up to send a message to the Emerge
 <br>**15) Publish and Run Workspaces**
 <br>Re-publish and set the workspaces running again. Navigate to the Notifications page and click on the Topics tab. Enable Topic Monitoring to watch the EmergencyTransitMessages topic for incoming notifications.
 
-In a short while you will start to see emergency messages like this: 
+In a short while you will start to see emergency messages like this:
 
 ![](./Images/Img4.466.Ex6.TopicMonitoringResults.png)
 
 Visit Resources &gt; Logs &gt; core &gt; current &gt; subscribers &gt; logger.log to find the results as recorded by the Logger protocol notification.
- 
+
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

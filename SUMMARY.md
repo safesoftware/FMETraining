@@ -89,7 +89,7 @@
    * [Troubleshooting for Administrators](ServerAuthoring5Projects/5.06.TroubleshootingForAdministrators.md)
    * [Module Review](ServerAuthoring5Projects/5.07.ModuleReview.md)
    * [Q+A Answers](ServerAuthoring5Projects/5.08.QuestionAnswers.md)
-* [Self-Serve and Parameters](ServerAuthoring5SelfServeParameters/5.00.SelfServe1.md)
+* [Self-Serve and Parameters](ServerAuthoring5SelfServeParameters/5.00.SelfServe2.md)
    * [Self-Serve and Parameters](ServerAuthoring5SelfServeParameters/5.01.SelfServeParameters.md)
    * [Published Parameters](ServerAuthoring5SelfServeParameters/5.02.PublishedParameters.md)
    * [Key Parameter Types](ServerAuthoring5SelfServeParameters/5.03.KeyParameterTypes.md)
