@@ -43,6 +43,7 @@
     * [Exercise: Cell Phone Signal Processing - Read/Write Performance](./DesktopAdvanced2WorkspaceDesign/2.Exercise2.md)
     * [Exercise: Cell Phone Signal Processing - Transformation Performance](./DesktopAdvanced2WorkspaceDesign/2.Exercise3.md)
     * [Exercise: Garbage Collection Day Project](./DesktopAdvanced2WorkspaceDesign/2.Exercise4.md)
+    * [Batch Processing](./DesktopAdvanced2WorkspaceDesign/2.29.BatchProcessing.md)
     * [Parallel Processing](./DesktopAdvanced2WorkspaceDesign/2.25.ParallelProcessing.md)
     * [Exercise: Performance Review Project](./DesktopAdvanced2WorkspaceDesign/2.Exercise5.md)
     * [Server and Cloud Performance](./DesktopAdvanced2WorkspaceDesign/2.26.FMEServerFMECloud.md)
