@@ -41,6 +41,7 @@ These changes are for the FME Desktop Advanced Training Course.
     + Exercise 2: Interpreting the log file and rejection codes
     + Exercise 3: Raster handling and workspace optimization
 - Added bookmarks to Exercises 4-5 to keep consistent with chapter
+    + Exercise 4: Added tip about collapsing bookmarks and then deleting to remove all
 - Added batch processing section using the WorkspaceRunner and Batch Deploy
 
 
