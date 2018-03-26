@@ -25,7 +25,7 @@
     * [Feature Caching](./DesktopAdvanced2WorkspaceDesign/2.01.FeatureCaching.md)
     * [Bookmarks](./DesktopAdvanced2WorkspaceDesign/2.02.Bookmarks.md)
     * [Partial Runs](./DesktopAdvanced2WorkspaceDesign/2.03.PartialRuns.md)
-     [Exercise: Public Art in Parks - Feature Caching](./DesktopAdvanced2WorkspaceDesign/2.Exercise1.md)
+    * [Exercise: Public Art in Parks - Feature Caching](./DesktopAdvanced2WorkspaceDesign/2.Exercise1.md)
     * [Logfile Interpretation](./DesktopAdvanced2WorkspaceDesign/2.04.LogFileInterpretation.md)
 	    * [Logfile Command Section](./DesktopAdvanced2WorkspaceDesign/2.05.LogCommandLineSection.md)
 	    * [Logfile Configuration and Setup Section](./DesktopAdvanced2WorkspaceDesign/2.06.LogConfigAndSetupSection.md)
