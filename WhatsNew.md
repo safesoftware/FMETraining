@@ -15,12 +15,12 @@ These changes are for the FMEData dataset that accompanies FME training
 These changes are for the FME Desktop Advanced Training Course.
 
 ### General ###
-- All screenshots now used Cureved rather than Straight connections
+- All screenshots now used Curved rather than Straight connections
 - Chapter reordering
 
 ### Advanced Attribute Handling ###
 - Moved from Chapter 4 to Chapter 1
-- Updated screenshots to reflect changes to Function changes in Text and Arithemetic editors
+- Updated screenshots to reflect changes to Function changes in Text and Arithmetic editors
 
 
 ### Advanced Workspace Design ###
@@ -35,12 +35,14 @@ These changes are for the FME Desktop Advanced Training Course.
     + Condensed Transformer Performance section into one section
     + Condensed Reading/Writing databases into one section called Optimizing Databases
     + Moved Server and Cloud Performance before Parallel Processing
-- Exercises 1-3 changed to reflect changes in performance, continous scenario
-    + Batch reading geotiffs, raster clipping, remove raster no data, writing out to geotiff. 
+- Exercises 1-3 changed to reflect changes in performance, continuous scenario
+    + Batch reading GeoTIFFs, raster clipping, remove raster no data, writing out to GeoTIFF. 
     + Exercise 1: Workspace design to introduce feature caching and bookmarks
     + Exercise 2: Interpreting the log file and rejection codes
     + Exercise 3: Raster handling and workspace optimization
+- Added bookmarks to Exercises 4-5 to keep consistent with chapter
 - Added batch processing section using the WorkspaceRunner and Batch Deploy
+
 
 
 ### Advanced Reading/Writing ###
