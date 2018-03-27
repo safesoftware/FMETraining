@@ -47,7 +47,10 @@ These changes are for the FME Desktop Advanced Training Course.
 
 
 ### Advanced Reading/Writing ###
--
+- Expanded connection type list for Web-Based Datasets
+- Changed example from Google Drive to AutoCAD A360 connection
+- Condensed Generic Reader/Writer into one section (more of a server topic)
+- Exercise 1 changed to combine fanouts and generic reading/writing. 
 
 ### User Parameters ###
 -
