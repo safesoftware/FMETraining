@@ -52,7 +52,7 @@
 * [Advanced Readers and Writers](./DesktopAdvanced3AdvancedR+W/3.00.AdvancedReadWrite.md)
 	* [Writing Zip Files](./DesktopAdvanced3AdvancedR+W/3.01.ZipFileHandling.md)
 	* [Web-Based Datasets](./DesktopAdvanced3AdvancedR+W/3.02.WebBasedDatasets.md)
-   * [Exercise: Web Based Connections](./DesktopAdvanced3AdvancedR+W/3.Exercise6.md) 
+    * [Exercise: Web Based Connections](./DesktopAdvanced3AdvancedR+W/3.Exercise6.md) 
 	* [Fanouts](./DesktopAdvanced3AdvancedR+W/3.03.Fanouts.md)
 		* [Feature Type Fanouts](./DesktopAdvanced3AdvancedR+W/3.04.FeatureTypeFanout.md)
 		* [Dataset Fanouts](./DesktopAdvanced3AdvancedR+W/3.05.DatasetFanout.md)
