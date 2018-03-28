@@ -1,4 +1,7 @@
+[comment]: <>  (we use the term projects to talk about workspaces, although it is a project it seems like Project should be a reserved term)
+
 <!--Exercise Section-->
+
 
 <table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
 <tr>
@@ -40,7 +43,7 @@
 
 ---
 
-For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. 
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city.
 
 You have already (Exercises 1, 2, and 3) created a workspace to carry out a translation, published it to FME Server, ran it to confirm it works, shared the repository, and set the workspace to run on a schedule.
 
@@ -93,7 +96,7 @@ You can turn off the layer of VotingDivisions. All we are interested in for this
 
 
 <br>**2) Create Workspace**
-<br>Open the starting workspace listed above. 
+<br>Open the starting workspace listed above.
 
 You might notice that it's a copy of our previous project, since the requirements for this workspace are so similar. If you do choose to just carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
 
@@ -165,7 +168,7 @@ Save the workspace. As already mentioned, make sure it has a different name to t
 <br>**7) Publish to Server**
 <br>Publish the workspace to FME Server. This time you can simply choose the previously created FME Server connection, rather than having to enter parameters all over again.
 
-For the repository select the previously created Training repository and enter a name for the workspace if it doesn't already have one. 
+For the repository select the previously created Training repository and enter a name for the workspace if it doesn't already have one.
 
 This time, instead of simply checking the box to upload all the data files, click the Select Files button:
 
@@ -221,13 +224,13 @@ Select both the files NewElectionVoting.gml and ElectionVoting.xsd and click Ope
 
 The file needs to exist, but it doesn't need to be selected. Now click OK and then click the Run button.
 
-The workspace will now run to completion using the uploaded dataset. 
+The workspace will now run to completion using the uploaded dataset.
 
-However - and this is the important part - this was only a temporary upload. The workspace can be re-run immediately and the data will still appear in the temporary upload section, but it is not a permanent solution. The data is likely to be cleaned up automatically within 24 hours. 
+However - and this is the important part - this was only a temporary upload. The workspace can be re-run immediately and the data will still appear in the temporary upload section, but it is not a permanent solution. The data is likely to be cleaned up automatically within 24 hours.
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
