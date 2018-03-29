@@ -58,7 +58,8 @@ These changes are for the FME Desktop Advanced Training Course.
 
 
 ### User Parameters ###
--
+- Changed wording from Add Parameter to Create User Parameter
+- Updated screenshots to reflect new attributes in Parks.tab
 
 ### Custom Transformers ###
 -
