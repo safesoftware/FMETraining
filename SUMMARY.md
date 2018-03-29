@@ -57,8 +57,6 @@
 		* [Feature Type Fanouts](./DesktopAdvanced3AdvancedR+W/3.04.FeatureTypeFanout.md)
 		* [Dataset Fanouts](./DesktopAdvanced3AdvancedR+W/3.05.DatasetFanout.md)
 	* [Generic Reader and Writer](./DesktopAdvanced3AdvancedR+W/3.06.GenericReadWrite.md)
-		* [Generic Reader](./DesktopAdvanced3AdvancedR+W/3.07.GenericReader.md)
-		* [Generic Writer](./DesktopAdvanced3AdvancedR+W/3.08.GenericWriter.md)
 	* [Exercise: Community Map Translation](./DesktopAdvanced3AdvancedR+W/3.Exercise2.md)
 	* [Dynamic Translations](./DesktopAdvanced3AdvancedR+W/3.09.DynamicTranslations.md)
 	* [Creating Dynamic Translations](./DesktopAdvanced3AdvancedR+W/3.10.CreatingDynamicTranslations.md)
