@@ -3,6 +3,7 @@
 * [About This Document](./DesktopAdvanced0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./DesktopAdvanced0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./DesktopAdvanced0Introduction/0.02.CourseResources.md)
+    * [Exercise: Basic FME Skills Review](./DesktopAdvanced0Introduction/0.Exercise1.md)
 * [Advanced Attribute Handling](./DesktopAdvanced1Attributes/1.00.AdvancedAttributes.md)
 	* [Constructing Values](./DesktopAdvanced1Attributes/1.01.ConstructingValues.md)
 	* [Editor Dialogs](./DesktopAdvanced1Attributes/1.02.EditorDialogs.md)
