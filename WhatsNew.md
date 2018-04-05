@@ -17,10 +17,12 @@ These changes are for the FME Desktop Advanced Training Course.
 ### General ###
 - All screenshots now used Curved rather than Straight connections
 - Chapter reordering
+- New Review Desktop Basic exercise in the Course Introduction
 
 ### Advanced Attribute Handling ###
 - Moved from Chapter 4 to Chapter 1
 - Updated screenshots to reflect changes to Function changes in Text and Arithmetic editors
+- Advanced exercise at the end of Exercise 4
 
 
 ### Advanced Workspace Design ###
@@ -60,9 +62,13 @@ These changes are for the FME Desktop Advanced Training Course.
 ### User Parameters ###
 - Changed wording from Add Parameter to Create User Parameter
 - Updated screenshots to reflect new attributes in Parks.tab
+- Exercise 2: Advanced workspace updated to include the use of bookmarks
 
 ### Custom Transformers ###
--
+- Exercise 1-3: Screenshots and text now refer to the year when talking about each ExpressionEvaluator
+- Exercise 4: New tip on how to display transformer version
+- Exercise 5: Changed exercise to reflect 64-bit parallel processing
+- Exercise 6: New looping in a custom transformer exercise 
 
 
 

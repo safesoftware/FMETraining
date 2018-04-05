@@ -28,16 +28,16 @@ It is valid for **FME2018.0**
 
 The status of each chapter is:
 
-- Chapter 0: Complete. No exercises
-- Chapter 1: Content and exercises incomplete
-- Chapter 2: Content and exercises incomplete
-- Chapter 3: Content and exercises incomplete
-- Chapter 4: Content and exercises incomplete
-- Chapter 5: Content and exercises incomplete
-- Chapter 6: Incomplete content. No exercises
+- Chapter 0: Content and exercise complete
+- Chapter 1: Content and exercises complete
+- Chapter 2: Content and exercises complete
+- Chapter 3: Content and exercises complete
+- Chapter 4: Content and exercises complete
+- Chapter 5: Content and exercises complete
+- Chapter 6: Complete content. No exercises
 - Slides: Incomplete
-- FMEData: Incomplete
-- Course Outline: Incomplete
+- FMEData: Complete
+- Course Outline: Complete
 
 
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
