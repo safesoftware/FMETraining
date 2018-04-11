@@ -11,7 +11,7 @@
 	    * [Window Control in Workbench](./DesktopBasic1Basics/1.04.WindowControl.md)
 	    * [Creating a Translation](./DesktopBasic1Basics/1.05.CreatingATranslation.md)
     	* [The New Workspace](./DesktopBasic1Basics/1.06.TheNewWorkspace.md)
-    	* [Running a Translation](./DesktopBasic1Basics/1.07.RunningTheWorkspace.md)
+    	* [Running a Workspace](./DesktopBasic1Basics/1.07.RunningTheWorkspace.md)
     	* [Exercise: Basic Workspace Creation](./DesktopBasic1Basics/1.Exercise2.md)
     * [Data Inspection](./DesktopBasic1Basics/1.08.WhatIsDataInspection.md)
 	    * [Introduction to FME Data Inspector](./DesktopBasic1Basics/1.09.IntroductionToDataInspector.md)
