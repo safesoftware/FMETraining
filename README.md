@@ -20,7 +20,7 @@ The full course is made up of five main sections. These sections are:
  
 ## Current Status ##
 
-The current status of this manual is: **COMPLETE**: this manual can be used for training, subject to minor, last-minute fixes and creation of slides.
+The current status of this manual is: **COMPLETE**: this manual can be used for training.
 
 This manual applies to **FME2018.0**
 
@@ -33,7 +33,7 @@ The status of each chapter is:
 - Chapter 4: Complete content and exercises
 - Chapter 5: Complete content and exercises
 - Chapter 6: Complete content. No exercises
-- Slides: Incomplete
+- Slides: Complete
 - FMEData: Complete
 - Course Outline: Complete
 
