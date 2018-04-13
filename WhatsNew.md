@@ -25,6 +25,7 @@ These changes are for the FME Desktop Advanced Training Course.
 ### Advanced Attribute Handling ###
 - Moved from Chapter 4 to Chapter 1
 - Updated screenshots to reflect changes to Function changes in Text and Arithmetic editors
+- Added a small paragraph about null values in key/attribute joins
 - Advanced exercise at the end of Exercise 4
 
 ### Advanced Workspace Design ###
