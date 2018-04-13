@@ -5,9 +5,12 @@ This file documents major changes made to training materials in 2018
 
 ## FMEData ##
 These changes are for the FMEData dataset that accompanies FME training
-
--
-
+- Updated Community Map Geodatabase with new URLs for libraries (also extended field size)
+- Updated libraries with more numeric information such as book count, circulation, user visits
+- Updated parks with more numeric information such as tree count and visitor count
+    + Data is randomly generated, not from an official source
+    + Removed excess attributes from parks (NSStreet, EWStreet)
+- Renamed Crime2011.csv to Crime.csv
 
 ---
 
@@ -23,7 +26,6 @@ These changes are for the FME Desktop Advanced Training Course.
 - Moved from Chapter 4 to Chapter 1
 - Updated screenshots to reflect changes to Function changes in Text and Arithmetic editors
 - Advanced exercise at the end of Exercise 4
-
 
 ### Advanced Workspace Design ###
 - Renamed from Performance to Advanced Workspace Design
@@ -46,8 +48,6 @@ These changes are for the FME Desktop Advanced Training Course.
     + Exercise 4: Added tip about collapsing bookmarks and then deleting to remove all
 - Added batch processing section using the WorkspaceRunner and Batch Deploy
 
-
-
 ### Advanced Reading/Writing ###
 - Expanded connection type list for Web-Based Datasets
 - Changed example from Google Drive to AutoCAD A360 connection 
@@ -58,10 +58,10 @@ These changes are for the FME Desktop Advanced Training Course.
 - Exercise 2: create a .zip file as an output
 - Exercise 3-5: Update screenshots for bookmarks being added when generating a workspace
 
-
 ### User Parameters ###
 - Changed wording from Add Parameter to Create User Parameter
 - Updated screenshots to reflect new attributes in Parks.tab
+- Exercise 1: UserCompanyName parameter set in the ParameterFetcher, a new BuildNumber parameter added for FME_BUILD_NUM
 - Exercise 2: Advanced workspace updated to include the use of bookmarks
 
 ### Custom Transformers ###
@@ -70,13 +70,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Exercise 5: Changed exercise to reflect 64-bit parallel processing
 - Exercise 6: New looping in a custom transformer exercise 
 
-
-
-
-
-
 -
-
 
 ### Course Wrap Up ###
--
+- Updated screenshots of safe.com 

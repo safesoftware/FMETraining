@@ -18,8 +18,6 @@ The full course is made up of five main sections. These sections are:
 - Advanced Parameter Use
 - Custom Transformers
 
-
-
 ## Current Status ##
 
 The current status of this manual is: **INCOMPLETE**: this manual should **NOT** be used for training
