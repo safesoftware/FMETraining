@@ -59,7 +59,7 @@ In this step we'll give the end-user control over the transformation stages.
 <br>**2) Create User Parameter**
 <br>If you look at the parameters for the RasterResampler transformer you'll see parameters for X Cell Spacing and Y Cell Spacing. We should let the end user choose what spacing they want.
 
-So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter: 
+So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Create User Parameter:
 
 ![](./Images/Img2.205.Ex2.CreateParameter.png)
 
@@ -82,7 +82,7 @@ Click OK to close the dialog.
 
 
 <br>**3) Apply User Parameter**
-<br>Currently we've created a user parameter, but not applied it to anywhere. 
+<br>Currently we've created a user parameter, but not applied it to anywhere.
 
 Inspect the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing
 
@@ -134,17 +134,17 @@ Click OK to close the dialog. If you press the run button now - with the prompt 
 
 
 <br>**6) Publish and Run Workspace**
-<br>Now publish the workspace to FME Server again. As before, register it with the Data Download service. 
+<br>Now publish the workspace to FME Server again. As before, register it with the Data Download service.
 
 Locate the workspace through the FME Server web interface and run it. This time you will be prompted to set the cell size and compression.
 
 ![](./Images/Img2.210.Ex2.RunWorkspace.png)
 
 Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect. The size of the output file is a good indicator that the process is working correctly.
- 
+
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -166,6 +166,3 @@ By completing this exercise you have learned how to:
 </td>
 </tr>
 </table>   
-
-
-

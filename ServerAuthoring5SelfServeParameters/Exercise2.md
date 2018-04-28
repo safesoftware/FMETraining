@@ -73,7 +73,7 @@ In this step we'll give the end-user control over format and coordinate system.
 
 <tr>
 <td style="font-weight: bold">Writer Parameters</td>
-<td style="">Output Format: JPEG (Joint Photographic Experts Group)<br>MIME Type: img/jpeg</td>
+<td style="">Output Format: JPEG (Joint Photographic Experts Group)<br>MIME Type: image/jpeg</td>
 </tr>
 
 <tr>
@@ -119,7 +119,7 @@ This will open a list of FME-supported formats. Choose a few simple raster forma
 
 ---
 
-<!--Warning Section--> 
+<!--Warning Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -158,7 +158,7 @@ When prompted select the OutputFormat parameter that we just created:
 
 The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it any more and, since it is used nowhere else, will remove it.
 
-***NB:** If you didn't set a default value for the OutputFormat user parameter, then the Generic writer parameter will turn red (flagged as incomplete). This is nothing to worry about. It will be set at runtime.* 
+***NB:** If you didn't set a default value for the OutputFormat user parameter, then the Generic writer parameter will turn red (flagged as incomplete). This is nothing to worry about. It will be set at runtime.*
 
 
 <br>**6) Create User Parameter**
@@ -174,7 +174,7 @@ Set the parameter values as follows:
 <tr><td style="font-weight: bold">Prompt</td><td>Select the Output Coordinate System</td></tr>
 </table>
 
-For the configuration field, click the [...] browse button. In the dialog that opens, click on Import &gt; Coordinate System(s). This opens a list of FME coordinate systems. Choose a few simple systems that will apply to this part of Canada, such as LL84, BCALB-83, and UTM83-10. 
+For the configuration field, click the [...] browse button. In the dialog that opens, click on Import &gt; Coordinate System(s). This opens a list of FME coordinate systems. Choose a few simple systems that will apply to this part of Canada, such as LL84, BCALB-83, and UTM83-10.
 
 Click OK to close the dialog and return to the previous one:
 
@@ -205,7 +205,7 @@ If you don't do that, then the Data Download will consist of the output of the J
 Once published locate the workspace in the FME Server web interface and run it.
 
 Choose different options for output format and coordinate system to see what happens in the output.
- 
+
 ---
 
 <!--Person X Says Section-->
@@ -233,7 +233,7 @@ Right now I imagine you have some questions!
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
