@@ -109,6 +109,6 @@
 * [**Course Wrap-Up**](ServerAuthoring7WrapUp/7.00.CourseWrapup.md)
    * [Product Information and Resources](ServerAuthoring7WrapUp/7.01.ProductInfo.md)
    * [Community Information and Resources](ServerAuthoring7WrapUp/7.02.CommunityInfo.md)
-   * [Course Feedback](ServerAuthoring6WrapUp/7.03.CourseFeedback.md)
-   * [Thank You](ServerAuthoring6WrapUp/7.04.ThankYou.md)
+   * [Course Feedback](ServerAuthoring7WrapUp/7.03.CourseFeedback.md)
+   * [Thank You](ServerAuthoring7WrapUp/7.04.ThankYou.md)
    * [Exercise: A Fun Challenge!](ServerAuthoring7WrapUp/7.05.Challenge.md)
