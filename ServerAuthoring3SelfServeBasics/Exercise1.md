@@ -45,11 +45,11 @@
 
 As a technical analyst in the GIS department of your local city you have plenty of experience using FME Desktop, and are just getting started with FME Server.
 
-Other departments frequently ask the GIS team for orthophoto imagery of the city. Their format of choice is usually JPEG. Currently you use FME Desktop to translate the data, adding to your workspace any special requests they have such as a particular resolution, a specific area of interest, or even sets of vector data stamped onto the raster. 
+Other departments frequently ask the GIS team for orthophoto imagery of the city. Their format of choice is usually JPEG. Currently you use FME Desktop to translate the data, adding to your workspace any special requests they have such as a particular resolution, a specific area of interest, or even sets of vector data stamped onto the raster.
 
 However good you are with FME Workbench, it does take time to set up each of these individual requests. It would be far better if the other departments could help themselves to the raster data, with options for all of their special requests built in.
 
-Of course, you very soon realize that a Data Download system implemented on FME Server would be an ideal solution. 
+Of course, you very soon realize that a Data Download system implemented on FME Server would be an ideal solution.
 
 ---
 
@@ -164,7 +164,7 @@ You may inspect the RasterMosaicker's parameters, but there aren't any that need
 
 
 <br>**7) Run Workspace**
-<br>Log in to the FME Server web interface, locate the workspace, and run it. 
+<br>Log in to the FME Server web interface, locate the workspace, and run it.
 
 The workspace will run and you will be presented with a hyperlink to a zip file of the output dataset:
 
@@ -172,7 +172,7 @@ The workspace will run and you will be presented with a hyperlink to a zip file 
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -193,6 +193,3 @@ By completing this exercise you have learned how to:
 </td>
 </tr>
 </table>   
-
-
-
