@@ -80,7 +80,7 @@ Add Reader. When prompted enter these parameters:
 
 </table>
 <br>Connect the new reader to the Output port of the RasterMosaicker:  
-<br>
+
 ![](./Images/Img3.206.Ex2.ConnectJPEG.png)  
 
 
@@ -88,7 +88,7 @@ Add Reader. When prompted enter these parameters:
 <br>Now publish the workspace to FME Server.
 
 In the final dialog of the publishing wizard, check the boxes to register the workspace with both Data Download and Data Streaming (but don't click Finish yet):  
-<br>
+
 ![](./Images/Img3.207.Ex2.PublishToStreamService.png)  
 <br>
 
