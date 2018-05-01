@@ -144,16 +144,16 @@ So, simply click the Run button to run the workspace. The workspace will run to 
 <br>**6) Examine Jobs Page**
 <br>Click Jobs on the main menu. A list of previously run jobs will open, including the one we just ran:
 
-![](./Images/Img1.223.Ex2.JobsWindow.png)
+![](./Images/Img1.223.Ex2.JobsWindow.png?)
 
 Notice some interesting parts of the interface:
 
 1. There are tabs to show Completed jobs (the default), Queued Jobs, and Running Jobs.
-2. There is a drop-down list that allows you to filter whose jobs are being shown. And another that allows you to filter based on the Job Status.
+2. There are two drop-down lists. One that allows you to filter whose jobs are being shown. And another that allows you to filter based on the Job Status.
 3. Jobs that are successful and which fail are differentiated using a different icon.
 4. The jobs are displayed in the chronological order in which they finished (whether successful or not).
 
-Click on your job to inspect the results in more detail. You'll see a summary at the top showing the number of features written as well as the time it started and finished. There are more timing details under the *STATUS* drop-down that include the time the job was submitted, queued, etc. Information about the exact request made to FME Server can be found under *REQUEST DATA*. And full results of the translation are under *RESULT DATA*.
+Click on your job to inspect the results in more detail. You'll see a summary at the top showing the number of features written as well as the time it started and finished. There are more timing details under *STATUS* that include the time the job was submitted, queued, etc. Information about the exact request made to FME Server can be found under *REQUEST DATA*. And full results of the translation are under *RESULT DATA*.
 
 You may also inspect the FME translation log file on this page.
 
