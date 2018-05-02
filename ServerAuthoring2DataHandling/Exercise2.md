@@ -40,9 +40,9 @@
 
 ---
 
-For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. 
+For the exercises in this chapter, you are a technical analyst in the GIS department of your local city.
 
-You have already (Exercise 4) created a workspace to carry out a translation, and published it to FME Server; both with data and using data uploaded temporarily. 
+You have already (Exercise 4) created a workspace to carry out a translation, and published it to FME Server; both with data and using data uploaded temporarily.
 
 However, such data management tools are not particularly suited to a long term project, so the task here is to upgrade the workspaces to use datasets stored in a Resources folder. There we can store source data and write destination data.
 
@@ -57,11 +57,11 @@ However, such data management tools are not particularly suited to a long term p
 
 ![](./Images/Img1.247.Ex5.TempUnselectFile.png)
 
-Next click on the Election folder and within there create subfolders called Input and Output.
+Next click on the Election folder and within there create **new** subfolders called Input and Output.
 
 
 <br>**3) Upload Source Datasets**
-<br>Browse to the Input folder and click the upload button. Upload the source datasets for the current translation: 
+<br>Browse to the Input folder and click the upload button. Upload the source datasets for the current translation:
 
 <table style="border: 0px">
 
@@ -101,7 +101,7 @@ So, open the workspace listed above in FME Workbench and then select Writers &gt
 
 </table>
 
-<!--Updated Section--> 
+<!--Updated Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -126,7 +126,7 @@ The reason we want to add no feature types is that we can move the existing ones
 
 
 <br>**5) Move Feature Types**
-<br>Inspect the parameters dialog for each writer feature type in turn. For each type move it from the NULL writer to the FILEGDB writer, like so: 
+<br>Inspect the parameters dialog for each writer feature type in turn. For each type move it from the NULL writer to the FILEGDB writer, like so:
 
 ![](./Images/Img1.250.Ex5.MoveAFeatureType.png)
 
@@ -185,7 +185,7 @@ Now when the workspace is completed a Geodatabase file should appear in the fold
 
 It would be much better if the workspace was programmed to look into the resources folders automatically.
 
-So, return to the workspace in FME Workbench. 
+So, return to the workspace in FME Workbench.
 
 If we do set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window locate the three parameters for source and destination datasets and delete them:
 
@@ -234,7 +234,7 @@ This time you won't be able to test-run the workspace in FME Workbench, because 
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

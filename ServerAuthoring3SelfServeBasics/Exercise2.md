@@ -51,9 +51,9 @@ Sometimes the end-users download data as JPEG just to open it in a browser or im
 <br>**1) Open Workspace**
 <br>Open the workspace from exercise 1, or the begin workspace listed above. You will need to add an additional writer to the workspace for the data streaming service.
 
-<br>**2) Add reader**
+<br>**2) Add Writer**
 
-Add Reader. When prompted enter these parameters:
+Add Writer. When prompted enter these parameters:
 
 
 <table style="border: 0px">
@@ -80,7 +80,7 @@ Add Reader. When prompted enter these parameters:
 
 </table>
 
-Connect the new reader to the Output port of the RasterMosaicker:  
+Connect the new writer to the Output port of the RasterMosaicker:  
 
 ![](./Images/Img3.206.Ex2.ConnectJPEG.png)  
 
