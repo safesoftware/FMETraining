@@ -66,6 +66,10 @@ These changes are for the FME Desktop Basic Training Course.
 - Attribute Handling Exercise: Now uses Excel template (not XML)
 	- Also uses FeatureJoiner not FeatureMerger
 
+**May 2018**
+
+- Added example workspaces for demonstrating content in manual (see FMEData2018\Workspaces\InstructorUse)
+- Updated screenshots and examples in manual to be consistent with new example workspaces 
 
 ### Best Practice ###
 - Correctly numbered Best Practice files as chapter 5
