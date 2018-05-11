@@ -36,7 +36,7 @@
   * [Resource Filesystem](ServerAuthoring2DataHandling/2.06.ResourceFilesystem.md)
   * [Authoring for Resources](ServerAuthoring2DataHandling/2.07.AuthoringForResources.md)
   * [Exercise 2.2: Daily Database Updates: Using Resources](ServerAuthoring2DataHandling/Exercise2.md)
-  * [Module Review](ServerAuthoring2DataHandling/2.13.ModuleReview.md)
+  * [Module Review](ServerAuthoring2DataHandling/2.09.ModuleReview.md)
 * [Chapter 3: Self-Serve Basics](ServerAuthoring3SelfServeBasics/3.00.SelfServe1.md)
   * [What is Self-Serve?](ServerAuthoring3SelfServeBasics/3.01.WhatIsSelfServe.md)
   * [FME Server Services](ServerAuthoring3SelfServeBasics/3.02.FMEServerServices.md)
