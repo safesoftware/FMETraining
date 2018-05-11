@@ -186,7 +186,7 @@ This will ensure the neighborhoods data is in the same coordinate system as the 
 
 ![](./Images/Img1.205.Ex1.AddWriterDialog.png)
 
-Click OK and OK again. When prompted, select both Firehalls and Neighborhoods as the feature types to add:
+Click OK. When prompted, select both Firehalls and Neighborhoods as the feature types to add  and OK again:
 
 ![](./Images/Img1.206.Ex1.AddWriterSelectFTs.png)
 

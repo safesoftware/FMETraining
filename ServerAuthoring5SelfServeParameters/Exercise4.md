@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex1-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex5-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex5-Complete.fmw</td>
 </tr>
 
 </table>
@@ -80,7 +80,7 @@ Be sure to set the workflow option if you carried out the previous exercise, as 
 
 ![](./Images/Img3.200.Ex1.NeighborhoodFT.png)
 
-Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt the user to select this dataset. 
+Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt the user to select this dataset.
 
 
 <br>**3) Add Published Parameter**
@@ -142,7 +142,7 @@ So, place a CsmapReprojector transformer after the Tester, connected to the Test
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Why does the CsmapReprojector come after the Tester? Because it has less work to do. If the data was reprojected first then we would be reprojecting data that is subsequently filtered out. It might only be a small difference here, but this is the type of detail that really helps workspace performance in larger projects. 
+Why does the CsmapReprojector come after the Tester? Because it has less work to do. If the data was reprojected first then we would be reprojecting data that is subsequently filtered out. It might only be a small difference here, but this is the type of detail that really helps workspace performance in larger projects.
 </span>
 </td>
 </tr>
@@ -167,7 +167,7 @@ Run the workspace on FME Server. You should now be able to choose all source til
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

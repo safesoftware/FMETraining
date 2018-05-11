@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe-Ex4-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe-Ex4-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
@@ -121,7 +121,7 @@ Right-click on the parameter and choose Edit User Parameter Definition. This wil
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 The Feature Types to Read parameter tells FME which layers to read from the source. When you use a Single Merged Feature Type (or manually set a merge filter) it is published automatically. It also is set to update automatically.
-<br><br>This means when the end-user is prompted to select feature types, FME will automatically scan the source dataset for the list. This is particularly useful for databases, where the table list will often change. However, for this project we're going to assume a fixed list of feature types. 
+<br><br>This means when the end-user is prompted to select feature types, FME will automatically scan the source dataset for the list. This is particularly useful for databases, where the table list will often change. However, for this project we're going to assume a fixed list of feature types.
 </span>
 </td>
 </tr>
@@ -166,7 +166,7 @@ It's just a small thing but will help with the end user experience.
 <br>**6) Save and Run Workspace**
 <br>Save the workspace and then run it in FME Workbench to test it. You should be able to select any of the three types of roads, or even none of them.
 
-Check that the output includes whatever roads you selected. 
+Check that the output includes whatever roads you selected.
 
 
 <br>**7) Clean User Parameters**
@@ -181,7 +181,7 @@ Locate and delete the following published parameters:
 
 Finally, let's change the order of parameters. You can do this by dragging one above the other in the Navigator window. So do this and put the parameters in the order that seems best to you:
 
-![](./Images/Img2.225.Ex4.SortedParameters.png) 
+![](./Images/Img2.225.Ex4.SortedParameters.png)
 
 
 <br>**8) Raster User Parameters**
@@ -201,7 +201,7 @@ Now run the workspace again to check on our improved parameters dialog.
 
 ---
 
-<!--Warning Section--> 
+<!--Warning Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -243,7 +243,7 @@ Outside of a training environment we might want to order the raster tiles into g
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
