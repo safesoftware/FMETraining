@@ -40,9 +40,7 @@
 
 ---
 
-For the exercises in this chapter, you are a technical analyst in the GIS department of your local city.
-
-You have already (Exercise 4) created a workspace to carry out a translation, and published it to FME Server; both with data and using data uploaded temporarily.
+You have already (Exercise 2.1) created a workspace to carry out a translation, and published it to FME Server; both with data and using data uploaded temporarily.
 
 However, such data management tools are not particularly suited to a long term project, so the task here is to upgrade the workspaces to use datasets stored in a Resources folder. There we can store source data and write destination data.
 
@@ -61,7 +59,7 @@ Next click on the Election folder and within there create **new** subfolders cal
 
 
 <br>**3) Upload Source Datasets**
-<br>Browse to the Input folder and click the upload button. Upload the source datasets for the current translation:
+<br>Browse to the Input folder and click the Upload button and then select Files. Upload the source datasets for the current translation:
 
 <table style="border: 0px">
 
@@ -80,7 +78,7 @@ So we now have both source datasets and a folder to write the output data to.
 <br>**4) Add Writer**
 <br>Up until now all of our workspaces have had only a NULL (dummy) writer. Now we know about Resources we can add a proper writer and point its output to the Resources Output folder.
 
-So, open the workspace listed above in FME Workbench and then select Writers &gt; Add Writer on the menubar and set up a new writer with the following parameters:
+So, open the starting workspace listed above in FME Workbench and then select Writers &gt; Add Writer on the menubar and set up a new writer with the following parameters:
 
 <table style="border: 0px">
 
@@ -99,25 +97,6 @@ So, open the workspace listed above in FME Workbench and then select Writers &gt
 <td style="">None (Advanced)</td>
 </tr>
 
-</table>
-
-<!--Updated Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-bolt fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">.1 UPDATE</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-Note that Esri Geodatabase format was renamed from *File Geodb API* to *File Geodb **Open** API* in FME 2017.1!
-</span>
-</td>
-</tr>
 </table>
 
 The reason we want to add no feature types is that we can move the existing ones from the NULL writer. So when you click OK the workspace will look no different, but there will be a new writer in the Navigator window:

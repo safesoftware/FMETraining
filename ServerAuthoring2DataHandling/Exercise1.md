@@ -45,7 +45,7 @@
 
 For the exercises in this chapter, you are a technical analyst in the GIS department of your local city.
 
-You have already (Exercises 1, 2, and 3) created a workspace to carry out a translation, published it to FME Server, ran it to confirm it works, shared the repository, and set the workspace to run on a schedule.
+You have already (Exercises 1.1, 1.2, and 1.3) created a workspace to carry out a translation, published it to FME Server, ran it to confirm it works, shared the repository, and set the workspace to run on a schedule.
 
 Now you have a task to create a new workspace. One of the datasets it uses is the same as in the previous exercise, so we will try to have this second workspace use the data belonging to the first.
 
@@ -192,7 +192,7 @@ This is how a workspace has access to files published with it. It can also, with
 
 
 <br>**9) Run Workspace**
-<br>Locate and run the workspace. In the Run dialog notice that the published parameters denoting the source data include an FME environment variable, FME_MF_DIR:
+<br>Log in to FME Server and then locate and run the workspace. In the Run dialog notice that the published parameters denoting the source data include an FME environment variable, FME_MF_DIR:
 
 ![](./Images/Img1.243.Ex4.RepositoryFileSelection.png)
 
