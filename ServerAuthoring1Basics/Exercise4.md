@@ -40,12 +40,6 @@
 
 ---
 
-For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
-
-There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single, corporate database.
-
-Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
-
 You have already (in Exercises 1, 2, and 3) created a workspace to carry out this translation, published it to FME Server, run it to confirm it works, and scheduled it to run daily.
 
 You would now like to 'checkpoint' this working version of the workspace to ensure that you can always come back to this state if any edits are made to it in the future.
@@ -68,7 +62,7 @@ Don't worry about the other settings on that page for now, just leave them with 
 Add a meaningful commit comment for this version fo the workspace and click Commit to add it to the history.
 
 <br>**4) Check Version History**
-<br>Confirm that this new version has been added to your Version History. Go to the Repositories page and open the Training Repository. Click the History button to see the information about the workspace version you just committed.
+<br>Confirm that this new version has been added to your Version History. Go to the Repositories page and open the Training Repository.Select the checkbox beside the workspace and click the History button to see the information about the workspace version you just committed.
 
 ![](./Images/Img1.242.Ex4.ViewHistory.png)
 

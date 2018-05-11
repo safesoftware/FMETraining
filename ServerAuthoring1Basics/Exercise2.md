@@ -134,7 +134,7 @@ The workspace page shows a few options, the first of which are for the repositor
 
 ![](./Images/Img1.221.Ex2.RunWorkspaceDialog.png)
 
-Because this workspace has a few published parameters, they are also listed; but we can ignore these for now (we'll deal with source datasets and the like shortly).
+Because this workspace has a few published parameters, they are also listed; but we can ignore these for now (we'll deal with source datasets later in the course).
 
 So, simply click the Run button to run the workspace. The workspace will run to completion and a message to that effect will appear:
 
@@ -142,15 +142,15 @@ So, simply click the Run button to run the workspace. The workspace will run to 
 
 
 <br>**6) Examine Jobs Page**
-<br>Click Jobs on the main menu. A list of previously run jobs will open, including the one we just ran:
+<br>Click Jobs --> Completed on the main menu. A list of previously run jobs will open, including the one we just ran:
 
 ![](./Images/Img1.223.Ex2.JobsWindow.png?)
 
 Notice some interesting parts of the interface:
 
 1. There are tabs to show Completed jobs (the default), Queued Jobs, and Running Jobs.
-2. There are two drop-down lists. One that allows you to filter whose jobs are being shown. And another that allows you to filter based on the Job Status.
-3. Jobs that are successful and which fail are differentiated using a different icon.
+2. TThere are two drop-down lists: one that allows you to filter whose jobs are being shown and another that allows you to filter based on the Job Status
+3. A different icon is used to indicate if jobs succeeded or failed.
 4. The jobs are displayed in the chronological order in which they finished (whether successful or not).
 
 Click on your job to inspect the results in more detail. You'll see a summary at the top showing the number of features written as well as the time it started and finished. There are more timing details under *STATUS* that include the time the job was submitted, queued, etc. Information about the exact request made to FME Server can be found under *REQUEST DATA*. And full results of the translation are under *RESULT DATA*.

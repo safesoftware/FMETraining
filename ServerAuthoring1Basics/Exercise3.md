@@ -40,12 +40,6 @@
 
 ---
 
-For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
-
-There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single, corporate database.
-
-Because each department produces their datasets in a different format and style, you use FME for this task, and carry it out on a weekly basis.   
-
 You have already (in Exercises 1 and 2) created a workspace to carry out this translation, published it to FME Server, and run it to confirm it works.
 
 As a daily task, you plan to run the translation every day after work. However... what happens if you are not there, or leave early, or someone else stays late. Who will run it then?
@@ -82,9 +76,9 @@ By selecting the *fmeuser* role (rather than the single *user* account) we allow
 <br>**3) Check Sharing**
 <br>Log out of the administrator account and log back into FME Server with the user account (user/user).
 
-This time, you should have access to the Training repository and be able to run the workspace successfully as a general user. Check the Jobs page and you'll see one entry for the workspace, when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs.
+This time, you should have access to the Training repository. Click Run Workspace, select your workspace in the Training repository, and run it.  Check the Jobs | Completed page and you'll see one entry for the workspace, when it was run as the user. Check the Jobs page and you'll see one entry for the workspace, when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs.
 
-Log out again and log back in as an administrator. Now, in the Jobs window, you should be able to see both the administrator's jobs and the user's jobs:
+Log out again and log back in as an administrator. Now, in the Jobs | Completed window, you should be able to see both the administrator's jobs and the user's jobs
 
 ![](./Images/Img1.227.Ex3.MultiUserJobsList.png)
 
