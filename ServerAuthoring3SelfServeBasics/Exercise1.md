@@ -150,7 +150,7 @@ Your workspace will now look like this:
 
 ![](./Images/Img2.202.Ex1.RasterResamplerParams.png)
 
-You may inspect the RasterMosaicker's parameters, but there aren't any that need changing at the moment. You may notice the Overlapping Values parameter that is new for FME2017.
+You may inspect the RasterMosaicker's parameters, but there aren't any that need changing at the moment.
 
 
 <br>**5) Save and Run Workspace**

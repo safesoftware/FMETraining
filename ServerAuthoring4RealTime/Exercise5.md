@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">RealTime-Ex5-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex5-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">RealTime-Ex5-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex5-Complete.fmw</td>
 </tr>
 
 </table>
@@ -117,9 +117,31 @@ Regardless of the email provider, you should set these parameters as follows:
 
 Most of the general settings (Email To, Email Template, etc.) will be set by the content we are going to provide, so once the above is set, click OK to save the Subscription.
 
+<!--Warning Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">NOTE</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Depending on your Gmail security settings, you may need to create an app-specific password to allow FME Server to log into the account. See this article if you are noticing errors connecting to your account: [IMAP Publication or Email Subscription is not Reading Emails from Gmail](https://knowledge.safe.com/articles/394/imap-publisher-not-reading-emails-from-gmail.html)
+<br>Alternatively, if you do not have access to an email account, change the Protocol for this subscription to 'Logger' instead. This will add an entry into one of the FME Server logfiles when the BuildingUpdateEmail topic is triggered.
+</span>
+</td>
+</tr>
+</table>
+
+---
+
 
 <br>**2) Edit Workspace**
-<br>Open the workspace from Exercise 4 (or the Start Workspace listed above). 
+<br>Open the workspace from Exercise 4 (or the Start Workspace listed above).
 
 Add two new transformers - the [FMEServerEmailGenerator](https://hub.safe.com/transformers/fmeserveremailgenerator) (a custom transformer) and an FMEServerNotifier - as a separate stream of data, connected to the <Initiator\> Output Port of the FeatureReader:
 
@@ -153,16 +175,23 @@ Each field can also accept attributes allowing the email to be dynamically confi
 
 </table>
 
+<br>**4) Inspect FMEServerEmailGenerator Output**
+<br>The FMEServerEmailGenerator creates a new attribute called *text&#95;line&#95;data*. Connect an Inspector transformer to the FMEServerEmailGenerator and run the workspace to take a look at the content of that attribute.
 
-<br>**4) Edit FMEServerNotifier**
-<br>Now edit the parameters for the FMEServerNotifier transformer. 
+You'll see it creates a JSON string like this:
+<br>`{ "email_to" : "fmeservertraining@safe.com","email_cc" : "", "email_bcc" : "", "email_from" : "", "email_replyto" : "", "email_subject" : "Building Footprints Database Updated", "subscriber_content" : "The Building Footprints database has been updated!" }`
+
+Each of the keywords that have values set(such as email_to, email_subject, and subscriber_content) will then override the settings inside the Email Subscription we created. This would allow us to dynamically change parts of the email that is sent based on what happens inside the workspace.
+
+<br>**5) Edit FMEServerNotifier**
+<br>Now edit the parameters for the FMEServerNotifier transformer.
 
 Set FME Server Connection parameters, pick the Topic created earlier (BuildingUpdateEmail), and for the Content select the attribute *text&#95;line&#95;data* (this attribute is created by the FMEServerEmailGenerator):
 
 ![](./Images/Img4.430.Ex5.FMEServerNotifierParameters.png)
 
 
-<br>**5) Publish Workspace**
+<br>**6) Publish Workspace**
 <br>Save and publish the workspace.
 
 If the workspace name is different to that used in the Exercise 4 workspace, an update will need to be made as follows.
@@ -174,7 +203,7 @@ Navigate to the FME Workspace Subscriptions page. Notice that a Subscription wil
 Click on this notification to change its parameters, and set/ensure that the Workspace parameter is pointing to the workspace just published.
 
 
-<br>**6) Test Workspace**
+<br>**7) Test Workspace**
 <br>Test the workspace by sending an email to the Publication email address. Be sure to attach a zip file of the Shapefile datasets (.dbf, .prj, .shp, .shx) from C:\FMEData2018\Data\Engineering\BuildingFootprints to the email.
 
 If the workflow was successful, you should receive an email back with a response!
@@ -182,7 +211,7 @@ If the workflow was successful, you should receive an email back with a response
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

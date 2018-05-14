@@ -31,19 +31,19 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">RealTime-Ex4-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">RealTime-Ex4-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-As a technical analyst in the GIS department you were involved in a recent project to set up a Directory Watch solution for users to automatically update the corporate database. 
+As a technical analyst in the GIS department you were involved in a recent project to set up a Directory Watch solution for users to automatically update the corporate database.
 
 Having learned that not all users are able to access the internal network where FME Server is hosted, you think that it should be possible to also set up a system that uses email-based automation to handle the same updates.
 
@@ -54,11 +54,11 @@ Having learned that not all users are able to access the internal network where 
 
 Click the Publications tab and then select New.
 
-Enter "Email Receiver" as the Name. Then click in the text box under Topics to Publish To. Type in *ShapeIncomingEmail* and click on it to add. This will create a new Topic and assign it to this Publication. 
+Enter "Email Receiver" as the Name. Then click in the text box under Topics to Publish To. Type in *ShapeIncomingEmail* and click on it to add. This will create a new Topic and assign it to this Publication.
 
 ![](./Images/Img4.417.Ex4.CreateIncomingTopic.png)
 
-The new Publication can be created to use either the Email (SMTP) protocol or the Email (IMAP) protocol. 
+The new Publication can be created to use either the Email (SMTP) protocol or the Email (IMAP) protocol.
 
 SMTP is easier to set up but FME Server must reside on a server with a proper DNS record (all FME Cloud and Training machines will have this). IMAP is necessary when FME Server resides on an internal network.
 
@@ -70,7 +70,7 @@ To use the SMTP protocol select Email (SMTP) as the Publication Protocol. This w
 
 ![](./Images/Img4.418.Ex4.CreateSMTPPublication.png)
 
-Clicking OK will create an email address *fmeshapeprocessing@&lt;hostname&gt;* - for example: 
+Clicking OK will create an email address *fmeshapeprocessing@&lt;hostname&gt;* - for example:
 
 <table>
 <tr><th>Host</th><th>Example Email Address</th></tr>
@@ -78,7 +78,7 @@ Clicking OK will create an email address *fmeshapeprocessing@&lt;hostname&gt;* -
 <tr><td>Amazon AWS</td><td>fmeshapeprocessing@ec1-23-456-789-012.compute-1.amazonaws.com</td></tr>
 </table>
 
-Now all emails sent to that address will trigger the ShapeIncomingEmail topic. 
+Now all emails sent to that address will trigger the ShapeIncomingEmail topic.
 
 ---
 
@@ -196,7 +196,7 @@ Adding both imap&#95;publisher&#95;attachment and email&#95;publisher&#95;attach
 <br>**4) Add AttributeManager**
 <br>The next step is to insert a transformer that will determine where the data is coming from (Directory Watch or an Email Publication) - this is a task where conditional statements are invaluable.
 
-Add an AttributeManager transformer in between the JSONFlattener and FeatureReader. Open the parameters and add *&#95;dataset* as a new Output Attribute. 
+Add an AttributeManager transformer in between the JSONFlattener and FeatureReader. Open the parameters and add *&#95;dataset* as a new Output Attribute.
 
 Select, from the drop-down menu, the option to set the attribute as a Conditional Value:
 
@@ -236,9 +236,9 @@ Configure the Conditional Value as follows:
 
 In other words:
 
-- If *dirwatch&#95;publisher&#95;path* has a value, then copy that value into the *&#95;dataset* attribute. 
-- Else, if *email&#95;publisher&#95;attachment{0}* has a value, then copy that value into the *&#95;dataset* attribute. 
-- Else, if *imap&#95;publisher&#95;attachment{0}* has a value, then copy that value into the *&#95;dataset* attribute. 
+- If *dirwatch&#95;publisher&#95;path* has a value, then copy that value into the *&#95;dataset* attribute.
+- Else, if *email&#95;publisher&#95;attachment{0}* has a value, then copy that value into the *&#95;dataset* attribute.
+- Else, if *imap&#95;publisher&#95;attachment{0}* has a value, then copy that value into the *&#95;dataset* attribute.
 
 So *&#95;dataset* gets the location of the data to be processed, whether it comes from the directory watch notification, or an email notification of either type.
 
@@ -253,7 +253,7 @@ The workflow should now look like this:
 ![](./Images/Img4.426.Ex4.FinalWorkspace.png)
 
 
-<br>**6) Edit User Parameter** 
+<br>**6) Edit User Parameter**
 <br>As with Exercise 3, specify the output dataset to be written into the FME Server Resources Folder.
 
 Locate the user parameter DestDataset&#95;SPATIALITE (under User Parameters &gt; Published Parameters in the Navigator window) and double-click it to open an editor dialog.
@@ -264,7 +264,7 @@ In that dialog enter *$(FME&#95;SHAREDRESOURCE&#95;DATA)/Output/building&#95;foo
 
 
 <br>**7) Publish Workspace**
-<br>Publish this workspace to FME Server, registering it under the Notification service. When the Notification service is selected, it is highlighted in red indicating its parameters need to be configured. 
+<br>Publish this workspace to FME Server, registering it under the Notification service. When the Notification service is selected, it is highlighted in red indicating its parameters need to be configured.
 
 Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topics" parameter. Set the "Parameter to Get Topic Message" as *Source Text File(s)*:
 
@@ -272,7 +272,7 @@ Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topic
 
 
 <br>**8) Update Directory Watch Subscription (Optional)**
-<br>If you have completed Exercise 3, using the FME Server web interface you can set the "Process Building Updates" Subscription to point at this new workspace. 
+<br>If you have completed Exercise 3, using the FME Server web interface you can set the "Process Building Updates" Subscription to point at this new workspace.
 
 
 <br>**9) Test Workspace**
@@ -283,7 +283,7 @@ You can verify if the workflow was successful by checking the Completed Jobs pag
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
