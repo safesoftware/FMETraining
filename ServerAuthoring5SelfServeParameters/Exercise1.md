@@ -31,7 +31,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServ1-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServ2-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
@@ -51,7 +51,7 @@ Now you need to start customizing the workspace to allow the end-users to have a
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 1, or the starting workspace listed above. You can see that it consists of a reader, a writer, and two transformers.
+<br>Open the starting workspace listed above. You can see that it consists of a reader, a writer, and two transformers.
 
 In this step we'll give the end-user control over the transformation stages.
 

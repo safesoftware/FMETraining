@@ -75,9 +75,30 @@ The project will very quickly be imported:
 <br>**3) Check Log**
 <br>Click the View Details button in order to examine the Project Import log. A successful import will look something like this:
 
-**SCREENSHOT GOES HERE INSTEAD OF LOG SNIPPET**
+![](./Images/Img5.022.Ex1.ImportSummary.png)
 
-TIP - THE HISTORY PAGE UNDER PROJECTS WILL SHOW A FULL HISTORY OF ALL PROJECTS THAT HAVE BEEN IMPORTED TO THE SYSTEM
+---
+
+<!--Tip Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+The history page under projects will show a full history of all projects that have been imported to the system.
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 <br>**4) Check Components**
 <br>Now let's check for some of the components that should have been imported.
@@ -114,7 +135,7 @@ So, return to the project contents, select the marki User, and remove it.
 
 ![](./Images/Img5.020.Ex1.RemoveAccount.png)
 
-This will remove the account from the project, but since the project has already been imported, the account will also exist on the machine. So also visit the security pages and remove that user.
+This will remove the account from the project, but since the project has already been imported, the account will also exist on the machine. So also go to the Security > Users page and remove that user.
 
 Send another email to confirm that the project is still working.
 

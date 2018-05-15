@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 6</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Authoring Workspace Chains</span>
@@ -88,7 +88,7 @@ The Writer dataset can be left empty for now. When prompted, leave both source f
 <br>**2) Create Resources**
 <br>We'll handle the input and output of this workspace using the resources folders on FME Server. So, log in to the FME Server web interface and navigate to the Resources page.
 
-If you carried out exercise 5, then you should already have a folder Resources\Data\Election\Input containing the source data used in the workspace.
+If you carried out exercise 1.4, then you should already have a folder Resources\Data\Election\Input containing the source data used in the workspace.
 
 If not, create that set of folders and subfolders. Upload the source GML dataset to the Input folder (you should upload both the .gml and .xsd files):
 
@@ -111,13 +111,13 @@ One final tweak: change the Writer parameter Overwrite Existing Database to Yes
 
 
 <br>**4) Save, Publish, and Run Workspace**
-<br>Save the workspace (to something like Basics-Ex6-CompleteA.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service. 
+<br>Save the workspace (to something like Basics-Ex6-CompleteA.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service.
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. The evidence of success will be the log and an sl3 file in the resources folder.
 
-Select the sl3 dataset and click the button to download the file. This is important; we'll need the file to set up our next workspace. 
+Select the sl3 dataset and click on Actions > Download to download the file. This is important; we'll need the file to set up our next workspace.
 
-![](./Images/Img1.263.Ex6.DownloadSpatialiteDB.png)
+![](./Images/Img1.263.Ex6.DownloadSpatialiteDB.png?)
 
 Save the file to the Elections folder, so you will remember where it is; i.e. C:\FMEData2018\Data\Elections\VotingDivisions.sl3
 
@@ -175,7 +175,7 @@ When prompted, leave both source feature types (tables) selected.
 
 ***NB:*** *If you can't find that sl3 file, go back to step 4 and make sure you downloaded the result of the first workspace.*
 
-When prompted, select only the source feature type (table) *votingdivisions*. 
+When prompted, select only the source feature type (table) *votingdivisions*.
 
 ![](./Images/Img1.265.Ex6.SelectingVotingDivisions.png)
 
@@ -192,10 +192,12 @@ When prompted, select only the source feature type (table) *votingdivisions*.
 - **Add Connection:** Geodatabase:PostalAddress &gt; PointOnAreaOverlayer:Point
 - **Add Connection:** SpatiaLite:votingdivisions &gt; PointOnAreaOverlayer:Area
 - **Add Connection:** PointOnAreaOverlayer:Point &gt; Geodatabase:PostalAddress
- 
+
+<br>Then open the parameters for the PointOnAreaOverlayer, expand the section Attribute Accumulation, and check Merge Attributes. The default settings are fine as they are. This will add the attributes from votingdivisions to PostalAddress.
+
 
 <br>**8) Edit Writer Schema**
-<br>That transformer will copy the division attribute on to each address, but that attribute won't be written unless we also add it to the output schema. 
+<br>That transformer will copy the division attribute on to each address, but that attribute won't be written unless we also add it to the output schema.
 
 So, inspect the parameters for the writer feature type PostalAddress. In the User Attributes tab add a new attribute called division (of type int):
 
@@ -205,18 +207,18 @@ So, inspect the parameters for the writer feature type PostalAddress. In the Use
 
 
 <br>**9) Test Run Workspace**
-<br>Before we start adjusting the dataset paths for use on FME Server, run the workspace to ensure it produces the correct output; i.e. that each address now has a division attribute. 
+<br>Before we start adjusting the dataset paths for use on FME Server, run the workspace to ensure it produces the correct output; i.e. that each address now has a division attribute.
 
 
 <br>**10) Create Resources**
-<br>We'll also handle the input and output of this workspace using the resources folders on FME Server. 
+<br>We'll also handle the input and output of this workspace using the resources folders on FME Server.
 
 Firstly, we can upload a File Geodatabase as a folder/file only if we're using the Chrome web browser. Just in case you aren't, locate the source Geodatabase in your file system and compress it into a single zip file:
 
 ![](./Images/Img1.268.Ex6.CompressedAddresses.png)
 
 
-Next, upload the zipped address file to the Resources folder on FME Server:
+Next, upload the zipped address file to the Resources > Data > Election > Input folder on FME Server:
 
 ![](./Images/Img1.269.Ex6.UploadedCompressedAddresses.png)
 
@@ -238,7 +240,7 @@ One final tweak: change the Writer parameter Overwrite Geodatabase to Yes
 
 
 <br>**12) Save, Publish, and Run Workspace**
-<br>Save the workspace (to something like Basics-Ex6-CompleteB.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service. 
+<br>Save the workspace (to something like Basics-Ex6-CompleteB.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service.
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. The evidence of success will be the log and a zipped geodatabase file in the resources folder.
 
@@ -248,7 +250,7 @@ You may wish to download the newly created dataset to inspect it and make sure t
 
 
 <br>**13) Create Workspace**
-<br>That was the second workspace in our project. Now for the third and final workspace. This workspace will be used to chain the previous two workspaces. It is going to be the master, with the two prior workspaces as children. 
+<br>That was the second workspace in our project. Now for the third and final workspace. This workspace will be used to chain the previous two workspaces. It is going to be the master, with the two prior workspaces as children.
 
 So, open Workbench and start with an empty canvas. Place a Creator transformer followed by two FMEServerJobSubmitter transformers:
 
@@ -256,25 +258,27 @@ So, open Workbench and start with an empty canvas. Place a Creator transformer f
 
 
 <br>**14) Set Parameters**
-<br>Inspect the parameters for the first of the FMEServerJobSubmitter transformers. 
+<br>Inspect the parameters for the first of the FMEServerJobSubmitter transformers.
 
-Firstly select your FME Server connection. Then select the Training repository and the first of the two prior workspaces (the one that converted election divisions from GML to SpatiaLite).
+Firstly, select your FME Server connection. Then, under Submission Mode, set Wait for Jobs to Complete to Yes. If we didn't do this then the second job submitter transformer would run before the first had finished!
 
-Finally set Wait for Server Job to Complete to Yes. If we didn't do this then the second job submitter transformer would run before the first had finished!
+Finally, select the Training repository and the first of the two prior workspaces (the one that converted election divisions from GML to SpatiaLite).
 
 ![](./Images/Img1.273.Ex6.FMEServerJobSubmitterParams1.png)
 
 Below is an area where we can set the parameters for the translation. However, since there are no published parameters, we don't need to worry about that.
 
-Click OK to close the dialog. 
+Click OK to close the dialog.
+
+Notice that the output ports on the transformer have changed now that we have set it to wait for the job to complete. Reconnect it to the other FMEServerJobSubmitter by dragging a connection from the Succeeded port to the input port on the second transformer.
 
 Now repeat the same process for the second FMEServerJobSubmitter, this time selecting the second workspace (the one that did the overlay of addresses on divisions).
 
 
 <br>**15) Save, Publish, and Run Workspace**
-<br>Save the workspace and publish it to FME Server. It should be registered with the Job Submitter service. 
+<br>Save the workspace and publish it to FME Server. It should be registered with the Job Submitter service.
 
-Locate the workspace in the Server web interface and run it to make sure it runs to completion. It will run each of the two child workspaces in turn. 
+Locate the workspace in the Server web interface and run it to make sure it runs to completion. It will run each of the two child workspaces in turn.
 
 Don't worry that FME reports zero features written. That only refers to the master workspace (not the child workspaces). Evidence of success will be the log, and new output files (sl3,gdb) in the resources folder:
 
@@ -305,7 +309,7 @@ As already mentioned there are many ways to set up chains and this is just one o
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

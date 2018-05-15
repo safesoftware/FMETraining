@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Layer Selection</span>
@@ -51,7 +51,7 @@ One of the frequent requests you get when you translate orthophoto data is to ad
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 3, or the begin workspace listed above. You can see that it consists of a reader, two writers, and two transformers, plus some published parameters.
+<br>Open the workspace from exercise 2, or the begin workspace listed above. You can see that it consists of a reader, two writers, and two transformers, plus some published parameters.
 
 To add - for example - road features to the raster output first requires a reader for those road features, so that is the first step...
 
