@@ -8,7 +8,7 @@
 * [Feature Caching](./2018Upgrade2PartialRun/2.00.FeatureCaching.md)
 	* [Caching Features](./2018Upgrade2PartialRun/2.01.CachingFeatures.md)
     * [Partial Runs](./2018Upgrade2PartialRun/2.02.ReusingCachedData.md)
-	* [Exercise: Emergency Reponse Project](./2018Upgrade2PartialRun/2.Exercise1.md)
+	* [Exercise: Emergency Response Project](./2018Upgrade2PartialRun/2.Exercise1.md)
 * [Collapsible Bookmarks](./2018Upgrade3CollapsibleBookmarks/3.00.CollapsibleBookmarksTitle.md)
 	* [Collapsing Bookmarks](./2018Upgrade3CollapsibleBookmarks/3.01.CollapsibleBookmarks.md)
 	* [Collapsible Bookmark Best Practice](./2018Upgrade3CollapsibleBookmarks/3.02.CollapsibleBookmarkBestPractice.md)
