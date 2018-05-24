@@ -27,6 +27,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - Updated screenshots to reflect changes to Function changes in Text and Arithmetic editors
 - Added a small paragraph about null values in key/attribute joins
 - Advanced exercise at the end of Exercise 4
+- A fix in 2018.1 resolves an issue with a bad display in Exercise 2c (screenshot: https://www.screencast.com/t/ZnYXiTX69cn)
+  - The issue appears to be just a display fault, and the exercise/workspace works correctly
 
 ### Advanced Workspace Design ###
 - Renamed from Performance to Advanced Workspace Design
