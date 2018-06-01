@@ -113,7 +113,7 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
  
 		<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="8443"/>
-		
+		**SM: may need to look at HTTP/2.0**
 
 Save and close the *server.xml* file.
 
