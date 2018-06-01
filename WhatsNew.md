@@ -18,33 +18,33 @@ These changes are for the FME Server Administration Training Course.
 -
 
 
-### Chapter 1 ###
+### Chapter 1 - Installation ###
 -
 
 
-### Chapter 2 ###
+### Chapter 2 - Connectivity ###
 -
 
 
-### Chapter 3 ###
+### Chapter 3 - Security ###
 -
 
 
-### Chapter 4 ###
+### Chapter 4 - Scalability###
 -
 
 
-### Chapter 5 ###
+### Chapter 5 - Customization ###
 -
 
 
-### Chapter 6 ###
+### Chapter 6 - Migration ###
 -
 
 
-### Chapter 7 ###
+### Chapter 7 - Troubleshooting ###
 -
 
 
-### Chapter 8 ###
+### Chapter 8 - Wrap Up###
 -

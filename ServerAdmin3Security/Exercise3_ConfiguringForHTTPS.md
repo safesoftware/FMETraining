@@ -44,7 +44,7 @@ Open a **Command Prompt** as an administrator.
 
 Navigate to the FME Server Java bin directory:
 	
-	cd C:\apps\FMEServer\Utilities\jre\bin\
+	cd C:\Program Files\FMEServer\Utilities\jre\bin\
 
 Run the following command to create a new keystore file:
 
