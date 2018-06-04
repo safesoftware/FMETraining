@@ -15,11 +15,12 @@ These changes are for the FMEData dataset that accompanies FME training
 These changes are for the FME Server Administration Training Course.
 
 ### General ###
--
+- Updated FME Version Information
 
 
 ### Chapter 1 - Installation ###
--
+- Updated Database and Web Connections Sections
+- Updated FME Version Information
 
 
 ### Chapter 2 - Connectivity ###
