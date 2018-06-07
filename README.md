@@ -15,8 +15,8 @@ The full course is made up of seven sections. These sections are:
 
 - Planning an FME Server Installation
 - FME Server Connectivity
-- Scalability and Performance
 - FME Server Customization/Enterprise
+- Scalability and Performance
 - Migration and Upgrades
 - FME Server Security
 - Troubleshooting
