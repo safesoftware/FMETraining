@@ -23,6 +23,8 @@ These changes are for the FME Server Administration Training Course.
 - Updated FME Version Information
 - Updated the Installation Types.
 - Removed reference to active-passive & active-active in favor for Fault Tolerant
+- Added FME Server Job Queue Component
+- Updated Chapter Review
 
 
 ### Chapter 2 - Connectivity ###
