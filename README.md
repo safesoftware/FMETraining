@@ -6,7 +6,7 @@ This is the manual for the training course System Administration for FME Server.
 
 ![](./ServerAdmin0Introduction/Images/0.000.ServerHomeScreen.png)
 
-
+<!--Comment to force gitbook update-->
 The training will assist you to install and administer an FME Server installation and its users.
 
 ## Course Structure ##
