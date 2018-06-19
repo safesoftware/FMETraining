@@ -44,7 +44,7 @@ Your GIS department is working with several other organizations on one big proje
 
 ---
 
-<!--Miss Vector says...--> 
+<!--Miss Vector says...-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -89,7 +89,7 @@ This opens a new window with a direct, secure connection to Dropbox. Fill in the
 
 - **Email:** fmedropbox@gmail.com
 - **Password:** *&lt;distributed_during_course&gt;*
-
+<!-- Check this email address still works-->
 ...and then click **Sign in**.
 
 Note: The above email and password should be used solely for this exercise. You can use *your own Dropbox account*, but for this course we have provided an account to use.
@@ -137,7 +137,7 @@ Fill in the *Client Information* parameters as follows:
 - **Client Id:** lxx2amcu6xfs11r
 - **Client Secret:** *&lt;distributed_during_course&gt;*
 - **Redirect Uri:** https://localhost:8443/fmeoauth
-
+<!--**SM: We need to figure out how to store the credentials for this and email**-->
 The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explains in more detail about web service app creation.
 
 Click **OK** to save these updates.
@@ -152,9 +152,9 @@ On the *Edit* page, click the **Authorize** button:
 
 ![](./Images/5.406.Authorize.png)
 
-A window opens with the login screen for Dropbox. Sign in with: 
-
-- **Email:** fmeserver2017@gmail.com 
+A window opens with the login screen for Dropbox. Sign in with:
+<!--**SM create new email account**-->
+- **Email:** fmeserver2017@gmail.com
 - **Password:** *&lt;distributed_during_course&gt;*
 
 The window closes and a message pops up:
@@ -165,7 +165,7 @@ You have now successfully authorized a Dropbox web connection in FME Server for 
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
