@@ -49,6 +49,7 @@ While FME Server provides a means to control access to its components and items 
 <span style="font-family:serif; font-style:italic; font-size:larger">
 Due to security requirements and restrictions it may not be possible to complete this exercise.<br>
 Instead, please watch <a href="https://drive.google.com/a/safe.com/file/d/0B9i4bX_jniydaThpUGZqOF9JVkk/view?usp=sharing">this video demonstrating the exercise</a>.
+<!-- ** SM: create a new video for this... ** -->
 </span>
 </td>
 </tr>
@@ -56,13 +57,13 @@ Instead, please watch <a href="https://drive.google.com/a/safe.com/file/d/0B9i4b
 
 ---
 
-<br>**1) Connect to FME Server** 
-<br>Open the FME Server web interface, either through the web interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*. 
+<br>**1) Connect to FME Server**
+<br>Open the FME Server web interface, either through the web interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
 
 Click *Security*, under the Admin heading on the left sidebar, and then select **Active Directory**.
 
 
-<br>**2) Create Connection to Active Directory** 
+<br>**2) Create Connection to Active Directory**
 <br>By creating a new connection, you can incorporate your organization’s Active Directory users and groups into your FME Server security configuration.
 
 To get started, select **New** to open the Create New Server Connection page.
@@ -78,17 +79,17 @@ Enter the following information:
 Click **OK** to save the new Active Directory connection. You will be returned to the Active Directory page. Wait for the Status to change from Yellow to Green, indicating that the connection is successful.
 
 
-<br>**3) Import Users** 
+<br>**3) Import Users**
 <br>Now that the connection is established, select the **Import Users** icon to add users from the Active Directory connection.
 
-On the Browse Users page, type in *mvector* and press Enter. Select Miss Vector's user and click **Import**. 
+On the Browse Users page, type in *mvector* and press Enter. Select Miss Vector's user and click **Import**.
 
 A notification will appear in the top right of the web browser window to indicate that the user was successfully imported.
 
 Note: If Miss Vector belonged to any Active Directory groups, we could have instead imported that as an FME Server Role – and all users that are a member of would be imported automatically.
 
 
-<br>**4) Configure User Permissions** 
+<br>**4) Configure User Permissions**
 <br>After the Active Directory user is imported to FME Server, you must configure the permissions.
 
 Select Security &gt; **Users** under the Admin heading on the left sidebar of the FME Server web interface. Click on the **Miss Vector** user that was just created to open the Edit User page.
@@ -108,7 +109,7 @@ Either logout of the admin account or open a new private browsing window, and lo
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
