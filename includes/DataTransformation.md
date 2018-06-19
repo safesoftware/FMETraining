@@ -1,0 +1,1 @@
+**Data Transformation** is FME’s ability to manipulate data during a data translation, even to the extent of having an output greater than the sum of the inputs! The transformation step occurs during the process of format translation. Data transformation is important to ensure that key elements of a dataset are preserved.
