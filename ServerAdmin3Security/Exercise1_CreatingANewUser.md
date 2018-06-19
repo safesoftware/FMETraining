@@ -41,7 +41,7 @@ Click *Security*, under the Admin heading on the left sidebar to expand the menu
 <br>**2) Create a New User**
 <br>Let's create a new FME Server user account for the new analyst. Click **New** to add a new user:
 
-![](./Images/3.401.CreateNewUser.png)
+![](./Images/3.201.Ex1.CreateNewUser.png)
 
 When prompted, create a new user with the following parameters:
 
@@ -55,7 +55,7 @@ When prompted, create a new user with the following parameters:
 
 By selecting the **Load Template** button, you have the option to copy permissions from an existing role.
 
-![](./Images/3.402.NewUserLoadTemplate.png)
+![](./Images/3.202.Ex1.NewUserLoadTemplate.png)
 
 Select *fmeguest* from the Load Template options. This can help speed up security configurations. Notice that Run Workspace and Jobs have been now granted Access.
 
@@ -79,7 +79,7 @@ Either logout of the admin account or open a new private browsing window, and lo
 
 Notice how this user only sees a limited set of menu options: Run Workspace, Jobs, Schedules, Repositories, and Projects.
 
-![](./Images/3.403.NewUserHomepage.png)
+![](./Images/3.203.Ex1.NewUserHomepage.png)
 
 ---
 
