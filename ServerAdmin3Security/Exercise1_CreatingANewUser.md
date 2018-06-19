@@ -36,8 +36,7 @@ Your company has recently hired a new analyst who will be accessing FME Server. 
 <br>**1) Connect to FME Server** 
 <br>Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*. 
 
-Select the *Security* page, under the Admin heading on the left sidebar, to see a list of your current users.
-
+Click *Security*, under the Admin heading on the left sidebar to expand the menu, and then select **Users** to see a list of your current users.
 
 <br>**2) Create a New User**
 <br>Let's create a new FME Server user account for the new analyst. Click **New** to add a new user:
