@@ -34,7 +34,7 @@ Your company has an Express Installation of FME Server already installed but you
 
 ---
 
-<!--Miss Vector says...--> 
+<!--Miss Vector says...-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -61,20 +61,20 @@ Note: If you have *already created an FME Server backup* you can use this existi
 
 Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
 
-Find **Backup & Restore** in left sidebar, under the Admin heading in the FME Server web interface, and click to open this page.
+Find **Backup & Restore** in left sidebar, under the Admin heading in the FME Server web interface, and click to expand, then click **Backup**.
 
 Select *Download* to save a backup file of FME Server - this can be thought of as a "snapshot". It will take a short time to run processes in the background to compile the FME Server backup, and once this is complete it will automatically save to your local downloads folder.
 
 
 <br>**2) Initial Database Configuration**
-<br>For the purposes of this exercise a separate PostgreSQL database has been installed to the Training Machines, running on port 5432. 
+<br>For the purposes of this exercise a separate PostgreSQL database has been installed to the Training Machines, running on port 5432.
 
 The next step is to configure this database for FME Server. From the Windows Start Menu, select **PostgreSQL &gt; SQL Shell** to open the psql command prompt. Login using the username and password *postgres* - this is the root user for the database.
 
 First, create a new user to assign ownership of the FME Server database. From the psql prompt, run the *postgresql\_createUser.sql* script by entering the following command:
-		
+
 	\i 'C:/apps/FMEServer/Server/database/postgresql/postgresql_createUser.sql'
-	
+
 This SQL script creates a new user *fmeserver* with password *fmeserver*.
 
 Next, create the FME Server database by running the *postgresql\_createDB.sql* script in the psql command prompt:
@@ -92,7 +92,7 @@ This SQL script creates the FME Server database and grants all privileges on the
 From the command prompt, run the *postgresql\_createSchema.sql* script by entering the following command:
 
 	\i 'C:/apps/FMEServer/Server/database/postgresql/postgresql_createSchema.sql'
-	
+
 This SQL script creates all FME Server related tables, indexes, views, and triggers.
 
 
@@ -113,6 +113,26 @@ Save and close the *pg_hba.conf* file.
 
 In order for these changes to take effect, restart the PostgreSQL Database service. Open the Services application by using the *Windows Start Menu* and typing in *Services*. In the Services application, right-click **postgresql-x64-9.6** and select *Restart*.
 
+---
+
+
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">First-Officer Transformer says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+This step is not required if you installed FME Server with the distributed install option as all ports for PostgreSQL are opened by default.  </span>
+</td>
+</tr>
+</table>
 
 <br>**5) Configure the Database Connection**
 <br>Open the *fmeCommonConfig.txt* file, located in the *C:\apps\FMEServer\Server\\* directory, using a text editor in administrator mode.
@@ -125,9 +145,10 @@ Save and close the *fmeCommonConfig.txt* file, and then **Restart FME Server**.
 
 
 <br>**6) Post-Configuration Script**
-<br>Finally, open *C:\apps\FMEServer\Utilities\\*, and invoke **runPostInstall.bat** by right-clicking the file and selecting *Run as administrator*.
+<br>Starting in 2018.0 the Post-Configuration scripts are now run by the Core when connecting to a new FME Server System Database. However, there is one script that still requires to be run (this is resolved in 2018.1).
+Open *C:\apps\FMEServer\Clients\utilities\*, and invoke **addQueueNode.bat** by right-clicking the file and selecting *Run as administrator*. **(only for 2018.0)**
 
-This script will take a couple of minutes to create the default FME Server Publisher and Subscriber protocols, add FME Server cleanup tasks, and add the "Samples" repository.
+This script will take a moment to run and create the default job queue to the new database.
 
 
 <br>**7) Restore Your FME Server Configuration**
@@ -145,7 +166,7 @@ The FME Server web interface will report if the restore is successful. If it is 
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

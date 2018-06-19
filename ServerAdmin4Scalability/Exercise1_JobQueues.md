@@ -44,7 +44,7 @@ Your GIS department is all onboard with FME Server and translating jobs with the
 
 ---
 
-<!--Miss Vector says...--> 
+<!--Miss Vector says...-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -67,9 +67,9 @@ If you have completed the Configure for HTTPS exercise, remember that the URL to
 <br>**1) Create a Job Queue**
 <br>Job queues are created in the FME Server web interface.
 
-Login to the FME Server web interface and select **Admin &gt; Engines & Licensing** in the left sidebar.
+Login to the FME Server web interface and select **Admin &gt; Engines & Licensing &gt; Configure** in the left sidebar.
 
-Scroll down to the *Job Queues* heading and select **Create Job Queue**.
+Scroll down to the bottom of the Engines & Licensing page and select **Create Queue**.
 
 ![](./Images/4.401.Create_JobQueue.png)
 
@@ -136,7 +136,7 @@ In the left sidebar of the FME Server web interface select **Jobs &gt; Completed
 
 Select the workspace that just ran to open the *Job Details* page.
 
-Click to expand the **Request Data** section. Next to the **queue** parameter you will see the name of the specified job queue: 
+Click to expand the **Request Data** section. Next to the **queue** parameter you will see the name of the specified job queue:
 
 ![](./Images/4.406.VerifyJobQueue_Success.png)
 
@@ -144,7 +144,7 @@ Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct 
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
