@@ -51,7 +51,7 @@ Login to the FME Server web interface and select **Admin &gt; Engines & Licensin
 
 Scroll down to the bottom of the Engines & Licensing page and select **Create Queue**.
 
-![](./Images/4.401.Create_JobQueue.png)
+![](./Images/4.201.Ex1.Create_JobQueue.png)
 
 Give it the name *Quick Translations* and click OK.
 
@@ -61,7 +61,7 @@ Give it the name *Quick Translations* and click OK.
 
 Click on the *edit button*. Give the Job Queue the description of "FME Server Engine for Quick Translations," then select **&#60;localhost&#62;_Engine1** from the drop-down selection for Engines.
 
-![](./Images/4.402.JobQueue_SelectEngine.png)
+![](./Images/4.202.Ex1.JobQueue_SelectEngine.png)
 
 To save your edits click the edit button again.
 
@@ -73,13 +73,13 @@ Open FME Workbench and create a new Blank Workspace.
 
 Add a **Creator** transformer and connect it to a **Logger** transformer.
 
-![](./Images/4.403.JobQueue_Workspace.png)
+![](./Images/4.203.Ex1.JobQueue_Workspace.png)
 
 
 <br>**4) Publish to FME Server**
 <br>Publish the workspace to FME Server by selecting **Publish to FME Server** from the File menu in FME Workbench:
 
-![](./Images/4.404.PublishToServer.png)
+![](./Images/4.204.Ex1.PublishToServer.png)
 
 When prompted in the Publish to FME Server Wizard, connect to your FME Server then publish the workspace to:
 
@@ -118,7 +118,7 @@ On Run Workspace page, fill out the parameters as follows:
 
 Next, expand the **Advanced** options on the Run Workspace page. Set the *Job Queues* parameter to **QuickTranslations** (the name of the queue created in Step 1):
 
-![](./Images/4.405.RunWorkspace_JobQueue.png)
+![](./Images/4.205.Ex1.RunWorkspace_JobQueue.png)
 
 Click **Run** at the bottom of the Run Workspace page.
 
@@ -132,11 +132,11 @@ Select the workspace that just ran to open the *Job Details* page.
 
 Click to expand the **Request Data** section. Next to the **queue** parameter, you will see the name of the specified job queue:
 
-![](./Images/4.406.VerifyJobQueue_Success.png)
+![](./Images/4.206.Ex1.VerifyJobQueue_Success.png)
 
 Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct engine. 
 
-![](./Images/4.407.CompletedJobQueue.png)
+![](./Images/4.207.Ex1.CompletedJobQueue.png)
 
 When testing, you may consider submitting the job multiple times for an added verification step, and peace of mind, but this isn't necessary of course!
 

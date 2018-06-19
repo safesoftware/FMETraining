@@ -52,7 +52,7 @@ The **DropboxConnector** transformer can access a Dropbox account and perform De
 
 Add a **Creator** transformer and a **DropboxConnector** transformer to the workspace. Join the Creator to the DropboxConnector. Add a **Logger** transformer connected to the Output port of the DropboxConnector.
 
-![](./Images/5.401.WebConnectionsWorkbench.png)
+![](./Images/5.201.Ex1.WebConnectionsWorkbench.png)
 
 
 <br>**2) Configure DropboxConnector and Create Web Connection**
@@ -64,7 +64,7 @@ Then select the drop-down for *Dropbox Connection* and select **Add Web Connecti
 
 Set the *Connection Name* to **DropboxWebConnection** and click **Authenticate...**.
 
-![](./Images/5.402.AuthenticateConnection.png)
+![](./Images/5.202.Ex1.AuthenticateConnection.png)
 
 This opens a new window with a direct, secure connection to Dropbox. Fill in the *Web Service Authentication* credentials as follows:
 
@@ -79,7 +79,7 @@ Click **Allow** to allow FME to access the Dropbox account.
 
 Your *DropboxConnector* parameters should now look like the following:
 
-![](./Images/5.403.DropboxConnectorParameters.png)
+![](./Images/5.203.Ex1.DropboxConnectorParameters.png)
 
 Click **OK** to apply the changes.
 
@@ -95,7 +95,7 @@ Click **Run** to make sure the translation is successful. Now we are ready to pu
 
 On the *Upload Connections* step, make the DropboxWebConnection is selected and click **Next**. We will authorize our web connection using the FME Server web interface.
 
-![](./Images/5.404.UploadConnections.png)
+![](./Images/5.204.Ex1.UploadConnections.png)
 
 Make sure that the workspace is registered with the **Job Submitter** FME Server Service. Click **Publish**.
 
@@ -131,7 +131,7 @@ If you have completed the Configure for HTTPS exercise, remember that the URL to
 
 Click **Manage Web Services** on the Web Connections page.
 
-![](./Images/5.405.ManageServices.png)
+![](./Images/5.205.Ex1.ManageServices.png)
 
 Select **Dropbox**. The *Editing Web Service "Dropbox"* page opens.
 
@@ -145,7 +145,7 @@ The Client Id and Client Secret are how you connect your client to the web servi
 
 Click **OK** to save these updates.
 
-![](./Images/5.413.EditWebConnection.png)
+![](./Images/5.206.Ex1.EditWebConnection.png)
 
 
 <br>**7) Authorize Web Connection**
@@ -155,7 +155,7 @@ Select *DropboxWebConnection* in your list of Web Connections.
 
 On the *Edit* page, click the **Authorize** button:
 
-![](./Images/5.406.Authorize.png)
+![](./Images/5.207.Ex1.Authorize.png)
 
 A window opens with the login screen for Dropbox. Sign in with:
 <!--**SM create new email account**-->
@@ -164,7 +164,7 @@ A window opens with the login screen for Dropbox. Sign in with:
 
 The window closes, and a message pops up:
 
-![](./Images/5.406.AuthorizedSuccessfully.png)
+![](./Images/5.208.Ex1.AuthorizedSuccessfully.png)
 
 You have now successfully authorized a Dropbox web connection in FME Server for you to use in your workspaces!
 

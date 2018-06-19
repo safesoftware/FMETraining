@@ -87,7 +87,7 @@ This SQL script creates the FME Server database and grants all privileges on the
 <br>**3) Create the FME Server Database Schema**
 <br>Exit the psql command prompt to end the current session. Open a new session (Windows Start Menu &gt; PostgreSQL &gt; SQL Shell) and now login to the database *fmeserver* as the FME Server database user - using the username and password *fmeserver*.
 
-![](./Images/4.410.SQLShell_fmeserver.png)
+![](./Images/4.208.Ex2.SQLShell_fmeserver.png)
 
 From the command prompt, run the *postgresql\_createSchema.sql* script by entering the following command:
 
@@ -158,11 +158,11 @@ Login to the FME Server web interface and select **Backup & Restore &gt; Restore
 
 Upload your saved backup configuration file from the beginning of this exercise. Navigate to *C:\Users\Administrator\Downloads\\* and locate the FME Server backup file (Hint: It has *.fsconfig* extension!). Drag-and-drop this file onto the FME Server Restore page:
 
-![](./Images/4.411.RestoreConfiguration.png)
+![](./Images/4.209.Ex2.RestoreConfiguration.png)
 
 The FME Server web interface will report if the restore is successful. If it is not, the log file is easily accessible from this page if further investigation is needed.
 
-![](./Images/4.412.RestoreSuccess.png)
+![](./Images/4.210.Ex2.RestoreSuccess.png)
 
 ---
 

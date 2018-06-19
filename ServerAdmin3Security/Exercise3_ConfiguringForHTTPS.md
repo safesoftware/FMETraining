@@ -64,7 +64,7 @@ Copy the new keystore file to the tomcat directory in the FME Server installatio
 
 	copy tomcat.keystore C:\apps\FMEServer\Utilities\tomcat\tomcat.keystore
 
-![](./Images/3.404.ConfigureForHTTPS_createKeytool.png)
+![](./Images/3.204.Ex3.ConfigureForHTTPS_createKeytool.png)
 
 
 <br>**2) Working with the Certificate**
@@ -74,7 +74,7 @@ Copy the new keystore file to the tomcat directory in the FME Server installatio
 
 You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is **tomcat**.
 
-![](./Images/3.405.ConfigureForHTTPS_selfSignedCertificate.png)
+![](./Images/3.205.Ex3.ConfigureForHTTPS_selfSignedCertificate.png)
 
 ---
 
@@ -151,35 +151,35 @@ Save and close the *context.xml* file.
 
 Restart the FME Server Application service from the **Start menu &gt; FME Server 2017.1 &gt; Restart FME Server**.
 
-Open a browser and navigate to *https://localhost:8443/fmeserver*.
+Open a browser and navigate to _https://localhost:8443/fmeserver_.
 
 You should see the FME Server login page in a secured format.
 
-![](./Images/3.406.verifyConfiguration.png)
+![](./Images/3.206.Ex3.verifyConfiguration.png)
 
 Note: If a self-signed certificate is used for testing, your browser may report the page as not secure:
 
-![](./Images/3.411.ConnectionNotSecure_Warning.png)
+![](./Images/3.206.Ex4.ConnectionNotSecure_Warning.png)
 
-For self-signed certificates, some browsers will allow you to add an exception for *https://localhost:8443/*.
+For self-signed certificates, some browsers will allow you to add an exception for _https://localhost:8443/_.
 
 
 <br>**7) Modify Service URLs to Use HTTPS**
 <br>To enable SSL for FME Server Services, login to the FME Server web interface (username and password *admin*), and select **Services** on the left sidebar.
 
-![](./Images/3.407.ServicesButton.png)
+![](./Images/3.208.Ex3.ServicesButton.png)
 
 On the *Services* page, you can update specific services or all services at once. Let's update all services. Click **Change All Hosts**
 
-![](./Images/3.413.ChangeAllHosts.png)
+![](./Images/3.209.Ex3.ChangeAllHosts.png)
 
-The *Change All Hosts* dialog opens. Make sure **Host** is set to *https://localhost:8443* and click **OK**.
+The *Change All Hosts* dialog opens. Make sure **Host** is set to _https://localhost:8443_ and click **OK**.
 
-![](./Images/3.414.ChangeAllHosts2.png)
+![](./Images/3.210.Ex3.ChangeAllHosts2.png)
 
 The URLs will be updated to their new, correct values on the Services page.
 
-![](./Images/3.410.NewServiceURLs.png)
+![](./Images/3.211.Ex3.NewServiceURLs.png)
 
 ---
 
