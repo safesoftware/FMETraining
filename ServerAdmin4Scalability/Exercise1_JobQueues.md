@@ -40,9 +40,52 @@
 
 ---
 
-Your GIS department is all onboard with FME Server and translating jobs with the web interface, but jobs are always being queued, even the quick translations. You are wondering if there is a way to set aside one of the FME Server Engines for quick translations only so that you and your fellow technical analysts do not have to wait too long for your smaller jobs to complete. With job queues you can allocate specific engines to specific tasks.
+Your GIS department is all onboard with FME Server and translating jobs with the web interface, but jobs are always being queued, even the quick translations. You are wondering if there is a way to set aside one of the FME Server Engines for quick translations only so that you and your fellow technical analysts do not have to wait too long for your smaller jobs to complete. With job queues, you can allocate specific engines to specific tasks.
 
 ---
+
+<br>**1) Create a Job Queue**
+<br>Job queues are created in the FME Server web interface.
+
+Login to the FME Server web interface and select **Admin &gt; Engines & Licensing &gt; Configure** in the left sidebar.
+
+Scroll down to the bottom of the Engines & Licensing page and select **Create Queue**.
+
+![](./Images/4.401.Create_JobQueue.png)
+
+Give it the name *Quick Translations* and click OK.
+
+
+<br>**2) Assign FME Engines**
+<br>Now that the job queue has been created, specific FME Engines – and repositories – can be assigned to the queue.
+
+Click on the *edit button*. Give the Job Queue the description of "FME Server Engine for Quick Translations," then select **&#60;localhost&#62;_Engine1** from the drop-down selection for Engines.
+
+![](./Images/4.402.JobQueue_SelectEngine.png)
+
+To save your edits click the edit button again.
+
+
+<br>**3) Create FME Workspace**
+<br>To confirm that the job queue is operating correctly, we can run a workspace in FME Server that specifies the *Quick Translations* queue. For this exercise, we do not need a complicated workspace, just a job that will run.
+
+Open FME Workbench and create a new Blank Workspace.
+
+Add a **Creator** transformer and connect it to a **Logger** transformer.
+
+![](./Images/4.403.JobQueue_Workspace.png)
+
+
+<br>**4) Publish to FME Server**
+<br>Publish the workspace to FME Server by selecting **Publish to FME Server** from the File menu in FME Workbench:
+
+![](./Images/4.404.PublishToServer.png)
+
+When prompted in the Publish to FME Server Wizard, connect to your FME Server then publish the workspace to:
+
+- **Repository Name:** Training
+- **Workspace Name:** JobQueue_TestJob.fmw
+- **Service:** Job Submitter
 
 <!--Miss Vector says...-->
 
@@ -63,57 +106,8 @@ If you have completed the Configure for HTTPS exercise, remember that the URL to
 </tr>
 </table>
 
-
-<br>**1) Create a Job Queue**
-<br>Job queues are created in the FME Server web interface.
-
-Login to the FME Server web interface and select **Admin &gt; Engines & Licensing &gt; Configure** in the left sidebar.
-
-Scroll down to the bottom of the Engines & Licensing page and select **Create Queue**.
-
-![](./Images/4.401.Create_JobQueue.png)
-
-Give it the name *Quick Translations* and click OK.
-
-
-<br>**2) Assign FME Engines**
-<br>Now that the job queue has been created, specific FME Engines – and repositories – can be assigned to the queue.
-
-Click on the *edit button*. Select **localhost_Engine1** from the drop-down selection for Engines.
-
-![](./Images/4.402.JobQueue_SelectEngine.png)
-
-To save your edits click the edit button again.
-
-
-<br>**3) Create FME Workspace**
-<br>To confirm that the job queue is operating correctly, we can run a workspace in FME Server that specifies the *Quick Translations* queue. For this exercise we do not need a complicated workspace, just a job that will run.
-
-Open FME Workbench and create a new Blank Workspace.
-
-Add a **Creator** transformer and connect it to a **Logger** transformer.
-
-![](./Images/4.403.JobQueue_Workspace.png)
-
-
-<br>**4) Publish to FME Server**
-<br>Publish the workspace to FME Server by selecting **Publish to FME Server** from the File menu in FME Workbench:
-
-![](./Images/4.404.PublishToServer.png)
-
-When prompted in the Publish to FME Server Wizard, publish the workspace to:
-
-- **Repository Name:** Training
-- **Workspace Name:** JobQueue_TestJob.fmw
-- **Service:** Job Submitter
-
-
-<br>**5) Connect to FME Server**
-<br>Open the FME Server web interface, either through the Web Interface shortcut in the Windows Start Menu or directly in your web browser.
-
-
-<br>**6) Assign and Run Workspace in Job Queue**
-<br>Once you have a published to FME Server, you can run the **JobQueue_TestJob** workspace and set the Job Queue parameter.
+<br>**5) Assign and Run Workspace in Job Queue**
+<br>Back in the FME Server Web Interface, once you have a published to FME Server, you can run the **JobQueue_TestJob** workspace and set the Job Queue parameter.
 
 Select *Run Workspace* in the left sidebar of the FME Server web interface.
 
@@ -129,18 +123,22 @@ Next, expand the **Advanced** options on the Run Workspace page. Set the *Job Qu
 Click **Run** at the bottom of the Run Workspace page.
 
 
-<br>**7) Verify Job Queue Configuration**
+<br>**6) Verify Job Queue Configuration**
 <br>You want to make sure that the job was routed to the correct engine and not just the first available engine.
 
 In the left sidebar of the FME Server web interface select **Jobs &gt; Completed**.
 
 Select the workspace that just ran to open the *Job Details* page.
 
-Click to expand the **Request Data** section. Next to the **queue** parameter you will see the name of the specified job queue:
+Click to expand the **Request Data** section. Next to the **queue** parameter, you will see the name of the specified job queue:
 
 ![](./Images/4.406.VerifyJobQueue_Success.png)
 
-Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct engine. When testing, you may consider submitting the job multiple times for an added verification step, and piece of mind, but this isn't necessary of course!
+Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct engine. 
+
+![](./Images/4.407.CompletedJobQueue.png)
+
+When testing, you may consider submitting the job multiple times for an added verification step, and peace of mind, but this isn't necessary of course!
 
 ---
 
