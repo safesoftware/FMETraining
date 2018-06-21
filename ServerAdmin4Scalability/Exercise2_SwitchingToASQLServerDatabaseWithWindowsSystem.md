@@ -7,7 +7,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">[UNDER REVIEW] Changing the FME Server Database Provider</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Changing the FME Server Database Provider</span>
 </td>
 </tr>
 
@@ -70,11 +70,11 @@ Select *Download* to save a backup file of FME Server - this can be thought of a
 <br>**2) Initial Database Configuration**
 <br>For the purposes of this exercise a separate SQL Server database has been installed to the Training Machines.
 
-The two SQL scripts we'll be using can be found at: **C:\Program Files\FMEServer\Server\database\sqlserver\**
+The two SQL scripts we'll be using for this step and the next (3) can be found at: **C:\Program Files\FMEServer\Server\database\sqlserver\**
   - sqlserver_createDB.sql
   - sqlserver_createUser.sql
 
-The next step is to configure this database for FME Server. From the Windows Start Menu, open **Command Prompt**.
+**Create the FMESERVER database schema**: The next step is to configure the local SQL Server database for FME Server. From the Windows Start Menu, open **Command Prompt**.
 
 First, we need to create a new database using the sqlserver_createDB.sql script.  You can review the SQL scripts in a text editor. In the **Command Prompt** run the following:
 
@@ -89,10 +89,10 @@ The output should look like this now in the **Command Prompt** window:
 This confirms the new Database "fmeserver" was created.  This SQL script creates all FME Server related tables, indexes, views, and triggers.
 
 
-<br>**3) Create the FME Server Database Schema**
+<br>**3) Create the FME Server Database User**
 
 Next, we will create the new user *fmeserver* and grant all necessary permissions to the new user.
-This SQL script creates a new user *fmeserver* with password *fmeserver*.
+This SQL script creates a new user *fmeserver* with password *fmeserver*.  It uses the sqlserver_createUser.sql script.
 
     sqlcmd -S FMETRAINING -i "C:\Program Files\FMEServer\Server\database\sqlserver\sqlserver_createUser.sql"
 
@@ -102,7 +102,7 @@ The new user will be created with the appropriate login and permissions to acces
 
 <br>Exit the **Command Prompt**.
 
-<!-- My add SQL Server Studio steps to confirm database and user was created successfully.  This is optional to include but would help a new user confirm the database and user were created. -->
+<!-- May add SQL Server Studio steps to confirm database and user was created successfully.  This is optional to include but would help a new user confirm the database and user were created. -->
 
 <br>**5) Configure the Database Connection**
 <br>Open the *fmeCommonConfig.txt* file, located in the *C:\apps\FMEServer\Server\\* directory, using a text editor in administrator mode.
