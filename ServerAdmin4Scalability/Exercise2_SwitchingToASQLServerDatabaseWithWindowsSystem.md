@@ -66,6 +66,26 @@ Find **Backup & Restore** in the left sidebar, under the Admin heading in the FM
 
 Select *Download* to save a backup file of FME Server - this can be thought of as a "snapshot." It will take a short time to run processes in the background to compile the FME Server backup, and once this is complete, it will automatically save to your local downloads folder.
 
+---
+
+<!--Tip Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you have a PostgreSQL installation instead of SQLServer, you can follow the instructions in the <a href="https://safe-software.gitbooks.io/fme-server-administration-training-2017/content/ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.html">Server Administrator 2017 Course</a>. Just note that the path names might have changed slightly from 2017 to 2018. 
+</span>
+</td>
+</tr>
+</table>
 
 <br>**2) Initial Database Configuration**
 <br>For the purposes of this exercise a separate SQL Server database has been installed to the Training Machines.
