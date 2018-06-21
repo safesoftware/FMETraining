@@ -58,19 +58,46 @@ Set the following values when prompted:
 
 Enter *yes* when prompted if the input is correct. When prompted for the key password for &lt;tomcat&gt;, press RETURN.
 
-A new keystore is created in *C:\apps\FMEServer\Utilities\jre\bin\\*
-
-Copy the new keystore file to the tomcat directory in the FME Server installation:
-
-	copy tomcat.keystore C:\apps\FMEServer\Utilities\tomcat\tomcat.keystore
 
 ![](./Images/3.204.Ex3.ConfigureForHTTPS_createKeytool.png)
 
+A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*
+
+Copy the new keystore file to the tomcat directory in the FME Server installation:
+
+	copy tomcat.keystore "C:\Program Files\FMEServer\Utilities\tomcat\tomcat.keystore"
+
+
+---
+
+<!--Tip Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Ensure the keystore file is **COPIED** NOT moved.
+<br>This is most important when working with a
+<br>distributed FME Server Core and FME Server
+<br>Web Application.
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 <br>**2) Working with the Certificate**
 <br>The new keystore must be imported into the FME Server keystore for trusted certificates. In the command prompt, enter the following command:
 
-	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore C:\apps\FMEServer\Utilities\jre\lib\security\cacerts
+	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore "C:\Program Files\FMEServer\Utilities\jre\lib\security\cacerts"
 
 You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is **tomcat**.
 
@@ -79,14 +106,14 @@ You will be prompted to enter two passwords. One for the destination keystore an
 ---
 
 **Configuring Tomcat**
-<br>In the next steps, we need to modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\apps\FMEServer\Utilities\tomcat\conf\\*
+<br>In the next steps, we need to modify three configuration files of Apache Tomcat. All three files are located in the FME Server installation directory: *C:\Program Files\FMEServer\Utilities\tomcat\conf\\*
 
 It is a good idea to make copies of any files you will be changing and place them in a separate directory until you have verified that the edits are working successfully.
 
 ---
 
 **3) Configure server.xml**
-<br>Open *C:\apps\FMEServer\Utilities\tomcat\conf\server.xml* file in a text editor in administrator mode.
+<br>Open *C:\Program Files\FMEServer\Utilities\tomcat\conf\server.xml* file in a text editor in administrator mode.
 
 Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
 
@@ -99,7 +126,7 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
 		enableLookups="true" disableUploadTimeout="true"
 		acceptCount="100" maxThreads="200"
 		scheme="https" secure="true" SSLEnabled="true"
-		keystoreFile="C:\apps\FMEServer\Utilities\tomcat\tomcat.keystore"
+		keystoreFile="C:\Program Files\FMEServer\Utilities\tomcat\tomcat.keystore"
 		keystorePass="tomcat"
 		clientAuth="false" sslEnabledProtocols="TLSv1,TLSv1.1,TLSv1.2"
 		sslImplementationName="org.apache.tomcat.util.net.jsse.JSSEImplementation"
@@ -149,7 +176,7 @@ Save and close the *context.xml* file.
 <br>**6) Verify the Configuration**
 <br>Now that we have made our changes, we want to verify that HTTPS was configured correctly for FME Server.
 
-Restart the FME Server Application service from the **Start menu &gt; FME Server 2017.1 &gt; Restart FME Server**.
+Restart the FME Server Application service from the **Start menu &gt; FME Server 2018.0 &gt; Restart FME Server**.
 
 Open a browser and navigate to _https://localhost:8443/fmeserver_.
 
@@ -159,7 +186,7 @@ You should see the FME Server login page in a secured format.
 
 Note: If a self-signed certificate is used for testing, your browser may report the page as not secure:
 
-![](./Images/3.206.Ex4.ConnectionNotSecure_Warning.png)
+![](./Images/3.207.Ex3.ConnectionNotSecure_Warning.png)
 
 For self-signed certificates, some browsers will allow you to add an exception for _https://localhost:8443/_.
 
@@ -180,6 +207,34 @@ The *Change All Hosts* dialog opens. Make sure **Host** is set to _https://local
 The URLs will be updated to their new, correct values on the Services page.
 
 ![](./Images/3.211.Ex3.NewServiceURLs.png)
+
+
+
+---
+
+<!--Tip Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you are making use of WebSockets with FME Server
+<br> please review the FME Server Admin Guide and
+<br> the section titled
+[Enable SSL on the WebSocket Server (Optional)](http://docs.safe.com/fme/2018.0/html/FME_Server_Documentation/Content/AdminGuide/configuring_for_https.htm)
+
+
+</span>
+</td>
+</tr>
+</table>
 
 ---
 
