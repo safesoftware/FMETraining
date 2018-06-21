@@ -66,6 +66,26 @@ Find **Backup & Restore** in the left sidebar, under the Admin heading in the FM
 
 Select *Download* to save a backup file of FME Server - this can be thought of as a "snapshot." It will take a short time to run processes in the background to compile the FME Server backup, and once this is complete, it will automatically save to your local downloads folder.
 
+---
+
+<!--Tip Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If you have a PostgreSQL installation instead of SQLServer, you can follow the instructions in the <a href="https://safe-software.gitbooks.io/fme-server-administration-training-2017/content/ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.html">Server Administrator 2017 Course</a>. Just note that the path names might have changed slightly from 2017 to 2018. 
+</span>
+</td>
+</tr>
+</table>
 
 <br>**2) Initial Database Configuration**
 <br>For the purposes of this exercise a separate SQL Server database has been installed to the Training Machines.
@@ -74,9 +94,11 @@ The two SQL scripts we'll be using for this step and the next (3) can be found a
   - sqlserver_createDB.sql
   - sqlserver_createUser.sql
 
-**Create the FMESERVER database schema**: The next step is to configure the local SQL Server database for FME Server. From the Windows Start Menu, open **Command Prompt**.
+We need to create the FMESERVER database schema by configuring the local SQL Server database for FME Server. From the Windows Start Menu open **Command Prompt**.
 
-First, we need to create a new database using the sqlserver_createDB.sql script.  You can review the SQL scripts in a text editor. In the **Command Prompt** run the following:
+<!--**Create the FMESERVER database schema**: The next step is to configure the local SQL Server database for FME Server. From the Windows Start Menu, open **Command Prompt**. -->
+
+First, create a new database using the sqlserver_createDB.sql script.  You can review the SQL scripts in a text editor if you wish, but it isn't necessary. In the **Command Prompt** run the following:
 
     sqlcmd -S FMETRAINING -i "C:\Program Files\FMEServer\Server\database\sqlserver\sqlserver_createDB.sql"
 
@@ -105,11 +127,11 @@ The new user will be created with the appropriate login and permissions to acces
 <!-- May add SQL Server Studio steps to confirm database and user was created successfully.  This is optional to include but would help a new user confirm the database and user were created. -->
 
 <br>**5) Configure the Database Connection**
-<br>Open the *fmeCommonConfig.txt* file, located in the *C:\apps\FMEServer\Server\\* directory, using a text editor in administrator mode.
+<br>Open the *fmeCommonConfig.txt* file, located in the *C:\Program Files\FMEServer\Server\\* directory, using a text editor in administrator mode.
 
 Under the heading *FME SERVER SETTINGS START*, locate the section titled *Database Connection*. We want to disable the default connection to the Postgres database and instruct FME Server to connect to the SQL Server database.
 
-Comment out the *DB_TYPE=postgresql* section and uncomment the *DB_TYPE=sqlserver* section.  The final edits should look at as follows:
+Comment out the *DB_TYPE=postgresql* section, by adding a number sign (#) in front of each line and uncomment the *DB_TYPE=sqlserver* section.  The final edits should look at as follows:
 
     #DB_JDBC_URL=jdbc:postgresql://localhost:5432/fmeserver
     #DB_TYPE=postgresql
@@ -187,7 +209,7 @@ The FME Server web interface will report if the restore is successful. If it is 
 ![](./Images/4.210.Ex2.RestoreSuccess.png)
 
 <br>**8) Update Service URLs to HTTPS**
-Finally, since restoring the configuration does not update the service URLs we must redo the step from Chapter 3, Exercise3.  The reason the service URLs are not updated when restoring a configuration is because we may be restoring to an entirely different system with different URLs.
+Finally, since restoring the configuration does not update the service URLs we must redo the step from Chapter 3, Exercise3.  The reason the service URLs are not updated when restoring a configuration is that we may be restoring to an entirely different system with different URLs.
 
 <br>To enable SSL for FME Server Services, login to the FME Server web interface (username and password *admin*), and select **Services** on the left sidebar.
 
