@@ -44,11 +44,15 @@ Open a **Command Prompt** as an administrator.
 
 Navigate to the FME Server Java bin directory:
 
+<pre>
 	cd C:\Program Files\FMEServer\Utilities\jre\bin\
+</pre>
 
 Run the following command to create a new keystore file:
 
+<pre>
 	keytool -genkey -alias tomcat -keyalg RSA -keystore tomcat.keystore
+</pre>
 
 Set the following values when prompted:
 
@@ -65,7 +69,9 @@ A new keystore is created in *C:\Program Files\FMEServer\Utilities\jre\bin\\*
 
 Copy the new keystore file to the tomcat directory in the FME Server installation:
 
+<pre>
 	copy tomcat.keystore "C:\Program Files\FMEServer\Utilities\tomcat\tomcat.keystore"
+</pre>
 
 
 ---
@@ -84,9 +90,7 @@ Copy the new keystore file to the tomcat directory in the FME Server installatio
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 Ensure the keystore file is **COPIED** NOT moved.
-<br>This is most important when working with a
-<br>distributed FME Server Core and FME Server
-<br>Web Application.
+<br>This is most important when working with a distributed FME Server Core and FME Server Web Application.
 </span>
 </td>
 </tr>
@@ -97,7 +101,9 @@ Ensure the keystore file is **COPIED** NOT moved.
 <br>**2) Working with the Certificate**
 <br>The new keystore must be imported into the FME Server keystore for trusted certificates. In the command prompt, enter the following command:
 
+<pre>
 	keytool -importkeystore -srckeystore tomcat.keystore -destkeystore "C:\Program Files\FMEServer\Utilities\jre\lib\security\cacerts"
+</pre>
 
 You will be prompted to enter two passwords. One for the destination keystore and one for the source keystore. The password for the destination keystore is **changeit**. The password for the source keystore is **tomcat**.
 
@@ -117,11 +123,14 @@ It is a good idea to make copies of any files you will be changing and place the
 
 Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *className="org.apache.catalina.core.AprLifecycleListener"* and change the *“on”* value to *“off”*.
 
-		<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="off" />
+<pre>
+	<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="off" />
+</pre>
 
 Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
 
-		<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
+<pre>
+	<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
 		port="8443" minSpareThreads="5"
 		enableLookups="true" disableUploadTimeout="true"
 		acceptCount="100" maxThreads="200"
@@ -138,8 +147,9 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
 		SSL_RSA_WITH_3DES_EDE_CBC_SHA"
 		URIEncoding="UTF8" />
 
-		<Connector port="80" protocol="HTTP/1.1"
+	<Connector port="80" protocol="HTTP/1.1"
 		redirectPort="8443"/>
+</pre>
 
 Save and close the *server.xml* file.
 
@@ -149,15 +159,17 @@ Save and close the *server.xml* file.
 
 Add the following code block to the end of the file, just before the closing *&lt;/web-app&gt;* element:
 
-		<security-constraint>
+<pre>
+	<security-constraint>
 		<web-resource-collection>
-		<web-resource-name>HTTPSOnly</web-resource-name>
-		<url-pattern>/*</url-pattern>
+			<web-resource-name>HTTPSOnly</web-resource-name>
+			<url-pattern>/*</url-pattern>
 		</web-resource-collection>
 		<user-data-constraint>
-		<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
 		</user-data-constraint>
-		</security-constraint>
+	</security-constraint>
+</pre>
 
 Save and close the *web.xml* file.
 
@@ -167,8 +179,10 @@ Save and close the *web.xml* file.
 
 Add the following to the end of the file, just before the closing *&lt;/context&gt;* element:
 
-		<Valve className="org.apache.catalina.authenticator.SSLAuthenticator"
+<pre>
+	<Valve className="org.apache.catalina.authenticator.SSLAuthenticator"
 		disableProxyCaching="false" />
+</pre>
 
 Save and close the *context.xml* file.
 
@@ -225,12 +239,7 @@ The URLs will be updated to their new, correct values on the Services page.
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you are making use of WebSockets with FME Server
-<br> please review the FME Server Admin Guide and
-<br> the section titled
-[Enable SSL on the WebSocket Server (Optional)](http://docs.safe.com/fme/2018.0/html/FME_Server_Documentation/Content/AdminGuide/configuring_for_https.htm)
-
-
+If you are making use of WebSockets with FME Server please review the FME Server Admin Guide and the section titled <a href="http://docs.safe.com/fme/2018.0/html/FME_Server_Documentation/Content/AdminGuide/configuring_for_https.htm">Enable SSL on the WebSocket Server (Optional)</a>
 </span>
 </td>
 </tr>
