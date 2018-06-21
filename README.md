@@ -1,4 +1,4 @@
- <!--This file duplicates a little of the content to follow, but is added here because the content of this file is used for the landing page on GitBook-->
+<!--This file duplicates a little of the content to follow, but is added here because the content of this file is used for the landing page on GitBook-->
 
 # FME Server Administration Training Manual #
 
@@ -6,7 +6,6 @@ This is the manual for the training course System Administration for FME Server.
 
 ![](./ServerAdmin0Introduction/Images/0.000.ServerHomeScreen.png)
 
-<!--Comment to force gitbook update-->
 The training will assist you to install and administer an FME Server installation and its users.
 
 ## Course Structure ##
@@ -15,10 +14,12 @@ The full course is made up of seven sections. These sections are:
 
 - Planning an FME Server Installation
 - FME Server Connectivity
-- FME Server Customization/Enterprise
-- Scalability and Performance
-- Migration and Upgrades
 - FME Server Security
+- Scalability and Performance
+- FME Server Customization
+- Migration and Upgrades
+- Troubleshooting
+
 - Troubleshooting
 
 ## Current Status ##
