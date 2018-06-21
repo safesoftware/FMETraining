@@ -129,8 +129,8 @@ Locate the *SSLEngine* setting in the *&lt;Listener&gt;* element, including *cla
 
 Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyote.http11.Http11NioProtocol"* and replace it with the following:
 
-<pre>
-	<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
+
+	`<Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
 		port="8443" minSpareThreads="5"
 		enableLookups="true" disableUploadTimeout="true"
 		acceptCount="100" maxThreads="200"
@@ -148,8 +148,8 @@ Locate the *&lt;Connector&gt;* element that contains *protocol="org.apache.coyot
 		URIEncoding="UTF8" />
 
 	<Connector port="80" protocol="HTTP/1.1"
-		redirectPort="8443"/>
-</pre>
+		redirectPort="8443"/>`
+
 
 Save and close the *server.xml* file.
 
