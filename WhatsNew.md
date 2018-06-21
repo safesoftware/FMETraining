@@ -19,7 +19,9 @@ These changes are for the FME Server Administration Training Course.
 
 
 ### Chapter 1 - Installation ###
+- Updated Server Architecture Diagram
 - Updated Database and Web Connections Sections
+  - Added Tip for External Systems
 - Updated FME Version Information
 - Updated the Installation Types.
 - Added notes on 2018 Engine Only Updates
@@ -27,6 +29,7 @@ These changes are for the FME Server Administration Training Course.
 - Added FME Server Job Queue Component
 - Updated Planning for Fault Tolerance.
   - Reworked Fault Tolerance
+  - Added Note for UDB and SMTP Publisher
 - Updated Chapter Review
 
 
@@ -34,6 +37,7 @@ These changes are for the FME Server Administration Training Course.
 ### Chapter 2 - Connectivity ###
 - Added Port for FME Server Queue Component
 - Tweaked FME Server version for CORS.
+- Updated Port Diagram
 
 
 ### Chapter 3 - Security ###
@@ -43,6 +47,7 @@ These changes are for the FME Server Administration Training Course.
 - Added information on installing FME Server and using a Domain Service account on new system.
 - Added note on using multiple domains containing common usernames.
 - Added note on IWA and SSO with web browsers related to automatic login.
+- Updated Command Windows steps for Exercise 3
 
 
 ### Chapter 4 - Scalability###
@@ -52,7 +57,7 @@ These changes are for the FME Server Administration Training Course.
 - Added information on reasons for distributed engines
 - Added note on post installation scripts 2018.0 vs 2018.1
 - Updated Images in Exercise 1 & 2.
-- Updated instructions in Exercise 2.
+- Updated instructions in Exercise 2 for SQL Server
 
 
 ### Chapter 5 - Customization ###
