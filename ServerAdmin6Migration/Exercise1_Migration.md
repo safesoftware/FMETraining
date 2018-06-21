@@ -30,7 +30,7 @@
 
 ---
 
-Your organization has decided to upgrade FME Server to the latest version just released. You want to make sure all the configurations, settings, and resources you have made to your current FME Server will be transfered over to the new FME Server installation. By backing up your current FME Server and then migrating the configurations and settings to the new version you will save lots of time!
+Your organization has decided to upgrade FME Server to the latest version just released. You want to make sure all the configurations, settings, and resources you have made to your current FME Server will be transferred over to the new FME Server installation. By backing up your current FME Server and then migrating the configurations and settings to the new version you will save lots of time!
 
 ---
 
@@ -95,7 +95,7 @@ For this exercise, we will backup only a couple of the log files. Go to **Resour
 
 Click **Download** and save these log files in the same location where you saved your **BackupFMEServer** configuration and your configuration files.
 
-Log files from FME Server can be backed up but *cannot be restored* to a new instance of FME Server. However, it is still a good idea to backup log files in case you need to reference them later on. If you do not backup your log files, they will disappear when you uninstall FME Server.
+Log files from FME Server can be backed up but *can not be restored* to a new instance of FME Server. However, it is still a good idea to backup log files in case you need to reference them later on. If you do not backup your log files, they will disappear when you uninstall FME Server.
 
 ---
 
