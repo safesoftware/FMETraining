@@ -103,6 +103,38 @@ A notification will appear in the top right of the web browser window to indicat
 Note: If Miss Vector belonged to any Active Directory groups, we could have instead imported that as an FME Server Role – and all users that are a member of would be imported automatically.
 
 
+
+<!--Tip Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP: Import Error</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+When importing users from Active Directory you may encounter this message.  
+This is because a username of the same value already exists in the SYSTEM users.
+<br>
+<br><br><img src="./Images/3.215.Ex2.ImportUserError.png">
+<br><br>It is recommended that you remove the SYSTEM user account, and reimport the Active Directory user.  
+<br>This error can also occur if you are importing users from a second domain that contains
+<br>a same named user as the first domain. In this case it will be necessary to provide a
+<br>different username on this dialog to represent the user from the second domain.  
+<br><strong>NOTE</strong>: FME Server creates an aliase for the imported usernames and this is linked to the
+<br>user account in the Active Directory.
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+
 <br>**4) Configure User Permissions**
 <br>After the Active Directory user is imported to FME Server, you must configure the permissions.
 
