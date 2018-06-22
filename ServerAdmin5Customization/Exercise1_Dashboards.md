@@ -44,11 +44,6 @@ As your role as FME Server Administrator, you are responsible for managing and m
 
 ---
 
-
-<br>**1)Update workspaces**
-
----
-
 <!--Warning Section--> 
 
 <table style="border-spacing: 0px">
@@ -69,6 +64,8 @@ Only complete step 1 if you have finished the Configuring for HTTPS exercise. If
 </table>
 
 ---
+
+<br>**1)Update workspaces**
 
 <br>It is a known issue that when you configure FME Server with a self-signed certificate that Dashboards will fail. To fix this we will need to republish the dashboard workspaces that have a parameter changed in the HTTPCallers. For more detailed information about this issue, see the [FME Server Dashboards Troubleshooting](https://knowledge.safe.com/articles/55053/fme-server-troubleshooting-fme-server-dashboards.html) article. 
 
