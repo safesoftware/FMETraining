@@ -10,12 +10,10 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Configuring Dashboards</span>
 </td>
 </tr>
-
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Resources\ServerAdmin\DropboxWebConnection.xml</td>
+<td style="border: 1px solid darkorange">N/A</td>
 </tr>
-
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
 <td style="border: 1px solid darkorange">Monitor FME Server health with a dashboard</td>
@@ -28,7 +26,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\JobHistoryStatisticsGathering.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\Customization-Ex1-JobHistoryStatisticsGathering.fmw</td>
 </tr>
 
 <tr>
@@ -41,11 +39,6 @@
 ---
 
 As your role as FME Server Administrator, you are responsible for managing and maintaining the health of your company's FME Server. To easily monitor the health FME Server has default dashboards that can be enabled. 
-
----
-
-
-<br>**1)Update workspaces**
 
 ---
 
@@ -70,9 +63,10 @@ Only complete step 1 if you have finished the Configuring for HTTPS exercise. If
 
 ---
 
+<br>**1)Update workspaces**
 <br>It is a known issue that when you configure FME Server with a self-signed certificate that Dashboards will fail. To fix this we will need to republish the dashboard workspaces that have a parameter changed in the HTTPCallers. For more detailed information about this issue, see the [FME Server Dashboards Troubleshooting](https://knowledge.safe.com/articles/55053/fme-server-troubleshooting-fme-server-dashboards.html) article. 
 
-<br>In FME Desktop, open the JobHistoryStatisticGathering.fmw workspace and publish it to FME Server. Ensure that the Repository is set to Dashboards. A warning message will appear, click Yes to overwrite the existing workspace. This is the controller workspace, now that it is updated we can run our other dashboards. 
+<br>In FME Desktop, open the Customization-Ex1-JobHistoryStatisticsGathering.fmw workspace and publish it to FME Server. Ensure that the Repository is set to Dashboards and rename the workspace to JobHistoryStatisticsGathering.fmw. When publishing, a warning message will appear, click Yes to overwrite the existing workspace. This is the controller workspace, now that it is updated, we can run our other dashboards. 
 
 <br>**2) Login to FME Server**
 <br>Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
@@ -80,7 +74,7 @@ Only complete step 1 if you have finished the Configuring for HTTPS exercise. If
 <br>**3) Run dashboard workspaces**
 <br>We first need to enable dashboards before they will appear on the Dashboards page. FME Server comes with five default dashboards which are triggered by running a workspace. 
 
-<br>On the side menu bar click on Run Workspace. On the Run Workspace page, select Dashboards as the repository. Then select JobHistoryStatisticsGathering.fmw as the workspace. In the parameters set the username and password to *admin* and click Run. 
+<br>On the side menu bar click on Run Workspace. On the Run Workspace page, select Dashboards as the repository. Then select JobHistoryStatisticsGathering.fmw as the workspace. In the parameters set the username and password to *admin* and click Run:
 
 ![](./Images/5.301.RunJobHistoryDashboard.png)
 
@@ -91,7 +85,7 @@ Only complete step 1 if you have finished the Configuring for HTTPS exercise. If
 <br>**4) View a dashboard**
 <br>On the side menu bar click on Dashboards. This is the Dashboard page where any dashboards that have been run can be viewed. 
 
-<br>Select the DailyTotalRunningTime to view the dashboard. Since we've only ran the austinApartments.fmw workspace once, our dashboard doesn't tell us much, but overtime dashboards become a valuable resource for the server administrator. 
+<br>Select the DailyTotalRunningTime to view the dashboard. Since we've only ran the austinApartments.fmw workspace once, our dashboard doesn't tell us much, but overtime dashboards become a valuable resource for the server administrator: 
 
 ![](./Images/5.302.TotalRunTime.png)
 

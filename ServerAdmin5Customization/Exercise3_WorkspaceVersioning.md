@@ -23,12 +23,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\Customization-Ex3-Versioning-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\...fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\Customization-Ex3-Versioning-Complete.fmw</td>
 </tr>
 
 </table>
