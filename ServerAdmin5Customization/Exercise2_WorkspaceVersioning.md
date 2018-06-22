@@ -37,7 +37,7 @@
 
 Your GIS department has two staff members that regularly author and make changes to their own workspaces and others when necessary.  On a few occasions, changes were made to workspaces that caused a workspace to fail after the edit was made. The original working workspace was not backed up and was lost. This resulted in extra time to uncover the cause and restore the previous working workspace.
 
-Your Management has learned about the new Version Control feature in FME Server and wonder if it might reduce these issues from occurring.  Your task is to enable Version Control and ensure it is functioning properly.
+Your Management has learned about the new Version Control feature in FME Server and wonder if it might reduce these issues from occurring.  Your task is to enable Version Control and ensure it is functioning correctly.
 
 ---
 
@@ -84,7 +84,7 @@ Add a **Creator** transformer to the workspace.
 
 Save the workspace.
 
-br>**4) Run the Workspace**
+**4) Run the Workspace**
 <br>It is a best practice to first run the workspace in FME Desktop before uploading it to FME Server. If the workspace does not run in FME Desktop, then it will not run in FME Server!
 
 Click **Run** to make sure the translation is successful. Now we are ready to publish the workspace to FME Server.
@@ -100,11 +100,11 @@ Next, you should see a new button on the  Publish to FME Server dialog called **
 
 ![](./Images/5.214.Ex2.CommitButton.png)
 
-Click the **Commit** button and the following dialog will appear:
+Click the **Commit** button, and the following dialog will appear:
 
 ![](./Images/5.215.Ex2.VersionOptions1.png)
 
-Click the check box and populate the Text box with **Version 0.1 Initial Workspace** and click **OK**.
+Click the checkbox and populate the Textbox with **Version 0.1 Initial Workspace** and click **OK**.
 
 ![](./Images/5.216.Ex2.VersionOptions2.png)
 
@@ -133,11 +133,11 @@ Click **OK** to dismiss the dialog.
 
 <br>**6) Downloading a versioned workspace**
 
-When it is necessary to download a versioned workspace, and you want to retrieve a particular version you must do this from the Web UI.  FME Workbench cannot select a versioned workspace through the Download Wizard.  Lets download the Version 0.1 of the Workspace we just published.
+When it is necessary to download a versioned workspace, and you want to retrieve a particular version you must do this from the Web UI.  FME Workbench cannot select a versioned workspace through the Download Wizard.  Download the Version 0.1 of the Workspace we just published.
 
 Log back into FME Server as *admin* and in the FME Server Web UI, click on the **Repositories** in the left menu.  This will list all Repositories.  Next click on the **Version Test** repository.  This will display the workspaces inside this repository. You should only see the one workspace called *VersionControTest.fmw*.
 
-Lets review the Version History again.  Click the checkbox next to the workspace and then click the **History** button.
+Let's review the Version History again.  Click the checkbox next to the workspace and then click the **History** button.
 
 ![](./Images/5.220.Ex2.WorkspaceVersionHistory.png)
 
@@ -145,39 +145,39 @@ This will return the following dialog window list the available versions.
 
 ![](./Images/5.221.Ex2.ViewWorkspaceVersions.png)
 
-Lets download this workspace and open it in FME Desktop. In the dialog below click on the *Download* icon next to the workspace you wish to download.  In this example that is *VersionControlTest.fmw & Version 0.1 - Initial Workspace*.  Remember where you saved the workspace if you selected another location then the default one.  
+Let's download this workspace and open it in FME Desktop. In the dialog below click on the *Download* icon next to the workspace, you wish to download.  In this example that is *VersionControlTest.fmw & Version 0.1 - Initial Workspace*.  Remember where you saved the workspace if you selected another location then the default one.  
 
 ![](./Images/5.222.Ex2.DownloadVersionWorksapce.png)
 
 <br>**7) Edit workspace and republish same workspace**
 
-Next we want to make a small edit to the workspace and republish it to FME Server. We will then visit the Web UI and Version the workspace there after have successfully tested that it works.
+Next, we want to make a small edit to the workspace and republish it to FME Server. We will then visit the Web UI and Version the workspace thereafter have successfully tested that it works.
 
-Lets open the workspace that we downloaded in step 6. The default download location is **C:\Users\Administrator\Downloads** and the workspace should called *VersionControlTest.fmw*
+Open the workspace that we downloaded in step 6. The default download location is **C:\Users\Administrator\Downloads** and the workspace should called *VersionControlTest.fmw*
 
 With the workspace open in FME Workbench, add a *Logger* to the *Creator* transformer.
 
 ![](./Images/5.223.Ex2.SimpleWorkspaceUpdate.png)
 
-Save the workspace and Run the workspace.  Next lets publish it to FME Server.
+Save the workspace and Run the workspace.  Next, let's publish it to FME Server.
 
-This time, **DO NOT** use the commit button on the publish wizard.  We will commit the workspace using the Web UI in the next step.
+This time, **DO NOT** use the commit button on the publish wizard. You will get a warning that the workspace already exists in the repository, this is ok since we have version control enabled. Click Yes to overwrite the workspace, we will commit the workspace using the Web UI in the next step.
 
 ![](./Images/5.224.Ex2.PublishtoFMEServer2.png)
 
-<br>**8) Version the Workspace using FME Server Web UI**
+**8) Version the Workspace using FME Server Web UI**
 
 We've published the workspace and our colleague has confirmed the workspace runs.  Now we will create a new version for the workspace using the Web UI.
 
 Log into FME Server Web UI with the *admin* user.  
 
-Lets review the Version History again for the workspace.  Click on *Repositories* in the left menu and navigate to the **Version Test** repository, and finally, click on the repository name to view the contents.  
+Review the Version History again for the workspace.  Click on *Repositories* in the left menu and navigate to the **Version Test** repository, and finally, click on the repository name to view the contents.  
 
 There should be one workspace called **VersionControlTest.fmw**.  
 
 ![](./Images/5.225.Ex2.Workspace.png)
 
-Next select the workspace and click the Commit button.
+Next, select the workspace and click the Commit button.
 
 This will open the *Commit Item* dialog.  Enter a commit comment and click the **Commit** button.
 
@@ -226,10 +226,5 @@ By completing this exercise you have learned how to:
 </td>
 </tr>
 </table>
-
-
-
-
-
 
 ---

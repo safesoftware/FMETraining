@@ -89,7 +89,7 @@ Copy the new keystore file to the tomcat directory in the FME Server installatio
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Ensure the keystore file is **COPIED** NOT moved.
+Ensure the keystore file is <strong>COPIED</strong> NOT moved.
 <br>This is most important when working with a distributed FME Server Core and FME Server Web Application.
 </span>
 </td>
