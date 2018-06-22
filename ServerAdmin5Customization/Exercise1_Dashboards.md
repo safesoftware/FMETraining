@@ -46,7 +46,29 @@ As your role as FME Server Administrator, you are responsible for managing and m
 
 
 <br>**1)Update workspaces**
-**Only complete this step if you have finished the Configuring for HTTPS exercise. If you did not complete this exercise, move on to step 2.**
+
+---
+
+<!--Warning Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">WARNING</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Only complete step 1 if you have finished the Configuring for HTTPS exercise. If you did not complete this exercise, move on to step 2.
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 <br>It is a known issue that when you configure FME Server with a self-signed certificate that Dashboards will fail. To fix this we will need to republish the dashboard workspaces that have a parameter changed in the HTTPCallers. For more detailed information about this issue, see the [FME Server Dashboards Troubleshooting](https://knowledge.safe.com/articles/55053/fme-server-troubleshooting-fme-server-dashboards.html) article. 
 
