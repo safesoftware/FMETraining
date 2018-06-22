@@ -40,6 +40,18 @@ While FME Server provides a means to control access to its components and items 
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">SKIP THIS EXERCISE...</span>
+</td>
+</tr>
+</table>
+
+<br><br>
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
 <span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
 </td>
 </tr>
@@ -49,11 +61,13 @@ While FME Server provides a means to control access to its components and items 
 <span style="font-family:serif; font-style:italic; font-size:larger">
 Due to security requirements and restrictions it may not be possible to complete this exercise.<br>
 Instead, please watch <a href="https://drive.google.com/a/safe.com/file/d/0B9i4bX_jniydaThpUGZqOF9JVkk/view?usp=sharing">this video demonstrating the exercise</a>.
-<!-- ** SM: create a new video for this... ** -->
 </span>
 </td>
 </tr>
 </table>
+
+<br>
+<br>
 
 ---
 
@@ -73,8 +87,8 @@ Enter the following information:
 - **Name:** FME Active Directory
 - **Host:** dc.fme.com
 - **Port:** 389
-- **Domain Search User:** DC\Administrator
-- **Domain Search Password:** dcAdmin2017
+- **Search Account Name:** DC\Administrator
+- **Search Account Password:** dcAdmin2017
 
 Click **OK** to save the new Active Directory connection. You will be returned to the Active Directory page. Wait for the Status to change from Yellow to Green, indicating that the connection is successful.
 
