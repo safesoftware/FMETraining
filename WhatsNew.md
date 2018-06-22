@@ -65,10 +65,16 @@ These changes are for the FME Server Administration Training Course.
 - Added Mention of Web UI functionality to add Network Shares to Resources.
 - Updated Web Connections and no need to reauthorize once published to FME Server.
 - Updated Database Connections page.
-- Added Workspace Versioning Chapter
+- Added Workspace Versioning Chapter.
+- Added Ex2 Versioning.
+- Added Encryption section.
+- Added Password Recovery section.
 
 ### Chapter 6 - Migration ###
 - Updated ConfigFile Backup Information.
+- Included mention of no backup of Version Control information.
+- Added Job Queues.
+- Update Scheduled Backup to .fsconfig
 - Updated Upgrading FME Server section.
 
 
