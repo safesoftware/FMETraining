@@ -11,6 +11,10 @@
 </td>
 </tr>
 <tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Data</td>
+<td style="border: 1px solid darkorange">N/A</td>
+</tr>
+<tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
 <td style="border: 1px solid darkorange">Monitor FME Server health with a dashboard</td>
 </tr>
@@ -22,7 +26,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\JobHistoryStatisticsGathering.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\Customization-Ex1-JobHistoryStatisticsGathering.fmw</td>
 </tr>
 
 <tr>
@@ -62,7 +66,7 @@ Only complete step 1 if you have finished the Configuring for HTTPS exercise. If
 <br>**1)Update workspaces**
 <br>It is a known issue that when you configure FME Server with a self-signed certificate that Dashboards will fail. To fix this we will need to republish the dashboard workspaces that have a parameter changed in the HTTPCallers. For more detailed information about this issue, see the [FME Server Dashboards Troubleshooting](https://knowledge.safe.com/articles/55053/fme-server-troubleshooting-fme-server-dashboards.html) article. 
 
-<br>In FME Desktop, open the JobHistoryStatisticGathering.fmw workspace and publish it to FME Server. Ensure that the Repository is set to Dashboards. A warning message will appear, click Yes to overwrite the existing workspace. This is the controller workspace, now that it is updated we can run our other dashboards. 
+<br>In FME Desktop, open the Customization-Ex1-JobHistoryStatisticsGathering.fmw workspace and publish it to FME Server. Ensure that the Repository is set to Dashboards and rename the workspace to JobHistoryStatisticsGathering.fmw. When publishing, a warning message will appear, click Yes to overwrite the existing workspace. This is the controller workspace, now that it is updated, we can run our other dashboards. 
 
 <br>**2) Login to FME Server**
 <br>Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.

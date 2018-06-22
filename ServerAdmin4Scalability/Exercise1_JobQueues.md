@@ -33,7 +33,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\JobQueues-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAdmin\Scalability-Ex1-JobQueues-Complete.fmw</td>
 </tr>
 
 </table>
