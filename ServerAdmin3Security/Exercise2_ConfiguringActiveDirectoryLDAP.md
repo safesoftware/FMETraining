@@ -29,23 +29,22 @@
 </table>
 
 ---
-
-While FME Server provides a means to control access to its components and items within by creating Users and Roles, your company has instructed you to connect FME Server to an existing Active Directory service. After this connection is completed, you will import existing users and groups and configure permissions.
-
----
-
 <!--Person X Says Section-->
 
 <table style="border-spacing: 0px">
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">SKIP THIS EXERCISE...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">This exercise is for demonstration purposes only</span>
 </td>
 </tr>
 </table>
 
-<br><br>
+This lab requires an Windows domain controller to be present and available to connect to from the FME Server system.  The training environment being used today does not have access to a domain controller.  The following steps and video are presented as a guide for configuring the typical active directory to work with FME Server.  It does not cover all possible configurations that may be required for your particular active directory.
+
+---
+
+
 <!--Person X Says Section-->
 
 <table style="border-spacing: 0px">
@@ -59,20 +58,17 @@ While FME Server provides a means to control access to its components and items 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Due to security requirements and restrictions it may not be possible to complete this exercise.<br>
+Due to security requirements and restrictions it is not possible to complete this exercise.<br>
 Instead, please watch <a href="https://drive.google.com/a/safe.com/file/d/0B9i4bX_jniydaThpUGZqOF9JVkk/view?usp=sharing">this video demonstrating the exercise</a>.
 </span>
 </td>
 </tr>
 </table>
 
-<br>
-<br>
-
 ---
 
 <br>**1) Connect to FME Server**
-<br>Open the FME Server web interface, either through the web interface option on the Windows Start Menu or directly in your web browser (http://localhost/fmeserver), and log in using the username and password *admin*.
+<br>Open the FME Server web interface, either through the web interface option on the Windows Start Menu or directly in your web browser http://**&lt;your fmeserver host&gt;**/fmeserver, and log in with an admin account.
 
 Click *Security*, under the Admin heading on the left sidebar, and then select **Active Directory**.
 
