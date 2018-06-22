@@ -198,6 +198,31 @@ Review the Version History for the workspace and this time you should see the ne
 
 You have successfully enabled and tested Version Control for FME Server.
 
+
+---
+
+<!--Tip Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+If there have been no changes to the workspace since the last commit you will be notified.
+<br><br><img src="./Images/5.229.Ex2.WebUI_VersionNoChanges.png">
+<br><br>This confirms a version of the workspace already exists.
+</span>
+</td>
+</tr>
+</table>
+
+
 ---
 
 <!--Exercise Congratulations Section-->
