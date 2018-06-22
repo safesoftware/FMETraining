@@ -91,7 +91,7 @@ Click **Run** to make sure the translation is successful. Now we are ready to pu
 
 
 <br>**4) Publish to FME Server**
-<br>Select *Publish to FME Server* under the File Menu. Use the Publish to FME Server Wizard to place the workspace in the **Training** repository. 
+<br>Select *Publish to FME Server* under the File Menu. Use the Publish to FME Server Wizard to place the workspace in the **Training** repository.
 
 On the *Upload Connections* step, make the DropboxWebConnection is selected and click **Next**. We will authorize our web connection using the FME Server web interface.
 
@@ -140,7 +140,7 @@ Fill in the *Client Information* parameters as follows:
 - **Client Id:** lxx2amcu6xfs11r
 - **Client Secret:** *&lt;distributed_during_course&gt;*
 - **Redirect Uri:** https://localhost:8443/fmeoauth
-<!--**SM: We need to figure out how to store the credentials for this and email**-->
+
 The Client Id and Client Secret are how you connect your client to the web service. They are generated when you create a new API app for a web service. REST API Documentation pages such as this one for [Dropbox](https://www.dropbox.com/developers) explains in more detail about web service app creation.
 
 Click **OK** to save these updates.
@@ -158,7 +158,7 @@ On the *Edit* page, click the **Authorize** button:
 ![](./Images/5.207.Ex1.Authorize.png)
 
 A window opens with the login screen for Dropbox. Sign in with:
-<!--**SM create new email account**-->
+
 - **Email:** fmedropbox@gmail.com
 - **Password:** *&lt;distributed_during_course&gt;*
 
