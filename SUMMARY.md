@@ -40,6 +40,7 @@
 	* [Q&A Answers](./ServerAdmin4Scalability/4.06.QuestionAnswers.md)
 * [Chapter 5: FME Server Customization](./ServerAdmin5Customization/5.00.FMEServerCustomization.md)
 	* [Server Dashboards](./ServerAdmin5Customization/5.01.ServerDashboards.md)
+	* [Exercise 1: Configuring Dashboards](./ServerAdmin5Customization/Exercise1_Dashboards.md)
 	* [32- and 64-bit Engines on Same Machine](./ServerAdmin5Customization/5.02.32And64BitEnginesOnSameMachine.md)
 	* [Configuring Custom Coordinate Systems/Grid Transformations](./ServerAdmin5Customization/5.03.ConfiguringCustomCoordinateSystemsGridTransformations.md)
 	* [Using Python with FME Server](./ServerAdmin5Customization/5.04.UsingPythonWithFMEServer.md)
