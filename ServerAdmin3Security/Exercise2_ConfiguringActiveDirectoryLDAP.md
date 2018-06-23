@@ -59,7 +59,7 @@ This lab requires an Windows domain controller to be present and available to co
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 Due to security requirements and restrictions it is not possible to complete this exercise.<br>
-Instead, please watch <a href="https://drive.google.com/a/safe.com/file/d/0B9i4bX_jniydaThpUGZqOF9JVkk/view?usp=sharing">this video demonstrating the exercise</a>.
+Instead, please watch <a href="https://youtu.be/XzoCR-X5TKQ">this video demonstrating the exercise</a>.
 </span>
 </td>
 </tr>
