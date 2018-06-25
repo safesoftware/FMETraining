@@ -20,8 +20,6 @@ The full course is made up of seven sections. These sections are:
 - Migration and Upgrades
 - Troubleshooting
 
-- Troubleshooting
-
 ## Current Status ##
 
 The current status of this manual is: **COMPLETE**. this manual can be used for training, subject to minor, last-minute fixes and creation of slides. 
