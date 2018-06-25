@@ -31,12 +31,12 @@ This manual applies to **FME2018.0**
 The status of each chapter is: 
 
 - Chapter 0: Complete content. No exercises
-- Chapter 1: Complete content and exercises
-- Chapter 2: Complete content and exercises
+- Chapter 1: Complete content. No exercises
+- Chapter 2: Complete content. No exercises
 - Chapter 3: Complete content and exercises
 - Chapter 4: Complete content and exercises
 - Chapter 5: Complete content and exercises
-- Chapter 6: Complete content. No exercises
+- Chapter 6: Complete content and exercises
 - Chapter 7: Complete content. No exercises
 - Chapter 8: Complete content. No exercises
 - Slides: Incomplete
