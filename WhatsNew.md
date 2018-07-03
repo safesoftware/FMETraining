@@ -11,6 +11,7 @@ These changes are for the FMEData dataset that accompanies FME training
     + Data is randomly generated, not from an official source
     + Removed excess attributes from parks (NSStreet, EWStreet)
 - Renamed Crime2011.csv to Crime.csv
+- Added instructor workspaces for advanced training
 
 ---
 
@@ -21,6 +22,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - All screenshots now used Curved rather than Straight connections
 - Chapter reordering
 - New Review Desktop Basic exercise in the Course Introduction
+- Content updated for 2018.1
 
 ### Advanced Attribute Handling ###
 - Moved from Chapter 4 to Chapter 1
@@ -50,6 +52,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Added bookmarks to Exercises 4-5 to keep consistent with chapter
     + Exercise 4: Added tip about collapsing bookmarks and then deleting to remove all
 - Added batch processing section using the WorkspaceRunner and Batch Deploy
+- Removed "Dangling Readers" since they no longer seem to be a problem (FME detects/fixes)
 
 ### Advanced Reading/Writing ###
 - Expanded connection type list for Web-Based Datasets
