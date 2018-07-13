@@ -12,8 +12,6 @@ The FME Server REST API Training is brand new training course that teaches FME u
 
 The full course is made up of two sections. These sections are:
 
-The course is made up of two sections:
-
 - ***Interacting with the FME Server REST API***
 
  - Getting Started with the REST API
