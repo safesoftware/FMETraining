@@ -1,3 +1,3 @@
-# My Awesome Book
+# FME Desktop Basics
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+Learn the basic concepts and terminology of FME Desktop and how to conduct translations and transformations.
