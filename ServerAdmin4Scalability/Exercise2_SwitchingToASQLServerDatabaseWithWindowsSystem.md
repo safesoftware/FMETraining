@@ -68,7 +68,7 @@ Select *Download* to save a backup file of FME Server - this can be thought of a
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -81,7 +81,7 @@ Select *Download* to save a backup file of FME Server - this can be thought of a
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have a PostgreSQL installation instead of SQLServer, you can follow the instructions in the <a href="https://safe-software.gitbooks.io/fme-server-administration-training-2017/content/ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.html">Server Administrator 2017 Course</a>. Just note that the path names might have changed slightly from 2017 to 2018. 
+If you have a PostgreSQL installation instead of SQLServer, you can follow the instructions in the <a href="https://safe-software.gitbooks.io/fme-server-administration-training-2017/content/ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.html">Server Administrator 2017 Course</a>. Just note that the path names might have changed slightly from 2017 to 2018.
 </span>
 </td>
 </tr>
@@ -133,7 +133,6 @@ Under the heading *FME SERVER SETTINGS START*, locate the section titled *Databa
 
 Comment out the *DB_TYPE=postgresql* section, by adding a number sign (#) in front of each line and uncomment the *DB_TYPE=sqlserver* section.  The final edits should look at as follows:
 
-    #DB_JDBC_URL=jdbc:postgresql://localhost:5432/fmeserver
     #DB_TYPE=postgresql
     #DB_DRIVER=org.postgresql.Driver
     #DB_JDBC_URL=jdbc:postgresql://localhost:7082/fmeserver

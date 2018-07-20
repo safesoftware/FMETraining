@@ -61,6 +61,9 @@ Give it the name *Quick Translations* and click OK.
 
 Click on the *edit button*. Give the Job Queue the description of "FME Server Engine for Quick Translations," then select **&#60;localhost&#62;_Engine1** from the drop-down selection for Engines.
 
+Next assign a job priority of 1.
+
+<!-- Need to update this image to show priority 1 not five -->
 ![](./Images/4.202.Ex1.JobQueue_SelectEngine.png)
 
 To save your edits click the edit button again.
@@ -134,7 +137,7 @@ Click to expand the **Request Data** section. Next to the **queue** parameter, y
 
 ![](./Images/4.206.Ex1.VerifyJobQueue_Success.png)
 
-Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct engine. 
+Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct engine.
 
 ![](./Images/4.207.Ex1.CompletedJobQueue.png)
 

@@ -135,7 +135,7 @@ Click **OK** to dismiss the dialog.
 
 When it is necessary to download a versioned workspace, and you want to retrieve a particular version you must do this from the Web UI.  FME Workbench cannot select a versioned workspace through the Download Wizard.  Download the Version 0.1 of the Workspace we just published.
 
-Log back into FME Server as *admin* and in the FME Server Web UI, click on the **Repositories** in the left menu.  This will list all Repositories.  Next click on the **Version Test** repository.  This will display the workspaces inside this repository. You should only see the one workspace called *VersionControTest.fmw*.
+Log back into FME Server as *admin* and in the FME Server Web UI, click on the **Repositories** in the left menu.  This will list all Repositories.  Next click on the **Version Test** repository.  This will display the workspaces inside this repository. You should only see the one workspace called *VersionControlTest.fmw*.
 
 Let's review the Version History again.  Click the checkbox next to the workspace and then click the **History** button.
 
@@ -151,7 +151,7 @@ Let's download this workspace and open it in FME Desktop. In the dialog below cl
 
 <br>**7) Edit workspace and republish same workspace**
 
-Next, we want to make a small edit to the workspace and republish it to FME Server. We will then visit the Web UI and Version the workspace thereafter have successfully tested that it works.
+Next, we want to make a small edit to the workspace and republish it to FME Server. We will then visit the Web UI and Version the workspace thereafter having successfully tested that it works.
 
 Open the workspace that we downloaded in step 6. The default download location is **C:\Users\Administrator\Downloads** and the workspace should called *VersionControlTest.fmw*
 
@@ -161,7 +161,7 @@ With the workspace open in FME Workbench, add a *Logger* to the *Creator* transf
 
 Save the workspace and Run the workspace.  Next, let's publish it to FME Server.
 
-This time, **DO NOT** use the commit button on the publish wizard. You will get a warning that the workspace already exists in the repository, this is ok since we have version control enabled. Click Yes to overwrite the workspace, we will commit the workspace using the Web UI in the next step.
+This time, **DO NOT** use the commit button on the publish wizard. You will get a warning that the workspace already exists in the repository, this is ok since we have version control enabled. Click Yes to *update* the workspace. We will commit the workspace using the Web UI in the next step.
 
 ![](./Images/5.224.Ex2.PublishtoFMEServer2.png)
 

@@ -40,7 +40,7 @@
 </tr>
 </table>
 
-This lab requires an Windows domain controller to be present and available to connect to from the FME Server system.  The training environment being used today does not have access to a domain controller.  The following steps and video are presented as a guide for configuring the typical active directory to work with FME Server.  It does not cover all possible configurations that may be required for your particular active directory.
+This lab requires a Windows domain controller to be present and available to connect to from the FME Server system.  The training environment being used today does not have access to a domain controller.  The following steps and video are presented as a guide for configuring the typical active directory to work with FME Server.  It does not cover all possible configurations that may be required for your particular active directory.
 
 ---
 
@@ -121,7 +121,7 @@ This is because a username of the same value already exists in the SYSTEM users.
 <br>This error can also occur if you are importing users from a second domain that contains
 <br>a same named user as the first domain. In this case it will be necessary to provide a
 <br>different username on this dialog to represent the user from the second domain.  
-<br><strong>NOTE</strong>: FME Server creates an aliase for the imported usernames and this is linked to the
+<br><strong>NOTE</strong>: FME Server creates an alias for the imported usernames and this is linked to the
 <br>user account in the Active Directory.
 </span>
 </td>
