@@ -4,7 +4,7 @@
   - [What is FME?](1.fme-concepts\1.02.what-is-fme.md)
   - [FME Components](1.fme-concepts\1.03.fme-components.md)
   - [FME Workbench](1.fme-concepts\1.04.fme-workbench.md)
-  - [Quiz](1.fme-concepts\quiz.html)
+  - [Quiz](1.fme-concepts\1.05.quiz.md)
 * [FME Translations (30 minutes)](2.fme-translations\2.01.fme-translations.md)
   - [Generate Workspace](2.fme-translations\2.02.generate-workspace.md)
   - [Schema and Data Model](2.fme-translations\2.03.schema-and-data-model.md)
