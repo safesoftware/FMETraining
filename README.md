@@ -46,22 +46,17 @@ This manual applies to **FME2018.0**
 
 The status of each chapter is:
 
-TO BE UPDATED
-
 - Chapter 0: Incomplete content. No exercises
-- Chapter 1: Incomplete content. No exercises
+- Chapter 1: Incomplete content and exercises
 - Chapter 2: Incomplete content. No exercises
 - Chapter 3: Incomplete content and exercises
 - Chapter 4: Incomplete content and exercises
-- Chapter 5: Incomplete content. No exercises
-- Chapter 6: Incomplete content. No exercises
+- Chapter 5: Incomplete content and exercises
+- Chapter 6: Incomplete content and exercises
 - Chapter 7: Incomplete content and exercises
 - Chapter 8: Incomplete content and exercises
-- Chapter 9: Incomplete content. No exercises
-- Chapter 10: Incomplete content and exercises
-- Chapter 11: Incomplete content and exercises
-- Chapter 12: Incomplete content and exercises
-- Chapter 13: Incomplete content and exercises
+- Chapter 9: Incomplete content and exercises
+- Chapter 10: Incomplete content no exercises
 - Slides: Incomplete
 - FMEData: Incomplete
 - Course Outline: Incomplete
