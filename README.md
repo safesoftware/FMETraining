@@ -16,11 +16,11 @@ The full course is made up of two sections. These sections are:
 
  - Getting Started with the REST API
 
- - Using an HTTP Caller to make calls to the FME Server
+ - Using a REST Client Tool to Make Calls to the FME Server
 
  - Interacting with Workspaces
 
- - Web Services and the REST API
+ - Web Services, Direct URLs, and the REST API
 
  - Server Administration Tasks
 
@@ -32,11 +32,15 @@ The full course is made up of two sections. These sections are:
 
  - Creating a Dynamically Populated Form
 
- - Data Distribution using Google Maps
+ - Data Distribution Using ArcGIS
 
- - Data Visualization using ArcGIS
+ - Data Visualization Using ArcGIS
 
- - Data Uploads and Downloads   
+ - Data Uploads and Downloads
+
+ - Creating a Data Validation Application
+
+ - Course Wrap Up  
 
 ## Current Status ##
 
