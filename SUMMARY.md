@@ -43,6 +43,8 @@
 	* [9.6 Exercise 17- Data Visualization ](./FMESERVER_RESTAPI9CustomApplications/9.6.ExerciseVisualization.md)
 	* [9.7 Introduction to Data Uploads ](./FMESERVER_RESTAPI9CustomApplications/9.7.IntroductionDataUpload.md)
 	* [9.8 Exercise 18- Data Uploads ](./FMESERVER_RESTAPI9CustomApplications/9.8.ExerciseUpload.md)
+	* [9.9 Exercise 19- Data Validation Application ](./FMESERVER_RESTAPI9CustomApplications/9.9.DataValidationExercise.md)
+
 * [Chapter 10. Course Wrap Up  ](./FMESERVER_RESTAPI10WrapUp/10.00.CourseWrapup.md)
 	* [10.1 Product Information and Resources ](./FMESERVER_RESTAPI10WrapUp/10.01.ProductInfo.md)
 	* [10.2 Community Information and Resources ](./FMESERVER_RESTAPI10WrapUp/10.02.CommunityInfo.md)
