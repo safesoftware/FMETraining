@@ -1,10 +1,10 @@
 # FME Desktop Training Module: Data Integration
 
-This manual is an introductory-level training module for FME Desktop. It provides a framework for a basic understanding of FME and for using FME in data integration.
+This manual is an introductory-level training module for FME Desktop. It provides a framework for a basic understanding of FME and for using FME in data integration. While the scenario used is grounded in Geographic Information Systems for local government, urban planning, and administration, the skills are applicable to any use of FME.
 
 ![](./Integration0About/Images/Img0.0.FMEAboutScreen.png)
 
-The training will introduce basic concepts and terminology, help students become efficient users of FME, and direct them to resources to help apply the product to their own needs.
+The module will introduce basic concepts and terminology, help students become efficient users of FME, and direct them to resources to help apply the product to their own needs.
 
 ## Module Structure
 
@@ -22,7 +22,20 @@ Finally, the **Lab Exercises** section provides hands-on activities for students
 
 ## Module Audience
 
-This module is aimed at a university or college student audience. Students should be comfortable with data manipulation software in a scripted or GUI environment. Prior knowledge of FME is not required. If the instructor wishes to adapt the module to a higher level the lecture and lab demonstration content can be shortened.
+This module is aimed at a university or college student audience. FME sees a wide range of applications in any discipline that works with data, but is most commonly used in:
+
+- Architecture
+- Construction
+- Engineering
+- Forestry
+- Geography and Geographic Information Systems (GIS)
+- Oil & Gas
+- Public Administration
+- Telecommunications
+- Urban Planning
+- Utilities
+
+Students should be comfortable with data manipulation software in a scripted or GUI environment. Prior knowledge of FME is not required. If the instructor wishes to adapt the module to a higher level, the lecture and lab demonstration content can be shortened.
 
 ## Module Length
 
@@ -35,7 +48,7 @@ All of this content is provided for instructors to use, adapt, and remix for the
 If you wish to change the content of the manual, you can fork the [GitHub repository](https://github.com/safesoftware/FMETraining/tree/FME-Desktop-Data-Integration-2018). The manual is created using the [GitBook toolchain](https://toolchain.gitbook.com/) and is written in easily editable [Markdown](https://daringfireball.net/projects/markdown/). [Detailed instructions on adapting this content](https://docs.google.com/document/d/1N0XCvhYy2CP8x9qtANF0VKXAyK5GYMfaa6XPkyYcyi0/edit) are also available.
 
 Some suggestions for adaptation:
-- Localize the exercise data to your country or city. A list of open data portals is available [here](https://www.opendatasoft.com/a-comprehensive-list-of-all-open-data-portals-around-the-world/).
+- Localize the exercise data to your country or city. A list of open data portals is available [here](https://www.opendatasoft.com/a-comprehensive-list-of-all-open-data-portals-around-the-world/). You could also use [OpenStreetMap](https://www.openstreetmap.org/) data, which has good global coverage.
   - If you do change the data, feel free to modify your own [Module Resources](.\Integration0About\0.02.ModuleResources.md) page.
 - If you prefer to grade close-ended questions, you could edit the final question in the scenario exercise. You could restrict the datasets or provide a data integration problem to solve rather then leaving it open for students to choose their data.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Edits existing content by inserting or replacing
-# an include to edit or add content. Run after downloading warehousing
+# an include to edit or add content. Run after downloading markdown files with
 # generateChapters.py.
 
 import os
