@@ -11,7 +11,7 @@
 	* [1.5 Exercise 1- Create a User](./FMESERVER_RESTAPI1Overview/1.5.UserCreation.md)
 
 * [Chapter 2. Getting Started with the REST API](./FMESERVER_RESTAPI2GettingStarted/2.0.GettingStarted.md)
-	* [2.1 REST API Response](./FMESERVER_RESTAPI2GettingStarted/2.1.RESTAPIHomepage.md)
+	* [2.1 Exploring the REST API Homepage](./FMESERVER_RESTAPI2GettingStarted/2.1.RESTAPIHomepage.md)
     * [2.2 REST API Response](./FMESERVER_RESTAPI2GettingStarted/2.2.RESTAPIResponse.md)
 * [Chapter 3. Using an HTTP Caller to Make Calls to the Server](./FMESERVER_RESTAPI3HTTPCaller/3.0.HTTPCaller.md)
 	* [3.1 Exercise 2- Creating a call with a REST Client Tool](./FMESERVER_RESTAPI3HTTPCaller/3.1.RESTClient.md)
