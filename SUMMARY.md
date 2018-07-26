@@ -27,7 +27,7 @@
 	* [5.1 Exercise 9- Introduction to Using Direct URLs](./FMESERVER_RESTAPI5WebServices/5.1.Exercise.md)
 * [Chapter 6. Server Admin Tasks](./FMESERVER_RESTAPI6ServerAdmin/6.0.Introduction.md)
 	* [6.1 Exercise 10- Working with Resources](./FMESERVER_RESTAPI6ServerAdmin/6.1.WorkingWithResources.md)
-	* [6.2 Exercise 11- Working with Shared Resources](./FMESERVER_RESTAPI6ServerAdmin/6.2.WorkingWithResourcesUsingSharedResources.md)
+	* [6.2 Exercise 11- Using a Shared Resource as a Workspace Output Location](./FMESERVER_RESTAPI6ServerAdmin/6.2.WorkingWithResourcesUsingSharedResources.md)
 * [Chapter 7. Job Management](./FMESERVER_RESTAPI7JobManagement/7.0.Introduction.md)
 	* [7.1 Exercise 12- Creating a Job Queue](./FMESERVER_RESTAPI7JobManagement/7.1.JobRoutingTag.md)
 	* [7.2 Retrieve Job History](./FMESERVER_RESTAPI7JobManagement/7.2.RetrieveJobHistory.md)
