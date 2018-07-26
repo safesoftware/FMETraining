@@ -24,7 +24,7 @@
 	* [4.5 Using REST API Commands in a Workbench](./FMESERVER_RESTAPI4Workspaces/4.5.UsingRest.md)
 	* [4.6 Exercise 8- Chaining Jobs Together using the REST API in FME Workbench](./FMESERVER_RESTAPI4Workspaces/4.6.Exercise.md)
 * [Chapter 5. Web Services and the REST API](./FMESERVER_RESTAPI5WebServices/5.0.WebServicesAndRESTAPI.md)
-	* [5.1 Exercise 9- Using Postman to Recreate the Query made in the Web Application Demonstration](./FMESERVER_RESTAPI5WebServices/5.1.Exercise.md)
+	* [5.1 Exercise 9- Introduction to Using Direct URLs](./FMESERVER_RESTAPI5WebServices/5.1.Exercise.md)
 * [Chapter 6. Server Admin Tasks](./FMESERVER_RESTAPI6ServerAdmin/6.0.Introduction.md)
 	* [6.1 Exercise 10- Working with Resources](./FMESERVER_RESTAPI6ServerAdmin/6.1.WorkingWithResources.md)
 	* [6.2 Exercise 11- Working with Shared Resources](./FMESERVER_RESTAPI6ServerAdmin/6.2.WorkingWithResourcesUsingSharedResources.md)
