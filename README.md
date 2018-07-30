@@ -44,7 +44,7 @@ The full course is made up of two sections. These sections are:
 
 ## Current Status ##
 
-The current status of this manual is: **Incomplete**: this manual should not be used for training.
+The current status of this manual is: **Complete**: this manual can be used for training, subject to minor, last-minute fixes.
 
 This manual applies to **FME2018.0**
 
