@@ -50,19 +50,19 @@ This manual applies to **FME2018.0**
 
 The status of each chapter is:
 
-- Chapter 0: Incomplete content. No exercises
-- Chapter 1: Incomplete content and exercises
-- Chapter 2: Incomplete content. No exercises
-- Chapter 3: Incomplete content and exercises
-- Chapter 4: Incomplete content and exercises
-- Chapter 5: Incomplete content and exercises
-- Chapter 6: Incomplete content and exercises
-- Chapter 7: Incomplete content and exercises
-- Chapter 8: Incomplete content and exercises
-- Chapter 9: Incomplete content and exercises
-- Chapter 10: Incomplete content no exercises
-- Slides: Incomplete
-- FMEData: Incomplete
-- Course Outline: Incomplete
+- Chapter 0: Complete content. No exercises
+- Chapter 1: Complete content and exercises
+- Chapter 2: Complete content. No exercises
+- Chapter 3: Complete content and exercises
+- Chapter 4: Complete content and exercises
+- Chapter 5: Complete content and exercises
+- Chapter 6: Complete content and exercises
+- Chapter 7: Complete content and exercises
+- Chapter 8: Complete content and exercises
+- Chapter 9: Complete content and exercises
+- Chapter 10: Complete content no exercises
+- Slides: Complete
+- FMEData: Complete
+- Course Outline: Complete
 
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
