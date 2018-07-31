@@ -1,0 +1,180 @@
+<!--Exercise Section-->
+
+<table style="border-spacing: 0px;border-collapse: collapse;font-family:serif">
+<tr>
+<td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
+</td>
+<td style="border: 2px solid darkorange;background-color:darkorange;color:white">
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Sharing and Scheduling</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Data</td>
+<td style="border: 1px solid darkorange">Firehalls (GML)<br>Neighborhoods (KML)</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
+<td style="border: 1px solid darkorange">Sharing and scheduling a translation in FME Server</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
+<td style="border: 1px solid darkorange">None</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
+<td style="border: 1px solid darkorange">None</td>
+</tr>
+
+</table>
+
+---
+
+You have already (in Exercises 1 and 2) created a workspace to carry out this translation, published it to FME Server, and run it to confirm it works.
+
+As a daily task, you plan to run the translation every day after work. However... what happens if you are not there, or leave early, or someone else stays late. Who will run it then?
+
+First you should ensure other users have access to the workspace to run it, but you can also set it up to run on an automatic schedule.
+
+---
+
+<!--Tip Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+When testing permissions for other user accounts, it is useful to open up another instance of FME Server in a private browser (incognito mode) and log in as the user you are testing. This speeds up the process without having to log in and out multiple times. 
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+
+<br>**1) Connect to Server**
+<br>Before we begin, we should log into another account and see how their interface looks. If you have FME Server already open and you are currently logged in as Admin, log out. If you do not have FME Server open, open it through the Windows Start Menu. 
+
+Now log in using the generic user account that is a default account on any FME Server installation. The username is ***user*** and the password is ***user*** as well!
+
+The first thing you'll notice is that the menu and functionality is much more restricted for this account:
+
+![](./Images/Img1.224.Ex3.UserMenu.png)
+
+In fact, if you try to run a workspace you'll find that the only repository this account has access to is the Samples repository; not Training where the existing workspace resides:
+
+![](./Images/Img1.402.UserRepository.png)
+
+<br>**2) Share Repository**
+<br>Log out of the ***user*** account and log back in as an administrator (admin/admin) or switch back to 
+
+Now we will share the Training Repository with the ***user*** account. Click Repositories on the side menu. Under the list of repositories locate the Training repository. Click the Share icon to the right:
+
+![](./Images/Img1.225.Ex3.ShareButton.png)
+
+In the Sharing Options dialog, select fmeuser as the role to share with, and allow them to run the workspace:
+
+![](./Images/Img1.226.Ex3.ShareDialog.png)
+
+By selecting the *fmeuser* role (rather than the single *user* account) we allow anyone who is tagged as a user to access the workspace; and by allowing them only the run capability, we prevent them from downloading and making edits to our workspace.
+
+
+<br>**3) Check Sharing**
+<br>Log out of the administrator account and log back into FME Server with the user account (user/user).
+
+This time, you should have access to the Training repository. Click Run Workspace, then select the Training Repository and then select your workspace, and click run. Check the Completed Jobs page and you'll see one entry for the workspace, when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs:
+
+![](./Images/Img1.403.Ex3.CompletedJobUser.png)
+
+Log out again and log back in as an administrator. Now, on the Completed Jobs page, you should be able to see both the administrator's jobs and the user's jobs
+
+![](./Images/Img1.227.Ex3.MultiUserJobsList.png)
+
+That's because the administrator group has permission to view all jobs.
+
+
+<br>**4) Create Test Schedule**
+<br>Now that we have allowed other users to run the workspace on demand, we should also set up the translation to run on a schedule.
+
+First, just to confirm that scheduling works, let's set up a test schedule. Click Schedules on the side menu and on the Schedules page, click the New button to start the process.
+
+Set the Name to Test Schedule and add it to a Training category by typing Training into the Category field:
+
+![](./Images/Img1.228.Ex3.NewScheduleAndCategory.png)
+
+For the time settings, set the schedule to Run Immediately and repeat every 30 seconds. Uncheck the box beside Schedule Does Not Expire and set the End Time to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on for ever!)
+
+![](./Images/Img1.229.Ex3.NewScheduleSetSchedule.png)
+
+Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine on which you are running the web browser that is connected to FME Server. Keep this in mind if your FME Server is on a machine in a different timezone from the machine where you are accessing FME Server.
+
+Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
+
+![](./Images/Img1.230.Ex3.NewScheduleWorkspace.png)
+
+There are no user parameters we need to change for this workspace, so any can be ignored.
+
+Now click OK to add the new schedule. Take note of the time you click OK
+
+
+<br>**5) Examine Jobs Page**
+<br>Wait 30 seconds and then open the Completed Jobs page. You should see that the workspace was run immediatly then again at 30 second intervals: 
+
+![](./Images/Img1.231.Ex3.NewScheduleJobs.png)
+
+Notice that the username is set to admin; since that is the user who created the schedule, that is the username under which the job will be run.
+
+
+<br>**6) Create Actual Schedule**
+<br>Now we are confident that we know how to use the interface, let's set up an actual schedule. First, let's delete the Test Schedule. Go back to the Scheudles page, and select the Test Schedule and click Remove. Next, click New to create the new schedule. 
+
+On the new schedule page, set the Name to Training Schedule, and set the Category to Training (you might need to create the Training Category again since we deleted the only schedule associated to it). Next set the Start Time to 8:00 PM, once daily and then set the expiry date to 4 days from now at 8:00 PM. 
+
+![](./Images/Img1.232.Ex3.UpdatedSchedule.png)
+
+Set the Repository to Training and the Workspace to Basics-Ex1-Complete.fmw and click OK. 
+
+The daily schedule is now set to run at 8:00 PM every day for the next 4 days. You may wish to check back periodically during this training to ensure the workspace runs as expected.
+
+---
+
+<!--Exercise Congratulations Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-thumbs-o-up fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">CONGRATULATIONS</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+By completing this exercise you have learned how to:
+<br>
+<ul><li>Share a repository in FME Server and tested to ensure it is available to the right users</li>
+<li>Schedule a translation in FME Server</li>
+<li>Check the job history to ensure the scheduled translation took place</li></ul>
+</span>
+</td>
+</tr>
+</table>
