@@ -6,7 +6,7 @@ This is the manual for the training course for Safe Software’s FME Server REST
 
 ![](./Safe_RGB_transparent200.png)
 
-The FME Server REST API Training is brand new training course that teaches FME users how to master the FME Server REST API and build their own web applications to solve data challenges. The REST API allows a user to interact with the FME Server without the use of the FME Server Graphical User Interface. This enables the user to create web applications that allow a client access to the FME Server without ever having to log in or directly access the server. This course will teach users what the REST API is, how to use it, and how to build custom web applications that leverage the power of FME.
+The FME Server REST API Training is a training course that teaches FME users how to master the FME Server REST API and build their own web applications to solve data challenges. The REST API allows a user to interact with the FME Server without the use of the FME Server Graphical User Interface. This enables the user to create web applications that allow a client access to the FME Server without ever having to log in or directly access the server. This course teaches users what the REST API is, how to use it, and how to build custom web applications that leverage the power of FME.
 
 ## Course Structure ##
 
