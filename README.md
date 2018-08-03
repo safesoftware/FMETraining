@@ -65,3 +65,8 @@ The status of each chapter is:
 - Answers: Complete
 
 _**NB**: Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement in [About this Document](.\Integration0About\0.00.AboutThisDocument.md) for further details._
+
+
+## Thanks
+
+Thanks to FME users Dave Laurier, Clair Ellul, and Patrick Lougheed for their feedback on an earlier version of this module.
