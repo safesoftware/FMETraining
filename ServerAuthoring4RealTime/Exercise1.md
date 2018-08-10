@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department you want to start experimenting with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to, or updating, the corporate database. 
+As a technical analyst in the GIS department, you want to start experimenting with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to, or updating, the corporate database. 
 
 
 <br>**1) Create Resources Folder**
@@ -81,7 +81,7 @@ This exercise utilizes the FME Server Resource folders, but there is also native
 
 Enter "Incoming Building Footprints" as the new publication's name. 
 
-Next click in the text box besides Topics to Publish To. Type in ShapeIncomingFile and click on the entry with that name that appears in the drop-down list. This will create a new topic and assign it to this publication. 
+Next, click on the text box beside Topics to Publish To. Type in ShapeIncomingFile and click on the entry with that name that appears in the drop-down list. This will create a new topic and assign it to this publication. 
 
 ![](./Images/Img4.401.Ex1.NewPublicationDialog.png)
 
@@ -91,20 +91,44 @@ Next click in the text box besides Topics to Publish To. Type in ShapeIncomingFi
 
 ![](./Images/Img4.402.Ex1.DirectoryToWatch.png)
 
-Back in the publication definition, for the Filter parameter remove the MODIFY and DELETE actions. All we really want to monitor are new files arriving, not old ones being removed:
+Back in the publication definition, for the Filter parameter remove the MODIFY and DELETE actions. All we want to monitor are new files arriving, not old ones being removed:
 
 ![](./Images/Img4.403.Ex1.DirectoryWatchFilters.png)
 
-Change the Poll Interval to 1 Minute and click OK to create the new publication.
+Change the Poll Interval to 1 Minute and click OK to create the new publication. Then in the top right corner, click on the Validate button to validate the publication. This ensures that the publication was set up correctly:
+
+![](./Images/Img4.404.Ex1.CompletedDirectoryWatch.png)
 
 
 <br>**4) Monitor Topic**
-<br>Click on the tab for Topics. The ShapeIncomingFile topic should now be listed in the list of topics. There is also a Topic Monitoring dialog to the upper-right of the page.
+<br>Click on the Topic Monitoring tab on the Notifications page. Start typing ShapeIncomingFile into the Select a Topic search bar, then select it. If the topic doesn't appear, it means it wasn't made with the publication. You can create the topic here, but you will need to go back to the Incoming Building Footprints publication and add the topic. 
 
-In the drop-down box for Topic Monitoring, select the ShapeIncomingFile topic and click the green "run" button. This will start Topic Monitoring:
+Once the topic is added, topic monitoring will begin automatically, and a memo will appear at the bottom stating that Monitoring has been started and the time when it was started. To start or pause monitoring, click the play or pause button at the top. 
 
-![](./Images/Img4.403.Ex1.DirectoryWatchTopicMonitoring.png)
+![](./Images/Img4.405.Ex1.DirectoryWatchTopicMonitoring.png)
 
+---
+
+<!--Tip Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+When monitoring topics, the Topic Monitoring tab needs to stay open. If you are navigating away from this page, but would like to keep monitoring topics, open a new tab with FME Server and continue working. 
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 <br>**5) Test Topic**
 <br>Now let's test the topic. Locate the source Shapefile datasets in C:\FMEData2018\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) for one dataset and create a compressed zip file out of them (right-click &gt; Send to &gt; Compressed (zipped) folder).
@@ -113,11 +137,11 @@ Now upload the zip file into the newly created Resources folder. There are two w
 
 You can use the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
 
-![](./Images/Img4.404.Ex1.DirectoryWatchDataInFolder.png)
+![](./Images/Img4.406.Ex1.DirectoryWatchDataInFolder.png)
 
-Check back in the Topic Monitoring window and you will see that the topic has been triggered by the new file:
+Check back in the Topic Monitoring window, and you will see that the topic has been triggered by the new file:
 
-![](./Images/Img4.405.Ex1.DirectoryWatchTopicMonitoringTriggered.png)
+![](./Images/Img4.407.Ex1.DirectoryWatchTopicMonitoringTriggered.png)
 
 ---
 

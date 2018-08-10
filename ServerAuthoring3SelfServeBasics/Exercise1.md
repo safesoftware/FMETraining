@@ -118,7 +118,7 @@ The Feature Type Name parameter is important because it will help us later allow
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2018\Output</td>
+<td style="">C:\FMEData2018\Output\Training</td>
 </tr>
 
 <tr>
@@ -130,13 +130,13 @@ The Feature Type Name parameter is important because it will help us later allow
 
 Your workspace will now look like this:
 
-![](./Images/Img2.200.Ex1.InitialWorkspace.png)
+![](./Images/Img3.200.Ex1.InitialWorkspace.png)
 
 
 <br>**3) Add Transformers**
 <br>We'll start out with two transformers in our workspace; a RasterResampler and a RasterMosaicker. So place one of each of these and connect up everything in the workspace:
 
-![](./Images/Img2.201.Ex1.WorkspaceWithTransformers.png)
+![](./Images/Img3.201.Ex1.WorkspaceWithTransformers.png)
 
 
 <br>**4) Set Transformer Parameters**
@@ -148,7 +148,7 @@ Your workspace will now look like this:
 <tr><td style="font-weight: bold">Y Cell Spacing</td><td>5</td></tr>
 </table>
 
-![](./Images/Img2.202.Ex1.RasterResamplerParams.png)
+![](./Images/Img3.202.Ex1.RasterResamplerParams.png)
 
 You may inspect the RasterMosaicker's parameters, but there aren't any that need changing at the moment.
 
@@ -156,7 +156,7 @@ You may inspect the RasterMosaicker's parameters, but there aren't any that need
 <br>**5) Save and Run Workspace**
 <br>Save the workspace and - just to ensure that all is well - run it in FME Workbench. The result should be a JPEG file (06_07_LM.jpg) along with a world file (06_07_LM.wld).
 
-![](./Images/Img2.203.Ex1.TestOutput.png)
+![](./Images/Img3.203.Ex1.TestOutput.png)
 
 
 <br>**6) Publish Workspace**
@@ -168,7 +168,7 @@ You may inspect the RasterMosaicker's parameters, but there aren't any that need
 
 The workspace will run and you will be presented with a hyperlink to a zip file of the output dataset:
 
-![](./Images/Img2.204.Ex1.DataDownloadResult.png)
+![](./Images/Img3.204.Ex1.DataDownloadResult.png)
 
 ---
 

@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department you have realized the overhead associated with pushing manual updates to your corporate database. Having read up about notifications in FME Server, you think that it should be possible to set up a system that automates this process.
+As a technical analyst in the GIS department, you have realized the overhead associated with pushing manual updates to your corporate database. Having read up about notifications in FME Server, you think that it should be possible to set up a system that automates this process.
 
 So far you have set up a system for added file notifications to be registered by FME Server. Now you must create a workspace to process these and publish it to FME Server. The workspace must then be triggered by a notification topic.
 
@@ -72,7 +72,7 @@ This exercise continues where Exercise 1 left off. You must have completed Exerc
 <br>**1) Create Workspace**
 <br>Start FME Workbench and begin with an empty workspace. Simply add a Creator and Logger transformer:
 
-![](./Images/Img4.406.Ex2.InitialWorkspace.png)
+![](./Images/Img4.408.Ex2.InitialWorkspace.png)
 
 This will give us a workspace to run in response to new files; albeit one that doesn’t do much yet. We're just creating this to check that we can get the setup to work.
 
@@ -86,23 +86,23 @@ This will give us a workspace to run in response to new files; albeit one that d
 
 Call the subscription "Process Building Updates". Subscribe to the topic ShapeIncomingFile:
 
-![](./Images/Img4.407.Ex2.CreateSubscription1.png)
+![](./Images/Img4.409.Ex2.CreateSubscription1.png)
 
 Now set the protocol to FME Workspace and select the workspace uploaded in the previous step:
 
-![](./Images/Img4.408.Ex2.CreateSubscription2.png)
+![](./Images/Img4.410.Ex2.CreateSubscription2.png)
 
 Click OK to create the subscription. This will cause the workspace to run every time an incoming Shape dataset triggers the ShapeIncomingFile topic.
 
 
 <br>**4) Test Subscription**
-<br>Test the subscription by uploading another Shapefile dataset.
+<br>Back in Windows Explorer, zip up the update002.shp/.dbf/.shx/.prj files. Then back in FME Server, test the subscription by uploading the update002.zip file. 
 
 ***NB:*** *Since we set the Directory Watch to watch only for new files, the Shapefile uploaded should be a different one - or at least have a different name - to the first.*
 
 This time, instead of monitoring the topic (although it will appear there again), check the Jobs page. You should see that the workspace has been run in response to the new file:
 
-![](./Images/Img4.409.Ex2.JobLogShowingTriggeredWorkspace.png)
+![](./Images/Img4.411.Ex2.JobLogShowingTriggeredWorkspace.png)
 
 This proves that the workspace has run.
 

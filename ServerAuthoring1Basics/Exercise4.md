@@ -44,6 +44,8 @@ You have already (in Exercises 1, 2, and 3) created a workspace to carry out thi
 
 You would now like to 'checkpoint' this working version of the workspace to ensure that you can always come back to this state if any edits are made to it in the future.
 
+---
+
 <!--Warning Section--> 
 
 <table style="border-spacing: 0px">
@@ -63,11 +65,15 @@ In the workplace you will have to have your FME Server Administrator enable Vers
 </tr>
 </table>
 
+---
+
 <br>**1) Connect to Server**
 <br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/admin).
 
 <br>**2) Turn on Version Control**
 <br>Version Control will be turned off by default, so you'll need to switch it on before you can use it. Click System Configuration on the side menu to expand the menu then click Features in the Admin part of the interface menu. On the System Configuration Features page, locate the Version Control settings toggle the switch to turn on Version Control, the switch will be green when the feature is enabled.
+
+---
 
 <!--Warning Section--> 
 
@@ -87,6 +93,8 @@ In FME Server 2018.1 the System Configurations have been condensed and Version C
 </td>
 </tr>
 </table>
+
+---
 
 ![](./Images/Img1.238.Ex4.VersionControlToggle.png)
 

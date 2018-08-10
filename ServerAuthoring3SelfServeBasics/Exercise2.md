@@ -56,30 +56,33 @@ Sometimes the end-users download data as JPEG just to open it in a browser or im
 
 In the final dialog of the publishing wizard, check the boxes to register the workspace with both Data Download and Data Streaming (but don't click Finish yet):  
 
-![](./Images/Img3.207.Ex2.PublishToStreamService.png)  
+![](./Images/Img3.205.Ex2.PublishToStreamService.png)  
 <br>
 
-Click the Edit button for the Data Streaming service. Ensure that service is using the output of the JPEG Writer (for now we're limiting the streaming of data to JPEG format).  
+Click the Edit button for the Data Streaming service. Ensure that service is using the output of the JPEG Writer (for now we're limiting the streaming of data to JPEG format):
+
+![](./Images/Img3.206.Ex2.StreamingParameters.png)
+
 <br>**3) Run Workspace**
 <br>In the FME Server web interface locate the newly published workspace and run it. In the parameters for the workspace be sure to set the web service to Data Streaming instead of Data Download:
 <br>
-<br>![](./Images/Img3.208.Ex2.SelectStreamingService.png)  
+<br>![](./Images/Img3.207.Ex2.SelectStreamingService.png)  
 <br>
 The result of this translation is not a streamed JPEG file. Instead, the translation returns a zip file:  
 <br>
-![](./Images/Img3.209.Ex2.StreamedZipFile.png)  
+![](./Images/Img3.208.Ex2.StreamedZipFile.png)  
 <br>
 If you open the zip file you'll see that it includes both a JPEG file and a wld (World) file. That's why FME returned a zip file. It will zip the results of a Data Streaming service whenever the result is multiple files.  
 <br>**4) Turn off World File Creation**  
 <br>To really stream the data we should turn off the world file creation in the workspace. Check the properties for the JPEG Writer's feature type and set the Generate World File parameter to No:  
 
-![](./Images/Img3.210.Ex2.TurnOffWorldFile.png)  
+![](./Images/Img3.209.Ex2.TurnOffWorldFile.png)  
 
 
 <br>**5) Publish and Run Workspace**  
 <br>Re-publish the workspace and run it on FME Server. You should find that the results of the translation are returned as a streamed JPEG file. Most likely it will open directly in your web browser:
 
-![](./Images/Img3.211.Ex2.JPEGOpenedInBrowser.png)
+![](./Images/Img3.210.Ex2.JPEGOpenedInBrowser.png)
 
 ---
 

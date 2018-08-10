@@ -43,9 +43,9 @@
 
 ---
 
-As a technical analyst in the GIS department you deal with spatial data. Sometimes you need to process that data in real-time and sometimes that data can arrive in great quantities and at great speed.
+As a technical analyst in the GIS department, you deal with spatial data. Sometimes you need to process that data in real-time, and sometimes that data can arrive in significant quantities and at high speed.
 
-In one such case, the city has been given access to the monitoring systems of emergency services. That means the ability to access in real-time information about all emergency calls.
+In one such case, the city has been given access to the monitoring systems of emergency services. That means the ability to access real-time information about all emergency calls.
 
 *By emergency calls we mean the equivalent of 911 calls in North America, 999 in the UK, 112 in most of Europe, and 000 in Australia.*
 
@@ -58,11 +58,11 @@ Of course, these calls can arrive at a tremendous rate, and at unknown intervals
 
 Open the workspace C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw
 
-![](./Images/Img4.450.Ex6.MessageGeneratingWorkspace.png)
+![](./Images/Img4.439.Ex6.MessageGeneratingWorkspace.png)
 
 ---
 
-Notice that the workspace generates a stream of events. A random number of events are generated, at random times, and at random locations. Additionally random severity and event type attributes are generated.
+Notice that the workspace generates a stream of events. A random number of events are generated, at random times, and at random locations. Additionally, random severity and event type attributes are generated.
 
 Each event is wrapped up into a JSON format message. All that we need to do is push that message out as a stream.
 
@@ -140,31 +140,31 @@ Save the changes and add a Logger transformer after the WebSocketReceiver.
 <br>**4) Publish Workspaces**
 <br>Let's test what we have by publishing the workspaces and running them on FME Server.
 
-Publish each workspace in turn. In both cases simply register it with the Job Submitter service. There are no datasets or other parameters we need worry about.
+Publish each workspace in turn. In both cases register it with the Job Submitter service. There are no datasets or other parameters we need to worry about.
 
 
 <br>**5) Run Workspace**
 <br>Log in to the FME Server web interface, locate the data stream generator workspace, and run it. The dialog in response will look like this:
 
-![](./Images/Img4.451.Ex6.MessageGeneratingWorkspaceRun.png)
+![](./Images/Img4.440.Ex6.MessageGeneratingWorkspaceRun.png)
 
-The workspace will run for a long time and we can leave it to do so. Leave this page by clicking the Run Workspace button on the main menu and - within the Run Workspace page - locate the processing workspace. Now run that.
+The workspace will run for a long time, and we can leave it to do so. Leave this page by clicking the Run Workspace button on the main menu and - within the Run Workspace page - locate the processing workspace. Now run that.
 
 Again the response will report that the workspace is running, and will continue to do so.
 
 
 <br>**6) Check Jobs and Cancel**
-<br>Navigate to the Jobs page and click the tab labelled Running. You will see the two jobs:
+<br>Navigate to the Jobs page and click the tab labeled Running. You will see the two jobs:
 
-![](./Images/Img4.452.Ex6.RunningWorkspaces.png)
+![](./Images/Img4.441.Ex6.RunningWorkspaces.png)
 
 Let the jobs run for a minute or two. Then choose each of them and click the Cancel button to cancel them:
 
-![](./Images/Img4.453.Ex6.RunningWorkspacesCancel.png)
+![](./Images/Img4.442.Ex6.RunningWorkspacesCancel.png)
 
-Once cancelled, go to the Completed jobs tab. You'll see the two cancelled jobs:
+Once canceled, go to the Completed jobs tab. You'll see the two canceled jobs:
 
-![](./Images/Img4.454.Ex6.CancelledWorkspaces.png)
+![](./Images/Img4.443.Ex6.CancelledWorkspaces.png)
 
 Click on the processing workspace job and check the log. You should see messages in the log like this:
 
@@ -217,7 +217,7 @@ Under Attributes to Expose manually enter:
 - EventSeverity
 - EventType
 
-![](./Images/Img4.455.Ex6.JSONFlattenerParameters.png)
+![](./Images/Img4.444.Ex6.JSONFlattenerParameters.png)
 
 You will now have the information from the message available as a set of attributes in the workspace.
 
@@ -226,13 +226,13 @@ You will now have the information from the message available as a set of attribu
 <br>**8) Add VertexCreator**
 <br>Now add a VertexCreator transformer. Set it up to use the X/Y attributes to create a true point feature:
 
-![](./Images/Img4.456.Ex6.VertexCreatorParameters.png)
+![](./Images/Img4.445.Ex6.VertexCreatorParameters.png)
 
-With this we now have a true geographic feature and can process it as required.
+With this, we now have a true geographic feature and can process it as required.
 
 
 <br>**9) Add Reader**
-<br>The public transportation team within the city has learned you are working with this emergency data. They wish to be alerted immediately if there is an emergency event within 200 metres of a transit station. Let's show them how easy it is to set this up.
+<br>The public transportation team within the city has learned you are working with this emergency data. They wish to be alerted immediately if there is an emergency event within 200 meters of a transit station. Let's show them how easy it is to set this up.
 
 Firstly we need the transit station data, so select Readers &gt; Add Reader and add the following:
 
@@ -256,29 +256,29 @@ When prompted (or in the parameters dialog) ensure that only the TransitStations
 <br>**10) Filter Data**
 <br>Now let's filter the emergencies.
 
-First, add a Bufferer transformer to the TransitStation feature type and buffer the features by 200 metres.
+First, add a Bufferer transformer to the TransitStation feature type and buffer the features by 200 meters.
 
 Secondly, add a PointOnAreaOverlayer to assess whether an emergency falls inside one of these buffers. The workspace will now look like this:
 
-![](./Images/Img4.457.Ex6.WorkspaceWithBufferAndOverlay.png)
+![](./Images/Img4.446.Ex6.WorkspaceWithBufferAndOverlay.png)
 
-At the moment there is one big problem that stops this from working. The PointOnAreaOverlayer transformer is a Group-Based transformer, sometimes called a "blocker". It will hold on to features until it has finished being fed them, before outputting any data. In our case we want to make it Feature-Based; i.e. it will process each message at once.
+At the moment there is one big problem that stops this from working. The PointOnAreaOverlayer transformer is a Group-Based transformer, sometimes called a "blocker." It will hold on to features until it has finished being fed them, before outputting any data. In our case we want to make it Feature-Based; i.e., it will process each message at once.
 
 So, inspect the PointOnAreaOverlayer parameters and set Areas First to Yes:
 
-![](./Images/Img4.458.Ex6.PointOnAreaParameters.png)
+![](./Images/Img4.447.Ex6.PointOnAreaParameters.png)
 
-This tells the transformer that all area features (buffered stations) will be first to arrive, therefore any point features (message locations) can be processed immediately.
+This tells the transformer that all area features (buffered stations) will be first to arrive; therefore any point features (message locations) can be processed immediately.
 
 However, we have to ensure that the transit features will arrive first. Therefore inspect the transformer parameters for the Creator transformer and set Create at End to Yes:
 
-![](./Images/Img4.459.Ex6.CreatorParameters.png)
+![](./Images/Img4.448.Ex6.CreatorParameters.png)
 
 Now, all being well, the transit features will arrive first at the PointOnAreaOverlayer transformer.
 
 Finally, add a Tester transformer after the PointOnAreaOverlayer. Set up the test to check for &#95;overlaps &gt; 0 (i.e. where the message location falls inside a transit station buffer). Connect some Logger transformers to the Tester output ports:
 
-![](./Images/Img4.460.Ex6.TesterToFilterMessages.png)
+![](./Images/Img4.449.Ex6.TesterToFilterMessages.png)
 
 Note that, if there were other parameters (for example the transit team were only interested in Event Types 7, 8, 9, and 10) you could add them to this Tester as well.
 
@@ -286,7 +286,7 @@ Note that, if there were other parameters (for example the transit team were onl
 <br>**11) Publish Workspaces**
 <br>Now publish the two workspaces again (you may or may not have to upload the TransitStation Geodatabase along with the workspace) and run them using the same process as before, but leave it for a few minutes longer, as it may take a while for one of the random events to fall inside a transit station buffer.
 
-Once stopped, check the logs and you should see that messages falling within 200 metres of a transit station are logged (with a different header).
+Once stopped, check the logs and you should see that messages falling within 200 meters of a transit station are logged (with a different header).
 
 ---
 
@@ -303,7 +303,7 @@ Once stopped, check the logs and you should see that messages falling within 200
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you want to adjust the settings to get a result quicker, then go ahead. For example, you might set the buffer size to 500 metres instead of 200, or you might reduce the interval time on the message generator. Feel free to make whatever parameter changes you like to test the setup. You could even bypass the Decelerator transformer (in the data-stream creation workspace) to see how fast FME can deal with the incoming messages! But if you do that, be sure to start the processing workspace first, else the generator might finish by the time you do get the processor started!
+If you want to adjust the settings to get a result quicker, then go ahead. For example, you might set the buffer size to 500 meters instead of 200, or you might reduce the interval time on the message generator. Feel free to make whatever parameter changes you like to test the setup. You could even bypass the Decelerator transformer (in the data-stream creation workspace) to see how fast FME can deal with the incoming messages! However, if you do that, be sure to start the processing workspace first, else the generator might finish by the time you do get the processor started!
 </span>
 </td>
 </tr>
@@ -340,16 +340,16 @@ If you want to adjust the settings to get a result quicker, then go ahead. For e
 
 In the newly added feature type, change the name to *events* and close the dialog. Connect the feature type to the VertexCreator output port (i.e. we're recording all events, not just the filtered ones):
 
-![](./Images/Img4.461.Ex6.WriterFeatureTypeConnected.png)
+![](./Images/Img4.450.Ex6.WriterFeatureTypeConnected.png)
 
-The attributes are added automatically, but include a few we don't need. So open up the properties dialog again for the feature type and click the User Attributes tab. Change it from Automatic to Manual and delete the attributes:
+The attributes are added automatically but include a few we don't need. So open up the properties dialog again for the feature type and click the User Attributes tab. Change it from Automatic to Manual and delete the attributes:
 
 - &#95;creation&#95;instance
 - incomingmessage
 - eventlocation_eventxcoord
 - eventlocation_eventycoord
 
-![](./Images/Img4.462.Ex6.WriterFeatureTypeAttributes.png)
+![](./Images/Img4.451.Ex6.WriterFeatureTypeAttributes.png)
 
 Notice that the attributes were automatically renamed (to lower case and removing disallowed characters) to match SpatiaLite requirements.
 
@@ -367,17 +367,17 @@ Go to the FME Server web interface and navigate to the Notifications page.
 
 Create a new Topic called EmergencyTransitMessages:
 
-![](./Images/Img4.463.Ex6.NotificationNewTopic.png)
+![](./Images/Img4.452.Ex6.NotificationNewTopic.png)
 
 Now create a new notification Subscription tied to that topic. There are various protocols we could realistically use for sending a message (email springs to mind) but for the purposes of this exercise use the Logger protocol. Set the Log Level parameter to High:
 
-![](./Images/Img4.464.Ex6.NotificationNewSubscription.png)
+![](./Images/Img4.453.Ex6.NotificationNewSubscription.png)
 
 
 <br>**14) Add FMEServerNotifier Transformer**
 <br>Back in the processing workspace in Workbench, remove any Logger transformers at the end of the workspace. Add an FMEServerNotifier transformer connected to the Tester:Passed port:
 
-![](./Images/Img4.465.Ex6.FMEServerNotifierOnCanvas.png)
+![](./Images/Img4.454.Ex6.FMEServerNotifierOnCanvas.png)
 
 Inspect the transformer parameters and set it up to send a message to the EmergencyTransitMessages topic. Set the message content to be whatever you like. You could use the text editor dialog to create something out of the available attributes (it can be plain text, it doesn't have to be JSON or XML).
 
@@ -387,7 +387,7 @@ Inspect the transformer parameters and set it up to send a message to the Emerge
 
 In a short while you will start to see emergency messages like this:
 
-![](./Images/Img4.466.Ex6.TopicMonitoringResults.png)
+![](./Images/Img4.455.Ex6.TopicMonitoringResults.png)
 
 Visit Resources &gt; Logs &gt; core &gt; current &gt; subscribers &gt; logger.log to find the results as recorded by the Logger protocol notification.
 

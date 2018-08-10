@@ -130,7 +130,7 @@ Most of the general settings (Email To, Email Template, etc.) will be set by the
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Depending on your Gmail security settings, you may need to create an app-specific password to allow FME Server to log into the account. See this article if you are noticing errors connecting to your account: [IMAP Publication or Email Subscription is not Reading Emails from Gmail](https://knowledge.safe.com/articles/394/imap-publisher-not-reading-emails-from-gmail.html)
+Depending on your Gmail security settings, you may need to create an app-specific password to allow FME Server to log into the account. See this article if you are noticing errors connecting to your account: <a href="https://knowledge.safe.com/articles/394/imap-publisher-not-reading-emails-from-gmail.html">IMAP Publication or Email Subscription is not Reading Emails from Gmail</a>
 <br>Alternatively, if you do not have access to an email account, change the Protocol for this subscription to 'Logger' instead. This will add an entry into one of the FME Server logfiles when the BuildingUpdateEmail topic is triggered.
 </span>
 </td>
@@ -194,9 +194,9 @@ Set FME Server Connection parameters, pick the Topic created earlier (BuildingUp
 <br>**6) Publish Workspace**
 <br>Save and publish the workspace.
 
-If the workspace name is different to that used in the Exercise 4 workspace, an update will need to be made as follows.
+You can either update the published workspace or rename it. 
 
-Navigate to the FME Workspace Subscriptions page. Notice that a Subscription will have been automatically created when registering the workspace with the Notification Service in the previous exercise. For example, if the workspace was called RealTime4, the Subscription name will be something like admin.Training.RealTime4:
+In FME Server, navigate to the FME Workspace Subscriptions page. Notice that a Subscription will have been automatically created when registering the workspace with the Notification Service in the previous exercise. For example, if the workspace was called RealTime-Ex4, the Subscription name will be something like admin.Training.RealTime-Ex44:
 
 ![](./Images/Img4.432.Ex5.RescueEsmerelda.png)
 
