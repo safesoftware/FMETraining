@@ -57,7 +57,7 @@ The first step is to create another Resource folder to save all the email attach
 
 Enter "Email Receiver" as the Name. Then click on the text box under Topics to Publish To. Type in *ShapeIncomingEmail* and click on it to add. This will create a new Topic and assign it to this Publication.
 
-![](./Images/Img4.417.Ex4.CreateIncomingTopic.png)
+![](./Images/Img4.424.Ex4.CreateIncomingTopic.png)
 
 The new Publication can be created to use either the Email (SMTP) protocol or the Email (IMAP) protocol.
 
@@ -69,7 +69,7 @@ SMTP is easier to set up, but FME Server must reside on a server with a proper D
 
 To use the SMTP protocol select Email (SMTP) as the Publication Protocol. This will open the Email User Name parameter. Enter a name for receiving email, for example: *fmeshapeprocessing*
 
-![](./Images/Img4.418.Ex4.CreateSMTPPublication.png)
+![](./Images/Img4.425.Ex4.CreateSMTPPublication.png)
 
 Clicking OK will create an email address *fmeshapeprocessing@&lt;hostname&gt;* - for example:
 
@@ -154,15 +154,15 @@ You may select any Resource folder for attachments to be saved to; but (if you h
 <br>**3) Test Publication**
 <br>Now let's test the publication. In the Notifications page on FME Server, click the tab marked Topics. Set up Topic Monitoring to watch the topic *ShapeIncomingEmail*:
 
-![](./Images/Img4.419.Ex4.MonitorTopic.png)
+![](./Images/Img4.426.Ex4.MonitorTopic.png)
 
 Now send an email *with an attachment* to the address selected for the new publication. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the topic will be triggered with a message. (Remember that an IMAP publication only checks for an email every 60 seconds, so the result might not be immediate!)
 
-![](./Images/Img4.420.Ex4.MonitorTopicResult.png)
+![](./Images/Img4.427.Ex4.MonitorTopicResult.png)
 
 Recall that in the previous exercise you used the Logger Protocol and Logger transformers to record the JSON formatted notification message. The same information is displayed in the Topic Monitoring window. So copy the text from the Topic Monitoring window and paste it into a text editor for use later in this exercise.
 
-![](./Images/Img4.421.Ex4.JSONNotificationMessage.png)
+![](./Images/Img4.428.Ex4.JSONNotificationMessage.png)
 
 
 <br>**4) Update Workspace**
@@ -170,7 +170,7 @@ Recall that in the previous exercise you used the Logger Protocol and Logger tra
 
 Open the JSONFlattener parameters, and add *imap&#95;publisher&#95;attachment{0}* and *email&#95;publisher&#95;attachment{0}* under Attributes to Expose:
 
-![](./Images/Img4.422.Ex4.JSONFlattenerParameters.png)
+![](./Images/Img4.429.Ex4.JSONFlattenerParameters.png)
 
 You can see these are two of the available attributes that are returned by the Topic Message.
 
@@ -201,11 +201,11 @@ Add an AttributeManager transformer in between the JSONFlattener and FeatureRead
 
 Select, from the drop-down menu, the option to set the attribute as a Conditional Value:
 
-![](./Images/Img4.423.Ex4.AttributeManagerParameters.png)
+![](./Images/Img4.430.Ex4.AttributeManagerParameters.png)
 
 Configure the Conditional Value as follows:
 
-![](./Images/Img4.424.Ex4.ConditionalDefinition.png)
+![](./Images/Img4.431.Ex4.ConditionalDefinition.png)
 
 <table style="border: 0px">
 
@@ -247,11 +247,11 @@ So *&#95;dataset* gets the location of the data to be processed, whether it come
 <br>**6) Edit FeatureReader**
 <br>The final step is to change the Dataset parameter in the FeatureReader transformer. Instead of pointing to dirwatch&#95;publisher&#95;path, it should be changed to point at the new &#95;dataset attribute:
 
-![](./Images/Img4.425.Ex4.FeatureReaderParameters.png)
+![](./Images/Img4.432.Ex4.FeatureReaderParameters.png)
 
 The workflow should now look like this:
 
-![](./Images/Img4.426.Ex4.FinalWorkspace.png)
+![](./Images/Img4.433.Ex4.FinalWorkspace.png)
 
 
 <br>**7) Edit User Parameter**
@@ -261,7 +261,7 @@ Locate the user parameter DestDataset&#95;SPATIALITE (under User Parameters &gt;
 
 In that dialog enter *$(FME&#95;SHAREDRESOURCE&#95;DATA)/Output/building&#95;footprints.sl3*
 
-![](./Images/Img4.431.Ex4.DestinationDatasetUserParameter.png)
+![](./Images/Img4.434.Ex4.DestinationDatasetUserParameter.png)
 
 
 <br>**8) Publish Workspace**
@@ -269,7 +269,7 @@ In that dialog enter *$(FME&#95;SHAREDRESOURCE&#95;DATA)/Output/building&#95;foo
 
 Click the "Edit" button and set *ShapeIncomingEmail* for the "Subscribe to Topics" parameter. Set the "Parameter to Get Topic Message" as *Source Text File(s)*:
 
-![](./Images/Img4.427.Ex4.PublishWorkspaceNotificationService.png)
+![](./Images/Img4.435.Ex4.PublishWorkspaceNotificationService.png)
 
 
 <br>**9) Update Directory Watch Subscription (Optional)**

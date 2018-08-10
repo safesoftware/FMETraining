@@ -145,7 +145,7 @@ Depending on your Gmail security settings, you may need to create an app-specifi
 
 Add two new transformers - the [FMEServerEmailGenerator](https://hub.safe.com/transformers/fmeserveremailgenerator) (a custom transformer) and an FMEServerNotifier - as a separate stream of data, connected to the <Initiator\> Output Port of the FeatureReader:
 
-![](./Images/Img4.429.Ex5.WorkspaceWithNotifier.png)
+![](./Images/Img4.436.Ex5.WorkspaceWithNotifier.png)
 
 ***NB:*** *It's important to connect these two transformers to the &lt;Initiator&gt; port of the FeatureReader, where only one feature will emerge. If you connect them to the &lt;Generic&gt; output port then you will get an email for every feature in the Shapefile dataset!*
 
@@ -188,7 +188,7 @@ Each of the keywords that have values set(such as email_to, email_subject, and s
 
 Set FME Server Connection parameters, pick the Topic created earlier (BuildingUpdateEmail), and for the Content select the attribute *text&#95;line&#95;data* (this attribute is created by the FMEServerEmailGenerator):
 
-![](./Images/Img4.430.Ex5.FMEServerNotifierParameters.png)
+![](./Images/Img4.437.Ex5.FMEServerNotifierParameters.png)
 
 
 <br>**6) Publish Workspace**
@@ -198,7 +198,7 @@ You can either update the published workspace or rename it.
 
 In FME Server, navigate to the FME Workspace Subscriptions page. Notice that a Subscription will have been automatically created when registering the workspace with the Notification Service in the previous exercise. For example, if the workspace was called RealTime-Ex4, the Subscription name will be something like admin.Training.RealTime-Ex44:
 
-![](./Images/Img4.432.Ex5.RescueEsmerelda.png)
+![](./Images/Img4.438.Ex5.RescueEsmerelda.png)
 
 Click on this notification to change its parameters, and set/ensure that the Workspace parameter is pointing to the workspace just published.
 
