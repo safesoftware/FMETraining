@@ -31,25 +31,25 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex5-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex5-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 You've implemented a lot of different options for transformation, format, coordinate system, and layers to process. However, end-users also often ask for raster data for a particular neighborhood of the city, and that's easy to do using a Clipper transformer.
 
 
 <br>**1) Open Workspace**
-<br>Open the begin workspace listed above. You can see that it consists of a reader, two writers, three transformers, and various published parameters.
+<br>Open the begin workspace listed above or continue in your workspace from the previous exercises. You can see that it consists of a reader, two writers, three transformers, and various published parameters.
 
 To clip data to a particular neighborhood first requires a reader for those neighborhood features, so that is the first step...
 
@@ -78,7 +78,7 @@ To clip data to a particular neighborhood first requires a reader for those neig
 
 Be sure to set the workflow option if you carried out the previous exercise, as it might default to a different value. Click OK and, when prompted, select only the feature type for Neighborhoods:
 
-![](./Images/Img3.200.Ex1.NeighborhoodFT.png)
+![](./Images/Img5.224.Ex4.NeighborhoodFT.png)
 
 Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt the user to select this dataset.
 
@@ -107,15 +107,39 @@ For the configuration field, click the [...] browse button. In the dialog that o
 
 Notice that this parameter is optional. The user should not have to select a value if they don't want to. Also, this is a choice field alone; an alias is not needed because the proper values are clear enough.
 
+---
+
+<!--Tip Section--> 
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+Alternatily, instead of typing all of the attribute values in manually, you can import the values from the dataset. 
+<br><br>In the Choices List, click on Import... In the Import Wizard, select the VancouverNeighborhoods.kml file again, then select Attribute Values for the Import From drop-down. Next, select Neighborhoods as the Feature Types. Finally, for Choice List, select NeighborhoodName from the drop-down and click Import. 
+</span>
+</td>
+</tr>
+</table>
+
+---
+
 
 <br>**4) Add Tester**
 <br>Now we need to filter the neighborhood data by the user's choice. So add a Tester transformer to the workspace, connected to the Neighborhood feature type:
 
-![](./Images/Img3.201.Ex1.TesterTransformer.png)
+![](./Images/Img5.225.Ex4.TesterTransformer.png)
 
 Inspect its parameters and set them up to test where NeighborhoodName = the neighborhood published parameter:
 
-![](./Images/Img3.202.Ex1.TesterTransformerDialog.png)
+![](./Images/Img5.226.Ex4.TesterTransformerDialog.png)
 
 Save the parameter changes.
 
@@ -125,7 +149,7 @@ Save the parameter changes.
 
 So, place a CsmapReprojector transformer after the Tester, connected to the Tester:Passed port. Set it up to reproject to UTM83-10
 
-![](./Images/Img3.203.Ex1.CSMapReprojector.png)
+![](./Images/Img5.227.Ex4.CSMapReprojector.png)
 
 ---
 
@@ -153,9 +177,9 @@ Why does the CsmapReprojector come after the Tester? Because it has less work to
 <br>**6) Add Clipper**
 <br>Now to clip the raster data. Add a Clipper transformer to the workspace. Connect the CsmapReprojector to the  Clipper:Clipper port. Connect the output from the VectorOnRasterOverlayer to the Clipper:Clippee port:
 
-![](./Images/Img3.204.Ex1.DrJonesWillNeverBelieveThis.png)
+![](./Images/Img5.228.Ex4.Clipper.png)
 
-Check the parameters. The only parameter to really check is one specifically related to raster data: Preserve Clippee Extents. Set this parameter to No if it is not already.
+Check the parameters. The only parameter to check is one specifically related to raster data: Preserve Clippee Extents. Set this parameter to No if it is not already.
 
 
 <br>**7) Publish to FME Server**
@@ -163,7 +187,7 @@ Check the parameters. The only parameter to really check is one specifically rel
 
 Run the workspace on FME Server. You should now be able to choose all source tiles and clip them to a chosen neighborhood, like so (here, the Downtown neighborhood):
 
-![](./Images/Img3.205.Ex1.OutputResults.png)
+![](./Images/Img5.229.Ex4.OutputResults.png)
 
 ---
 

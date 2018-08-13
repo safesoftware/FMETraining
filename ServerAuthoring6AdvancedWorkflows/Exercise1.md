@@ -43,7 +43,7 @@
 
 ---
 
-Best Practice is a very important concept for FME workspaces. To encourage colleagues to carry out best practices you wish to install a project that allows workspaces to be analyzed.
+Best Practice is a fundamental concept for FME workspaces. To encourage colleagues to carry out best practices you wish to install a project that allows workspaces to be analyzed.
 
 
 <br>**1) Browse To Projects**
@@ -51,31 +51,31 @@ Best Practice is a very important concept for FME workspaces. To encourage colle
 
 Select Projects on the main menu to browse to the Projects page:
 
-![](./Images/Img5.012.Ex1.ProjectsMenu.png)
+![](./Images/Img6.200.Ex1.ProjectsMenu.png)
 
 
 <br>**2) Import Project**
 <br>Click on the Import button to open the Import page:
 
-![](./Images/Img5.013.Ex1.ImportButton.png)
+![](./Images/Img6.201.Ex1.ImportButton.png)
 
 Under the Configure Import section, be sure to set the import to be from an upload:
 
-![](./Images/Img5.014.Ex1.ImportConfig.png)
+![](./Images/Img6.202.Ex1.ImportConfig.png)
 
-*Overwrite Existing Items* is less important because the project should not yet exist for items to need overwriting. Similarly, *Pause Notifications System* is not important because it's very unlikely the notifications in the project will be triggered immediately (they are for handling incoming emails).
+*Overwrite Existing Items* is less critical because the project should not yet exist for items to need overwriting. Similarly, *Pause Notifications System* is not important because it's very unlikely the notifications in the project will be triggered immediately (they are for handling incoming emails).
 
 Click the Upload File button and browse to/select the file C:\FMEData2018\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
 
 The project will very quickly be imported:
 
-![](./Images/Img5.015.Ex1.ImportComplete.png)  
+![](./Images/Img6.203.Ex1.ImportComplete.png)  
 
 
 <br>**3) Check Log**
-<br>Click the View Details button in order to examine the Project Import log. A successful import will look something like this:
+<br>Click the View Details button to examine the Project Import log. A successful import will look something like this:
 
-![](./Images/Img5.022.Ex1.ImportSummary.png)
+![](./Images/Img6.204.Ex1.ImportSummary.png)
 
 ---
 
@@ -105,9 +105,9 @@ The history page under projects will show a full history of all projects that ha
 
 Click Projects on the menu again, and select the recently imported project. You should now see a list of the imported contents:
 
-![](./Images/Img5.016.Ex1.ProjectContents.png)
+![](./Images/Img6.205.Ex1.ProjectContents.png)
 
-Use the menu options to check the Repository, Notifications, and Resources pages to ensure that the imported components do really exist.
+Use the menu options to check the Repository, Notifications, and Resources pages to ensure that the imported components do exist.
 
 
 <br>**5) Test Project**
@@ -115,15 +115,15 @@ Use the menu options to check the Repository, Notifications, and Resources pages
 
 For FME Server on one of Safe's training computers, the public IP address is shown on the top-right of the desktop, or within the readme file obtained when you started the computer:
 
-![](./Images/Img5.018.Ex1.ServerIPAddress.png)
+![](./Images/Img6.206.Ex1.ServerIPAddress.png)
 
 The email address will be BestPractice@xxxx, where xxxx is the IP address:
 
-![](./Images/Img5.017.Ex1.EmailTest.png)
+![](./Images/Img6.207.Ex1.EmailTest.png)
 
 Set a subject line and attach a workspace file. Click the Send button. In response (it may take a minute or two) you will receive an email report about the best practices used in that workspace:
 
-![](./Images/Img5.019.Ex1.BPReport.png)
+![](./Images/Img6.208.Ex1.BPReport.png)
 
 This demonstrates that the project has been imported and set up correctly.
 
@@ -133,7 +133,7 @@ This demonstrates that the project has been imported and set up correctly.
 
 So, return to the project contents, select the marki User, and remove it.
 
-![](./Images/Img5.020.Ex1.RemoveAccount.png)
+![](./Images/Img6.209.Ex1.RemoveAccount.png)
 
 This will remove the account from the project, but since the project has already been imported, the account will also exist on the machine. So also go to the Security > Users page and remove that user.
 
@@ -147,7 +147,7 @@ To do so, browse to the Projects page, select the project (using the checkbox on
 
 In the dialog that opens you can choose whether to save the project file to a download or a resources folder. Once complete the following message will appear:
 
-![](./Images/Img5.021.Ex1.ProjectExported.png)
+![](./Images/Img6.210.Ex1.ProjectExported.png)
 
 ---
 

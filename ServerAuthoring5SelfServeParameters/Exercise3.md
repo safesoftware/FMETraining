@@ -31,19 +31,19 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex3-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex3-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 So far you have created a simple workspace to translate orthophotos to JPEG format. To this you have added published parameters for transformation, format, and coordinate system. The workspace was published to a Data Download service on FME Server.
 
@@ -89,7 +89,7 @@ We'll use the Single Merged Feature Type option here because there are multiple 
 <br>**3) Add VectorOnRasterOverlayer Transformer**
 <br>Add a VectorOnRasterOverlayer transformer. Connect the DGN feature type to the Vector input port, and the output of the RasterMosaicker transformer to the Raster input port:
 
-![](./Images/Img2.219.Ex4.VOROTransformer.png)
+![](./Images/Img5.214.Ex3.VOROTransformer.png)
 
 You can check the parameters for this transformer but, for now at least, we'll leave them as they are.
 
@@ -99,11 +99,11 @@ You can check the parameters for this transformer but, for now at least, we'll l
 
 In the Navigator window find the DGN Reader's parameters, expand the Features to Read section, and locate the parameter called Feature Types to Read. You will see that it is already published - a result of us using the Single Merged Feature Type:
 
-![](./Images/Img2.220.Ex4.FTTRParameter.png)
+![](./Images/Img5.215.Ex3.FTTRParameter.png)
 
 Right-click on the parameter and choose Edit User Parameter Definition. This will bring up a dialog that looks like this:
 
-![](./Images/Img2.221.Ex4.FTTRParameterDialog.png)
+![](./Images/Img5.216.Ex3.FTTRParameterDialog.png)
 
 ---
 
@@ -130,13 +130,13 @@ The Feature Types to Read parameter tells FME which layers to read from the sour
 ---
 
 <br>**5) Edit User Parameter**
-<br>In the Modify Feature Types List dialog, check the box that is labelled Fixed List, and also the box that is labelled Use Alternate Display Name.
+<br>In the Modify Feature Types List dialog, check the box that is labeled Fixed List, and also the box that is labeled Use Alternate Display Name.
 
-Click List &gt; Add From Current Dataset and - when prompted - select all of the feature types in this dataset. Click OK and the dialog will now look like this:
+Click List &gt; Add From Current Dataset and - when prompted - select all of the feature types in this dataset. Click OK, and the dialog will now look like this:
 
-![](./Images/Img2.222.Ex4.FTTRParameterDialogEdit1.png)
+![](./Images/Img5.217.Ex3.FTTRParameterDialogEdit1.png)
 
-What we could do is just create a display name for each road type and close the dialog. The end-user will then be able to select any of the individual layers. However, for this project I think we should give them a simpler choice, and we will do that by grouping the layers.
+What we could do is create a display name for each road type and close the dialog. The end-user will then be able to select any of the individual layers. However, for this project, I think we should give them a simpler choice, and we will do that by grouping the layers.
 
 So, under the Display Name, enter values to match as follows:
 
@@ -151,20 +151,20 @@ So, under the Display Name, enter values to match as follows:
 <tr><td>Other Roads</td><td>Other</td></tr>
 </table>
 
-The list will sort itself by display name and look like this:
+The list will look like this:
 
-![](./Images/Img2.223.Ex4.FTTRParameterDialogEdit2.png)
+![](./Images/Img5.217.Ex3.FTTRParameterDialogEdit2.png)
 
 What this will do is give the user a choice of three options: Primary Roads, Secondary Roads, Other Roads. Whichever they choose will return all of the source layers for that choice.
 
 One final task. In the lower part of the dialog, change the prompt to something like "Vector Roads to Overlay":
 
-![](./Images/Img2.224.Ex4.FTTRParameterDialogEdit3.png)
+![](./Images/Img5.218.Ex3.FTTRParameterDialogEdit3.png)
 
 It's just a small thing but will help with the end user experience.
 
 <br>**6) Save and Run Workspace**
-<br>Save the workspace and then run it in FME Workbench to test it. You should be able to select any of the three types of roads, or even none of them.
+<br>Save the workspace and then run it in FME Workbench to test it. You should be able to select any of the three types of roads or even none of them.
 
 Check that the output includes whatever roads you selected.
 
@@ -181,55 +181,30 @@ Locate and delete the following published parameters:
 
 Finally, let's change the order of parameters. You can do this by dragging one above the other in the Navigator window. So do this and put the parameters in the order that seems best to you:
 
-![](./Images/Img2.225.Ex4.SortedParameters.png)
+![](./Images/Img5.219.Ex3.SortedParameters.png)
 
 
 <br>**8) Raster User Parameters**
 <br>Now let's do something with the source raster. We want the user to be able to select the files to read, without having to upload them. Locate the reader in the Navigator window and double-click the Source GeoTIFF File(s) parameter. When prompted, select all of the GeoTIFF files in the Orthophotos folder.
 
-![](./Images/Img2.226.Ex4.MultipleSourceDatasets.png)
+![](./Images/Img5.220.Ex3.MultipleSourceDatasets.png)
 
-This would normally mean that all files would get read into the translation; but the Feature Types to Read parameter will let the user actually choose which ones to read. We do, however, need to make some edits.
+This would normally mean that all files would get read into the translation, but the Feature Types to Read parameter will let the user choose which ones to read. We do, however, need to make some edits.
 
 Open the definition of the GeoTIFF Feature Types to Read parameter. Click the option for a Fixed List. To list all of the available tiles select List &gt; Add From Current Dataset and select all the files.
 
-Finally change the prompt to something sensible like "Raster Tiles to Read".
+Finally, change the prompt to something sensible like "Raster Tiles to Read."
 
-![](./Images/Img2.227.Ex4.RasterFTTRParam.png)
+![](./Images/Img5.221.Ex3.RasterFTTRParam.png)
 
-Now run the workspace again to check on our improved parameters dialog.
-
----
-
-<!--Warning Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">WARNING</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-At this point you might find, on running the workspace, that no filenames appear. Instead all you get is a single option called "Geotiff" in the file prompt.
-<br><br>The reason for that is you made a mistake way back in exercise 1, step 1. You missed out setting the parameter "Feature Type Name(s)" to "From file name(s)".
-<br><br>The only solution to this is to delete the GeoTIFF reader, and re-add it, this time being sure to set that parameter! Then you'll also have to clean up the reader's published parameters too.
-</span>
-</td>
-</tr>
-</table>
-
----
+Now rerun the workspace to check on our improved parameters dialog.
 
 <br>**9) Publish to FME Server**
 <br>Save the workspace and publish it to FME Server. There are two things to note.
 
-Firstly, because we removed the Source Dataset parameters FME will suggest we upload the data. If your data is on the same computer as FME Server (or on a path otherwise accessible to the Server), then you don't need to do this and can uncheck that box:
+Firstly, because we removed the Source Dataset parameters, FME will suggest we upload the data. If your data is on the same computer as FME Server (or on a path otherwise accessible to the Server), then you don't need to do this and can uncheck that box:
 
-![](./Images/Img2.228.Ex4.DeselectFilesToUpload.png)
+![](./Images/Img5.222.Ex3.DeselectFilesToUpload.png)
 
 If the files aren't accessible, then you will have to upload them all - but at least the end user will never have to.
 
@@ -237,9 +212,9 @@ Secondly, remember to make sure the Data Download service is using the "Output [
 
 In the FME Server web interface, run the workspace, taking time to admire the new, cleaner set of parameters that are available:
 
-![](./Images/Img2.229.Ex4.AwesomeLookingPublishedParameters.png)
+![](./Images/Img5.223.Ex3.AwesomeLookingPublishedParameters.png)
 
-Outside of a training environment we might want to order the raster tiles into groups, but we'll live with it as-is for now.
+Outside of a training environment, we might want to order the raster tiles into groups, but we'll live with it as-is for now.
 
 ---
 

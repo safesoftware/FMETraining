@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex6-CompleteA.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex6-CompleteB.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex6-CompleteMaster.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteA.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteB.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteC.fmw</td>
 </tr>
 
 </table>
@@ -45,11 +45,11 @@
 
 You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department has just purchased FME Server.
 
-A municipal election is about to happen and Elections Interopolis have provided a dataset of new voting divisions in GML format. Your first task today is to create a workspace to translate these voting divisions to a SpatiaLite database format for use within the city, and write the data to a resources folder on FME Server so that everyone can use it.
+A municipal election is about to happen, and Elections Interopolis have provided a dataset of new voting divisions in GML format. Your first task today is to create a workspace to translate these voting divisions to a SpatiaLite database format for use within the city and write the data to a resources folder on FME Server so that everyone can use it.
 
 Coincidentally, the planning department heard of this update and has asked you to assign voting division IDs to each of the records in the city's address database, for use in election planning.
 
-You realize that you can chain these two translations together to execute consecutively under a master workspace. So in all you have three workspaces to create!
+You realize that you can chain these two translations together to execute consecutively under a master workspace. So in all, you have three workspaces to create!
 
 ---
 
@@ -82,7 +82,7 @@ You realize that you can chain these two translations together to execute consec
 
 The Writer dataset can be left empty for now. When prompted, leave both source feature types (layers) selected.
 
-![](./Images/Img1.260.Ex6.InitialWorkspace.png)
+![](./Images/Img6.211.Ex2.InitialWorkspace.png)
 
 
 <br>**2) Create Resources**
@@ -92,7 +92,7 @@ If you carried out exercise 1.4, then you should already have a folder Resources
 
 If not, create that set of folders and subfolders. Upload the source GML dataset to the Input folder (you should upload both the .gml and .xsd files):
 
-![](./Images/Img1.261.Ex6.UploadedData.png)
+![](./Images/Img6.211.Ex2.UploadedData.png)
 
 
 <br>**3) Edit Workspace to use Resources**
@@ -107,17 +107,17 @@ Next locate the parameters for the GML source dataset and SpatiaLite destination
 
 One final tweak: change the Writer parameter Overwrite Existing Database to Yes
 
-![](./Images/Img1.262.Ex6.WorkspaceDatasetParameters.png)
+![](./Images/Img6.213.Ex2.WorkspaceDatasetParameters.png)
 
 
 <br>**4) Save, Publish, and Run Workspace**
-<br>Save the workspace (to something like Basics-Ex6-CompleteA.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service.
+<br>Save the workspace (to something like AdvancedWorkflows-Ex2-CompleteA.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service.
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. The evidence of success will be the log and an sl3 file in the resources folder.
 
 Select the sl3 dataset and click on Actions > Download to download the file. This is important; we'll need the file to set up our next workspace.
 
-![](./Images/Img1.263.Ex6.DownloadSpatialiteDB.png?)
+![](./Images/Img6.214.Ex2.DownloadSpatialiteDB.png?)
 
 Save the file to the Elections folder, so you will remember where it is; i.e. C:\FMEData2018\Data\Elections\VotingDivisions.sl3
 
@@ -153,7 +153,7 @@ Open Workbench if necessary and generate a new workspace with these parameters:
 
 When prompted, leave both source feature types (tables) selected.
 
-![](./Images/Img1.264.Ex6.HalfwayUpTheEastWall.png)
+![](./Images/Img6.215.Ex2.StartingWorkspaceB.png)
 
 
 <br>**6) Add Reader**
@@ -177,14 +177,14 @@ When prompted, leave both source feature types (tables) selected.
 
 When prompted, select only the source feature type (table) *votingdivisions*.
 
-![](./Images/Img1.265.Ex6.SelectingVotingDivisions.png)
+![](./Images/Img6.216.Ex2.SelectingVotingDivisions.png)
 
 
 
 <br>**7) Add Transformer**
 <br>Now let's add a transformer to assign voting divisions to each address. Place a PointOnAreaOverlayer transformer into the workspace. Connect it as follows:
 
-![](./Images/Img1.266.Ex6.POAOOnCanvas.png)
+![](./Images/Img6.217.Ex2.POAOOnCanvas.png)
 
 <br>
 
@@ -197,13 +197,13 @@ When prompted, select only the source feature type (table) *votingdivisions*.
 
 
 <br>**8) Edit Writer Schema**
-<br>That transformer will copy the division attribute on to each address, but that attribute won't be written unless we also add it to the output schema.
+<br>The PointOnAreaOverlayer will copy the division attribute on to each address, but that attribute won't be written unless we also add it to the output schema.
 
 So, inspect the parameters for the writer feature type PostalAddress. In the User Attributes tab add a new attribute called division (of type int):
 
-![](./Images/Img1.267.Ex6.DivisionAttrAddedToSchema.png)
+![](./Images/Img6.218.Ex2.DivisionAttrAddedToSchema.png)
 
-*division* is case-sensitive, since we want it to match what is coming in from the *votingdivisions* table.
+*division* is case-sensitive since we want it to match what is coming in from the *votingdivisions* table.
 
 
 <br>**9) Test Run Workspace**
@@ -215,12 +215,12 @@ So, inspect the parameters for the writer feature type PostalAddress. In the Use
 
 Firstly, we can upload a File Geodatabase as a folder/file only if we're using the Chrome web browser. Just in case you aren't, locate the source Geodatabase in your file system and compress it into a single zip file:
 
-![](./Images/Img1.268.Ex6.CompressedAddresses.png)
+![](./Images/Img6.219.Ex2.CompressedAddresses.png)
 
 
-Next, upload the zipped address file to the Resources > Data > Election > Input folder on FME Server:
+Next, upload the Addresses.gdb folder (or addresses.gdb.zip) to the Resources > Data > Election > Input folder on FME Server:
 
-![](./Images/Img1.269.Ex6.UploadedCompressedAddresses.png)
+![](./Images/Img6.220.Ex2.UploadedCompressedAddresses.png)
 
 
 <br>**11) Edit Workspace to use Resources**
@@ -233,18 +233,19 @@ Next locate the parameters for the Geodatabase source dataset, SpatiaLite source
 <tr><td>SpatiaLite Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\VotingDivisions.sl3</td></tr>
 <tr><td>Geodatabase Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\NewAddresses.gdb.zip</td></tr>
 </table>
+**Note:** If you uploaded the Addresses.gdb as a zip file, add .zip at the end of the parameter for both the Geodatabase Reader and Writer. 
 
 One final tweak: change the Writer parameter Overwrite Geodatabase to Yes
 
-![](./Images/Img1.270.Ex6.UpdatedWorkspaceParameters.png)
+![](./Images/Img6.221.Ex2.UpdatedWorkspaceParameters.png)
 
 
 <br>**12) Save, Publish, and Run Workspace**
-<br>Save the workspace (to something like Basics-Ex6-CompleteB.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service.
+<br>Save the workspace (to something like AdvancedWorkflows-Ex2-CompleteB.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service.
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. The evidence of success will be the log and a zipped geodatabase file in the resources folder.
 
-![](./Images/Img1.271.Ex6.GeodatabaseWrittenToResources.png)
+![](./Images/Img6.222.Ex1.GeodatabaseWrittenToResources.png)
 
 You may wish to download the newly created dataset to inspect it and make sure the output is correct.
 
@@ -254,7 +255,7 @@ You may wish to download the newly created dataset to inspect it and make sure t
 
 So, open Workbench and start with an empty canvas. Place a Creator transformer followed by two FMEServerJobSubmitter transformers:
 
-![](./Images/Img1.272.Ex6.FMEServerJobSubmitters.png)
+![](./Images/Img6.223.Ex2.FMEServerJobSubmitters.png)
 
 
 <br>**14) Set Parameters**
@@ -264,7 +265,7 @@ Firstly, select your FME Server connection. Then, under Submission Mode, set Wai
 
 Finally, select the Training repository and the first of the two prior workspaces (the one that converted election divisions from GML to SpatiaLite).
 
-![](./Images/Img1.273.Ex6.FMEServerJobSubmitterParams1.png)
+![](./Images/Img6.224.Ex2.FMEServerJobSubmitterParams1.png)
 
 Below is an area where we can set the parameters for the translation. However, since there are no published parameters, we don't need to worry about that.
 
@@ -280,9 +281,9 @@ Now repeat the same process for the second FMEServerJobSubmitter, this time sele
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. It will run each of the two child workspaces in turn.
 
-Don't worry that FME reports zero features written. That only refers to the master workspace (not the child workspaces). Evidence of success will be the log, and new output files (sl3,gdb) in the resources folder:
+Don't worry that FME reports zero features written. That only refers to the master workspace (not the child workspaces). Evidence of success will be the log and new output files (sl3, gdb) in the resources folder:
 
-![](./Images/Img1.274.Ex6.OutputDatasetsInResources.png)
+![](./Images/Img6.225.Ex2.OutputDatasetsInResources.png)
 
 Notice that the date/timestamps will be very similar for the two datasets; the VotingDivisions.sl3 file should be created first and then NewAddresses.gdb.zip shortly after.
 

@@ -31,19 +31,19 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex3-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex3-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 So far you have created a simple workspace to translate orthophotos to JPEG format, added published parameters for transformation, and published it to a Data Download service on FME Server.
 
@@ -53,7 +53,7 @@ Now you need to give the end-users control over the output format and output coo
 <br>**1) Open Workspace**
 <br>Open the workspace from exercise 1, or the begin workspace listed above. You can see that it consists of a reader, a writer, and two transformers, plus some published parameters.
 
-In this step we'll give the end-user control over format and coordinate system.
+In this step, we'll give the end-user control over the format and coordinate system.
 
 
 <br>**2) Add Writer**
@@ -85,19 +85,19 @@ In this step we'll give the end-user control over format and coordinate system.
 
 The MIME type setting doesn't apply for a Data Download service, but we'll set it anyway. It can't hurt. Your workspace will now look like this:
 
-![](./Images/Img2.211.Ex3.AddedWriter.png)
+![](./Images/Img5.206.Ex2.AddedWriter.png)
 
 The unconnected feature type belongs to the Generic Writer.
 
 
 <br>**3) Switch Feature Types**
-<br>We want to write to the Generic Writer, not the JPEG Writer, so switch the connection from the JPEG feature type to the Generic feature type. They are both labelled with the same name, so be sure to inspect their properties to check if you need to. You could (should?) also add an annotation to each, to tell them apart.
+<br>We want to write to the Generic Writer, not the JPEG Writer, so switch the connection from the JPEG feature type to the Generic feature type. They are both labeled with the same name, so be sure to inspect their properties to check if you need to. You could (should?) also add an annotation to each, to tell them apart.
 
 Don't delete the JPEG Writer though, or its feature type. We'll need those for reasons to be explained shortly.
 
 
 <br>**4) Create User Parameter**
-<br>To give control over format requires a published parameter. So in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter.
+<br>To give control over format requires a published parameter. So in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Create User Parameter.
 
 Set the parameter values as follows:
 
@@ -111,11 +111,11 @@ Set the parameter values as follows:
 
 For the configuration field, click the [...] browse button. In the dialog that opens, click on Import &gt; Writer Format(s):
 
-![](./Images/Img2.212.Ex3.WriterFormatsParam.png)
+![](./Images/Img5.207.Ex2.WriterFormatsParam.png)
 
 This will open a list of FME-supported formats. Choose a few simple raster formats such as JPEG, PNG, and GeoTIFF. Click OK to close the dialog and return to the previous one:
 
-![](./Images/Img2.213.Ex3.WriterFormatsImported.png)
+![](./Images/Img5.208.Ex2.WriterFormatsImported.png)
 
 ---
 
@@ -150,19 +150,19 @@ Locate the Generic Writer in the Navigator window, expand its parameters and loc
 
 So, right-click on Output Format and choose the option to Link to User Parameter:
 
-![](./Images/Img2.214.Ex3.GenericLinkOption.png)
+![](./Images/Img5.209.Ex2.GenericLinkOption.png)
 
 When prompted select the OutputFormat parameter that we just created:
 
-![](./Images/Img2.215.Ex3.BallroomWest.png)
+![](./Images/Img5.210.Ex2.BallroomWest.png)
 
-The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it any more and, since it is used nowhere else, will remove it.
+The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it anymore and, since it is used nowhere else, will remove it.
 
 ***NB:** If you didn't set a default value for the OutputFormat user parameter, then the Generic writer parameter will turn red (flagged as incomplete). This is nothing to worry about. It will be set at runtime.*
 
 
 <br>**6) Create User Parameter**
-<br>The next parameter required is to give control over output coordinate system. The process is very similar to that of format. In the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Add Parameter.
+<br>The next parameter required is to give control over output coordinate system. The process is very similar to that of format. In the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Create User Parameter.
 
 Set the parameter values as follows:
 
@@ -178,7 +178,7 @@ For the configuration field, click the [...] browse button. In the dialog that o
 
 Click OK to close the dialog and return to the previous one:
 
-![](./Images/Img2.216.Ex3.ImportedCoordSys.png)
+![](./Images/Img5.211.Ex2.ImportedCoordSys.png)
 
 Click OK and OK again to close these dialogs and create the parameter.
 
@@ -188,7 +188,7 @@ Click OK and OK again to close these dialogs and create the parameter.
 
 Locate the Generic Writer in the Navigator window, and this time look for the parameter called Coordinate System:
 
-![](./Images/Img2.217.Ex3.GenericCoordSysParam.png)
+![](./Images/Img5.212.Ex2.GenericCoordSysParam.png)
 
 Right-click on this parameter and choose Link to User Parameter. When prompted, select the published parameter called OutputCoordSys that we just created.
 
@@ -196,9 +196,9 @@ If you now use the Run button in Workbench you'll see that both these parameters
 
 
 <br>**8) Publish to FME Server**
-<br>Save the workspace and publish it to FME Server. **However!** When you register it with the Data Download service be sure to click the Edit button to edit the service properties. In that dialog you MUST set the writer to "Output [GENERIC]" (not "Output [JPEG]").
+<br>Save the workspace and publish it to FME Server. **However!** When you register it with the Data Download service be sure to click the Edit button to edit the service properties. In that dialog, you MUST set the writer to "Output [GENERIC]" (not "Output [JPEG]").
 
-![](./Images/Img2.218.Ex3.PublishDataDownloadParams.png)
+![](./Images/Img5.213.Ex2.PublishDataDownloadParams.png)
 
 If you don't do that, then the Data Download will consist of the output of the JPEG Writer. Since that is not connected, there will be no output and so no zip file!
 

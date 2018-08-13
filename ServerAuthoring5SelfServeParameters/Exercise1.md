@@ -31,19 +31,19 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServ2-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServ2-Ex1-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
 
 ---
 
-As a technical analyst in the GIS department of a city you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 So far you have created a simple workspace to translate orthophotos to JPEG format, and published it to a Data Download service on FME Server.
 
@@ -53,15 +53,15 @@ Now you need to start customizing the workspace to allow the end-users to have a
 <br>**1) Open Workspace**
 <br>Open the starting workspace listed above. You can see that it consists of a reader, a writer, and two transformers.
 
-In this step we'll give the end-user control over the transformation stages.
+In this step, we'll give the end-user control over the transformation stages.
 
 
 <br>**2) Create User Parameter**
-<br>If you look at the parameters for the RasterResampler transformer you'll see parameters for X Cell Spacing and Y Cell Spacing. We should let the end user choose what spacing they want.
+<br>If you look at the parameters for the RasterResampler transformer, you'll see parameters for X Cell Spacing and Y Cell Spacing. We should let the end user choose what spacing they want.
 
 So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Create User Parameter:
 
-![](./Images/Img2.205.Ex2.CreateParameter.png)
+![](./Images/Img5.200.Ex1.CreateParameter.png)
 
 The dialog that opens allows us to create a new parameter. Create one using the following parameters:
 
@@ -76,7 +76,7 @@ The dialog that opens allows us to create a new parameter. Create one using the 
 </table>
 
 
-![](./Images/Img2.206.Ex2.CreateParameterDialog.png)
+![](./Images/Img5.201.Ex1.CreateParameterDialog.png)
 
 Click OK to close the dialog.
 
@@ -84,13 +84,13 @@ Click OK to close the dialog.
 <br>**3) Apply User Parameter**
 <br>Currently we've created a user parameter, but not applied it to anywhere.
 
-Inspect the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing
+Inspect the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing.
 
 Do the same for the Y Cell Spacing parameter. The dialog will now look like this:
 
-![](./Images/Img2.207.Ex2.PublishedRasterResamplerParams.png)
+![](./Images/Img5.202.Ex1.PublishedRasterResamplerParams.png)
 
-Notice that we're using the same values for the X and Y cell sizes. That's OK. Although we could use rectangular (oblong) raster cells, for this exercise we'll stick with square.
+Notice that we're using the same values for the X and Y cell sizes. That's OK. Although we could use rectangular (oblong) raster cells, for this exercise we'll stick with a square.
 
 
 <br>**4) Create User Parameter**
@@ -120,25 +120,25 @@ For the configuration field, click the [...] browse button. In the dialog that o
 <tr><td>High</td><td>75</td></tr>
 </table>
 
-![](./Images/Img2.208.Ex2.CreateChoiceParam.png)
+![](./Images/Img5.203.Ex1.CreateChoiceParam.png)
 
 Click OK and OK again to close these dialogs and create the parameter.
 
 
 <br>**5) Apply User Parameter**
-<br>To apply the parameter, inspect the parameters for the JPEG feature type. Expand the Compression parameters (if necessary) and set the Compression Level parameter to User Parameter &gt; Compression
+<br>To apply the parameter, inspect the parameters for the JPEG feature type. Expand the Compression parameters (if necessary) and set the Compression Level parameter to User Parameter &gt; Compression.
 
-![](./Images/Img2.209.Ex2.SetFTCompression.png)
+![](./Images/Img5.204.Ex1.SetFTCompression.png)
 
 Click OK to close the dialog. If you press the run button now - with the prompt option set - you'll see that there are now two new prompts for cell size and compression.
 
 
 <br>**6) Publish and Run Workspace**
-<br>Now publish the workspace to FME Server again. As before, register it with the Data Download service.
+<br>Now publish the workspace to FME Server. Publish it to the Training repository and then register it with the Data Download service.
 
 Locate the workspace through the FME Server web interface and run it. This time you will be prompted to set the cell size and compression.
 
-![](./Images/Img2.210.Ex2.RunWorkspace.png)
+![](./Images/Img5.205.Ex1.RunWorkspace.png)
 
 Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect. The size of the output file is a good indicator that the process is working correctly.
 
