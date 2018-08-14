@@ -245,7 +245,7 @@ One final tweak: change the Writer parameter Overwrite Geodatabase to Yes:
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. The evidence of success will be the log and a zipped geodatabase file in the resources folder.
 
-![](./Images/Img6.222.Ex1.GeodatabaseWrittenToResources.png)
+![](./Images/Img6.222.Ex2.GeodatabaseWrittenToResources.png)
 
 You may wish to download the newly created dataset to inspect it and make sure the output is correct.
 
