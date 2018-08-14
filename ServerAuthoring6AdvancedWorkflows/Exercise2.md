@@ -92,7 +92,7 @@ If you carried out exercise 1.4, then you should already have a folder Resources
 
 If not, create that set of folders and subfolders. Upload the source GML dataset to the Input folder (you should upload both the .gml and .xsd files):
 
-![](./Images/Img6.211.Ex2.UploadedData.png)
+![](./Images/Img6.212.Ex2.UploadedData.png)
 
 
 <br>**3) Edit Workspace to use Resources**
