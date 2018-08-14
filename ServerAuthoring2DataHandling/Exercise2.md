@@ -4,7 +4,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 5</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2.2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Using Resources</span>
@@ -28,12 +28,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex5-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataHandling-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex5-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataHandling-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -53,11 +53,11 @@ However, such data management tools are not particularly suited to a long-term p
 <br>**2) Create Folder**
 <br>In most cases data should be stored under the Data folder, so click on Data in the Resources dialog to open that folder. To avoid mixing datasets, our data should go into its own subfolder. So click on the New Folder button and create a folder called Election:
 
-![](./Images/Img2.214.Ex5.TempUnselectFile.png)
+![](./Images/Img2.214.Ex2.TempUnselectFile.png)
 
 Next click on the Election folder and within there create **new** subfolders called Input and Output:
 
-![](./Images/Img2.215.Ex5.InputOutputFolders.png)
+![](./Images/Img2.215.Ex2.InputOutputFolders.png)
 
 
 <br>**3) Upload Source Datasets**
@@ -72,7 +72,7 @@ Next click on the Election folder and within there create **new** subfolders cal
 
 </table>
 
-![](./Images/Img2.216.Ex5.UploadedFiles.png)
+![](./Images/Img2.216.Ex2.UploadedFiles.png)
 
 So we now have both source datasets and a folder to write the output data to.
 
@@ -103,17 +103,17 @@ So, open the starting workspace listed above in FME Workbench and then select Wr
 
 The reason we want to add no feature types is that we can move the existing ones from the NULL writer. So when you click OK the workspace will look no different, but there will be a new writer in the Navigator window:
 
-![](./Images/Img2.217.Ex5.AddedGeodatabaseWriter.png)
+![](./Images/Img2.217.Ex2.AddedGeodatabaseWriter.png)
 
 
 <br>**5) Move Feature Types**
 <br>Inspect the parameters dialog for each writer feature type in turn. For each type move it from the NULL writer to the FILE GDB writer, like so:
 
-![](./Images/Img2.218.Ex5.MoveAFeatureType.png)
+![](./Images/Img2.218.Ex2.MoveAFeatureType.png)
 
 This will expose a number of extra parameters. The key one to set is Geometry. For the Neighborhoods they should be set to geodb_polygon:
 
-![](./Images/Img2.219.Ex5.TheBanyanTree.png)
+![](./Images/Img2.219.Ex2.NeighborFeatureType.png)
 
 For the VotingPlaces feature type, the Geometry parameter should be set to geodb_point.
 
@@ -123,7 +123,7 @@ Now the two feature types belong to the Geodatabase writer, and the NULL writer 
 <br>**6) Set Geodatabase Parameter**
 <br>One (very quick) last thing to change: locate the Geodatabase writer in the Navigator window and expand its list of parameters. Double-click the parameter labeled Overwrite Existing Geodatabase and set it to Yes:
 
-![](./Images/Img2.220.Ex5.OverwriteGeodatabaseParameter.png)
+![](./Images/Img2.220.Ex2.OverwriteGeodatabaseParameter.png)
 
 This ensures we aren't continually adding data to the same dataset if we run the workspace more than once.
 
@@ -131,7 +131,7 @@ This ensures we aren't continually adding data to the same dataset if we run the
 <br>**7) Run Workspace**
 <br>Test run the workspace in FME Desktop. Inspect the output. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
 
-![](./Images/Img2.221.Ex5.OutputTables.png)
+![](./Images/Img2.221.Ex2.OutputTables.png)
 
 
 <br>**8) Publish and Run Workspace**
@@ -139,7 +139,7 @@ This ensures we aren't continually adding data to the same dataset if we run the
 
 Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog. Notice how the dataset paths are all hard-coded to the original file locations:
 
-![](./Images/Img2.222.Ex5.HardCodedParameters.png)
+![](./Images/Img2.222.Ex2.HardCodedParameters.png)
 
 Obviously, this will be of no use if the Server does not have access to those files. However, because we already uploaded them to the Resources folders, we can use those files.
 
@@ -149,15 +149,15 @@ So, for each file, click the browse button, browse to the appropriate subfolder 
 $(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb
 </pre>
 
-![](./Images/Img2.223.Ex5.SetGeodatabaseOutputAsAResource.png)
+![](./Images/Img2.223.Ex2.SetGeodatabaseOutputAsAResource.png)
 
 Remember to remove any existing references to the incorrect files:
 
-![](./Images/Img2.224.Ex5.RemoveExistingReference.png)
+![](./Images/Img2.224.Ex2.RemoveExistingReference.png)
 
-Now when the workspace is completed a Geodatabase file should appear in the folder Resources\Data\Election\Output:
+Now when the workspace is run, a completed Geodatabase file should appear in the folder Resources\Data\Election\Output:
 
-![](./Images/Img2.225.Ex5.OutputGeodatabaseInResourcesFolder.png)
+![](./Images/Img2.225.Ex2.OutputGeodatabaseInResourcesFolder.png)
 
 
 
@@ -170,7 +170,7 @@ So, return to the workspace in FME Workbench.
 
 If we do set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window locate the three parameters for source and destination datasets and delete them:
 
-![](./Images/Img2.226.Ex5.DeleteThePublishedParameters.png)
+![](./Images/Img2.226.Ex2.DeleteThePublishedParameters.png)
 
 
 
@@ -183,7 +183,7 @@ If we do set the workspace to read from the resources folders, we don't want to 
 <tr><td>Geodatabase Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\DepartmentData.gdb</td></tr>
 </table>
 
-![](./Images/Img2.227.Ex5.ResetDatasetParameters.png)
+![](./Images/Img2.227.Ex2.ResetDatasetParameters.png)
 
 Save the workspace and publish it back to FME Server.
 

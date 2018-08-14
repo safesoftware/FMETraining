@@ -5,7 +5,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1.2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Running a Workspace</span>
@@ -73,7 +73,7 @@ You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-
 ---
 
 <br>**1) Connect to Server**
-<br>To log in to the FMEserver interface either select the Web Interface option from the start menu or - in your web browser - enter the address of your FME Server.
+<br>To log in to the FME Server web interface either select the Web Interface option from the start menu or - in your web browser - enter the address of your FME Server.
 
 ---
 

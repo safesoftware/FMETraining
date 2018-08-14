@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4.3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
@@ -189,7 +189,7 @@ You may recognize these attributes from the Topic Monitoring exercise - indeed y
 
 
 <br>**7) Edit JSONFlattener Transformer**
-<br>Back in FME Workbench inspect the JSONFlattener transformer parameters once more. Under Attribute to Expose add the attribute *dirwatch&#95;publisher&#95;path* by clicking the browse button and then manually typing its name:
+<br>Back in FME Workbench inspect the JSONFlattener transformer parameters once more. Under Attribute to Expose add the attribute *dirwatch&#95;publisher&#95;path* by clicking the browse button and then manually typing it in:
 
 ![](./Image/Img4.414.Ex3.DirWatchPubPath.png)
 
@@ -210,8 +210,6 @@ This is a transformer that will let us read the contents of the dataset into the
 Select to have a Single Output Port:
 
 ![](./Images/Img4.416.Ex3.FeatureReaderParameters.png)
-
-You may receive a warning message, but it can be safely ignored.
 
 
 <br>**9) Add Writer**

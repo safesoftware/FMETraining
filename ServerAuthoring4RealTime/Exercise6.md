@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 6</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4.6</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Message Streaming: Handling Emergency Phone Call Streams</span>
@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex6-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Generate-Complete.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\DataStream-Ex1-Process-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex6-Generate-Complete.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex6-Process-Complete.fmw</td>
 </tr>
 
 </table>

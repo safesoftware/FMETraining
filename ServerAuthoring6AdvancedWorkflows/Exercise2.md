@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 6.2</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Authoring Workspace Chains</span>
@@ -233,12 +233,12 @@ Next locate the parameters for the Geodatabase source dataset, SpatiaLite source
 <tr><td>SpatiaLite Reader</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\VotingDivisions.sl3</td></tr>
 <tr><td>Geodatabase Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\NewAddresses.gdb.zip</td></tr>
 </table>
+
 **Note:** If you uploaded the Addresses.gdb as a zip file, add .zip at the end of the parameter for both the Geodatabase Reader and Writer. 
 
-One final tweak: change the Writer parameter Overwrite Geodatabase to Yes
+One final tweak: change the Writer parameter Overwrite Geodatabase to Yes:
 
 ![](./Images/Img6.221.Ex2.UpdatedWorkspaceParameters.png)
-
 
 <br>**12) Save, Publish, and Run Workspace**
 <br>Save the workspace (to something like AdvancedWorkflows-Ex2-CompleteB.fmw) and remember the filename: it will be important later. Publish the workspace to FME Server. It should be registered with the Job Submitter service.

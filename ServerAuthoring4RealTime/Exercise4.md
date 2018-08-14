@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4.4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
@@ -259,7 +259,11 @@ The workflow should now look like this:
 
 Locate the user parameter DestDataset&#95;SPATIALITE (under User Parameters &gt; Published Parameters in the Navigator window) and double-click it to open an editor dialog.
 
-In that dialog enter *$(FME&#95;SHAREDRESOURCE&#95;DATA)/Output/building&#95;footprints.sl3*
+In that dialog enter:
+
+<pre>
+    $(FME&#95;SHAREDRESOURCE&#95;DATA)/Output/building&#95;footprints.sl3*
+</pre>
 
 ![](./Images/Img4.434.Ex4.DestinationDatasetUserParameter.png)
 
