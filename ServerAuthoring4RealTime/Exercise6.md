@@ -97,16 +97,16 @@ This workspace is just generating "events". Those events could be lightning stri
 <tr><td>Verify SSL Certificates</td><td>No</td></tr>
 <tr><td>Connection Preamble</td>
 <td>
-`{
+{
     ws_op: "open",
     ws_stream_id: "EmergencyEvents"
-}`
+}
 </td></tr>
 <tr><td>Data To Transmit</td><td>
-`{
+{
     ws_op: 'send',
     ws_msg: '@Value(EventMessage)'
-}`
+}
 </td></tr>
 
 </table>

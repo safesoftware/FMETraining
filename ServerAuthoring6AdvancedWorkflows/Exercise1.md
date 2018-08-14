@@ -59,15 +59,19 @@ Select Projects on the main menu to browse to the Projects page:
 
 ![](./Images/Img6.201.Ex1.ImportButton.png)
 
-Under the Configure Import section, be sure to set the import to be from an upload:
+Under the Configure Import section, be sure to set the Import From to Upload. Then once the parameters are configured, click the Import button:
 
 ![](./Images/Img6.202.Ex1.ImportConfig.png)
 
 *Overwrite Existing Items* is less critical because the project should not yet exist for items to need overwriting. Similarly, *Pause Notifications System* is not important because it's very unlikely the notifications in the project will be triggered immediately (they are for handling incoming emails).
 
-Click the Upload File button and browse to/select the file C:\FMEData2018\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
+Click the Upload File button and browse to the Code Smells Workshop and select the BestPracticeAnalysis.fsproject:
 
-The project will very quickly be imported:
+<pre>
+C:\FMEData2018\Resources\CodeSmellsWorkshop\BestPracticeAnalysis.fsproject
+</pre>
+
+The project will quickly be imported:
 
 ![](./Images/Img6.203.Ex1.ImportComplete.png)  
 
@@ -113,7 +117,7 @@ Use the menu options to check the Repository, Notifications, and Resources pages
 <br>**5) Test Project**
 <br>Now let's send an email to your FME Server to test the project. This assumes that you are using a server that has a public name, domain, or address.
 
-For FME Server on one of Safe's training computers, the public IP address is shown on the top-right of the desktop, or within the readme file obtained when you started the computer:
+For FME Server on one of Safe's training computers, the public IP address is shown on the top-right of the desktop:
 
 ![](./Images/Img6.206.Ex1.ServerIPAddress.png)
 

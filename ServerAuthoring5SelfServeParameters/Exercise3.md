@@ -197,7 +197,7 @@ Finally, change the prompt to something sensible like "Raster Tiles to Read."
 
 ![](./Images/Img5.221.Ex3.RasterFTTRParam.png)
 
-Now rerun the workspace to check on our improved parameters dialog.
+Now enable Run With Prompt by going to Run > Run with Prompt. Then rerun the workspace to check on our improved parameters dialog.
 
 <br>**9) Publish to FME Server**
 <br>Save the workspace and publish it to FME Server. There are two things to note.

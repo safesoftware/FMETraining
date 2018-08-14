@@ -105,7 +105,7 @@ Don't worry about the other settings on that page, for now, just leave them with
 
 ![](./Images/Img1.239.Ex4.CommitFromRepository.png)
 
-Add a meaningful commit comment for this version fo the workspace and click Commit to add it to the history.
+Add a meaningful commit comment for this version of the workspace and click Commit to add it to the history.
 
 <br>**4) Check Version History**
 <br>Confirm that this new version has been added to your Version History. Go to the Repositories page and open the Training Repository. Select the checkbox beside the workspace and click the History button to see the information about the workspace version you just committed.
