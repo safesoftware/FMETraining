@@ -5,14 +5,34 @@
 **New module**
 
 1.1. Open and run workspace
-2.1. Generate workspace (csv to xls or something)
+- Same example, or new one?
+2.1. Generate workspace
+- XLS: ftp://webftp.vancouver.ca/opendata/xls/CaseLocationsDetails_2017_XLS.zip
+- CSV
 2.2. Schema editing and mapping (do we still call it that? same skills)
-2.3. Inspect data, including feature caches and workspace output (just diff data)
-3.1. Finding transformers (just looking and adding one)
-3.2. Common transformations (adding several)
+- Remove underscores from attribute names
+- Remove Hour and Minute attributes?
+2.3. Inspect data
+- Just feature caches and workspace output
+3.1. Finding transformers
+- Looking: Gallery, Quick Add, online
+- Adding with drag from Gallery and with Quick Add
+- Selecting parts to add with connections
+3.2. Common transformations
+- Tester
+- AttributeValueMapper
+- AttributeManager (manage schema; add now, update later)
 4.1. Multiple readers and writers, including db and/or web. Adding FT. (no new trans)
-4.2. Feature caching (example of error)
+- Read and write KML
+- AttributePivoter (a kind of odd one, but roughly analogous to StatisticsCalculator, familiar to Excel users)
+- AttributeExposer
+- FeatureJoiner
+- KML Styler
+- Format attribute editing (kml_polystyle_fill = 1)
+4.2. Feature caching
+- Example of error?
 4.3. Bookmarks and annotations
+- Add to workspace
 
 **Getting Started currently**
 
@@ -22,6 +42,31 @@ Proposal: redo these for 2019.0 to align with training, switch inspect and trans
 2. Schema editing (and mapping w/o transformer)
 3. Adding a transformer
 4. Data Inspector (and feature caching)
+
+## Format and solution
+
+- Format
+  - CSV
+    - https://knowledge.safe.com/articles/687/using-fme-to-read-or-write-comma-separated-value-c.html
+  - Excel
+  - XML
+  - JSON
+  - Database
+- Solution
+  - ?
+- Order
+  - Start with basic conversion; file should have coords, but not spatial
+  - Change schema
+  - Add web data and database table, make spatial, some kind of easy output
+    - Feature Types To Read at some point
+- Look through existing data for candidates that can be joined either on attr or location
+  - Addresses
+  - Business Licenses
+  - Crime
+  - Electric vehicle charging stations
+  - Speeding Tickets
+- Geospatial PDF with attributes -> CSV...
+- Excel with multiple tables and lat/long and/or address -> JSON or GeoJSON
 
 ## Questions
 
