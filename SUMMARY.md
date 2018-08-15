@@ -59,7 +59,7 @@
   * [Notifications and Workspaces](ServerAuthoring4RealTime/4.08.NotificationsAndWorkspaces.md)
   * [Workspaces as Subscribers](ServerAuthoring4RealTime/4.09.WorkspacesAsSubscribers.md)
   * [Exercise 4.2: Building Updates Notification System: Workspace Subscription](ServerAuthoring4RealTime/Exercise2.md)
-    * [Incoming Message Handling](ServerAuthoring4RealTime/4.10.IncomingMessageHandling.md)
+  * [Incoming Message Handling](ServerAuthoring4RealTime/4.10.IncomingMessageHandling.md)
   * [Exercise 4.3: Building Updates Notification System: Incoming Messages](ServerAuthoring4RealTime/Exercise3.md)
   * [Email Notifications](ServerAuthoring4RealTime/4.11.EmailNotifications.md)
     * [Email Publications: SMTP](ServerAuthoring4RealTime/4.12.SMTPPublications.md)
