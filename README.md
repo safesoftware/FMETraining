@@ -24,7 +24,7 @@ The full course is made up of six main sections. These sections are:
 
 The current status of this manual is: **COMPLETE**. This manual can be used for training.
 
-This manual applies to **FME2018.0**
+This manual applies to **FME2018.1**
 
 The status of each chapter is:
 
@@ -34,9 +34,10 @@ The status of each chapter is:
 - Chapter 3: Complete content and exercises
 - Chapter 4: Complete content and exercises
 - Chapter 5: Complete content and exercises
-- Chapter 6: Complete content. No exercises
-- Slides: Incomplete
-- FMEData: Incomplete
+- Chapter 6: Complete content and exercises
+- Chapter 7: Complete content. No Exercises
+- Slides: Complete
+- FMEData: Complete
 - Course Outline: Complete
 
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
