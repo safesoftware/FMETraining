@@ -75,7 +75,7 @@
   * [Message Streams](ServerAuthoring4RealTime/4.20.WhatIsMessageStreaming.md)
     * [Elements of a Message Stream](ServerAuthoring4RealTime/4.21.ElementsOfAMessageStream.md)
     * [Message Streaming Architecture](ServerAuthoring4RealTime/4.22.MessageStreamingArchitecture.md)
-    * [Exercise 4.6: Handling Emergency Phone Call Streams](ServerAuthoring4RealTime/Exercise6.md)
+  * [Exercise 4.6: Handling Emergency Phone Call Streams](ServerAuthoring4RealTime/Exercise6.md)
   * [Troubleshooting for Administrators](ServerAuthoring4RealTime/4.23.TroubleshootingForAdministrators.md)
   * [Module Review](ServerAuthoring4RealTime/4.24.ModuleReview.md)
   * [Q+A Answers](ServerAuthoring4RealTime/4.25.QuestionAnswers.md)
