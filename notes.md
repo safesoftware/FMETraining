@@ -1,5 +1,9 @@
 # Notes
 
+## General
+
+- Structural versus content transformation not coming across well
+
 ## Exercise skill progression
 
 **New module**
