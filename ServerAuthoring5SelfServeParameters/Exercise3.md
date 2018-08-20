@@ -153,13 +153,13 @@ So, under the Display Name, enter values to match as follows:
 
 The list will look like this:
 
-![](./Images/Img5.217.Ex3.FTTRParameterDialogEdit2.png)
+![](./Images/Img5.218.Ex3.FTTRParameterDialogEdit2.png)
 
 What this will do is give the user a choice of three options: Primary Roads, Secondary Roads, Other Roads. Whichever they choose will return all of the source layers for that choice.
 
 One final task. In the lower part of the dialog, change the prompt to something like "Vector Roads to Overlay":
 
-![](./Images/Img5.218.Ex3.FTTRParameterDialogEdit3.png)
+![](./Images/Img5.219.Ex3.FTTRParameterDialogEdit3.png)
 
 It's just a small thing but will help with the end user experience.
 
@@ -181,13 +181,13 @@ Locate and delete the following published parameters:
 
 Finally, let's change the order of parameters. You can do this by dragging one above the other in the Navigator window. So do this and put the parameters in the order that seems best to you:
 
-![](./Images/Img5.219.Ex3.SortedParameters.png)
+![](./Images/Img5.220.Ex3.SortedParameters.png)
 
 
 <br>**8) Raster User Parameters**
 <br>Now let's do something with the source raster. We want the user to be able to select the files to read, without having to upload them. Locate the reader in the Navigator window and double-click the Source GeoTIFF File(s) parameter. When prompted, select all of the GeoTIFF files in the Orthophotos folder.
 
-![](./Images/Img5.220.Ex3.MultipleSourceDatasets.png)
+![](./Images/Img5.221.Ex3.MultipleSourceDatasets.png)
 
 This would normally mean that all files would get read into the translation, but the Feature Types to Read parameter will let the user choose which ones to read. We do, however, need to make some edits.
 
@@ -195,7 +195,7 @@ Open the definition of the GeoTIFF Feature Types to Read parameter. Click the op
 
 Finally, change the prompt to something sensible like "Raster Tiles to Read."
 
-![](./Images/Img5.221.Ex3.RasterFTTRParam.png)
+![](./Images/Img5.222.Ex3.RasterFTTRParam.png)
 
 Now enable Run With Prompt by going to Run > Run with Prompt. Then rerun the workspace to check on our improved parameters dialog.
 
@@ -204,7 +204,7 @@ Now enable Run With Prompt by going to Run > Run with Prompt. Then rerun the wor
 
 Firstly, because we removed the Source Dataset parameters, FME will suggest we upload the data. If your data is on the same computer as FME Server (or on a path otherwise accessible to the Server), then you don't need to do this and can uncheck that box:
 
-![](./Images/Img5.222.Ex3.DeselectFilesToUpload.png)
+![](./Images/Img5.223.Ex3.DeselectFilesToUpload.png)
 
 If the files aren't accessible, then you will have to upload them all - but at least the end user will never have to.
 
@@ -212,7 +212,7 @@ Secondly, remember to make sure the Data Download service is using the "Output [
 
 In the FME Server web interface, run the workspace, taking time to admire the new, cleaner set of parameters that are available:
 
-![](./Images/Img5.223.Ex3.AwesomeLookingPublishedParameters.png)
+![](./Images/Img5.224.Ex3.AwesomeLookingPublishedParameters.png)
 
 Outside of a training environment, we might want to order the raster tiles into groups, but we'll live with it as-is for now.
 

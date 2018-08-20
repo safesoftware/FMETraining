@@ -70,9 +70,9 @@ This exercise continues where Exercise 2 left off. You must have completed Exerc
 ---
 
 <br>**1) Create Workspace**
-<br>Start FME Workbench and begin with an empty workspace. 
+<br>Start FME Workbench and begin with an empty workspace.
 
-Select Readers &gt; Add Reader from the menubar. When prompted set the parameters as follows: 
+Select Readers &gt; Add Reader from the menubar. When prompted set the parameters as follows:
 
 <table style="border: 0px">
 
@@ -126,15 +126,15 @@ Instead of using Text Reader &gt; JSONFlattener we could have used the JSON Read
 ---
 
 <br>**3) Publish to FME Server**
-<br>Publish the workspace to FME Server, registering it under the Job Submitter service. 
+<br>Publish the workspace to FME Server, registering it under the Job Submitter service.
 
 
 <br>**4) Update Subscription**
-<br>Now log in to the FME Server web interface and navigate to the Notifications page. 
+<br>Now log in to the FME Server web interface and navigate to the Notifications page.
 
 Click on the Subscriptions tab and select the existing "Process Building Updates" Subscription to edit it.
 
-Change the specified workspace, from the one created in Exercise 2, to the one uploaded in the previous step. 
+Change the specified workspace, from the one created in Exercise 2, to the one uploaded in the previous step.
 
 The change of workspace will cause a Source Text File parameter to appear. Here just select the checkbox to the right for *Get Value from Topic Message*.
 
@@ -148,11 +148,11 @@ Click OK to update the Subscription.
 
 Be sure to give the zip file a different name to any used previously.
 
-Copy the zip file into the Resources folder data\BuildingUpdates. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or by using the FME Server web interface. 
+Copy the zip file into the Resources folder data\BuildingUpdates. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or by using the FME Server web interface.
 
 
 <br>**6) Check Results**
-<br>Open the Jobs page in the web interface. The completed jobs list should include the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON and a number of attributes extracted from the JSON. 
+<br>Open the Jobs page in the web interface. The completed jobs list should include the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON and a number of attributes extracted from the JSON.
 
 <table>
 <tr><td>dirwatch_publisher_action</td><td>CREATE</td></tr>
@@ -160,9 +160,9 @@ Copy the zip file into the Resources folder data\BuildingUpdates. You can do thi
 <tr><td>dirwatch_publisher_path</td><td>C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates\update002.zip</td></tr>
 </table>
 
-![](./Image/Img4.413.Ex3.DirectoryWatchResults.png)
+![](./Images/Img4.413.Ex3.DirectoryWatchResults.png)
 
-So now we know what the data looks like and can process it accordingly. 
+So now we know what the data looks like and can process it accordingly.
 
 ---
 
@@ -191,7 +191,7 @@ You may recognize these attributes from the Topic Monitoring exercise - indeed y
 <br>**7) Edit JSONFlattener Transformer**
 <br>Back in FME Workbench inspect the JSONFlattener transformer parameters once more. Under Attribute to Expose add the attribute *dirwatch&#95;publisher&#95;path* by clicking the browse button and then manually typing it in:
 
-![](./Image/Img4.414.Ex3.DirWatchPubPath.png)
+![](./Images/Img4.414.Ex3.DirWatchPubPath.png)
 
 
 <br>**8) Add FeatureReader Transformer**
@@ -215,7 +215,7 @@ Select to have a Single Output Port:
 <br>**9) Add Writer**
 <br>Having read the data from a Shapefile, we can now add it to the corporate database.
 
-Select Writers &gt; Add Writer from the menubar. When prompted set the parameters as follows: 
+Select Writers &gt; Add Writer from the menubar. When prompted set the parameters as follows:
 
 <table style="border: 0px">
 
@@ -262,7 +262,7 @@ After adding the writer, click on the building_footprints feature type to bring 
 
 
 <br>**11) Add Dataset to FME Server**
-<br>Since the purpose of this notification system is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources. 
+<br>Since the purpose of this notification system is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources.
 
 Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2018\Data\Engineering\BuildingFootprints\building_footprints.sl3
 
@@ -278,7 +278,7 @@ Click OK to save the changes.
 
 
 <br>**13) Test Solution**
-<br>Now test the solution by putting update001.zip, update002.zip or update003.zip into the BuildingUpdates folder. If these files already exist, delete them first, and then re-add them. You will find that each dataset put into the folder is added to the SpatiaLite database. 
+<br>Now test the solution by putting update001.zip, update002.zip or update003.zip into the BuildingUpdates folder. If these files already exist, delete them first, and then re-add them. You will find that each dataset put into the folder is added to the SpatiaLite database.
 
 Check the Completed Jobs page to confirm that the workspace was run. Then in the FME Data Inspector, add a new dataset, and browse to the C:\ProgramData\Safe Software\FMEServer\resources\data\Output\ folder and add the building_footprints.sl3 dataset. Depending on which update file you added, you should see one of the three buildings added to the dataset:
 
@@ -286,7 +286,7 @@ Check the Completed Jobs page to confirm that the workspace was run. Then in the
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -306,4 +306,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

@@ -78,7 +78,7 @@ To clip data to a particular neighborhood first requires a reader for those neig
 
 Be sure to set the workflow option if you carried out the previous exercise, as it might default to a different value. Click OK and, when prompted, select only the feature type for Neighborhoods:
 
-![](./Images/Img5.224.Ex4.NeighborhoodFT.png)
+![](./Images/Img5.225.Ex4.NeighborhoodFT.png)
 
 Once added, remove the published parameter for SourceDataset_OGCKML. We don't need to prompt the user to select this dataset.
 
@@ -135,11 +135,11 @@ Alternately, instead of typing all of the attribute values in manually, you can 
 <br>**4) Add Tester**
 <br>Now we need to filter the neighborhood data by the user's choice. So add a Tester transformer to the workspace, connected to the Neighborhood feature type:
 
-![](./Images/Img5.225.Ex4.TesterTransformer.png)
+![](./Images/Img5.226.Ex4.TesterTransformer.png)
 
 Inspect its parameters and set them up to test where NeighborhoodName = the neighborhood published parameter:
 
-![](./Images/Img5.226.Ex4.TesterTransformerDialog.png)
+![](./Images/Img5.227.Ex4.TesterTransformerDialog.png)
 
 Save the parameter changes.
 
@@ -149,7 +149,7 @@ Save the parameter changes.
 
 So, place a CsmapReprojector transformer after the Tester, connected to the Tester:Passed port. Set it up to reproject to UTM83-10
 
-![](./Images/Img5.227.Ex4.CSMapReprojector.png)
+![](./Images/Img5.228.Ex4.CSMapReprojector.png)
 
 ---
 
@@ -177,7 +177,7 @@ Why does the CsmapReprojector come after the Tester? Because it has less work to
 <br>**6) Add Clipper**
 <br>Now to clip the raster data. Add a Clipper transformer to the workspace. Connect the CsmapReprojector to the  Clipper:Clipper port. Connect the output from the VectorOnRasterOverlayer to the Clipper:Clippee port:
 
-![](./Images/Img5.228.Ex4.Clipper.png)
+![](./Images/Img5.229.Ex4.Clipper.png)
 
 Check the parameters. The only parameter to check is one specifically related to raster data: Preserve Clippee Extents. Set this parameter to No if it is not already.
 
@@ -187,7 +187,7 @@ Check the parameters. The only parameter to check is one specifically related to
 
 Run the workspace on FME Server. You should now be able to choose all source tiles and clip them to a chosen neighborhood, like so (here, the Downtown neighborhood):
 
-![](./Images/Img5.229.Ex4.OutputResults.png)
+![](./Images/Img5.230.Ex4.OutputResults.png)
 
 ---
 
