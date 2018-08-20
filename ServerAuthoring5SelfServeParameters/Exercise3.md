@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced an initiative to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 So far you have created a simple workspace to translate orthophotos to JPEG format. To this you have added published parameters for transformation, format, and coordinate system. The workspace was published to a Data Download service on FME Server.
 
@@ -121,7 +121,7 @@ Right-click on the parameter and choose Edit User Parameter Definition. This wil
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 The Feature Types to Read parameter tells FME which layers to read from the source. When you use a Single Merged Feature Type (or manually set a merge filter) it is published automatically. It also is set to update automatically.
-<br><br>This means when the end-user is prompted to select feature types, FME will automatically scan the source dataset for the list. This is particularly useful for databases, where the table list will often change. However, for this project we're going to assume a fixed list of feature types.
+<br><br>This means when the end-user is prompted to select feature types, FME will automatically scan the source dataset for the list. This is particularly useful for databases, where the table list will often change. However, for this workspace we're going to assume a fixed list of feature types.
 </span>
 </td>
 </tr>
@@ -241,4 +241,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

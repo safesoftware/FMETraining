@@ -97,16 +97,20 @@ This workspace is just generating "events". Those events could be lightning stri
 <tr><td>Verify SSL Certificates</td><td>No</td></tr>
 <tr><td>Connection Preamble</td>
 <td>
+<pre>
 {
     ws_op: "open",
     ws_stream_id: "EmergencyEvents"
 }
+</pre>
 </td></tr>
 <tr><td>Data To Transmit</td><td>
+<pre>
 {
     ws_op: 'send',
     ws_msg: '@Value(EventMessage)'
 }
+</pre>
 </td></tr>
 
 </table>
@@ -123,12 +127,12 @@ In the blank canvas add a Creator transformer and follow it with a WebSocketRece
 <tr><td>WebSocket Server URL</td><td>ws://localhost:7078</td></tr>
 <tr><td>Verify SSL Certificates</td><td>No</td></tr>
 <tr><td>Connection Preamble</td><td>
-
-`{
+<pre>
+{
     ws_op: "open",
     ws_stream_id: "EmergencyEvents"
-}`
-
+}
+</pre>
 </td></tr>
 <tr><td>Output Attribute</td><td>IncomingMessage</td></tr>
 
@@ -419,4 +423,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

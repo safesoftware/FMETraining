@@ -43,14 +43,14 @@
 
 ---
 
-As a technical analyst in the GIS department, you were involved in a recent project to set up a Directory Watch solution for users to automatically update the corporate database.
+As a technical analyst in the GIS department, you were involved in a recent assignment to set up a Directory Watch solution for users to automatically update the corporate database.
 
 Having learned that not all users are able to access the internal network where FME Server is hosted, you think that it should be possible to also set up a system that uses email-based automation to handle the same updates.
 
 ---
 
 <br>**1) Create Resource Folder**
-The first step is to create another Resource folder to save all the email attachments to. Log into the FME Server web interface and then navigate to Resources > Data then create a new folder called Emails. 
+The first step is to create another Resource folder where all the email attachments will be saved. Log into the FME Server web interface, navigate to Resources > Data, and then create a new folder called Emails.
 
 <br>**2) Create Topic**
 <br>Next, Navigate to the Notifications page. Click the Publications tab and then select New.
@@ -310,4 +310,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

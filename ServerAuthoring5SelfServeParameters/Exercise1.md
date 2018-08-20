@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced an initiative to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 So far you have created a simple workspace to translate orthophotos to JPEG format, and published it to a Data Download service on FME Server.
 
@@ -165,4 +165,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

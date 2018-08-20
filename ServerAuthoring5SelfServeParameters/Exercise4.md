@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced an initiative to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 You've implemented a lot of different options for transformation, format, coordinate system, and layers to process. However, end-users also often ask for raster data for a particular neighborhood of the city, and that's easy to do using a Clipper transformer.
 
@@ -109,7 +109,7 @@ Notice that this parameter is optional. The user should not have to select a val
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -122,8 +122,8 @@ Notice that this parameter is optional. The user should not have to select a val
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Alternatily, instead of typing all of the attribute values in manually, you can import the values from the dataset. 
-<br><br>In the Choices List, click on Import... In the Import Wizard, select the VancouverNeighborhoods.kml file again, then select Attribute Values for the Import From drop-down. Next, select Neighborhoods as the Feature Types. Finally, for Choice List, select NeighborhoodName from the drop-down and click Import. 
+Alternately, instead of typing all of the attribute values in manually, you can import the values from the dataset.
+<br><br>In the Choices List, click on Import... In the Import Wizard, select the VancouverNeighborhoods.kml file again, then select Attribute Values for the Import From drop-down. Next, select Neighborhoods as the Feature Types. Finally, for Choice List, select NeighborhoodName from the drop-down and click Import.
 </span>
 </td>
 </tr>
@@ -211,4 +211,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

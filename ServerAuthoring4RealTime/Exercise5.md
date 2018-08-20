@@ -194,11 +194,11 @@ Set FME Server Connection parameters, pick the Topic created earlier (BuildingUp
 <br>**6) Publish Workspace**
 <br>Save and publish the workspace.
 
-You can either update the published workspace or rename it. 
+You can either update the published workspace or rename it.
 
 In FME Server, navigate to the FME Workspace Subscriptions page. Notice that a Subscription will have been automatically created when registering the workspace with the Notification Service in the previous exercise. For example, if the workspace was called RealTime-Ex4, the Subscription name will be something like admin.Training.RealTime-Ex44:
 
-![](./Images/Img4.438.Ex5.RescueEsmerelda.png)
+![](./Images/Img4.438.Ex5.FindingSubscription.png)
 
 Click on this notification to change its parameters, and set/ensure that the Workspace parameter is pointing to the workspace just published.
 
@@ -231,4 +231,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

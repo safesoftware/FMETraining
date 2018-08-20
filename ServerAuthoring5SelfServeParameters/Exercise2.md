@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department of a city, you have just commenced a project to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced an initiative to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
 So far you have created a simple workspace to translate orthophotos to JPEG format, added published parameters for transformation, and published it to a Data Download service on FME Server.
 
@@ -154,7 +154,7 @@ So, right-click on Output Format and choose the option to Link to User Parameter
 
 When prompted select the OutputFormat parameter that we just created:
 
-![](./Images/Img5.210.Ex2.BallroomWest.png)
+![](./Images/Img5.210.Ex2.SelectUserParameter.png)
 
 The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it anymore and, since it is used nowhere else, will remove it.
 
@@ -255,4 +255,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

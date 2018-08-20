@@ -71,7 +71,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 ---
 
 <br>**1) Inspect Source Data**
-<br>The first task in any new project is to inspect the source data, so let's do that. Use the FME Data Inspector to open these two datasets:
+<br>The first task in creating any new workspace is to inspect the source data, so let's do that. Use the FME Data Inspector to open these two datasets:
 
 <table style="border: 0px">
 
@@ -96,7 +96,7 @@ You can turn off the layer of VotingDivisions. All we are interested in for this
 <br>**2) Create Workspace**
 <br>Open the starting workspace listed above.
 
-You might notice that it's a copy of our previous project since the requirements for this workspace are so similar. If you do choose to carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
+You might notice that it's a copy of our previous workspace since the requirements for this workspace are so similar. If you do choose to carry on working in that workspace, be sure to save it under a different name - otherwise the data we will publish will not work for this exercise.
 
 The workspace looks like this:
 
@@ -104,7 +104,7 @@ The workspace looks like this:
 
 
 <br>**3) Remove Firehalls**
-<br>For this project we need to process election data instead of FireHalls, so firstly delete the writer feature type for the FireHalls, and then the reader feature type.
+<br>For this workspace we need to process election data instead of FireHalls, so firstly delete the writer feature type for the FireHalls, and then the reader feature type.
 
 When you delete the reader feature type, you will be asked if you wish to delete the entire reader. We could reuse it but, for the sake of simplicity, click yes.
 
