@@ -119,7 +119,7 @@ Select the sl3 dataset and click on Actions > Download to download the file. Thi
 
 ![](./Images/Img6.214.Ex2.DownloadSpatialiteDB.png?)
 
-Save the file to the Elections folder, so you will remember where it is; i.e. C:\FMEData2018\Data\Elections\VotingDivisions.sl3
+Save the file to the Elections folder, so you will remember where it is; i.e., C:\FMEData2018\Data\Elections\VotingDivisions.sl3
 
 
 <br>**5) Generate Workspace**
@@ -207,7 +207,7 @@ So, inspect the parameters for the writer feature type PostalAddress. In the Use
 
 
 <br>**9) Test Run Workspace**
-<br>Before we start adjusting the dataset paths for use on FME Server, run the workspace to ensure it produces the correct output; i.e. that each address now has a division attribute.
+<br>Before we start adjusting the dataset paths for use on FME Server, run the workspace to ensure it produces the correct output; i.e., that each address now has a division attribute.
 
 
 <br>**10) Create Resources**
@@ -234,7 +234,7 @@ Next locate the parameters for the Geodatabase source dataset, SpatiaLite source
 <tr><td>Geodatabase Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\NewAddresses.gdb.zip</td></tr>
 </table>
 
-**Note:** If you uploaded the Addresses.gdb as a zip file, add .zip at the end of the parameter for both the Geodatabase Reader and Writer. 
+**Note:** If you uploaded the Addresses.gdb as a zip file, add .zip at the end of the parameter for both the Geodatabase Reader and Writer.
 
 One final tweak: change the Writer parameter Overwrite Geodatabase to Yes:
 
@@ -247,7 +247,7 @@ Locate the workspace in the Server web interface and run it to make sure it runs
 
 ![](./Images/Img6.222.Ex2.GeodatabaseWrittenToResources.png)
 
-You may wish to download the newly created dataset to inspect it and make sure the output is correct.
+You may wish to download the newly created dataset to inspect it and make sure the output is correct; i.e., that each address now has a division attribute.
 
 
 <br>**13) Create Workspace**
@@ -277,7 +277,7 @@ Now repeat the same process for the second FMEServerJobSubmitter, this time sele
 
 
 <br>**15) Save, Publish, and Run Workspace**
-<br>Save the workspace and publish it to FME Server. It should be registered with the Job Submitter service.
+<br>Save the workspace (to something like AdvancedWorkflows-Ex2-CompleteC.fmw) and publish it to FME Server. It should be registered with the Job Submitter service.
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. It will run each of the two child workspaces in turn.
 
