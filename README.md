@@ -54,7 +54,7 @@ Some suggestions for adaptation:
 
 ## Current Status
 
-The current status of this manual is: **READY FOR REVIEW**: this manual **CAN** be used for training, but will be updated before official release.
+The current status of this manual is: **READY**.
 This manual applies to **FME2018.0**.
 The status of each chapter is:
 
