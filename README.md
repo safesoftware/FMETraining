@@ -17,12 +17,12 @@ The full course is made up of five main sections. These sections are:
 - Workspace Design
 - Practical Transformer Use
 - Best Practice
- 
+
 ## Current Status ##
 
 The current status of this manual is: **COMPLETE**: this manual can be used for training.
 
-This manual applies to **FME2018.0**
+This manual applies to **FME2018.1**
 
 The status of each chapter is:
 
