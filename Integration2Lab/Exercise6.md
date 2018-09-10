@@ -5,7 +5,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 6</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Grounds Maintenance Project - Calculating Statistics</span>
@@ -42,7 +42,7 @@
 
 Let's continue your work on the grounds maintenance project.
 
-In case you forgot, the team responsible for maintaining parks and other grassed areas needs to know the area and facilities of each park in order to plan their budget for the upcoming year. 
+In case you forgot, the team responsible for maintaining parks and other grassed areas needs to know the area and facilities of each park in order to plan their budget for the upcoming year.
 
 In this part of the project we’ll calculate the size and average size of each park, and ensure that information is correctly mapped to the destination schema.
 
@@ -80,7 +80,7 @@ Notice how the connection has been changed from the incorrect Summary port to th
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -168,7 +168,7 @@ Notice that the numbers in the Table View show the results have been calculated 
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -185,7 +185,7 @@ By completing this exercise you have learned how to:
 <br>
 <ul><li>Carry out content transformation with transformers (AreaCalculator, StatisticsCalculator)</li>
 <li>Manage transformer connections using pop-up buttons</li>
-<li>Use transformer parameters to create attributes that match the writer schema</li></ul> 
+<li>Use transformer parameters to create attributes that match the writer schema</li></ul>
 </span>
 </td>
 </tr>

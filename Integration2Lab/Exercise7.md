@@ -5,7 +5,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 7</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Grounds Maintenance Project - Labelling Features</span>
@@ -92,7 +92,7 @@ Be sure to include a space character in the constant before "sq metres".
 
 ![](./Images/Img2.230.Ex4.StringConcatenatorParams.png)
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -124,7 +124,7 @@ The new transformer will be added and automatically connected between those two 
 
 
 <br>**6) Check LabelPointReplacer Parameters**
-<br>Inspect the LabelPointReplacer parameters. 
+<br>Inspect the LabelPointReplacer parameters.
 
 Firstly click the dropdown arrow to the right of the Label parameter:
 
@@ -140,7 +140,7 @@ The “Always Rotate Label” parameter can be left to its default value.
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -197,7 +197,7 @@ Now you know how to create a new feature type (layer) in the output, how to test
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>

@@ -5,7 +5,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 6</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 9</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Grounds Maintenance Project - Data Reprojection</span>
@@ -63,7 +63,7 @@ In the Coordinate System field enter the name UTM83-10 or select it from the Coo
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -117,7 +117,7 @@ Open the newly reprojected dataset and query a feature. The Feature Information 
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -159,7 +159,7 @@ Instead of using the reader/writer parameters in the Navigator window, why not t
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -180,4 +180,3 @@ By completing this exercise you have learned how to:
 </td>
 </tr>
 </table>
-

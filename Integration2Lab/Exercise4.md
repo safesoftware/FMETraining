@@ -5,7 +5,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Grounds Maintenance Project - Schema Editing</span>
@@ -154,7 +154,7 @@ Now when the workspace is run the output will be named ParksMaintenanceData.tab 
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -212,7 +212,7 @@ Click Apply/OK to confirm the changes.
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Some Writer attributes (ParkArea and AverageParkArea) have red connection arrows because there is nothing yet to map to them, while another (Neighborhood) is just unconnected. 
+Some Writer attributes (ParkArea and AverageParkArea) have red connection arrows because there is nothing yet to map to them, while another (Neighborhood) is just unconnected.
 <br><br>That's OK. I'll let you off with a caution if you promise to connect them later. You can still run this workspace just to see what the output looks like anyway.
 </span>
 </td>
@@ -221,7 +221,7 @@ Some Writer attributes (ParkArea and AverageParkArea) have red connection arrows
 
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
