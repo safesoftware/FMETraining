@@ -1,6 +1,6 @@
 # Data Integration with FME Desktop
 
-This manual is an introductory-level training module for FME Desktop. It provides a framework for a basic understanding of FME and for using FME in data integration. While the scenario used is grounded in Geographic Information Systems for local government, urban planning, and administration, the skills are applicable to any use of FME.
+This manual is an introductory-level training module for FME Desktop. It provides a framework for a basic understanding of FME and for using FME in data integration. While the scenario used is grounded in Geographic Information Systems for local government, urban planning, and administration, the skills are applicable to any use of FME. It has approximately four hours of content.
 
 ![](./Integration0About/Images/Img0.0.FMEAboutScreen.png)
 
@@ -16,9 +16,11 @@ The module is made up of three main sections. These sections are:
 
 The **Lecture** section is intended to be adapted by instructors to be taught in a classroom lecture. It covers conceptual issues of data integration and provides a high-level introduction to FME. [Slides](./fme-desktop-data-integration-slides.zip) are available.
 
-The **Lab Demonstration** section provides a walkthrough of how to use FME and is designed to be taught by an instructor in a lab, with students optionally following along on their own computers.
+The **Lab** section provides a walkthrough of how to use FME. It is designed to be presented by an instructor in a lab, with students either following along or independently completing the provided exercises.
 
-Finally, the **Lab Exercises** section provides hands-on activities for students to complete during lab time or as assignments. It contains questions; instructors may fill out [this form](https://goo.gl/forms/jWeso3OY6RVe6PJG3) to request access to answers for grading.
+Finally, the **Scenario-based Exercise** section provides a activities for students to complete during lab time or as an assignment.
+
+[Lab questions](Integration3Scenario\3.03.LabQuestions.md) are provided; instructors may fill out [this form](https://goo.gl/forms/jWeso3OY6RVe6PJG3) to request access to answers for grading.
 
 ## Module Audience
 
@@ -39,7 +41,7 @@ Students should be comfortable with data manipulation software in a scripted or 
 
 ## Module Length
 
-This module is designed to be delivered as an hour lecture and lab demonstration, with approximately two hours of lab exercises. The instructor may choose to cover as many of these sections as they feel are required, or possible in the time permitted. They may also cover the module content in a different order, skip, or add new content to better customize the module to your needs. Therefore, the length and content of the module may vary.
+The module's total length is approximately four hours. The lecture is approximately half an hour. The lab contains about two hours of walkthrough and exercises. Finally, the scenario-based exercise will take about an hour to complete. The instructor may choose to cover as many of these sections as they feel are required, or possible in the time permitted. They may also cover the module content in a different order and will skip or add new content to better customize the module to their needs. Therefore, the length and content of the module may vary.
 
 ## Adapting this Module
 

@@ -7,7 +7,7 @@
 - Run generateChapters.py in book directory
 
 ## Manual Steps for Updating
-- Integration2LabDemonstration/2.26.IntegratedInspection.md has an added include (PlacingAnInspectorTransformer) that has to be updated manually from DesktopBasic2Transformation/2.11.DataInspectionFromWorkbench.md, as well as any images it links.
+- Integration2Lab/2.26.IntegratedInspection.md has an added include (PlacingAnInspectorTransformer) that has to be updated manually from DesktopBasic2Transformation/2.11.DataInspectionFromWorkbench.md, as well as any images it links.
 - generateChapters.py will successfully only download needed external sections, but currently if they already exist editing will be messed up. Basically need to generate from scratch to work.
 
 ## Improvements
