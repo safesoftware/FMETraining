@@ -144,7 +144,7 @@ While adding the KML dataset, you'll be prompted to choose which Feature Types (
 
 ![](./Images/Img1.200.Ex1.KMLFTSelection.png)
 
-You should now have two readers on the canvas: 
+You should now have two readers on the canvas:
 
 ![](./Images/Img1.201.Ex1.TwoReaders.png)
 
@@ -190,11 +190,12 @@ The workspace will now look like this:
 
 
 <br>**6) Add Clipper Transformer**
-<br>Add a Clipper transformer to the workspace. This will be used to divide the FireHall data by Neighborhood. 
+<br>Add a Clipper transformer to the workspace. This will be used to divide the FireHall data by Neighborhood.
 
-Connect the FireHalls feature type to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections:
+Connect the FireHalls feature type to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections
 
-![](./Images/Img1.207.Ex1.WorkspaceConnectedClipper.png)
+
+![](./Images/Img1.207.Ex1.WorkspaceConnected.png)
 
 Check the parameters for the Clipper transformer to ensure the Clipper Type is set to Multiple Clippers. That's because there are multiple neighborhood features to act as a clipper feature.
 
@@ -226,7 +227,7 @@ First, save the workspace. It is always a good idea to save the workspace before
 
 Once the workspace has been run, inspect the translation log. Your translation log should look like the one below:
 
-![](./Images/Img1.211.Ex1.WorkspaceOutput.png)
+![](./Images/Img1.211.Ex1.Output.png)
 
 <br>**9) Publish to Server: Create Connection**
 <br>Now we have a workspace and know that it works correctly, let's publish it to FME Server.
