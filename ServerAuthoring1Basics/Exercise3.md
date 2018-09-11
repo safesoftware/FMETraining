@@ -96,11 +96,11 @@ Firstly, just to confirm that scheduling does work, let's set up a test schedule
 
 Set a name of Test Schedule and add it to a Training category by typing Training into the Category field:
 
-![](./Images/Img1.233.Ex3.NewScheduleAndCategory.png)
+![](./Images/Img1.233.Ex3.NewSchedule.png)
 
 For the time settings, set the schedule to start immediately and run every 30 seconds. Uncheck the box beside Schedule Does Not Expire and set the end time to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on forever!)
 
-![](./Images/Img1.234.Ex3.NewScheduleSetSchedule.png)
+![](./Images/Img1.234.Ex3.SetSchedule.png)
 
 Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine on which you are running the web browser that is connected to FME Server. Keep this in mind if your FME Server is on a machine in a different time zone from the machine where you are accessing FME Server.
 
@@ -129,7 +129,7 @@ So, return to the Schedules page. You may now either:
 - Click on the Test schedule and edit it to the required values
 - Delete the test schedule and create a new one with the required values
 
-![](./Images/Img1.237.Ex3.UpdatedSchedule.png)
+![](./Images/Img1.237.Ex3.ChangedSchedule.png)
 
 This setup will run the workspace at 8:00pm every day. Don't forget to click the OK button!
 
