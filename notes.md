@@ -13,11 +13,11 @@
 2.1. Generate workspace
 - XLS: ftp://webftp.vancouver.ca/opendata/xls/CaseLocationsDetails_2017_XLS.zip
 - CSV
-2.2. Schema editing and mapping (do we still call it that? same skills)
+2.2. Inspect data
+- Just feature caches and workspace output
+2.3. Schema editing and mapping (do we still call it that? same skills)
 - Remove underscores from attribute names
 - Remove Hour and Minute attributes?
-2.3. Inspect data
-- Just feature caches and workspace output
 3.1. Finding transformers
 - Looking: Gallery, Quick Add, online
 - Adding with drag from Gallery and with Quick Add
