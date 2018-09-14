@@ -204,7 +204,7 @@ Now enable Run With Prompt by going to Run > Run with Prompt. Then rerun the wor
 
 Firstly, because we removed the Source Dataset parameters, FME will suggest we upload the data. If your data is on the same computer as FME Server (or on a path otherwise accessible to the Server), then you don't need to do this and can uncheck that box:
 
-![](./Images/Img5.223.Ex3.DeselectFilesToUpload.png)
+![](./Images/Img5.223.Ex3.DeselectFilesToUp.png)
 
 If the files aren't accessible, then you will have to upload them all - but at least the end user will never have to.
 
