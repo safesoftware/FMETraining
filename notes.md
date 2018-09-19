@@ -72,6 +72,10 @@ Proposal: redo these for 2019.0 to align with training, switch inspect and trans
 - Geospatial PDF with attributes -> CSV...
 - Excel with multiple tables and lat/long and/or address -> JSON or GeoJSON
 
+## Potential Changes
+
+- Could do only Feature Caching for inspection. Would be a more obvious choice if DI gets integrated. Might still want to show adding data to DI though.
+
 ## Questions
 
 1. How frequently to have quizzes? Is once per unit too infrequent? Could try once per section instead. I think once per section with 2-5 questions might be about right. Trailhead does 1 ~5 question quiz per unit, which range from 5-30 minutes.
