@@ -53,6 +53,12 @@ These changes are for the FME Desktop Basic Training Course.
 - Chopped section on Dev/Testing/Acceptance/Production - more advanced than is required
 - New exercises - generating Garbage Collection areas
 
+**September 2018**
+
+- To equalize delivery times, removed FeatureReader and FeatureWriter content from chapter 3 and moved it to chapter 4 
+- Updated and renamed all workspaces, exercises, and instructor workspaces as necessary
+
+
 ### Practical Transformer Use ###
 - Changed Top 25 transformers to Top 30. Switched table to two-columns reading top-bottom
 - Removed AttributeRenamer and AttributeCopier from list of transformers that can set values
@@ -70,6 +76,13 @@ These changes are for the FME Desktop Basic Training Course.
 
 - Added example workspaces for demonstrating content in manual (see FMEData2018\Workspaces\InstructorUse)
 - Updated screenshots and examples in manual to be consistent with new example workspaces 
+
+**September 2018**
+
+- Included FeatureReader and FeatureWriter content from chapter 3. 
+- Made a new section on "Workflow Transformers" for the FR/FW content to go into.
+- Updated and renamed all workspaces, exercises, and instructor workspaces as necessary
+
 
 ### Best Practice ###
 - Correctly numbered Best Practice files as chapter 5
