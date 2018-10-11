@@ -3,8 +3,9 @@
 ## General
 
 - Structural versus content transformation not coming across well
-- Make sure consistent on use of `code` for attribute/file names etc. Is it the best choice, or could we show this some other way? Any way to make direct links in formatting between Workbench and the training? Currently even Workbench and Server have different formatting, so I don't know...
-- Consistent formatting, e.g. use of **bold**
+- Only covered attribute mapping, not feature mapping as a concept
+- Consistent formatting, e.g. use of **bold** and `code`
+-
 
 ## Exercise skill progression
 
