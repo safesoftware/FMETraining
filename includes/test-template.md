@@ -14,7 +14,7 @@
         <answer>No</answer>
     </question>
     <question>
-        <p>This is multiple dropdown quiz, in each dropdown select a correct number corresponding to the dropdown's order</p>
+        <p>This is multiple drop-down quiz, in each drop-down select a correct number corresponding to the drop-down's order</p>
         <answer>
             <option correct>First</option>
             <option>Second</option>
