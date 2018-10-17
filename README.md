@@ -1,4 +1,4 @@
-# Intro to FME Desktop
+# Introduction to FME Desktop
 
 ## Overview
 
