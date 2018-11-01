@@ -1,11 +1,15 @@
 # Notes
 
+## Review to-do
+
+1. Change Date in AttributeManager to `@Value(Year)/@Value(Month)/@Value(Day)` for every workspace
+
 ## General
 
 - Structural versus content transformation not coming across well
 - Only covered attribute mapping, not feature mapping as a concept
 - Consistent formatting, e.g. use of **bold** and `code`
--
+  - do special sections stand out? File paths, names, menu instructions, attributes, etc.
 
 ## Exercise skill progression
 

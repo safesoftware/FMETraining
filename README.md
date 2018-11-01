@@ -11,7 +11,7 @@ The course covers:
 
 ## Learning Objectives
 
-- Translate data from one format to another using FME Workbench
+- Convert data from one format to another using FME Workbench
 - View and inspect data using the FME Data Inspector
 - Manipulate data structure and content with transformers
 - Work with multiple datasets in a single workspace
