@@ -25,7 +25,7 @@
   - [Quiz](3.fme-transformations\3.09.quiz.md)
 * [FME Workflows (30 minutes)](4.fme-workflows\4.01.fme-workflows.md)
   - [The Workflow](4.fme-workflows\4.02.the-workflow.md)
-  - [Multiple Readers, Writers, and Feature Types](4.fme-workflows\4.03.multiple-readers-writers-and-feature-types.md)
+  - [Multiple Readers, Writers, and Feature Types](4.fme-workflows\4.03.multiple-readers-and-writers.md)
   - [Exercise 4.1](4.fme-workflows\4.04.ex4.1.md)
   - [Partial Runs](4.fme-workflows\4.05.partial-runs.md)
   - [Exercise 4.2](4.fme-workflows\4.06.ex4.2.md)

@@ -10,6 +10,7 @@
 - Only covered attribute mapping, not feature mapping as a concept
 - Consistent formatting, e.g. use of **bold** and `code`
   - do special sections stand out? File paths, names, menu instructions, attributes, etc.
+- Accessibility?
 
 ## Exercise skill progression
 
