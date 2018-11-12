@@ -33,7 +33,7 @@
 	    * [Log File Translation/Transformation Section](./DesktopAdvanced2WorkspaceDesign/2.07.TranslationTransformationSection.md)
 	    * [Log File Summary Section](./DesktopAdvanced2WorkspaceDesign/2.08.LogSummarySection.md)
 	    * [Log File Timestamp Interpretation](./DesktopAdvanced2WorkspaceDesign/2.09.LogTimings.md)
-    * [Exercise: Public Art in Parks - Log File](./DesktopAdvanced2WorkspaceDesign/2.Exercise2.md) * 
+    * [Exercise: Public Art in Parks - Log File](./DesktopAdvanced2WorkspaceDesign/2.Exercise2.md)
     * [Performance and FME](./DesktopAdvanced2WorkspaceDesign/2.10.PerformanceAndFME.md)
         * [64-Bit FME](./DesktopAdvanced2WorkspaceDesign/2.11.64bitFME.md)
         * [General Performance Tips](./DesktopAdvanced2WorkspaceDesign/2.12.GeneralPerformanceTips.md)
