@@ -49,7 +49,7 @@ A municipal election is about to happen, and Elections Interopolis have provided
 
 Coincidentally, the planning department heard of this update and has asked you to assign voting division IDs to each of the records in the city's address database, for use in election planning.
 
-You realize that you can chain these two translations together to execute consecutively under a master workspace. So in all, you have three workspaces to create!
+You realize that you can chain these two translations together to be carried out consecutively under a parent workspace. So in all, you have three workspaces to create!
 
 ---
 
@@ -251,7 +251,7 @@ You may wish to download the newly created dataset to inspect it and make sure t
 
 
 <br>**13) Create Workspace**
-<br>That was the second workspace in our project. Now for the third and final workspace. This workspace will be used to chain the previous two workspaces. It is going to be the master, with the two prior workspaces as children.
+<br>That was the second workspace in our project. Now for the third and final workspace. This workspace will be used to chain the previous two workspaces. It is going to be the parent, with the two prior workspaces as helpers.
 
 So, open Workbench and start with an empty canvas. Place a Creator transformer followed by two FMEServerJobSubmitter transformers:
 
@@ -279,9 +279,9 @@ Now repeat the same process for the second FMEServerJobSubmitter, this time sele
 <br>**15) Save, Publish, and Run Workspace**
 <br>Save the workspace (to something like AdvancedWorkflows-Ex2-CompleteC.fmw) and publish it to FME Server. It should be registered with the Job Submitter service.
 
-Locate the workspace in the Server web interface and run it to make sure it runs to completion. It will run each of the two child workspaces in turn.
+Locate the workspace in the Server web interface and run it to make sure it runs to completion. It will run each of the two helper workspaces in turn.
 
-Don't worry that FME reports zero features written. That only refers to the master workspace (not the child workspaces). Evidence of success will be the log and new output files (sl3, gdb) in the resources folder:
+Don't worry that FME reports zero features written. That only refers to the parent workspace (not the helper workspaces). Evidence of success will be the log and new output files (sl3, gdb) in the resources folder:
 
 ![](./Images/Img6.225.Ex2.OutputDatasetsInResources.png)
 
@@ -325,8 +325,8 @@ As already mentioned there are many ways to set up chains and this is just one o
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create child workspaces that read and write resources datasets</li>
-<li>Create a master workspace that runs the child workspaces using the FMEServerJobSubmitter</li></ul>
+<ul><li>Create helper workspaces that read and write resources datasets</li>
+<li>Create a parent workspace that runs the helper workspaces using the FMEServerJobSubmitter</li></ul>
 </span>
 </td>
 </tr>
