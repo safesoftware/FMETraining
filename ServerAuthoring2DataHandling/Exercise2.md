@@ -194,15 +194,17 @@ Save the workspace and publish it back to FME Server.
 <table style="border-spacing: 0px">
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This time you won't be able to test-run the workspace in FME Workbench, because it won't recognize the shared resource parameter. Only FME Server will return a value for that parameter.
+If you try running this workspace in FME Workbench now that you've updated the dataset parameters to use the FME Server Shared Resource parameter, you will get an error because Workbench won't recognize that FME Server parameter.
+<br/>
+If you still want to be able to test this workspace in Workbench, you can set a value for the FME_SHAREDRESOURCE_DATA parameter. Configure it to point to a local file path that matches the folder structure used on FME Server. The workspace will still run on FME Server as Server will automatically override any value for that parameter and replace it with the correct path. 
 </span>
 </td>
 </tr>
