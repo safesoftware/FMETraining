@@ -14,7 +14,7 @@
   - [Feature Caching](2.translations\2.06.feature-caching.md)
   - [Exercise 2.3](2.translations\2.07.ex2.3.md)
   - [Schema and Data Model](2.translations\2.08.schema-and-data-model.md)
-  - [Exercise 2.3](2.translations\2.09.ex2.4.md)
+  - [Exercise 2.4](2.translations\2.09.ex2.4.md)
   - [Quiz](2.translations\2.10.quiz.md)
 * [Transformations (45 minutes)](3.transformations\3.01.fme-transformations.md)
   - [Transformers](3.transformations\3.02.transformers.md)
