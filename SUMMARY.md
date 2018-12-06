@@ -20,7 +20,7 @@
   - [Transformers](3.transformations\3.02.transformers.md)
   - [Exercise 3.1](3.transformations\3.03.ex3.1.md)
   - [Locating Transformers](3.transformations\3.04.locating-transformers.md)
-  - [Exercise 3.2a](3.transformations\3.05.ex3.2.md)
+  - [Exercise 3.2](3.transformations\3.05.ex3.2.md)
   - [Common Transformations](3.transformations\3.07.common-transformations.md)
   - [Exercise 3.3a](3.transformations\3.08.ex3.3a.md)
   - [Exercise 3.3b](3.transformations\3.09.ex3.3b.md)
