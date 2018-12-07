@@ -11,6 +11,7 @@ The course covers:
 
 ## Learning Objectives
 
+- Learn what FME Desktop is and what it can do for you
 - Convert data from one format to another using FME Workbench
 - View and inspect data using the FME Data Inspector
 - Manipulate data structure and content with transformers
