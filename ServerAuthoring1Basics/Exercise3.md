@@ -77,7 +77,7 @@ By selecting the *fmeuser* role (rather than the single *user* account), we allo
 <br>**3) Check Sharing**
 <br>Log out of the administrator account and log back into FME Server with the user account (user/user).
 
-This time, you should have access to the Training repository. Click Run Workspace, select your workspace in the Training repository and run it.  Check the Completed Jobs page, and you'll see one entry for the workspace when it was run as the user. Check the Jobs page, and you'll see one entry for the workspace when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs:
+This time, you should have access to the Training repository. Click Run Workspace, select your workspace in the Training repository and run it. Check the Jobs page, and you'll see one entry for the workspace when it was run as the user. There is only one entry because the user does not have the privileges required to view any other users' jobs:
 
 ![](./Images/Img1.231.Ex3.CompletedJobUser.png)
 
