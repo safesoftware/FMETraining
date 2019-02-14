@@ -24,12 +24,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Starting S3 upload"
-                withAwsCli(credentialsId: 'gitbook-testing', defaultRegion: 'us-east-1') {
+                withAwsCli(credentialsId: 'gitbook-s3', defaultRegion: 'us-east-1') {
                     // Copy book directory to S3
                     echo "Uploading book"
-                    sh "aws s3 cp _book s3://gitbook-testing/${env.BRANCH_NAME} --acl public-read --recursive"
+                    sh "aws s3 cp _book s3://gitbook/${env.BRANCH_NAME} --acl public-read --recursive"
                     echo "Uploading PDF"
-                    sh "aws s3 cp ${env.BRANCH_NAME}.pdf s3://gitbook-testing/${env.BRANCH_NAME}/ --acl public-read"
+                    sh "aws s3 cp ${env.BRANCH_NAME}.pdf s3://gitbook/${env.BRANCH_NAME}/ --acl public-read"
                 }
             }
         }
