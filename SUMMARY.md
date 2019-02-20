@@ -67,7 +67,7 @@
 	* [Initial Troubleshooting](./ServerAdmin7Troubleshooting/7.01.Troubleshooting.md)
 	* [FME Server Log Files](./ServerAdmin7Troubleshooting/7.02.LogFiles.md)
 	* [Additional Troubleshooting](./ServerAdmin7Troubleshooting/7.03.AdditionalTroubleshooting.md)
-	* [Knowledge Center](./ServerAdmin7Troubleshooting/7.04.KnowledgeCenter.md)
+	* [FME Community](./ServerAdmin7Troubleshooting/7.04.KnowledgeCenter.md)
 * [Course Wrap-Up](./ServerAdmin8WrapUp/8.00.CourseWrapup.md)
 	* [Product Information and Resources](./ServerAdmin8WrapUp/8.01.ProductInfo.md)
 	* [Community Information and Resources](./ServerAdmin8WrapUp/8.02.CommunityInfo.md)
