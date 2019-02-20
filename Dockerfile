@@ -8,3 +8,4 @@ RUN apt-get -qq update && \
     npm install -g gitbook-cli && \
     gitbook install && \
     rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
