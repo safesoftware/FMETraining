@@ -14,7 +14,7 @@ These changes are for the FMEData dataset that accompanies FME training
 These changes are for the FME Desktop Advanced Training Course.
 
 ### General ###
-- 
+- The people of Interopolis (advice sections) have been replaced by the FME Lizard. 
 
 ### Advanced Attribute Handling ###
 - 
