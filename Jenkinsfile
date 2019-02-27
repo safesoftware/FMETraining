@@ -16,6 +16,9 @@ pipeline {
                 echo "Building GitBook"
                 sh "gitbook build"
 
+                echo "Fixing directory structure"
+                sh "find ./ -type f -exec sed -i 's/<a href="..\/">/<a href="..\/index.html">/g' {} \;"
+
                 echo "Generating PDF"
                 sh "gitbook pdf ./ ${env.BRANCH_NAME}.pdf"
 
