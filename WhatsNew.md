@@ -29,6 +29,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - a
 
 ### Custom Transformers ###
+- Changed the section on "Schema" to "Input" because it is more about the input to parameters than schema
+	- Rewrote this section to be clearer with a new example/analogy
 - Expanded the Parallel Processing content because it is more relevant in 2019
 
 
