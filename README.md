@@ -30,7 +30,6 @@ You can download the data [here](https://s3.amazonaws.com/FMEData/FMEData2019.zi
 
 ## Overlap with FME Desktop Basic Training
 
-
 |Introduction|Basic|
 |-|-|
 |**Introduction**|-|
