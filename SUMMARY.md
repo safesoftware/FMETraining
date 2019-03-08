@@ -103,7 +103,6 @@
     * [Looping](./DesktopAdvanced5CustomTransformers/5.11.CustomTransformerLoops.md)
     * [Exercise: Looping](./DesktopAdvanced5CustomTransformers/5.Exercise6.md)
     * [Module Review](./DesktopAdvanced5CustomTransformers/5.12.ModuleReview.md)
-	* [Q+A Answers](./DesktopAdvanced5CustomTransformers/5.13.QuestionAnswers.md)
 * [Course Wrap-Up](./DesktopAdvanced6WrapUp/6.00.CourseWrapup.md)
 	* [Product Information and Resources](./DesktopAdvanced6WrapUp/6.01.ProductInfo.md)
 	* [Community Information and Resources](./DesktopAdvanced6WrapUp/6.02.CommunityInfo.md)
