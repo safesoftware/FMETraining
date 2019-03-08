@@ -6,7 +6,7 @@ This file documents major changes made to training materials in 2019
 ## FMEData ##
 These changes are for the FMEData dataset that accompanies FME training
 
-- a
+- Added various raster datasets to the Zoning folder, for nodata and palette examples
 
 ---
 
