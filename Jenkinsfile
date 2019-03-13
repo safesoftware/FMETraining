@@ -30,7 +30,7 @@ pipeline {
                 withAwsCli(credentialsId: 'gitbook-s3', defaultRegion: 'us-east-1') {
                     // Copy book directory to S3
                     echo "Uploading book"
-                    sh "aws s3 cp _book s3://gitbook/${env.BRANCH_NAME} --acl public-read --recursive"
+                    sh "aws s3 cp _book s3://gitbook/${env.BRANCH_NAME} --acl public-read --recursive || true"
                     echo "Uploading PDF"
                     sh "aws s3 cp ${env.BRANCH_NAME}.pdf s3://gitbook/${env.BRANCH_NAME}/ --acl public-read"
                 }
