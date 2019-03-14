@@ -28,6 +28,22 @@ To complete this training, you need a licensed version of FME Desktop installed.
 
 You can download the data [here](https://s3.amazonaws.com/FMEData/FMEData2019.zip). After downloading, extract the data to C:\FMEData2019.
 
+## Current Status
+
+The current status of this manual is: **INCOMPLETE**: this manual should **NOT** be used for training.
+
+This manual applies to **FME2019.0**
+
+The status of each unit is:
+
+- Unit 1: Incomplete content and exercises
+- Unit 2: Incomplete content and exercises
+- Unit 3: Incomplete content and exercises
+- Unit 4: Incomplete content and exercises
+- FMEData: Incomplete
+
+***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
+
 ## Overlap with FME Desktop Basic Training
 
 |Introduction|Basic|
