@@ -21,7 +21,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 
 ### Data Transformation ###
-
+- Exercise 7 removed initial step of inspecting data and changed it to use Visual Preview instead. Moved the FME Data Inspector into a tip box. 
 
 ### Workspace Design ###
 
