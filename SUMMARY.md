@@ -47,7 +47,7 @@
     * [Batch Processing](./DesktopAdvanced2WorkspaceDesign/2.20.BatchProcessing.md)
     * [Module Review](./DesktopAdvanced2WorkspaceDesign/2.21.ModuleReview.md)
 * [Advanced Readers and Writers](./DesktopAdvanced3AdvancedR+W/3.00.AdvancedReadWrite.md)
-	* [Writing Zip Files](./DesktopAdvanced3AdvancedR+W/3.01.ZipFileHandling.md)
+	* [Reading and Writing Archive Files](./DesktopAdvanced3AdvancedR+W/3.01.ZipFileHandling.md)
 	* [Web-Based Datasets](./DesktopAdvanced3AdvancedR+W/3.02.WebBasedDatasets.md)
     * [Exercise: Web Based Connections](./DesktopAdvanced3AdvancedR+W/3.Exercise1.md) 
 	* [Fanouts](./DesktopAdvanced3AdvancedR+W/3.03.Fanouts.md)

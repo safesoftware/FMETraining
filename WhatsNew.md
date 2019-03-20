@@ -25,10 +25,10 @@ These changes are for the FME Desktop Advanced Training Course.
 - Removed the Parallel Processing content because it no longer applies in 2019
 
 ### Advanced Reading/Writing ###
-- a
+- Changed Zip Files to Compressed Files, since 2019 now supports other archived or compressed file formats
 
 ### User Parameters ###
-- a
+- None
 
 ### Custom Transformers ###
 - Changed the section on "Schema" to "Input" because it is more about the input to parameters than schema
