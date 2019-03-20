@@ -26,6 +26,7 @@ These changes are for the FME Desktop Advanced Training Course.
 
 ### Advanced Reading/Writing ###
 - Changed Zip Files to Compressed Files, since 2019 now supports other archived or compressed file formats
+- Changed examples that read from the City of Vancouver website, to a "City of Interopolis" site on S3.
 
 ### User Parameters ###
 - None
