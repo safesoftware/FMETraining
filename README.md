@@ -30,17 +30,17 @@ You can download the data [here](https://s3.amazonaws.com/FMEData/FMEData2019.zi
 
 ## Current Status
 
-The current status of this manual is: **INCOMPLETE**: this manual should **NOT** be used for training.
+The current status of this manual is: **READY FOR REVIEW**: this manual should **NOT** be used for training.
 
 This manual applies to **FME2019.0**
 
 The status of each unit is:
 
-- Unit 1: Incomplete content and exercises
-- Unit 2: Incomplete content and exercises
-- Unit 3: Incomplete content and exercises
-- Unit 4: Incomplete content and exercises
-- FMEData: Incomplete
+- Unit 1: Ready for review
+- Unit 2: Ready for review
+- Unit 3: Ready for review
+- Unit 4: Ready for review
+- FMEData: Complete
 
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
 
