@@ -13,7 +13,7 @@ The course covers:
 
 - Learn what FME Desktop is and what it can do for you
 - Convert data from one format to another using FME Workbench
-- View and inspect data using the FME Data Inspector
+- View and inspect data using FME Data Inspector and Visual Preview
 - Manipulate data structure and content with transformers
 - Work with multiple datasets in a single workspace
 - Apply best practices to workspaces
