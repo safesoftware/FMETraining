@@ -69,7 +69,7 @@
 		* [Transformer Searching](./DesktopBasic4Transformers/4.03.TransformerSearching.md)
 		* [Most Valuable Transformers](./DesktopBasic4Transformers/4.04.MostValuableTransformers.md)
 		* [Exercise: Transformer Selection Practice](./DesktopBasic4Transformers/4.Exercise1.md)
-	* [Workflows](./DesktopBasic4Transformers/4.05.Workflows.md)
+	* [Workflow Transformers](./DesktopBasic4Transformers/4.05.Workflows.md)
 		* [FeatureReader and FeatureWriter](./DesktopBasic4Transformers/4.06.FeatureReadersWriters.md)
 		* [Read/Write with Integration Transformers](./DesktopBasic4Transformers/4.07.NoReadersWriters.md)
 	* [Managing Attributes](./DesktopBasic4Transformers/4.08.ManagingAttributes.md)
