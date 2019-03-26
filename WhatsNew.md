@@ -24,10 +24,12 @@ These changes are for the FMEData dataset that accompanies FME training
 ### Getting Started
 
 - The [What is FME? section](..\1.getting-started\1.02.what-is-fme.md) has been updated to discuss the FME data integration platform
+- Added Visual Preview to the [FME Workbench section](..\1.getting-started\1.04.fme-workbench.md)
 
 ### Translations
 
 - Inspecting is now done with Visual Preview primarily, with just one exercise using FME Data Inspector
+- [Exercise 2.3](2.translations\2.07.ex2.3.md) now covers Sort Natural in Table View.
 
 ### Transformations
 
