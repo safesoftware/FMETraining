@@ -18,8 +18,7 @@ These changes are for the FMEData dataset that accompanies FME training
 ### General
 
 - Replaced the tip sections with FME Lizard tips.
-- Q+A questions are now interactive in the HTML version of the manual
-- Removed the Q+A answer page, since the answers are supplied with the question
+- Added Overlap with FME Desktop Basic Training section to [README.md](..\README.md).
 
 ### Getting Started
 
