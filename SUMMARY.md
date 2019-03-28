@@ -24,7 +24,7 @@
 	    * [Background Maps in the Data Inspector](./DesktopBasic1Basics/1.13.BackgroundMaps.md)
     * [Exercise: The FME Data Inspector](./DesktopBasic1Basics/1.Exercise4.md)
     * [Module Review](./DesktopBasic1Basics/1.16.ModuleReview.md)
-	    * [Q+A Answers](./DesktopBasic1Basics/1.17.QuestionAnswers.md)
+	    * [Quiz](./DesktopBasic1Basics/1.17.Quiz.md)
 	    * [Exercise: Tourist Bureau Project](./DesktopBasic1Basics/1.Exercise5.md)
 * [Data Transformation](./DesktopBasic2Transformation/2.00.DataTransformation.md)
     * [What is Data Transformation](./DesktopBasic2Transformation/2.01.WhatIsDataTransformation.md)
