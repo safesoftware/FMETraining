@@ -120,4 +120,5 @@
 	* [Product Information and Resources](./DesktopBasic6WrapUp/6.01.ProductInfo.md)
 	* [Community Information and Resources](./DesktopBasic6WrapUp/6.02.CommunityInfo.md)
 	* [Feedback and Certificates](./DesktopBasic6WrapUp/6.03.CourseFeedback.md)
-	* [Thank You](./DesktopBasic6WrapUp/6.04.ThankYou.md)
+	* [More Courses](./DesktopBasic6WrapUp/6.04.MoreCourses.md)
+	* [Thank You](./DesktopBasic6WrapUp/6.05.ThankYou.md)
