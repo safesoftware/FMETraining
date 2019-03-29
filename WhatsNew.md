@@ -32,10 +32,11 @@ These changes are for the FME Desktop Basic Training Course.
 
 
 ### Best Practice ###
+- Chapter reordering to focus more on debugging and less on styling as styling is now covered throughout the manual. 
 
 
 
 ### Course Wrap Up ###
 - Updated content and screenshots to match the FME Community name change.
 - Added a link for the free trial
-- Added a More Courses page to advertise other course. 
+- Added a More Courses page to advertise other course.
