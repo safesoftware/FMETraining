@@ -19,13 +19,15 @@ These changes are for the FME Desktop Advanced Training Course.
 - The Q+A answer page is now removed, since the answers are supplied with the question
 
 ### Advanced Attribute Handling ###
-- a
+- None
 
 ### Advanced Workspace Design ###
+- Removed the sections on Feature Caching, Partial Runs, and Bookmarks; as it is covered in basic training.
 - Removed the Parallel Processing content because it no longer applies in 2019
+- Restructured the Log File Interpretation section
 
 ### Advanced Reading/Writing ###
-- Changed Zip Files to Compressed Files, since 2019 now supports other archived or compressed file formats
+- Changed "Zip Files" to "Compressed Files", since 2019 now supports other archived or compressed file formats
 - Changed examples that read from the City of Vancouver website, to a "City of Interopolis" site on S3.
 
 ### User Parameters ###
