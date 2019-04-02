@@ -28,6 +28,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - Changed log examples from screenshots to preformatted text, to make editing/localization easier
 - Dropped all references to 32/64-bit differences, since 64-bit is pretty much the default now
 - Moved definition of performance to first section. Removed "Performance and FME"
+- Moved "Remove Unattached" function to section on Optimizing Readers
+- Changed General Performance Tips to introduce the idea of Authoring vs Production
 
 ### Advanced Reading/Writing ###
 - Changed "Zip Files" to "Compressed Files", since 2019 now supports other archived or compressed file formats
