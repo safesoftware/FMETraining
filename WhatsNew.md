@@ -26,6 +26,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Removed the Parallel Processing content because it no longer applies in 2019
 - Restructured the Log File Interpretation section
 - Changed log examples from screenshots to preformatted text, to make editing/localization easier
+- Dropped all references to 32/64-bit differences, since 64-bit is pretty much the default now
 
 ### Advanced Reading/Writing ###
 - Changed "Zip Files" to "Compressed Files", since 2019 now supports other archived or compressed file formats
