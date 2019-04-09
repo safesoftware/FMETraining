@@ -19,7 +19,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - The Q+A answer page is now removed, since the answers are supplied with the question
 
 ### Advanced Attribute Handling ###
-- None
+- Compressed exercise 2 (used to be three separate pieces) into a single set of instructions
 
 ### Advanced Workspace Design ###
 - Removed the sections on Feature Caching, Partial Runs, and Bookmarks; as it is covered in basic training.
