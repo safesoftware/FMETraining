@@ -10,7 +10,7 @@ The training builds upon basic training to cover functionality that is important
 
 ## Course Structure ##
 
-The full course is made up of five main sections. These sections are:
+The full course is made up of five sections. These sections are:
 
 - Advanced Attribute Handling
 - Advanced Workspace Design
