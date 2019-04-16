@@ -51,7 +51,7 @@ The status of each unit is:
 |**Introduction**|-|
 |Getting Started (20 minutes)|Similar skills as first half of [Data Translation Basics](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2018/DesktopBasic1Basics)|
 |What is FME?|[What is FME?](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.01.WhatIsFME.md)|
-|FME Components|[FME Desktop Components](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.02.FMEDesktopComponents.md)|
+|FME Desktop Components|[FME Desktop Components](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.02.FMEDesktopComponents.md)|
 |FME Workbench|[Introduction to FME Workbench](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.03.IntroductionToWorkbench.md)|
 |Exercise 1.1|Similar skills as  [Exercise 1: Exploring FME](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.Exercise1.md)|
 |Quiz|-|
