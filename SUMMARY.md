@@ -8,7 +8,7 @@
     * [1.2 What components are in a Request?](./FMESERVER_RESTAPI1Overview/1.2.WhatComponentsAreInARequest.md)
 	* [1.3 Authorization And Authentication](./FMESERVER_RESTAPI1Overview/1.3.AuthorizationAndAuthentication.md)
 	* [1.4 Tokens and the REST API](./FMESERVER_RESTAPI1Overview/1.4.Token.md)
-	* [1.5 Exercise 1- Create a User](./FMESERVER_RESTAPI1Overview/1.5.UserCreation.md)
+	* [1.5 Exercise 1- Create a new token](./FMESERVER_RESTAPI1Overview/1.5.UserCreation.md)
 
 * [Chapter 2. Getting Started with the REST API](./FMESERVER_RESTAPI2GettingStarted/2.0.GettingStarted.md)
 	* [2.1 Exploring the REST API Homepage](./FMESERVER_RESTAPI2GettingStarted/2.1.RESTAPIHomepage.md)
