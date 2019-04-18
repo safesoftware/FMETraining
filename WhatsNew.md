@@ -41,6 +41,6 @@ These changes are for the FMEData dataset that accompanies FME training
 - Removed the fanout section and exercise
 - Instead of writing out an HTML report, the final output is now joining a summary table to a KML file to view tabular data on a map in Google Earth
 
-### Module Wrap-up
+### Course Wrap-up
 
 - Changed the FME Knowledge Centre to the FME Community, with Q+A Forum changing to Forums

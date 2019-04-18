@@ -4,7 +4,7 @@
 
 This course introduces the essential components and capabilities of FME through hands-on problem-solving exercises. It is a condensed version of the more in-depth [FME Desktop Basic training](https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/index.html) and is a great start to become an efficient user of FME.
 
-Through this course, you will learn what FME is, how it works, how to accomplish basic data translation and transformation, and how to set up your FME workflows following best practices. By the end of the module, you will be ready to create workspaces or to take further training specific to your needs. Because a wide variety of industries use FME, this module is a general introduction to FME that will show how FME works with data regardless of format or structure.
+Through this course, you will learn what FME is, how it works, how to accomplish basic data translation and transformation, and how to set up your FME workflows following best practices. By the end of the course, you will be ready to create workspaces or to take further training specific to your needs. Because a wide variety of industries use FME, this course is a general introduction to FME that will show how FME works with data regardless of format or structure.
 
 The course covers:
 - Format Translations
