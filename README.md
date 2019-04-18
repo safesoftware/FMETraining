@@ -30,6 +30,8 @@ To complete this training, you need a licensed version of FME Desktop installed.
 
 You can download the data [here](https://s3.amazonaws.com/FMEData/FMEData2019.zip). After downloading, extract the data to C:\FMEData2019.
 
+If you wish to inspect the output data in a native application, you should download and install the free software [Google Earth Pro](https://www.google.com/earth/versions/), or [follow instructions for viewing KML files in Google Earth Pro in Google Chrome](https://support.google.com/earth/answer/7365595?co=GENIE.Platform%3DDesktop&hl=en).
+
 ## Current Status
 
 The current status of this manual is: **READY FOR REVIEW**: this manual should **NOT** be used for training.
