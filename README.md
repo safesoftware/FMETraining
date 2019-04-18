@@ -49,23 +49,23 @@ The status of each unit is:
 |Introduction|Basic|
 |-|-|
 |**Introduction**|-|
-|Getting Started (20 minutes)|Similar skills as first half of [Data Translation Basics](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2018/DesktopBasic1Basics)|
-|What is FME?|[What is FME?](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.01.WhatIsFME.md)|
-|FME Desktop Components|[FME Desktop Components](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.02.FMEDesktopComponents.md)|
-|FME Workbench|[Introduction to FME Workbench](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.03.IntroductionToWorkbench.md)|
-|Exercise 1.1|Similar skills as  [Exercise 1: Exploring FME](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.Exercise1.md)|
+|Getting Started (20 minutes)|Similar skills as first half of [Data Translation Basics](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2019/DesktopBasic1Basics)|
+|What is FME?|[What is FME?](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.01.WhatIsFME.md)|
+|FME Desktop Components|[FME Desktop Components](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.02.FMEDesktopComponents.md)|
+|FME Workbench|[Introduction to FME Workbench](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.03.IntroductionToWorkbench.md)|
+|Exercise 1.1|Similar skills as  [Exercise 1: Exploring FME](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.Exercise1.md)|
 |Quiz|-|
-|**Translations (30 minutes)**|Similar skills as second half of [Data Translation Basics](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2018/DesktopBasic1Basics) and first half of [Data Transformation](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2018/DesktopBasic2Transformation)|
-|Generate Workspace|[Creating a Translation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.05.CreatingATranslation.md)|
-|Exercise 2.1|Similar skills as [Exercise 2: Basic Workspace Creation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.Exercise2.md)|
-|Inspecting Data|[Introduction to the FME Data Inspector](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.09.IntroductionToDataInspector.md)|
-|Exercise 2.2|Similar skills as [Exercise 3: Basic Data Inspection](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic1Basics/1.Exercise3.md)|
-|Feature Caching|[Integrated Inspection](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic3WorkspaceDesign/3.08.IntegratedInspection.md)|
+|**Translations (30 minutes)**|Similar skills as second half of [Data Translation Basics](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2019/DesktopBasic1Basics) and first half of [Data Transformation](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2019/DesktopBasic2Transformation)|
+|Generate Workspace|[Creating a Translation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.05.CreatingATranslation.md)|
+|Exercise 2.1|Similar skills as [Exercise 2: Basic Workspace Creation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.Exercise2.md)|
+|Inspecting Data|[FME Data Inspector](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.09.DataInspector.md)|
+|Exercise 2.2|Similar skills as [Exercise 3: Basic Data Inspection](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.Exercise3.md)|
+|Feature Caching|[Feature Caching](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic1Basics/1.13.FeatureCaching.md)|
 |Exercise 2.3|-|
-|Schema and Data Model|[Structural Transformation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic2Transformation/2.02.StructuralTransformation.md)|
-|Exercise 2.4|Similar skills as [Ex 1: Schema Editing ](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic2Transformation/2.Exercise1.md) and [Exercise 2: Structural Transformation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2018/DesktopBasic2Transformation/2.Exercise2.md)|
+|Schema and Data Model|[Structural Transformation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic2Transformation/2.02.StructuralTransformation.md)|
+|Exercise 2.4|Similar skills as [Ex 1: Schema Editing ](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic2Transformation/2.Exercise1.md) and [Exercise 2: Structural Transformation](https://github.com/safesoftware/FMETraining/blob/Desktop-Basic-2019/DesktopBasic2Transformation/2.Exercise2.md)|
 |Quiz|-|
-|**Transformations (45 minutes)**|Similar skills as first third of [Practical Transformer Use](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2018/DesktopBasic4Transformers)|
+|**Transformations (45 minutes)**|Similar skills as first third of [Practical Transformer Use](https://github.com/safesoftware/FMETraining/tree/Desktop-Basic-2019/DesktopBasic4Transformers)|
 |Transformers|[Transformation with Transformers](https://safe-software.gitbooks.io/fme-desktop-basic-training-2018/content/DesktopBasic2Transformation/2.05.TransformationWithTransformers.html)|
 |Exercise 3.1|-|
 |Locating Transformers|[Locating Transformers](https://safe-software.gitbooks.io/fme-desktop-basic-training-2018/content/DesktopBasic4Transformers/4.01.LocatingTransformers.html) and children|
