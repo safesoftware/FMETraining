@@ -2,8 +2,8 @@
 
 * [Getting Started (20 minutes)](1.getting-started\1.01.getting-started.md)
   - [What is FME?](1.getting-started\1.02.what-is-fme.md)
-  - [FME Desktop Components](1.getting-started\1.03.fme-components.md)
-  - [FME Workbench](1.getting-started\1.04.fme-workbench.md)
+  - [FME Workbench](1.getting-started\1.03.fme-workbench.md)
+  - [FME Desktop Components](1.getting-started\1.04.fme-components.md)
   - [Exercise 1.1](1.getting-started\1.05.ex1.1.md)
   - [Quiz](1.getting-started\1.06.quiz.md)
 * [Translations (45 minutes)](2.translations\2.01.fme-translations.md)

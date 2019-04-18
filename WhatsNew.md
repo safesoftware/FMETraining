@@ -23,7 +23,8 @@ These changes are for the FMEData dataset that accompanies FME training
 ### Getting Started
 
 - The [What is FME? section](..\1.getting-started\1.02.what-is-fme.md) has been updated to discuss the FME data integration platform
-- Added Visual Preview to the [FME Workbench section](..\1.getting-started\1.04.fme-workbench.md)
+- Added Visual Preview to the [FME Workbench section](..\1.getting-started\1.03.fme-workbench.md)
+- Switched the order of the [FME Workbench section](..\1.getting-started\1.03.fme-workbench.md) and the [FME Desktop Components section](..\1.getting-started\1.04.fme-components.md).
 
 ### Translations
 
@@ -38,7 +39,7 @@ These changes are for the FMEData dataset that accompanies FME training
 
 - Added a small section on reader and writer parameters
 - Removed the fanout section and exercise
-- Instead of writing out an HTML report, the final output is now joining a summary table to a KML file to view tabular data on a map
+- Instead of writing out an HTML report, the final output is now joining a summary table to a KML file to view tabular data on a map in Google Earth
 
 ### Module Wrap-up
 
