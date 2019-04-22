@@ -87,7 +87,6 @@
 		* [Spatially Based Join Transformers](./DesktopBasic4Transformers/4.20.SpatialJoinTransformers.md)
 		* [Exercise: Crime Mapping Data Request](./DesktopBasic4Transformers/4.Exercise4.md)
 	* [Module Review](./DesktopBasic4Transformers/4.21.ModuleReview.md)
-		* [Exercise 1 Answers](./DesktopBasic4Transformers/4.22.Ex1Answers.md)
 		* [Quiz](./DesktopBasic4Transformers/4.23.Quiz.md)
 * [Best Practice](./DesktopBasic5BestPractice/5.00.BestPractice.md)
 	* [Debugging](./DesktopBasic5BestPractice/5.01.Debugging.md)

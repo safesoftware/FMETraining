@@ -35,7 +35,7 @@ These changes are for the FME Desktop Basic Training Course.
 
 
 ### Practical Transformer Use ###
-- 
+- Added quiz inside exercise 1 and removed separate answer page. 
 
 
 ### Best Practice ###
