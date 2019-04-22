@@ -61,7 +61,6 @@
 		* [Partial Runs](./DesktopBasic3WorkspaceDesign/3.10.PartialRuns.md)
 		* [Exercise: Residential Garbage Collection Zones](./DesktopBasic3WorkspaceDesign/3.Exercise3.md)
 	* [Module Review](./DesktopBasic3WorkspaceDesign/3.11.ModuleReview.md)
-	* [Quiz](./DesktopBasic3WorkspaceDesign/3.12.Quiz.md)
 * [Practical Transformer Use](./DesktopBasic4Transformers/4.00.PracticalTransformerUse.md)
 	* [Locating Transformers](./DesktopBasic4Transformers/4.01.LocatingTransformers.md)
 		* [The Transformer Gallery](./DesktopBasic4Transformers/4.02.TransformerGallery.md)
