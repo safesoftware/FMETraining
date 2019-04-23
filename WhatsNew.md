@@ -16,12 +16,14 @@ These changes are for the FME Desktop Basic Training Course.
 ### General ###
 - Updated all Person X Characters (ie. Miss Vector, Chef Bimm, etc.) to FME Lizard
 - Most exercises use Visual Preview instead of Data Inspector except in a few cases.
+- Interactive end of chapter quizes
 
 
 ### Data Translation Basics ###
 
 
 ### Data Transformation ###
+- Renamed workspaces from Transformation to DataTransformation to prevent confusion with the Transformers exercises
 - Exercise 1 added initial data inspection and information as to why we are updating the data types
 - Exercise 2 updated to include the new Tester
 - Exercise 3 removed autocomplete output port information for the StatisticsCalculator
@@ -31,11 +33,12 @@ These changes are for the FME Desktop Basic Training Course.
 - Group-By Processing section added information about the new group-by mode
 
 ### Workspace Design ###
-
+- Removed integrated Inspection
+- Less focus on partial runs as it is now covered in Chapter 1
 
 
 ### Practical Transformer Use ###
-- Added quiz inside exercise 1 and removed separate answer page. 
+- Added quiz inside exercise 1 and removed separate answer page.
 
 
 ### Best Practice ###
