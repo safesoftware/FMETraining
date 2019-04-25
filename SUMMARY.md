@@ -15,7 +15,7 @@
     	* [Exercise: Basic Workspace Creation](./DesktopBasic1Basics/1.Exercise2.md)
     * [Data Inspection](./DesktopBasic1Basics/1.08.DataInspection.md)
 	    * [Data Inspector](./DesktopBasic1Basics/1.09.DataInspector.md)
-	    * [Querying Data](./DesktopBasic1Basics/1.10.QueryingData.md)
+	    * [Inspecting Data](./DesktopBasic1Basics/1.10.InspectingData.md)
 	    * [Exercise: Basic Data Inspection](./DesktopBasic1Basics/1.Exercise3.md)
 	    * [Display Control](./DesktopBasic1Basics/1.11.DisplayControl.md)
 	    * [Background Maps](./DesktopBasic1Basics/1.12.BackgroundMaps.md)

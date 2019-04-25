@@ -32,6 +32,6 @@ The status of each chapter is:
 - Chapter 5: Complete content and exercises
 - Chapter 6: Complete content. No exercises
 - Slides: Incomplete
-- FMEData: Incomplete
+- FMEData: Complete
 
 ***Note:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
