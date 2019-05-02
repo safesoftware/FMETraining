@@ -50,5 +50,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Removed section on Custom Transformer licensing, since Hub packages make it less relevant
 
 
+***NOTE:*** *I strongly suspect a bug exists that can occur in the first two steps of exercise 3 for Custom Transformers (probably in step 2). Somehow the density results can end up being the same for 2001 and 2011. The only way I have found to resolve the problem is to close the workspace (without saving) and follow steps 1 and 2 again.*
+
 ### Course Wrap Up ###
 - Changed the FME Knowledge Centre to the FME Community, with Q+A Forum changing to Forums 
