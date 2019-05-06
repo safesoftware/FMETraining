@@ -49,6 +49,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Expanded the Parallel Processing content because it is more relevant in 2019
 - Created a new, more involved, exercise on Parallel Processing, again because it is more relevant in 2019
 - Removed section on Custom Transformer licensing, since Hub packages make it less relevant
+- Create a new, but less involved, exercise for looping. It should be easier, quicker, and more realistic.
 
 
 ***NOTE:*** *I strongly suspect a bug exists that can occur in the first two steps of exercise 3 for Custom Transformers (probably in step 2). Somehow the density results can end up being the same for 2001 and 2011. The only way I have found to resolve the problem is to close the workspace (without saving) and follow steps 1 and 2 again.*
