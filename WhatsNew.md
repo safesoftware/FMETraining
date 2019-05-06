@@ -47,6 +47,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Changed the section on "Schema" to "Input" because it is more about the input to parameters than schema
 	- Rewrote this section to be clearer with a new example/analogy
 - Expanded the Parallel Processing content because it is more relevant in 2019
+- Created a new, more involved, exercise on Parallel Processing, again because it is more relevant in 2019
 - Removed section on Custom Transformer licensing, since Hub packages make it less relevant
 
 
