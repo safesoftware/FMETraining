@@ -187,7 +187,7 @@ This is a marker for a feature updated since the original release (eg .0 to .1)
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This is text as spoken by a person from the city of Interopolis
+This is text as spoken by a person from the city of Interopolis (usually the FME Lizard)
 <br>It uses a font awesome icon (this won't show in PDF)
 <br>The text is a serif font, italic.
 <br>It is in a table with an orange border
@@ -195,21 +195,6 @@ This is text as spoken by a person from the city of Interopolis
 </td>
 </tr>
 </table>
-
-The list of persons currently used in the training is:
-
-- FireFighter Mapp
-- Miss Vector
-- Police Chief Webb-Mapp
-- Chef Bimm
-- Mr Flibble
-- Ms. Analyst
-- First-Officer Transformer
-- Mr. Statistics-Calculator
-- Mr. E. Dict, (Attorney of FME Law)
-- Dr. Workbench
-- Aunt Interop
-- Sister Intuitive
 
 ---
 
@@ -319,3 +304,26 @@ For when a screenshot of a Data Inspector background map is used. Be sure to inc
 <br><span style="font-style:italic;font-size:x-small">Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a></span> 
 
 <br><span style="font-style:italic;font-size:x-small">Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC-BY-3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC-BY-SA</a>.</span>
+
+---
+
+**Add Reader/Writer Table**
+
+<table style="border: 0px">
+
+<tr>
+<td style="font-weight: bold">Reader Format</td>
+<td style="">Esri Geodatabase (File Geodb Open API)</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Reader Dataset</td>
+<td style="">C:\FMEData2019\Data\CommunityMapping\CommunityMap.gdb</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Workflow Options</td>
+<td style="">Single Merged Feature Type</td>
+</tr>
+
+</table>
