@@ -29,7 +29,7 @@
     * [Authoring vs Production](./DesktopAdvanced2WorkspaceDesign/2.07.AuthoringVersusProduction.md)
     * [Assessing Performance](./DesktopAdvanced2WorkspaceDesign/2.08.AssessingPerformance.md)
     * [Exercise: Public Art in Parks - Performance Assessment](./DesktopAdvanced2WorkspaceDesign/2.Exercise2.md)
-    * [Optimizing Reader Performance](./DesktopAdvanced2WorkspaceDesign/209.OptimizingReaderPerformance.md) 
+    * [Optimizing Reader Performance](./DesktopAdvanced2WorkspaceDesign/2.09.OptimizingReaderPerformance.md) 
     * [Optimizing Writer Performance](./DesktopAdvanced2WorkspaceDesign/2.10.OptimizingWriterPerformance.md)
     * [Optimizing Transformer Performance](./DesktopAdvanced2WorkspaceDesign/2.11.OptimizingTransformationPerformance.md)
     * [Exercise: Public Art in Parks - Optimization](./DesktopAdvanced2WorkspaceDesign/2.Exercise3.md)
