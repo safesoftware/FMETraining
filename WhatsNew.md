@@ -30,6 +30,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - Moved definition of performance to first section. Removed "Performance and FME"
 - Moved "Remove Unattached" function to section on Optimizing Readers
 - Changed General Performance Tips to introduce the idea of Authoring vs Production
+- New exercises 1-3 (4 is the same as before)
 
 ### Advanced Reading/Writing ###
 - Changed "Zip Files" to "Compressed Files", since 2019 now supports other archived or compressed file formats
