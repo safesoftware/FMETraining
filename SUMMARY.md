@@ -36,7 +36,7 @@
     * [Optimizing Databases](./DesktopAdvanced2WorkspaceDesign/2.12.DatabaseOptimization.md)
     * [Server and Cloud Performance](./DesktopAdvanced2WorkspaceDesign/2.13.FMEServerFMECloud.md)
     * [Batch Processing](./DesktopAdvanced2WorkspaceDesign/2.14.BatchProcessing.md)
-    * [Exercise: Batch Processing and Garbage Collection](./DesktopAdvanced2WorkspaceDesign/2.Exercise4.md)
+    * [Exercise: Garbage Collection Project - Database Performance](./DesktopAdvanced2WorkspaceDesign/2.Exercise4.md)
     * [Module Review](./DesktopAdvanced2WorkspaceDesign/2.15.ModuleReview.md)
 * [Advanced Readers and Writers](./DesktopAdvanced3AdvancedRW/3.00.AdvancedReadWrite.md)
 	* [Reading and Writing Archive Files](./DesktopAdvanced3AdvancedRW/3.01.ZipFileHandling.md)
