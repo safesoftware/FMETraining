@@ -41,7 +41,7 @@
 * [Advanced Readers and Writers](./DesktopAdvanced3AdvancedRW/3.00.AdvancedReadWrite.md)
 	* [Reading and Writing Archive Files](./DesktopAdvanced3AdvancedRW/3.01.ZipFileHandling.md)
 	* [Web-Based Datasets](./DesktopAdvanced3AdvancedRW/3.02.WebBasedDatasets.md)
-    * [Exercise: Web Based Connections](./DesktopAdvanced3AdvancedRW/3.Exercise1.md) 
+    * [Exercise: Snowfall Project: Web-Based Datasets](./DesktopAdvanced3AdvancedRW/3.Exercise1.md) 
 	* [Fanouts](./DesktopAdvanced3AdvancedRW/3.03.Fanouts.md)
 		* [Feature Type Fanouts](./DesktopAdvanced3AdvancedRW/3.04.FeatureTypeFanout.md)
 		* [Dataset Fanouts](./DesktopAdvanced3AdvancedRW/3.05.DatasetFanout.md)
