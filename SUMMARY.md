@@ -33,6 +33,7 @@
 	* [7.1 Exercise 13- Creating a Job Queue](./FMESERVER_RESTAPI7JobManagement/7.1.JobRoutingTag.md)
 	* [7.2 Retrieve Job History](./FMESERVER_RESTAPI7JobManagement/7.2.RetrieveJobHistory.md)
 	* [7.3 Exercise 14- Creating a Workspace to Retrieve Job History](./FMESERVER_RESTAPI7JobManagement/7.3.Exercise.md)
+	* [7.4 Exercise 15- Scheduling Automations with the FME Server REST API](./FMESERVER_RESTAPI7JobManagement/7.4.Exercise.md)
 * [Chapter 8. Developing with the FME Server REST API](./FMESERVER_RESTAPI8Session2/8.0.Introduction.md)
 	* [8.1 Best Practices](./FMESERVER_RESTAPI8Session2/8.1.BestPractices.md)
 	* [8.2 Hosting Web Applications](./FMESERVER_RESTAPI8Session2/8.2.HostingWebApplications.md)
