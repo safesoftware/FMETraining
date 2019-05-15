@@ -6,7 +6,7 @@
 * [Chapter 1. Overview of the REST API](./FMESERVER_RESTAPI1Overview/1.0.ChapterOverview.md)
     * [1.1 What is a REST API?](./FMESERVER_RESTAPI1Overview/1.1.RESTAPI.md)
     * [1.2 What components are in a Request?](./FMESERVER_RESTAPI1Overview/1.2.WhatComponentsAreInARequest.md)
-	* [1.3 Authorization And Authentication](./FMESERVER_RESTAPI1Overview/1.3.AuthorizationAndAuthentication.md)
+	* [1.3 Authorization and Authentication](./FMESERVER_RESTAPI1Overview/1.3.AuthorizationAndAuthentication.md)
 	* [1.4 Tokens and the REST API](./FMESERVER_RESTAPI1Overview/1.4.Token.md)
 	* [1.5 Exercise 1- Create a new token](./FMESERVER_RESTAPI1Overview/1.5.UserCreation.md)
 
