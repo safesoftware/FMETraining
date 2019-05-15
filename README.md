@@ -33,7 +33,7 @@ The status of each chapter is:
 - Chapter 4: Complete content and exercises
 - Chapter 5: Complete content and exercises
 - Chapter 6: Complete content 
-- Slides: Incomplete
+- Slides: Complete
 - FMEData: Complete
 
 
