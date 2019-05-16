@@ -10,7 +10,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 4.1</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Building Updates Automation</span>
 </td>
 </tr>
 
@@ -26,7 +26,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Notification topics and Directory Watch publications</td>
+<td style="border: 1px solid darkorange">Directory Watch Trigger</td>
 </tr>
 
 <tr>
@@ -43,7 +43,7 @@
 
 ---
 
-As a technical analyst in the GIS department, you want to start experimenting with notifications in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to, or updating, the corporate database. 
+As a technical analyst in the GIS department, you want to start experimenting with Automations in FME Server. The Directory Watch protocol seems like a good place to start, and you already were thinking about a shared folder where users place Shapefile datasets for adding to, or updating, the corporate database.
 
 
 <br>**1) Create Resources Folder**
@@ -68,7 +68,7 @@ Browse to the Data folder and create a new subfolder called BuildingUpdates:
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise utilizes the FME Server Resource folders, but there is also native support in FME Server to watch for new resources in Amazon S3 Buckets, Dropbox, and FTP.
+This exercise utilizes the FME Server Resource folders, but you could also watch a Directory outside of FME Server Resources by creating a Resource Connection or reference a shared UNC path. There is also native support in FME Server to watch for new resources in Amazon S3 Buckets, Dropbox, and FTP.
 <br>Using the same concepts described here, you could use one of these protocols instead of Directory Watch.
 </td>
 </tr>
@@ -76,72 +76,64 @@ This exercise utilizes the FME Server Resource folders, but there is also native
 
 ---
 
-<br>**2) Create Publication**
-<br>Now to create a publication and topic that will be triggered by a new file. Navigate to the Notifications page, click the Publications tab, and then click the New button.
+<br>**2) Create Automation**
+<br>Now to create the Automation that will watch the Directory for incoming files. Navigate to the Automations page and click on the build tab.
 
-Enter "Incoming Building Footprints" as the new publication's name. 
+By default Automations starts in guided mode. This means that there is already a Trigger node on the canvas but it still needs to be configured. Start by selecting the Trigger and a parameter box will appear on the right hand side of the canvas.
+Select Directory modified from the drop-down list as the trigger for this Automation
 
-Next, click on the text box beside Topics to Publish To. Type in ShapeIncomingFile and click on the entry with that name that appears in the drop-down list. This will create a new topic and assign it to this publication. 
+![](./Images/Img4.401.Ex1.NewTriggerDialog.png)
 
-![](./Images/Img4.401.Ex1.NewPublicationDialog.png)
+<br>**3) Define Trigger parameters**
+<br>After selecting a Trigger a list of configurable parameters appears in the dialog. Click the browse elipsis button for the Directory to Watch parameter and select the newly created resources folder:
 
+![](./Images/Img4.402.Ex1.DirectoryToWatch1.png)
 
-<br>**3) Set Publication Protocol**
-<br>Now select Directory Watch from the drop-down list as the protocol for this publication. In the dialog that appears click the browse button for the Directory to Watch parameter and select the newly created resources folder:
+Leave the Watch Subdirectories and Receive Notifications for Folders parameters set to No, since we are only interested in monitoring for files in the BuildingUpdates folder directly. Then for the Filter parameter remove the MODIFY and DELETE actions. All we want to monitor are new files arriving, not old ones being removed:
 
-![](./Images/Img4.402.Ex1.DirectoryToWatch.png)
+![](./Images/Img4.403.Ex1.DirectoryWatchFilter.png)
 
-Back in the publication definition, for the Filter parameter remove the MODIFY and DELETE actions. All we want to monitor are new files arriving, not old ones being removed:
+Change the Poll Interval to 30 Seconds and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas the Trigger node will update to show it is a Directory watch.
 
-![](./Images/Img4.403.Ex1.DirectoryWatchFilters.png)
-
-Change the Poll Interval to 1 Minute and click OK to create the new publication. Then in the top right corner, click on the Validate button to validate the publication. This ensures that the publication was set up correctly:
-
-![](./Images/Img4.404.Ex1.CompletedDirectoryWatch.png)
+![](./Images/Img4.404.Ex1.CompleteDirectoryWatch.png)
 
 
-<br>**4) Monitor Topic**
-<br>Click on the Topic Monitoring tab on the Notifications page. Start typing ShapeIncomingFile into the Select a Topic search bar, then select it. If the topic doesn't appear, it means it wasn't made with the publication. You can create the topic here, but you will need to go back to the Incoming Building Footprints publication and add the topic. 
+Save the Automation by selecting Menu > Save as and name the Automation "Incoming Building Footprints".
 
-Once the topic is added, topic monitoring will begin automatically, and a memo will appear at the bottom stating that Monitoring has been started and the time when it was started. To start or pause monitoring, click the play or pause button at the top. 
+<br>**4) Log Message**
+<br>To check the Directory Watch trigger is working as expecting we can send the incoming messages to a log file located on FME Server. Select the Next Action node and set the Action to Log.
 
-![](./Images/Img4.405.Ex1.DirectoryWatchTopicMonitoring.png)
+Click on the drown-down arrow for the Message Parameter, since we want to record the entire message select General > Event as JSON.
 
----
+Since this is for testing we can save the log file to a temporary location that will be cleaned up by FME Server. Select browse and this will take you to the FME Server Resources, select the Temp folder and then specify the file name as IncomingBuildingFootprints.log. Click Apply to save this configuration.  
 
-<!--Tip Section--> 
+![](./Images/Img4.405.Ex1.LogMessageFilePath.png)
 
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
-</td>
-</tr>
 
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-When monitoring topics, the Topic Monitoring tab needs to stay open. If you are navigating away from this page, but would like to keep monitoring topics, open a new tab with FME Server and continue working. 
-</span>
-</td>
-</tr>
-</table>
+![](./Images/Img4.406.Ex1.CompleteLogMessage.png)
+In order for FME Server to start watching the directory for incoming files the Automation must be enabled. Select the Start Automation button in the top right corner. When this button turns red and there is an Orange warning ribbon across the canvas this indicates your Automation is running and FME Server is not checking that directory every 30 seconds for updates.
 
----
+![](./Images/Img4.407.Ex1.StartAutomation.png)
 
-<br>**5) Test Topic**
-<br>Now let's test the topic. Locate the source Shapefile datasets in C:\FMEData2018\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) for one dataset and create a compressed zip file out of them (right-click &gt; Send to &gt; Compressed (zipped) folder).
+Note: As your Automation grows you may wish to turn off Guided mode, this can be done by selecting Hide Guides from the Menu drop-down list.
 
-Now upload the zip file into the newly created Resources folder. There are two ways to do this.
 
-You can use the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface. If you use the web interface, open a new window or tab, so we can continue to monitor the ShapeIncomingFile topic.
+<br>**5) Test Automation**
+<br>Now let's test the Automation. Locate the source Shapefile datasets in C:\FMEData2019\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.
 
-![](./Images/Img4.406.Ex1.DirectoryWatchDataInFolder.png)
+You can use the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface.
 
-Check back in the Topic Monitoring window, and you will see that the topic has been triggered by the new file:
+![](./Images/Img4.408.Ex1.DirectoryWatchDataInFolder.png)
 
-![](./Images/Img4.407.Ex1.DirectoryWatchTopicMonitoringTriggered.png)
+Check back in Resources > Temp, if the log is not present select the refresh button until it appears. Click on the file to view the contents and there will be four messages from the Logger showing the individual file paths.
+
+![](./Images/Img4.409.Ex1.ViewDirectoryWatchLog.png)
+
+Return to the Automations: Manage page and select the Incoming Building Footprints Automation. Every Automation also has a log file that records all activity that occurs in this Automation. Select Menu, View Log File to check this out.
+
+![](./Images/Img4.410.Ex1.ViewAutomationsLog.png)
+
+Note: The Log and Filter Actions in Automations are simple workspaces installed with FME Server. Therefore when you view the Automations Log file you will see Jobs have been submitted to the Server.
 
 ---
 
@@ -158,18 +150,18 @@ Check back in the Topic Monitoring window, and you will see that the topic has b
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Remember, the Publication is set up to check the folder only once per minute - so if the Topic Monitoring doesn't immediately show a result, don't panic! Be patient and it will appear shortly.
+Remember, the Poll interval is set up to check the folder only once per 30 seconds - so if the Log file doesn't immediately appear, don't panic! Be patient and it will appear shortly.
 </td>
 </tr>
 </table>
 
 ---
 
-Now we know how the Directory Watch notification works! We will see in subsequent exercises how to process this information.
- 
+Now we know how the Directory Watch Trigger works! We will see in subsequent exercises how to process this information.
+
 ---
 
-<!--Exercise Congratulations Section--> 
+<!--Exercise Congratulations Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -184,10 +176,9 @@ Now we know how the Directory Watch notification works! We will see in subsequen
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Create a new Publication</li>
-<li>Create a new Topic as part of the Create Publication process</li>
-<li>Use Directory Watch to trigger Topics and Notifications</li>
-<li>Test a Publication and Topic using Topic Monitoring</li></ul>
+<ul><li>Create a new Automation</li>
+<li>Use Directory Watch to poll an FME Server Resource</li>
+<li>Test a Directory Watch trigger by writing to a log</li></ul>
 </span>
 </td>
 </tr>

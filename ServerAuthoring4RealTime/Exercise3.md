@@ -10,7 +10,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 4.3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Building Updates Notification System</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Building Updates Automation</span>
 </td>
 </tr>
 
@@ -21,89 +21,149 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Triggering real-time updates to databases</td>
+<td style="border: 1px solid darkorange">Provide email-driven triggers for building updates</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Processing Directory Watch notifications</td>
+<td style="border: 1px solid darkorange">Email Triggers</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange">N/A</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\RealTime-Ex3-Complete.fmw</td>
+<td style="border: 1px solid darkorange">N/A</td>
 </tr>
 
 </table>
 
 ---
 
-Now that you have learned how to run a workspace in response to a notification, it's time to take that basic workspace and adjust it for your overall goal: to provide real-time updates to your corporate database.
+As a technical analyst in the GIS department, you were involved in a recent assignment to set up a Directory Watch solution for users to automatically update the corporate database.
 
-The next step towards achieving this is understanding how to extract information from the notifications and configure an FME Workspace to process that incoming data.
+Having learned that not all users are able to access the internal network where FME Server is hosted, you think that it should be possible to also set up a system that uses email-based automation to handle the same updates.
 
 ---
 
-<!--Person X Says Section-->
+<br>**1) Create Resource Folder**
+The first step is to create another Resource folder where all the email attachments will be saved. Log into the FME Server web interface, navigate to Resources > Data > BuildingUpdates, and then create a new folder called Emails.
 
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
-</td>
-</tr>
+<br>**2) Update Automation**
+<br>Next, Navigate to the Automations page, since we are triggering the same workspace we can add a second trigger into the existing Automation. Add a new Trigger by dragging and dropping a Trigger (green) node onto the canvas.
 
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where Exercise 2 left off. You must have completed Exercise 2 to carry out this exercise.
-</td>
-</tr>
+![](./Images/Img4.425.Ex3.AddTrigger.png)
+
+The new Trigger can be created to use either the Email (SMTP) protocol or the Email (IMAP) protocol.
+
+SMTP is easier to set up, but FME Server must reside on a server with a proper DNS record (all FME Cloud and Training machines will have this). IMAP is necessary when FME Server resides on an internal network or you would like to monitor an email account sitting on an external server.
+
+
+---
+
+***SMTP Protocol***
+
+To use the SMTP protocol select Email (SMTP) as the Trigger. This will reveal the Email User Name parameter. Enter a name for receiving email, for example: *fmeshapeprocessing*
+
+For the Download Attachments To parameter browse to the Emails folder created in step 1.
+
+![](./Images/Img4.426.Ex3.CreateSMTPTrigger.png)
+
+
+Clicking Apply will create an email address *fmeshapeprocessing@&lt;hostname&gt;* - for example:
+
+<table>
+<tr><th>Host</th><th>Example Email Address</th></tr>
+<tr><td>FME Cloud</td><td>fmeshapeprocessing@myfmeserver.fmecloud.com</td></tr>
+<tr><td>Amazon AWS</td><td>fmeshapeprocessing@ec1-23-456-789-012.compute-1.amazonaws.com</td></tr>
 </table>
 
+
 ---
 
-<br>**1) Create Workspace**
-<br>Start FME Workbench and begin with an empty workspace.
+***IMAP Protocol***
 
-Select Readers &gt; Add Reader from the menubar. When prompted set the parameters as follows:
+To use the IMAP protocol select Email (IMAP) as the Trigger. This will open up a number of other parameters. Enter them according to your email account.
+
+In case it is of use, the server information for Gmail, Outlook, and Yahoo! are as follows:
 
 <table style="border: 0px">
 
 <tr>
-<td style="font-weight: bold">Reader Format</td>
-<td style="">Text File</td>
+<td style="font-weight: bold">IMAP Server Host</td>
+<td style="">imap.gmail.com</td>
+<td style="">imap-mail.outlook.com</td>
+<td style="">imap.mail.yahoo.com</td>
 </tr>
 
 <tr>
-<td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\readme.txt</td>
+<td style="font-weight: bold">Server Port</td>
+<td style="">993</td>
+<td style="">993</td>
+<td style="">993</td>
 </tr>
 
 <tr>
-<td style="font-weight: bold">Reader Parameters</td>
-<td style="">Read Whole File at Once: Yes</td>
+<td style="font-weight: bold">Connection Security</td>
+<td style="">SSL/TLS</td>
+<td style="">SSL/TLS</td>
+<td style="">SSL/TLS</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Verify SSL Certificates</td>
+<td style="">Yes</td>
+<td style="">Yes</td>
+<td style="">Yes</td>
 </tr>
 
 </table>
 
-It doesn't matter what text file we use as the source right now; setting the source dataset in this step is only to satisfy the text file reader requirements. At runtime, the source dataset will be replaced by the content of the incoming message.
+You will also need to check the settings in your email account to make sure IMAP is turned on. Regardless of the email provider, you should set these parameters as follows:
+
+<table style="border: 0px">
+
+<tr>
+<th style="font-weight: bold">Parameter</th>
+<th style="">Value</th>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Poll Interval</td>
+<td style="">30 Seconds</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Emails to Fetch</td>
+<td style="">New Emails Only</td>
+</tr>
+
+<tr>
+<td style="font-weight: bold">Download Attachments To</td>
+<td style="">A Resource folder of your choice</td>
+</tr>
+
+</table>
 
 
-<br>**2) Add JSONFlattener**
-<br>Now add a JSONFlattener transformer to the workspace, after the Text File Reader. The incoming message is formatted as JSON, and this transformer will expose attributes on the canvas - making them available to work with.
+You may select any Resource folder for attachments to be saved to; but (if you have already completed exercise 1-3) don't choose the BuildingUpdates folder, or else you'll cause the workspace to be triggered by both the Email and Directory Watch Trigger!
 
-Inspect the transformer parameters and - under the JSON Document parameter - select the attribute *text&#95;line&#95;data* as the source of the JSON content.
+![](./Images/Img4.428.Ex3.CompleteAutomation.png)
 
-Add a Logger transformer to each output port on the JSONFlattener.
+Add a connection from the Email trigger to the workspace action. The automation is not ready yet because the JSON message from the Email Trigger stores the JSON in a parameter named Email Attachment, however the Source dataset for the run workspace is set to pick up a value from the Directory Watch File Path attribute. Therefore in order to have both incoming triggers send the correct information to the workspace we need to create an attribute in each Trigger with a common name that can be used downstream in the workflow. These are known as Custom keys.
 
----
+<br>**3) Create Custom key**
+<br>We will need to create an Output Key on both Triggers. First select the Email trigger and click on the Output Keys tab. This will list all the standard output keys that come with that action, scroll to the bottom of the list and there is a second section called Custom Keys.
+
+Set the Key name to shapefile and for the Value select email.attachment from the drop down list.
+
+![](./Images/Img4.427.Ex3.CreateCustomKey.png)
+
+Repeat the process in the Directory Watch trigger but this time set the value to file path. Now return to the Workspace Action and change the Source Dataset from file.path to the user.shapefile attribute listed under Custom Keys.
+
 
 <!--Person X Says Section-->
 
@@ -111,178 +171,27 @@ Add a Logger transformer to each output port on the JSONFlattener.
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Dr. Workbench says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms Analyst says...</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Instead of using Text Reader &gt; JSONFlattener we could have used the JSON Reader. Why didn't we? The JSON Reader requires a source file with valid schema. At this stage in the exercise, we do not have a file with this structure yet.
-</td>
-</tr>
-</table>
-
----
-
-<br>**3) Publish to FME Server**
-<br>Publish the workspace to FME Server, registering it under the Job Submitter service.
-
-
-<br>**4) Update Subscription**
-<br>Now log in to the FME Server web interface and navigate to the Notifications page.
-
-Click on the Subscriptions tab and select the existing "Process Building Updates" Subscription to edit it.
-
-Change the specified workspace, from the one created in Exercise 2, to the one uploaded in the previous step.
-
-The change of workspace will cause a Source Text File parameter to appear. Here just select the checkbox to the right for *Get Value from Topic Message*.
-
-![](./Images/Img4.412.Ex3.ValueFromTopicMessage.png)
-
-Click OK to update the Subscription.
-
-
-<br>**5) Test Topic**
-<br>Once more (as in exercises 1 and 2) locate the update003.shp source Shapefile datasets in C:\FMEData2018\Data\Engineering\BuildingFootprints and create a compressed (zip) file from the set of Shapefiles (.dbf, .prj, .shp, .shx).
-
-Be sure to give the zip file a different name to any used previously.
-
-Copy the zip file into the Resources folder data\BuildingUpdates. You can do this through the file system (by copying the file to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or by using the FME Server web interface.
-
-
-<br>**6) Check Results**
-<br>Open the Jobs page in the web interface. The completed jobs list should include the workspace you updated in the subscription. View or download the log file and look for the logged feature. You should find it has an attribute containing JSON and a number of attributes extracted from the JSON.
-
-<table>
-<tr><td>dirwatch_publisher_action</td><td>CREATE</td></tr>
-<tr><td>dirwatch_publisher_content</td><td>ENTRY_CREATE C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates\update002.zip</td></tr>
-<tr><td>dirwatch_publisher_path</td><td>C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates\update002.zip</td></tr>
-</table>
-
-![](./Images/Img4.413.Ex3.DirectoryWatchResults.png)
-
-So now we know what the data looks like and can process it accordingly.
-
----
-
-<!--Person X Says Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Mr. Flibble says...</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-You may recognize these attributes from the Topic Monitoring exercise - indeed you can view the same information there without going through this process of adding Logger transformers!
+Custom keys can only be used in the Automation they are defined in, and can be set to an element of the JSON from the Trigger or Action message. To create values that can be used across all workspaces you can create Global Keys by selected the globe icon in the menu ribbon. These can only be set to plain text values, an example of their use might be a UNC path to an external location your organisation stores their data.
 </span>
 </td>
 </tr>
 </table>
 
----
 
+<br>**4) Test Automation**
+<br>Now let's test the Automation.
 
-<br>**7) Edit JSONFlattener Transformer**
-<br>Back in FME Workbench inspect the JSONFlattener transformer parameters once more. Under Attribute to Expose add the attribute *dirwatch&#95;publisher&#95;path* by clicking the browse button and then manually typing it in:
+This time we can zip up the four .shp and associated file types to pass as an email attachment. Since the Email trigger is not being passed through the filter but directly hooked up to the Run Workspace action and we do not want to see it fail.  
 
-![](./Images/Img4.414.Ex3.DirWatchPubPath.png)
+Send an email *with an attachment* to the address created in the Email trigger. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the Automation will send a message to the Workspace Action. (Remember that an IMAP publication only checks for an email at the specified poll interval, so the result might not be immediate!)
 
-
-<br>**8) Add FeatureReader Transformer**
-<br>Now remove the Logger transformers and add a FeatureReader transformer to the output of the JSONFlattener:
-
-![](./Images/Img4.415.Ex3.FeatureReaderInWorkspace.png)
-
-This is a transformer that will let us read the contents of the dataset into the workflow mid-translation. Inspect the transformer's parameters and set the following values:
-
-<table>
-<tr><td><strong>Reader Format</strong></td><td>Esri Shapefile</td></tr>
-<tr><td><strong>Reader Dataset</strong></td><td>Select Attribute Value &gt; dirwatch&#95;publisher&#95;path</td></tr>
-<tr><td><strong>Output Port</strong></td><td>Single Output Port</td></tr>
-</table>
-
-Select to have a Single Output Port:
-
-![](./Images/Img4.416.Ex3.FeatureReaderParameters.png)
-
-
-<br>**9) Add Writer**
-<br>Having read the data from a Shapefile, we can now add it to the corporate database.
-
-Select Writers &gt; Add Writer from the menubar. When prompted set the parameters as follows:
-
-<table style="border: 0px">
-
-<tr>
-<td style="font-weight: bold">Writer Format</td>
-<td style="">SpatiaLite</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2018\Data\Engineering\BuildingFootprints\building_footprints.sl3</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Writer Parameters</td>
-<td style="">Overwrite Existing Database: No</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Add Feature Types</td>
-<td style="">Table Definition: Manual</td>
-</tr>
-
-</table>
-
-In the new feature type that is created, change the Table Name parameter to *building_footprints*:
-
-![](./Images/Img4.417.Ex3.FeatureTypeName.png)
-
-Ensure that the Table Handling is set to "Create if Needed". Click OK to close the dialog and then connect the new feature type to the FeatureReader transformer's &lt;Generic&gt; output port.
-
-![](./Images/Img4.418.Ex3.FinalWorkspace.png)
-
-<br>**10) Inspect Data**
-After adding the writer, click on the building_footprints feature type to bring up the popup menu. Then click the Inspect button to open the dataset in the FME Data Inspector. There is already data in the building_footprints.sl3 dataset, but we should take note of what the data looks like so we will know where it has changed once we update the dataset with the new data. The area within the red box will be where the new data will be added:
-
-![](./Images/Img4.419.Ex3.SpatialLiteData.png)
-
-
-<br>**10) Republish Workspace**
-<br>Back in FME Workbench, publish the workspace back to FME Server. If you have the same FME Workbench session open from the start of this exercise, you can use the Republish option on the toolbar or under the File menu.
-
-![](./Images/Img4.420.Ex3.RepublishWorkspace.png)
-
-
-<br>**11) Add Dataset to FME Server**
-<br>Since the purpose of this notification system is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources.
-
-Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2018\Data\Engineering\BuildingFootprints\building_footprints.sl3
-
-![](./Images/Img4.421.Ex3.UploadDatabase.png)
-
-
-<br>**12) Edit Subscription**
-<br>Navigate to the Notifications page and open the Process Building Updates Subscription for editing. The parameters should now include one for the output database. Use the browse button to locate the database uploaded in the previous step:
-
-![](./Images/Img4.422.Ex3.OutputDatabaseSelection.png)
-
-Click OK to save the changes.
-
-
-<br>**13) Test Solution**
-<br>Now test the solution by putting update001.zip, update002.zip or update003.zip into the BuildingUpdates folder. If these files already exist, delete them first, and then re-add them. You will find that each dataset put into the folder is added to the SpatiaLite database.
-
-Check the Completed Jobs page to confirm that the workspace was run. Then in the FME Data Inspector, add a new dataset, and browse to the C:\ProgramData\Safe Software\FMEServer\resources\data\Output\ folder and add the building_footprints.sl3 dataset. Depending on which update file you added, you should see one of the three buildings added to the dataset:
-
-![](./Images/Img4.423.Ex3.ViewOutputInDataInspector.png)
 
 ---
 
@@ -301,8 +210,9 @@ Check the Completed Jobs page to confirm that the workspace was run. Then in the
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Identify JSON attributes on an incoming Topic Message</li>
-<li>Use a FeatureReader transformer to read the dataset added to watched folder</li></ul>
+<ul><li>Create an Email Trigger</li>
+<li>Create an automation with multiple input triggers to a single action</li>
+<li>Create custom keys to configure an Action so it can handle triggers across different protocols</li></ul>
 </span>
 </td>
 </tr>
