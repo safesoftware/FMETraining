@@ -96,7 +96,7 @@ Select Readers &gt; Add Reader from the menu bar. When prompted set the paramete
 
 </table>
 
-It doesn't matter what Shapefile we use as the source right now; setting the source dataset in this step is only to satisfy the shapefile reader requirements. At runtime, the source dataset will be replaced by the content of the incoming message.
+It doesn't matter what Shapefile we use as the source right now; setting the source dataset in this step is only to satisfy the shapefile reader requirements. At runtime, the source dataset will be replaced by the content of the incoming message. By setting the Workflow options to Single Merged Feature Type this means it is possible to process any source dataset (of the right format) and have it translated.
 
 
 <br>**2) Add Writer**

@@ -28,12 +28,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataHandling-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\DataHandling-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\DataHandling-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\DataHandling-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -67,7 +67,7 @@ Next click on the Election folder and within there create **new** subfolders cal
 
 <tr>
 <td style="font-weight: bold">Reader Datasets</td>
-<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml<br>C:\FMEData2018\Data\Elections\ElectionVoting.xsd<br>C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2019\Data\Elections\ElectionVoting.gml<br>C:\FMEData2019\Data\Elections\ElectionVoting.xsd<br>C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>
@@ -78,7 +78,7 @@ So we now have both source datasets and a folder to write the output data to.
 
 
 <br>**4) Add Writer**
-<br>Up until now all of our workspaces have had only a NULL (dummy) writer. Now we know about Resources we can add a proper writer and point its output to the Resources Output folder.
+<br>Up until now all of our workspaces have had only a NULL (dummy) writer. Now we know about Resources we can add a proper writer and point the output dataset to the Resources Output folder.
 
 So, open the starting workspace listed above in FME Workbench and then select Writers &gt; Add Writer on the menubar and set up a new writer with the following parameters:
 
@@ -91,7 +91,7 @@ So, open the starting workspace listed above in FME Workbench and then select Wr
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2018\Output\Training\DepartmentData.gdb</td>
+<td style="">C:\FMEData2019\Output\Training\DepartmentData.gdb</td>
 </tr>
 
 <tr>
@@ -129,7 +129,7 @@ This ensures we aren't continually adding data to the same dataset if we run the
 
 
 <br>**7) Run Workspace**
-<br>Test run the workspace in FME Desktop. Inspect the output. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
+<br>Test run the workspace in FME Desktop. Inspect the output in Visual Preview. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
 
 ![](./Images/Img2.221.Ex2.OutputTables.png)
 
@@ -137,13 +137,13 @@ This ensures we aren't continually adding data to the same dataset if we run the
 <br>**8) Publish and Run Workspace**
 <br>Publish the workspace to FME Server. Be sure not to check the button to upload any data. Register the workspace against the Job Submitter service as usual.
 
-Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog. Notice how the dataset paths are all hard-coded to the original file locations:
+Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog. Notice how all the dataset parameters are blank. This is because the paths referenced the original file locations through a mapped drive. If the default file path value does not reference a file using a UNC path or Resource Connection FME Server will strip out that value since FME Server does not have access to those files:
 
 ![](./Images/Img2.222.Ex2.HardCodedParameters.png)
 
-Obviously, this will be of no use if the Server does not have access to those files. However, because we already uploaded them to the Resources folders, we can use those files.
+However, because we already uploaded them to the Resources folders, we can use those files.
 
-So, for each file, click the browse button, browse to the appropriate subfolder in the Resources folder, and select/set the file location. For the Geodatabase output location you'll need to type the file name manually:
+So, for each file, click the browse button, browse to the Input subfolder in Resources, and select/set the file location. Since the Geodatabase does not exist yet, For the Geodatabase output location you'll need to type the file name manually:
 
 <pre>
 $(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb
@@ -151,9 +151,7 @@ $(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb
 
 ![](./Images/Img2.223.Ex2.SetGeodatabaseOutputAsAResource.png)
 
-Remember to remove any existing references to the incorrect files:
 
-![](./Images/Img2.224.Ex2.RemoveExistingReference.png)
 
 Now when the workspace is run, a completed Geodatabase file should appear in the folder Resources\Data\Election\Output:
 
@@ -204,7 +202,7 @@ Save the workspace and publish it back to FME Server.
 <span style="font-family:serif; font-style:italic; font-size:larger">
 If you try running this workspace in FME Workbench now that you've updated the dataset parameters to use the FME Server Shared Resource parameter, you will get an error because Workbench won't recognize that FME Server parameter.
 <br/>
-If you still want to be able to test this workspace in Workbench, you can set a value for the FME_SHAREDRESOURCE_DATA parameter. Configure it to point to a local file path that matches the folder structure used on FME Server. The workspace will still run on FME Server as Server will automatically override any value for that parameter and replace it with the correct path. 
+If you still want to be able to test this workspace in Workbench, you can set a value for the FME_SHAREDRESOURCE_DATA parameter. Configure it to point to a local file path that matches the folder structure used on FME Server. The workspace will still run on FME Server as Server will automatically override any value for that parameter and replace it with the correct path.
 </span>
 </td>
 </tr>
