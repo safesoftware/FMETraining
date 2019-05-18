@@ -53,7 +53,7 @@ Having learned that not all users are able to access the internal network where 
 The first step is to create another Resource folder where all the email attachments will be saved. Log into the FME Server web interface, navigate to Resources > Data > BuildingUpdates, and then create a new folder called Emails.
 
 <br>**2) Update Automation**
-<br>Next, Navigate to the Automations page, since we are triggering the same workspace we can add a second trigger into the existing Automation. Add a new Trigger by dragging and dropping a Trigger (green) node onto the canvas.
+<br>Next, Navigate to the Automations page, since we are triggering the same workspace we can expand on the existing Automation created in the previous exercises. Add a new Trigger by dragging and dropping a Trigger node (green) onto the canvas.
 
 ![](./Images/Img4.425.Ex3.AddTrigger.png)
 
@@ -143,7 +143,7 @@ You will also need to check the settings in your email account to make sure IMAP
 
 <tr>
 <td style="font-weight: bold">Download Attachments To</td>
-<td style="">A Resource folder of your choice</td>
+<td style="">A Resource folder of your choice e.g. Emails</td>
 </tr>
 
 </table>
@@ -151,18 +151,20 @@ You will also need to check the settings in your email account to make sure IMAP
 
 You may select any Resource folder for attachments to be saved to; but (if you have already completed exercise 1-3) don't choose the BuildingUpdates folder, or else you'll cause the workspace to be triggered by both the Email and Directory Watch Trigger!
 
+Add a connection from the Email trigger to the workspace action.
+
 ![](./Images/Img4.428.Ex3.CompleteAutomation.png)
 
-Add a connection from the Email trigger to the workspace action. The automation is not ready yet because the JSON message from the Email Trigger stores the JSON in a parameter named Email Attachment, however the Source dataset for the run workspace is set to pick up a value from the Directory Watch File Path attribute. Therefore in order to have both incoming triggers send the correct information to the workspace we need to create an attribute in each Trigger with a common name that can be used downstream in the workflow. These are known as Custom keys.
+The automation is not quite ready yet because the JSON message from the Email Trigger stores the incoming file path in an attribute named Email Attachment, however the Source dataset for the run workspace is set to pick up a value from the Directory Watch File Path attribute. Therefore in order for the workspace to be able to process the file path from both triggers we need to create an attribute in each Trigger with a common name that can be used downstream in the workflow.
 
 <br>**3) Create Custom key**
 <br>We will need to create an Output Key on both Triggers. First select the Email trigger and click on the Output Keys tab. This will list all the standard output keys that come with that action, scroll to the bottom of the list and there is a second section called Custom Keys.
 
-Set the Key name to shapefile and for the Value select email.attachment from the drop down list.
+Set the key name to shapefile and for the Value select email.attachment from the drop down list.
 
 ![](./Images/Img4.427.Ex3.CreateCustomKey.png)
 
-Repeat the process in the Directory Watch trigger but this time set the value to file path. Now return to the Workspace Action and change the Source Dataset from file.path to the user.shapefile attribute listed under Custom Keys.
+Repeat this process in the Directory Watch trigger but this time set the value to file.path. Now return to the Workspace Action and change the Source Dataset from file.path to the user.shapefile attribute listed under Custom Keys. Now, the workspace will be able to parse the shapefile path to the workspace no matter what the trigger is.
 
 
 <!--Person X Says Section-->
@@ -178,7 +180,8 @@ Repeat the process in the Directory Watch trigger but this time set the value to
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Custom keys can only be used in the Automation they are defined in, and can be set to an element of the JSON from the Trigger or Action message. To create values that can be used across all workspaces you can create Global Keys by selected the globe icon in the menu ribbon. These can only be set to plain text values, an example of their use might be a UNC path to an external location your organisation stores their data.
+Custom keys can only be used in the Automation they are defined in, and can be set to an element of the JSON from the Trigger or Action message.
+<br>To create values that can be used across all workspaces you can create Global Keys by selected the globe icon in the menu ribbon. These can only be set to plain text values, but an example of their use might be a value your organisation commonly refers to, such as a  UNC path to an external location where all data is stored.
 </span>
 </td>
 </tr>
@@ -188,7 +191,7 @@ Custom keys can only be used in the Automation they are defined in, and can be s
 <br>**4) Test Automation**
 <br>Now let's test the Automation.
 
-This time we can zip up the four .shp and associated file types to pass as an email attachment. Since the Email trigger is not being passed through the filter but directly hooked up to the Run Workspace action and we do not want to see it fail.  
+This time, because we connected the email trigger directly to the Workspace action, lets zip up the four .shp, and associated file types, to add as an attachment.  
 
 Send an email *with an attachment* to the address created in the Email trigger. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the Automation will send a message to the Workspace Action. (Remember that an IMAP publication only checks for an email at the specified poll interval, so the result might not be immediate!)
 
@@ -212,7 +215,7 @@ By completing this exercise you have learned how to:
 <br>
 <ul><li>Create an Email Trigger</li>
 <li>Create an automation with multiple input triggers to a single action</li>
-<li>Create custom keys to configure an Action so it can handle triggers across different protocols</li></ul>
+<li>Create custom keys to configure a single action to handle multiple trigger types</li></ul>
 </span>
 </td>
 </tr>
