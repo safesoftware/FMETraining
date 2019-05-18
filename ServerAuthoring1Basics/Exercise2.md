@@ -51,7 +51,7 @@ After creating a workspace to carry out this translation, and publishing it to F
 
 ---
 
-<!--Tip Section--> 
+<!--Tip Section-->
 
 <table style="border-spacing: 0px">
 <tr>
@@ -64,7 +64,7 @@ After creating a workspace to carry out this translation, and publishing it to F
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-authoring-training-2018/content/ServerAuthoring1Basics/Exercise1.html">Exercise 1.1</a> before starting this exercise. We will be running the published Basics-Ex1-Complete.fmw workspace (or whatever your named it). 
+You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-authoring-training-2018/content/ServerAuthoring1Basics/Exercise1.html">Exercise 1.1</a> before starting this exercise. We will be running the published Basics-Ex1-Complete.fmw workspace (or whatever your named it).
 </span>
 </td>
 </tr>
@@ -74,6 +74,8 @@ You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-
 
 <br>**1) Connect to Server**
 <br>To log in to the FME Server web interface either select the Web Interface option from the start menu or - in your web browser - enter the address of your FME Server.
+
+If you are following this training on one of our training machines, the URL for your FME Server will be: http://localhost/
 
 ---
 
@@ -89,7 +91,7 @@ You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 When FME Server is installed on either physical or virtual hardware, the address is http://&lt;servername&gt;/fmeserver
-<br><br>If you are using FME Cloud, then the address is: http://&lt;servername&gt;.fmecloud.com/fmeserver
+<br><br>If you are using FME Cloud, then the address is: https://&lt;servername&gt;.fmecloud.com/fmeserver
 </span>
 </td>
 </tr>
@@ -97,11 +99,11 @@ When FME Server is installed on either physical or virtual hardware, the address
 
 ---
 
-This will open the web interface login screen for the FME Server being used. 
+This will open the web interface login screen for the FME Server being used.
 
 
 <br>**2) Log In to Server**
-<br>In the User Login dialog, enter a username and password for your FME Server account. A common username/password combination for a training installation is admin/admin:
+<br>In the User Login dialog, enter a username and password for your FME Server account. The username/password combination for a training installation is admin/admin:
 
 ![](./Images/Img1.217.Ex2.LogInWindow.png)
 
@@ -109,7 +111,7 @@ Click the Login button.
 
 
 <br>**3) Examine the User Interface**
-<br>Welcome to the FME Server Web Interface. Take a moment to familiarize yourself with this interface. In the top-right corner you can access the Help menu, a list of your favorite workspaces and your user settings:
+<br>Welcome to the FME Server Web Interface. Take a moment to familiarize yourself with this interface. In the top-right corner you can access the Help menu and your user settings:
 
 ![](./Images/Img1.218.Ex2.TopRightMenu.png)
 
@@ -117,11 +119,12 @@ The side menu is where all of the FME Server functions can be accessed. If you n
 
 ![](./Images/Img1.219.Ex2.SidebarMenu.png)
 
-Finally, while still on the FME Server Home page, you can access Recent Jobs, Recent Projects, Last Published Workspaces and Favorite Workspaces. If you clicked away from this page, just click the FME logo in the top corner to get back to the Home page. 
+Finally, while still on the FME Server Home page, you can access Recent Jobs, Recent Projects, Last Published Workspaces, Favorite Workspaces, and Help pages. There are also options in the top right to customize the layout and content of this page.
+If you clicked away from this page, just click the FME logo in the top corner to get back to the Home page.
 
 ![](./Images/Img1.220.Ex2.HomePageOverview.png)
 
-Under Last Published Workspaces, you should be able to find the workspace published in Exercise 1. Click the Star icon next to this workspace to set it as a favorite:
+Under Last Published Workspaces, you should be able to find the workspace you published in Exercise 1. Click the Star icon next to this workspace to set it as a favorite:
 
 ![](./Images/Img1.221.Ex2.StarWorkspace.png)
 
@@ -159,9 +162,9 @@ If your machine is unlicensed, or is missing engines, then check with your instr
 ---
 
 <br>**5) Run Workspace**
-<br>Click the FME Server Logo in the very top-left of the interface, to return to the Web Interface Homepage. 
+<br>Click the FME Server Logo in the very top-left of the interface, to return to the Web Interface Homepage.
 
-Click on the published workspace in the Favorite Workspaces panel to open the web page for this workspace. If you don't see the workspace in under the Favorite Workspaces panel, you didn't click the star in step 3. 
+Click on the published workspace in the Favorite Workspaces panel to open the web page for this workspace. If you don't see the workspace in under the Favorite Workspaces panel, you didn't click the star in step 3.
 
 The workspace page shows a few options, the first of which are for the repository, workspace, and service. These should already be filled in with values since we opened the workspace directly. If we opened the workspace through the Run Workspace page, we would have to fill these values in:
 
@@ -175,15 +178,15 @@ Click the Run button to run the workspace. The workspace will run to completion,
 
 
 <br>**6) Examine Jobs Page**
-<br>Click Jobs on the side menu to expand it, then click Completed to view a list of the completed jobs. A list of previously run jobs will open, including the one we just ran. Note that your Jobs page will look different than the screenshot below, a DataTest.fmw workspace was run to show a failed job:
+<br>Click Jobs on the side menu to expand it, then click Completed to view a list of the completed jobs. A list of previously run jobs will open, including the one we just ran:
 
 ![](./Images/Img1.226.Ex2.JobsWindow.png?)
 
 Notice some interesting parts of the interface:
 
-1. There are tabs to show Completed jobs (the default), Queued Jobs, and Running Jobs.
-2. There are two drop-down lists: one that allows you to filter whose jobs are being shown and another that will enable you to filter based on the Job Status. In 2018.1, filters are contained in one drop-down list. 
-3. A different icon is used to indicate if jobs succeeded or failed.
+1. There are tabs to show Completed Jobs (the default), Queued Jobs, and Running Jobs.
+2. There is an option to turn on Filters for the view to allow you to filter the list of jobs to make it easier to find specific ones on a busy server.
+3. An icon is used to indicate if jobs succeeded or failed. The green check indicates a successful job and a red x marks a failed job.
 4. The jobs are displayed in the chronological order in which they finished (whether successful or not).
 
 Click on your job to inspect the results in more detail. You'll see a summary at the top showing the number of features written as well as the time it started and finished. There are more timing details under *STATUS* that include the time the job was submitted, queued, etc. Information about the specific request made to FME Server can be found under *REQUEST DATA*. And full results of the translation are under *RESULT DATA*.

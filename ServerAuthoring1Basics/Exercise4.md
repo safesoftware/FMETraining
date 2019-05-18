@@ -7,7 +7,7 @@
 <span style="color:white;font-size:x-large;font-weight: bold">Exercise 1.4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Adding to Version History</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Workspace Scheduling</span>
 </td>
 </tr>
 
@@ -18,12 +18,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Commit a copy of the workspace built in the previous exercises to Version History on FME Server.</td>
+<td style="border: 1px solid darkorange">Create a workspace to read and process departmental data and publish it to FME Server</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Interacting with Version History tools</td>
+<td style="border: 1px solid darkorange">Schedule a workspace to run automatically on FME Server </td>
 </tr>
 
 <tr>
@@ -40,77 +40,58 @@
 
 ---
 
-You have already (in Exercises 1, 2, and 3) created a workspace to carry out this translation, published it to FME Server, run it to confirm it works and scheduled it to run daily.
+You have already (in Exercises 1, 2, and 3) created a workspace to carry out this translation, published it to FME Server, run it to confirm it works, and committed it to version history.
 
-You would now like to 'checkpoint' this working version of the workspace to ensure that you can always come back to this state if any edits are made to it in the future.
+As a daily task, you plan to run the translation every day after work. However... what happens if you are not there or leave early? How can you make sure it runs every day at the same time then?
 
----
-
-<!--Warning Section-->
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">WARNING</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-In the workplace you will have to have your FME Server Administrator enable Version Control before you can start using it.
-</span>
-</td>
-</tr>
-</table>
-
----
+This is where Scheduling comes in handy. You can set up the workspace to run on an automatic schedule so you don't have to remember to run it daily.
 
 <br>**1) Connect to Server**
 <br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/admin).
 
-<br>**2) Turn on Version Control**
-<br>Version Control will be turned off by default, so you'll need to switch it on before you can use it. Click System Configuration on the side menu to expand the menu then click General in the Admin part of the interface menu. On the System Configuration General page, locate the Version Control settings toggle the switch to turn on Version Control, the switch will be green when the feature is enabled.
+<br>**2) Create Test Schedule**
+<br>Firstly, just to confirm that scheduling does work, let's set up a test schedule. Click Schedules on the menu and, in the Schedules page, click the New button to start the process.
 
----
+Set a name of Test Schedule and add it to a Training category by typing Training into the Category field:
 
-<!--Warning Section-->
+![](./Images/Img1.233.Ex3.NewSchedule.png)
 
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">NEW for 2018.1</span>
-</td>
-</tr>
+For the time settings, set the schedule to start immediately and run every 30 seconds. Uncheck the box beside Does Not Expire and set the end time to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on forever!)
 
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-In FME Server 2018.1 the System Configurations have been condensed and Version Control can be found in the General page of the System Configuration menu.
-</span>
-</td>
-</tr>
-</table>
+![](./Images/Img1.234.Ex3.SetSchedule.png)
 
----
+Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine on which you are running the web browser that is connected to FME Server. Keep this in mind if your FME Server is on a machine in a different time zone from the machine where you are accessing FME Server.
 
-![](./Images/Img1.238.Ex4.VersionControl.png)
+Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
 
-Don't worry about the other settings on that page, for now, just leave them with the default values.
+![](./Images/Img1.235.Ex3.NewScheduleWorkspace.png)
 
-<br>**3) Add Workspace to Version History**
-<br>As the Basics-Ex1-Complete.fmw workspace has already been published to FME Server, you can add it to the version history from the web interface. Go to the Repositories page and open the Training repository. Select the checkbox beside the workspace and click Commit.
+There are no user parameters we need to change for this workspace, so any can be ignored.
 
-![](./Images/Img1.239.Ex4.CommitFromRepo.png)
+Now click OK to add the new schedule.
 
-Add a meaningful commit comment for this version of the workspace and click Commit to add it to the history.
 
-<br>**4) Check Version History**
-<br>Confirm that this new version has been added to your Version History. Go to the Repositories page and open the Training Repository. Select the checkbox beside the workspace and click the History button to see the information about the workspace version you just committed.
+<br>**5) Examine Jobs Page**
+<br>Open the Jobs page. A list of previously run jobs will open. You will find (if it was set up correctly) that there will be jobs running to schedule:
 
-![](./Images/Img1.240.Ex4.ViewHistory.png)
+![](./Images/Img1.236.Ex3.NewScheduleJobs.png)
+
+Notice that the username is set to admin; since that is the user who created the schedule, that is the username under which the job will be run.
+
+
+<br>**6) Create Actual Schedule**
+<br>Now we are confident that we know how to use the interface, let's set up an actual schedule. We want the workspace to run, say, every day of the week. There should also be no end date.
+
+So, return to the Schedules page. You may now either:
+
+- Click on the Test schedule and edit it to the required values
+- Delete the test schedule and create a new one with the required values
+
+![](./Images/Img1.237.Ex3.ChangedSchedule.png)
+
+This setup will run the workspace at 8:00pm every day. Don't forget to click the OK button!
+
+You may wish to check back periodically during this training to ensure the workspace runs as expected.
 
 ---
 
@@ -129,8 +110,8 @@ Add a meaningful commit comment for this version of the workspace and click Comm
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Commit a new version of a workspace to Version History</li>
-<li>View the version history for a Repository</li>
+<ul><li>Schedule a translation in FME Server</li>
+<li>Check the job history to ensure the scheduled translation took place</li></ul>
 </span>
 </td>
 </tr>

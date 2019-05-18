@@ -37,7 +37,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\Basics-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\Basics-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
@@ -294,8 +294,8 @@ By completing this exercise you have learned how to:
 <ul><li>Create a workspace converting data to a Null (dummy) format</li>
 <li>Use a Clipper to transfer attribute values from one feature to another</li>
 <li>Rename output layers according to the value of an attribute</li>
-<li>Publish a workspace to FME Server using the Publishing Wizard</li>
 <li>Create a repository on FME Server using the Publishing Wizard</li>
+<li>Publish a workspace to FME Server using the Publishing Wizard</li>
 <li>Register a workspace with the Job Submitter service using the Publishing Wizard</li></ul>
 </span>
 </td>
