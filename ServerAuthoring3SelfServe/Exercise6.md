@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 5</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Geographic Selection</span>
@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex6-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex4-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex6-Complete.fmw</td>
 </tr>
 
 </table>
@@ -66,11 +66,11 @@ To clip data to a particular neighborhood first requires a reader for those neig
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 <tr>
-<td style="font-weight: bold">Workflow</td>
+<td style="font-weight: bold">Workflow Options</td>
 <td style="">Individual Feature Types</td>
 </tr>
 
@@ -179,7 +179,7 @@ Why does the CsmapReprojector come after the Tester? Because it has less work to
 
 ![](./Images/Img5.229.Ex4.Clipper.png)
 
-Check the parameters. The only parameter to check is one specifically related to raster data: Preserve Clippee Extents. Set this parameter to No if it is not already.
+Check the parameters. The only parameter to check is one specifically related to raster data. Look under Raster Parameters &gt; Preserve Clippee Extents. Set this parameter to No if it is not already.
 
 
 <br>**7) Publish to FME Server**

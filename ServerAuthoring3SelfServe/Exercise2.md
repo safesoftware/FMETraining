@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe1-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe1-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -63,46 +63,13 @@ Click the Edit button for the Data Streaming service. Ensure that service is usi
 ![](./Images/Img3.206.Ex2.StreamingParameters.png)
 
 <br>**3) Run Workspace**
-<br>In the FME Server web interface locate the newly published workspace and run it. In the parameters for the workspace be sure to set the web service to  Data Streaming instead of Data Download
+<br>In the FME Server web interface locate the newly published workspace and run it. In the parameters for the workspace, be sure to set the web service to Data Streaming instead of Data Download
 
-![](./Images/Img3.207.Ex2.SelectStreamingService.png) 
-
-
-The result of this translation is not a streamed JPEG file. Instead, the translation returns a zip file:  
-
-![](./Images/Img3.208.Ex2.StreamedZipFile.png)  
-
-If you open the zip file you'll see that it includes both a JPEG file and a wld (World) file. That's why FME returned a zip file. It will zip the results of a Data Streaming service whenever the result is multiple files.  
-
-<!--Tip Section--> 
-
-<table style="border-spacing: 0px">
-<tr>
-<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
-<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">NEW for 2018.1</span>
-</td>
-</tr>
-
-<tr>
-<td style="border: 1px solid darkorange">
-<span style="font-family:serif; font-style:italic; font-size:larger">
-The extra world files no longer affect data streaming in 2018.1. If you are working through this exercise on FME Server 2018.1+ you can end here if the data was streamed as expected. If you recieved a download file, continue on to step 4. 
-</span>
-</td>
-</tr>
-</table>
-
----
-
-<br>**4) Turn off World File Creation**  
-<br>To really stream the data we should turn off the world file creation in the workspace. Check the properties for the JPEG Writer's feature type and set the Generate World File parameter to No:  
-
-![](./Images/Img3.209.Ex2.TurnOffWorldFile.png)  
+![](./Images/Img3.207.Ex2.SelectStreamingService.png)
 
 
-<br>**5) Publish and Run Workspace**  
-<br>Re-publish the workspace and run it on FME Server. You should find that the results of the translation are returned as a streamed JPEG file. Most likely it will open directly in your web browser:
+<br>**5) Check Results**  
+<br>You should find that the results of the translation are returned as a streamed JPEG file. Most likely it will open directly in your web browser:
 
 ![](./Images/Img3.210.Ex2.JPEGOpenedInBrowser.png)
 

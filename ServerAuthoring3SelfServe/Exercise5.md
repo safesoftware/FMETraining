@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 5</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Layer Selection</span>
@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex3-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex5-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex3-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex5-Complete.fmw</td>
 </tr>
 
 </table>
@@ -51,7 +51,7 @@ One of the frequent requests you get when you translate orthophoto data is to ad
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 2, or the begin workspace listed above. You can see that it consists of a reader, two writers, and two transformers, plus some published parameters.
+<br>Open the workspace from exercise 4, or the begin workspace listed above. You can see that it consists of a reader, two writers, and two transformers, plus some published parameters.
 
 To add - for example - road features to the raster output first requires a reader for those road features, so that is the first step...
 
@@ -68,7 +68,7 @@ To add - for example - road features to the raster output first requires a reade
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Transportation\RoadsDGN.dgn</td>
+<td style="">C:\FMEData2019\Data\Transportation\RoadsDGN.dgn</td>
 </tr>
 
 <tr>
@@ -95,9 +95,9 @@ You can check the parameters for this transformer but, for now at least, we'll l
 
 
 <br>**4) Create User Parameter**
-<br>Now that we have some source data we can create a parameter to control which layers in that data should be read.
+<br>Now that we have some source data, we can create a parameter to control which layers in that data should be read.
 
-In the Navigator window find the DGN Reader's parameters, expand the Features to Read section, and locate the parameter called Feature Types to Read. You will see that it is already published - a result of us using the Single Merged Feature Type:
+In the Navigator window, find the DGN Reader's parameters, expand the Features to Read section, and locate the parameter called Feature Types to Read. You will see that it is already published - a result of us using the Single Merged Feature Type:
 
 ![](./Images/Img5.215.Ex3.FTTRParameter.png)
 
@@ -130,9 +130,9 @@ The Feature Types to Read parameter tells FME which layers to read from the sour
 ---
 
 <br>**5) Edit User Parameter**
-<br>In the Modify Feature Types List dialog, check the box that is labeled Fixed List, and also the box that is labeled Use Alternate Display Name.
+<br>In the Modify Feature Types List dialog, check the box that is labeled Fixed List.
 
-Click List &gt; Add From Current Dataset and - when prompted - select all of the feature types in this dataset. Click OK, and the dialog will now look like this:
+Click List &gt; Add From Current Dataset and - when prompted - select all of the feature types in this dataset. Click OK. Then check the box labeled Use Alternate Display Name and the dialog will now look like this:
 
 ![](./Images/Img5.217.Ex3.FTTRParameterDialogEdit1.png)
 
@@ -155,7 +155,7 @@ The list will look like this:
 
 ![](./Images/Img5.218.Ex3.FTTRParameterDialogEdit2.png)
 
-What this will do is give the user a choice of three options: Primary Roads, Secondary Roads, Other Roads. Whichever they choose will return all of the source layers for that choice.
+What this will do is give the user a choice of three options: Primary Roads, Secondary Roads, and Other Roads. Whichever they choose will return all of the source layers for that choice.
 
 One final task. In the lower part of the dialog, change the prompt to something like "Vector Roads to Overlay":
 

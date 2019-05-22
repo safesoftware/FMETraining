@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 2</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Format and Coordinate Systems</span>
@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex4-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex4-Complete.fmw</td>
 </tr>
 
 </table>
@@ -51,13 +51,13 @@ Now you need to give the end-users control over the output format and output coo
 
 
 <br>**1) Open Workspace**
-<br>Open the workspace from exercise 1, or the begin workspace listed above. You can see that it consists of a reader, a writer, and two transformers, plus some published parameters.
+<br>Open the workspace from exercise 3, or the begin workspace listed above. You can see that it consists of a reader, a writer, and two transformers, plus some published parameters.
 
 In this step, we'll give the end-user control over the format and coordinate system.
 
 
 <br>**2) Add Writer**
-<br>To give control over format you need a Generic format writer. Select Writers &gt; Add Writer from the menubar. When prompted enter these parameters:
+<br>To give control over format you need a Generic format writer. Select Writers &gt; Add Writer from the menubar. When prompted, enter these parameters:
 
 <table style="border: 0px">
 
@@ -68,7 +68,7 @@ In this step, we'll give the end-user control over the format and coordinate sys
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2018\Output</td>
+<td style="">C:\FMEData2019\Output</td>
 </tr>
 
 <tr>
@@ -77,7 +77,7 @@ In this step, we'll give the end-user control over the format and coordinate sys
 </tr>
 
 <tr>
-<td style="font-weight: bold">Add Feature Types</td>
+<td style="font-weight: bold">Feature Type Definition</td>
 <td style="">Copy From Reader</td>
 </tr>
 
@@ -156,9 +156,9 @@ When prompted select the OutputFormat parameter that we just created:
 
 ![](./Images/Img5.210.Ex2.SelectUserParameter.png)
 
-The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it anymore and, since it is used nowhere else, will remove it.
+The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it anymore and, since it is used nowhere else.
 
-***NB:** If you didn't set a default value for the OutputFormat user parameter, then the Generic writer parameter will turn red (flagged as incomplete). This is nothing to worry about. It will be set at runtime.*
+***NB:*** If you didn't set a default value for the OutputFormat user parameter, then the Generic writer parameter will turn red (flagged as incomplete). This is nothing to worry about. It will be set at runtime.
 
 
 <br>**6) Create User Parameter**
@@ -202,7 +202,7 @@ If you now use the Run button in Workbench you'll see that both these parameters
 
 If you don't do that, then the Data Download will consist of the output of the JPEG Writer. Since that is not connected, there will be no output and so no zip file!
 
-Once published locate the workspace in the FME Server web interface and run it.
+Once published, locate the workspace in the FME Server web interface and run it.
 
 Choose different options for output format and coordinate system to see what happens in the output.
 

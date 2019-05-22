@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 5.1</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 3.3</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Data Download System: Published Parameters</span>
@@ -31,12 +31,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex1-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex3-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\SelfServe2-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex3-Complete.fmw</td>
 </tr>
 
 </table>
@@ -51,7 +51,7 @@ Now you need to start customizing the workspace to allow the end-users to have a
 
 
 <br>**1) Open Workspace**
-<br>Open the starting workspace listed above. You can see that it consists of a reader, a writer, and two transformers.
+<br>Open the workspace from exercise 2, or the begin workspace listed above.
 
 In this step, we'll give the end-user control over the transformation stages.
 
@@ -82,9 +82,9 @@ Click OK to close the dialog.
 
 
 <br>**3) Apply User Parameter**
-<br>Currently we've created a user parameter, but not applied it to anywhere.
+<br>Now we've created a user parameter, but not applied it to anywhere.
 
-Inspect the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing.
+Open the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing.
 
 Do the same for the Y Cell Spacing parameter. The dialog will now look like this:
 
@@ -96,11 +96,11 @@ Notice that we're using the same values for the X and Y cell sizes. That's OK. A
 <br>**4) Create User Parameter**
 <br>Another setting we might give control of to the user is file compression. This is not defined in a transformer, but in the writer feature type. However, we can still create a published parameter in the same way.
 
-So, right-click on User Parameters in the Navigator window and choose Add Parameter again.
+So, right-click on User Parameters in the Navigator window and choose Create User Parameter again.
 
 This time we'll do this a little bit differently. Compression can be a value from zero to one hundred, but we'll present the user with the choice of None, Low, Medium, and High.
 
-So create a parameter with the following:
+So create a parameter with the following settings:
 
 <table>
 <tr><td style="font-weight: bold">Type</td><td>Choice with Alias</td></tr>
@@ -130,7 +130,7 @@ Click OK and OK again to close these dialogs and create the parameter.
 
 ![](./Images/Img5.204.Ex1.SetFTCompression.png)
 
-Click OK to close the dialog. If you press the run button now - with the prompt option set - you'll see that there are now two new prompts for cell size and compression.
+Click OK to close the dialog. If you press the run button now - with the prompt option set - you'll see that there are now two new prompts for resolution and compression.
 
 
 <br>**6) Publish and Run Workspace**
