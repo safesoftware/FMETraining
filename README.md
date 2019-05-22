@@ -16,7 +16,7 @@ The full course is made up of two sections. These sections are:
 
  - Getting Started with the REST API
 
- - Using a REST Client Tool to Make Calls to the FME Server
+ - Using a REST Client Tool to Make Calls to FME Server
 
  - Interacting with Workspaces
 
