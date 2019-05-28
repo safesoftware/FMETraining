@@ -49,11 +49,32 @@ Having learned that not all users are able to access the internal network where 
 
 ---
 
+<!--Person X Says Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2019/ServerAuthoring4RealTime/Exercise2.html"> Exercise 2</a> left off. You must have completed Exercise 1 to carry out this exercise.
+</td>
+</tr>
+</table>
+
+---
+
+
 <br>**1) Create Resource Folder**
-The first step is to create another Resource folder where all the email attachments will be saved. Log into the FME Server web interface, navigate to Resources > Data > BuildingUpdates, and then create a new folder called Emails.
+<br>The first step is to create another Resource folder where all the email attachments will be saved. Log into the FME Server web interface, navigate to Resources > Data > BuildingUpdates, and then create a new folder called Emails.
 
 <br>**2) Update Automation**
-<br>Next, Navigate to the Automations page, since we are triggering the same workspace we can expand on the existing Automation created in the previous exercises. Add a new Trigger by dragging and dropping a Trigger node (green) onto the canvas.
+<br>Next, Navigate to the Automations page, since we are triggering the same workspace we can expand on the existing Automation created in the previous exercises. Add a new Trigger by dragging and dropping a Trigger node (green) onto the canvas. Before configuring the Email Trigger add a connection from its output port to the Workspace Action.
 
 ![](./Images/Img4.425.Ex3.AddTrigger.png)
 
@@ -143,28 +164,29 @@ You will also need to check the settings in your email account to make sure IMAP
 
 <tr>
 <td style="font-weight: bold">Download Attachments To</td>
-<td style="">A Resource folder of your choice e.g. Emails</td>
+<td style=""> Data > BuildingUpdates > Emails</td>
 </tr>
 
 </table>
 
 
-You may select any Resource folder for attachments to be saved to; but (if you have already completed exercise 1-3) don't choose the BuildingUpdates folder, or else you'll cause the workspace to be triggered by both the Email and Directory Watch Trigger!
+You could select any Resource folder for attachments to be saved to; but for this exercise series we have created a separate Emails folder to ensure we don't choose the BuildingUpdates folder as this would cause the workspace to be triggered by both the Email and Directory Watch Trigger!
 
-Add a connection from the Email trigger to the workspace action.
 
 ![](./Images/Img4.428.Ex3.CompleteAutomation.png)
 
-The automation is not quite ready yet because the JSON message from the Email Trigger stores the incoming file path in an attribute named Email Attachment, however the Source dataset for the run workspace is set to pick up a value from the Directory Watch File Path attribute. Therefore in order for the workspace to be able to process the file path from both triggers we need to create an attribute in each Trigger with a common name that can be used downstream in the workflow.
+The Automation is not quite ready yet because the JSON message from the Email Trigger stores the incoming file path in an attribute named Email Attachment, however the Source dataset for the run workspace is set to pick up a value from the Directory Watch File Path attribute. Therefore in order for the workspace to be able to process the file path from both Triggers we need to create an attribute in each Trigger with a common name that can be used downstream in the workflow.
 
-<br>**3) Create Custom key**
+<br>**3) Create Custom Key**
 <br>We will need to create an Output Key on both Triggers. First select the Email trigger and click on the Output Keys tab. This will list all the standard output keys that come with that action, scroll to the bottom of the list and there is a second section called Custom Keys.
 
-Set the key name to shapefile and for the Value select email.attachment from the drop down list.
+To add a new Custom Key click on the plus icon. Set the key name to user.shapefile and for the Value select email.attachment from the drop down list.
 
 ![](./Images/Img4.427.Ex3.CreateCustomKey.png)
 
-Repeat this process in the Directory Watch trigger but this time set the value to file.path. Now return to the Workspace Action and change the Source Dataset from file.path to the user.shapefile attribute listed under Custom Keys. Now, the workspace will be able to parse the shapefile path to the workspace no matter what the trigger is.
+Repeat this process in the Directory Watch trigger but this time set the value to file.path.
+
+Lastly return to the Workspace Action and change the Source Dataset from file.path to the user.shapefile attribute listed under the Custom Keys Folder. Now, the workspace will be able to parse the Shapefile path to the workspace no matter what the trigger is.
 
 
 <!--Person X Says Section-->
@@ -173,7 +195,7 @@ Repeat this process in the Directory Watch trigger but this time set the value t
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Ms Analyst says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -181,7 +203,7 @@ Repeat this process in the Directory Watch trigger but this time set the value t
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 Custom keys can only be used in the Automation they are defined in, and can be set to an element of the JSON from the Trigger or Action message.
-<br>To create values that can be used across all workspaces you can create Global Keys by selected the globe icon in the menu ribbon. These can only be set to plain text values, but an example of their use might be a value your organisation commonly refers to, such as a  UNC path to an external location where all data is stored.
+<br>To create values that can be used across all workspaces you can create Global Keys by selected the globe icon in the menu ribbon. These can only be set to plain text values, but an example of their use might be a value your organization commonly refers to, such as a  UNC path to an external location where all data is stored.
 </span>
 </td>
 </tr>
@@ -191,9 +213,9 @@ Custom keys can only be used in the Automation they are defined in, and can be s
 <br>**4) Test Automation**
 <br>Now let's test the Automation.
 
-This time, because we connected the email trigger directly to the Workspace action, lets zip up the four .shp, and associated file types, to add as an attachment.  
+This time, because we connected the Email Trigger directly to the Workspace Action, let's zip up the four .shp, and associated file types, to add as an attachment.  
 
-Send an email *with an attachment* to the address created in the Email trigger. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the Automation will send a message to the Workspace Action. (Remember that an IMAP publication only checks for an email at the specified poll interval, so the result might not be immediate!)
+Send an email *with an attachment* to the address created in the Email Trigger. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the Automation will send a message to the Workspace Action. (Remember that an IMAP publication only checks for an email at the specified poll interval, so the result might not be immediate!)
 
 
 ---

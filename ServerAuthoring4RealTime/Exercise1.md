@@ -47,7 +47,7 @@ As a technical analyst in the GIS department, you want to start experimenting wi
 
 
 <br>**1) Create Resources Folder**
-<br>The first step is to create a Resources folder to upload the data to. Open the FME Server web interface and navigate to the Resources page.
+<br>The first step is to create a Resources folder to upload the data. Open the FME Server web interface and navigate to the Resources page.
 
 Browse to the Data folder and create a new subfolder called BuildingUpdates:
 
@@ -61,7 +61,7 @@ Browse to the Data folder and create a new subfolder called BuildingUpdates:
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -77,27 +77,27 @@ This exercise utilizes the FME Server Resource folders, but you could also watch
 ---
 
 <br>**2) Create Automation**
-<br>Now to create the Automation that will watch the Directory for incoming files. Navigate to the Automations page and click on the build tab.
+<br>Now to create the Automation that will watch the BuildingUpdates Directory for incoming files. Navigate to Automations > Build on the side menu bar. In the Getting Started dialog that appears when you go to the Automations page for the first time, click on the Build tab and click Create New to start a new Automation.
 
-By default Automations starts in guided mode. This means that there is already a Trigger node on the canvas but it will still need to be configured.
+By default, Automations starts in guided mode. This means that there is already a Trigger node on the canvas but it will still need to be configured.
 
 Start by selecting the Trigger and a parameter box will appear on the right hand side of the canvas.
-Select Directory modified from the drop-down list as the trigger for this Automation
+Select Directory modified from the drop-down list as the Trigger for this Automation.
 
 ![](./Images/Img4.401.Ex1.NewTriggerDialog.png)
 
-<br>**3) Define Trigger parameters**
-<br>After selecting a Trigger type a list of configurable parameters appears in the dialog. Click the elipsis button to browse the FME Server Resources and set the Directory to Watch parameter. Select the newly created Resources under the Data subfolder:
+<br>**3) Define Trigger Parameters**
+<br>After selecting a Trigger type a list of configurable parameters appears in the dialog. Click the ellipsis button to browse the FME Server Resources and set the Directory to Watch parameter. Select the newly created BuildingUpdates folder under the Data subfolder:
 
 ![](./Images/Img4.402.Ex1.DirectoryToWatch1.png)
 
 Leave the Watch Subdirectories and Receive Notifications for Folders parameters set to No, since we are only interested in monitoring for files in the BuildingUpdates folder directly.
 
-Then for the Filter parameter remove the MODIFY and DELETE actions. Since we are looking to add to the corporate database, in this example we are only interested in monitoring for new files arriving, not old ones being removed:
+Then for the Filter parameter remove the MODIFY and DELETE actions. Since we are looking to add to the corporate database, in this example we are only interested in monitoring for new files arriving, not old ones being changed or removed:
 
 ![](./Images/Img4.403.Ex1.DirectoryWatchFilter.png)
 
-Lastly change the Poll Interval to 30 Seconds and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas the Trigger node will update to show it is a Directory watch.
+Lastly change the Poll Interval to 30 Seconds and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas the Trigger node will update to show it is a Directory Watch.
 
 ![](./Images/Img4.404.Ex1.CompleteDirectoryWatch.png)
 
@@ -109,7 +109,7 @@ Save the Automation by selecting Menu > Save as and name the Automation "Incomin
 
 Select the Next Action node and set the Action to Log.
 
-Click on the drown-down arrow for the Message Parameter and select General > Event as JSON because in this instance we want to record the entire incoming message from the Directory Watch protocol.
+Click on the drop-down arrow for the Message parameter and select General > Event as JSON because in this instance we want to record the entire incoming message from the Directory Watch protocol.
 
 ---
 <!--Tip Section-->
@@ -125,7 +125,7 @@ Click on the drown-down arrow for the Message Parameter and select General > Eve
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-A trigger stores the incoming message event details as JSON however for the standard protocols FME is able to flatten the JSON down into it's separate elements so the workspace or other subsequent action does not need to be able to handle this.
+A trigger stores the incoming message event details as JSON however for the standard protocols FME is able to flatten the JSON down into its separate elements so the workspace or other subsequent action does not need to be able to handle this.
 <br>If your trigger contains information from a webhook that is buried in the JSON you can parse the entire message into a parameter to flatten using JSON transformers in FME Workbench.
 </span>
 </td>
@@ -133,7 +133,7 @@ A trigger stores the incoming message event details as JSON however for the stan
 </table>
 
 ---
-Since this is for testing we can save the log file to a temporary location that is frequently cleaned up by FME Server. Select browse and navigate to the Temp folder in FME Server Resources. You will need to specify the file name since it does not yet exist, call it IncomingBuildingFootprints.log.
+Since this is for testing we can save the log file to a temporary location that is frequently cleaned up by FME Server. For the Log file location, click the ellipsis to browse and then navigate to the Temp folder in FME Server Resources. You will need to specify the file name since it does not yet exist, call it IncomingBuildingFootprints.log.
 
 ![](./Images/Img4.405.Ex1.LogMessageFilePath.png)
 
@@ -141,7 +141,8 @@ Since this is for testing we can save the log file to a temporary location that 
 
 ![](./Images/Img4.406.Ex1.CompleteLogMessage.png)
 
-In order for FME Server to start watching the directory for incoming files the Automation must be enabled. Select the Start Automation button in the top right corner. The button will turn red and an Orange warning ribbon will appear across the canvas indicating that your Automation is currently running. This means FME Server is now checking that directory every 30 seconds for updates.
+<br>**5) Start Automation**
+<br>In order for FME Server to start watching the directory for incoming files, the Automation must be enabled. Select the Start Automation button in the top right corner. The button will turn red and an orange warning ribbon will appear across the canvas indicating that your Automation is currently running. This means FME Server is now checking that directory every 30 seconds for updates.
 
 ![](./Images/Img4.407.Ex1.StartAutomation.png)
 
@@ -153,7 +154,7 @@ In order for FME Server to start watching the directory for incoming files the A
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -168,7 +169,7 @@ As your Automation grows you may wish to turn off Guided mode, this can be done 
 
 ---
 
-<br>**5) Test Automation**
+<br>**6) Test Automation**
 <br>Now let's test the Automation. Locate the source Shapefile datasets in C:\FMEData2019\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.
 
 You can use the file system (by copying the files to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface.
@@ -179,9 +180,11 @@ Check back in Resources > Temp, if the log is not yet present select the refresh
 
 ![](./Images/Img4.409.Ex1.ViewDirectoryWatchLog.png)
 
-In fact, every Automation also has a log file recording all the activity that occurs for every aspect of that Automation. To view this return to Automations and this time select the Manage page. This web page lists all existing Automations. Select the Incoming Building Footprints and once within this Automation Select Menu, View Log File to check this out this activity log and spot the recording of these create messages being sent.
+In fact, every Automation also has a log file recording all the activity that occurs for every aspect of that Automation. To view this return to Automations and this time select the Manage page. This web page lists all existing Automations. Select the Incoming Building Footprints and once within this Automation select Menu > View Log File to view the activity log and spot the recording of these CREATE messages being sent.
 
 ![](./Images/Img4.410.Ex1.ViewAutomationsLog.png)
+
+When you view this log file you might also notice reports of the Automation sending Jobs to FME Engine. This is because FME Server is actually performing the Log action using a simple FME Workspace. 
 
 ---
 
@@ -191,7 +194,7 @@ In fact, every Automation also has a log file recording all the activity that oc
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 

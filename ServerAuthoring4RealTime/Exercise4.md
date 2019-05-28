@@ -55,14 +55,15 @@ Using an external email server, you think that it is possible to configure the e
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where Exercise 3 left off. You must have completed Exercise 3 to carry out this exercise.
+This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2019/ServerAuthoring4RealTime/Exercise3.html
+"> Exercise 3 </a> left off. You must have completed Exercise 3 to carry out this exercise.
 <br>Access to an SMTP Email Server is required for sending email in this exercise. Gmail, Outlook, and Yahoo! are examples of acceptable web-based solutions if you do not have access to an internal email server.
 </td>
 </tr>
@@ -73,7 +74,7 @@ This exercise continues where Exercise 3 left off. You must have completed Exerc
 <br>**1) Add External Action**
 <br>Open the FME Server web interface and navigate to the Automations:Manage page. Click the Incoming Building Footprints and stop the Automation to allow for editing. The final step in the Automation is to add an email service External Action through which a response will be sent.
 
-Select the plus icon in the bottom left and this time drag a blue icon onto the canvas. Connect this to the Success (check mark) output port of the Run Workspace node, which will now also act as a Trigger.
+Select the plus icon in the bottom left and this time drag an External Action (blue) to the canvas. Connect this to the Success (check mark) output port of the Run Workspace node, which will now also act as a Trigger.
 
 ![](./Images/Img4.430.Ex4.ConnectEmailAction.png)
 
@@ -135,7 +136,7 @@ There is also the option to load a template for some other Email Servers, if you
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -151,6 +152,8 @@ For the Email Body parameter click the drop-down arrow and then select Text Edit
 Before you Apply these parameters validate the Email Server configuration using the Validate button, if FME Server is unable to connect to the email server you can troubleshoot this before finding out after your automation is running.
 
 ![](./Images/Img4.429.Ex4.ValidateEmailAction.png)
+
+Enable the Automation by selecting the Start Automation button.
 
 ---
 <!--Warning Section-->
@@ -180,7 +183,7 @@ Depending on your Gmail security settings, you may need to create an app-specifi
 
 If the workflow was successful, you should receive an email back with a response!
 
-
+![](./Images/Img4.429.1.Ex4.EmailResponse.png)
 ---
 
 <!--Exercise Congratulations Section-->

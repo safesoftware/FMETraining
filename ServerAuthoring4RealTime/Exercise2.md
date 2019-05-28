@@ -58,14 +58,14 @@ You may have noticed that the Log Action in Automations actually submits a works
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where Exercise 1 left off. You must have completed Exercise 1 to carry out this exercise.
+This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2019/ServerAuthoring4RealTime/Exercise1.html"> Exercise 1</a> left off. You must have completed Exercise 1 to carry out this exercise.
 </td>
 </tr>
 </table>
@@ -81,7 +81,7 @@ Select Readers &gt; Add Reader from the menu bar. When prompted set the paramete
 
 <tr>
 <td style="font-weight: bold">Reader Format</td>
-<td style="">ESRI Shapefile</td>
+<td style="">Esri Shapefile</td>
 </tr>
 
 <tr>
@@ -145,11 +145,11 @@ After adding the writer, click on the building_footprints feature type to bring 
 
 
 <br>**4) Publish Workspace**
-<br>Save the workspace and publish it to FME Server. We only need it to be run (not do anything special) so register it with the Job Submitter service only.
+<br>Save the workspace as RealTime-Ex2-Complete.fmw and publish it to  the Training Repository in FME Server. We only need it to be run (not do anything special) so register it with the Job Submitter service only.
 
 
 <br>**5) Add Dataset to FME Server**
-<br>Since the purpose of this automation is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources.
+<br>Since the purpose of this Automation is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources.
 
 Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2019\Data\Engineering\BuildingFootprints\building_footprints.sl3
 
@@ -157,20 +157,20 @@ Use the FME Server web interface to create a new folder **Output** in **Resource
 
 
 <br>**6) Edit Automation**
-<br>Navigate to the Automations: Manage page and select Incoming Building Footprints to open the automation for editing. Before you can make any changes stop the automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the trigger parameter value to Run Workspace.
+<br>Navigate to the Automations: Manage page and select Incoming Building Footprints to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the trigger parameter value to Run Workspace.
 
-Select the Training Repository and workspace uploaded in the previous step. The parameters should now include one for the Source shapefile and the output database.
+Select the Training Repository and workspace uploaded in the previous step. The parameters should now include one for the Source Esri Shapefile and the output database.
 
 The source dataset needs to pick up the file path from the Directory Watch trigger. From the drop-down menu select file path found under the Directory folder. This drop down list is essentially the JSON flattened into its separate components.
 
 ![](./Images/Img4.421.Ex2.SourceDataset.png)
 
-For the output database browse the Resource to locate the SpatiaLite database uploaded in the previous step:
+For the output database browse the Resource/Data/Output folder to locate the SpatiaLite database uploaded in the previous step:
 
 ![](./Images/Img4.422.Ex2.OutputDatabaseSelection.png)
 
 <br>**7) Add Filter**
-<br>The ESRI Shapefile Reader will only accept .shp file extension types, however the Directory Watch will pass a message to the workspace for every file uploaded.
+<br>The Esri Shapefile Reader will only accept .shp file extension types, however the Directory Watch will pass a message to the workspace for every file uploaded.
 To prevent the Automation triggering database update workspaces that will fail add a Filter action so that only the file path containing .shp is parsed to the Run Workspace action.
 
 Select the plus icon at the bottom of the canvas, drag an internal action (orange) onto the canvas.
@@ -196,7 +196,7 @@ Click Apply to save the changes and restart the automation.
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Dr. Workbench says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
