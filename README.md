@@ -16,7 +16,7 @@ The full course is made up of six main sections. These sections are:
 - Data Handling and FME Server
 - Self-Serve Basics
 - Real-Time with FME Server
-- Self-Serve with Parameters
+- Real-Time Message Handling
 - Advanced FME Server Workflows
 
 
@@ -24,7 +24,7 @@ The full course is made up of six main sections. These sections are:
 
 The current status of this manual is: **COMPLETE**. This manual can be used for training.
 
-This manual applies to **FME2018.1**
+This manual applies to **FME2019.0**
 
 The status of each chapter is:
 

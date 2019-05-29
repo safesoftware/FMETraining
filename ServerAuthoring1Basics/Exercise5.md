@@ -74,10 +74,10 @@ By selecting the *fmeauthor* role (rather than the single *author* account), we 
 
 This time, you should have access to the Training repository. Click Run Workspace, select your workspace in the Training repository and run it. Check the Jobs page, and you'll see one entry for the workspace when it was run as the author. There is only one entry because the author does not have the privileges required to view any other users' jobs:
 
-![](./Images/Img1.231.Ex3.CompletedJobUser.png)
+![](./Images/Img1.231.Ex3.CompletedJobAuthor.png)
 
 
-Log out again and log back in as an administrator. Now, in the Jobs | Completed window, you should be able to see both the administrator's jobs and the user's jobs
+Log out again and log back in as an administrator. Now, in the Jobs | Completed window, you should be able to see both the administrator's jobs and the user's jobs:
 
 ![](./Images/Img1.232.Ex3.MultiUserJobsList.png)
 
