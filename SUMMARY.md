@@ -25,6 +25,7 @@
   * [Sharing Workspaces](ServerAuthoring1Basics/1.13.SharingWorkspaces.md)
   * [Exercise 1.6: Daily Database Updates: Sharing a Workspace](ServerAuthoring1Basics/Exercise6.md)
   * [Module Review](ServerAuthoring1Basics/1.14.ModuleReview.md)
+  * [Q+A Answers](ServerAuthoring1Basics/1.15.QuestionAnswers.md)
 * [Chapter 2: FME Server and Data Handling](ServerAuthoring2DataHandling/2.00.FMEServerDataHandling.md)
   * [Source Data Management](ServerAuthoring2DataHandling/2.01.SourceDataManagement.md)
   * [Database Connections](ServerAuthoring2DataHandling/2.02.DatabaseConnections.md)
