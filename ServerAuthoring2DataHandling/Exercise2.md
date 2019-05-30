@@ -129,7 +129,7 @@ This ensures we aren't continually adding data to the same dataset if we run the
 
 
 <br>**7) Run Workspace**
-<br>Test run the workspace in FME Desktop. Inspect the output in Visual Preview. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
+<br>Test run the workspace in FME Workbench. Inspect the output in Visual Preview. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
 
 ![](./Images/Img2.221.Ex2.OutputTables.png)
 

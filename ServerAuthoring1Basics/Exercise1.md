@@ -60,7 +60,7 @@ One of the reasons for purchasing FME Server is to automate this procedure, so l
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Police Chief Webb-Mapp says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -85,7 +85,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 </tr>
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Emergency\FireHalls.gml</td>
+<td style="">C:\FMEData2019\Data\Emergency\FireHalls.gml</td>
 </tr>
 
 <table style="border: 0px">
@@ -95,7 +95,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 </tr>
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>
