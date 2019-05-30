@@ -74,7 +74,7 @@ Each event is wrapped up into a JSON format message. All that we need to do is p
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -119,7 +119,7 @@ As you can see, these parameters open a WebSocket connection (to an EmergencyEve
 
 
 <br>**3) Create Workspace**
-<br>Now we have the ability to generate a stream of data we will create the workspace that is to process the data. Start Workbench and begin with a blank canvas (don't close the stream generator workspace, as we'll need that as well in a moment).
+<br>Now we have the ability to generate a stream of data we will create the workspace that is to process the data. Start FME Workbench and begin with a blank canvas (don't close the stream generator workspace, as we'll need that as well in a moment).
 
 In the blank canvas add a Creator transformer and follow it with a WebSocketReceiver. Inspect the WebSocketReceiver transformer parameters and set them as follows:
 
@@ -193,7 +193,7 @@ This proves that the WebSocketReceiver is acting as expected and receiving messa
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -249,7 +249,7 @@ Firstly we need the transit station data, so select Readers &gt; Add Reader and 
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\CommunityMapping\CommunityMap.gdb</td>
+<td style="">C:\FMEData2019\Data\CommunityMapping\CommunityMap.gdb</td>
 </tr>
 
 </table>
@@ -300,7 +300,7 @@ Once stopped, check the logs and you should see that messages falling within 200
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Miss Vector says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
@@ -327,7 +327,7 @@ If you want to adjust the settings to get a result quicker, then go ahead. For e
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2018\Output\EventMessages.sl3</td>
+<td style="">C:\FMEData2019\Output\EventMessages.sl3</td>
 </tr>
 
 <tr>
@@ -378,7 +378,7 @@ Now add a Log action connected to that topic. There are various protocols we cou
 ![](./Images/Img4.453.Ex1.TopicLogAutomation.png)
 
 <br>**14) Add FMEServerNotifier Transformer**
-<br>Back in the processing workspace in Workbench, remove any Logger transformers at the end of the workspace. Add an FMEServerNotifier transformer connected to the Tester:Passed port:
+<br>Back in the processing workspace in FME Workbench, remove any Logger transformers at the end of the workspace. Add an FMEServerNotifier transformer connected to the Tester:Passed port:
 
 ![](./Images/Img4.454.Ex6.FMEServerNotifierOnCanvas.png)
 

@@ -53,11 +53,11 @@ Now you need to give the end-users control over the output format and output coo
 <br>**1) Open Workspace**
 <br>Open the workspace from exercise 3, or the begin workspace listed above. You can see that it consists of a reader, a writer, and two transformers, plus some published parameters.
 
-In this step, we'll give the end-user control over the format and coordinate system.
+In this exercise, we'll give the end-user control over the format and coordinate system.
 
 
 <br>**2) Add Writer**
-<br>To give control over format you need a Generic format writer. Select Writers &gt; Add Writer from the menubar. When prompted, enter these parameters:
+<br>To give control over the format you need a Generic format writer. Select Writers &gt; Add Writer from the menubar. When prompted, enter these parameters:
 
 <table style="border: 0px">
 
@@ -156,13 +156,13 @@ When prompted select the OutputFormat parameter that we just created:
 
 ![](./Images/Img5.210.Ex2.SelectUserParameter.png)
 
-The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it anymore and, since it is used nowhere else.
+The parameter FME created (GENERIC_OUT_FORMAT_GENERIC) will be automatically deleted. FME realizes that we don't need it anymore since it is used nowhere else.
 
 ***NB:*** If you didn't set a default value for the OutputFormat user parameter, then the Generic writer parameter will turn red (flagged as incomplete). This is nothing to worry about. It will be set at runtime.
 
 
 <br>**6) Create User Parameter**
-<br>The next parameter required is to give control over output coordinate system. The process is very similar to that of format. In the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Create User Parameter.
+<br>The next parameter required is to give control over the output coordinate system. The process is very similar to that of format. In the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Create User Parameter.
 
 Set the parameter values as follows:
 

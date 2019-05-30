@@ -49,7 +49,7 @@ You've implemented a lot of different options for transformation, format, coordi
 
 
 <br>**1) Open Workspace**
-<br>Open the begin workspace listed above or continue in your workspace from the previous exercises. You can see that it consists of a reader, two writers, three transformers, and various published parameters.
+<br>Open the begin workspace listed above or continue in your workspace from the previous exercises. You can see that it consists of two readers, two writers, three transformers, and various published parameters.
 
 To clip data to a particular neighborhood first requires a reader for those neighborhood features, so that is the first step...
 

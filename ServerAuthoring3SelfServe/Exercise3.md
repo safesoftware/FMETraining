@@ -53,7 +53,7 @@ Now you need to start customizing the workspace to allow the end-users to have a
 <br>**1) Open Workspace**
 <br>Open the workspace from exercise 2, or the begin workspace listed above.
 
-In this step, we'll give the end-user control over the transformation stages.
+In this exercise, we'll give the end-user control over the transformation stages.
 
 
 <br>**2) Create User Parameter**
