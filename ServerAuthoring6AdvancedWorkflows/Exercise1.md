@@ -45,7 +45,6 @@
 
 Best Practice is a fundamental concept for FME workspaces. To encourage colleagues to carry out best practices you wish to install a project that allows workspaces to be analyzed.
 
-
 <br>**1) Browse To Projects**
 <br>Open the FME Server web interface and log in with an account that has administrator privileges.
 

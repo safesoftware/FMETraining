@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteA.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteB.fmw<br>C:\FMEData2018\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteC.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteA.fmw<br>C:\FMEData2019\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteB.fmw<br>C:\FMEData2019\Workspaces\ServerAuthoring\AdvancedWorkflows-Ex2-CompleteC.fmw</td>
 </tr>
 
 </table>
@@ -65,7 +65,7 @@ You realize that you can chain these two translations together to be carried out
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Elections\ElectionVoting.gml</td>
+<td style="">C:\FMEData2019\Data\Elections\ElectionVoting.gml</td>
 </tr>
 
 <tr>
@@ -88,7 +88,7 @@ The Writer dataset can be left empty for now. When prompted, leave both source f
 <br>**2) Create Resources**
 <br>We'll handle the input and output of this workspace using the resources folders on FME Server. So, log in to the FME Server web interface and navigate to the Resources page.
 
-If you carried out exercise 1.4, then you should already have a folder Resources\Data\Election\Input containing the source data used in the workspace.
+If you carried out exercise 2.1, then you should already have a folder Resources\Data\Election\Input containing the source data used in the workspace.
 
 If not, create that set of folders and subfolders. Upload the source GML dataset to the Input folder (you should upload both the .gml and .xsd files):
 
@@ -96,7 +96,7 @@ If not, create that set of folders and subfolders. Upload the source GML dataset
 
 
 <br>**3) Edit Workspace to use Resources**
-<br>Back in FME Workbench look in the Navigator window under User Parameters for the two existing published parameters called SourceDataset&#95;GML and DestDataset&#95;SPATIALITE. Click on each in turn and press the delete key to delete them.
+<br>Back in FME Workbench, look in the Navigator window under User Parameters for the two existing published parameters called SourceDataset&#95;GML and DestDataset&#95;SPATIALITE. Click on each in turn and press the delete key to delete them.
 
 Next locate the parameters for the GML source dataset and SpatiaLite destination dataset. Update the parameters to read as follows:
 
@@ -119,7 +119,7 @@ Select the sl3 dataset and click on Actions > Download to download the file. Thi
 
 ![](./Images/Img6.214.Ex2.DownloadSpatialiteDB.png?)
 
-Save the file to the Elections folder, so you will remember where it is; i.e., C:\FMEData2018\Data\Elections\VotingDivisions.sl3
+Save the file to the Elections folder, so you will remember where it is; i.e., C:\FMEData2019\Data\Elections\VotingDivisions.sl3
 
 
 <br>**5) Generate Workspace**
@@ -136,7 +136,7 @@ Open Workbench if necessary and generate a new workspace with these parameters:
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Addresses\Addresses.gdb</td>
+<td style="">C:\FMEData2019\Data\Addresses\Addresses.gdb</td>
 </tr>
 
 <tr>
@@ -146,7 +146,7 @@ Open Workbench if necessary and generate a new workspace with these parameters:
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2018\Output\Training\NewAddresses.gdb</td>
+<td style="">C:\FMEData2019\Output\Training\NewAddresses.gdb</td>
 </tr>
 
 </table>
@@ -168,7 +168,7 @@ When prompted, leave both source feature types (tables) selected.
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Elections\VotingDivisions.sl3</td>
+<td style="">C:\FMEData2019\Data\Elections\VotingDivisions.sl3</td>
 </tr>
 
 </table>
@@ -184,17 +184,14 @@ When prompted, select only the source feature type (table) *votingdivisions*.
 <br>**7) Add Transformer**
 <br>Now let's add a transformer to assign voting divisions to each address. Place a PointOnAreaOverlayer transformer into the workspace. Connect it as follows:
 
-![](./Images/Img6.217.Ex2.POAOOnCanvas.png)
-
-<br>
-
 - **Delete Connection**: Geodatabase:PostalAddress &gt; Geodatabase:PostalAddress
 - **Add Connection:** Geodatabase:PostalAddress &gt; PointOnAreaOverlayer:Point
 - **Add Connection:** SpatiaLite:votingdivisions &gt; PointOnAreaOverlayer:Area
 - **Add Connection:** PointOnAreaOverlayer:Point &gt; Geodatabase:PostalAddress
 
-<br>Then open the parameters for the PointOnAreaOverlayer, expand the section Attribute Accumulation, and check Merge Attributes. The default settings are fine as they are. This will add the attributes from votingdivisions to PostalAddress.
+Then open the parameters for the PointOnAreaOverlayer, expand the section Attribute Accumulation, and check Merge Attributes. The default settings are fine as they are. This will add the attributes from votingdivisions to PostalAddress.
 
+![](./Images/Img6.217.Ex2.POAOOnCanvas.png)
 
 <br>**8) Edit Writer Schema**
 <br>The PointOnAreaOverlayer will copy the division attribute on to each address, but that attribute won't be written unless we also add it to the output schema.
@@ -234,7 +231,7 @@ Next locate the parameters for the Geodatabase source dataset, SpatiaLite source
 <tr><td>Geodatabase Writer</td><td>$(FME&#95;SHAREDRESOURCE&#95;DATA)\Election\Output\NewAddresses.gdb.zip</td></tr>
 </table>
 
-**Note:** If you uploaded the Addresses.gdb as a zip file, add .zip at the end of the parameter for both the Geodatabase Reader and Writer.
+**Note:** If you uploaded the Addresses.gdb as a folder without zipping it, do not add .zip at the end of the parameter for the Geodatabase Reader.
 
 One final tweak: change the Writer parameter Overwrite Geodatabase to Yes:
 
@@ -281,7 +278,7 @@ Now repeat the same process for the second FMEServerJobSubmitter, this time sele
 
 Locate the workspace in the Server web interface and run it to make sure it runs to completion. It will run each of the two helper workspaces in turn.
 
-Don't worry that FME reports zero features written. That only refers to the parent workspace (not the helper workspaces). Evidence of success will be the log and new output files (sl3, gdb) in the resources folder:
+Don't worry that FME reports zero features written. That only refers to the parent workspace (not the helper workspaces). Evidence of success will be the log, Jobs page (which will show the two helper workspaces run before the parent workspace finishes), and new output files (sl3, gdb) in the resources folder:
 
 ![](./Images/Img6.225.Ex2.OutputDatasetsInResources.png)
 
@@ -295,7 +292,7 @@ Notice that the date/timestamps will be very similar for the two datasets; the V
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">Sister Intuitive says...</span>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">FME Lizard says...</span>
 </td>
 </tr>
 
