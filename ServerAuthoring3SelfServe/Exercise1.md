@@ -160,7 +160,7 @@ You may inspect the RasterMosaicker's parameters, but there aren't any that need
 
 
 <br>**6) Publish Workspace**
-<br>Now publish the workspace to FME Server. Register it with the Data Download service. If you are working on a remote server, such as an FME Cloud instance, you'll need to either publish the data with the workspace or upload it to an FME Server Resources folder.
+<br>Now publish the workspace to FME Server. Register it with the Data Download service. Remember. you'll need to either publish the data with the workspace or upload it to an FME Server Resources folder.
 
 
 <br>**7) Run Workspace**

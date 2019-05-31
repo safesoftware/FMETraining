@@ -117,7 +117,7 @@ The goal of our translation is to convert the FireHalls and Neighborhoods to a d
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Emergency\FireHalls.gml</td>
+<td style="">C:\FMEData2019\Data\Emergency\FireHalls.gml</td>
 </tr>
 
 </table>
@@ -135,7 +135,7 @@ The goal of our translation is to convert the FireHalls and Neighborhoods to a d
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2018\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>

@@ -164,7 +164,7 @@ If your machine is unlicensed, or is missing engines, then check with your instr
 <br>**5) Run Workspace**
 <br>Click the FME Server Logo in the very top-left of the interface, to return to the Web Interface Homepage.
 
-Click on the published workspace in the Favorite Workspaces panel to open the web page for this workspace. If you don't see the workspace in under the Favorite Workspaces panel, you didn't click the star in step 3.
+Click on the published workspace in the Favorite Workspaces panel to open the web page for this workspace. If you don't see the workspace under the Favorite Workspaces panel, you didn't click the star in step 3.
 
 The workspace page shows a few options, the first of which are for the repository, workspace, and service. These should already be filled in with values since we opened the workspace directly. If we opened the workspace through the Run Workspace page, we would have to fill these values in:
 

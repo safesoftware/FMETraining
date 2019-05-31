@@ -89,7 +89,11 @@ So, return to the Schedules page. You may now either:
 
 ![](./Images/Img1.237.Ex3.ChangedSchedule.png)
 
-This setup will run the workspace at 8:00pm every day. Don't forget to click the OK button!
+Once you click OK, this setup will run the workspace at 8:00pm every day. I'm not sure about you, but I don't think we should stick around until then to check this Schedule ran correctly!
+
+Return to the Schedule home page, select the Training schedule we just created and notice the Trigger button is no longer greyed out. We can use this to trigger a one-off run and confirm the schedule was configured correctly.
+
+![](./Images/Img1.237.1.Ex3.TriggerSchedule.png)
 
 You may wish to check back periodically during this training to ensure the workspace runs as expected.
 

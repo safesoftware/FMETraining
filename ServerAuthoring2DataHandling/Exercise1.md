@@ -194,7 +194,7 @@ Now, in the FME Server web interface, log out of the admin account and log in as
 
 So, as a user, we wish to run the workspace with the new data. We can't publish the data because the user account doesn't have permission to write to that repository; and in any case, since the workspace hasn't changed in any way, we shouldn't have to go through the publishing process.
 
-So, click Run Workspace and select the newly published workspace in the Training repository. However, to use the new dataset, click the browse button to the right of the Source GML prompt:
+So, click Run Workspace and select the newly published workspace in the Training repository. However, to use the new dataset for the Source GML prompt, click the browse option:
 
 ![](./Images/Img2.211.Ex1.SelectSourceData.png)
 
