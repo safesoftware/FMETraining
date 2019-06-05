@@ -11,14 +11,14 @@ The module will introduce basic concepts and terminology, help students become e
 The module is made up of three main sections. These sections are:
 
 - Lecture
-- Lab Demonstration
-- Lab Exercises
+- Lab
+- Scenario-based Exercise
 
 The **Lecture** section is intended to be adapted by instructors to be taught in a classroom lecture. It covers conceptual issues of data integration and provides a high-level introduction to FME. [Slides](./fme-desktop-data-integration-slides.zip) are available.
 
-The **Lab** section provides a walkthrough of how to use FME. It is designed to be presented by an instructor in a lab, with students either following along or independently completing the provided exercises.
+The **Lab** section provides a walkthrough of how to use FME. It is designed to be presented by an instructor in a lab, with students either following along or independently completing the provided exercises. It is the same content as our [Introduction to FME Desktop](https://s3.amazonaws.com/gitbook/Desktop-Intro-2019/index.html) training.
 
-Finally, the **Scenario-based Exercise** section provides a activities for students to complete during lab time or as an assignment.
+Finally, the **Scenario-based Exercise** section provides a data integration scenario for students to complete during lab time or as an assignment.
 
 [Lab questions](Integration3Scenario\3.03.LabQuestions.md) are provided; instructors may fill out [this form](https://goo.gl/forms/jWeso3OY6RVe6PJG3) to request access to answers for grading.
 
@@ -47,7 +47,7 @@ The module's total length is approximately four hours. The lecture is approximat
 
 All of this content is provided for instructors to use, adapt, and remix for their own modules. Please note that this use does come with some legal caveats, explained in [About this Document](.\Integration0About\0.00.AboutThisDocument.md).
 
-If you wish to change the content of the manual, you can fork the [GitHub repository](https://github.com/safesoftware/FMETraining/tree/FME-Desktop-Data-Integration-2018). The manual is created using the [GitBook toolchain](https://toolchain.gitbook.com/) and is written in easily editable [Markdown](https://daringfireball.net/projects/markdown/). [Detailed instructions on adapting this content](https://docs.google.com/document/d/1N0XCvhYy2CP8x9qtANF0VKXAyK5GYMfaa6XPkyYcyi0/edit) are also available.
+If you wish to change the content of the manual, you can fork the [GitHub repository](https://github.com/safesoftware/FMETraining/tree/FME-Desktop-Data-Integration-2019). The manual is created using the [GitBook toolchain](https://toolchain.gitbook.com/) and is written in easily editable [Markdown](https://daringfireball.net/projects/markdown/). [Detailed instructions on adapting this content](https://docs.google.com/document/d/1N0XCvhYy2CP8x9qtANF0VKXAyK5GYMfaa6XPkyYcyi0/edit) are also available.
 
 Some suggestions for adaptation:
 - Localize the exercise data to your country or city. A list of open data portals is available [here](https://www.opendatasoft.com/a-comprehensive-list-of-all-open-data-portals-around-the-world/). You could also use [OpenStreetMap](https://www.openstreetmap.org/) data, which has good global coverage.
