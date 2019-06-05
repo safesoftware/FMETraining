@@ -56,15 +56,15 @@ Some suggestions for adaptation:
 
 ## Current Status
 
-The current status of this manual is: **READY**.
-This manual applies to **FME2018.0**.
+The current status of this manual is: **INCOMPLETE**.
+This manual applies to **FME2019.0**.
 The status of each chapter is:
 
-- Lecture: Complete
-- Lab Demonstration: Complete
-- Lab Exercises: Complete
-- Slides: Complete
-- Answers: Complete
+- Lecture: Incomplete
+- Lab Demonstration: Incomplete
+- Lab Exercises: Incomplete
+- Slides: Incomplete
+- Answers: Incomplete
 
 _**NB**: Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement in [About this Document](.\Integration0About\0.00.AboutThisDocument.md) for further details._
 
