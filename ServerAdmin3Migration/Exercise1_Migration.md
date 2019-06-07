@@ -79,12 +79,12 @@ Click the **Download** button to start the FME Server backup process and save th
 
 In this training course, if you have completed all exercises up until this point, we have modified *server.xml*, *web.xml*, *context.xml*, *cacerts*, and created a *tomcat.keystore* file in the Configuring FME Server for HTTPS exercise. 
 
-So if we were trying to migrate our current FME Server configurations, these are the files that we would want to have copies of for reference later on when restoring FME Server configurations.
+If we were trying to migrate our current FME Server configurations, these are the files that we would want to have copies of for reference later on when restoring FME Server configurations.
 
 Save these files with your backup configuration file to easily find during a restore.
 
 
-<br>**4) Backup Log Files**
+<br>**4) Backup Log Files (Optional)**
 <br>Like configuration files, FME Server Log Files are not automatically backed up.
 
 FME Server log files can be found on the *Resources* page of the web interface in the *Logs* folder.
@@ -94,6 +94,7 @@ For this exercise, we will backup only a couple of the log files. Go to **Resour
 ![](./Images/6.402.SelectLogFiles.png)
 
 Click **Download** and save these log files in the same location where you saved your **BackupFMEServer** configuration and your configuration files.
+
 
 Log files from FME Server can be backed up but *can not be restored* to a new instance of FME Server. However, it is still a good idea to backup log files in case you need to reference them later on. If you do not backup your log files, they will disappear when you uninstall FME Server.
 
@@ -124,7 +125,7 @@ If you want to backup the entire logs folder, you can find it on your file syste
 <br>**5) Verify Backup, Install FME Server, Restore Configurations**
 <br>At this point, during a regular migration workflow, this is when you verify the backup and install your new FME Server. For the purposes of this exercise, we will end the exercise here.
 
-It is vitally important that you verify the FME Server backup first, by installing a new instance of FME Server, *before* you uninstall FME Server. Once you uninstall there isn't an easy way to backtrack unless you regularly perform backups of your entire file system.
+It is vitally important that you verify the FME Server backup first, by installing a new instance of FME Server, *before* you uninstall FME Server. Once you uninstall there isn't an easy way to backtrack unless you regularly perform backups of your entire file system. If you're doing an upgrade on the same machine you won't be able to test this as you cannot install multiple versions of FME Server on the same machine.
 
 When restoring the configuration files that are manually backed up, it is strongly suggested to go through each configuration file instead of simply copying the old configuration file into the new FME Server directory - file structures and parameters may have changed between releases!
 
