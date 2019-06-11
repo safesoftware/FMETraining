@@ -182,17 +182,14 @@ And when prompted click *Yes*.
 ![](./Images/4.220.Ex2.SQLServer_Properties6.png)
 
 
- Finally, **Restart FME Server**.  From the start menu select **FME Server 2018.0.0.3 &#62; Restart FME Server**.
+ Finally, **Restart FME Server**.  From the start menu select **FME Server 2019.0.0.3 &#62; Restart FME Server**.
 
 
 <br>**6) Post-Configuration Script**
 <br>Starting in 2018.0 the Post-Configuration scripts are now run by the Core when connecting to a new FME Server System Database. There is one script that still needs to be run (step follows Add Queue).  Allow a few minutes for the scripts to run and complete loading the new metadata into the database.  Attempting to log in during this time may result in an incomplete Web UI appearing. Wait a few moments and refresh the browser.
 <br> <br>
-**Add Job Queue metadata**:  There is one script that still requires to be run manually (this is resolved in 2018.1).
-Open *C:\Program Files\FMEServer\Clients\utilities\*, and invoke **addQueueNode.bat** by right-clicking the file and selecting *Run as administrator*. **(only for 2018.0)**
 
-This script will take a moment to run and create the default job queue.
-Next, **Restart FME Server**.  From the start menu select **FME Server 2018.0.0.3 &#62; Restart FME Server**.
+Next, **Restart FME Server**.  From the start menu select **FME Server 2019.0.0.3 &#62; Restart FME Server**.
 
 <br>**7) Restore Your FME Server Configuration**
 <br>Since a backup of FME Server was created in Step 1, we can now restore that same FME Server instance which contains all of the previous FME Server configuration settings.

@@ -13,7 +13,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">C:\FMEData2018\Resources\ServerAdmin\server.xml<br>C:\FMEData2018\Resources\ServerAdmin\web.xml<br>C:\FMEData2018\Resources\ServerAdmin\context.xml</td>
+<td style="border: 1px solid darkorange">C:\FMEData2019\Resources\ServerAdmin\server.xml<br>C:\FMEData2018\Resources\ServerAdmin\web.xml<br>C:\FMEData2018\Resources\ServerAdmin\context.xml</td>
 </tr>
 
 <tr>
@@ -190,7 +190,7 @@ Save and close the *context.xml* file.
 <br>**6) Verify the Configuration**
 <br>Now that we have made our changes, we want to verify that HTTPS was configured correctly for FME Server.
 
-Restart the FME Server Application service from the **Start menu &gt; FME Server 2018.0 &gt; Restart FME Server**.
+Restart the FME Server Application service from the **Start menu &gt; FME Server 2019.0 &gt; Restart FME Server**.
 
 Open a browser and navigate to _https://localhost:8443/fmeserver_.
 
@@ -239,7 +239,7 @@ The URLs will be updated to their new, correct values on the Services page.
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you are making use of WebSockets with FME Server please review the FME Server Admin Guide and the section titled <a href="http://docs.safe.com/fme/2018.0/html/FME_Server_Documentation/Content/AdminGuide/configuring_for_https.htm">Enable SSL on the WebSocket Server (Optional)</a>
+If you are making use of WebSockets with FME Server please review the FME Server Admin Guide and the section titled <a href="https://docs.safe.com/fme/2019.0/html/FME_Server_Documentation/AdminGuide/configuring_for_https.htm">Enable SSL on the WebSocket Server (Optional)</a>
 </span>
 </td>
 </tr>
