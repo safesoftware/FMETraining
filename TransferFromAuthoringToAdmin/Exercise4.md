@@ -51,7 +51,7 @@ You've already created a workspace to read a feed of earthquake data and publish
 
 
 <br>**1) Connect to Server**
-<br>Open the FME Server interface, either through the Web User Interface option on the start menu or directly in your web browser, and log in. Select Manage &gt; Administration &gt; Security from the menu.
+<br>Open the FME Server interface, either through the Web Interface option on the start menu or directly in your web browser, and log in. Select Manage &gt; Administration &gt; Security from the menu.
 
 
 <br>**2) Create User**
@@ -70,7 +70,7 @@ When prompted, create a new user with the following parameters:
 <br>**3) Check Role Permissions**
 <br>If this user is to have access to the web interface, we should check that in the security settings.
 
-Click on the Role Policies tab and then choose the fmeguest role as the one to examine. At the very bottom of the list is a parameter for FME Server Web User Interface. It will be turned off by default. This means someone in this role could not possibly access the workspace through the web interface.
+Click on the Role Policies tab and then choose the fmeguest role as the one to examine. At the very bottom of the list is a parameter for FME Server Web Interface. It will be turned off by default. This means someone in this role could not possibly access the workspace through the web interface.
 
 We could simply turn on that parameter - but then that would give every guest user the ability to access the interface, and this might not be a good idea. So, let's create a new role.
 
