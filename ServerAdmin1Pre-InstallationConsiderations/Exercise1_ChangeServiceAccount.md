@@ -47,7 +47,7 @@ This lab uses the Administrator account used to log into the training machine as
 ---
 
 <br>**1) Open Services Desktop App**
-<br> Search and launch Services from the windows menu.
+<br> Search and launch Services from the Windows menu.
 
 
 <br>**2) Find the FME Services**
@@ -57,9 +57,9 @@ This lab uses the Administrator account used to log into the training machine as
 <br>**3) Change the Log On Account**
 <br>
 
-- Stop the FME Server Services
+- Stop each of the FME Server Services
 
-- Right click on the service and select properties and open the **Log On** tab.
+- Right click on each service and select properties. Click the **Log On** tab.
 
 - Select **This Account** and click Browse
 
@@ -72,9 +72,6 @@ This lab uses the Administrator account used to log into the training machine as
     2. FME Server Core
     3. FME Server Engine
     4. FME Server Application Server
-
-
-
 
 
 <!--Tip Section-->
