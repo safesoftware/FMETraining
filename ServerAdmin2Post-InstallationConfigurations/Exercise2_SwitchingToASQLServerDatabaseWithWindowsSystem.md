@@ -98,7 +98,7 @@ We need to create the FMESERVER database schema by configuring the local SQL Ser
 
 First, create a new database using the sqlserver_createDB.sql script.  You can review the SQL scripts in a text editor if you wish, but it isn't necessary. In the **Command Prompt** run the following:
 
-    sqlcmd -S FMETRAINING -i "C:\Program Files\FMEServer\Server\database\sqlserver\sqlserver_createDB.sql"
+    sqlcmd -S FMETRAINING\SQLEXPRESS -i "C:\Program Files\FMEServer\Server\database\sqlserver\sqlserver_createDB.sql"
 
 ![](./Images/4.211.Ex2.CommandPrompt1_fmeserver.png)
 
@@ -114,7 +114,7 @@ This confirms the new Database "fmeserver" was created.  This SQL script creates
 Next, we will create the new user *fmeserver* and grant all necessary permissions to the new user.
 This SQL script creates a new user *fmeserver* with password *fmeserver*.  It uses the sqlserver_createUser.sql script.
 
-    sqlcmd -S FMETRAINING -i "C:\Program Files\FMEServer\Server\database\sqlserver\sqlserver_createUser.sql"
+    sqlcmd -S FMETRAINING\SQLEXPRESS -i "C:\Program Files\FMEServer\Server\database\sqlserver\sqlserver_createUser.sql"
 
 The new user will be created with the appropriate login and permissions to access the *fmeserver* database.
 
