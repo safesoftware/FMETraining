@@ -37,7 +37,7 @@ Your company has an Express Installation of FME Server already installed, but yo
 
 <!--Miss Vector says...-->
 
-<table style="border-spacing: 0px">
+<!--<table style="border-spacing: 0px">
 <tr>
 <td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-quote-left fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
@@ -52,7 +52,7 @@ If you have completed the Configuring for HTTPS exercise, remember that the URL 
 </span>
 </td>
 </tr>
-</table>
+</table>-->
 
 
 <br>**1) Backup FME Server**
@@ -81,7 +81,7 @@ Select *Download* to save a backup file of FME Server - this can be thought of a
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-If you have a PostgreSQL installation instead of SQLServer, you can follow the instructions in the <a href="https://safe-software.gitbooks.io/fme-server-administration-training-2017/content/ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.html">Server Administrator 2017 Course</a>. Just note that the path names might have changed slightly from 2017 to 2018.
+If you have a PostgreSQL installation instead of SQLServer, you can follow the instructions in the <a href="https://safe-software.gitbooks.io/fme-server-administration-training-2017/content/ServerAdmin4Scalability/Exercise2_SwitchingToAPostgreSQLDatabaseWithWindowsSystem.html">Server Administrator 2017 Course</a>. Just note that the path names might have changed slightly since 2017.
 </span>
 </td>
 </tr>
@@ -121,7 +121,6 @@ This SQL script creates a new user *fmeserver* with password *fmeserver*.  It us
 The new user will be created with the appropriate login and permissions to access the *fmeserver* database.
 
 ![](./Images/4.213.Ex2.CommandPrompt3_fmeserver.png)
-
 <br>Exit the **Command Prompt**.
 
 <!-- May add SQL Server Studio steps to confirm database and user was created successfully.  This is optional to include but would help a new user confirm the database and user were created. -->
@@ -204,7 +203,7 @@ The FME Server web interface will report if the restore is successful. If it is 
 
 ![](./Images/4.210.Ex2.RestoreSuccess.png)
 
-<br>**8) Update Service URLs to HTTPS**
+<!--<br>**8) Update Service URLs to HTTPS**
 Finally, since restoring the configuration does not update the service URLs we must redo the step from Chapter 3, Exercise3.  The reason the service URLs are not updated when restoring a configuration is that we may be restoring to an entirely different system with different URLs.
 
 <br>To enable SSL for FME Server Services, login to the FME Server web interface (username and password *admin*), and select **Services** on the left sidebar.
@@ -222,8 +221,7 @@ The *Change All Hosts* dialog opens. Make sure **Host** is set to _https://local
 The URLs will be updated to their new, correct values on the Services page.
 
 ![](./Images/4.224.Ex2.NewServiceURLs.png)
-
-
+-->
 ---
 
 <!--Exercise Congratulations Section-->
