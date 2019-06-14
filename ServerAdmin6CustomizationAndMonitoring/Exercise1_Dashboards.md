@@ -68,8 +68,10 @@ Only complete step 1 if you have finished the Configuring for HTTPS exercise. If
 
 <br>In FME Desktop, open the Customization-Ex1-JobHistoryStatisticsGathering.fmw workspace and publish it to FME Server. Ensure that the Repository is set to Dashboards and rename the workspace to JobHistoryStatisticsGathering.fmw. When publishing, a warning message will appear, click Yes to overwrite the existing workspace. This is the controller workspace, now that it is updated, we can run our other dashboards.
 
+
 <br>**2) Login to FME Server**
 <br>Open the FME Server web interface, either through the Web Interface option on the Windows Start Menu or directly in your web browser, and log in using the username and password *admin*.
+
 
 <br>**3) Run dashboard workspaces**
 <br>We first need to enable dashboards before they will appear on the Dashboards page. FME Server comes with five default dashboards which are triggered by running a workspace.
@@ -78,14 +80,15 @@ Only complete step 1 if you have finished the Configuring for HTTPS exercise. If
 
 ![](./Images/5.301.RunJobHistoryDashboard.png)
 
-<br>When the workspace has finished running, go back to the Run Workspace page, and run another dashboard. On the Run Workspace page, select the DailyTotalRunningTime.fmw and then click Run.
+<br>When the workspace has finished running, return to the Run Workspace page. On the Run Workspace page, select the DailyTotalRunningTime.fmw and then click Run.
 
 <br>Run one more workspace so that we will have some data to look at. On the Run Workspace page, change the Repository to Samples and select austinApartments.fmw and click Run.
+
 
 <br>**4) View a dashboard**
 <br>On the side menu bar click on Dashboards. This is the Dashboard page where any dashboards that have been run can be viewed.
 
-<br>Select the DailyTotalRunningTime to view the dashboard. Since we've only ran the austinApartments.fmw workspace once, our dashboard doesn't tell us much, but overtime dashboards become a valuable resource for the server administrator:
+<br>Select the DailyTotalRunningTime to view the dashboard. Since we've only ran the austinApartments.fmw workspace once, our dashboard doesn't tell us much, but over time dashboards become a valuable resource for the server administrator:
 
 ![](./Images/5.302.TotalRunTime.png)
 
