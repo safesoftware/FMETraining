@@ -123,7 +123,7 @@ The new user will be created with the appropriate login and permissions to acces
 
 <!-- May add SQL Server Studio steps to confirm database and user was created successfully.  This is optional to include but would help a new user confirm the database and user were created. -->
 
-<br>**5) Configure the Database Connection**
+<br>**4) Configure the Database Connection**
 <br>Open the *fmeCommonConfig.txt* file, located in the *C:\Program Files\FMEServer\Server\\* directory, using a text editor in administrator mode.
 
 Under the heading *FME SERVER SETTINGS START*, locate the section titled *Database Connection*. We want to disable the default connection to the Postgres database and instruct FME Server to connect to the SQL Server database.
@@ -149,7 +149,7 @@ Comment out the *DB_TYPE=postgresql* section, by adding a number sign (#) in fro
 
 Save and close the *fmeCommonConfig.txt* file.
 
-<br>**6) SQL Server Modifications**
+<br>**5) SQL Server Modifications**
 
 From the Start menu, Open **Microsoft SQL Server 2016 &#62; SQL Server Management Studio**
 Accept the default server name *FMETRAINING* and *Windows Authentication* and click **Connect**.
