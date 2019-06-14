@@ -125,6 +125,8 @@ If you want to backup the entire logs folder, you can find it on your file syste
 <br>**5) Verify Backup, Install FME Server, Restore Configurations**
 <br>At this point, during a regular migration workflow, this is when you verify the backup and install your new FME Server. For the purposes of this exercise, we will end the exercise here.
 
+*Optional: If you have extra time at the end of the course or your instructor says it's ok, you could try downloading, installing and migrating to the latest [FME Server Beta](https://www.safe.com/support/support-resources/fme-downloads/beta/). Please note that betas are not production safe.*
+
 It is vitally important that you verify the FME Server backup first, by installing a new instance of FME Server, *before* you uninstall FME Server. Once you uninstall there isn't an easy way to backtrack unless you regularly perform backups of your entire file system. If you're doing an upgrade on the same machine you won't be able to test this as you cannot install multiple versions of FME Server on the same machine.
 
 When restoring the configuration files that are manually backed up, it is strongly suggested to go through each configuration file instead of simply copying the old configuration file into the new FME Server directory - file structures and parameters may have changed between releases!
