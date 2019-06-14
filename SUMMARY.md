@@ -26,7 +26,8 @@
 	* [HTTPS](./ServerAdmin2Post-InstallationConfigurations/2.04.FMEServerHTTPS.md)
 	* [Exercise 3: Configuring for HTTPS](./ServerAdmin2Post-InstallationConfigurations/Exercise3_ConfiguringForHTTPS.md)
 	* [Encryption](./ServerAdmin2Post-InstallationConfigurations/2.05.Encryption.md)
-	* [Chapter Review](./ServerAdmin2Connectivity/2.06.ChapterReview.md)
+	* [Proxy Server](./ServerAdmin2Connectivity/2.06.ProxyConfiguration.md)
+	* [Chapter Review](./ServerAdmin2Connectivity/2.07.ChapterReview.md)
 * [Chapter 3: FME Server Migration and Upgrades](./ServerAdmin3Migration/3.00.MigrationAndUpgrades.md)
 	* [Backup and Migration](./ServerAdmin3Migration/3.01.BackupAndMigration.md)
 	* [Backup Configuration Files](./ServerAdmin3Migration/3.02.BackupConfigFiles.md)c
