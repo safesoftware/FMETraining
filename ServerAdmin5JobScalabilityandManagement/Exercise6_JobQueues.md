@@ -40,7 +40,7 @@
 
 ---
 
-Your GIS department is using FME Server and carrying out jobs with the web interface. However, jobs are always being queued, even the quick translations. You are wondering if there is a way to set aside one of the FME Server Engines for quick translations, so that you and your fellow technical analysts do not have to wait too long for your smaller jobs to complete. 
+Your GIS department is using FME Server and carrying out jobs with the web interface. However, jobs are always being queued, even the quick translations. You are wondering if there is a way to set aside one of the FME Server Engines for quick translations, so that you and your fellow technical analysts do not have to wait too long for your smaller jobs to complete.
 
 With job queues, you can allocate specific engines to specific tasks. So let's set that up.
 
@@ -63,7 +63,7 @@ Give it the name *Quick Translations* and click OK.
 
 Click on the edit button (the pencil icon) for the Quick Translations queue. Give the Job Queue the description of "FME Server Engine for Quick Translations," then select **&#60;hostname&#62;_Engine1** from the drop-down selection for Engines.
 
-Next assign a job priority of 1.
+Next assign a job priority of 5.
 
 <!-- Need to update this image to show priority 1 not five -->
 ![](./Images/4.202.Ex1.JobQueue_SelectEngine.png)
@@ -137,7 +137,7 @@ Click to expand the **Request Data** section. Next to the **queue** parameter, y
 
 ![](./Images/4.206.Ex1.VerifyJobQueue_Success.png)
 
-Go back to *Jobs &gt; Completed* to verify that the job was sent to the correct engine.
+Go back to *Jobs &gt; Completed*, click on the customize columns icon in the right corner under filters, add the engine and queue to the columns. This will allow you verify that the job was sent to the correct engine and queue.
 
 ![](./Images/4.207.Ex1.CompletedJobQueue.png)
 
