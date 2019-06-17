@@ -34,16 +34,16 @@ If you wish to inspect the output data in a native application, you should downl
 
 ## Current Status
 
-The current status of this manual is: **READY FOR REVIEW**: this manual should **NOT** be used for training.
+The current status of this manual is: **COMPLETE**. This manual **CAN** be used for training.
 
-This manual applies to **FME2019.0**
+This manual applies to **FME2019.0**.
 
 The status of each unit is:
 
-- Unit 1: Ready for review
-- Unit 2: Ready for review
-- Unit 3: Ready for review
-- Unit 4: Ready for review
+- Unit 1: Complete content and exercises
+- Unit 2: Complete content and exercises
+- Unit 3: Complete content and exercises
+- Unit 4: Complete content and exercises
 - FMEData: Complete
 
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
