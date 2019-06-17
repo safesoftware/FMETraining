@@ -26,8 +26,8 @@
 	* [Exercise 3: Configuring for HTTPS](./ServerAdmin2Post-InstallationConfigurations/Exercise3_ConfiguringForHTTPS.md)
 	* [Encryption](./ServerAdmin2Post-InstallationConfigurations/2.05.Encryption.md)
 	* [Proxy Server](./ServerAdmin2Post-InstallationConfigurations/2.06.ProxyConfiguration.md)
-	* [CORS](./ServerAdmin1Pre-InstallationConsiderations/2.07.CORS.md)
-	* [Chapter Review](./ServerAdmin2Post-InstallationConfigurations/2.07.ChapterReview.md)
+	* [CORS](./ServerAdmin2Post-InstallationConfigurations/2.07.CORS.md)
+	* [Chapter Review](./ServerAdmin2Post-InstallationConfigurations/2.08.ChapterReview.md)
 * [Chapter 3: FME Server Migration and Upgrades](./ServerAdmin3Migration/3.00.MigrationAndUpgrades.md)
 	* [Backup and Migration](./ServerAdmin3Migration/3.01.BackupAndMigration.md)
 	* [Backup Configuration Files](./ServerAdmin3Migration/3.02.BackupConfigFiles.md)c
