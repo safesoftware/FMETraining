@@ -23,7 +23,7 @@
 	* [5.1 Exercise 7- Using a Shared Resource as a Workspace Output Location](./FMESERVER_RESTAPI5ServerAdmin/5.1.WorkingWithResourcesUsingSharedResources.md)
 * [Chapter 6. Job Management](./FMESERVER_RESTAPI6JobManagement/6.0.Introduction.md)
 	* [6.1 Retrieve Job History](./FMESERVER_RESTAPI6JobManagement/6.1.RetrieveJobHistory.md)
-	* [6.2 Using REST API Commands in a Workbench](./FMESERVER_RESTAPI6Workspaces/6.2.UsingRest.md)
+	* [6.2 Using REST API Commands in a Workbench](./FMESERVER_RESTAPI6JobManagement/6.2.UsingRest.md)
 	* [6.3 Exercise 8- Creating a Workspace to Retrieve Job History](./FMESERVER_RESTAPI6JobManagement/6.3.Exercise.md)
 	* [6.4 Exercise 9- Scheduling Automations with the FME Server REST API](./FMESERVER_RESTAPI6JobManagement/6.4.Exercise.md)
 * [Chapter 7. Web Services and the REST API](./FMESERVER_RESTAPI7WebServices/7.0.WebServicesAndRESTAPI.md)
