@@ -6,12 +6,15 @@ This file documents major changes made to training materials in 2019
 ## FMEData ##
 These changes are for the FMEData dataset that accompanies FME training
 
+- Added various raster datasets to the Zoning folder, for nodata and palette examples
+- Added an Owners field to the Excel address template in the Resources folder
 
 
 ---
 
 ## Desktop Basic ##
 These changes are for the FME Desktop Basic Training Course.
+
 
 ### General ###
 - Updated all Person X Characters (ie. Miss Vector, Chef Bimm, etc.) to FME Lizard
@@ -39,6 +42,8 @@ These changes are for the FME Desktop Basic Training Course.
 
 ### Practical Transformer Use ###
 - Added quiz inside exercise 1 and removed separate answer page.
+- Updated exercise 2 with a new method of handling lists (instead of concatenating them in an AttrManager it uses ListConcatenator)
+- Updated exercises 2-4 to include handling property owner names (demonstrates attr sorting, concatenation, and AttrCompressor)
 
 
 ### Best Practice ###
