@@ -13,4 +13,3 @@
 * [Product Info](Integration3Scenario/3.04.ProductInfo.md)
 * [Community Info](Integration3Scenario/3.05.CommunityInfo.md)
 * [Feedback](Integration3Scenario/3.06.Feedback.md)
-* [Wrap-up](Integration3Scenario/4.09.wrap-up.md)
