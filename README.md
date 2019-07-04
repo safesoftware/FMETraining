@@ -1,6 +1,6 @@
 # Data Integration with FME Desktop
 
-This manual is an introductory-level training module for FME Desktop. It provides a framework for a basic understanding of FME and for using FME in data integration. While the scenario used is grounded in Geographic Information Systems for local government, urban planning, and administration, the skills are applicable to any use of FME. It has approximately four hours of content.
+This manual is an introductory-level training module for FME Desktop, designed for delivery in higher education. It provides a framework for a basic understanding of FME and for using FME in data integration. While the scenario used is grounded in Geographic Information Systems for local government, urban planning, and administration, the skills are applicable to any use of FME. It has approximately four hours of content.
 
 ![](./Integration0About/Images/Img0.0.FMEAboutScreen.png)
 
