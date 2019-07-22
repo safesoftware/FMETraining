@@ -19,11 +19,12 @@ These changes are for the FME Desktop Basic Training Course.
 ### General ###
 - Updated all Person X Characters (ie. Miss Vector, Chef Bimm, etc.) to FME Lizard
 - Most exercises use Visual Preview instead of Data Inspector except in a few cases.
-- Interactive end of chapter quizzes
+- Interactive end of chapter quizes
+- Updated with information for 2019.1 changes
 
 
 ### Data Translation Basics ###
-
+- Added a short paragraph about switching from 2D to 3D to tabular views in the Data Inspector
 
 ### Data Transformation ###
 - Renamed workspaces from Transformation to DataTransformation to prevent confusion with the Transformers exercises
