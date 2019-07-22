@@ -19,7 +19,7 @@ These changes are for the FME Desktop Basic Training Course.
 ### General ###
 - Updated all Person X Characters (ie. Miss Vector, Chef Bimm, etc.) to FME Lizard
 - Most exercises use Visual Preview instead of Data Inspector except in a few cases.
-- Interactive end of chapter quizes
+- Interactive end of chapter quizzes
 
 
 ### Data Translation Basics ###
