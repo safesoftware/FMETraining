@@ -47,7 +47,7 @@ This is a tip that provides information and advice
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
 This is a tip that has a screenshot inside it.
-<br><br><img src="./DesktopBasic1Basics/Images/Img1.008.WorkbenchInterfaceMenuToolbar.png">
+<br><br><img src="./DesktopBasic1Basics/Images/Img1.013.WorkbenchInterfaceMenuToolbar.png">
 <br><br>Notice the use of br tags to create spacing.
 </span>
 </td>
