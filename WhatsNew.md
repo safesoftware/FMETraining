@@ -32,6 +32,8 @@ These changes are for the FME Desktop Advanced Training Course.
 - Moved "Remove Unattached" function to section on Optimizing Readers
 - Changed General Performance Tips to introduce the idea of Authoring vs Production
 - New exercises 1-3 (4 is the same as before)
+- Included information on Bulk Mode and the order of features from the Tester in bulk mode. Included in exercise too.
+- Mentioned new Sorter capabilities for .1 (in ex3)
 
 ### Advanced Reading/Writing ###
 - Changed "Zip Files" to "Compressed Files", since 2019 now supports other archived or compressed file formats
