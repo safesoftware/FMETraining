@@ -18,6 +18,7 @@ These changes are for the FME Desktop Advanced Training Course.
 - The people of Interopolis (advice sections) have been replaced by the FME Lizard. 
 - Q+A questions are now interactive in the HTML version of the manual
 - The Q+A answer page is now removed, since the answers are supplied with the question
+- Made updates for 2019.1 changes
 
 ### Advanced Attribute Handling ###
 - Compressed exercise 2 (used to be three separate pieces) into a single set of instructions
