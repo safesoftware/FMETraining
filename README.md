@@ -6,6 +6,16 @@ This manual is an introductory-level training module for FME Desktop, designed f
 
 The module will introduce basic concepts and terminology, help students become efficient users of FME, and direct them to resources to help apply the product to their own needs.
 
+## Learning Objectives
+
+- Discover the importance of data integration as a technical and business challenge
+- Learn what FME Desktop is and what it can do for you
+- Convert data from one format to another using FME Workbench
+- View and inspect data using FME Data Inspector and Visual Preview
+- Work with multiple datasets in a single workspace
+- Manipulate data structure and content with transformers
+- Apply best practices to workspaces
+
 ## Module Structure
 
 The module is made up of three main sections. These sections are:
@@ -56,15 +66,15 @@ Some suggestions for adaptation:
 
 ## Current Status
 
-The current status of this manual is: **READY FOR REVIEW**.
+The current status of this manual is: **COMPLETE**. his manual **CAN** be used for training.
 This manual applies to **FME2019.0**.
 The status of each chapter is:
 
-- Lecture: ready for review
-- Lab: ready for review
-- Integration Scenario: ready for review
-- Slides: ready for review
-- Answers: ready for review
+- Lecture: Complete
+- Lab: Complete content and exercises
+- Integration Scenario: Complete content and exercises
+- Slides: Complete
+- Answers: Complete
 
 _**NB**: Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement in [About this Document](.\Integration0About\0.00.AboutThisDocument.md) for further details._
 
