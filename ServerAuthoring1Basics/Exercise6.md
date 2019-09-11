@@ -43,40 +43,43 @@ You have already (in Exercises 1, 2, and 3) created a workspace to carry out thi
 
 In the last exercise, you shared the Training repository you created in Exercise 1 with other authors on FME Server. Now you have gotten requests from other users who do not have FME Server accounts to be able to run the translation on demand.  
 
-Let's create an FME Server app so that anyone with the URL can run this workspace to update the database whenever they need to.
+Let's create an FME Server App so that anyone with the URL can run this workspace to update the database whenever they need to.
 
 <br>**1) Connect to Server**
 <br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/admin).
 
-<br>**2) Locate Workspace Sharing**
-<br>Click on Run Workspace from the Server menu and select the Training Repository and Basics-Ex1-Complete.fmw Workspace on that page.
+<br>**2) Open Server Apps**
+<br>Click on Server Apps from the Server menu, then click on Create to begin configuring a new FME Server App.
 
-Below the published parameters, click on the arrow to the right of Advanced to expand the panel and click on Share this workspace under Workspace Sharing.
+![](./Images/Img1.241.Ex6.CreateApp.png)
 
-![](./Images/Img1.241.Ex6.WorkspaceSharing.png)
+<br>**3) Configure Server App**
+<br>Set a Name and Description for your new Server App. Then select the Training Repository and Basics-Ex1-Complete.fmw Workspace.
 
-<br>**3) Configure Workspace Sharing**
-<br>This will open a new page to let you configure the workspace sharing options. You can set an expiration date for the token used to share the workspace and also give additional permissions to users who will run the workspace through the FME Server App you create.
-
-You can leave the expiration time at its default value which will allow the API Token to expire after 1 year. You could set this to a shorter time if you only want to grant access for a small time window.
+You can leave the expiration time at its default value which will allow the API Token to expire after 10 years. You could set this to a shorter time if you only want to grant access for a smaller time window.
 
 Keep the User Can Upload option turned on, this will allow your users to upload their own datasets to send as input to the workspace. Notice under Additional Parameters, you can give the users access to browse for data within folders in Resources. We won't touch that setting now either.
 
-![](./Images/Img1.241.Ex6.WorkspaceSharingOptions.png)
+![](./Images/Img1.244.Ex6.AppSelectWorkspace.png)
 
-Click OK to share the workspace.
+<br>**4) Customize Server App**
+
+Below the workspace selection area, you will see sections for Additional Permissions and Parameters.
+- Additional Permissions will let you decide if you want the users who will access your Server App to be able to access items within the FME Server Resources.
+- Parameters will allow you to configure which published parameters should be displayed for your users to set when using the Server App.
+
+Leave those with their default values and move on to Customize Appearance. Expand that section and change the Title and Background Color for the App.
+
+![](./Images/Img1.245.Ex6.CustomizeApp.png)
+
+Click OK to create the Server App.
 
 <br>**4) Test the FME Server App**
-<br>Now that your workspace has been shared, you'll see that two URLs were generated.
+<br>Now that your App has been created, you'll see that a URL was generated for it.
 
 ![](./Images/Img1.243.Ex6.SharingURLs.png)
 
-The FME Server App URL will open a webpage that is very similar to the Run Workspace page in FME Server, but has no options other than to run this one workspace and it does not require a user to enter a username and password to access it.
-
-The Web Service URL will not open a webpage when it is clicked on, it will simply run the workspace using the parameter values that are set directly in the URL itself.
-
-Click on the clipboard icon at the end of each of these URLs and paste them into an incognito browser window to see the differences in how they behave.
-
+Click on the URL to open it. You will see that it opens a webpage very similar to the Run Workspace page in FME Server, but it has no options other than to run this one workspace and it does not require a user to enter a username and password to access it. The styling for the page will also match what you selected within the customization options.
 
 ---
 
@@ -96,7 +99,6 @@ Click on the clipboard icon at the end of each of these URLs and paste them into
 By completing this exercise you have learned how to:
 <br>
 <ul><li>Create an FME Server App to share a workspace with users who do not have FME Server accounts</li>
-<li>Generate a Web Service URL for a workspace that can act as a webhook to run the workspace programmatically</li></ul>
 </span>
 </td>
 </tr>
