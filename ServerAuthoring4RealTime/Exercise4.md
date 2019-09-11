@@ -78,6 +78,7 @@ Select the plus icon in the bottom left and this time drag an External Action (b
 
 ![](./Images/Img4.430.Ex4.ConnectEmailAction.png)
 
+
 Double click on the node to configure it, set the action to send an email and set up your SMTP email server parameters.
 
 In case it is of use, the server information for Gmail is as follows:
