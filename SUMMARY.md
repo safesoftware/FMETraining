@@ -66,7 +66,7 @@
   * [Elements of Automations](ServerAuthoring4RealTime/4.02.ElementsOfAutomations.md)
   * [Automation Clients](ServerAuthoring4RealTime/4.03.AutomationClients.md)
   * [Triggers and Actions](ServerAuthoring4RealTime/4.04.AutomationTriggerAction.md)
-  * [Automation Protocols](ServerAuthoring4RealTime/4.05.AutomationProtocol.md)
+  * [Automation Protocols](ServerAuthoring4RealTime/4.05.AutomationProtocols.md)
     * [Protocol Details](ServerAuthoring4RealTime/4.06.AutomationProtocolDetails.md)
   * [Exercise 4.1: Building Updates Automation: Directory Watch Trigger](ServerAuthoring4RealTime/Exercise1.md)
   * [Automations and Workspaces](ServerAuthoring4RealTime/4.08.AutomationsAndWorkspaces.md)

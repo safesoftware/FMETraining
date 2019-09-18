@@ -76,7 +76,7 @@ This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-A
 
 Select the plus icon in the bottom left and this time drag an External Action (blue) to the canvas. Connect this to the Success (check mark) output port of the Run Workspace node, which will now also act as a Trigger.
 
-![](./Images/Img4.430.Ex4.ConnectEmailAction.png)
+![](./Images/Img4.430.Ex4.ConnectEmailActions.png)
 
 
 Double click on the node to configure it, set the action to send an email and set up your SMTP email server parameters.
