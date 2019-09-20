@@ -108,7 +108,7 @@ This workspace is just generating "events". Those events could be lightning stri
 <pre>
 {
     ws_op: 'send',
-    ws_msg: 'fme_get_attribute(EventMessage)'
+    ws_msg: 'fme_get_attribute("EventMessage")'
 }
 </pre>
 </td></tr>
