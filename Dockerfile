@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:python3.7-nodejs10
+FROM nikolaik/python-nodejs:python3.6-nodejs12
 
 # Disables user input prompts during apt-get install
 ENV DEBIAN_FRONTEND=noninteractive
