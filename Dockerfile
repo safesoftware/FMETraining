@@ -5,9 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update && \
     apt-get -qq install -y nodejs npm awscli && \
-    wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sh /dev/stdin version=3.48.0 install_dir=~/calibre-bin isolated=y && \
+    wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sh /dev/stdin version=3.48.0 install_dir=~/calibre-bin isolated=y
     npm install -g gitbook-cli && \
     gitbook install && \
-    npm install -q && \
-    gitbook build && \
-    gitbook pdf ./ Server-REST-API-2019.pdf
+    rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/*
