@@ -4,7 +4,7 @@ FROM python
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get -qq update && \
-    apt-get -qq install -y nodejs npm awscli python3-pyqt5 pyqt5-dev-tools qttools5-dev-tools && \
+    apt-get -qq install -y nodejs npm awscli && \
     wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sh /dev/stdin version=3.48.0 && \
     npm install -g gitbook-cli && \
     gitbook install && \
