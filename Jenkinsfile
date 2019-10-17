@@ -19,11 +19,6 @@ pipeline {
                 echo "Fixing directory structure"
                 sh 'find ./ -type f -exec sed -i \'s/<a href="..\\/">/<a href="..\\/index.html">/g\' {} \\;'
 
-                echo "Create symlink for Calibre"
-                sh 'calibre'
-                sh '/root/calibre-bin/calibre/calibre'
-                sh 'ln -s /root/calibre-bin/calibre/calibre calibre'
-
                 echo "Generating PDF"
                 sh "gitbook pdf ./ ${env.BRANCH_NAME}.pdf"
 
