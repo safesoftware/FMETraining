@@ -6,10 +6,7 @@ This file documents major changes made to training materials in 2020.
 
 ## FMEData
 
-These changes are for the FMEData dataset that accompanies FME training
-
-- Added 3-1-1 files to the Resources\\311 directory.
-- Now host some of the FMEData data on the [Interopolis Open Data Portal](fme.ly/interopolis) for reading from the web in training
+No changes for the FMEData dataset that accompanies FME training.
 
 ---
 
@@ -17,30 +14,24 @@ These changes are for the FMEData dataset that accompanies FME training
 
 ### General
 
-- Replaced the tip sections with FME Lizard tips.
-- Added Overlap with FME Desktop Basic Training section to [README.md](..\README.md).
+- Replaced 2019 with 2020
+- Tester dialog changed slightly, so screenshots have been updated
 
-### Getting Started
+# Getting Started
 
-- The [What is FME? section](..\1.getting-started\1.02.what-is-fme.md) has been updated to discuss the FME data integration platform
-- Added Visual Preview to the [FME Workbench section](..\1.getting-started\1.03.fme-workbench.md)
-- Switched the order of the [FME Workbench section](..\1.getting-started\1.03.fme-workbench.md) and the [FME Desktop Components section](..\1.getting-started\1.04.fme-components.md).
+No major changes.
 
-### Translations
+# Translations
 
-- Inspecting is now done with Visual Preview primarily, with just one exercise using FME Data Inspector
-- [Exercise 2.3](2.translations\2.07.ex2.3.md) now covers Sort Natural in Table View.
+No major changes.
 
-### Transformations
+# Transformations
 
-- Exercise 3.3a and b now cover looking for a join transformer, not a summary table creator
+- Exercise 3.1: Tester dialog changed slightly, so screenshots have been updated
+- Quick Add dialog changed slightly, so screenshots have been updated
+- Transformer Gallery numbers changed, so screenshots have been updated
 
-### Workflows
+# Workflows
 
-- Added a small section on reader and writer parameters
-- Removed the fanout section and exercise
-- Instead of writing out an HTML report, the final output is now joining a summary table to a KML file to view tabular data on a map in Google Earth
-
-### Course Wrap-up
-
-- Changed the FME Knowledge Centre to the FME Community, with Q+A Forum changing to Forums
+- Exercise 4.1: clarified section on reader parameters for the CSV reader
+- FeatureJoiner dialog changed slightly, so screenshots have been updated-

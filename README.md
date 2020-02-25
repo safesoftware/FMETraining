@@ -40,10 +40,10 @@ This manual applies to **FME2020.0**.
 
 The status of each unit is:
 
-- Unit 1: Incomplete content and exercises
-- Unit 2: Incomplete content and exercises
-- Unit 3: Incomplete content and exercises
-- Unit 4: Incomplete content and exercises
+- Unit 1: Complete content, incomplete exercises
+- Unit 2: Complete content, incomplete exercises
+- Unit 3: Complete content, incomplete exercises
+- Unit 4: Complete content, incomplete exercises
 - FMEData: Incomplete
 
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
