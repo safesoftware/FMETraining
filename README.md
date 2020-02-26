@@ -1,6 +1,6 @@
 <!--This file duplicates a little of the content to follow, but is added here because the content of this file is used for the landing page on GitBook-->
 
-# FME Server REST API Training 2019 #
+# FME Server REST API Training 2020 #
 
 This is the manual for the training course for Safe Software’s FME Server REST API.
 
@@ -46,7 +46,7 @@ The full course is made up of two sections. These sections are:
 
 The current status of this manual is: **Complete**: this manual can be used for training, subject to minor, last-minute fixes.
 
-This manual applies to **FME2019.0**
+This manual applies to **FME2020.0**
 
 The status of each chapter is:
 
