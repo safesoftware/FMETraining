@@ -19,8 +19,8 @@ pipeline {
                 echo "Fixing directory structure"
                 sh 'find ./ -type f -exec sed -i \'s/<a href="..\\/">/<a href="..\\/index.html">/g\' {} \\;'
 
-                echo "Generating PDF"
-                sh "gitbook pdf ./ ${env.BRANCH_NAME}.pdf"
+          //      echo "Generating PDF"
+          //      sh "gitbook pdf ./ ${env.BRANCH_NAME}.pdf"
 
             }
         }
@@ -31,8 +31,8 @@ pipeline {
                     // Copy book directory to S3
                     echo "Uploading book"
                     sh "aws s3 cp _book s3://gitbook/${env.BRANCH_NAME} --acl public-read --recursive || true"
-                    echo "Uploading PDF"
-                    sh "aws s3 cp ${env.BRANCH_NAME}.pdf s3://gitbook/${env.BRANCH_NAME}/ --acl public-read"
+                  //  echo "Uploading PDF"
+                //    sh "aws s3 cp ${env.BRANCH_NAME}.pdf s3://gitbook/${env.BRANCH_NAME}/ --acl public-read"
                 }
             }
         }
