@@ -23,7 +23,7 @@
 	* [5.1 Retrieve Job History](./FMESERVER_RESTAPI5RESTinWorkbench/5.1.RetrieveJobHistory.md)
 	* [5.2 Using REST API Commands in a Workbench](./FMESERVER_RESTAPI5RESTinWorkbench/5.2.UsingRest.md)
 	* [5.3 Exercise 7- Creating a Workspace to Retrieve Job History](./FMESERVER_RESTAPI5RESTinWorkbench/5.3.Exercise.md)
-	* [5.4 Exercise 8- Scheduling Automations with the FME Server REST API](./FMESERVER_RESTAPI5RESTinWorkbencht/5.4.Exercise.md)
+	* [5.4 Exercise 8- Scheduling Automations with the FME Server REST API](./FMESERVER_RESTAPI5RESTinWorkbench/5.4.Exercise.md)
 	* [5.5 Exercise 9- Uploading Workspaces using the FME Server REST API](./FMESERVER_RESTAPI5RESTinWorkbench/5.5.Exercise.md)
 * [Chapter 7. Web Services and the REST API](./FMESERVER_RESTAPI7WebServices/7.0.WebServicesAndRESTAPI.md)
 	* [7.1 Exercise 10- Sharing Workspaces in FME Server](./FMESERVER_RESTAPI7WebServices/7.1.Exercise.md)
