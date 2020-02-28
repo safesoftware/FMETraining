@@ -20,8 +20,8 @@
 	* [4.2 Exercise 5- Running a Job Asynchronously](./FMESERVER_RESTAPI4Workspaces/4.2.Asynchronous.md)
 	* [4.3 Exercise 6- Retrieve Job Results](./FMESERVER_RESTAPI4Workspaces/4.3.JobResults.md)
 * [Chapter 5. Using REST API calls in a workspace to automate FME Server processes](./FMESERVER_RESTAPI5RESTinWorkbench/5.0.Introduction.md)
-	* [5.2 Using REST API Commands in a Workbench](./FMESERVER_RESTAPI5RESTinWorkbench/5.1.UsingRest.md)
-	* [5.1 Retrieve Job History](./FMESERVER_RESTAPI5RESTinWorkbench/5.2.RetrieveJobHistory.md)
+	* [5.1 Using REST API Commands in a Workbench](./FMESERVER_RESTAPI5RESTinWorkbench/5.1.UsingRest.md)
+	* [5.2 Retrieve Job History](./FMESERVER_RESTAPI5RESTinWorkbench/5.2.RetrieveJobHistory.md)
 
 	* [5.3 Exercise 7- Creating a Workspace to Retrieve Job History](./FMESERVER_RESTAPI5RESTinWorkbench/5.3.Exercise.md)
 	* [5.4 Exercise 8- Scheduling Automations with the FME Server REST API](./FMESERVER_RESTAPI5RESTinWorkbench/5.4.Exercise.md)
