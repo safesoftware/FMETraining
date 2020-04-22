@@ -34,17 +34,17 @@ If you wish to inspect the output data in a native application, you should downl
 
 ## Current Status
 
-The current status of this manual is: **INCOMPLETE**. This manual **CANNOT** be used for training.
+The current status of this manual is: **COMPLETE**. This manual **CAN** be used for training.
 
 This manual applies to **FME2020.0**.
 
 The status of each unit is:
 
-- Unit 1: Complete content, incomplete exercises
-- Unit 2: Complete content, incomplete exercises
-- Unit 3: Complete content, incomplete exercises
-- Unit 4: Complete content, incomplete exercises
-- FMEData: Incomplete
+- Unit 1: complete content, complete exercises
+- Unit 2: complete content, complete exercises
+- Unit 3: complete content, complete exercises
+- Unit 4: complete content, complete exercises
+- FMEData: complete
 
 ***NB:*** *Even for completed content, Safe Software Inc. assumes no responsibility for any errors in this document or their consequences, and reserves the right to make improvements and changes to this document without notice. See the full licensing agreement for further details.*
 
