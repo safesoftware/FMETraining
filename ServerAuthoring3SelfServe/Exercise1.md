@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\SelfServe-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
@@ -86,7 +86,7 @@ If you have lots of experience with FME Workbench - <strong>and if your instruct
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2019\Data\Orthophotos\06-07-LM.tif</td>
+<td style="">C:\FMEData2020\Data\Orthophotos\06-07-LM.tif</td>
 </tr>
 
 <tr>
@@ -118,7 +118,7 @@ The Feature Type Name parameter is important because it will help us later allow
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2019\Output\Training</td>
+<td style="">C:\FMEData2020\Output\Training</td>
 </tr>
 
 <tr>
