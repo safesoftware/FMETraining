@@ -135,7 +135,7 @@ This ensures we aren't continually adding data to the same dataset if we run the
 
 
 <br>**8) Publish and Run Workspace**
-<br>Publish the workspace to FME Server. Be sure not to check the button to upload any data. Register the workspace against the Job Submitter service as usual.
+<br>Connect and publish the workspace to FME Server. Be sure not to check the button to upload any data. Register the workspace against the Job Submitter service as usual.
 
 Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog. Notice how all the dataset parameters are blank. This is because the paths referenced the original file locations through a mapped drive. If the default file path value does not reference a file using a UNC path or Resource Connection FME Server will strip out that value since FME Server does not have access to those files:
 

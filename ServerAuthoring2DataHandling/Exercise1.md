@@ -158,9 +158,9 @@ If its saved, choose the previously created FME Server connection, or select Add
 - **Username:** admin
 - **Password:** admin
 
-![](./Images/Img1.212.Ex1.ServerConnection.png)
+![](./Images/Img2.214.Ex1.ServerConnection.png)
 
-Create a repository again by clicking the New... button, enter the name "Training". Enter a name for the workspace if it doesn't already have one.
+Create a repository by clicking the New... button, enter the name "Training". Enter a name for the workspace if it doesn't already have one.
 
 This time, instead of simply checking the box to upload all the data files, click the Select Files button:
 
