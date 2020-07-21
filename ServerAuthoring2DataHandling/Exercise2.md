@@ -28,12 +28,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\DataHandling-Ex2-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\DataHandling-Ex2-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\DataHandling-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\DataHandling-Ex2-Complete.fmw</td>
 </tr>
 
 </table>
@@ -51,9 +51,9 @@ However, such data management tools are not particularly suited to a long-term p
 
 
 <br>**2) Create Folder**
-<br>In most cases data should be stored under the Data folder, so click on Data in the Resources dialog to open that folder. To avoid mixing datasets, our data should go into its own subfolder. So click on the New Folder button and create a folder called Election:
+<br>In most cases data should be stored under the Data folder, so click on Data in the Resources dialog to open that folder. To avoid mixing datasets, our data should go into its own subfolder. So click on the +New button and create a folder called Election:
 
-![](./Images/Img2.214.Ex2.TempUnselectFile.png)
+![](./Images/Img2.214.Ex2.CreateFolder.png)
 
 Next click on the Election folder and within there create **new** subfolders called Input and Output:
 
@@ -67,7 +67,7 @@ Next click on the Election folder and within there create **new** subfolders cal
 
 <tr>
 <td style="font-weight: bold">Reader Datasets</td>
-<td style="">C:\FMEData2019\Data\Elections\ElectionVoting.gml<br>C:\FMEData2019\Data\Elections\ElectionVoting.xsd<br>C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
+<td style="">C:\FMEData2020\Data\Elections\ElectionVoting.gml<br>C:\FMEData2020\Data\Elections\ElectionVoting.xsd<br>C:\FMEData2020\Data\Boundaries\VancouverNeighborhoods.kml</td>
 </tr>
 
 </table>
@@ -91,7 +91,7 @@ So, open the starting workspace listed above in FME Workbench and then select Wr
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2019\Output\Training\DepartmentData.gdb</td>
+<td style="">C:\FMEData2020\Output\Training\DepartmentData.gdb</td>
 </tr>
 
 <tr>
