@@ -152,7 +152,7 @@ Save the workspace. As already mentioned, make sure it has a different name than
 <br>**6) Publish to Server**
 <br>Publish the workspace to FME Server. 
 
-If its saved, choose the previously created FME Server connection, or select Add Web Connection again from the dropdown menu and reconnect with the provided credentiels: 
+If its saved, choose the previously created FME Server connection. Or, select Add Web Connection again from the dropdown menu to reconnect with the provided credentiels: 
 
 - **FME Server URL:** http://localhost
 - **Username:** admin
@@ -166,7 +166,7 @@ This time, instead of simply checking the box to upload all the data files, clic
 
 ![](./Images/Img2.207.Ex1.PublishToServer.png)
 
-This dialog lists the files we are about to publish to the repository with the workspace. Technically the VancouverNeighborhoods dataset was already published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
+This dialog lists the files we are about to publish to the repository with the workspace. Technically, the VancouverNeighborhoods dataset may already be published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
 
 ![](./Images/Img2.208.Ex1.SelectAllFiles.png)
 
