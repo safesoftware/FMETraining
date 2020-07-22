@@ -29,12 +29,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\DataHandling-Ex1-Begin.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\DataHandling-Ex1-Begin.fmw</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\DataHandling-Ex1-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\DataHandling-Ex1-Complete.fmw</td>
 </tr>
 
 </table>
@@ -102,7 +102,7 @@ The workspace now looks like this:
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2019\Data\Elections\ElectionVoting.gml</td>
+<td style="">C:\FMEData2020\Data\Elections\ElectionVoting.gml</td>
 </tr>
 
 </table>
@@ -150,15 +150,23 @@ Save the workspace. As already mentioned, make sure it has a different name than
 
 
 <br>**6) Publish to Server**
-<br>Publish the workspace to FME Server. This time you can simply choose the previously created FME Server connection, rather than having to enter parameters all over again.
+<br>Publish the workspace to FME Server. 
 
-For the repository select the previously created Training repository and enter a name for the workspace if it doesn't already have one.
+If its saved, choose the previously created FME Server connection. Or, select Add Web Connection again from the dropdown menu to reconnect with the provided credentiels: 
+
+- **FME Server URL:** http://localhost
+- **Username:** admin
+- **Password:** admin
+
+![](./Images/Img2.214.Ex1.ServerConnection.png)
+
+Create a repository by clicking the New... button, enter the name "Training". Enter a name for the workspace if it doesn't already have one.
 
 This time, instead of simply checking the box to upload all the data files, click the Select Files button:
 
 ![](./Images/Img2.207.Ex1.PublishToServer.png)
 
-This dialog lists the files we are about to publish to the repository with the workspace. Technically the VancouverNeighborhoods dataset was already published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
+This dialog lists the files we are about to publish to the repository with the workspace. Technically, the VancouverNeighborhoods dataset may already be published to the repository with the previous workspace, but it's not very good practice to try and re-use data this way (even though we could) so place a check mark against all files and click OK:
 
 ![](./Images/Img2.208.Ex1.SelectAllFiles.png)
 
@@ -186,15 +194,11 @@ This variable tells FME to look in the same folder as the workspace for the sour
 <br>**9) Upload Temporary Data**
 <br>Now let's pretend that the layer of VotingPlaces data has changed in some way. You can simulate that by simply opening a file browser and making a copy of the GML file.
 
-For example, rename C:\FMEData2019\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml
+For example, rename C:\FMEData2020\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml
 
 ***NB:*** You don't also have to copy ElectionVoting.xsd - it's okay to use that schema file for the new GML dataset.*
 
-Now, in the FME Server web interface, log out of the admin account and log in as a user (user/user).
-
-So, as a user, we wish to run the workspace with the new data. We can't publish the data because the user account doesn't have permission to write to that repository; and in any case, since the workspace hasn't changed in any way, we shouldn't have to go through the publishing process.
-
-So, click Run Workspace and select the newly published workspace in the Training repository. However, to use the new dataset for the Source GML prompt, click the browse option:
+We wish to run the workspace with the new data. To use the new dataset for the Source GML prompt, click the browse option:
 
 ![](./Images/Img2.211.Ex1.SelectSourceData.png)
 

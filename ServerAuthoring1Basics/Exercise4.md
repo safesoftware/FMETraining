@@ -47,22 +47,22 @@ As a daily task, you plan to run the translation every day after work. However..
 This is where Scheduling comes in handy. You can set up the workspace to run on an automatic schedule so you don't have to remember to run it daily.
 
 <br>**1) Connect to Server**
-<br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/admin).
+<br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/FMElearnings).
 
-<br>**2) Create Test Schedule**
-<br>Firstly, just to confirm that scheduling does work, let's set up a test schedule. Click Schedules on the menu and, in the Schedules page, click the New button to start the process.
+<br>**2) Create Schedule**
+<br>Now let's create a new schedule. Expand Schedules on the side menu and select Build Schedule.
 
-Set a name of Test Schedule and add it to a Training category by typing Training into the Category field:
+Set a name of Test Schedule, then create a new Category named Training, by clicking on the plus sign (+):
 
 ![](./Images/Img1.233.Ex3.NewSchedule.png)
 
-For the time settings, set the schedule to start immediately and run every 30 seconds. Uncheck the box beside Does Not Expire and set the end time to be approximately 30 minutes into the future (that way if we forget to cancel the schedule it won't carry on forever!)
+Change the Schedule Type to Repeat on Interval. Set the Repeat Every to 1 Days at 9am, then enable Start Immediately. Then leave the end time blank, and ensure that Does Not Expire is enabled.
 
 ![](./Images/Img1.234.Ex3.SetSchedule.png)
 
 Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine on which you are running the web browser that is connected to FME Server. Keep this in mind if your FME Server is on a machine in a different time zone from the machine where you are accessing FME Server.
 
-Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Basics-Ex1-Complete.fmw):
+Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Ch-Ex1-Complete.fmw):
 
 ![](./Images/Img1.235.Ex3.NewScheduleWorkspace.png)
 
@@ -70,32 +70,19 @@ There are no user parameters we need to change for this workspace, so any can be
 
 Now click OK to add the new schedule.
 
+<br>**3) Trigger Schedule**
+<br>Our schedule is set up to run every day at 9am, depending on what time you are taking this course, you might have to wait until tomorrow to see the schedule in action. Thankfully, we can trigger the schedule to run whenever we want. This is great for testing purposes or whenever you might need the workspace to run.
 
-<br>**5) Examine Jobs Page**
-<br>Open the Jobs page. A list of previously run jobs will open. You will find (if it was set up correctly) that there will be jobs running to schedule:
+On the Manage Schedules page, select the Test Schedule schedule we just made and then click the Actions drop-down and select Trigger.
+
+![](./Images/Img1.237.1.Ex3.TriggerSchedule.png)
+
+<br>**4) Examine Jobs Page**
+<br>Open the Jobs page. A list of previously run jobs will open. You will see the workspace we triggered with the schedule. You can tell it was the workspace associated with the schedule as schedule will appear under Source Type.
 
 ![](./Images/Img1.236.Ex3.NewScheduleJobs.png)
 
 Notice that the username is set to admin; since that is the user who created the schedule, that is the username under which the job will be run.
-
-
-<br>**6) Create Actual Schedule**
-<br>Now we are confident that we know how to use the interface, let's set up an actual schedule. We want the workspace to run, say, every day of the week. There should also be no end date.
-
-So, return to the Schedules page. You may now either:
-
-- Click on the Test schedule and edit it to the required values
-- Delete the test schedule and create a new one with the required values
-
-![](./Images/Img1.237.Ex3.ChangedSchedule.png)
-
-Once you click OK, this setup will run the workspace at 8:00pm every day. I'm not sure about you, but I don't think we should stick around until then to check this Schedule ran correctly!
-
-Return to the Schedule home page, select the Training schedule we just created and notice the Trigger button is no longer greyed out. We can use this to trigger a one-off run and confirm the schedule was configured correctly.
-
-![](./Images/Img1.237.1.Ex3.TriggerSchedule.png)
-
-You may wish to check back periodically during this training to ensure the workspace runs as expected.
 
 ---
 
@@ -115,6 +102,7 @@ You may wish to check back periodically during this training to ensure the works
 By completing this exercise you have learned how to:
 <br>
 <ul><li>Schedule a translation in FME Server</li>
+<li>Trigger a schedule</li>
 <li>Check the job history to ensure the scheduled translation took place</li></ul>
 </span>
 </td>

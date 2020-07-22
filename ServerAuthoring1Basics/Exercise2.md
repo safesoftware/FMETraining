@@ -43,9 +43,9 @@
 
 For the exercises in this chapter, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department is now investigating FME Server to evaluate its capabilities.
 
-There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single, corporate database.
+There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single corporate database.
 
-Because each department produces their datasets in a different format and style, you use FME for this task and carry it out on a weekly basis.   
+Because each department produces its datasets in a different format and style, you use FME for this task and carry it out on a weekly basis.   
 
 After creating a workspace to carry out this translation, and publishing it to FME Server, you now wish to log in to Server to run that workspace.
 
@@ -64,7 +64,7 @@ After creating a workspace to carry out this translation, and publishing it to F
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-authoring-training-2018/content/ServerAuthoring1Basics/Exercise1.html">Exercise 1.1</a> before starting this exercise. We will be running the published Basics-Ex1-Complete.fmw workspace (or whatever your named it).
+You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-authoring-training-2018/content/ServerAuthoring1Basics/Exercise1.html">Exercise 1.1</a> before starting this exercise. We will be running the published Ch1-Ex1-Complete.fmw workspace (or whatever your named it).
 </span>
 </td>
 </tr>
@@ -73,7 +73,7 @@ You will need to complete <a href="https://safe-software.gitbooks.io/fme-server-
 ---
 
 <br>**1) Connect to Server**
-<br>To log in to the FME Server web interface either select the Web Interface option from the start menu or - in your web browser - enter the address of your FME Server.
+<br>To log in to the FME Server web interface, either select the Web Interface option from the Start menu or - in your web browser - enter the address of your FME Server.
 
 If you are following this training on one of our training machines, the URL for your FME Server will be: http://localhost/
 
@@ -103,7 +103,7 @@ This will open the web interface login screen for the FME Server being used.
 
 
 <br>**2) Log In to Server**
-<br>In the User Login dialog, enter a username and password for your FME Server account. The username/password combination for a training installation is admin/admin:
+<br>In the User Login dialog, enter a username and password for your FME Server account. The username/password combination for a training installation is admin/FMElearnings:
 
 ![](./Images/Img1.217.Ex2.LogInWindow.png)
 
@@ -111,7 +111,7 @@ Click the Login button.
 
 
 <br>**3) Examine the User Interface**
-<br>Welcome to the FME Server Web Interface. Take a moment to familiarize yourself with this interface. In the top-right corner you can access the Help menu and your user settings:
+<br>Welcome to the FME Server Web Interface. Take a moment to familiarize yourself with this interface. In the top-right corner, you can access the Help menu and your user settings:
 
 ![](./Images/Img1.218.Ex2.TopRightMenu.png)
 
@@ -120,15 +120,15 @@ The side menu is where all of the FME Server functions can be accessed. If you n
 ![](./Images/Img1.219.Ex2.SidebarMenu.png)
 
 Finally, while still on the FME Server Home page, you can access Recent Jobs, Recent Projects, Last Published Workspaces, Favorite Workspaces, and Help pages. There are also options in the top right to customize the layout and content of this page.
-If you clicked away from this page, just click the FME logo in the top corner to get back to the Home page.
+If you clicked away from this page, just click the FME logo in the top left corner to get back to the Home page.
 
 ![](./Images/Img1.220.Ex2.HomePageOverview.png)
 
-Under Last Published Workspaces, you should be able to find the workspace you published in Exercise 1. Click the Star icon next to this workspace to set it as a favorite:
+Under Last Published Workspaces, you should be able to find the workspace you published in Exercise 1. Click the star icon next to this workspace to set it as a favorite:
 
 ![](./Images/Img1.221.Ex2.StarWorkspace.png)
 
-After clicking the Star, the workspace appears in the Favorite Workspaces panel. This allows for quick access to this workspace from anywhere in the FME Server Web Interface:
+After clicking the star, the workspace appears in the Favorite Workspaces panel. This allows for quick access to this workspace from anywhere in the FME Server Web Interface:
 
 ![](./Images/Img1.222.Ex2.StarredWorkspace.png)
 
@@ -136,7 +136,7 @@ We'll run the workspace shortly, but perhaps first we should make sure FME Serve
 
 
 <br>**4) Confirm Licensing**
-<br>Click Engines & Licensing on the ADMIN part of the interface menu. This will open up the licensing section. You should see a message informing you that FME Server is licensed and a list of the engines available:
+<br>Expand Engines & Licensing in the ADMIN section of the side menu, then click on Licensing. This will open up the licensing page. You should see a message informing you that FME Server is licensed and a list of the engines available:
 
 ![](./Images/Img1.223.Ex2.LicensingInfo.png)
 
