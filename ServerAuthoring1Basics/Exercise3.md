@@ -71,11 +71,11 @@ In the workplace you will have to have your FME Server Administrator enable Vers
 <br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/FMElearnings).
 
 <br>**2) Turn on Version Control**
-<br>Version Control will be turned off by default, so you'll need to switch it on before you can use it. From the Admin part of the interface menu, click System Configuration on the side menu to expand the menu then click General. On the System Configuration General page, locate the Version Control settings and toggle the switch to turn on Version Control, the switch will turn green when the feature is enabled.
+<br>Version Control will be turned off by default, so you'll need to switch it on before you can use it. From the Admin part of the interface menu, expand System Configuration on the side menu then click Version Control. On the Version Control page, toggle the switch to turn on Version Control, the switch will turn green when the feature is enabled.
 
 ![](./Images/Img1.238.Ex4.VersionControl.png)
 
-Don't worry about the other settings on that page, for now, just leave them with the default values.
+Don't worry about the other settings on that page, just leave them with the default values.
 
 <br>**3) Add Workspace to Version History**
 <br>As the Ch1-Ex1-Complete.fmw workspace has already been published to FME Server, you can add it to the version history from the web interface. Go to the Manage Workspaces page and open the Training repository. Select the checkbox beside the workspace and click Commit.
