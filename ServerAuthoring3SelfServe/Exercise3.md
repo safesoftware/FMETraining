@@ -74,25 +74,116 @@ This gives the user the option of four output formats (GeoJSON, OGC GeoPackage, 
 
 IMAGE
 
+In the Add/Edit User Parameter window enter the following:
+
+<table>
+<tr><td>Type</td><td>Geometry</td></tr>
+<tr><td>Name</td><td>GEOM_COORDS</td></tr>
+<tr><td>Prompt</td><td>Select construction area:</td></tr>
+<tr><td>Published</td><td>Checked</td></tr>
+<tr><td>Optional</td><td>Unchecked</td></tr>
+<tr><td>Attribute Assignment</td><td>Off</td></tr>
+</table>
+
+For Configuration, click on the ellipsis and enter the following:
+
+<table>
+<tr><td>Geometry Types</td><td>Box, Polygon, Line<td></tr>
+<tr><td>Specify initial bounds for map display</td><td>Checked<td></tr>
+<tr><td>Top (-90..90)</td><td>49.2548<td></tr>
+<tr><td>Left (-180..180)</td><td>-123.244<td></tr>
+<tr><td>Bottom (-90..90)</td><td>49.3034<td></tr>
+<tr><td>Right (-180..180)</td><td>-123.071<td></tr>
+</table>
+
+The initial bounds will be the area that the map displays in FME Server. Larger bounds will have the map zoomed out, and smaller bounds will have the map zoomed in.
+
+IMAGE from KB
+
+Click OK to close the parameter dialog.
+
 <br>**4) Create the Area of Interest Polygon**
-<br>
+<br>Now that we have set up the geometry published parameter, we need to use it within the workflow. Add a GeometryReplacer after the Creator transformer to the canvas.
+
+IMAGE from KB
+
+Open the parameters for the GeometryReplacer. Set the Geometry Encoding to GeoJSON and then set the Geometry Source to the GEOM_COORDS published parameter.
+
+IMAGE from KB
 
 <br>**5) Reproject the Area of Interest**
-<br>
+<br>We will want to ensure that FME knows our data is in LL84 as this is what the geometry published parameter accepts as values. Add a CoordinateSystemSetter transformer after the GeometryReplacer. In the parameters, set the Coordinate System to LL84.
+
+IMAGE from KB
+
+Our source data is in UTM83-10. It is more appropriate to buffer and intersect data in a projected coordinate system, so we will reproject both streams of data to UTM83-10. Add the first Reprojector after the CoordinateSystemSetter. Set the Destination Coordinate System to UTM83-10.
+
+IMAGE from KB
+
+Your workflow should look like this once both the coordinates are set:
+
+IMAGE from KB
 
 <br>**6) Buffer the Area of Interest**
-<br>
+<br>We need to add a 100-meter buffer around the area of interest to find which neighboring residents might be affected by construction noise and must be notified. Add a Bufferer transformer connected to the first Reprojector. In the parameters, set the Buffer Distance to 100 and set the Buffer Distance Units to Meters.
+
+IMAGE from KB
 
 <br>**7) Clip the Addresses to the Area of Interest**
+<br>Now we need to apply the buffered area of interest to our data. To do this we will use a Clipper transformer. Add a Clipper transformer to the canvas and connect the Bufferer to the Clipper input port. Then connect the Reprojector_2 to the Clippee input port. In the Clipper parameters, enable Merge Attributes.
+
+IMAGE from KB
+
+<br>**8) Clean up Attributes**
+<br>One final step before we can write out our data is to clean up the attributes. Add an AttributeKeeper to the canvas and connect it to the Inside output port on the Clipper_2.
+
+In the parameters, for Attributes to Keep, select:
+- OWNERNM1
+- PSTLADDRESS
+- PSTLCITY
+- PSTLPROV
+- POSTALCODE
+
+<br>**9) Test Writing Results to Shapefile**
+<br>Let's test our workspace by writing the results to a Shapefile. Make sure your AttributeKeeper is connected to the NotifyList writer feature type and run your workspace. Select LL84 as the coordinate system and Esri Shapefile as the output format.
+
+For the Geometry parameter, we have to supply GeoJSON to test on FME Desktop. On FME Server you can use a web map. Paste the following GeoJSON code in to test:
+
+```javascript
+<code>{"type":"Polygon","coordinates":[[[-123.131762,49.282752],[-123.132148,49.282465],[-123.131579,49.282087],[-123.131139,49.282332],[-123.131762,49.282752]]]}
+```
+
+When the translation finishes, click the NotifyList writer feature type once to select it, and then click View Written Data. The address to notify, those within 100m of the area of interest, should appear in the Visual Preview window.
+
+IMAGE
+
+---
+
+<!--Tip Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-info-circle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">TIP</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+We have provided the test GeoJSON code for you here. If you want to get your own GeoJSON to test, you can do the following. You can publish your unfinished workspace to FME Server, fill out the Geometry parameter, and copy the resulting GeoJSON code. Alternatively, you can use an online service to generate the GeoJSON for you, e.g. <a href="https://geojson.io/">https://geojson.io/</a>. Just remember the parameter expects a single feature, not a </span><span style="font-size:larger"><code>FeatureCollection</code>
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+<br>**10) Publish to FME Server**
 <br>
 
-<br>**8) Test Writing Results to Excel**
-<br>
-
-<br>**9) Publish to FME Server**
-<br>
-
-<br>**10) Test on FME Server**
+<br>**11) Test on FME Server**
 <br>
 
 Then you need to use the parameter in the workspace. A common workflow is to use a GeometryBuilder to create the area of interest using the published parameter.
@@ -106,106 +197,6 @@ IMAGE
 After that, you can use a FeatureReader to read the data using the same method described above (the user-defined boundary is the Initiator). After that you can use a Clipper to clip the data to the user-defined boundary. This step is necessary because sometimes the data that is read in by the FeatureReader might still go outside the boundaries defined by the user. For example, a long road feature might be partly within their boundaries, but the entire feature is read in by the FeatureReader. The Clipper will transform the feature so it is exactly within the user's boundary.
 
 After publishing to FME Server, the user will see a web map where they can interactively select their area of interest.
-
----
-
-<br>**1) Open Workspace**
-<br>Open the workspace from exercise 2, or the begin workspace listed above.
-
-In this exercise, we'll give the end-user control over the transformation stages.
-
-
-<br>**2) Create User Parameter**
-<br>If you look at the parameters for the RasterResampler transformer, you'll see parameters for X Cell Spacing and Y Cell Spacing. We should let the end user choose what spacing they want.
-
-So, in the Navigator window of FME Workbench, locate the section marked User Parameters. Right-click on there and choose the option Create User Parameter:
-
-![](./Images/Img5.200.Ex1.CreateParameter.png)
-
-The dialog that opens allows us to create a new parameter. Create one using the following parameters:
-
-<table>
-<tr><td style="font-weight: bold">Type</td><td>Number</td></tr>
-<tr><td style="font-weight: bold">Name</td><td>CellSpacing</td></tr>
-<tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
-<tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
-<tr><td style="font-weight: bold">Prompt</td><td>Enter Resolution (1-50)</td></tr>
-<tr><td style="font-weight: bold">Configuration</td><td>Lower Limit: Greater than value: 0<br>Upper Limit: Less than value: 51<br>Decimal places of precision: 0</td></tr>
-<tr><td style="font-weight: bold">Default Value</td><td>50</td></tr>
-</table>
-
-
-![](./Images/Img5.201.Ex1.CreateParameterDialog.png)
-
-Click OK to close the dialog.
-
-
-<br>**3) Apply User Parameter**
-<br>Now we've created a user parameter, but not applied it to anywhere.
-
-Open the parameters for the RasterResampler transformer. Click the drop-down arrow to the right of the X Cell Spacing parameter, and choose User Parameter &gt; CellSpacing.
-
-Do the same for the Y Cell Spacing parameter. The dialog will now look like this:
-
-![](./Images/Img5.202.Ex1.PublishedRasterResamplerParams.png)
-
-Notice that we're using the same values for the X and Y cell sizes. That's OK. Although we could use rectangular (oblong) raster cells, for this exercise we'll stick with a square.
-
-
-<br>**4) Create User Parameter**
-<br>Another setting we might give control of to the user is file compression. This is not defined in a transformer, but in the writer feature type. However, we can still create a published parameter in the same way.
-
-So, right-click on User Parameters in the Navigator window and choose Create User Parameter again.
-
-This time we'll do this a little bit differently. Compression can be a value from zero to one hundred, but we'll present the user with the choice of None, Low, Medium, and High.
-
-So create a parameter with the following settings:
-
-<table>
-<tr><td style="font-weight: bold">Type</td><td>Choice with Alias</td></tr>
-<tr><td style="font-weight: bold">Name</td><td>Compression</td></tr>
-<tr><td style="font-weight: bold">Published</td><td>Yes</td></tr>
-<tr><td style="font-weight: bold">Optional</td><td>No</td></tr>
-<tr><td style="font-weight: bold">Prompt</td><td>Select Compression Level</td></tr>
-</table>
-
-For the configuration field, click the [...] browse button. In the dialog that opens, set the following:
-
-<table>
-<tr><th>Display Name</th><th>Value</th></tr>
-<tr><td>None</td><td>0</td></tr>
-<tr><td>Low</td><td>25</td></tr>
-<tr><td>Medium</td><td>50</td></tr>
-<tr><td>High</td><td>75</td></tr>
-</table>
-
-![](./Images/Img5.203.Ex1.CreateChoiceParam.png)
-
-Click OK and OK again to close these dialogs and create the parameter.
-
-
-<br>**5) Apply User Parameter**
-<br>To apply the parameter, inspect the parameters for the JPEG feature type. Expand the Compression parameters (if necessary) and set the Compression Level parameter to User Parameter &gt; Compression.
-
-![](./Images/Img5.204.Ex1.SetFTCompression.png)
-
-Click OK to close the dialog. If you press the run button now - with the prompt option set - you'll see that there are now two new prompts for resolution and compression.
-
-
-<br>**6) Publish and Run Workspace**
-<br>Now publish the workspace to FME Server. Publish it to the Training repository and then register it with the Data Download service.
-
-Locate the workspace through the FME Server web interface and run it. This time you will be prompted to set the cell size and compression.
-
-![](./Images/Img5.205.Ex1.RunWorkspace.png)
-
-Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect. The size of the output file is a good indicator that the process is working correctly.
-
----
-
-ADD
-
-Also note that testing the Geometry parameter in FME Workbench requires an extra step. The parameter expects GeoJSON formatted geometry. If you want to test user input in FME Workbench before publishing, you need to paste GeoJSON into the parameter at runtime. You can publish your unfinished workspace to FME Server, fill out the Geometry parameter, and copy the resulting GeoJSON code, or you can use an online service to generate the GeoJSON for you, e.g. <a href="https://geojson.io/">https://geojson.io/</a>. Just remember the paramter expects a single feature, not a </span><span style="font-size:larger"><code>FeatureCollection</code>
 
 ---
 
