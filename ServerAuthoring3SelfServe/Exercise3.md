@@ -16,12 +16,12 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Data</td>
-<td style="border: 1px solid darkorange">Orthophoto images (GeoTIFF)</td>
+<td style="border: 1px solid darkorange">Community Mapping (Esri File Geodatabase)</td>
 </tr>
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create an FME Server Data Download system for orthophotos</td>
+<td style="border: 1px solid darkorange">Create an FME Server Data Download system community mapping data, allowing the user to choose the format, layers, and area of interest</td>
 </tr>
 
 <tr>
@@ -43,12 +43,71 @@
 
 ---
 
-As a technical analyst in the GIS department of a city, you have just commenced an initiative to allow other departments to download orthophoto data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
+As a technical analyst in the GIS department of a city, you have just commenced an initiative to allow other departments to download community mapping data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.
 
-So far you have created a simple workspace to translate orthophotos to JPEG format, and published it to a Data Download service on FME Server.
+So far you have created a workspace that allows users to choose the format and layers of the data they wish to download.
 
-Now you need to start customizing the workspace to allow the end-users to have a degree of control over the output.
+Now you need to add a Geometry published parameter to let users interactively choose their area of interest.
 
+<br>**1) Open Workspace**
+<br>Open C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex3-Begin.fmw.
+
+<br>**2) Inspect Published Parameters**
+<br>The starting workspace is in-progress. It already has published parameters that let users choose the output format and coordinate system. You can find them by looking at Navigator > Published Parameters. Right-click COORD_SYS and choose Edit Definition to view its configuration.
+
+IMAGE
+
+You can see it is of type Coordinate System Name and will let the user pick any output coordinate system. Click Cancel.
+
+Right-click FORMAT and choose Edit Definition to view its configuration:
+
+IMAGE
+
+You can see this parameter lets the user choose the output format for the data they receive. The default is Microsoft Excel. You can click the ellipsis button next to Configuration to view the options for this Choice with Alias parameter.
+
+IMAGE
+
+This gives the user the option of four output formats (GeoJSON, OGC GeoPackage, Esri Shapefile, or Microsoft Excel). Using Choice with Alias like this lets you provide a set of formats or coordinate systems to the user, instead of letting them pick from the entire list. This option can be beneficial as it is less overwhelming to the user and can prevent incorrect outcomes. Click Cancel twice to close the parameter dialog.
+
+<br>**3) Create a Geometry Published Parameter**
+<br>First you need to add a Geometry published parameter. In the Navigator, right-click User Parameters > Create User Parameter:
+
+IMAGE
+
+<br>**4) Create the Area of Interest Polygon**
+<br>
+
+<br>**5) Reproject the Area of Interest**
+<br>
+
+<br>**6) Buffer the Area of Interest**
+<br>
+
+<br>**7) Clip the Addresses to the Area of Interest**
+<br>
+
+<br>**8) Test Writing Results to Excel**
+<br>
+
+<br>**9) Publish to FME Server**
+<br>
+
+<br>**10) Test on FME Server**
+<br>
+
+Then you need to use the parameter in the workspace. A common workflow is to use a GeometryBuilder to create the area of interest using the published parameter.
+
+IMAGE
+
+Then you need to make sure it's in the right coordinate system using a Reprojector.
+
+IMAGE
+
+After that, you can use a FeatureReader to read the data using the same method described above (the user-defined boundary is the Initiator). After that you can use a Clipper to clip the data to the user-defined boundary. This step is necessary because sometimes the data that is read in by the FeatureReader might still go outside the boundaries defined by the user. For example, a long road feature might be partly within their boundaries, but the entire feature is read in by the FeatureReader. The Clipper will transform the feature so it is exactly within the user's boundary.
+
+After publishing to FME Server, the user will see a web map where they can interactively select their area of interest.
+
+---
 
 <br>**1) Open Workspace**
 <br>Open the workspace from exercise 2, or the begin workspace listed above.
@@ -141,6 +200,12 @@ Locate the workspace through the FME Server web interface and run it. This time 
 ![](./Images/Img5.205.Ex1.RunWorkspace.png)
 
 Run the workspace a few times, varying the cell size and compression, to confirm that the parameters are having an effect. The size of the output file is a good indicator that the process is working correctly.
+
+---
+
+ADD
+
+Also note that testing the Geometry parameter in FME Workbench requires an extra step. The parameter expects GeoJSON formatted geometry. If you want to test user input in FME Workbench before publishing, you need to paste GeoJSON into the parameter at runtime. You can publish your unfinished workspace to FME Server, fill out the Geometry parameter, and copy the resulting GeoJSON code, or you can use an online service to generate the GeoJSON for you, e.g. <a href="https://geojson.io/">https://geojson.io/</a>. Just remember the paramter expects a single feature, not a </span><span style="font-size:larger"><code>FeatureCollection</code>
 
 ---
 

@@ -17,8 +17,9 @@ This file documents major changes made to training materials in 2019
 - Added section on sharing custom resources (including custom transformers, formats, python and R modules)
 
 ### Self-Serve with FME Server: Part1 & Part2###
-- Combined chapter 3 with old chapter 5 as they both address Self Serve
-- No major changes otherwise
+- Reduced the content on user parameters, as this is covered in detail in [Desktop Advanced](https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/4.00.AdvancedParameterUse.html)
+- Edited [Exercise 3](ServerAuthoring3SelfServe\Exercise3.md) to cover adding a Geometry user parameter
+- Removed Exercises 4-6, as these are covered by Desktop Advanced training and were repetitive
 
 ### Real-Time with FME Server ###
 - Converted chapter from using Notifications to Automations
@@ -28,4 +29,6 @@ This file documents major changes made to training materials in 2019
 - Split from Chapter 4 which focuses purely on Automations
 
 ### Advanced Workflows ###
-- Added section on job chaining using Automations in addition to using the FMEServerJobSubmitter transformer
+- Removed this chapter and moved its relevant sections to other chapters:
+  - Projects to Chapter 1
+  - Job Chains to Chapter 4
