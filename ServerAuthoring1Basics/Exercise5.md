@@ -39,27 +39,39 @@
 </table>
 
 ---
-In the last exercise, you created a schedule to automatically run the workspace you created in Exercise 1 once a day. But what happens if something goes wrong with this workspace or it needs to be updated and you're not available to fix it? It would be a good idea to allow other FME Server authors within your department to be able to edit and run this workspace.
+In the last exercise, you created a schedule to automatically run the workspace you created in Exercise 1 once a day. But what happens if something goes wrong with this workspace or it needs to be updated and you're not available to fix it? It would be a good idea to allow other FME Server Authors within your department to be able to edit and run this workspace.
 
-Let's ensure that other users that are part of the FME Server author role have access to this repository to run and modify the workspace.  
+Let's ensure that other users that are part of the FME Server Author role have access to this repository to run and modify the workspace.  
 
-<br>**1) Connect to Server**
-<br>Browse to the login page of the FME Server interface, either by starting it through the Web Interface option on the start menu or by logging out if you are already logged in.
+<br>**1) Enable Author Account**
+<br>In FME 2020, the default accounts of Author, User, and Guest are now disabled on installation for enhanced security. We will need to enable the Author account before we continue.
 
-This time, log in using the generic author account that is a default account on any FME Server installation. The username is ***author*** and the password is ***author*** as well!
+Browse to the login page of the FME Server interface, and log in using the administrator account (admin/FMElearnings).
+
+Under the Admin section on the side menu bar, expand User Management, then click on Users.
+
+![](./Images/Img1.859.Ex5.UsersMenu.png)
+
+Select the Author user, then in the Actions drop-down select Enable. A green checkmark should appear for the Author user under status.
+
+![](./Images/Img1.860.Ex5.EnableAuthor.png)
+
+<br>**2) Log In to Author Account**
+<br>Now open an Incognito or Private window in your browser and open another instance of FME Server. Log in using the credentials Author/Author
+
 
 The first thing you'll notice is that the menu and functionality is more restricted for this account (notice the Admin section is now gone):
 
 ![](./Images/Img1.227.Ex3.AuthorMenu.png)
 
-Also, if you try to run a workspace you'll find that this account does not have access to the Training repository where the existing workspace resides:
+Also, if you try to run a workspace, you'll find that this account does not have access to the Training repository where the existing workspace resides:
 
 ![](./Images/Img1.228.Ex3.AuthorRepository.png)
 
-<br>**2) Share Repository**
-<br>Log out of the author account and log back in as an administrator (admin/admin).
+<br>**3) Share Repository**
+<br>Minimize the incognito/private browser window where you are logged in as Author, and return to the browser where you are logged in as Admin.
 
-Now you have the full set of menu entries, click Repositories on the menu. Under the list of repositories locate the Training repository. Click the Share icon to the right:
+You have the full set of menu entries, expand Workspaces and click on Manage Workspaces on the side menu. Under the list of repositories, locate the Training repository. Click the Share icon to the right:
 
 ![](./Images/Img1.229.Ex3.ShareButton.png)
 
@@ -67,21 +79,21 @@ In the Sharing Options dialog, select fmeauthor as the role to share with, and a
 
 ![](./Images/Img1.230.Ex3.ShareDialog.png)
 
-By selecting the *fmeauthor* role (rather than the single *author* account), we allow anyone who is tagged as an author to access the workspace; and by allowing them full access to the repository, we allow them to run, download, and make edits to our workspace.
+By selecting the *fmeauthor* role (rather than the single *Author* account), we allow anyone who is tagged as an Author to access the workspace; and by allowing them full access to the repository, we allow them to run, download, and make edits to our workspace.
 
-<br>**3) Check Sharing**
-<br>Log out of the administrator account and log back into FME Server with the author account (author/author).
+<br>**4) Check Sharing**
+<br>Switch back to the incognito/private window with the Author account.
 
-This time, you should have access to the Training repository. Click Run Workspace, select your workspace in the Training repository and run it. Check the Jobs page, and you'll see one entry for the workspace when it was run as the author. There is only one entry because the author does not have the privileges required to view any other users' jobs:
+This time, you should have access to the Training repository. Click Run Workspace (or refresh the page), select your workspace in the Training repository and run it. Check the Jobs page, and you'll see one entry for the workspace when it was run as the Author. There is only one entry because the Author does not have the privileges required to view any other users' jobs:
 
 ![](./Images/Img1.231.Ex3.CompletedJobAuthor.png)
 
 
-Log out again and log back in as an administrator. Now, in the Jobs | Completed window, you should be able to see both the administrator's jobs and the user's jobs:
+Switch back to the Admin browser. Now, in the Jobs > Completed page, you should be able to see both the administrator's jobs and the Author's jobs:
 
 ![](./Images/Img1.232.Ex3.MultiUserJobsList.png)
 
-That's because the administrator group does have permission to view all jobs.
+That's because the administrator account has the permission to view all jobs.
 
 ---
 
