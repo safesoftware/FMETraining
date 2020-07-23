@@ -260,7 +260,7 @@ When prompted (or in the parameters dialog) ensure that only the TransitStations
 <br>**10) Filter Data**
 <br>Now let's filter the emergencies.
 
-First, add a Bufferer transformer to the TransitStation feature type and buffer the features by 200 meters.
+First, add a Bufferer transformer to the TransitStation feature type and buffer the features by 200 meters. Be sure to set the End Cap Style and Corner Style parameters to Round.
 
 Secondly, add a PointOnAreaOverlayer to assess whether an emergency falls inside one of these buffers. The workspace will now look like this:
 
@@ -369,11 +369,11 @@ On the other hand, the outgoing messages are nothing like the same rate as the i
 
 Go to the FME Server web interface and navigate to the Automations: Build page.
 
-Add a Topic Trigger to the canvas and create a new Topic called EmergencyTransitMessages:
+Add an FME Server Topic Notified Trigger to the canvas and create a new Topic called EmergencyTransitMessages:
 
 ![](./Images/Img4.452.Ex1.NotificationNewTopic.png)
 
-Now add a Log action connected to that topic. There are various protocols we could realistically use for sending a message (email springs to mind) but for the purposes of this exercise use the Log protocol is appropriate. Set the Log Message to Event as JSON and specify a Log File name and location. Then start the Automation.
+Now add a Log action connected to that topic. There are various protocols we could realistically use for sending a message (email springs to mind) but for the purposes of this exercise use the "Log a message" action is appropriate. Set the Formatted Message using the drop-down menu to Event as JSON (under the Event sub-menu). Then start the Automation.
 
 ![](./Images/Img4.453.Ex1.TopicLogAutomation.png)
 
@@ -386,7 +386,7 @@ Inspect the transformer parameters and set it up to send a message to the Emerge
 
 
 <br>**15) Publish and Run Workspaces**
-<br>Re-publish and set the workspaces running again. Navigate to your Log file under Resources to find the results as recorded by the Log Action.
+<br>Re-publish and set the workspaces running again. Navigate to View Log File under the Menu drop-down in your Automation to find the results as recorded by the Log Action.
 
 ---
 
