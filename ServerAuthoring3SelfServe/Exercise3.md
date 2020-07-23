@@ -39,6 +39,11 @@
 <td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex3-Complete.fmw</td>
 </tr>
 
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex3-Complete.fsproject</td>
+</tr>
+
 </table>
 
 ---
@@ -219,12 +224,12 @@ Double-click the FeatureReader to open its parameters. Change the Dataset parame
 Note that this workspace won't work on FME Desktop now, but it will run properly on Server. Click OK. The Addresses output port disappears; connect the &lt;Generic&gt; port to the Reprojector_2.
 
 <br>**11) Publish to FME Server**
-<br>With the workspace complete, we can now publish to FME Server. Click on the Publish button on the toolbar. Select the Training FME Server connection, then create a new repository called Geometry. Click Select Files... > Select Location > Upload to a shared resource folder > Data > OK to upload the GDB to FME Server's Data folder. Select Data Download and Job Submitter as the Services.
+<br>With the workspace complete, we can now publish to FME Server. Click on the Publish button on the toolbar. Select the Training FME Server connection and the Training repository. Click Select Files... > Select Location > Upload to a shared resource folder > Data > OK to upload the GDB to FME Server's Data folder. Select Data Download and Job Submitter as the Services.
 
 <br>**12) Test on FME Server**
-<br>Click the Direct Link to the workspace in the Translation Log (http://localhost/fmeserver/#/workspaces/run/Geometry/SelfServe-Ex3-Complete.fmw/) and login if necessary.
+<br>Click the Direct Link to the workspace in the Translation Log (http://localhost/fmeserver/#/workspaces/run/Training/SelfServe-Ex3-Complete.fmw/) and login if necessary.
 
-Select Geometry as the Repository and set the Service to Data Download.
+Select Training as the Repository and set the Service to Data Download.
 
 For Published Parameters, you should see the Select construction area parameter. Click on the map icon to select the area.
 

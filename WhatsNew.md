@@ -18,6 +18,7 @@ This file documents major changes made to training materials in 2019
 
 ### Self-Serve with FME Server: Part1 & Part2###
 - Reduced the content on user parameters, as this is covered in detail in [Desktop Advanced](https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/4.00.AdvancedParameterUse.html)
+- Consolidated the discussion of geometry user parameters to just include pre-existing boundaries and the Geometry user parameter
 - Edited [Exercise 3](ServerAuthoring3SelfServe\Exercise3.md) to cover adding a Geometry user parameter
 - Removed Exercises 4-6, as these are covered by Desktop Advanced training and were repetitive
 

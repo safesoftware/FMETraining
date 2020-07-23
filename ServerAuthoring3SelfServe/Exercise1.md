@@ -39,6 +39,11 @@
 <td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex1-Complete.fmw</td>
 </tr>
 
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex1-Complete.fsproject</td>
+</tr>
+
 </table>
 
 ---
@@ -143,7 +148,7 @@ Your workspace will now look like this:
 <br>Inspect the RasterResampler's parameters and set:
 
 <table>
-<tr><td style="font-weight: bold">Size Specification</td><td>Cell Size</td></tr>
+<tr><td style="font-weight: bold">Resolution Specification</td><td>Cell Spacing</td></tr>
 <tr><td style="font-weight: bold">X Cell Spacing</td><td>5</td></tr>
 <tr><td style="font-weight: bold">Y Cell Spacing</td><td>5</td></tr>
 </table>
@@ -192,4 +197,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

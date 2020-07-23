@@ -35,8 +35,18 @@
 </tr>
 
 <tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Start Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex2-Begin.fsproject</td>
+</tr>
+
+<tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
 <td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex2-Complete.fmw</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex2-Complete.fsproject</td>
 </tr>
 
 </table>
@@ -51,12 +61,12 @@ Sometimes the end-users download data as JPEG just to open it in a browser or im
 <br>**1) Open Workspace**
 <br>Open the workspace from exercise 1, or the begin workspace listed above.
 
-<br>**2) Publish to FME Server**  
+<br>**2) Publish to FME Server**
 <br> Re-publish the workspace to FME Server.
 
-In the final dialog of the publishing wizard, check the boxes to register the workspace with both Data Download and Data Streaming (but don't click Finish yet):  
+In the final dialog of the publishing wizard, check the boxes to register the workspace with both Data Download and Data Streaming (but don't click Finish yet):
 
-![](./Images/Img3.205.Ex2.PublishToStreamService.png)  
+![](./Images/Img3.205.Ex2.PublishToStreamService.png)
 
 Click the Edit button for the Data Streaming service. Ensure that service is using the output of the JPEG Writer (for now we're limiting the streaming of data to JPEG format):
 
@@ -68,7 +78,7 @@ Click the Edit button for the Data Streaming service. Ensure that service is usi
 ![](./Images/Img3.207.Ex2.SelectStreamingService.png)
 
 
-<br>**5) Check Results**  
+<br>**5) Check Results**
 <br>You should find that the results of the translation are returned as a streamed JPEG file. Most likely it will open directly in your web browser:
 
 ![](./Images/Img3.210.Ex2.JPEGOpenedInBrowser.png)
@@ -95,4 +105,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>
