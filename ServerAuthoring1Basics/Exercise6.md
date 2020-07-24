@@ -4,10 +4,10 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1.5</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1.6</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Sharing a Repository</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Workspace Sharing</span>
 </td>
 </tr>
 
@@ -23,7 +23,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Share a repository with another FME Server user</td>
+<td style="border: 1px solid darkorange">Share a workspace so that anyone can run it</td>
 </tr>
 
 <tr>
@@ -39,61 +39,47 @@
 </table>
 
 ---
-In the last exercise, you created a schedule to automatically run the workspace you created in Exercise 1 once a day. But what happens if something goes wrong with this workspace or it needs to be updated and you're not available to fix it? It would be a good idea to allow other FME Server Authors within your department to be able to edit and run this workspace.
+You have already (in Exercises 1, 2, and 3) created a workspace to carry out this translation, published it to FME Server, run it to confirm it works, and committed it to version history.
 
-Let's ensure that other users that are part of the FME Server Author role have access to this repository to run and modify the workspace.  
+In the last exercise, you shared the Training repository you created in Exercise 1 with other authors on FME Server. Now you have gotten requests from other users who do not have FME Server accounts to be able to run the translation on demand.  
 
-<br>**1) Enable Author Account**
-<br>In FME 2020, the default accounts of Author, User, and Guest are now disabled on installation for enhanced security. We will need to enable the Author account before we continue.
+Let's create an FME Server App so that anyone with the URL can run this workspace to update the database whenever they need to.
 
-Browse to the login page of the FME Server interface, and log in using the administrator account (admin/FMElearnings).
+<br>**1) Connect to Server**
+<br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/admin).
 
-Under the Admin section on the side menu bar, expand User Management, then click on Users.
+<br>**2) Open Server Apps**
+<br>Click on Server Apps from the Server menu, then click on Create to begin configuring a new FME Server App.
 
-![](./Images/Img1.859.Ex5.UsersMenu.png)
+![](./Images/Img1.241.Ex6.CreateApp.png)
 
-Select the Author user, then in the Actions drop-down select Enable. A green checkmark should appear for the Author user under status.
+<br>**3) Configure Server App**
+<br>Set a Name and Description for your new Server App. Then select the Training Repository and Basics-Ex1-Complete.fmw Workspace.
 
-![](./Images/Img1.860.Ex5.EnableAuthor.png)
+You can leave the expiration time at its default value which will allow the API Token to expire after 10 years. You could set this to a shorter time if you only want to grant access for a smaller time window.
 
-<br>**2) Log In to Author Account**
-<br>Now open an Incognito or Private window in your browser and open another instance of FME Server. Log in using the credentials Author/Author
+Keep the User Can Upload option turned on, this will allow your users to upload their own datasets to send as input to the workspace. Notice under Additional Parameters, you can give the users access to browse for data within folders in Resources. We won't touch that setting now either.
 
+![](./Images/Img1.244.Ex6.AppSelectWorkspace.png)
 
-The first thing you'll notice is that the menu and functionality is more restricted for this account (notice the Admin section is now gone):
+<br>**4) Customize Server App**
 
-![](./Images/Img1.227.Ex3.AuthorMenu.png)
+Below the workspace selection area, you will see sections for Additional Permissions and Parameters.
+- Additional Permissions will let you decide if you want the users who will access your Server App to be able to access items within the FME Server Resources.
+- Parameters will allow you to configure which published parameters should be displayed for your users to set when using the Server App.
 
-Also, if you try to run a workspace, you'll find that this account does not have access to the Training repository where the existing workspace resides:
+Leave those with their default values and move on to Customize Appearance. Expand that section and change the Title and Background Color for the App.
 
-![](./Images/Img1.228.Ex3.AuthorRepository.png)
+![](./Images/Img1.245.Ex6.CustomizeApp.png)
 
-<br>**3) Share Repository**
-<br>Minimize the incognito/private browser window where you are logged in as Author, and return to the browser where you are logged in as Admin.
+Click OK to create the Server App.
 
-You have the full set of menu entries, expand Workspaces and click on Manage Workspaces on the side menu. Under the list of repositories, locate the Training repository. Click the Share icon to the right:
+<br>**4) Test the FME Server App**
+<br>Now that your App has been created, you'll see that a URL was generated for it.
 
-![](./Images/Img1.229.Ex3.ShareButton.png)
+![](./Images/Img1.243.Ex6.SharingURLs.png)
 
-In the Sharing Options dialog, select fmeauthor as the role to share with, and allow them full access to the repository:
-
-![](./Images/Img1.230.Ex3.ShareDialog.png)
-
-By selecting the *fmeauthor* role (rather than the single *Author* account), we allow anyone who is tagged as an Author to access the workspace; and by allowing them full access to the repository, we allow them to run, download, and make edits to our workspace.
-
-<br>**4) Check Sharing**
-<br>Switch back to the incognito/private window with the Author account.
-
-This time, you should have access to the Training repository. Click Run Workspace (or refresh the page), select your workspace in the Training repository and run it. Check the Jobs page, and you'll see one entry for the workspace when it was run as the Author. There is only one entry because the Author does not have the privileges required to view any other users' jobs:
-
-![](./Images/Img1.231.Ex3.CompletedJobAuthor.png)
-
-
-Switch back to the Admin browser. Now, in the Jobs > Completed page, you should be able to see both the administrator's jobs and the Author's jobs:
-
-![](./Images/Img1.232.Ex3.MultiUserJobsList.png)
-
-That's because the administrator account has the permission to view all jobs.
+Click on the URL to open it. You will see that it opens a webpage very similar to the Run Workspace page in FME Server, but it has no options other than to run this one workspace and it does not require a user to enter a username and password to access it. The styling for the page will also match what you selected within the customization options.
 
 ---
 
@@ -112,7 +98,7 @@ That's because the administrator account has the permission to view all jobs.
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Share a repository in FME Server and tested to ensure it is available to the right users</li></ul>
+<ul><li>Create an FME Server App to share a workspace with users who do not have FME Server accounts</li>
 </span>
 </td>
 </tr>
