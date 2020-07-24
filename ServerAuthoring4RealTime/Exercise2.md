@@ -35,8 +35,18 @@
 </tr>
 
 <tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Start Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex2-Start.fsproject</td>
+</tr>
+
+<tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">C:\FMEData2019\Workspaces\ServerAuthoring\RealTime-Ex2-Complete.fmw</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\RealTime-Ex2-Complete.fmw</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex2-Complete.fsproject</td>
 </tr>
 
 </table>
