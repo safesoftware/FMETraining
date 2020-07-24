@@ -4,10 +4,10 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1.5</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 1.4</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
-<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Sharing a Repository</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Daily Database Updates: Workspace Scheduling</span>
 </td>
 </tr>
 
@@ -23,7 +23,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Demonstrates</td>
-<td style="border: 1px solid darkorange">Share a repository with another FME Server user</td>
+<td style="border: 1px solid darkorange">Schedule a workspace to run automatically on FME Server </td>
 </tr>
 
 <tr>
@@ -39,61 +39,50 @@
 </table>
 
 ---
-In the last exercise, you created a schedule to automatically run the workspace you created in Exercise 1 once a day. But what happens if something goes wrong with this workspace or it needs to be updated and you're not available to fix it? It would be a good idea to allow other FME Server Authors within your department to be able to edit and run this workspace.
 
-Let's ensure that other users that are part of the FME Server Author role have access to this repository to run and modify the workspace.  
+You have already (in Exercises 1, 2, and 3) created a workspace to carry out this translation, published it to FME Server, run it to confirm it works, and committed it to version history.
 
-<br>**1) Enable Author Account**
-<br>In FME 2020, the default accounts of Author, User, and Guest are now disabled on installation for enhanced security. We will need to enable the Author account before we continue.
+As a daily task, you plan to run the translation every day after work. However... what happens if you are not there or leave early? How can you make sure it runs every day at the same time then?
 
-Browse to the login page of the FME Server interface, and log in using the administrator account (admin/FMElearnings).
+This is where Scheduling comes in handy. You can set up the workspace to run on an automatic schedule so you don't have to remember to run it daily.
 
-Under the Admin section on the side menu bar, expand User Management, then click on Users.
+<br>**1) Connect to Server**
+<br>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/FMElearnings).
 
-![](./Images/Img1.859.Ex5.UsersMenu.png)
+<br>**2) Create Schedule**
+<br>Now let's create a new schedule. Expand Schedules on the side menu and select Build Schedule.
 
-Select the Author user, then in the Actions drop-down select Enable. A green checkmark should appear for the Author user under status.
+Set a name of Test Schedule, then create a new Category named Training, by clicking on the plus sign (+):
 
-![](./Images/Img1.860.Ex5.EnableAuthor.png)
+![](./Images/Img1.233.Ex3.NewSchedule.png)
 
-<br>**2) Log In to Author Account**
-<br>Now open an Incognito or Private window in your browser and open another instance of FME Server. Log in using the credentials Author/Author
+Change the Schedule Type to Repeat on Interval. Set the Repeat Every to 1 Days at 9am, then enable Start Immediately. Then leave the end time blank, and ensure that Does Not Expire is enabled.
 
+![](./Images/Img1.234.Ex3.SetSchedule.png)
 
-The first thing you'll notice is that the menu and functionality is more restricted for this account (notice the Admin section is now gone):
+Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine on which you are running the web browser that is connected to FME Server. Keep this in mind if your FME Server is on a machine in a different time zone from the machine where you are accessing FME Server.
 
-![](./Images/Img1.227.Ex3.AuthorMenu.png)
+Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Ch-Ex1-Complete.fmw):
 
-Also, if you try to run a workspace, you'll find that this account does not have access to the Training repository where the existing workspace resides:
+![](./Images/Img1.235.Ex3.NewScheduleWorkspace.png)
 
-![](./Images/Img1.228.Ex3.AuthorRepository.png)
+There are no user parameters we need to change for this workspace, so any can be ignored.
 
-<br>**3) Share Repository**
-<br>Minimize the incognito/private browser window where you are logged in as Author, and return to the browser where you are logged in as Admin.
+Now click OK to add the new schedule.
 
-You have the full set of menu entries, expand Workspaces and click on Manage Workspaces on the side menu. Under the list of repositories, locate the Training repository. Click the Share icon to the right:
+<br>**3) Trigger Schedule**
+<br>Our schedule is set up to run every day at 9am, depending on what time you are taking this course, you might have to wait until tomorrow to see the schedule in action. Thankfully, we can trigger the schedule to run whenever we want. This is great for testing purposes or whenever you might need the workspace to run.
 
-![](./Images/Img1.229.Ex3.ShareButton.png)
+On the Manage Schedules page, select the Test Schedule schedule we just made and then click the Actions drop-down and select Trigger.
 
-In the Sharing Options dialog, select fmeauthor as the role to share with, and allow them full access to the repository:
+![](./Images/Img1.237.1.Ex3.TriggerSchedule.png)
 
-![](./Images/Img1.230.Ex3.ShareDialog.png)
+<br>**4) Examine Jobs Page**
+<br>Open the Jobs page. A list of previously run jobs will open. You will see the workspace we triggered with the schedule. You can tell it was the workspace associated with the schedule as schedule will appear under Source Type.
 
-By selecting the *fmeauthor* role (rather than the single *Author* account), we allow anyone who is tagged as an Author to access the workspace; and by allowing them full access to the repository, we allow them to run, download, and make edits to our workspace.
+![](./Images/Img1.236.Ex3.NewScheduleJobs.png)
 
-<br>**4) Check Sharing**
-<br>Switch back to the incognito/private window with the Author account.
-
-This time, you should have access to the Training repository. Click Run Workspace (or refresh the page), select your workspace in the Training repository and run it. Check the Jobs page, and you'll see one entry for the workspace when it was run as the Author. There is only one entry because the Author does not have the privileges required to view any other users' jobs:
-
-![](./Images/Img1.231.Ex3.CompletedJobAuthor.png)
-
-
-Switch back to the Admin browser. Now, in the Jobs > Completed page, you should be able to see both the administrator's jobs and the Author's jobs:
-
-![](./Images/Img1.232.Ex3.MultiUserJobsList.png)
-
-That's because the administrator account has the permission to view all jobs.
+Notice that the username is set to admin; since that is the user who created the schedule, that is the username under which the job will be run.
 
 ---
 
@@ -112,7 +101,9 @@ That's because the administrator account has the permission to view all jobs.
 <span style="font-family:serif; font-style:italic; font-size:larger">
 By completing this exercise you have learned how to:
 <br>
-<ul><li>Share a repository in FME Server and tested to ensure it is available to the right users</li></ul>
+<ul><li>Schedule a translation in FME Server</li>
+<li>Trigger a schedule</li>
+<li>Check the job history to ensure the scheduled translation took place</li></ul>
 </span>
 </td>
 </tr>
