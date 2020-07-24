@@ -52,7 +52,7 @@ This is where Scheduling comes in handy. You can set up the workspace to run on 
 <br>**2) Create Schedule**
 <br>Now let's create a new schedule. Expand Schedules on the side menu and select Build Schedule.
 
-Set a name of Test Schedule, then create a new Category named Training, by clicking on the plus sign (+):
+Set a name of Test Schedule, then create a new Category named Training, by clicking on the plus sign '+'':
 
 ![](./Images/Img1.233.Ex3.NewSchedule.png)
 
