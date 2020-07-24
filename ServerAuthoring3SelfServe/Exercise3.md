@@ -41,7 +41,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
-<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex3-Complete.fsproject</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\SelfServe-Ex3-Complete.fsproject</td>
 </tr>
 
 </table>

@@ -36,7 +36,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Start Server Project</td>
-<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex2-Begin.fsproject</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\SelfServe-Ex2-Begin.fsproject</td>
 </tr>
 
 <tr>
@@ -46,7 +46,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
-<td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex2-Complete.fsproject</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\SelfServe-Ex2-Complete.fsproject</td>
 </tr>
 
 </table>
