@@ -27,7 +27,7 @@
   * [FME Server Projects](ServerAuthoring6AdvancedWorkflows/1.14.FMEServerProjects.md)
   * [Working With Projects](ServerAuthoring6AdvancedWorkflows/1.15.WorkingWithProjects.md)
   * [Sharing Projects](ServerAuthoring6AdvancedWorkflows/1.16.SharingAProject.md)
-  * [Exercise 6.1: Best Practice Workspace Analysis Project](ServerAuthoring6AdvancedWorkflows/Exercise7.md)
+  * [Exercise 1.7: Best Practice Workspace Analysis Project](ServerAuthoring6AdvancedWorkflows/Exercise7.md)
   * [Module Review](ServerAuthoring1Basics/1.17.ModuleReview.md)
   * [Q+A Answers](ServerAuthoring1Basics/1.18.QuestionAnswers.md)
 * [Chapter 2: FME Server and Data Handling](ServerAuthoring2DataHandling/2.00.FMEServerDataHandling.md)
