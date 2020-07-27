@@ -29,7 +29,7 @@ The status of each chapter is:
 - Chapter 0: Incomplete content. No exercises
 - Chapter 1: Incomplete content and exercises
 - Chapter 2: Incomplete content and exercises
-- Chapter 3: Incomplete content and exercises
+- Chapter 3: Ready for review
 - Chapter 4: Incomplete content and exercises
 - Chapter 5: Incomplete content and exercises
 - Chapter 6: Incomplete content and exercises
