@@ -50,11 +50,11 @@ Browse to the login page of the FME Server interface, and log in using the admin
 
 Under the Admin section on the side menu bar, expand User Management, then click on Users.
 
-![](./Images/Img1.859.Ex5.UsersMenu.png)
+![](./Images/Img1.238.Ex5.UsersMenu.png)
 
 Select the Author user, then in the Actions drop-down select Enable. A green checkmark should appear for the Author user under status.
 
-![](./Images/Img1.860.Ex5.EnableAuthor.png)
+![](./Images/Img1.239.Ex5.EnableAuthor.png)
 
 <br>**2) Log In to Author Account**
 <br>Now open an Incognito or Private window in your browser and open another instance of FME Server. Log in using the credentials Author/Author
@@ -62,22 +62,22 @@ Select the Author user, then in the Actions drop-down select Enable. A green che
 
 The first thing you'll notice is that the menu and functionality is more restricted for this account (notice the Admin section is now gone):
 
-![](./Images/Img1.227.Ex3.AuthorMenu.png)
+![](./Images/Img1.240.Ex5.AuthorMenu.png)
 
 Also, if you try to run a workspace, you'll find that this account does not have access to the Training repository where the existing workspace resides:
 
-![](./Images/Img1.228.Ex3.AuthorRepository.png)
+![](./Images/Img1.241.Ex5.AuthorRepository.png)
 
 <br>**3) Share Repository**
 <br>Minimize the incognito/private browser window where you are logged in as Author, and return to the browser where you are logged in as Admin.
 
 You have the full set of menu entries, expand Workspaces and click on Manage Workspaces on the side menu. Under the list of repositories, locate the Training repository. Click the Share icon to the right:
 
-![](./Images/Img1.229.Ex3.ShareButton.png)
+![](./Images/Img1.242.Ex5.ShareButton.png)
 
 In the Sharing Options dialog, select fmeauthor as the role to share with, and allow them full access to the repository:
 
-![](./Images/Img1.230.Ex3.ShareDialog.png)
+![](./Images/Img1.243.Ex5.ShareDialog.png)
 
 By selecting the *fmeauthor* role (rather than the single *Author* account), we allow anyone who is tagged as an Author to access the workspace; and by allowing them full access to the repository, we allow them to run, download, and make edits to our workspace.
 
@@ -86,12 +86,12 @@ By selecting the *fmeauthor* role (rather than the single *Author* account), we 
 
 This time, you should have access to the Training repository. Click Run Workspace (or refresh the page), select your workspace in the Training repository and run it. Check the Jobs page, and you'll see one entry for the workspace when it was run as the Author. There is only one entry because the Author does not have the privileges required to view any other users' jobs:
 
-![](./Images/Img1.231.Ex3.CompletedJobAuthor.png)
+![](./Images/Img1.244.Ex5.CompletedJobAuthor.png)
 
 
 Switch back to the Admin browser. Now, in the Jobs > Completed page, you should be able to see both the administrator's jobs and the Author's jobs:
 
-![](./Images/Img1.232.Ex3.MultiUserJobsList.png)
+![](./Images/Img1.245.Ex5.MultiUserJobsList.png)
 
 That's because the administrator account has the permission to view all jobs.
 

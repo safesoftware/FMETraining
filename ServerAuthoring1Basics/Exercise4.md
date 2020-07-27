@@ -54,17 +54,17 @@ This is where Scheduling comes in handy. You can set up the workspace to run on 
 
 Set a name of Test Schedule, then create a new Category named Training, by clicking on the plus sign '+'':
 
-![](./Images/Img1.233.Ex3.NewSchedule.png)
+![](./Images/Img1.233.Ex4.NewSchedule.png)
 
 Change the Schedule Type to Repeat on Interval. Set the Repeat Every to 1 Days at 9am, then enable Start Immediately. Then leave the end time blank, and ensure that Does Not Expire is enabled.
 
-![](./Images/Img1.234.Ex3.SetSchedule.png)
+![](./Images/Img1.234.Ex4.SetSchedule.png)
 
 Be aware that the times are given in 24-hour format, so 1:30 means AM and 13:30 means PM. It is also important to note that this time is the local time of the machine on which you are running the web browser that is connected to FME Server. Keep this in mind if your FME Server is on a machine in a different time zone from the machine where you are accessing FME Server.
 
 Under Workspace Settings, select the Training repository and within that the workspace previously uploaded (Ch-Ex1-Complete.fmw):
 
-![](./Images/Img1.235.Ex3.NewScheduleWorkspace.png)
+![](./Images/Img1.235.Ex4.NewScheduleWorkspace.png)
 
 There are no user parameters we need to change for this workspace, so any can be ignored.
 
@@ -75,12 +75,12 @@ Now click OK to add the new schedule.
 
 On the Manage Schedules page, select the Test Schedule schedule we just made and then click the Actions drop-down and select Trigger.
 
-![](./Images/Img1.237.1.Ex3.TriggerSchedule.png)
+![](./Images/Img1.236.Ex4.TriggerSchedule.png)
 
 <br>**4) Examine Jobs Page**
 <br>Open the Jobs page. A list of previously run jobs will open. You will see the workspace we triggered with the schedule. You can tell it was the workspace associated with the schedule as schedule will appear under Source Type.
 
-![](./Images/Img1.236.Ex3.NewScheduleJobs.png)
+![](./Images/Img1.237.Ex4.NewScheduleJobs.png)
 
 Notice that the username is set to admin; since that is the user who created the schedule, that is the username under which the job will be run.
 

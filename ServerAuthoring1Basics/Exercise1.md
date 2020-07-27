@@ -124,11 +124,11 @@ You should now have two readers on the canvas:
 <br>**3) Inspect the Data**
 <br>Before we proceed, we should inspect the data. Click on the FireHalls reader feature type to open the popup menu. On the popup menu, click on View Source Data, this will open the data in Visual Preview:
 
-![](./Images/Img1.700.Ex1.FireHallsViewSourceData.png)
+![](./Images/Img1.202.Ex1.FireHallsViewSourceData.png)
 
 While viewing the data in Visual Preview, take note of the coordinate system in the bottom right corner of the Graphics window. Since we are working with more than one dataset, we will want to make sure that all of the datasets are in the same coordinate system:
 
-![](./Images/Img1.701.Ex1.FireHallsVisualPreview.png)
+![](./Images/Img1.203.Ex1.FireHallsVisualPreview.png)
 
 Repeat the same steps to view the Neighborhoods reader feature type, and take note of the coordinate system.
 
@@ -138,11 +138,11 @@ Repeat the same steps to view the Neighborhoods reader feature type, and take no
 
 Add a Reprojector transformer to the workspace. You can do this by simply clicking on the canvas and starting to type Reprojector. Connect it to the Neighborhoods feature type:
 
-![](./Images/Img1.202.Ex1.WorkspaceConnectedReprojector.png)
+![](./Images/Img1.204.Ex1.WorkspaceConnectedReprojector.png)
 
 In the Reprojector's parameters set the Destination Coordinate System to UTM83-10:
 
-![](./Images/Img1.203.Ex1.ReprojectorParameters.png)
+![](./Images/Img1.205.Ex1.ReprojectorParameters.png)
 
 This will ensure the Neighborhoods data is in the same coordinate system as the rest of the data.
 
@@ -164,15 +164,15 @@ This will ensure the Neighborhoods data is in the same coordinate system as the 
 
 </table>
 
-![](./Images/Img1.204.Ex1.AddWriterDialog.png)
+![](./Images/Img1.206.Ex1.AddWriterDialog.png)
 
 Click OK. When prompted, select both FireHalls and Neighborhoods as the feature types to add  and OK again:
 
-![](./Images/Img1.205.Ex1.AddWriterSelectFTs.png)
+![](./Images/Img1.207.Ex1.AddWriterSelectFTs.png)
 
 The workspace will now look like this:
 
-![](./Images/Img1.206.Ex1.WorkspaceWithReadersWriters.png)
+![](./Images/Img1.208.Ex1.WorkspaceWithReadersWriters.png)
 
 
 <br>**6) Add Clipper Transformer**
@@ -180,15 +180,15 @@ The workspace will now look like this:
 
 Connect the FireHalls feature type to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections; this is done by right-clicking on the Clipper:Clipper port and selecting Move Down:
 
-![](./Images/Img1.207.Ex1.WorkspaceConnected.png)
+![](./Images/Img1.209.Ex1.WorkspaceConnected.png)
 
 In the Clipper parameters, enable Merge Attributes, so that the neighborhood name is copied from the Neighborhood features to the FireHall features:
 
-![](./Images/Img1.208.Ex1.ClipperParameters.png)
+![](./Images/Img1.210.Ex1.ClipperParameters.png)
 
 Connect the Clipper:Inside port to the FireHalls writer feature type. Also make a connection from the Reprojector:Reprojected port to the Neighborhoods writer feature type:
 
-![](./Images/Img1.209.Ex1.WorkspaceAllConnected.png)
+![](./Images/Img1.211.Ex1.WorkspaceAllConnected.png)
 
 <br>**7) Set Firehall Feature Type Name**
 <br>Finally, let's set the Feature Type Name for the FireHalls writer feature type.
@@ -201,7 +201,7 @@ FireHalls-@Value(NeighborhoodName)
 
 ...or click the drop-down and use the text editor dialog to enter that value. This will cause firehalls in each different neighborhood to be written to a different table/layer.
 
-![](./Images/Img1.210.Ex1.FireHallFeatureType.png)
+![](./Images/Img1.212.Ex1.FireHallFeatureType.png)
 
 <br>**8) Run Workspace**
 <br>Here comes the Server part of the process.
@@ -210,14 +210,37 @@ First, save the workspace. It is always a good idea to save the workspace before
 
 Once the workspace has been run, inspect the translation log. Your translation log should look like the one below:
 
-![](./Images/Img1.211.Ex1.Output.png)
+![](./Images/Img1.213.Ex1.Output.png)
 
 <br>**9) Publish to Server: Create Connection**
 <br>Now we have a workspace and know that it works correctly, let's publish it to FME Server.
 
 In FME Workbench, choose File &gt; Publish to FME Server from the menubar. As this is the first time we've connected to our FME Server, we'll need to create a new connection, so in the Publish to FME Server wizard select Add Web Connection from the drop-down menu:
 
-![](./Images/Img1.703.Ex1.AddWebConnection.png)
+![](./Images/Img1.214.Ex1.AddWebConnection.png)
+
+---
+
+<!--Warning Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">WARNING</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+As of FME 2019, the admin password is required to be set up after install. For this course, our administrator has chosen the password FMElearnings. If you are taking this course outside of Safe Software, please consult your FME Server Administrator for the admin password on their training machines.
+</span>
+</td>
+</tr>
+</table>
+
+---
 
 In the dialog that opens, enter the parameters provided by your training instructor. In most cases, the parameters will be as follows:
 
@@ -226,7 +249,7 @@ In the dialog that opens, enter the parameters provided by your training instruc
 - **Username:** admin
 - **Password:** FMElearnings
 
-![](./Images/Img1.212.Ex1.ServerConnection.png)
+![](./Images/Img1.215.Ex1.ServerConnection.png)
 
 You may or may not (probably not) need to enter a port number with the hostname, depending on how the system is set up.
 
@@ -238,11 +261,11 @@ Click Authenticate to confirm the connection and return to the previous dialog. 
 
 For this exercise, we’ll create a new repository by clicking the New button. When prompted, enter the name Training.
 
-![](./Images/Img1.213.Ex1.NewRepository.png)
+![](./Images/Img1.216.Ex1.NewRepository.png)
 
 Click OK to close the Create New Repository dialog. Enter a name for the workspace if it doesn't already have one. Place a checkmark against the Upload Data Files option:
 
-![](./Images/Img1.214.Ex1.UploadData.png)
+![](./Images/Img1.217.Ex1.UploadData.png)
 
 Then click Next to continue the wizard.
 
@@ -252,13 +275,13 @@ Then click Next to continue the wizard.
 
 Select the Job Submitter service as this is the only service we are using for now:
 
-![](./Images/Img1.215.Ex1.SelectService.png)
+![](./Images/Img1.218.Ex1.SelectService.png)
 
 ... and click Publish to complete publishing the workspace.
 
 After a workspace is transferred to Server, the log window displays a message reporting which workspace has been published to which repository and for which services. It will look something like this:
 
-![](./Images/Img1.216.Ex1.PublishLog.png)
+![](./Images/Img1.219.Ex1.PublishLog.png)
 
 ---
 

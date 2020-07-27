@@ -105,7 +105,7 @@ This will open the web interface login screen for the FME Server being used.
 <br>**2) Log In to Server**
 <br>In the User Login dialog, enter a username and password for your FME Server account. The username/password combination for a training installation is admin/FMElearnings:
 
-![](./Images/Img1.217.Ex2.LogInWindow.png)
+![](./Images/Img1.220.Ex2.LogInWindow.png)
 
 Click the Login button.
 
@@ -113,24 +113,24 @@ Click the Login button.
 <br>**3) Examine the User Interface**
 <br>Welcome to the FME Server Web Interface. Take a moment to familiarize yourself with this interface. In the top-right corner, you can access the Help menu and your user settings:
 
-![](./Images/Img1.218.Ex2.TopRightMenu.png)
+![](./Images/Img1.221.Ex2.TopRightMenu.png)
 
 The side menu is where all of the FME Server functions can be accessed. If you need more space, this menu can be collapsed. Note that the side menu will look different depending on which account you are signed into to. In the below image the user is logged in as admin:
 
-![](./Images/Img1.219.Ex2.SidebarMenu.png)
+![](./Images/Img1.222.Ex2.SidebarMenu.png)
 
 Finally, while still on the FME Server Home page, you can access Recent Jobs, Recent Projects, Last Published Workspaces, Favorite Workspaces, and Help pages. There are also options in the top right to customize the layout and content of this page.
 If you clicked away from this page, just click the FME logo in the top left corner to get back to the Home page.
 
-![](./Images/Img1.220.Ex2.HomePageOverview.png)
+![](./Images/Img1.223.Ex2.HomePageOverview.png)
 
 Under Last Published Workspaces, you should be able to find the workspace you published in Exercise 1. Click the star icon next to this workspace to set it as a favorite:
 
-![](./Images/Img1.221.Ex2.StarWorkspace.png)
+![](./Images/Img1.224.Ex2.StarWorkspace.png)
 
 After clicking the star, the workspace appears in the Favorite Workspaces panel. This allows for quick access to this workspace from anywhere in the FME Server Web Interface:
 
-![](./Images/Img1.222.Ex2.StarredWorkspace.png)
+![](./Images/Img1.225.Ex2.StarredWorkspace.png)
 
 We'll run the workspace shortly, but perhaps first we should make sure FME Server is running correctly (the fact that we could log in is a good sign) and that we are licensed and have engines running.
 
@@ -138,7 +138,7 @@ We'll run the workspace shortly, but perhaps first we should make sure FME Serve
 <br>**4) Confirm Licensing**
 <br>Expand Engines & Licensing in the ADMIN section of the side menu, then click on Licensing. This will open up the licensing page. You should see a message informing you that FME Server is licensed and a list of the engines available:
 
-![](./Images/Img1.223.Ex2.LicensingInfo.png)
+![](./Images/Img1.226.Ex2.LicensingInfo.png)
 
 ---
 
@@ -168,19 +168,19 @@ Click on the published workspace in the Favorite Workspaces panel to open the we
 
 The workspace page shows a few options, the first of which are for the repository, workspace, and service. These should already be filled in with values since we opened the workspace directly. If we opened the workspace through the Run Workspace page, we would have to fill these values in:
 
-![](./Images/Img1.224.Ex2.RunWorkspaceDialog.png)
+![](./Images/Img1.227.Ex2.RunWorkspaceDialog.png)
 
 Because this workspace has a few published parameters, they are also listed; but we can ignore these for now (we'll deal with source datasets later in the course).
 
 Click the Run button to run the workspace. The workspace will run to completion, and a message to that effect will appear:
 
-![](./Images/Img1.225.Ex2.RanWorkspace.png)
+![](./Images/Img1.228.Ex2.RanWorkspace.png)
 
 
 <br>**6) Examine Jobs Page**
 <br>Click Jobs on the side menu to expand it, then click Completed to view a list of the completed jobs. A list of previously run jobs will open, including the one we just ran:
 
-![](./Images/Img1.226.Ex2.JobsWindow.png?)
+![](./Images/Img1.229.Ex2.JobsWindow.png?)
 
 Notice some interesting parts of the interface:
 

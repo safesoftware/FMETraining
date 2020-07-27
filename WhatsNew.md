@@ -1,17 +1,21 @@
 # What's New #
-This file documents major changes made to training materials in 2019
+This file documents major changes made to training materials in 2020
 
 ---
 
 ## Server Authoring ##
 
 ### General ###
-- Updated materials to introduce functionality new to FME Server 2019
+- Updated materials to introduce functionality new to FME Server 2020
+- Updated screenshots to reflect 2020 GUI change
 
 ### Introduction to FME Server ###
-- Added information on how to create an FME Server App (new in 2019)
-- Removed section on FME Server Architecture as that is covered in the Administrator training course
-- Added information about the Advanced parameters on the Run Workspace page
+- Moved projects section here from Advanced Workflows to utilize projects throughout the rest of the course
+- Added information about dynamic engines
+- Added information about basic schedules (new for 2020)
+- Exercise 7, removed email section
+- Exercise 5, added steps to enable author user
+- All exercises, updated the admin password, added note on exercise 1 about the new password. 
 
 ### Data Handling and FME Server ###
 - Added section on sharing custom resources (including custom transformers, formats, python and R modules)
