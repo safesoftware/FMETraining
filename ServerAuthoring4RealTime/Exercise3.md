@@ -72,7 +72,7 @@ Having learned that not all users are able to access the internal network where 
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2019/ServerAuthoring4RealTime/Exercise2.html"> Exercise 2</a> left off. You must have completed Exercise 1 to carry out this exercise.
+This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Exercise2.html"> Exercise 2</a> left off. You must have completed Exercise 1 to carry out this exercise.
 </td>
 </tr>
 </table>
@@ -188,16 +188,17 @@ You could select any Resource folder for attachments to be saved to; but for thi
 The Automation is not quite ready yet because the JSON message from the Email Trigger stores the incoming file path in an attribute named Email Attachment, however the Source dataset for the run workspace is set to pick up a value from the Directory Watch File Path attribute. Therefore in order for the workspace to be able to process the file path from both Triggers we need to create an attribute in each Trigger with a common name that can be used downstream in the workflow.
 
 <br>**3) Create Custom Key**
-<br>We will need to create an Output Key on both Triggers. First select the Email trigger and click on the Output Keys tab. This will list all the standard output keys that come with that action, scroll to the bottom of the list and there is a second section called Custom Keys.
+<br>We will need to create an Output Key on both Triggers. First select the Email trigger and click on the Output Keys tab. Event Keys list all the standard output keys that come with that action, the second, custom section called User Keys.
 
-To add a new Custom Key click on the plus icon. Set the key name to user.shapefile and for the Value select email.attachment from the drop down list.
+To add a new User Key click on the plus icon. Set the key name to user.shapefile and for the Value select Email > Email Attachment in the Text Editor window.
 
-![](./Images/Img4.427.Ex3.CreateCustomKey.png)
+![](./Images/Img4.427.Ex3.CreateUserKey.png)
 
-Repeat this process in the Directory Watch trigger but this time set the value to file.path.
+Repeat this process in the Directory Watch trigger but this time set the Value to Directory > File Path.
 
-Lastly return to the Workspace Action and change the Source Dataset from file.path to the user.shapefile attribute listed under the Custom Keys Folder. Now, the workspace will be able to parse the Shapefile path to the workspace no matter what the trigger is.
+Lastly return to the Workspace Action and change the Source Dataset from file.path to the user.shapefile attribute listed under the User Keys dropdown menu. Now, the workspace will be able to parse the Shapefile path to the workspace no matter what the trigger is.
 
+![](./Images/Img4.427.Ex3.ActionUserKey.png)
 
 <!--Person X Says Section-->
 
@@ -212,7 +213,7 @@ Lastly return to the Workspace Action and change the Source Dataset from file.pa
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Custom keys can only be used in the Automation they are defined in, and can be set to an element of the JSON from the Trigger or Action message.
+User keys can only be used in the Automation they are defined in, and can be set to an element of the JSON from the Trigger or Action message.
 <br>To create values that can be used across all workspaces you can create Global Keys by selected the globe icon in the menu ribbon. These can only be set to plain text values, but an example of their use might be a value your organization commonly refers to, such as a  UNC path to an external location where all data is stored.
 </span>
 </td>
@@ -247,7 +248,7 @@ By completing this exercise you have learned how to:
 <br>
 <ul><li>Create an Email Trigger</li>
 <li>Create an automation with multiple input triggers to a single action</li>
-<li>Create custom keys to configure a single action to handle multiple trigger types</li></ul>
+<li>Create custom User Keys to configure a single action to handle multiple trigger types</li></ul>
 </span>
 </td>
 </tr>

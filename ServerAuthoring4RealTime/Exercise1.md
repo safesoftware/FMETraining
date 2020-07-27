@@ -57,7 +57,7 @@ As a technical analyst in the GIS department, you want to start experimenting wi
 
 
 <br>**1) Create Resources Folder**
-<br>The first step is to create a Resources folder to upload the data. Open the FME Server web interface and navigate to the Resources page.
+<br>Connect to FME Server (admin/admin). The first step is to create a Resources folder to upload the data. Open the FME Server web interface and navigate to the Resources page.
 
 Browse to the Data folder and create a new subfolder called BuildingUpdates:
 
@@ -101,7 +101,7 @@ Select Directory modified from the drop-down list as the Trigger for this Automa
 
 ![](./Images/Img4.402.Ex1.DirectoryToWatch1.png)
 
-Leave the Watch Subdirectories and Receive Notifications for Folders parameters set to No, since we are only interested in monitoring for files in the BuildingUpdates folder directly.
+Leave the Watch Subdirectories and Watch Folders parameters set to No, since we are only interested in monitoring for files in the BuildingUpdates folder directly.
 
 Then for the Filter parameter remove the MODIFY and DELETE actions. Since we are looking to add to the corporate database, in this example we are only interested in monitoring for new files arriving, not old ones being changed or removed:
 
@@ -117,9 +117,9 @@ Save the Automation by selecting Menu > Save as and name the Automation "Incomin
 <br>**4) Log Message**
 <br>Before we start the Automation we need to add an Action so the Trigger protocol can parse the notifications onwards. Before processing the data we first want to check the Directory Watch trigger is working as expected. To do this we can send the incoming messages to a log file located on FME Server.
 
-Select the Next Action node and set the Action to Log.
+Select the Next Action node and set the Action to Log a message.
 
-Click on the drop-down arrow for the Message parameter and select General > Event as JSON because in this instance we want to record the entire incoming message from the Directory Watch protocol.
+Click on the drop-down arrow for the Message parameter and select Event > Event as JSON because in this instance we want to record the entire incoming message from the Directory Watch protocol. 
 
 ---
 <!--Tip Section-->
@@ -143,9 +143,6 @@ A trigger stores the incoming message event details as JSON however for the stan
 </table>
 
 ---
-Since this is for testing we can save the log file to a temporary location that is frequently cleaned up by FME Server. For the Log file location, click the ellipsis to browse and then navigate to the Temp folder in FME Server Resources. You will need to specify the file name since it does not yet exist, call it IncomingBuildingFootprints.log.
-
-![](./Images/Img4.405.Ex1.LogMessageFilePath.png)
 
  Click Apply to save this Log configuration.  
 
@@ -180,17 +177,17 @@ As your Automation grows you may wish to turn off Guided mode, this can be done 
 ---
 
 <br>**6) Test Automation**
-<br>Now let's test the Automation. Locate the source Shapefile datasets in C:\FMEData2019\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.
+<br>Now let's test the Automation. Locate the source Shapefile datasets in C:\FMEData2020\Data\Engineering\BuildingFootprints. Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.
 
 You can use the file system (by copying the files to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface.
 
 ![](./Images/Img4.408.Ex1.DirectoryWatchDataInFolder.png)
 
-Check back in Resources > Temp, if the log is not yet present select the refresh button until it appears. Click on the file to view the contents and you will see four messages from the Logger showing the individual file paths.
+Check for updates in the log by selecting Menu > View Log File from the Incoming Building Footprints Automation.
 
-![](./Images/Img4.409.Ex1.ViewDirectoryWatchLog.png)
+![](./Images/Img4.409.Ex1.AutomationViewLogfile.png)
 
-In fact, every Automation also has a log file recording all the activity that occurs for every aspect of that Automation. To view this return to Automations and this time select the Manage page. This web page lists all existing Automations. Select the Incoming Building Footprints and once within this Automation select Menu > View Log File to view the activity log and spot the recording of these CREATE messages being sent.
+If the log is not yet present, select the refresh button until it appears. You will see four CREATE messages from the Logger showing the individual file paths.
 
 ![](./Images/Img4.410.Ex1.ViewAutomationsLog.png)
 
@@ -239,7 +236,7 @@ By completing this exercise you have learned how to:
 <br>
 <ul><li>Create a new Automation</li>
 <li>Use Directory Watch to poll an FME Server Resource</li>
-<li>Test a Directory Watch trigger by writing to a log</li></ul>
+<li>Test a Directory Watch trigger by reading a log</li></ul>
 </span>
 </td>
 </tr>

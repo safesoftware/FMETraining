@@ -75,7 +75,7 @@ You may have noticed that the Log Action in Automations actually submits a works
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2019/ServerAuthoring4RealTime/Exercise1.html"> Exercise 1</a> left off. You must have completed Exercise 1 to carry out this exercise.
+This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Exercise1.html"> Exercise 1</a> left off. You must have completed Exercise 1 to carry out this exercise.
 </td>
 </tr>
 </table>
@@ -96,7 +96,7 @@ Select Readers &gt; Add Reader from the menu bar. When prompted set the paramete
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2019\Data\Engineering\BuildingFootprints\Updates001.shp</td>
+<td style="">C:\FMEData2020\Data\Engineering\BuildingFootprints\Updates001.shp</td>
 </tr>
 
 <tr>
@@ -125,7 +125,7 @@ Select Writers &gt; Add Writer from the menubar. When prompted set the parameter
 
 <tr>
 <td style="font-weight: bold">Writer Dataset</td>
-<td style="">C:\FMEData2019\Data\Engineering\BuildingFootprints\building_footprints.sl3</td>
+<td style="">C:\FMEData2020\Data\Engineering\BuildingFootprints\building_footprints.sl3</td>
 </tr>
 
 <tr>
@@ -161,13 +161,13 @@ After adding the writer, click on the building_footprints feature type to bring 
 <br>**5) Add Dataset to FME Server**
 <br>Since the purpose of this Automation is to *update* our database – let's make sure that it is accessible in FME Server. To do this, we will upload the *building_footprints.sl3* SpatiaLite database to FME Server's shared resources.
 
-Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2019\Data\Engineering\BuildingFootprints\building_footprints.sl3
+Use the FME Server web interface to create a new folder **Output** in **Resources &gt; Data** and upload the file located at C:\FMEData2020\Data\Engineering\BuildingFootprints\building_footprints.sl3
 
 ![](./Images/Img4.421.Ex2.UploadDatabase.png)
 
 
 <br>**6) Edit Automation**
-<br>Navigate to the Automations: Manage page and select Incoming Building Footprints to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the trigger parameter value to Run Workspace.
+<br>Navigate to the Automations: Manage page and select Incoming Building Footprints to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the trigger parameter value to Run a workspace.
 
 Select the Training Repository and workspace uploaded in the previous step. The parameters should now include one for the Source Esri Shapefile and the output database.
 
@@ -191,7 +191,7 @@ Move the connection lines so that the Directory Watch enters this new Action nod
 
 ![](./Images/Img4.424.Ex2.RearrangeConnections.png)
 
-Click on the action to configure the filter. There are two parameter values required. Similar to how the Source dataset of the workspace was set, specify the File Path as the Value to Filter. In the Contains String set the string to search for to .shp.
+Click on the action to configure the filter, set the Action to Filter messages. There are two parameter values required. Similar to how the Source dataset of the workspace was set, specify the File Path as the Key. In Contains, set the string to search for to .shp.
 
 ![](./Images/Img4.425.Ex2.CompleteFilter.png)
 
