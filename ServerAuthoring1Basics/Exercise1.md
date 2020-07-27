@@ -219,6 +219,30 @@ In FME Workbench, choose File &gt; Publish to FME Server from the menubar. As th
 
 ![](./Images/Img1.214.Ex1.AddWebConnection.png)
 
+---
+
+<!--Warning Section-->
+
+<table style="border-spacing: 0px">
+<tr>
+<td style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
+<i class="fa fa-exclamation-triangle fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
+<span style="color:white;font-size:x-large;font-weight: bold;font-family:serif">WARNING</span>
+</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange">
+<span style="font-family:serif; font-style:italic; font-size:larger">
+As of FME 2019, the admin password is required to be set up after install. For this course, our administrator has chosen the password FMElearnings. If you are taking this course outside of Safe Software, please consult your FME Server Administrator for the admin password on their training machines. 
+</span>
+</td>
+</tr>
+</table>
+
+---
+
+
 In the dialog that opens, enter the parameters provided by your training instructor. In most cases, the parameters will be as follows:
 
 - **Connection Name:** Training FME Server
