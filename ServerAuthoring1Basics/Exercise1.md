@@ -234,14 +234,13 @@ In FME Workbench, choose File &gt; Publish to FME Server from the menubar. As th
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-As of FME 2019, the admin password is required to be set up after install. For this course, our administrator has chosen the password FMElearnings. If you are taking this course outside of Safe Software, please consult your FME Server Administrator for the admin password on their training machines. 
+As of FME 2019, the admin password is required to be set up after install. For this course, our administrator has chosen the password FMElearnings. If you are taking this course outside of Safe Software, please consult your FME Server Administrator for the admin password on their training machines.
 </span>
 </td>
 </tr>
 </table>
 
 ---
-
 
 In the dialog that opens, enter the parameters provided by your training instructor. In most cases, the parameters will be as follows:
 
