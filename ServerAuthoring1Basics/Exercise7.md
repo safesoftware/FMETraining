@@ -52,13 +52,13 @@ Job orchestration is an FME Server Automations concept. It allows for two or mor
 
 Expand Projects on the side menu and then go to the Manage Projects page:
 
-![](./Images/Img6.200.Ex1.ProjectsMenu.png)
+![](./Images/Img1.252.Ex7.ProjectsMenu.png)
 
 
 <br>**2) Import Project**
 <br>Click on the Import button to open the Import page:
 
-![](./Images/Img6.201.Ex1.ImportButton.png)
+![](./Images/Img1.253.Ex7.ImportButton.png)
 
 We can accept the default Import parameters. Click Upload and then browse to the following location:
 
@@ -68,13 +68,13 @@ C:\FMEData2020\Resources\ServerAuthoring\Ch1-Ex7-JobOrchestrationProject.fsproje
 
 The project will quickly be imported:
 
-![](./Images/Img6.203.Ex1.ImportComplete.png)  
+![](./Images/Img1.254.Ex7.ImportComplete.png)  
 
 
 <br>**3) Check Log**
 <br>Click the View Details button to examine the Project Import log. A successful import will look something like this:
 
-![](./Images/Img6.204.Ex1.ImportSummary.png)
+![](./Images/Img1.255.Ex7.ImportSummary.png)
 
 ---
 
@@ -104,26 +104,26 @@ The history page under projects will show a full history of all projects that ha
 
 Click Manage Projects on the menu again, and click on AutomationsJobOrchestraion-Complete. You should now see a list of the imported contents:
 
-![](./Images/Img6.205.Ex1.ProjectContents.png)
+![](./Images/Img1.256.Ex7.ProjectContents.png)
 
 Use the menu options to check the Automation and workspaces to ensure that the imported components do exist:
 
-![](./Images/Img6.205.Ex1.ContentConfirmation.png)
+![](./Images/Img1.257.Ex7.ContentConfirmation.png)
 
 <br>**5) Clean Up Project**
 <br>One part of the project that is not needed is a user account.
 
 So, return to the project contents, select the Temp User, and remove it.
 
-![](./Images/Img6.209.Ex1.RemoveAccount.png)
+![](./Images/Img1.258.Ex7.RemoveAccount.png)
 
 This will remove the account from the project, but since the project has already been imported, the account will also exist on the machine. So also go to the User Management > Users page and remove the Temp user:
 
-![](./Images/Img6.205.Ex1.RemoveUser.png)
+![](./Images/Img1.259.Ex7.RemoveUser.png)
 
 You will be prompted to which user account to transfer the ownership of items that were created with the Temp user account. Select admin and then click OK:
 
-![](.Images/Img6.209.Ex1.TransferOwnership.png)
+![](.Images/Img1.260.Ex7.TransferOwnership.png)
 
 <br>**6) Export Project**
 <br>Now the project has been updated, export it so that it can be imported in its proper form elsewhere.
@@ -132,7 +132,7 @@ To do so, browse to the Manage Projects page, select the project (using the chec
 
 In the dialog that opens, you can choose whether to save the project file to a download or a resources folder. Once complete the following message will appear:
 
-![](./Images/Img6.210.Ex1.ProjectExported.png)
+![](./Images/Img1.261.Ex7.ProjectExported.png)
 
 ---
 
