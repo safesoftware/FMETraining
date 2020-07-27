@@ -39,6 +39,11 @@
 <td style="border: 1px solid darkorange">N/A</td>
 </tr>
 
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Start Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\Ch1-Ex7-JobOrchestrationProject.fsproject</td>
+</tr>
+
 </table>
 
 ---
@@ -63,7 +68,7 @@ Expand Projects on the side menu and then go to the Manage Projects page:
 We can accept the default Import parameters. Click Upload and then browse to the following location:
 
 <pre>
-C:\FMEData2020\Resources\ServerAuthoring\Ch1-Ex7-JobOrchestrationProject.fsproject
+C:\FMEData2020\Projects\ServerAuthoring\Ch1-Ex7-JobOrchestrationProject.fsproject
 </pre>
 
 The project will quickly be imported:
