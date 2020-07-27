@@ -35,8 +35,18 @@
 </tr>
 
 <tr>
+<td style="border: 1px solid darkorange; font-weight: bold">Start Server Project</td>
+<td style="border: 1px solid darkorange">N/A</td>
+</tr>
+
+<tr>
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
 <td style="border: 1px solid darkorange">N/A</td>
+</tr>
+
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex1-Complete.fsproject</td>
 </tr>
 
 </table>
