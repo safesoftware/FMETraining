@@ -110,9 +110,11 @@ Clicking Apply will create an email address *fmeshapeprocessing@&lt;hostname&gt;
 <tr><th>Host</th><th>Example Email Address</th></tr>
 <tr><td>FME Cloud</td><td>fmeshapeprocessing@myfmeserver.fmecloud.com</td></tr>
 <tr><td>Amazon AWS</td><td>fmeshapeprocessing@ec1-23-456-789-012.compute-1.amazonaws.com</td></tr>
+<tr><td>localhost</td><td>fmeshapeprocessing@IP Address</td></tr>
 </table>
 
-
+To quickly find your IP Address, navigate to Google in your browser and search "My IP". The search results will return your public IP address as the first result. 
+ 
 ---
 
 ***IMAP Protocol***
@@ -224,7 +226,7 @@ User keys can only be used in the Automation they are defined in, and can be set
 <br>**4) Test Automation**
 <br>Now let's test the Automation.
 
-This time, because we connected the Email Trigger directly to the Workspace Action, let's zip up the four .shp, and associated file types, to add as an attachment.  
+This time, because we connected the Email Trigger directly to the Workspace Action, let's zip up the four .shp, and associated file types, to add as an attachment. 
 
 Send an email *with an attachment* to the address created in the Email Trigger. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the Automation will send a message to the Workspace Action. (Remember that an IMAP publication only checks for an email at the specified poll interval, so the result might not be immediate!)
 
