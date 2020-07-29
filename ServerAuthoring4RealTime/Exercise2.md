@@ -75,7 +75,7 @@ You may have noticed that the Log Action in Automations actually submits a works
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Exercise1.html"> Exercise 1</a> left off. You must have completed Exercise 1 to carry out this exercise.
+This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Exercise1.html"> Exercise 1</a> left off. You must have completed Exercise 1 to carry out this exercise, or upload the Begin Server Project to FME Server to start where the previous exercise left off.
 </td>
 </tr>
 </table>
