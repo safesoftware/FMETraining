@@ -71,6 +71,8 @@ This exercise continues where <a href="https://s3.amazonaws.com/gitbook/Server-A
 
 ---
 
+Will modify the workspace to add an Automations Writer so we can pass some specific information from inside the workspace to the Email Trigger. The rest of the exercise should follow as normal.
+
 <br>**1) Add External Action**
 <br>Open the FME Server web interface and navigate to the Automations:Manage page. Click the Incoming Building Footprints and stop the Automation to allow for editing. The final step in the Automation is to add an email service External Action through which a response will be sent.
 
