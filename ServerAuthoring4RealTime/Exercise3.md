@@ -45,7 +45,7 @@
 </tr>
 
 <tr>
-<td style="border: 1px solid darkorange; font-weight: bold">Start Server Project</td>
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
 <td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex3-Complete.fsproject</td>
 </tr>
 
@@ -113,8 +113,8 @@ Clicking Apply will create an email address *fmeshapeprocessing@&lt;hostname&gt;
 <tr><td>localhost</td><td>fmeshapeprocessing@IP Address</td></tr>
 </table>
 
-To quickly find your IP Address, navigate to Google in your browser and search "My IP". The search results will return your public IP address as the first result. 
- 
+To quickly find your IP Address, navigate to Google in your browser and search "My IP". The search results will return your public IP address as the first result.
+
 ---
 
 ***IMAP Protocol***
@@ -226,7 +226,7 @@ User keys can only be used in the Automation they are defined in, and can be set
 <br>**4) Test Automation**
 <br>Now let's test the Automation.
 
-This time, because we connected the Email Trigger directly to the Workspace Action, let's zip up the four .shp, and associated file types, to add as an attachment. 
+This time, because we connected the Email Trigger directly to the Workspace Action, let's zip up the four .shp, and associated file types, to add as an attachment.
 
 Send an email *with an attachment* to the address created in the Email Trigger. When the email is received by FME Server (SMTP), or FME Server fetches it (IMAP), the Automation will send a message to the Workspace Action. (Remember that an IMAP publication only checks for an email at the specified poll interval, so the result might not be immediate!)
 

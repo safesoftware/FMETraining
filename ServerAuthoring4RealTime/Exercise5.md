@@ -7,7 +7,7 @@
 <tr>
 <td width=25% style="vertical-align:middle;background-color:darkorange;border: 2px solid darkorange">
 <i class="fa fa-cogs fa-lg fa-pull-left fa-fw" style="color:white;padding-right: 12px;vertical-align:text-top"></i>
-<span style="color:white;font-size:x-large;font-weight: bold">Exercise 6.3</span>
+<span style="color:white;font-size:x-large;font-weight: bold">Exercise 4.5</span>
 </td>
 <td style="border: 2px solid darkorange;background-color:darkorange;color:white">
 <span style="color:white;font-size:x-large;font-weight: bold">Authoring Workspace Chains in Automations</span>
@@ -21,7 +21,7 @@
 
 <tr>
 <td style="border: 1px solid darkorange; font-weight: bold">Overall Goal</td>
-<td style="border: 1px solid darkorange">Create an Automation to chain the previous two translations together</td>
+<td style="border: 1px solid darkorange">Create an Automation to chain two translations together</td>
 </tr>
 
 <tr>
@@ -30,32 +30,42 @@
 </tr>
 
 <tr>
-<td style="border: 1px solid darkorange; font-weight: bold">Start Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange; font-weight: bold">Start Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex5-Begin.fsproject
+</td>
 </tr>
 
 <tr>
-<td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
-<td style="border: 1px solid darkorange">None</td>
+<td style="border: 1px solid darkorange; font-weight: bold">End Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex5-Complete.fsproject</td>
 </tr>
 
 </table>
 
 ---
 
-You have just finished creating a workspace that uses the FMEServerJobSubmitter transformer to chain two workspaces together so that they run consecutively. Now the team has requested you to update this workflow so that they can easily re-run it automatically whenever they update the Election Voting GML file.
+You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department has recently begun using FME Server.
 
-You know you can set up an automation to automatically run the parent workspace you created before, but then you'd have both the automation and that parent workspace to update if anything in this workflow changes. You realize that you can handle the job chaining within an Automation as well.
+A municipal election is about to happen, and Elections Interopolis have provided a dataset of new voting divisions in GML format. You've already created a workspace to translate these voting divisions to a SpatiaLite database format for use within the city and that data is being written to a resources folder on FME Server so everyone can use it.
+
+Coincidentally, the planning department heard of this update. They have a workspace that assigns voting division IDs to each of the records in the city's address database for use in election planning and would like to have their workspace run automatically whenever there are any updates to the voting divisions.
+
+You realize that you can chain these two translations together to be carried out consecutively and automatically whenever the Election Voting GML file is updated using an Automation.
 
 ---
 
-<br>**1) Create Automation**
+<br>**1) Import Project**
+<br>In the FME Server web interface, go to Projects > Manage Projects and import the Start Project for this Exercise from C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex5-Begin.fsproject
+
+This will contain the two workspaces we want to run in sequence as well as input and output Resource folders for this workflow. Take a moment to familiarize yourself with the contents of this project and look at the two included workspaces using the View Workspace page.
+
+<br>**2) Create Automation**
 <br>In the FME Server interface, navigate to the Automations > Build page to start building a new Automation.
 
 Save the Automation first and give it a name such as JobChaining.
 
-<br>**2) Add Trigger**
-<br>You want these jobs to start running whenever new data is added, so set up a Trigger to handle that.
+<br>**3) Add Trigger**
+<br>You want these jobs to start running whenever new data is added to the Election/Input folder, so set up a Trigger to handle that.
 
 Click on the Trigger that is already placed in your Automation to configure it. Set the Trigger as follows:
 
@@ -116,7 +126,7 @@ We're setting the Poll Interval here to 30 seconds just to make testing faster f
 ![](./Images/Img6.227.Ex3.DirectoryWatch.png)
 
 
-<br>**3) Add Workspace Action**
+<br>**4) Add Workspace Action**
 <br>Now we want to add an Action to run the first of the two workspaces we want to run in our job chain.
 
 Click on the + button and drag an Action onto the canvas. Connect it to the Directory Watch Trigger and configure it as follows:
@@ -135,7 +145,7 @@ Click on the + button and drag an Action onto the canvas. Connect it to the Dire
 
 <tr>
 <td style="font-weight: bold">Workspace</td>
-<td style="">AdvancedWorkflows-Ex2-CompleteA.fmw</td>
+<td style="">RealTime-Ex5-WorkspaceA.fmw</td>
 </tr>
 
 </table>
@@ -143,25 +153,25 @@ Click on the + button and drag an Action onto the canvas. Connect it to the Dire
 ![](./Images/Img6.228.Ex3.FirstWorkspace.png)
 
 
-<br>**4) Add Second Workspace Action**
-<br>Notice that unlike the FMEServerJobSubmitter, the Workspace Action does not have an option for wait for job to complete. This is because a Workspace Action will always wait until the job has completed before moving onto the next Action within the Automation.
+<br>**5) Add Second Workspace Action**
+<br>Note that a Workspace Action will always wait until the job has completed before moving onto the next Action within the Automation.
 
-To set up the second workspace to run, simply add a second Action and connect it to the checkmark (or Action Succeeded) port on the Workspace Action we just added. Configure this one to run the AdvancedWorkflows-Ex2-CompleteB.fmw from inside the Training repository.
+To set up the second workspace to run, simply add a second Action and connect it to the checkmark (or Action Succeeded) port on the Workspace Action we just added. Configure this one to run the RealTime-Ex5-WorkspaceB.fmw from inside the Training repository.
 
 Your final Automation should look like this:
 
 ![](./Images/Img6.229.Ex3.FinalAutomation.png)
 
-<br>**5) Save and Start Automation**
+<br>**6) Save and Start Automation**
 <br>Save your Automation. Then click the Start Automation button to start the Automation.
 
-<br>**6) Test the Automation**
+<br>**7) Test the Automation**
 <br> Now you can the Automation by uploading a modified version of the ElectionVoting.gml file to Resources.
 
 Open the Resources page and navigate to Data > Election > Input. Click on Upload > Files and select the following two files to upload:
 
-- C:\FMEData2019\Resources\ServerAuthoring\JobChaining\ElectionVoting.gml
-- C:\FMEData2019\Resources\ServerAuthoring\JobChaining\ElectionVoting.xsd
+- C:\FMEData2020\Resources\ServerAuthoring\JobChaining\ElectionVoting.gml
+- C:\FMEData2020\Resources\ServerAuthoring\JobChaining\ElectionVoting.xsd
 
 Wait a minute or so and then View Triggered Jobs for your Automation, you should see that both chained workspaces successfully ran in order.
 
