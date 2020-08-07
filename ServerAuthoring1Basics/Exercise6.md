@@ -41,7 +41,7 @@
 ---
 You have already (in Exercises 1, 2, and 3) created a workspace to carry out this translation, published it to FME Server, run it to confirm it works, and committed it to version history.
 
-In the last exercise, you shared the Training repository you created in Exercise 1 with other authors on FME Server. Now you have gotten requests from other users who do not have FME Server accounts to be able to run the translation on demand.  
+In the last exercise, you shared the Training repository you created in Exercise 1 with other authors on FME Server. Now you have gotten requests from other users who do not have FME Server accounts to be able to run the translation on demand.
 
 Let's create an FME Server App so that anyone with the URL can run this workspace to update the database whenever they need to.
 
@@ -101,8 +101,8 @@ Click on the URL to open it. You will see that it opens a webpage very similar t
 <span style="font-family:serif; font-style:italic; font-size:larger">
 We've been requested to create a webhook to share our workspace with customers in an email.
 <br>From the Run Workspace page, ensure that the Workspace is set to Ch1-Ex1-Completed.fmw, then from the Workspace Actions drop-down select Create Webhook
-<br><img src=".Images/Img1.251.Ex6.CreateWebHook.png">
-<br>On the Create Webhook page, we can just accept the defaults for the paramters. Optionally, you can add additional permissions for the user, such as access to the data folder. Click OK to create the Webhook.
+<br><img src="./Images/Img1.251.Ex6.CreateWebHook.png">
+<br>On the Create Webhook page, we can just accept the defaults for the parameters. Optionally, you can add additional permissions for the user, such as access to the data folder. Click OK to create the Webhook.
 <br>Before closing the Webhook URL page, ensure that you download your Webhook token and parameters as this will be the only time you can do so. If you forget to download it, or lose the file, you will have to recreate the Webhook.
 </span>
 </td>

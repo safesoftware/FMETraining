@@ -41,7 +41,7 @@
 ---
 In the last exercise, you created a schedule to automatically run the workspace you created in Exercise 1 once a day. But what happens if something goes wrong with this workspace or it needs to be updated and you're not available to fix it? It would be a good idea to allow other FME Server Authors within your department to be able to edit and run this workspace.
 
-Let's ensure that other users that are part of the FME Server Author role have access to this repository to run and modify the workspace.  
+Let's ensure that other users that are part of the FME Server Author role have access to this repository to run and modify the workspace.
 
 <br>**1) Enable Author Account**
 <br>In FME 2020, the default accounts of Author, User, and Guest are now disabled on installation for enhanced security. We will need to enable the Author account before we continue.
@@ -57,7 +57,7 @@ Select the Author user, then in the Actions drop-down select Enable. A green che
 ![](./Images/Img1.239.Ex5.EnableAuthor.png)
 
 <br>**2) Log In to Author Account**
-<br>Now open an Incognito or Private window in your browser and open another instance of FME Server. Log in using the credentials Author/Author
+<br>Now open an Incognito or Private window in your browser and open another instance of FME Server. Log in using the credentials author/author
 
 
 The first thing you'll notice is that the menu and functionality is more restricted for this account (notice the Admin section is now gone):

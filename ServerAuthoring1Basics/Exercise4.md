@@ -35,6 +35,11 @@
 <td style="border: 1px solid darkorange; font-weight: bold">End Workspace</td>
 <td style="border: 1px solid darkorange">None</td>
 </tr>
+<tr>
+
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
+<td style="border: 1px solid darkorange">"C:\FMEData2020\Projects\ServerAuthoring\Basics-Ex4-Complete.fsproject"</td>
+</tr>
 
 </table>
 

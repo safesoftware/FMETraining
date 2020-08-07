@@ -65,15 +65,15 @@ Expand Projects on the side menu and then go to the Manage Projects page:
 
 ![](./Images/Img1.253.Ex7.ImportButton.png)
 
-We can accept the default Import parameters. Click Upload and then browse to the following location:
+We can accept the default Import parameters. Click Upload File and then browse to the following location:
 
 <pre>
 C:\FMEData2020\Projects\ServerAuthoring\Ch1-Ex7-JobOrchestrationProject.fsproject
 </pre>
 
-The project will quickly be imported:
+Click Import and the project will quickly be imported:
 
-![](./Images/Img1.254.Ex7.ImportComplete.png)  
+![](./Images/Img1.254.Ex7.ImportComplete.png)
 
 
 <br>**3) Check Log**
@@ -164,4 +164,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

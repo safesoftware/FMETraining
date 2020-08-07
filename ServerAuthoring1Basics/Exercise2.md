@@ -45,7 +45,7 @@ For the exercises in this chapter, you are a technical analyst in the GIS depart
 
 There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single corporate database.
 
-Because each department produces its datasets in a different format and style, you use FME for this task and carry it out on a weekly basis.   
+Because each department produces its datasets in a different format and style, you use FME for this task and carry it out on a weekly basis.
 
 After creating a workspace to carry out this translation, and publishing it to FME Server, you now wish to log in to Server to run that workspace.
 
@@ -208,7 +208,7 @@ You may also inspect the FME translation log file on this page.
 <tr>
 <td style="border: 1px solid darkorange">
 <span style="font-family:serif; font-style:italic; font-size:larger">
-Remember, this workspace did not write any data, only sent it to a Null writer. So, for now, to view any results search for the summary in the log file.
+Remember, this workspace did not write any data, only sent it to a Null writer. So, for now, search for the summary in the log file to view any results.
 </span>
 </td>
 </tr>
@@ -231,7 +231,7 @@ Remember, this workspace did not write any data, only sent it to a Null writer. 
 <span style="font-family:serif; font-style:italic; font-size:larger">
 If you want to see a job in a different state, then we'll have to slow this workspace down some.
 <br><br>Open the workspace in FME Workbench and add a Decelerator transformer (say, before the Reprojector). Set it to delay the workspace by five (5) seconds per feature. Publish the workspace back to FME Server and re-run it.
-<br><br>Now the workspace will take 30+ seconds to run, and you should be able to find it under the Running state. Also, if you run it three or four times in quick succession, then you will have more jobs than engines and be able to find some jobs in the Queued state.   
+<br><br>Now the workspace will take 30+ seconds to run, and you should be able to find it under the Running state. Also, if you run it three or four times in quick succession, then you will have more jobs than engines and be able to find some jobs in the Queued state.
 </span>
 </td>
 </tr>

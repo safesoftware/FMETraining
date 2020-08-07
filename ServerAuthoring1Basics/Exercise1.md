@@ -40,6 +40,11 @@
 <td style="border: 1px solid darkorange">C:\FMEData2020\Workspaces\ServerAuthoring\Basics-Ex1-Complete.fmw</td>
 </tr>
 
+<tr>
+<td style="border: 1px solid darkorange; font-weight: bold">End Server Project</td>
+<td style="border: 1px solid darkorange">C:\FMEData2020\Projects\ServerAuthoring\Basics-Ex1-Complete.fsproject</td>
+</tr>
+
 </table>
 
 ---
@@ -48,7 +53,7 @@ For the exercises in this chapter, you are a technical analyst in the GIS depart
 
 There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single corporate database.
 
-Because each department produces its datasets in a different format and style, you use FME for this task and carry it out on a weekly basis.   
+Because each department produces its datasets in a different format and style, you use FME for this task and carry it out on a weekly basis.
 
 One of the reasons for purchasing FME Server is to automate this procedure, so let's start implementing that.
 
