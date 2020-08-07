@@ -378,7 +378,7 @@ If you publish and run the workspace (you may need to set the SpatiaLite databas
 <br>**13) Create Automation**
 <br>The filtered messages are important to the transit team, but at the moment they are going nowhere. We should set up a way to inform them.
 
-We could add another messaging transformer, such as the WebSocketSender, JMSSender, SQSSender, or even a Tweeter. That would make the processing workspace a "pure" messaging workspace.
+We could add another messaging transformer, such as the WebSocketSender, JMSSender, SQSConnector, or even a Tweeter. That would make the processing workspace a "pure" messaging workspace.
 
 On the other hand, the outgoing messages are nothing like the same rate as the incoming messages. With the parameters as described in this exercise, there is only a transit message once every minute. So, we can create a "hybrid" solution by setting output messages to be sent via Automations.
 
