@@ -111,7 +111,7 @@ Click Manage Projects on the menu again, and click on AutomationsJobOrchestraion
 
 ![](./Images/Img1.256.Ex7.ProjectContents.png)
 
-Use the menu options to check the Automation and workspaces to ensure that the imported components do exist:
+Use the menu options (Automations > Manage Automations and Workspaces > Manage Workspaces) to ensure that the imported components do exist:
 
 ![](./Images/Img1.257.Ex7.ContentConfirmation.png)
 
