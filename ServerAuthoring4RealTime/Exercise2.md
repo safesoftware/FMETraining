@@ -96,7 +96,7 @@ Select Readers &gt; Add Reader from the menu bar. When prompted set the paramete
 
 <tr>
 <td style="font-weight: bold">Reader Dataset</td>
-<td style="">C:\FMEData2020\Data\Engineering\BuildingFootprints\Updates001.shp</td>
+<td style="">C:\FMEData2020\Data\Engineering\BuildingFootprints\update001.shp</td>
 </tr>
 
 <tr>
@@ -144,7 +144,7 @@ In the new feature type that is created, change the Table Name parameter to *bui
 
 ![](./Images/Img4.417.Ex3.FeatureTypeName.png)
 
-Ensure that the Table Handling is set to "Create if Needed". Click OK to close the dialog and then connect the new feature type to the output port of the Shapefile Reader.
+Ensure that the Table Handling is set to "Create If Needed". Click OK to close the dialog and then connect the new feature type to the output port of the Shapefile Reader.
 
 ![](./Images/Img4.418.Ex3.FinalWorkspace.png)
 
@@ -167,7 +167,7 @@ Use the FME Server web interface to create a new folder **Output** in **Resource
 
 
 <br>**6) Edit Automation**
-<br>Navigate to the Automations: Manage page and select Incoming Building Footprints to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the trigger parameter value to Run a workspace.
+<br>Navigate to the Automations: Manage Automations page and select Incoming Building Footprints to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the Action parameter value to Run a workspace.
 
 Select the Training Repository and workspace uploaded in the previous step. The parameters should now include one for the Source Esri Shapefile and the output database.
 

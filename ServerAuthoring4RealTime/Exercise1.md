@@ -57,7 +57,7 @@ As a technical analyst in the GIS department, you want to start experimenting wi
 
 
 <br>**1) Create Resources Folder**
-<br>Connect to FME Server (admin/admin). The first step is to create a Resources folder to upload the data. Open the FME Server web interface and navigate to the Resources page.
+<br>Connect to FME Server (admin/FMElearnings). The first step is to create a Resources folder to upload the data. Open the FME Server web interface and navigate to the Files & Connections > Resources page.
 
 Browse to the Data folder and create a new subfolder called BuildingUpdates:
 
@@ -87,11 +87,11 @@ This exercise utilizes the FME Server Resource folders, but you could also watch
 ---
 
 <br>**2) Create Automation**
-<br>Now to create the Automation that will watch the BuildingUpdates Directory for incoming files. Navigate to Automations > Build on the side menu bar. In the Getting Started dialog that appears when you go to the Automations page for the first time, click on the Build tab and click Create New to start a new Automation.
+<br>Now to create the Automation that will watch the BuildingUpdates Directory for incoming files. Navigate to Automations: Build Automation on the side menu bar. In the Getting Started dialog that appears when you go to the Automations page for the first time, click on the Build tab and click Create New to start a new Automation.
 
 By default, Automations starts in guided mode. This means that there is already a Trigger node on the canvas but it will still need to be configured.
 
-Start by selecting the Trigger and a parameter box will appear on the right hand side of the canvas.
+Start by double-clicking the Trigger and a parameter box will appear on the right hand side of the canvas.
 Select Directory modified from the drop-down list as the Trigger for this Automation.
 
 ![](./Images/Img4.401.Ex1.NewTriggerDialog.png)
@@ -103,23 +103,22 @@ Select Directory modified from the drop-down list as the Trigger for this Automa
 
 Leave the Watch Subdirectories and Watch Folders parameters set to No, since we are only interested in monitoring for files in the BuildingUpdates folder directly.
 
-Then for the Filter parameter remove the MODIFY and DELETE actions. Since we are looking to add to the corporate database, in this example we are only interested in monitoring for new files arriving, not old ones being changed or removed:
+Then for the Events to Watch for parameter remove the MODIFY and DELETE actions. Since we are looking to add to the corporate database, in this example we are only interested in monitoring for new files arriving, not old ones being changed or removed:
 
 ![](./Images/Img4.403.Ex1.DirectoryWatchFilter.png)
 
-Lastly change the Poll Interval to 30 Seconds and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas the Trigger node will update to show it is a Directory Watch.
+Lastly, change the Poll Interval to 30 Seconds and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas the Trigger node will update to show it is a Directory Watch.
 
 ![](./Images/Img4.404.Ex1.CompleteDirectoryWatch.png)
 
-
-Save the Automation by selecting Menu > Save as and name the Automation "Incoming Building Footprints".
+Save the Automation by selecting Menu > Save As and name the Automation "Incoming Building Footprints".
 
 <br>**4) Log Message**
-<br>Before we start the Automation we need to add an Action so the Trigger protocol can parse the notifications onwards. Before processing the data we first want to check the Directory Watch trigger is working as expected. To do this we can send the incoming messages to a log file located on FME Server.
+<br>Before we start the Automation, we need to add an Action so the Trigger protocol can parse the notifications onwards. Before processing the data we first want to check the Directory Watch trigger is working as expected. To do this we can send the incoming messages to a log file located on FME Server.
 
 Select the Next Action node and set the Action to Log a message.
 
-Click on the drop-down arrow for the Message parameter and select Event > Event as JSON because in this instance we want to record the entire incoming message from the Directory Watch protocol. 
+Click on the drop-down arrow for the Message parameter and select Event > Event as JSON because in this instance we want to record the entire incoming message from the Directory Watch protocol.
 
 ---
 <!--Tip Section-->
@@ -144,7 +143,7 @@ A trigger stores the incoming message event details as JSON however for the stan
 
 ---
 
- Click Apply to save this Log configuration.  
+ Click Apply to save this Log configuration.
 
 ![](./Images/Img4.406.Ex1.CompleteLogMessage.png)
 
@@ -191,7 +190,7 @@ If the log is not yet present, select the refresh button until it appears. You w
 
 ![](./Images/Img4.410.Ex1.ViewAutomationsLog.png)
 
-When you view this log file you might also notice reports of the Automation sending Jobs to FME Engine. This is because FME Server is actually performing the Log action using a simple FME Workspace. 
+When you view this log file you might also notice reports of the Automation sending Jobs to FME Engine. This is because FME Server is actually performing the Log action using a simple FME Workspace.
 
 ---
 
@@ -240,4 +239,4 @@ By completing this exercise you have learned how to:
 </span>
 </td>
 </tr>
-</table>   
+</table>

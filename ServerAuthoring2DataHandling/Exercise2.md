@@ -57,7 +57,7 @@ However, such data management tools are not particularly suited to a long-term p
 ---
 
 <br>**1) Open FME Server Web Interface**
-<br>Log in to the FME Server web interface using an administrator account (such as admin/admin). Click Resources on the menu bar to navigate to the resources management pages.
+<br>Log in to the FME Server web interface using an administrator account (such as admin/FMElearnings). Click Resources on the menu bar to navigate to the resources management pages.
 
 
 <br>**2) Create Folder**
