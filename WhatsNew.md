@@ -15,7 +15,7 @@ This file documents major changes made to training materials in 2020
 - Added information about basic schedules (new for 2020)
 - Exercise 7, removed email section
 - Exercise 5, added steps to enable author user
-- All exercises, updated the admin password, added note on exercise 1 about the new password. 
+- All exercises, updated the admin password (now FMElearnings on training machines), added note on exercise 1 about the new password. 
 
 ### Data Handling and FME Server ###
 - Added section on sharing custom resources (including custom transformers, formats, python and R modules)

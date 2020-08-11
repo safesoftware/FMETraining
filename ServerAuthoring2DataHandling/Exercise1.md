@@ -160,13 +160,13 @@ Save the workspace. As already mentioned, make sure it has a different name than
 
 
 <br>**6) Publish to Server**
-<br>Publish the workspace to FME Server. 
+<br>Publish the workspace to FME Server.
 
-If its saved, choose the previously created FME Server connection. Or, select Add Web Connection again from the dropdown menu to reconnect with the provided credentiels: 
+If its saved, choose the previously created FME Server connection. Or, select Add Web Connection again from the dropdown menu to reconnect with the provided credentiels:
 
 - **FME Server URL:** http://localhost
 - **Username:** admin
-- **Password:** admin
+- **Password:** FMElearnings
 
 ![](./Images/Img2.214.Ex1.ServerConnection.png)
 
