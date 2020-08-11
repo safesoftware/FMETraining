@@ -92,12 +92,7 @@ Click on the Trigger that is already placed in your Automation to configure it. 
 </tr>
 
 <tr>
-<td style="font-weight: bold">Directory to Watch</td>
-<td style="">Poll Interval</td>
-</tr>
-
-<tr>
-<td style="font-weight: bold">Events to Watch for</td>
+<td style="font-weight: bold">Poll Interval</td>
 <td style="">30 Seconds</td>
 </tr>
 
@@ -168,10 +163,9 @@ Your final Automation should look like this:
 <br>**7) Test the Automation**
 <br> Now you can the Automation by uploading a modified version of the ElectionVoting.gml file to Resources.
 
-Open the Resources page and navigate to Data > Election > Input. Click on Upload > Files and select the following two files to upload:
+Open the Resources page and navigate to Data > Election > Input. Click on Upload > Files and select the following file to upload:
 
-- C:\FMEData2020\Resources\ServerAuthoring\JobChaining\ElectionVoting.gml
-- C:\FMEData2020\Resources\ServerAuthoring\JobChaining\ElectionVoting.xsd
+`C:\FMEData2020\Resources\ServerAuthoring\JobChaining\ElectionVoting.gml`
 
 Wait a minute or so and then View Triggered Jobs for your Automation, you should see that both chained workspaces successfully ran in order.
 
