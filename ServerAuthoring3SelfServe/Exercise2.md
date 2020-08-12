@@ -62,7 +62,7 @@ Sometimes the end-users download data as JPEG just to open it in a browser or im
 <br>Open the workspace from exercise 1, or the begin workspace listed above.
 
 <br>**2) Publish to FME Server**
-<br> Re-publish the workspace to FME Server.
+<br> Publish the workspace to FME Server.
 
 In the final dialog of the publishing wizard, check the boxes to register the workspace with both Data Download and Data Streaming (but don't click Finish yet):
 
