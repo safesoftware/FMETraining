@@ -90,7 +90,7 @@ This workspace is just generating "events". Those events could be lightning stri
 ---
 
 <br>**2) Add WebSocketSender Transformer**
-<br>Add a WebSocketSender transformer after the JSONTemplater. Inspect the parameters and set them as follows:
+<br>Connect a WebSocketSender transformer to the output port of the JSONTemplater. Inspect the parameters and set them as follows:
 
 <table>
 <tr><td>WebSocket Server URL</td><td>ws://localhost:7078</td></tr>
