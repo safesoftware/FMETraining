@@ -146,7 +146,7 @@ There is also the option to load a template for some other Email Servers, if you
 
 <tr>
 <td style="font-weight: bold">Email From</td>
-<td style="">Your account name (for example fmeshapeprocessing@gmail.com)</td>
+<td style="">Your account name (for example fmeshapeprocessing@myfmeserver.fmecloud.com)</td>
 </tr>
 
 <tr>
