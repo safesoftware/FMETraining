@@ -1,7 +1,25 @@
 pipeline {
     agent {
-        dockerfile {
-            label "docker-xsmall"
+        kubernetes {
+            defaultContainer "gitbooks"
+            yaml """
+            kind: Pod
+            metadata:
+              name: gitbooks
+            spec:
+              containers:
+              - name: gitbooks
+                image: docker.arty-1.base.safe.com/fme-training/gitbooks:2.1.3
+                imagePullPolicy: Always
+                command:
+                - cat
+                tty: true
+                resources:
+                  requests:
+                    cpu: 0.5
+                    memory: 1024Mi
+              restartPolicy: Never
+            """
         }
     }
     stages {
@@ -30,7 +48,7 @@ pipeline {
                 withAwsCli(credentialsId: 'gitbook-s3', defaultRegion: 'us-east-1') {
                     // Copy book directory to S3
                     echo "Uploading book"
-                    sh "aws s3 cp _book s3://gitbook/${env.BRANCH_NAME} --acl public-read --recursive || true"
+                    sh "aws s3 cp _book s3://gitbook/${env.BRANCH_NAME} --acl public-read --recursive"
                     echo "Uploading PDF"
                     sh "aws s3 cp ${env.BRANCH_NAME}.pdf s3://gitbook/${env.BRANCH_NAME}/ --acl public-read"
                 }
