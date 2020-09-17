@@ -1,5 +1,6 @@
 # Summary
 
+* [FME Server Authoring](README.md)
 * [Welcome](README.md)
    * [Introduction](./ServerAuthoring0Introduction/0.00.CourseIntroduction.md)
    * [Course Overview](./ServerAuthoring0Introduction/0.01.CourseOverview.md)
@@ -21,7 +22,7 @@
    * [FME Server Scheduling](ServerAuthoring1Basics/1.12.Scheduling.md)
    * [Exercise: Daily Database Updates: Sharing and Scheduling](ServerAuthoring1Basics/Exercise3.md)
    * [Source Data Management](ServerAuthoring1Basics/1.13.SourceDataManagement.md)
-   * [Database Connections](ServerAuthoring1Basics/1.14.DatabaseConnections.md)   
+   * [Database Connections](ServerAuthoring1Basics/1.14.DatabaseConnections.md)
    * [Web Connections](ServerAuthoring1Basics/1.15.WebConnections.md)
    * [Publishing Data](ServerAuthoring1Basics/1.16.PublishingData.md)
    * [Temporary Uploads](ServerAuthoring1Basics/1.17.TemporaryUploads.md)
