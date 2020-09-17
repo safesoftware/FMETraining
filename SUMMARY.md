@@ -1,5 +1,6 @@
 # Summary
 
+* [FME Desktop Advanced](README.md)
 * [About This Document](./DesktopAdvanced0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./DesktopAdvanced0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./DesktopAdvanced0Introduction/0.02.CourseResources.md)
