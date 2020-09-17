@@ -1,5 +1,6 @@
 # Summary
 
+* [FME Server Admin](README.md)
 * [About This Document](./ServerAdmin0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./ServerAdmin0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./ServerAdmin0Introduction/0.02.CourseResources.md)
