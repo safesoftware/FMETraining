@@ -1,5 +1,6 @@
 # Summary
 
+* [FME Desktop Basic](README.md)
 * [About This Document](./DesktopBasic0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./DesktopBasic0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./DesktopBasic0Introduction/0.02.CourseResources.md)
