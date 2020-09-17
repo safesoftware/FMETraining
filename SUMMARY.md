@@ -1,6 +1,6 @@
 # Summary
 
-* [Welcome](README.md)
+* [FME Server Authoring](README.md)
   * [Introduction](./ServerAuthoring0Introduction/0.00.CourseIntroduction.md)
   * [Course Overview](./ServerAuthoring0Introduction/0.01.CourseOverview.md)
   * [Course Resources](./ServerAuthoring0Introduction/0.02.CourseResources.md)
