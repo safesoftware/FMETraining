@@ -1,5 +1,6 @@
 # Summary
 
+* [Introduction to FME Desktop](README.md)
 * [Getting Started (20 minutes)](1.getting-started\1.01.getting-started.md)
   - [What is FME?](1.getting-started\1.02.what-is-fme.md)
   - [FME Components](1.getting-started\1.03.fme-components.md)
