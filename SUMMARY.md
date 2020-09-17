@@ -1,5 +1,6 @@
 # Summary
 
+* [Upgrading to FME Desktop 2018](README.md)
 * [About This Document](./2018Upgrade0Introduction/0.00.CourseIntroduction.md)
 	* [Course Overview](./2018Upgrade0Introduction/0.01.CourseOverview.md)
 	* [Course Resources](./2018Upgrade0Introduction/0.02.CourseResources.md)
