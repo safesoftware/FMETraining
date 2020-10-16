@@ -10,7 +10,7 @@ This training provides a framework for authoring workspaces for FME Server. We h
 
 ## Course Structure ##
 
-The full course is made up of six main sections. These sections are:
+The full course is made up of five main sections. These sections are:
 
 - Introduction to FME Server
 - Data Handling and FME Server
