@@ -1,7 +1,25 @@
 pipeline {
     agent {
-        dockerfile {
-            label "docker-xsmall"
+        kubernetes {
+            defaultContainer "gitbooks"
+            yaml """
+            kind: Pod
+            metadata:
+              name: gitbooks
+            spec:
+              containers:
+              - name: gitbooks
+                image: docker.arty-1.base.safe.com/fme-training/gitbooks:2.1.3
+                imagePullPolicy: Always
+                command:
+                - cat
+                tty: true
+                resources:
+                  requests:
+                    cpu: 0.5
+                    memory: 1024Mi
+              restartPolicy: Never
+            """
         }
     }
     stages {
