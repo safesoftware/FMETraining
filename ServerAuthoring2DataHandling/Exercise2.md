@@ -131,7 +131,7 @@ Now the two feature types belong to the Geodatabase writer, and the NULL writer 
 
 
 <br>**6) Set Geodatabase Parameter**
-<br>One (very quick) last thing to change: locate the Geodatabase writer in the Navigator window and expand its list of parameters. Double-click the parameter labeled Overwrite Existing Geodatabase and set it to Yes. To do this check the checkbox Overwrite Existing Database. 
+<br>One (very quick) last thing to change: locate the Geodatabase writer in the Navigator window and expand its list of parameters. Double-click the parameter labeled Overwrite Existing Geodatabase and set it to Yes. To do this check the checkbox Overwrite Existing Database.
 
 ![](./Images/Img2.220.Ex2.OverwriteGeodatabaseParameter.png)
 
@@ -141,7 +141,7 @@ This ensures we aren't continually adding data to the same dataset if we run the
 
 
 <br>**7) Run Workspace**
-<br>Test run the workspace in FME Workbench. Inspect the output in Visual Preview. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
+<br>Test run the workspace in FME Workbench. Inspect the output in Visual Preview. If it is not already selected click Toggle Display Control on the left hand side of the visaul preview page. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).
 
 ![](./Images/Img2.221.Ex2.OutputTables.png)
 
