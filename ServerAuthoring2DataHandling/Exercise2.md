@@ -131,9 +131,11 @@ Now the two feature types belong to the Geodatabase writer, and the NULL writer 
 
 
 <br>**6) Set Geodatabase Parameter**
-<br>One (very quick) last thing to change: locate the Geodatabase writer in the Navigator window and expand its list of parameters. Double-click the parameter labeled Overwrite Existing Geodatabase and set it to Yes:
+<br>One (very quick) last thing to change: locate the Geodatabase writer in the Navigator window and expand its list of parameters. Double-click the parameter labeled Overwrite Existing Geodatabase and set it to Yes. To do this check the checkbox Overwrite Existing Database. 
 
 ![](./Images/Img2.220.Ex2.OverwriteGeodatabaseParameter.png)
+
+
 
 This ensures we aren't continually adding data to the same dataset if we run the workspace more than once.
 
