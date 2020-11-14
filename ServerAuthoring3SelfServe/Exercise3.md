@@ -221,6 +221,20 @@ Double-click the FeatureReader to open its parameters. Change the Dataset parame
 
 ![](./Images/Img5.227.Ex3.FeatureReader.png)
 
+Next, expand the Attribute and Geometry Handling dropdown. Then, expand the &lt;Generic&gt; Port dropdown as well. Since, FME Desktop read the Dataset file we need to import the schema for the file manually.
+
+Click the ... button besides the attributes to expose bar. Then, select Import... in the Attributes to Expose dialog.
+
+![](./Images/Img5.228.Ex3.Generic.png)
+
+Under Format, select Esri Geodatabase (File Geodb Open API). Then, under dataset enter C:\FMEData2020\Data\Addresses\Addresses.gdb
+
+Click Next to continue. Then, under Feature Types select PostalAddress. Then, click Next again.
+
+Under Attributes to Expose select Select all. Then, click Import to complete the process.
+
+Now click OK twice to exit the FeatureReader.
+
 Note that this workspace won't work on FME Desktop now, but it will run properly on Server. Click OK. The Addresses output port disappears; connect the &lt;Generic&gt; port to the Reprojector_2.
 
 <br>**12) Publish to FME Server**
