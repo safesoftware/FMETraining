@@ -214,7 +214,7 @@ We have provided GeoJSON code for testing the Geometry parameter. If you want to
 
 ---
 
-<br>**11) Change Data Source to Shared Resources Folder**
+<br>**10) Change Data Source to Shared Resources Folder**
 <br>To ensure everyone can run this workspace on FME Server, we should change the address GDB dataset parameter to look for the data on FME Server's Shared Resources Data folder instead of the C:\ drive. We will do this before publishing it to FME Server, and then we can upload the data there when we publish the workspace.
 
 Double-click the FeatureReader to open its parameters. Change the Dataset parameter to `$(FME_SHAREDRESOURCE_DATA)\Addresses.gdb`. This path will look for the GDB in the FME Server Data folder. To ensure the FeatureReader still works when reading from FME Server, click Output > Output Ports > Single Output Port.
@@ -237,12 +237,12 @@ Now click OK twice to exit the FeatureReader.
 
 Note that this workspace won't work on FME Desktop now, but it will run properly on Server. Click OK. The Addresses output port disappears; connect the &lt;Generic&gt; port to the Reprojector_2.
 
-<br>**12) Publish to FME Server**
+<br>**11) Publish to FME Server**
 <br>With the workspace complete, we can now publish to FME Server. Click on the Publish button on the toolbar. Select the Training FME Server connection and the Training repository. Select Data Download and Job Submitter as the Services.
 
 After publishing, make sure you upload the GDB to FME Server's Data folder. In FME Server, go to Files & Connections: Resources. Then click the Data folder, then the Upload button, and choose Folder. Navigate to `C:\FMEData2020\Data\Addresses\Addresses.gdb` and upload it.
 
-<br>**13) Test on FME Server**
+<br>**12) Test on FME Server**
 <br>Click the Direct Link to the workspace in the Translation Log (http://localhost/fmeserver/#/workspaces/run/Training/SelfServe-Ex3-Complete.fmw/) and login if necessary.
 
 Select Training as the Repository and set the Service to Data Download.
