@@ -1,0 +1,51 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Understand the difference between appending and joining features in FME.</li>
+  <li>Explain the distinction between joins based on attribute values and spatial relationships.</li>
+</ul>
+<h2 id="what-is-a-data-join">
+  <span>What is a Data Join?</span>
+</h2>
+<p>Whereas filter transformers divide data into different streams, other transformers bring data streams together, merging the data according to a set of user-defined conditions. Here (for example) incoming streams A and B are joined together into a new stream, C:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.058.FeatureJoinDiagramHalfScale.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.058.FeatureJoinDiagramHalfScale.png" alt="Diagram of a join or merge" class="image" /></a></p>
+<h2 id="appending-versus-joining">
+  <span>Appending Versus Joining</span>
+</h2>
+<p>To combine multiple streams of data, FME provides users the capability to append or merge (or join) their data. The two techniques, although seemingly similar, yield different results. When datasets are appended, additional <strong>rows </strong>(in FME, features)<strong> </strong>are added to the attribute table. However, when datasets are merged or joined, additional <strong>columns </strong>(in FME, attributes)<strong> </strong>are added.</p>
+<p><strong>Append</strong></p>
+<p>Datasets are typically appended when there is no change to the table schema or data model. Appending can use the same schema since the values of one dataset are added after the existing values of another.</p>
+<p>If the table schemas are different, the output will contain missing values for the columns not contained in both datasets.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNtd&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTKT" alt="Diagram of appending" class="image" /></p>
+<p>Appends should be used in instances where additional rows or records are added to the dataset. Appends are performed by bringing together multiple feature connection lines into a single input port on a transformer or writer feature type.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNtd&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTKU" alt="Workspace that appends data" class="image" /></p>
+<p><em>This e</em><em>xample workspace appends records from both tables into a single table.</em></p>
+<p><strong>Joining or Merging</strong></p>
+<p>Datasets should be combined by merging when additional attributes need to be added to the table schema or data model.</p>
+<p>Merging requires a common attribute to join on, ensuring that the new attributes are correctly matched within the output. There can be missing values within either dataset provided the attribute being merged upon does not contain missing values.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNtd&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTKV" alt="Diagram of a merge" class="image" /></p>
+<p>Datasets can be merged using a variety of transformers, including the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/featuremerger.htm" rel="noreferrer noopener" target="_blank">FeatureMerger</a> (depicted below) and the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/databasejoiner.htm" rel="noreferrer noopener" target="_blank">DatabaseJoiner</a>. To join datasets using their spatial location, use the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/spatialfilter.htm" rel="noreferrer noopener" target="_blank">SpatialFilter</a> or <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/spatialrelator.htm" rel="noreferrer noopener" target="_blank">SpatialRelator</a>.<br /><img src="images/1605568546039.png" class="image image-block" alt="Workspace that joins or merges data" /></p>
+<p><em>This example workspace merges the attributes from both tables into one table.</em></p>
+<h2 id="attribute-values-versus-spatial-relationships">
+  <span>Attribute Values Versus Spatial Relationships</span>
+</h2>
+<p>To merge data it is necessary to define a relationship for the basis of the join, and this is done with one of a number of transformers.</p>
+<p>These transformers allow you to merge not just data that is being processed by the workspace but provide the ability to form a join against a database or other external dataset.</p>
+<p>Joins in FME can either be based on matching attribute values (DatabaseJoiner or FeatureMerger/FeatureJoiner), or they can be based on a spatial relationship such as an overlap between features or proximity from one feature to another (NeighborFinder or SpatialRelator).</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>This module covers joining data based on shared attribute values. To learn more about joining data based on spatial relationships, check out <a href="https://community.safe.com/s/article/performing-spatial-joins-and-merges" rel="noreferrer noopener" target="_blank">this article</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

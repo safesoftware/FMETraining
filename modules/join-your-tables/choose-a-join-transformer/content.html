@@ -1,0 +1,152 @@
+<h2>Learning Objectives</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Identify when to use the FeatureJoiner transformer.</li>
+  <li>Understand the difference between a left, inner, and full SQL-style join.</li>
+  <li>Identify when to use the DatabaseJoiner transformer.</li>
+  <li>Identify when to use the InlineQuerier transformer.</li>
+</ul>
+<h2>Introduction</h2>
+<p>Several transformers can join data by matching attribute values (keys). Some of these are more oriented towards geometry, while others have a more SQL-like style. Some join streams of data within one workspace, while others join one stream of data to an external database.</p>
+<p>Which you use depends on your join requirements and performance needs.</p>
+<h2 id="feature-joiner">
+  <span>FeatureJoiner</span>
+</h2>
+<p>The FeatureJoiner is another transformer for joining two streams of data within a workspace based on a key field match. It is configured using SQL-style joins and can often be more performant than the FeatureMerger.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.061.FeatureJoinerOnCanvas.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.061.FeatureJoinerOnCanvas.png" alt="Example FeatureJoiner workspace" class="image" /></a></p>
+<p>Here, for example, is the same Roads/Snowfall match in the FeatureJoiner. The parameters for the transformer looks like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.062.FeatureJoinerDialog.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.062.FeatureJoinerDialog.png" alt="FeatureJoiner parameters" class="image" /></a></p>
+<p>As you can see, this transformer is based more on traditional SQL queries. The Join Mode parameter can take one of three values:</p>
+<table class="featureTable sort_table">
+  <thead class="thead sorted">
+    <tr>
+      <th>Mode</th>
+      <th>Description</th>
+      <th>Depiction</th>
+      <th>Joined Output</th>
+      <th>Unjoined Left</th>
+      <th>Unjoined Right</th>
+    </tr>
+  </thead>
+  <tbody class="tbody">
+    <tr>
+      <td>Left</td>
+      <td>Left features look for a match and are output whether they find a match or not</td>
+      <td><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.063.JoinDiagramLeft.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.063.JoinDiagramLeft.png" alt="Left Venn diagram" class="image" /></a></td>
+      <td>All matches plus unmatched Left features</td>
+      <td>None</td>
+      <td>Unused Right features</td>
+    </tr>
+    <tr>
+      <td>Inner</td>
+      <td>Left features look for a match and are output if they find one</td>
+      <td><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.064.JoinDiagramInner.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.064.JoinDiagramInner.png" alt="Inner Venn diagram" class="image" /></a></td>
+      <td>All matches only</td>
+      <td>Unmatched Left features</td>
+      <td>Unused Right features</td>
+    </tr>
+    <tr>
+      <td>Full</td>
+      <td>Both Left and Right features output through the Joined output port, whether they find a join or not</td>
+      <td><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.065.JoinDiagramFull.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.065.JoinDiagramFull.png" alt="Full Venn diagram" class="image" /></a></td>
+      <td>All matches plus unmatched Left and Right features</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+<p>Other terms you might be familiar with are o<em>uter join</em> and r<em>ight join</em>. An outer join is simply a different name for what the full join does here. To do a right join, you would switch which features are being sent to which input port and use the left join option.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>The key thing to be aware of here is that a feature is output for every match that occurs. For example, if 1 Road feature matches 5 Snowfall records, there will be 5 features output to the Joined port.<br /><br />Joined features are always output to the Joined port. Left, Inner, and Full really only control which unmatched records are included in the Joined port.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>With a left join the user either believes that all roads will have a matching snowfall record, or it does not matter if there is not a match. In fact, no features will ever appear from the UnjoinedLeft output port.</p>
+<p>If it was essential to ensure a match, then the chosen mode should be inner. Then records that exited the UnjoinedLeft output port could be treated as an error and investigated as to why there is no match.</p>
+<p>There are parameters to handle conflicts of information and whether to merge attributes only or geometry as well.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>If you are working with an edition of FME prior to 2018.0, you can use the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/featuremerger.htm" rel="noreferrer noopener" target="_blank">FeatureMerger</a> transformer instead.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="database-joiner">
+  <span>DatabaseJoiner</span>
+</h2>
+<p>The DatabaseJoiner transformer is different to the FeatureJoiner because instead of merging two streams of features, it merges one (or more) stream(s) of data with records from an external database.</p>
+<p>Here is the same example as the FeatureMerger above. In this case, the roads features are obtaining snowfall data directly from a table in an Excel spreadsheet:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.066.DatabaseJoinerOnCanvas.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.066.DatabaseJoinerOnCanvas.png" alt="Example DatabaseJoiner workspace" class="image" /></a></p>
+<p>The parameters dialog for the DatabaseJoiner looks like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.067.DatabaseJoinerDialog.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.067.DatabaseJoinerDialog.png" alt="DatabaseJoiner parameters" class="image" /></a></p>
+<p>Again, StreetID is being used from both feature and database table to facilitate a merge between the two.</p>
+<p>As with the other transformers, there are parameters to control the attributes that are accumulated and how conflicts are resolved.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>The DatabaseJoiner has a number of advantages over the FeatureMerger. Firstly it has parameters to control how multiple matches are handled, as well as parameters for optimizing the database query.<br /><br />Secondly, it allows features to be joined without having to read the entire dataset into a workspace. FME can just query the database and select the individual records it needs. This can improve performance greatly.<br /><br />It does, of course, require the supplier records to be stored in an appropriate database format!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="inline-querier">
+  <span>InlineQuerier</span>
+</h2>
+<p>The InlineQuerier transformer accepts features from the workspace and generates a temporary database. With that database it's possible to apply any SQL commands required – including joins –  across a number of tables:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.068.InlineQuerier.png" target="_blank" rel="noreferrer noopener"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.068.InlineQuerier.png" alt="Example InlineQuerier workspace" class="image" /></a></p>
+<p>The InlineQuerier has the distinct advantage of allowing its input to be reused multiple times in a single transformer; whereas multiple joins would otherwise require multiple FeatureJoiner transformers. However, there is a performance overhead involved in generating that initial database.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>You can &quot;let the database do the work&quot; and see performance improvements by using SQL* transformers. For example, see <a href="https://community.safe.com/s/article/using-the-sqlexecutor-to-do-a-join" rel="noreferrer noopener" target="_blank">this article</a> for an example of using the SQLExecutor to do the join with an SQL statement before reading features into FME. This method often results in faster workflows.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>With all of these transformer choices, it is hard to choose which transformer is the right one for the job. Thankfully there is a flowchart to help you decide, check out the <a href="https://knowledge.safe.com/articles/34619/working-with-database-transformers-1.html" target="_blank" rel="noreferrer noopener">Merging or Joining Spreadsheet or Database Data</a> article.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<h2>Learning Objectives</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Add and connect a FeatureJoiner transformer.</li>
+  <li>Configure a FeatureJoiner to conduct a left join.</li>
+  <li>Inspect your data to ensure it has joined properly.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/TransformYourData/exercise-join-tables.fmwt" rel="noreferrer noopener" target="_blank">exercise-join-tables.fmwt</a></li>
+</ul>
+<h2>Introduction</h2>
+<p>In this exercise, you will learn how to use the FeatureJoiner to join two streams of features. The scenario is that you work for a city Parks &amp; Recreation department. You manage the data on parks. Currently you have one dataset with park information and another with park addresses. These datasets share a common ParkName attribute. You would like to join them together so all the parks information is in one table.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTMj" alt="FeatureJoiner transformer" class="image" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>This example uses spatial data, but the procedure is exactly the same regardless of if the data is spatial or not. Remember, if you have the data to be joined in a database, consider using the DatabaseJoiner or SQLCreator/SQLExecutor instead.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2>Exercise</h2>
+<p><strong>1) Open FME Workbench</strong></p>
+<p>Download and open the <a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/TransformYourData/exercise-join-tables.fmwt" rel="noreferrer noopener" target="_blank">exercise-join-tables.fmwt</a> template in FME Workbench.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn0" alt="Starting workspace" class="image" /></p>
+<p><em>Initial workspace reading in Parks.tab and the Parks table from CommunityMapping.gdb</em></p>
+<p>This workspace joins a parks MapInfo TAB dataset with a Parks table from the a community mapping geodatabase. The Parks geodatabase table contains addresses and a URL for each park which we want to join to the Parks.tab dataset. We will use ParkName to join the two tables.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn1" alt="MITAB table" class="image" /></p>
+<p><em>Parks MapInfo Tab table [MITAB]</em></p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn2" alt="GDB table" class="image" /></p>
+<p><em>Parks table from CommunityMapping File Geodatabase [FileGDB]</em></p>
+<p><strong>2) Connect the FeatureJoiner</strong></p>
+<p>Connect the Parks [MITAB] feature type to the Left input port on the FeatureJoiner and then connect the Parks [FILEGDB] to the Right input port.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn3" alt="Connected workspace" class="image" /></p>
+<p><em>Both Park datasets connected to the FeatureJoiner transformer</em></p>
+<p><strong>3) Configure the FeatureJoiner</strong></p>
+<p>Then in the FeatureJoiner parameters, set the Join Mode to Left. For the Attribute Conflict Resolution and Geometry Handling parameters, set those to Use Left.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn4" alt="Join Mode parameters" class="image" /></p>
+<p><em>FeatureJoiner Join Mode Parameter, all set to Left</em></p>
+<p>Next for Join On set the Left to ParkName and the Right to ParkName then change the Comparison Mode to String. You could leave the Comparison Mode to Automatic if you wish.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn5" alt="Join On parameters" class="image" /></p>
+<p><em>Join On parameter set to ParkName for both Left and Right and the Comparison Mode set to String</em></p>
+<p><strong>4) Run Translation and Inspect</strong></p>
+<p>Run the translation with Feature Caching Enabled</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn6" alt="Workspace with feature caches" class="image" /></p>
+<p><em>65 Joined features, 15 UnjoinedRight features and 15 &lt;Rejected&gt; features</em></p>
+<p>It looks like we have 65 features that were joined, 15 features that were unjoined from the right table and 15 features that were rejected. Let’s inspect the features that were rejected. Click on the Inspection icon on the Rejected port to inspect the features in the Data Inspector.</p>
+<p>Looking at these features, it looks like they are tiny unnamed parks that were built to create traffic calming areas. Since they are unnamed they can’t be joined, but we can still keep them even though they were rejected.</p>
+<p><strong>5) Append Features</strong></p>
+<p>Add an AttributeManager to the canvas and connect it to both the Joined and Rejected output ports on the FeatureJoiner. The only purpose of adding the AttributeManager is to show that both the joined and rejected features will continue through the rest of the workspace..</p>
+<p>Run the translation again with Feature Caching Enabled still and then inspect the AttributeManager output data. We will have 80 features and when we inspect the data both the named and unnamed parks are included in the table.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn7" alt="Workspace with AttributeManager added" class="image" /></p>
+<p><em>AttributeManager connected to the Joined and &lt;Rejected&gt; output ports on the FeatureJoiner</em></p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO13&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTn8" alt="Final table" class="image" /></p>
+<p>The Joined and &lt;Rejected&gt; features appended in the Data Inspector.</p>

@@ -1,0 +1,47 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Set the schema for your output data.</li>
+  <li>Combine data from different sources.</li>
+  <li>Find your written data.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/convert-your-data.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+</ul>
+<h2 id="combine-your-data-streams">
+  <span>Combine Your Data Streams</span>
+</h2>
+<p>When multiple streams connect to the same input port, the features accumulate. This operation is often called a <strong>union</strong>.</p>
+<p>Sven continues to work on his <a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/convert-your-data.fmw" target="_blank" rel="noreferrer noopener">Excel to geodatabase workspace</a>. He realizes that right now, with a separate writer feature type for each public art feature type, he will end up with many layers in the geodatabase, one for each neighborhood’s public art features. This corresponds to how the Excel file was structured, with one sheet per neighborhood. However, in the geodatabase he’d prefer all the public art to be stored in one layer called PublicArt.</p>
+<p>To create a single feature type, he could add a new feature type, but he prefers to just edit an existing one and then delete the others. He double-clicks on the Downtown writer feature type to open the <strong>Feature Type </strong>dialog and changes the <strong>Feature Class or Table Name</strong> to “PublicArt”. </p>
+<p>Sven also notices that the <strong>Geometry </strong>setting in the dialog is red, like it was with the <strong>BusinessOwners </strong>feature type. He needs to define what kind of geometry he wants this feature type to use. He sets it to “geodb_point”, as each art installation is represented by a point. Sven clicks <strong>OK </strong>to accept the changes in the <strong>Feature Type</strong> dialog.</p>
+<p>
+  <img src="images/39988-d-97-4-b-62-4-a-1-b-bb-56-d-837-d-9528-d-40.png" width="552" height="338" class="image" alt="Setting writer feature type name and geometry" />
+  <br />
+</p>
+<p>Sven then connects <strong>PublicArt </strong>to all of the neighborhood reader feature types by clicking on the red triangle going into PublicArt, holding down the CTRL key (⌘ or Shift on Mac), and clicking on each triangle coming out of the neighborhood feature types (<strong>Downtown</strong>, <strong>Mount Pleasan</strong>t, <strong>Strathcona</strong>, <strong>Fairview</strong>, <strong>Kitsilano</strong>, and <strong>West End</strong>). </p>
+<p>
+  <img src="images/df-7321-af-08-ca-4-b-96-848-c-0688-c-4327-c-3-a.gif" width="552" height="398" class="image" alt="Connecting feature types" />
+  <br />
+</p>
+<p>By creating these feature connection lines, Sven is telling FME to route all features from these sources into a single destination. When the workspace runs, features travel from left to right across the feature connection lines.</p>
+<p>Sven can now delete the writer feature types that are not connected (<strong>Mount_Pleasant</strong>, <strong>Strathcona</strong>, <strong>Fairview</strong>, <strong>Kitsilano</strong>, and <strong>West_End</strong>). He clicks-and-drags a rectangle around them, then right-clicks one of them and selects <strong>Delete</strong>.</p>
+<p>The workspace is now ready to be run. Sven clicks on <strong>Run</strong> in the toolbar.</p>
+<h2 id="locate-your-output-data">
+  <span>Locate Your Output Data</span>
+</h2>
+<p>Sven selects the <strong>BusinessOwners </strong>writer feature type and then clicks the <strong>Open Containing Folder</strong> icon. This opens the C:\FMEData2020\Output\Training folder where the data was written. </p>
+<p>
+  <img src="images/d-3-f-49951-df-48-4962-979-b-24-f-121-d-448-e-2.png" width="283" height="92" class="image" alt="Open Containing Folder" />
+  <br />
+</p>
+<p>Sven sees the <strong>Vancouver.gdb</strong> file which contains the BusinessOwners and PublicArt feature classes (Feature classes are what feature types are called in a geodatabase). This confirms that the geodatabase was created in the correct folder and Sven expects that the BusinessOwners and PublicArt feature classes are within the geodatabase. In the next unit, he’ll inspect it to ensure the contents of Vancouver.gdb are correct by checking that there are two feature types (BusinessOwners and PublicArt), they have the correct schema (attribute names, types, and allowed geometries), and they contain the correct number of features.</p>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>Make sure you have followed along with Sven’s steps.</p>
