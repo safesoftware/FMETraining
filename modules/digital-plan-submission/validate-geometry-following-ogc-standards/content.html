@@ -1,0 +1,155 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Explain how geometry validation improves spatial data quality.</li>
+  <li>Describe basic OGC Simple Features standards.</li>
+  <li>Validate spatial data according to OGC Simple Features standards using the GeometryValidator.</li>
+</ul>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>Learning content in the FME Academy presents the story of a user addressing their data integration challenges with FME. You should follow along with their actions using your own installation of FME 2020.1 or by <a href="http://strigo.io" rel="noreferrer noopener" target="_blank">accessing an on-demand training machine</a>. Some units will require you to follow their steps or to take additional steps on your own to answer a quiz question.</p>
+            <p>The Resources section will provide you with links to data and workspaces when necessary.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/DigitalPlanSubmission/good_data.dwg" rel="noreferrer noopener" target="_blank">good_data.dwg</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/DigitalPlanSubmission/bad_data.dwg" rel="noreferrer noopener" target="_blank">bad_data.dwg</a></li>
+</ul>
+<h2 id="ensuring-spatial-data-quality">
+  <span>Ensuring Spatial Data Quality</span>
+</h2>
+<p>Jennifer has reviewed the available material on data validation and is ready to build her digital plan submission workspace using FME Workbench. She is going to start by building a simplified version of the workflow to test it. She decides to use some water distribution network CAD data for this test. She can add additional layers to the workflow later. </p>
+<p>For this test data, valid features must:</p>
+<ul>
+  <li>Be lines</li>
+  <li>Pass the <a href="https://www.ogc.org/standards/sfa" rel="noreferrer noopener" target="_blank">Open Geospatial Consortium (OGC) Simple Features standards</a></li>
+  <li>Have a diameter measurement</li>
+</ul>
+<p>Jennifer will use transformers in FME Workbench to carry out these validations.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>The <a href="https://www.ogc.org/" rel="noreferrer noopener" target="_blank">OGC</a> is an international voluntary body that produces open standards for geographic features. FME can evaluate if features meet their standards: <a href="https://www.ogc.org/standards/sfa" rel="noreferrer noopener" target="_blank">OpenGIS® Simple Features Access (SFA)</a>, also called ISO 19125. This standard provides a common framework and is a useful way of evaluating if the geometry is well-formed. The standards allow users to identify geometry problems such as self-intersection, self tangency, and invalid coordinates.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>FME offers many ways to validate geometry. <a href="https://knowledge.safe.com/articles/32707/tutorial-data-validation-and-qa-with-fme.html" rel="noreferrer noopener" target="_blank">Learn more</a> about geometry validation with our extensive tutorial series.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="read-in-source-data">
+  <span>Read in Source Data</span>
+</h2>
+<p>Jennifer’s first step is to read the source dataset. She’ll eventually make this a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!Transformer_Parameters/adding_a_parameter.htm" rel="noreferrer noopener" target="_blank">user parameter</a> so the submitter can upload their own CAD data to be validated. For now, she’ll use a temporary testing dataset.</p>
+<p>She opens FME Workbench 2020.1 and clicks <strong>New </strong>to start with a blank workspace. </p>
+<p><img src="images/f-7-dbd-3-ee-c-93-d-4-c-22-942-d-281-c-9-e-92-d-330.png" width="439" height="221" class="image" alt="New workspace button" /></p>
+<p>She clicks the blank canvas and types “DWG”, bringing up Quick Add. </p>
+<p><img src="images/793-a-03-d-4-9-a-3-e-4321-8-b-3-c-05-a-73-d-549878.png" width="613" height="340" class="image" alt="Searching Quick Add for &quot;dwg&quot;" /></p>
+<p>She selects <strong>Autodesk AutoCAD DWG/DXF</strong> under <strong>Readers </strong>and presses Enter. She is using two test datasets: good_data.dwg and bad_data.dwg. She extracted these examples from an existing water distribution dataset to use during workspace development. good_data.dwg should pass validation and bad_data.dwg should fail.</p>
+<p>She chooses <strong>bad_data.dwg</strong> as her test dataset for now – she will try good_data.dwg later Finally, she clicks on the <strong>Parameters </strong>button, navigates to the <strong>Group Entities By</strong> section at the top, and chooses <strong>Attribute Schema </strong>from the radio buttons. This step ensures any <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/acad/Extended_Entity_Data.htm" rel="noreferrer noopener" target="_blank">extended entity data</a> on the CAD data is read into the workspace.</p>
+<p>She fills out the <strong>Add Reader</strong> dialog like this:</p>
+<div align="left">
+  <table class="featureTable sort_table">
+    <tbody class="tbody">
+      <tr>
+        <td>
+          <p><strong>Format</strong></p>
+        </td>
+        <td>
+          <p>Autodesk AutoCAD DWG/DXF</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p><strong>Dataset</strong></p>
+        </td>
+        <td>
+          <p>C:\FMEData2020\Resources\DigitalPlanSubmission\bad_data.dwg</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p><strong>Coord. System</strong></p>
+        </td>
+        <td>
+          <p>EPSG:2277</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p><strong>Parameters </strong>&gt; <strong>Group Entities By</strong></p>
+        </td>
+        <td>
+          <p>Attribute Schema</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>She clicks <strong>OK</strong>.</p>
+<p>She selects a single feature type named <strong>water_distribution_lines</strong> and clicks <strong>OK </strong>to add it to the canvas.</p>
+<p>She clicks <strong>File </strong>&gt; <strong>Save</strong> and saves her workspace, calling it “DigitalPlanSubmission.fmw”. Then she clicks the <strong>Run </strong>button, accepts the default parameter values by clicking <strong>Run </strong>again, and her data automatically appears in <strong>Visual Preview</strong>.</p>
+<p><img src="images/54814-bc-1-9254-4381-8-e-1-c-93346-d-94-af-05.png" width="624" height="380" class="image" alt="Viewing the water network data in Visual Preview's Graphics view" /></p>
+<h2 id="validate-spatial-data-using-the-geometry-filter-and-the-geometry-validator">
+  <span>Validate Spatial Data Using the GeometryFilter and the GeometryValidator</span>
+</h2>
+<p>Now that she has read in the CAD data, Jennifer needs to validate the geometry. She can validate that her features are lines using a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/geometryfilter.htm" rel="noreferrer noopener" target="_blank">GeometryFilter</a> and that they pass OGC standards using a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/geometryvalidator.htm" rel="noreferrer noopener" target="_blank">GeometryValidator</a>.</p>
+<p>She adds a <strong>GeometryFilter </strong>after her feature type by clicking the <strong>water_distiribution_lines</strong> feature type, typing “GeometryFilter”, and pressing Enter.</p>
+<p><img src="images/1-cda-2-f-1-d-058-b-43-b-5-9443-5183-e-185-db-75.png" width="436" height="64" class="image" alt="Adding a GeometryFilter" /></p>
+<p>She double-clicks it to open the <strong>GeometryFilter Parameters </strong>window. She double-clicks <strong>Geometry Types to Filter </strong>and selects <strong>Line</strong>, then clicks <strong>OK </strong>twice to close the dialog.</p>
+<p><img src="images/f-96-d-0-f-4-a-9-e-1-b-4888-a-556-d-84-f-2-b-00-aaa-7.png" width="369" height="261" class="image" alt="Setting GeometryFilter parameters" /></p>
+<p>Her transformer now has two ports: <strong>Line </strong>and <strong>&lt;</strong><strong>Unfiltered&gt;</strong>. She will continue the workspace from the <strong>Line </strong>port and will ignore any features coming out of the <strong>&lt;Unfiltered&gt;</strong> port. This will ensure that only line features are read. The <strong>&lt;Unfiltered&gt;</strong> port could be useful in the case that, for example, a user submits text annotations in the CAD drawing. These will be ignored.</p>
+<p>Next, she adds a <strong>GeometryValidator </strong>using Quick Add. </p>
+<p><img src="images/5589-ed-60-cb-33-434-f-98-fd-157-d-1621-ba-42.png" width="624" height="148" class="image" alt="Adding a GeometryValidator" /></p>
+<p>This powerful transformer will be used to ensure the geometry is OGC valid. She double-clicks the <strong>GeometryValidator </strong>to open its parameters and clicks in the first cell under <strong>Issues to Detect.</strong> She selects <strong>OGC Simple Compliant</strong>. Then she clicks in the next cell below and selects<strong> OGC Valid Compliant</strong>. For this one, she also selects <strong>OGC Version 1.2.0</strong> in the <strong>Parameters </strong>column. Her dialog looks like this:</p>
+<p><img src="images/dea-6-ec-61-985-d-45-bc-b-085-e-0-f-60-a-54-f-8-fc.png" width="393" height="460" class="image" alt="Setting GeometryValidator parameters" /></p>
+<p>She clicks <strong>OK</strong>.</p>
+<h2 id="test-workspace">
+  <span>Test Workspace</span>
+</h2>
+<p>Jennifer runs the workspace to test the geometry validation. She looks at the feature counts coming out of the ports and can see that one feature was <strong>&lt;Unfiltered&gt;</strong> (not lines) and three features failed the OGC validation.</p>
+<p>She clicks the <strong>GeometryValidator:Failed</strong> port feature cache and clicks one of the failed features in <strong>Visual Preview Table View</strong> to select it. </p>
+<p><img src="images/bb-19-de-9-f-a-53-b-4-e-81-8755-d-3-a-5-cf-2-c-8-c-37.png" width="624" height="300" class="image" alt="Selecting a failed feature" /></p>
+<p>Then she clicks the <strong>Toggle Feature Inspection Window</strong> button on the left side of <strong>Visual Preview </strong>to take a closer look. </p>
+<p><img src="images/c-47-e-1639-3-db-6-4-a-2-c-a-4-e-8-9-c-647-c-1-a-4749.png" width="624" height="300" class="image" alt="Toggling on Feature Inspection window" /></p>
+<p>The <strong>GeometryValidator </strong>automatically adds a list attribute called <strong>_issues{} </strong>to any failed features. This nested list contains a description of any violations of the standards. She sees that all three features have a single OGC standard issue, given that each _issues{}<strong> </strong>list only has one entry (index 0). She also sees that this issue means this feature: “Fails OGC Simple” (_issues{0}.issue_found) and the specific issue is “Self Intersection” (_issues{0}.supplementary_info{0}.details).</p>
+<p><img src="images/0-fe-016-b-5-5245-4269-9-a-71-c-445-e-9-d-6-cbc-6.png" width="624" height="367" class="image" alt="Viewing the issues with the failed feature" /></p>
+<p>By using the <strong>GeometryFilter </strong>and <strong>GeometryValidator</strong>, Jennifer has identified six geometry validation issues in this test dataset, but more importantly, has created a reusable workflow that will reliably identify any such issues in submitted data.</p>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>Now, try it yourself. Repeat the steps above using your own installation of FME 2020.1 or <a href="http://strigo.io" rel="noreferrer noopener" target="_blank">access an on-demand training machine</a>. If you have your own data you’d like to try to validate, you can create your own bad_data.dwg and good_data.dwg and try using those. Just keep in mind that this geometry validation example expects lines.</p>

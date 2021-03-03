@@ -1,0 +1,162 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Understand how filtering lets you create multiple streams of data in your workspaces.</li>
+  <li>Filter your data using a Tester transformer.</li>
+  <li>Inspect multiple feature caches.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="http://ior.ad/6V9D" target="_blank" rel="noreferrer noopener">Interactive tutorial to help you follow along</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/filter-your-data-start.fmwt" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+</ul>
+<h2 id="creating-multiple-streams-of-data">
+  <span>Creating Multiple Streams of Data</span>
+</h2>
+<p>FME workspaces send data from left to right across the canvas from reader feature types to writer feature types. The simplest workspace only has one “stream” of data: features are read in, all processed in the same way, and then written out. However, workspaces can have multiple streams of data, splitting and merging features as required. In Jennifer’s workspace, the <strong>GeometryFilter </strong>created multiple streams when it split the PostGIS features into point and null geometry. She now has two streams coming out of the <strong>GeometryFilter</strong>: #1 contains point geometry features going to the <strong>BusinessOwners </strong>feature type, and #2 contains features missing geometry going to the <strong>BusinessOwners_incomplete</strong> feature type.</p>
+<p><img alt="Multiple streams of data on the canvas" src="images/8-d-5-dbea-2-fd-8-c-4-b-0-e-8-e-23-40-afe-240-fff-4.png" class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>The name of the transformer in stream #1 above is obscured because it is the answer to a previous quiz question.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Jennifer has been given a <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/csv2/csv2.htm" target="_blank" rel="noreferrer noopener">CSV</a> file with a list of business license numbers that have been flagged to be revoked. She would like to use this list to filter out features with revoked licenses from her source data before writing to the geodatabase.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>You don’t have to follow along with Jennifer here. We provide a starting workspace below to let you skip this step. It’s a bit more advanced. If you want to learn more about the FeatureJoiner, you can <a href="https://knowledge.safe.com/articles/67526/the-featurejoiner-transformer.html" target="_blank" rel="noreferrer noopener">read this tutorial</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Jennifer adds a CSV reader and reads the revoked licenses file. She then uses a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/featurejoiner.htm" target="_blank" rel="noreferrer noopener"><strong>FeatureJoiner</strong></a> to join the revoked license data to her existing BusinessOwners data. Now her features have a “revoked_license” attribute that can be used to filter out the businesses with revoked licenses.</p>
+<h2 id="filter-your-data-using-a-tester">
+  <span>Filter Your Data Using a Tester</span>
+</h2>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>You can follow along with Jennifer now using this <a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/filter-your-data-start.fmwt" target="_blank" rel="noreferrer noopener">starting workspace</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Jennifer adds a <strong>Tester </strong>between the <strong>FeatureJoiner </strong>and the <strong>GeometryFilter </strong>using<strong> Quick Add </strong>so she can filter out the stream of data to get all businesses with valid licenses only.</p>
+<p><img alt="Adding a Tester" src="images/1-b-5783-c-5-ee-92-4-c-7-e-bc-71-1-c-0-b-28-eb-16-ce.png" class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>We are filtering our features into two streams with the <strong>Tester</strong>. Other transformers with “Filter” in their name are capable of routing features into more than three streams based on various operations, for example, the <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/testfilter.htm" target="_blank" rel="noreferrer noopener"><strong>TestFilter</strong></a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>To do this, she double-clicks the <strong>Tester </strong>to open its <strong>Parameters </strong>dialog. The table here allows her to enter a logical test or series of tests against incoming features. It works a bit like <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)%23If%25E2%2580%2593then(%25E2%2580%2593else)" target="_blank" rel="noreferrer noopener">an “if-then-else” statement in programming languages</a>. If the feature meets the criteria of the test(s), it comes out of the <strong>Passed </strong>port. If it does not, it comes out of the <strong>Failed</strong> port. The <strong>Tester</strong> is used to filter data and allows for simple branching of your data integration workflow.</p>
+<p>Jennifer sets up her <strong>Tester </strong>as follows:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td colspan="1" rowspan="1"><strong>Logic</strong><br /></td>
+      <td colspan="1" rowspan="1"><strong>Left Value</strong><br /></td>
+      <td colspan="1" rowspan="1"><strong>Operator</strong><br /></td>
+      <td colspan="1" rowspan="1"><strong>Right Value<br /></strong></td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">NOT<br /></td>
+      <td colspan="1" rowspan="1">🠈 revoked_license<br /></td>
+      <td colspan="1" rowspan="1">Attribute Has a Value<br /></td>
+      <td colspan="1" rowspan="1">&lt;Unused&gt;<br /></td>
+    </tr>
+  </tbody>
+</table>
+<p>These settings do the following: “For each feature being read by the <strong>Tester</strong>, if it does NOT have a value for the attribute “revoked_license”, it passes. Otherwise, it fails.” This test accomplishes our goal of sending any features with a revoked license to the <strong>Failed</strong> port. Jennifer uses <strong>Run to This </strong>on the <strong>Tester </strong>and sees 167 results come out of the <strong>Passed </strong>port and four come out of the <strong>Failed </strong>port.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>Starting with FME 2020.1, you can now use cached values in the <strong>Tester</strong>. This feature makes it faster and easier to build tests, saving you the step from manually confirming attribute values. For example, Jennifer could use this feature if she wanted to filter out businesses owned by a particular person, searching the list of last names to find the correct one. </p>
+            <p>On a <strong>Tester </strong>with a cache, simply click the drop-down arrow on <strong>Right Value</strong> and choose <strong>Cached Values</strong>. A list of values is displayed to choose from, including a search filter.</p>
+            <p></p>
+            <p>See the <a href="https://docs.safe.com/fme/2020.1/html/FME_Desktop_Documentation/FME_Transformers/Transformers/tester.htm" target="_blank" rel="noreferrer noopener">Tester documentation</a> for more information.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>This is a simplified example. It is more likely these revoked licenses would be removed from the PostGIS database or added to a license history table in the database. We are using a CSV file here to keep things simple.</p>
+            <p>We used the NOT Logic operator in this example. For more complex tests, you can combine different Logic operators like OR or AND.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="inspect-your-filtered-data">
+  <span>Inspect Your Filtered Data</span>
+</h2>
+<p>Jennifer inspects the <strong>Tester </strong>cache to make sure the correct features were filtered out. She clicks the<strong> Tester:Failed</strong> feature cache and sees <strong>Visual Preview’s Table View</strong> reporting in the bottom-right corner that 4 rows are being displayed, meaning the four revoked licenses have been filtered out successfully via the <strong>Failed</strong> port.</p>
+<p><img alt="Viewing the number of rows in Table View" src="images/51-ca-822-a-27-c-5-4517-a-313-e-1-ed-6912-a-6-a-7.png" class="image image-block image-center" /></p>
+<p>She can confirm the correct features failed because their “license_number” and “revoked_license” attributes match.</p>
+<h2 id="inspect-final-results">
+  <span>Inspect Final Results</span>
+</h2>
+<p>Now that her workspace is complete, Jennifer turns off feature caching from the toolbar (<strong>Run</strong> &gt; deselect <strong>Enable Feature Caching</strong>) and then clicks <strong>Run</strong>. Her entire workspace runs successfully.</p>
+<p>Then she clicks the <strong>BusinessOwners </strong>writer feature type to select it and clicks <strong>View Written Data</strong>. This shows the 96 valid records that were written to this feature class. Note that FME automatically added the required <strong>OBJECTID </strong>column to the data as required by the geodatabase format.</p>
+<p><img alt="View Written Data button" src="images/f-5-e-86276-188-c-4-d-07-84-c-5-6-bee-0-b-0004-c-9.png" class="image image-block image-center" /></p>
+<p><img alt="Viewing the new OBJECTID column in Table View" src="images/064-e-592-e-33-ca-4-afe-a-80-b-09-ee-3-f-6-df-631.png" class="image image-block image-center" /></p>
+<p>Using the same method to inspect <strong>BusinessOwners_incomplete </strong>shows the 71 features with missing values.</p>
+<p><img alt="71 features with missing values" src="images/f-97272-d-2-e-7-bf-4-ca-0-9-b-74-24233-d-5-c-7135.png" class="image image-block image-center" /></p>
+<p>Jennifer clicks one of the writer feature types and then <strong>Open Containing Folder</strong>, viewing the geodatabase in her file browser. From there she can open the geodatabase in ArcCatalog, ArcMap, or ArcGIS Pro.</p>
+<p><img alt="Viewing the geodatabase in ArcCatalog" src="images/a-48-b-7112-26-aa-4-ab-2-bcd-7-cf-9187742-b-01.png" class="image image-block image-center" /></p>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>Make sure you have followed along with Jennifer’s steps.</p>

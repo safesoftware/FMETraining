@@ -1,0 +1,76 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Publish a workspace to the web.</li>
+  <li>Test an automated digital plan submission workflow.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/DigitalPlanSubmission/publish-your-validation-workflow.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/DigitalPlanSubmission/good_data.dwg" rel="noreferrer noopener" target="_blank">good_data.dwg</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/DigitalPlanSubmission/bad_data.dwg" rel="noreferrer noopener" target="_blank">bad_data.dwg</a></li>
+</ul>
+<h2 id="put-your-automated-workflow-on-the-web">
+  <span>Put Your Automated Workflow on the Web</span>
+</h2>
+<p>Jennifer now has to publish her workspace to FME Server so it’s available on the web. After it is published to FME Server and tested, she can turn it into an FME Server web app for use by the plan submitters to validate their data.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>A workspace published to FME Server can be run by any logged-in FME Server user who has permissions to access the repository where it is stored. FME Server web apps let you provide access to an FME Server workspace to anyone with the link, no login required.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>This section assumes you know how to add an FME Server <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!NamedConnections/Using_Web_Service_Connections.htm" rel="noreferrer noopener" target="_blank">web connections</a>. If you don’t, please take Publish your Self-Serve Workspace to the Web before continuing. To continue, you need a working FME Server web connection with permission to publish and run workspaces and create Automations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Jennifer clicks the <strong>Publish to FME Server </strong>button in the Workbench toolbar.</p>
+<p><img src="images/5-e-2-ef-713-a-3-f-8-4-f-6-b-a-89-b-bc-245193-ae-6-a.png" width="624" height="60" class="image" alt="Publish button in the Toolbar" /></p>
+<p>Jennifer ensures her FME Server is selected from the drop-down and clicks <strong>Next</strong>. Workspaces in FME Server are stored in <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/ReferenceManual/Repositories.htm" rel="noreferrer noopener" target="_blank">repositories</a>. To create a new repository for her workspace, Jennifer clicks <strong>New… </strong>and makes a new repository called “Self-Serve”. She clicks <strong>OK </strong>twice to finish creating this new repository.</p>
+<p><img src="images/3204-cdfd-e-260-488-c-8-e-81-9-a-062-e-979-c-73.png" width="624" height="353" class="image" alt="Creating a new Self-Serve repository" /></p>
+<p>Before she can publish, Jennifer has to select service(s) for her workspace to use. The service controls how users receive the data when they run the workspace on FME Server. These services each provide a different way to interact with the workspace:</p>
+<ul>
+  <li>The <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/ReferenceManual/service_datadownload.htm" rel="noreferrer noopener" target="_blank"><strong>Data Download service</strong></a> provides a link to the output as a downloadable ZIP file.</li>
+  <li>The <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/ReferenceManual/service_datastreaming.htm" rel="noreferrer noopener" target="_blank"><strong>Data Streaming service</strong></a><strong> </strong>either immediately downloads the output, or displays it in the browser if possible (e.g. HTML).</li>
+  <li>The <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/ReferenceManual/job_submitter_service.htm" rel="noreferrer noopener" target="_blank"><strong>Job Submitter service</strong></a> accepts and runs workspace job requests. Data is written, but not presented to the user.</li>
+  <li>The <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/ReferenceManual/Notification_Service.htm" rel="noreferrer noopener" target="_blank"><strong>Notification service</strong></a> lets the workspace interact with FME Server Automations.</li>
+</ul>
+<p>Jennifer keeps the default <strong>Job Submitter</strong> service and checks the <strong>Data Streaming</strong> service. With this service selected, users can run the workspace and immediately see the HTML results in their browser. She clicks <strong>Publish</strong>.</p>
+<p><img src="images/aa-5-f-70-c-6-506-b-47-d-8-b-377-5-fda-6-d-7110-b-1.png" width="412" height="415" class="image" alt="Registering the Data Streaming and Job Submitter services" /></p>
+<p>Her workspace is now available in FME Server.</p>
+<h2 id="test-your-workflow">
+  <span>Test Your Workflow</span>
+</h2>
+<p>Jennifer accesses her workspace in a web browser using the <strong>Direct Link</strong> provided in the <strong>Translation Log</strong>: <a href="http://localhost/fmeserver/#/workspaces/run/Self-Serve/publish-your-validation-workflow.fmw" rel="noreferrer noopener" target="_blank">http://localhost/fmeserver/#/workspaces/run/Self-Serve/publish-your-validation-workflow.fmw</a>.</p>
+<p><img src="images/ad-56-d-38-e-81-fc-420-b-b-84-f-3-c-42-a-6-aa-3165.png" width="624" height="192" class="image" alt="Finding the Direct Link to the workspace in the Translation Log" /></p>
+<p>She clicks the link to open FME Server. This link directs Jennifer to the <strong>Run Workspace</strong> page. Here she can choose which workspace to run, which service to use, and optionally provide an email to receive the results. She selects <strong>Data Streaming</strong> as the <strong>Service</strong>, and clicks-and-drags <strong>bad_data.dwg</strong> to upload it as the <strong>Source Autodesk AutoCAD DWG/DXF File(s)</strong>.</p>
+<p><img src="images/9241-f-68-c-0616-49-c-5-84-c-9-22-fb-2444-d-512.png" width="624" height="621" class="image" alt="Setting user parameters in the FME Server Run Workspace web interface" /></p>
+<p>She clicks Run. The workspace runs on the web and she receives the report directly in her browser. The workspace is working properly. Next, she has to make it available for submitters to run without having to log into FME Server.</p>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>Make sure you have followed along with Jennifer’s steps.</p>

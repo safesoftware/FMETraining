@@ -1,0 +1,257 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<ul>
+  <li>Explain how attribute validation improves data quality.</li>
+  <li>Validate data based on attribute values using an AttributeManager.</li>
+  <li>Connect geometry and attribute validation workflows.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/DigitalPlanSubmission/validate-attributes.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+</ul>
+<h2 id="ensuring-data-attribute-quality">
+  <span>Ensuring Data Attribute Quality</span>
+</h2>
+<p>In addition to validating geometry, Jennifer wants to validate attribute values. She’s particularly concerned about the <strong>DIAMETER </strong>attribute on the water network lines. Contractors sometimes forget to provide a diameter, leaving a value of zero. She doesn’t want to let them introduce this low-quality data into their system, so she would like the workflow to flag these features as invalid.</p>
+<h2 id="attribute-validation-options">
+  <span>Attribute Validation Options</span>
+</h2>
+<p>Jennifer is aware of many methods for validating attributes. She could use:</p>
+<ul>
+  <li><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/tester.htm" rel="noreferrer noopener" target="_blank">Tester</a>: evaluates one or more tests on a feature, and routes the feature according to the outcome of the test(s).</li>
+  <li><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/testfilter.htm" rel="noreferrer noopener" target="_blank">TestFilter</a>: similar to the Tester, but lets you have more than just Passed and Failed output ports.</li>
+  <li><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/attributevalidator.htm" rel="noreferrer noopener" target="_blank">AttributeValidator</a>: validates any number of attributes against user-defined test conditions, routing the feature according to the outcome of the test(s) and identifying any tests it has failed.<ul>
+      <li><a href="https://knowledge.safe.com/articles/22668/validate-your-data-attributes-with-the-attributeva.html" rel="noreferrer noopener" target="_blank">Learn more</a> with this tutorial series.</li>
+    </ul>
+  </li>
+  <li><a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/!Transformer_Parameters/Parameter_Condition_Definition_Dialog.htm" rel="noreferrer noopener" target="_blank">Conditional Values</a> in any Attribute* transformer, which essentially let you embed one or more Tester transformers within an Attribute* transformer.</li>
+  <li>Multiple Attribute* transformers in combination with a Tester or other filtering transformer.</li>
+  <li>Some format-specific transformers, like the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/jsonvalidator.htm" rel="noreferrer noopener" target="_blank">JSONValidator</a> or <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/xmlvalidator.htm" rel="noreferrer noopener" target="_blank">XMLValidator</a>.</li>
+  <li>The <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/datetimeconverter.htm" rel="noreferrer noopener" target="_blank">DateTimeConverter</a> can validate and repair timestamps.</li>
+  <li>Controlling schema on<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!FeatureTypeProperties/writer_feature_type_props_editing.htm" rel="noreferrer noopener" target="_blank"> writer feature types</a>.<ul>
+      <li>Learn more about managing and validating schema with the <a href="https://knowledge.safe.com/articles/1136/schemamapper-transformer-tutorial.html" rel="noreferrer noopener" target="_blank">SchemaMapper</a> or <a href="https://knowledge.safe.com/articles/1050/dynamic-workflow-tutorial-introduction.html" rel="noreferrer noopener" target="_blank">dynamic workflows</a>.</li>
+    </ul>
+  </li>
+</ul>
+<p>Because her need is very simple (validating a single attribute with known schema and values), she will simply use an <strong>AttributeManager </strong>and a <strong>Tester</strong>. However, if she decides to expand the validation later based on feedback, she might explore the other options.</p>
+<h2 id="validate-attribute-data-using-the-attribute-manager">
+  <span>Validate Attribute Data Using the AttributeManager</span>
+</h2>
+<p>Jennifer is ready to set up her attribute validation transformers. She adds an <strong>AttributeManager </strong>and connects it to both the <strong>GeometryValidator:Passed</strong> and <strong>GeometryValidator:Failed </strong>ports. </p>
+<p><img src="images/1869-fbd-1-bded-4-da-7-b-594-7-cc-1-de-03243-a.png" width="546" height="234" class="image" alt="Adding an AttributeManager" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>Jennifer has started to add <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/using-annotations.htm" rel="noreferrer noopener" target="_blank">annotation</a> to her workspace to document it. Feel free to do the same.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>She could use the <strong>GeometryValidator</strong> to send her features in two different streams, but because the <strong>_issues{}</strong> attribute is only added to failed features, she can use that to distinguish which features have failed. Features that failed validation will have a value for the list attribute <strong>_issues{}</strong> at index 0 (i.e. the first item in the list), expressed in FME as <strong>_issues{0}</strong>. Keeping all her features in one stream will make summarizing them later easier. </p>
+<p>She will use the <strong>AttributeManager</strong> to create two attributes that indicate if a given feature passes validation for diameter and if it is OGC valid. She can use <strong>Conditional Values</strong> to conduct tests to set the right value for each feature. She can then summarize her features by these attributes to provide a validation report to the submitter.</p>
+<p>First, she will add the diameter validation attribute. She double-clicks the <strong>AttributeManager </strong>to open its parameters dialog. She scrolls down to the bottom of the<strong> Attribute Actions</strong> table and clicks in the cell that says <strong>&lt;Add new Attribute&gt;</strong>. She types in “diam_passed”. Then she right-clicks in the blank<strong> Attribute Value</strong> cell next to that and selects<strong> C</strong><strong>onditional Values </strong>from the drop-down menu.</p>
+<p><img src="images/306-ac-0-cc-e-9-f-5-4571-9-c-1-c-5-b-3093-ff-9-b-70.png" width="613" height="457" class="image" alt="Setting the AttributeManager parameters" /></p>
+<p>Jennifer will use<strong> Conditional Values </strong>to check if the diameter attribute is greater than zero. If it is, she will set the new attribute <strong>diam_passed</strong> to “Valid”; if it is not, she will set it to “Invalid”.</p>
+<p>She double-clicks in the first empty cell under <strong>Test Condition</strong> to add a new test. </p>
+<p><img src="images/68-e-58-f-48-deaf-437-c-9-d-12-902-b-0-c-2-e-557-a.png" width="326" height="274" class="image" alt="Creating a test in the Parameter Condition Definition dialog" /></p>
+<p>She sets<strong> Left Value </strong>to the attribute <strong>DIAMETER</strong>, the <strong>Operator</strong> to <strong>&gt;</strong>, and the <strong>Right Value</strong> to <strong>0</strong>. Then she sets <strong>Attribute Value</strong> at the bottom of the dialog to <strong>Valid</strong>.</p>
+<p><img src="images/3-a-404-e-0-d-13-a-7-4-d-82-bbd-2-c-13071821-f-88.png" width="340" height="347" class="image" alt="Filling out the test" /></p>
+<p>She clicks <strong>OK</strong>. Then she finds the empty cell in the <strong>Attribute Value</strong> column and the <strong>Else </strong>row and types in “Invalid”. If the <strong>DIAMETER </strong>is &gt; 0, the <strong>diam_passed </strong>attribute is set to “Valid”, otherwise, it is set to “Invalid”.</p>
+<p><img src="images/2-ad-07-c-0-e-7167-4288-b-276-924-a-97-cf-6-d-6-f.png" width="326" height="274" class="image" alt="Setting the Else result" /></p>
+<p>She clicks <strong>OK</strong>.</p>
+<p>Next, she wants to create the attribute to capture if a feature is OGC valid or not. She can use the <strong>_issues{} </strong>attribute from the <strong>GeometryValidator</strong> for this task. She repeats this process for another new attribute in the <strong>AttributeManager: ogc_passed</strong>. She adds this new attribute under <strong>diam_passed </strong>in the <strong>AttributeManager </strong>table, then uses <strong>Conditional Values</strong> again to create a test condition:</p>
+<div align="left">
+  <table class="featureTable sort_table">
+    <tbody class="tbody">
+      <tr>
+        <td>
+          <p><strong>Left Value</strong></p>
+        </td>
+        <td>
+          <p>_issues{0}.count </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p><strong>Operator</strong></p>
+        </td>
+        <td>
+          <p>Attribute Has a Value</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p><strong>Right Value</strong></p>
+        </td>
+        <td>
+          <p>&lt;Unused&gt;</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p><strong>Attribute Value</strong> &gt; <strong>Attribute Value</strong></p>
+        </td>
+        <td>
+          <p>Invalid</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>Her dialog looks like this:</p>
+<p><img src="images/9-b-966-dee-aed-3-4651-8439-4609-fa-6-f-6-ea-8.png" width="438" height="347" class="image" alt="Completed test dialog" /></p>
+<p>She clicks <strong>OK</strong>. Then she sets the <strong>Else </strong>value to “Valid”.</p>
+<p><img src="images/ece-70379-f-0-ce-4417-a-1-f-1-ec-3-d-18-b-710-a-2.png" width="326" height="274" class="image" alt="Setting the Else value" /></p>
+<p>She clicks <strong>OK</strong>. </p>
+<p>This test will set<strong> ogc_passed </strong>to “Invalid” if a feature has any values in the <strong>_issues{} </strong>list at index 0, or a value of “Valid” otherwise.</p>
+<p>Finally, she wants to create a summary attribute that captures if a feature was invalid for either test. This attribute will be useful later in the workspace. She creates a new attribute called <strong>validation_result</strong> and uses <strong>Conditional Values</strong> to set up a test as follows:</p>
+<div align="left">
+  <table class="featureTable sort_table">
+    <tbody class="tbody">
+      <tr>
+        <td>
+          <p><strong>Logic</strong></p>
+        </td>
+        <td>
+          <p><strong>Left Value</strong></p>
+        </td>
+        <td>
+          <p><strong>Operator</strong></p>
+        </td>
+        <td>
+          <p><strong>Right Value</strong></p>
+        </td>
+      </tr>
+      <tr>
+        <td><br /></td>
+        <td>
+          <p>diam_passed</p>
+        </td>
+        <td>
+          <p>=</p>
+        </td>
+        <td>
+          <p>Invalid</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>OR</p>
+        </td>
+        <td>
+          <p>ogc_passed</p>
+        </td>
+        <td>
+          <p>=</p>
+        </td>
+        <td>
+          <p>Invalid</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>The <strong>Attribute Value</strong> for passing is “Invalid”. The value for <strong>Else </strong>is “Valid”. Her dialog looks like this:</p>
+<p><img src="images/c-2559392-03-d-1-4-fee-8-c-7-c-cca-83-a-68-aa-53.png" width="374" height="347" class="image" alt="Completed test dialog" /></p>
+<p>She clicks <strong>OK</strong>.</p>
+<h2 id="count-features-using-a-statistics-calculator">
+  <span>Count Features Using a StatisticsCalculator</span>
+</h2>
+<p>Jennifer would like the final report to tell the submitter the total number of features evaluated and the total number that were invalid. She needs attributes storing this information, which she can create using a<strong> </strong><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/counter.htm" rel="noreferrer noopener" target="_blank"><strong>Counter</strong></a> or a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/statisticscalculator.htm" rel="noreferrer noopener" target="_blank"><strong>StatisticsCalculator</strong></a> transformer. She decides to use a <strong>StatisticsCalculator </strong>transformer because it will let her store the total number of features easily.</p>
+<p>Jennifer adds two <strong>StatisticsCalculators</strong>: one after the <strong>GeometryFilter </strong>to count the total number of features evaluated and one after the <strong>AttributeManager </strong>to count the number of invalid features. She also makes an important adjustment, changing the feature connection line coming out of the <strong>StatisticsCalculator:Summary </strong>port to instead come out of the <strong>Complete </strong>port. </p>
+<p><img src="images/3595-f-80-d-a-529-4125-8-c-72-459-f-75-e-64-f-79.png" width="624" height="167" class="image" alt="Using the Complete port of the StatisticsCalculator" /></p>
+<p>With this change, all the features will continue to flow through the workspace but will have the results of the <strong>StatisticsCalculator </strong>appended. The <strong>Summary </strong>port simply produces a small table of the results.</p>
+<p>She opens the parameters for the first <strong>StatisticsCalculator </strong>and chooses the <strong>FEATURE_ID </strong>as the <strong>Attribute </strong>to analyze. She checks <strong>Total Count</strong> as the statistic to generate. Now when she runs the transformer, she’ll get the total count of all features passing through as a new attribute named <strong>FEATURE_ID.total_count</strong>. </p>
+<p><img src="images/0-da-286-ba-0-f-1-f-4148-b-5-eb-3943963-d-7-f-70.png" width="624" height="71" class="image" alt="Getting Total Count with the StatisticsCalculator" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>The choice of<strong> FEATURE_ID</strong> in this case is arbitrary. Because Jennifer is just getting a count, not an average or other calculated statistic, she can choose any attribute. The StatisticsCalculator will just report the total number of features.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Because <strong>FEATURE_ID.total_count</strong> is not a very clear attribute name, Jennifer uses the <strong>AttributeManager </strong>to rename it to <strong>total_features</strong>. She opens the <strong>AttributeManager </strong>parameters, scrolls to the bottom of the table, finds<strong> FEATURE_ID.total_count</strong>, and renames it “total_features” in the <strong>Output Attribute</strong> column.</p>
+<p><img src="images/305-cc-274-4468-4-f-8-e-b-6-aa-20-c-7799-f-957-a.png" width="557" height="334" class="image" alt="Setting the AttributeManager parameters" /></p>
+<p>Next she sets up <strong>StatisticsCalculator_2</strong>. For this one, she calculates <strong>Total Count</strong> for <strong>FEATURE_ID</strong> and <strong>Max </strong>for <strong>total_features</strong>. She also sets <strong>Group By</strong> to <strong>validation_result.</strong> Using <strong>Group By</strong> will produce attributes with values of total valid and invalid features.</p>
+<p><img src="images/60-abc-18-d-ff-49-43-f-3-a-591-c-9-b-52-ca-53-dea.png" width="624" height="347" class="image" alt="Setting the StatisticsCalculator parameters" /></p>
+<p>Jennifer uses <strong>Run to This </strong>on the <strong>StatisticsCalculator_2 </strong>and inspects the <strong>Summary </strong>port. </p>
+<p><img src="images/21-d-48330-74-b-3-4326-ab-98-7-e-985-c-6-e-1522.png" width="193" height="140" class="image" alt="Using Run To This on the StatisticsCalculator_2" /></p>
+<p>She sees a table with the total number of valid and invalid features. She can use this in the report back to the submitter.</p>
+<p><img src="images/e-801-b-64-e-97-a-5-4-d-32-a-550-63-d-82-bd-96989.png" width="448" height="69" class="image" alt="Resulting table" /></p>
+<h2 id="take-different-actions-on-valid-and-invalid-features">
+  <span>Take Different Actions on Valid and Invalid Features</span>
+</h2>
+<p>A final attribute validation step that Jennifer will take in the workspace is to filter her features based on the validation results. She already has an attribute that reflects that (<strong>validation_result</strong>), so she can use a <strong>Tester </strong>to stream her features based on if they were valid or invalid.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>Another version of this workspace could filter features by the validation results much earlier. However, taking that approach can easily lead to a lot of duplicated effort, having to repeat transformers to do similar operations on both streams. For this workspace Jennifer chose instead to keep valid and invalid features together in one stream until it was necessary to separate them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Jennifer connects a <strong>Tester </strong>to the <strong>StatisticsCalculator_2:Complete</strong> port.</p>
+<p><img src="images/ac-5400-d-3-d-73-f-41-ef-b-769-eeec-0-eb-91-cad.png" width="354" height="130" class="image" alt="Connecting StatisticsCalculator_2:Complete port to the Tester" /></p>
+<p>She sets the following test within it:</p>
+<div align="left">
+  <table class="featureTable sort_table">
+    <tbody class="tbody">
+      <tr>
+        <td>
+          <p><strong>Logic</strong></p>
+        </td>
+        <td>
+          <p><strong>Left Value</strong></p>
+        </td>
+        <td>
+          <p><strong>Operator</strong></p>
+        </td>
+        <td>
+          <p><strong>Right Value</strong></p>
+        </td>
+      </tr>
+      <tr>
+        <td><br /></td>
+        <td>
+          <p>validation_result</p>
+        </td>
+        <td>
+          <p>=</p>
+        </td>
+        <td>
+          <p>Valid</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>This test will cause valid features to come out of the <strong>Passed </strong>port and invalid features to come out the <strong>Failed </strong>port. She will use these failed features to create a detailed report for the submitter.</p>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>Make sure you have followed along with Jennifer’s steps. Repeat the steps above using your own installation of FME 2020.1, <a href="http://strigo.io" rel="noreferrer noopener" target="_blank">access an on-demand training machine</a>, or use this interactive tutorial.  If you have your own data you’d like to try to validate, you can create your own bad_data.dwg and good_data.dwg and try using those. Just keep in mind that you might need to use a different attribute to validate.</p>

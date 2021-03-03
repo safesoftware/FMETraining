@@ -1,0 +1,80 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you'll be able to:</p>
+<ul>
+  <li>Use the Text Editor to construct attributes.</li>
+  <li>Use the Arithmetic Editor to construct attributes.</li>
+  <li>Understand what FME feature functions are.</li>
+  <li>Know when or when not to replace Transformers with feature functions.</li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>Besides constant attribute values, FME also allows you to construct values using string manipulation and arithmetic calculations. This procedure is achieved by clicking on the arrow in the Attribute Value field and selecting either Open Text Editor or Open Arithmetic Editor:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.026.AttributeManagerSetMenu.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.026.AttributeManagerSetMenu.png" alt="Clicking on the arrow in the Attribute Value field" class="image" /></a></p>
+<p>This method is advantageous because the attribute no longer needs to be a fixed value: it can be constructed from a mix of existing attributes, parameters, and constants.</p>
+<h2 id="text-editor">
+  <span>Text Editor</span>
+</h2>
+<p>The text editor - as you would expect - allows you to construct a text value. It includes all the usual string-handling functionality you would need, such as concatenation, trimming, padding, and case-changing.</p>
+<p>The text editor looks like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.027.AttributeManagerTextEdit.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.027.AttributeManagerTextEdit.png" alt="FME Feature Attributes in the Text Editor" class="image" /></a></p>
+<p>Here the user is constructing an address string by concatenating various existing attributes with some fixed characters (the commas).</p>
+<p>Notice the menu on the left-hand side. Existing attributes are listed here and were added into the string by double-clicking them. Also, notice the other menu options. Maybe the most important for text are String Functions:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.028.AttributeManagerTextEditStrings.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.028.AttributeManagerTextEditStrings.png" alt="A partial list of string functions" class="image" /></a></p>
+<p>These are the functions that can be used to manipulate the strings being used. For example, here the user is making sure the attributes being used are trimmed when used:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.029.AttributeManagerTextTrimFunc.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.029.AttributeManagerTextTrimFunc.png" alt="An example of string functions trimming attribute values" class="image" /></a></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>Notice the Date/Time functions in the text editor, which can be used to manipulate dates, times, and datetime strings; including TimeZone components.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="arithmetic-editor">
+  <span>Arithmetic Editor</span>
+</h2>
+<p>The arithmetic editor is much the same as the text editor, except that whatever is entered into the dialog will be evaluated as an arithmetic expression, and a numeric result returned:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.030.AttributeManagerMathEdit.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.030.AttributeManagerMathEdit.png" alt="An example of an arithmetic expression in the Arithmetic Editor" class="image" /></a></p>
+<p>Here the user is calculating the monthly number of visitors to a park by dividing the annual number of visitors by 12 (twelve). As with the text editor, existing attributes and arithmetic functions were obtained from the menu on the left-hand side.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <h4 class="mbs">Note</h4>
+          <div class="message-media-content">
+            <p>The contents of the Arithmetic Editor <strong>must</strong> form an arithmetic expression that can be evaluated mathematically.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="fme-feature-functions">
+  <span>FME Feature Functions</span>
+</h2>
+<p>One other item in the menu of both text and arithmetic editors is FME Feature Functions:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.031.AttributeManagerFMEFunctions.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.031.AttributeManagerFMEFunctions.png" alt="A list of FME Feature Functions" class="image" /></a></p>
+<p>These are functions that reach into the very heart of FME's core functionality. They are the building blocks that transformers are built upon; basic functionality that can return values to the editor.</p>
+<p>For example, the @Area() function returns the area of the current feature (assuming it is a polygon). @CoordSys() returns the coordinate system. They are the functional equivalent of the AreaCalculator and CoordinateSystemExtractor transformers.</p>
+<p>Some functions return strings; others return numeric values. Therefore, the available functions vary depending on whether the text or arithmetic editor is being used. In the screenshot above, the text editor functions are on the left and the arithmetic editor functions on the right. The text editor can use either text or numeric values; the arithmetic editor can only ever accept numeric values.</p>
+<p>FME Feature Functions are useful because they allow you to build processing directly into the AttributeManager, instead of using a separate transformer.</p>
+<h2 id="replacing-other-transformers">
+  <span>Replacing Other Transformers</span>
+</h2>
+<p>Integrated text and arithmetic editors provide a great benefit for workspace creation. They allow attribute-creating functions to be carried out directly in a single transformer.</p>
+<p>For example, the AttributeManager text editor can be used as a direct replacement for the StringConcatenator and ExpressionEvaluator transformers.</p>
+<p>The AttributeManager could also replace the StringPadder and AttributeTrimmer transformers, albeit with a little less user-friendliness. If FME Feature Functions are used inside the editor, this transformer could also technically replace transformers such as the AreaCalculator, LengthCalculator, DateTimeStamper, and many more.</p>
+<p>This feature is usually a good thing. Workspaces will be more compact and well-defined when as many peripheral operations as possible are directly integrated into a single transformer. However, because it's possible for an AttributeManager to be carrying out many, many operations, it is also more important to use Best Practice and ensure it has the proper annotation.</p>
+<p>If an AttributeManager is not properly annotated, it isn't possible to determine from looking at the Workbench canvas what action it is carrying out!</p>
