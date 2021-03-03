@@ -1,7 +1,5 @@
-<!--This file duplicates a little of the content to follow but is added here because the content of this file is used for the landing page on GitBook-->
+# FME Academy Training Material 2020
 
-# FME Desktop Training Manuals #
+This branch contains the 2020 training content for FME Academy, Safe Software's online learning platform.
 
-This repository contains the manuals for FME Desktop and FME Server training.
-
-Notice that each different manual is held in a different branch, and only periodically merged into the master branch. Therefore do not use the master branch as the source for training content (it may not be up to date) or to push updates to (the manuals are not built from the master branch).  
+Each module is stored as a separate ZIP file, as these are required for uploading content to use with the Salesforce myTrailhead platform. If you wish to adapt this training content for use with your own e-learning platform or for generating training manuals, you can use the HTML and images contained in the ZIP files. In the future we may explore providing a script to automatically generate PDFs from the content.
