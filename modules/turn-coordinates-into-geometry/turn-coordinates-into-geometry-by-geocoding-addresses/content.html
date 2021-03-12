@@ -4,18 +4,18 @@
 <p>After completing this unit, you'll be able to:</p>
 <ul>
   <li>Create points using addresses.</li>
-  <li>List the available geocoding services.</li>
+  <li>Understand the limitations of geocoding services.</li>
 </ul>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>Sometimes your dataset will only contain addresses, without latitude/longitude data. To handle these kinds of situations, you can use the Geocoder transformer.</p>
+<p>Sometimes your dataset will only contain addresses, without latitude/longitude data. To handle these kinds of situations, you can use the <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/geocoder.htm" rel="noreferrer noopener" target="_blank">Geocoder</a> transformer.</p>
 <p>The following services are supported:</p>
-<table style="width:100%" class="featureTable sort_table">
+<table class="featureTable sort_table" style="width:100%">
   <tbody class="tbody">
     <tr>
-      <td style="width:50.0000%">Service</td>
-      <td style="width:50.0000%">Mode</td>
+      <td style="width:50.0000%"><strong>Service</strong></td>
+      <td style="width:50.0000%"><strong>Mode</strong></td>
     </tr>
     <tr>
       <td style="width:50.0000%">ArcGIS Online<br /></td>
@@ -82,14 +82,20 @@
     </div>
   </div>
 </div>
+<p>Some Geocoder services support "reverse geocoding," finding the nearest address given a coordinate. Note as well that the exact address formatting that will give you the best chance of successfully geocoding will vary by service. Refer to the service's documentation and use an AttributeManager or other transformers to ensure you are giving the transformer an address format it expects.</p>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/AdvancedAttributes/https://s3.amazonaws.com/FMEData/FMEData2020/Resources/SpatialDataIntegration/CulturalSpaces2016.csv" rel="noreferrer noopener" target="_blank">CulturalSpaces2016.csv</a></p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/SpatialDataIntegration/CulturalSpaces2016.csv" rel="noreferrer noopener" target="_blank">CulturalSpaces2016.csv</a></p>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
 <ol>
-  <li>Add a CSV reader with the <a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/AdvancedAttributes/https://s3.amazonaws.com/FMEData/FMEData2020/Resources/SpatialDataIntegration/CulturalSpaces2016.csv" rel="noreferrer noopener" target="_blank">CulturalSpaces2016.csv</a> dataset to the canvas, add a Geocoder.</li>
-  <li>In the Geocoder parameters, sign up for a free Google Geocoder API and then paste the API into the parameters. </li>
-  <li>Next, for Street Address, identify where the address is stored select that Attribute. For this example, the address is stored in ADDRESS. </li>
+  <li>Open FME Workbench 2020.1. Click New to start a new workspace. Click Readers &gt; Add Reader and set Format to CSV (Comma-Separated Value).</li>
+  <li>Click the ellipsis button [...] and select the <a href="https://s3.amazonaws.com/FMEData/FMEData2020/Resources/AdvancedAttributes/https://s3.amazonaws.com/FMEData/FMEData2020/Resources/SpatialDataIntegration/CulturalSpaces2016.csv" rel="noreferrer noopener" target="_blank">CulturalSpaces2016.csv</a> dataset. </li>
+  <li>Add a Geocoder to the canvas connected to the CSV feature type.</li>
+  <li>In the Geocoder parameters, <a href="https://developers.google.com/maps/documentation/geocoding/get-api-key" rel="noreferrer noopener" target="_blank">sign up for a free Google Geocoder API</a> and then paste the API key into the parameters.</li>
+  <li>Next, for Street Address, identify where the address is stored select that Attribute. For this example, the address is stored in ADDRESS.</li>
   <li>Before running the translation, set the Rejected Feature Handling to Continue Translation. We need to do this because some of the cultural spaces don't have an address associated with them, so our translation will stop when the Geocoder rejects these features. To do this, in the Navigator Pane &gt; Workspace Parameters &gt; Translation &gt; Rejected Feature Handling &gt; Continue Translation. Running the translation you will now have points on the map.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000smWG&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000002VpIr" alt class="image image-block image-center" /><br /></li>
   <li>Run the workspace and inspect the results</li>
 </ol>
