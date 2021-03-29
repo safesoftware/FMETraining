@@ -1,0 +1,74 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Turn on additional log timestamp information.</li>
+  <li>Filter which messages are written to the log.</li>
+  <li>Filter a log to only view certain messages.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li>Starting workspace<ul>
+      <li>Commit to FMEData using the branch of the current release year.</li>
+      <li>Place in Workspaces/TheNameOfYourTrail</li>
+      <li>Name workspaces in all lowercase with - replacing spaces, e.g. Exercise: Create and Modify Attributes becomes exercise-create-and-modify-attributes.fmw.</li>
+      <li>Workspaces committed to FMEData will automatically appear in S3.</li>
+      <li>The S3 URL follows this pattern: <a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/edit-your-datas-schema.fmw" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/edit-your-datas-schema.fmw</a></li>
+      <li>Completed (finished) workspaces should not be linked to in the outline, but should be committed to Workspaces/InstructorUse/Workspaces/FMEAcademy. These should have -complete appended to their filenames, e.g. exercise-join-your-spatial-data-complete.fmw.</li>
+    </ul>
+  </li>
+</ul>
+<h2 id="log-message-format">
+  <span>Log Message Format</span>
+</h2>
+<p>The FME log file is your best friend for debugging. It tells you how long a translation took, where the time went, and how well FME was able to use the available system resources.</p>
+<p>The first thing to notice is that each line of the log is (in most cases) a separate message, for example:</p>
+<p>Creating writer for format: Esri Shapefile</p>
+<p>However, sometimes the message spans several lines, such as:</p>
+<p>-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-</p>
+<p>-~                                                                             ~-</p>
+<p>-~    Feature caches have been recorded at every stage of the translation.     ~-</p>
+<p>-~                      To inspect the recorded features,                      ~-</p>
+<p>-~              click the feature cache icons next to the ports.               ~-</p>
+<p>-~                                                                             ~-</p>
+<p>-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-</p>
+<h2 id="optional-log-message-fields">
+  <span>Optional Log Message Fields</span>
+</h2>
+<p>There are a number of options to adjust the log file and what is displayed. To access these select Tools &gt; FME Options &gt; Translation:</p>
+<p><img src="images/1-fabfc-22-37-b-7-4-f-2-e-8-fcc-ea-954057-e-039.png" width="607" height="267" class="image image-block image-center" /></p>
+<p>The most important setting is Log Timestamp Information. This option turns on a number of optional fields in the log messages. These are:</p>
+<ul>
+  <li>Absolute Date: The date on which this step took place</li>
+  <li>Absolute Time: The time at which this step took place</li>
+  <li>Cumulative Time: The amount of time taken to this step in the current translation</li>
+  <li>Elapsed Time: The amount of time taken for this step in the current translation</li>
+  <li>Message Type: The nature of the message</li>
+</ul>
+<p>For example:</p>
+<p>2019-04-01 12:13:55|   0.8|  0.0|INFORM|Closing native MapInfo reader</p>
+<p>These timestamps can be used to identify slow sections of your workspace.</p>
+<p>Note</p>
+<p>The log file always contains timestamps, regardless of this setting.</p>
+<p> </p>
+<h2 id="filtering-log-messages">
+  <span>Filtering Log Messages</span>
+</h2>
+<p>A common requirement is to filter log messages so that only messages of a certain type are displayed. For example, it can be useful to turn off INFORM and STAT messages in order to make it easier to spot ERRORs and WARNs.</p>
+<p>There are two ways to achieve this. Firstly log messages can be filtered using options under Tools &gt; FME Options &gt; Translation:</p>
+<p><img src="images/87-cafb-96-b-263-49-c-1-9-a-67-040819795-faa.png" width="587" height="151" class="image image-block image-center" /></p>
+<p>These options turn each type of message on (or off) for all subsequent translation logs. If a message type is unchecked here it will not appear in a log at all.</p>
+<p>The second method of filtering is a set of tools in the log window itself:</p>
+<p><img src="images/e-20-b-7-c-0-c-8760-412-e-923-f-2-bf-6-ecfd-54-ca.png" width="587" height="91" class="image image-block image-center" /></p>
+<p>These tools are a way to toggle messages on and off in the log window only. They are easier to use and more flexible than using the FME Options for filtering.</p>
+<p> </p>
+<p>Note</p>
+<p>The Log Debug option (under FME Options) allows you to turn on debug messages in the log. These are extra log messages that are usually hidden from the user.</p>
+<p>Debug messages can help during debugging but are less useful in general FME use. Many messages (labeled "BADNEWS") are alarming “errors” that FME has trapped and kept to itself (like an end-of-file message). For this reason, it's not recommended that this option is turned on permanently.</p>
+<p>Also, note that the Log Debug setting persists in the workspace. If you turn that setting on and pass the workspace to another user, it retains the setting and shows debug messages when that other user runs the workspace!</p>
+<p> </p>
+<p>Note</p>
+<p>If the log window text is a little small for you, or not stylish enough, use Tools &gt; FME Options &gt; Appearance &gt; Log Font to change the font size and style.</p>
