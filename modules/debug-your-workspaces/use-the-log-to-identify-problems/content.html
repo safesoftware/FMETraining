@@ -8,20 +8,6 @@
   <li>Find the text and spatial log files.</li>
   <li>Explain the difference between errors and warnings.</li>
 </ul>
-<h2 id="resources">
-  <span>Resources</span>
-</h2>
-<ul>
-  <li>Starting workspace<ul>
-      <li>Commit to FMEData using the branch of the current release year.</li>
-      <li>Place in Workspaces/TheNameOfYourTrail</li>
-      <li>Name workspaces in all lowercase with - replacing spaces, e.g. Exercise: Create and Modify Attributes becomes exercise-create-and-modify-attributes.fmw.</li>
-      <li>Workspaces committed to FMEData will automatically appear in S3.</li>
-      <li>The S3 URL follows this pattern: <a href="https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/edit-your-datas-schema.fmw" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2020/Workspaces/IntegrateYourDataWithTheFMEPlatform/edit-your-datas-schema.fmw</a></li>
-      <li>Completed (finished) workspaces should not be linked to in the outline, but should be committed to Workspaces/InstructorUse/Workspaces/FMEAcademy. These should have -complete appended to their filenames, e.g. exercise-join-your-spatial-data-complete.fmw.</li>
-    </ul>
-  </li>
-</ul>
 <h2 id="debugging">
   <span>Debugging</span>
 </h2>
@@ -31,35 +17,52 @@
 <p>There are various debugging techniques available in FME, and it's important to use these in the correct order. For example, it's not particularly useful to change parameters and re-run the workspace when a simple log message already explains the issue!</p>
 <p>A logical order would be:</p>
 <ul>
-  <li>Check for any problem<ul>
+  <li><strong>Check for any problem</strong>
+    <ul>
       <li>Interpret the log for warnings and errors</li>
       <li>Inspect the output datasets</li>
     </ul>
   </li>
-  <li>Locate the problem<ul>
+  <li><strong>Locate the problem</strong>
+    <ul>
       <li>Review connection feature counts</li>
       <li>Inspect the data at key stages of the translation</li>
     </ul>
   </li>
-  <li>Determine the problem<ul>
+  <li><strong>Determine the problem</strong>
+    <ul>
       <li>Check reader, writer, or transformer parameters at the point of failure</li>
       <li>If necessary, run the workspace in feature debug mode</li>
     </ul>
   </li>
 </ul>
-<p>Note</p>
-<p>In the world of software development, debugging a process after completion is called "post-mortem debugging"! We're trying to find out what caused a fatality.</p>
-<p>If we can't determine the cause by a post-mortem, we'll re-run the process with various tracing options turned on. We can call that "interactive debugging."</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>In the world of software development, debugging a process after completion is called "post-mortem debugging"! We're trying to find out what caused a fatality.</p>
+            <p>If we can't determine the cause by a post-mortem, we'll re-run the process with various tracing options turned on. We can call that "interactive debugging."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="log-interpretation">
   <span>Log Interpretation</span>
 </h2>
 <p>FME logs contain a record of all stages and processes within a translation. The contents are therefore vital for debugging purposes.</p>
-<p>Log Message Types</p>
+<p><strong>Log Message Types</strong></p>
 <p>There are different message types that show in the log window including:</p>
-<p>Error: An error, denoted in the log by red text and the term ERROR, indicates that a problem has caused FME to cease processing. For example, FME is unable to write the output dataset because of incorrect user permissions.</p>
-<p>Warning: A warning, denoted by blue text and the term WARN, indicates a processing problem. The problem is sufficiently minor to allow FME to complete the translation, but the output may be adversely affected and should be checked. For example, FME is unable to write features because its geometry is incompatible with the writer format. The features will be dropped from the translation and a warning issued in the log.</p>
-<p>Information: Information messages, denoted by the term INFORM, indicate a piece of information that may help a user determine whether their translation has been processed correctly. For example, FME sometimes logs confirmation of a particular dataset parameter, such as the coordinate system.</p>
-<p>Statistics: Statistics messages, denoted by the term STATS, provide information on various numbers relating to the translation; for example, the number of features read from a source dataset, and the time it took to do so.</p>
+<ul>
+  <li><strong>Error</strong>: An error, denoted in the log by red text and the term ERROR, indicates that a problem has caused FME to cease processing. For example, FME is unable to write the output dataset because of incorrect user permissions.</li>
+  <li><strong>Warning</strong>: A warning, denoted by blue text and the term WARN, indicates a processing problem. The problem is sufficiently minor to allow FME to complete the translation, but the output may be adversely affected and should be checked. For example, FME is unable to write features because its geometry is incompatible with the writer format. The features will be dropped from the translation and a warning issued in the log.</li>
+  <li><strong>Information</strong>: Information messages, denoted by the term INFORM, indicate a piece of information that may help a user determine whether their translation has been processed correctly. For example, FME sometimes logs confirmation of a particular dataset parameter, such as the coordinate system.</li>
+  <li><strong>Statistics</strong>: Statistics messages, denoted by the term STATS, provide information on various numbers relating to the translation; for example, the number of features read from a source dataset, and the time it took to do so.</li>
+</ul>
 <h2 id="spatial-log-file">
   <span>Spatial Log File</span>
 </h2>
@@ -71,14 +74,16 @@
   <span>Interpreting the Log Window</span>
 </h2>
 <p>The log window should be the first place to check when a translation is completed. It will tell the user whether there are any concerning errors or warnings.</p>
-<p>Errors</p>
+<p><strong>Errors</strong></p>
 <p>If an ERROR occurs, it is likely that the translation will be halted. There will be a lot of red text and some statements such as:</p>
 <p>Program Terminating</p>
 <p>Translation FAILED.</p>
 <p>There may be several ERROR messages, so scroll back up the log window to try and identify the first of these, which is likely to be the cause of the problem. For example this message:</p>
-<p>ERROR |Error connecting to PostgreSQL database(host='postgis.train.safe.com', port='5432', dbname='fmedata', user='fmedata', password='*'): 'FATAL: password authentication failed for user "fmedata" FATAL: password authentication failed for user "fmedata"</p>
+<div><pre>ERROR |Error connecting to PostgreSQL database(host='postgis.train.safe.com', port='5432', dbname='fmedata', user='fmedata', password='*'): 'FATAL: password authentication failed for user "fmedata" FATAL: password authentication failed for user "fmedata"</pre>
+</div>
 <p>...is an obvious problem with authenticating a database connection.</p>
-<p>Warnings</p>
+<p><strong>Warnings</strong></p>
 <p>Even when a translation succeeds, it's important to check the log for the following comment:</p>
-<p>Translation was SUCCESSFUL with X warning(s)</p>
+<div><pre>Translation was SUCCESSFUL with X warning(s)</pre>
+</div>
 <p>If there are any warnings (for example, if X &gt; 0) then use the search option to look for the word WARN. Any warning messages might have important consequences for the quality of the output data.</p>
