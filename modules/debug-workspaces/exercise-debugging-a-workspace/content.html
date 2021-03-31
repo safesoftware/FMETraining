@@ -21,26 +21,26 @@
 <h2 id="exercise">
   <span>Exercise</span>
 </h2>
-<p>You have just been assigned to take over a project from your colleague and they passed their workspace on to you. This project is to calculate the "walkability" of each address in the city of Vancouver. Walkability is a measure of how easy it is to access local facilities on foot. It will include a measure of the distance to the nearest park, the amount of crime in an area, and other similar metrics.</p>
+<p>Your manager just assigned you to take over a project from your colleague, and they passed their workspace on to you. This project is to calculate the "walkability" of each address in the city of Vancouver. Walkability is a measure of how easy it is to access local facilities on foot. The workspace will measure the distance to the nearest park, the amount of crime in an area, and other similar metrics.</p>
 <p>The workspace currently assesses crime, parks, and noise-control areas, but it doesn't give an overall measure of walkability.</p>
-<p>So let's do that, and then see if there are any other aspects we can include.</p>
+<p>Let's build on their workspace and use our debugging skills to address any problems we encounter.</p>
 <h2 id="1-start-fme-workbench">
   <span>1) Start FME Workbench</span>
 </h2>
-<p>Start FME Workbench 2021.0. Open the workspace template <strong>C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex1-Begin.fmw</strong>. Then run the workspace to cache the data.</p>
+<p>Start FME Workbench 2021.0 and open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-debugging-a-workspace.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>. Then run the workspace to cache the data.</p>
 <p>This workspace is a bit messy, but we will fix that in a later exercise. First, let's figure out what this workspace does:</p>
 <p><img src="images/74-ec-17-d-4-4577-431-d-8-f-9-a-01712-e-6-f-84-f-6.png" class="image image-block image-center" /></p>
 <ol>
-  <li>PostalAddress and PostcodeBoundaries are being read in from the Addresses.gdb.</li>
-  <li>Attributes from the PostalAddress feature type are being cleaned up to create a separate Number and Street attribute. Then the last two digits of the Number are being replaced by XX to create an attribute that will be the Join Key for joining the crime data.</li>
-  <li>Crime.csv read in, the street number for each crime incident is protected by XX as the last two digits.</li>
-  <li>PostalAddress and the Crime data is joined in the FeatureJoiner based on the Join Key attribute that was created in 2. and the Block attribute from Crime.</li>
-  <li>The [crime] Type attribute is given a number based on severity, and then the total CrimeValue is calculated for each address block. Then with the CenterPointReplacer, only one point is extracted if there are multiple crime incidents in the same location.</li>
-  <li>Parks MapInfo TAB file read in. This will be used to measure the walking distance from addresses to parks.</li>
-  <li>Using the NeighborFinder the park closest to each address is determined.</li>
-  <li>The _distance attribute that was created with the NeighborFinder is renamed ParkDistance.</li>
-  <li>A Planning Restrictions OGC Geopackage is read in using the Creator and the FeatureReader. Then from that dataset, the NoiseControlAreas are read in to obtain the noise restrictions areas. This data will be joined with the crime and address data.</li>
-  <li>Using the PointOnAreaOverlayer, the point data containing the crime, distance to park, and addresses is joined with the NoiseControlAreas polygons. This assigns the noise restrictions to any overlapping points. The AttributeValueMapper is used to assign the zone with a score, creating the attribute NoiseZoneScore. This new attribute will reflect that addresses in noise-restricted areas are more walkable.</li>
+  <li>Reading Addresses.gdb creates PostalAddress and PostcodeBoundaries feature types.</li>
+  <li>Transformers clean attributes from the PostalAddress feature type and create a separate Number and Street attribute. Then the last two digits of the Number are being replaced by XX to create an attribute that will be the Join Key for joining the crime data.</li>
+  <li>Reading crime.csv creates the Crime feature type. Substituting XX for the last two digits anonymizes the street number for each crime incident.</li>
+  <li>The FeatureJoiner joins PostalAddress and Crime based on the Join Key attribute created in 2 and the Block attribute from Crime.</li>
+  <li>Transformers set the crime Type attribute to a number based on severity and then calculate the total CrimeValue for each address block. The CenterPointReplacer ensures only one point exists if there are multiple crime incidents in the same location.</li>
+  <li>Reading Parks.tab creates the Parks feature type. This data will let us measure the walking distance from addresses to parks.</li>
+  <li>Using the NeighborFinder, the park closest to each address is determined.</li>
+  <li>The NeighborFinder creates the _distance attribute. The AttributeRenamer renames it to ParkDistance.</li>
+  <li>The Creator and FeatureReader are used to read the Planning Restrictions OGC Geopackage. Then from that dataset, the NoiseControlAreas feature type is used to obtain the noise restriction areas.</li>
+  <li>The PointOnAreaOverlayer joins the point data containing the crime, distance to park, and addresses with the NoiseControlAreas polygons. The merged data assigns the noise restrictions to any overlapping points. The AttributeValueMapper creates the attribute NoiseZoneScore, giving a score to each point based on its zone. This new attribute reflects that addresses in noise-restricted areas are more walkable.</li>
 </ol>
 <div class="box message info">
   <div class="inner">
@@ -49,7 +49,7 @@
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>This workspace is very messy as our colleague didn't follow any best practices. Follow the instructions in the Document Your Workspaces module to organize it, or just click on the Autolayout button to quickly tidy it up:</p>
+            <p>This workspace is very messy as our colleague didn't follow any best practices. Follow the instructions in the Document Your Workspaces module to organize it, or click on the Autolayout button to quickly tidy it up:</p>
             <p></p>
             <p>Note that this will change how your workspace looks compared to the instructions, so pay attention to the transformer names and ports:</p>
             <p></p>
@@ -68,7 +68,7 @@
 <div><pre>@Value(ParkDistance) + @Value(CrimeValue) - @Value(NoiseZoneScore)</pre>
 </div>
 <p><img src="images/7-a-1947-d-1-2874-485-e-af-88-9703808-d-2-fba.png" width="598" height="301" class="image image-block image-center" /></p>
-<p>With this expression, the smaller the result, the better. Run the workspace. Because we ran the workspace in the beginning to cache all the data, only the ExpressionEvaluator will run.</p>
+<p>With this expression, the smaller the result, the better. Run the workspace. Because we ran the workspace and already have caches, only the ExpressionEvaluator will run.</p>
 <h2 id="3-assess-the-result">
   <span>3) Assess the Result</span>
 </h2>
@@ -102,7 +102,7 @@ Result is set to null</pre>
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>A useful test would be to right-click on CrimeValue in the Table View window, and sort by ascending numeric order. That will put any null values to the top of the table.</p>
+            <p>A practical test would be to right-click on CrimeValue in the Table View window and sort by ascending numeric order. That will put any null values at the top of the table.</p>
           </div>
         </div>
       </div>
@@ -118,10 +118,10 @@ Result is set to null</pre>
 <p>Then we know that it must be the CrimeValue that is an issue because it is the middle value.</p>
 <p>Let's find out where it becomes an issue. First, organize the workspace a bit, and then inspect the caches on the FeatureJoiner transformer. We are inspecting the FeatureJoiner because that's where we first get our Crime data:</p>
 <p><img src="images/5-eb-480-be-6941-45-a-6-be-81-759-b-625-ebd-5-f.png" class="image image-block image-center" /></p>
-<p>There are no &lt;null&gt; values coming from the FeatureJoiner, so let's move along the translation. Check the cache for the AttributeValueMapper. That's where values are set, so perhaps nulls are coming out of there?</p>
-<p>On inspection, there are no &lt;null&gt; values for the CrimeValue or the crime Type attribute in there. There are also no nulls for the Aggregator and CenterPointReplacer caches.</p>
-<p>Checking each feature cache is a bit time consuming, let's try a different method. Check the feature counts on each connection. There are 68,446 features tagged with a crime (FeatureJoiner:Joined), but then that is reduced to 9,899 after the Aggregator and then there are 3,698 features that are not tagged with a crime (FeatureJoiner:UnjoinedLeft). That gives a total of 13,597, coming out of the NeighborFinder, which is correct.</p>
-<p>Oh. Do you see it yet? The 3,698 features that are not tagged with a crime: what CrimeValue do they get? Inspect the UnjoinedLeft output from the FeatureJoiner, and you will see that they do not have the CrimeValue attribute. That's why the ExpressionEvaluator says that there are nulls. The reason these features do not have a value for CrimeValue, is because they are not being routed through the AttributeValueMapper which assigns the CrimeValue a value.</p>
+<p>There are no &lt;null&gt; values from the FeatureJoiner, so let's move along the translation. Check the cache for the AttributeValueMapper. This transformer sets values, so perhaps nulls are coming out of there?</p>
+<p>If you inspect the AttributeValueMapper cache, you'll see no &lt;null&gt; values for the CrimeValue or the crime Type attribute. There are also no nulls for the Aggregator and CenterPointReplacer caches.</p>
+<p>Checking each feature cache is a bit time-consuming; let's try a different method. Check the feature counts on each connection. There are 68,446 features tagged with a crime (FeatureJoiner:Joined), but then that is reduced to 9,899 after the Aggregator, and then there are 3,698 features without a crime (FeatureJoiner:UnjoinedLeft). That gives a total of 13,597, coming out of the NeighborFinder, which is correct.</p>
+<p>Do you see it yet? The 3,698 features that do not have a crime: what CrimeValue do they get? Inspect the UnjoinedLeft output from the FeatureJoiner, and you will see that they do not have the CrimeValue attribute. That's why the ExpressionEvaluator says that there are nulls. These features do not have a CrimeValue because they don't enter the AttributeValueMapper, which assigns the CrimeValue a value.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -129,7 +129,7 @@ Result is set to null</pre>
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>To confirm this I copied the log into a text editor and searched for the phrase "ExpressionEvaluator: Failed to evaluate expression".</p>
+            <p>To confirm this issue, I copied the log into a text editor and searched for the phrase "ExpressionEvaluator: Failed to evaluate expression."</p>
             <p>It appeared 3,698 times, the same as the number of features that exit the UnjoinedLeft port. Coincidence?</p>
           </div>
         </div>
@@ -144,13 +144,13 @@ Result is set to null</pre>
 <p><img src="images/7-e-04-d-532-3442-4-ebc-9-c-23-b-4-b-787092-b-77.png" class="image image-block image-center" /></p>
 <p>Open up its parameters and create an attribute called CrimeValue with a value of zero (0).</p>
 <p><img src="images/54-e-4-a-961-e-7-ab-4-abf-9-a-82-95487-ffbad-0-e.png" width="451" height="152" class="image image-block image-center" /></p>
-<p>Run the workspace, which will run from the AttributeCreator to the ExpressionEvaluator. You should now find that there are fewer warnings and that the output contains no &lt;null&gt; values.</p>
+<p>Run the workspace, which will run from the AttributeCreator to the ExpressionEvaluator. You should now find fewer warnings and that the output contains no &lt;null&gt; values.</p>
 <h2 id="6-add-swimming-pools">
   <span>6) Add Swimming Pools</span>
 </h2>
-<p>The city has decided that parks are not a great candidate for walkability scores because there is usually a park nearby. They decided to evaluate how easy it is to walk to a swimming pool, and this evaluation might be used to decide later where a new pool should be built.</p>
-<p>We can reuse the same workflow for swimming pools that was built for parks, with just a few minor updates.</p>
-<p>First let's add a new reader with the following parameters:</p>
+<p>The city has decided that parks are not a great candidate for walkability scores because there is usually a park nearby. They decided to evaluate how easy it is to walk to a swimming pool.</p>
+<p>We can reuse the same workflow for swimming pools that we used for parks, with just a few minor updates.</p>
+<p>First, let's add a new reader with the following parameters:</p>
 <div>
   <table class="featureTable sort_table">
     <tbody class="tbody">
@@ -179,7 +179,7 @@ Result is set to null</pre>
 <h2 id="7-filter-leisure-data">
   <span>7) Filter Leisure Data</span>
 </h2>
-<p>If you inspect the leisure data, you'll notice that there are various types of leisure facility, the type being recorded in the leisure attribute.</p>
+<p>If you inspect the leisure data, you'll notice various leisure facilities types, with the type recorded in the leisure attribute.</p>
 <p>So, add a Tester transformer between the leisure reader and the NeighborFinder. Set up the parameters to test for leisure = swimming_pool</p>
 <p><img src="images/2353-f-04-c-0101-4496-94-b-9-a-9-bd-18-e-12700.png" class="image image-block image-center" /></p>
 <p> </p>
@@ -191,14 +191,14 @@ Result is set to null</pre>
 <div><pre>@Value(PoolDistance) + @Value(CrimeValue) - @Value(NoiseZoneScore)</pre>
 </div>
 <p>Re-run the workspace. Check the log for warnings and errors, and then inspect the ExpressionEvaluator cache.</p>
-<p>Notice that the walkability scores are exceedingly large all of a sudden, due to the PoolDistance. Something is wrong, but what?</p>
+<p>Notice that the walkability scores are exceedingly large all of a sudden due to the PoolDistance. Something is wrong, but what?</p>
 <h2 id="9-locate-problem">
   <span>9) Locate Problem</span>
 </h2>
 <p>The PoolDistance is the source of the problem. There is no related log message to give a clue, and the Feature Count numbers look correct.</p>
-<p>Let's inspect the data. Click on the leisure reader and while holding the shift key, click on the NeighborFinder. Then right-click on either object and select Inspect Cached Features. This will open all the selected caches in Visual Preview.</p>
-<p>Right-click in the Graphics view, go to Background Map and ensure Background map off is selected. Visual Preview shows two specks of data, a long distance apart. This result is typical of a mismatch of coordinate systems.</p>
-<p>Click on some features and select the Feature Information button. In this window you will see that the main data has a coordinate system of UTM83-10, while the leisure data from OSM has a coordinate system of LL84.</p>
+<p>Let's inspect the data. Click on the leisure reader and while holding the shift key, click on the NeighborFinder. Then right-click on either object and select Inspect Cached Features. This step will open all the selected caches in Visual Preview.</p>
+<p>Right-click in the Graphics view, go to Background Map, and ensure Background map off is selected. Visual Preview shows two specks of data, a long distance apart. This result is typical of a mismatch of coordinate systems.</p>
+<p>Click on some features and select the Feature Information button. In this window, you will see that the primary data has a coordinate system of UTM83-10, while the leisure data from OSM has a coordinate system of LL84.</p>
 <p>This disparity is why the "nearest" pool to each address is such a high distance.</p>
 <h2 id="10-fix-coordinate-system-problem">
   <span>10) Fix Coordinate System Problem</span>
