@@ -1,0 +1,129 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to: </p>
+<ul>
+  <li><br /></li>
+</ul>
+<h2 id="prototyping">
+  <span>Prototyping</span>
+</h2>
+<p>In the classical sense, prototyping means creating an incomplete application as a way to evaluate the feasibility of a project.</p>
+<p>Here we'll stretch the definition to mean how to build a complex FME project incrementally; starting with an empty workspace and building it piece by piece to deliver a result that matches the final specification.</p>
+<p>We will cover the techniques used for building a workspace incrementally, and how to handle data that is rejected by a transformer.</p>
+<h2 id="incremental-development">
+  <span>Incremental Development</span>
+</h2>
+<p>The key development technique for FME workspaces is <a href="https://en.wikipedia.org/wiki/Incremental_build_model" rel="noreferrer noopener" target="_blank">incremental updates</a>.</p>
+<p>The steps to this technique are:</p>
+<ul>
+  <li>Plan your project as a series of small sections, each of which would fit inside a bookmark in FME</li>
+  <li>Design and implement a section in FME Workbench. It should ideally be between 3-10 transformers.</li>
+  <li>Test each section immediately after it is completed. That way you can identify problems at an early stage, and identify them more easily because only a few changes are being made in any increment.</li>
+  <li>Repeat the process, saving the workspace and testing it whenever you've added a new section</li>
+</ul>
+<p>Although a range of 3-10 transformers is an arbitrary number, the more transformers you add, the more difficult it would be to identify the source of any problems. Beyond ten transformers is the point at which you should consider chopping that process into smaller sections.</p>
+<p>Here an author has planned their workspace by laying it out as a set of bookmarks on the canvas:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.001.TranslationPreDef.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.001.TranslationPreDef.png" alt class="image image-block image-center" /></a></p>
+<p>Now the author can complete and test each section at a time, keeping the overall goal in mind at the same time.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>WARNING</td>
+    </tr>
+    <tr>
+      <td>It can be all too easy to start developing a workspace and forget to save it at all! FME keeps a recover file as soon as the workspace is saved for the first time, but until then you are running the risk of an irretrievable loss.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h2 id="source-data">
+  <span>Source Data</span>
+</h2>
+<p>When the FME project is large and complex, it's likely that the source data will be large and complex too. So when creating a workspace in small increments, testing each part in turn, it's better to avoid using the entire dataset.</p>
+<p>It's better to use a sample of source data for testing. In fact, it's better to create a small sample of data - extracting it from your source and writing to a neutral format like FFS - rather than randomly sampling the data for each test run.</p>
+<p>Sampling is particularly useful for databases because it also avoids the problems of waiting for network traffic and database responses.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.002.SourceDataSample.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.002.SourceDataSample.png" alt class="image image-block image-center" /></a></p>
+<p>Here the workspace author is extracting a section of source data by reading from a database, splitting it into tiles, and writing just one tile to the FFS format. This one tile can be used for prototyping a solution in a way that is representative of the entire source database table.</p>
+<p>Another transformer to use would be the Sampler, although the features selected by it would not be spatially adjacent.</p>
+<hr />
+<h2 id="version-control">
+  <span>Version Control</span>
+</h2>
+<p>When making a set of incremental changes to a workspace, it's easy to work on a single workspace file only. However, there are various problems with this:</p>
+<ul>
+  <li>Faults cannot be easily tracked because there is no record of what has changed and when</li>
+  <li>It is not easy to create different versions for different platforms</li>
+  <li>If the workspace file is lost or corrupted, then the entire project is lost</li>
+</ul>
+<p>Therefore, it is better to keep versioned workspaces, where a different copy is kept for each set of revisions. This precaution can be taken manually within the file system, or by using a repository tool like Git.</p>
+<p>In fact, it is a good idea to keep and version all materials related to an FME project, including:</p>
+<ul>
+  <li>Workspace files</li>
+  <li>Python files</li>
+  <li>Log Files</li>
+  <li>Source Datasets</li>
+</ul>
+<p>It's better not to store any information that is personal or that includes passwords. Also, there's no need to store temporary files.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>FME Server has a version control system built in. Even if you don't have an FME Server license, you can still install it for use as a repository system for workspaces and related files.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="rejected-features">
+  <span>Rejected Features</span>
+</h2>
+<p>An important part of any workflow is handling data that fails to process. For example, where a feature with no geometry is sent into a geometry-based transformer like the AreaBuilder.</p>
+<p>FME handles such failures by outputting the data through &lt;Rejected&gt; ports, which are found on many transformers:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.003.RejectedPorts.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.003.RejectedPorts.png" alt class="image image-block image-center" /></a></p>
+<p>A parameter exists to control the action of &lt;Rejected&gt; ports and gives the workspace author a choice over what action to take.</p>
+<p>When a feature is rejected, the translation will stop and a red circle with a number will appear on the &lt;Rejected&gt; port. You can click on the cache to inspect the feature and determine why it was rejected:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.500.RejectedFeature.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.500.RejectedFeature.png" alt class="image image-block image-center" /></a></p>
+<h2 id="rejected-feature-handling">
+  <span>Rejected Feature Handling</span>
+</h2>
+<p>The parameter to control handling of rejected features can be found in the Navigator window, under Workspace Parameters:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.004.RejectedFeatureParameter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.004.RejectedFeatureParameter.png" alt class="image image-block image-center" /></a></p>
+<p>The two options are <em>Terminate Translation</em> and <em>Continue Translation</em>.</p>
+<p>When the parameter is set to <em>terminate</em>, then a feature that exits via a &lt;Rejected&gt; port causes the translation to stop. To visually denote this, the &lt;Rejected&gt; ports have a small black marker on them.</p>
+<p>When the parameter is set to <em>continue</em>, then the translation will continue, regardless of how many features exit &lt;Rejected&gt; ports. In that case, the small black marker is removed:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.005.RejectedFeatureMarkers.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.005.RejectedFeatureMarkers.png" alt class="image image-block image-center" /></a></p>
+<p>In <em>terminate</em> mode, a rejected feature gets written to the log window with the error message:</p>
+<p>The below feature caused the translation to be terminated</p>
+<p>There will also be an error message relating to the transformer:</p>
+<p>Intersector_&lt;Rejected&gt;(TeeFactory): Intersector_&lt;Rejected&gt;: Termination Message: 'Intersector output a &lt;Rejected&gt; feature.</p>
+<p>This error is useful because it tells the author which transformer experienced the failure.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>TIP</td>
+    </tr>
+    <tr>
+      <td>To quickly find these error messages you can filter the Translation Log by clicking on the Errors button.<br /><br /><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.006.FilterError.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.006.FilterError.png" alt="undefined" class="image image-block image-center" /></a></td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h2 id="mixed-mode">
+  <span>Mixed Mode</span>
+</h2>
+<p>In <em>terminate</em> mode, a rejected feature will not cause the translation to stop, provided that the &lt;Rejected&gt; port is connected to a further object:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.007.RejectedFeatureMixedMode.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.007.RejectedFeatureMixedMode.png" alt class="image image-block image-center" /></a></p>
+<p>In short, an author can create a mixed mode, where some transformers stop the translation on rejecting a feature (the Intersector above), but others will handle the feature another way (the Bufferer). That way the author can try to handle rejected features that are expected, but stop the translation if there are truly unexpected failures.</p>
+<h2 id="feature-counts-and-inspection">
+  <span>Feature Counts and Inspection</span>
+</h2>
+<p>In continue mode, features that exit a &lt;Rejected&gt; port are counted and saved for inspection:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.008.RejectedFeatureCount.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.008.RejectedFeatureCount.png" alt class="image image-block image-center" /></a></p>
+<p>Features will be saved for inspection even if there is no Logger or other transformer attached. The number tells us how many features were rejected and the green icon can be clicked to inspect the data.</p>
