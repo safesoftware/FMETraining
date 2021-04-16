@@ -1,0 +1,107 @@
+<h2 id="optimizing-transformer-performance">
+  <span>Optimizing Transformer Performance</span>
+</h2>
+<p>The key to improving transformer performance is to reduce the amount of memory used, particularly in group-based transformers. To do this you can either reduce the amount of data entering a group-based transformer or use parameters that, in the right conditions, can reduce the need to store data in memory.</p>
+<h2 id="transformer-order-and-filtering">
+  <span>Transformer Order and Filtering</span>
+</h2>
+<p>Although the order of transformers can sometimes vary without affecting the result, at other times it is important to get the correct order for performance reasons.</p>
+<p>You’ll get better performance when you put the least amount of data into a group-based transformer as possible. One scenario is to put feature-based filter transformers <em>before</em> the group-based process, not after it:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.020.TransformerPerformanceCanvasOrder.png" alt class="image image-block image-center" /></p>
+<p>For example, here the author is filtering data after statistics have been calculated on one set of data. It would be more sensible to filter the data before calculating the statistics, otherwise processing has been carried out on features that were eventually ignored.</p>
+<p>The best way to remember this is: <strong>Filter, Remove, Action!</strong></p>
+<p>In other words, filter first, then remove attributes, then carry out the action.</p>
+<h2 id="group-by-mode-parameter">
+  <span>Group-By Mode Parameter</span>
+</h2>
+<p>A common parameter to most Group-Based transformers is called "Group By Mode" and appears near the Group By parameter in most transformer dialogs:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.021.TransformerPerformanceGroupedFeatureParam.png" alt class="image image-block image-center" /></p>
+<p>When set to Process at End (Blocking) then ALL of the features are stored in memory until they are all available. Then groups are formed. The transformer is literally blocking data from proceeding.</p>
+<p>When the parameter is set to Process When Group Changes (Advanced), then FME processes groups as they become available. That way less data is stored in memory and processing is more efficient.</p>
+<p>The condition for applying this parameter is that the groups of features are pre-sorted into their groups.</p>
+<p>For example, in the above screenshot, the user is using the ZoneCategory attribute as a group-by parameter (i.e. zones are dissolved together where they are the same category). If the incoming data is already sorted in order of ZoneCategory then the user can set the Group By Mode parameter and allow FME to process the data more efficiently.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>When using Input Ordered By Group on a transformer with two (or more) input ports, you need to arrange data to arrive in group order (Port 1, Group A, Port 2, Group A, Port 1, Group B, Port 2, Group B, etc.)<br /><br />i.e. it's not just a case of each stream of data being ordered correctly, you need to alternate streams/ports for each group - and that's very difficult to achieve.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="features-first-parameter">
+  <span>Features First Parameter</span>
+</h2>
+<p>Besides the "Group By Mode" parameter, some transformers have their own, unique, parameters for performance improvements. Many of these specify one type of feature to arrive "first."</p>
+<p>For example, the PointOnAreaOverlayer transformer expects two sets of data: Points and Areas. By default, FME requires all incoming Points and Areas because it needs to be sure it has ALL of the Areas before it can process any Points.</p>
+<p>But, if FME knows the Area features will arrive first (i.e. the first Point feature signifies the end of the Areas) then it doesn’t need all Point features. It can process each one immediately because it knows there are no more Areas that it could match against.</p>
+<p>The user specifies that this is true using the parameter Areas First:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.022.TransformerPerformanceNeighborsFirst.png" alt class="image image-block image-center" /></p>
+<p>But how does a user ensure the Area features arrive first? Well, like writers you can change the order of readers in the Navigator so that the reader at the top of the list is read first.</p>
+<p>Changing the reader order doesn’t improve performance <em>per se</em>, but it does let you apply performance-improving parameters like the above.</p>
+<h2 id="attributes-and-transformation">
+  <span>Attributes and Transformation</span>
+</h2>
+<p>As mentioned (in Reader Performance) reducing data helps performance because it saves FME from either holding it in memory or caching it to a disk.</p>
+<p>However, this isn’t just helped by reducing the number of features; it is also helped by reducing the size of each individual feature.</p>
+<p>One aspect of this is attributes. Carrying attributes through a translation impacts performance, so if the attributes are not required in the output, it’s best to remove them <em>as early as possible</em> in the translation.</p>
+<p>For example, when the reader and writer schemas look like this:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.023.TransformerPerformanceAttrsSourceSchema.png" alt class="image image-block image-center" /></p>
+<p>...it makes sense to remove excess attributes from the translation, as early as possible.</p>
+<p>There are two ways to remove attributes. Some reader formats (but not all) have a setting in the reader feature type to avoid reading excess attributes in the first place:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.024.TransformerPerformanceReadAttrs.png" alt class="image image-block image-center" /></p>
+<p>With that, you can ensure that <em>only</em> attributes exposed are read. The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025.TransformerPerformanceRemovingAttrs.png" alt class="image image-block image-center" /></p>
+<p>This ensures that none of the extra attributes become a drain on resources by being processed by any further transformers.</p>
+<h2 id="lists">
+  <span>Lists</span>
+</h2>
+<p>One specific type of attribute to beware of is a <em>List</em>. A list in FME is an attribute that can have multiple values. Because of this, it can be a big drain on resources.</p>
+<p>For example, use a Joiner to join a feature to 1,000 records and the list for that feature will have 1,000 sets of records. This is bad enough, but if the list is exploded and all of the original attributes kept, then there will be 1,000 features each with 1,000 sets of attributes!</p>
+<p>In general, beware of creating lists unnecessarily and of keeping them in a workspace beyond the point at which they are still of use.</p>
+<h2 id="geometry-and-transformation">
+  <span>Geometry and Transformation</span>
+</h2>
+<p>Like attributes, geometry can be removed from a feature, in this case using the GeometryRemover transformer.</p>
+<p>Many FME users create translations that handle tabular – non-spatial – data. If you are reading a spatial dataset and writing it to a tabular format, be sure to remove the geometry early in the workspace, just as you would an attribute.</p>
+<p>Another particular problem is carrying around spatial data as attributes. Spatial database formats - for example, Oracle or GeoMedia - usually store geometry within a field in the database; for example GEOM. When FME reads the data it converts the GEOM field into FME geometry and drops the field from the data.</p>
+<p>However, if you read a geometry table with a non-geometry reader, the translation could end up with the geometry stored as an FME attribute. A similar thing could happen when a workspace reads only one geometry column of a multiple geometry tables.</p>
+<p>Geometry will create <em>very</em> large and complex attributes, which take up a lot of resources. If you don’t need them, then it’s worth removing them.</p>
+<h2 id="bulk-mode-and-feature-tables">
+  <span>Bulk Mode and Feature Tables</span>
+</h2>
+<p>FME's engine is gradually being updated to use a methodology we call Bulk Mode (also known as Feature Tables).</p>
+<p>It's not a tool designed for user control, rather bulk mode is a new way for features to be transported through the workspace. Bulk mode speeds up a workspace, its translations, and its transformations quite substantially. If you see a log message about Bulk Mode (or sometimes Feature Tables) then this technology is what it refers to.</p>
+<p>As more transformers support bulk mode, expect performance times to improve. However, you will need to upgrade transformers to get this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes Bulk Mode support:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025b.TransformerPerformanceUpgrading.png" alt class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>In FME2019.1, the Tester transformer includes Bulk Mode support and can be upgraded to improve performance.<br />However, this bulk mode support comes at a price: Feature order is no longer maintained the same way it was before.<br /><br />As an example, let's say we have features numbered 1 to 10, in that order. They enter a Tester. The test clauses are set up so that even numbers pass (emerge from the PASSED port), odd numbers fail (emerge from the FAILED port).<br /><br />Without bulk mode, the features would emerge in the order 1 (Failed port), 2 (Passed port), 3 (Failed), 4 (Passed), 5 (Failed) and so on. In other words, they emerge in the same order they entered.<br /><br />With bulk mode, the output order is less certain. The output of each port will still be in order, but we can't say that each port will occur in order. For example, the output order might be 1 (Failed), 3 (Failed), 5 (Failed), 7 (Failed), 9 (Failed), 2 (Passed), 4 (Passed) 6 (Passed), and so on.<br /><br />In other words, with bulk mode, features emerge from each port in the same order, but one port may output all of its features (or a bulk subset of them) before the next port starts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard asks...</td>
+    </tr>
+    <tr>
+      <td>
+        <p>Q) Which of these transformers have group-related parameters for improving performance (pick all that apply and see if you can get the answers without looking at the transformers)</p>StatisticsCalculatorSpikeRemoverLineOnLineOverlayerFeatureMerger
+      </td>
+    </tr>
+  </tbody>
+</table>

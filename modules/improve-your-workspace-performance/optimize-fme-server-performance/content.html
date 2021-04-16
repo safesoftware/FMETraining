@@ -1,0 +1,46 @@
+<h2 id="performance-fme-server-and-fme-cloud">
+  <span>Performance, FME Server, and FME Cloud</span>
+</h2>
+<p>FME Server adds an extra dimension to FME performance, that of scalability. In terms of performance, the item most easily scalable is the number of FME engines.</p>
+<p>Increasing the number of engines supports a higher volume of jobs, and the FME Server Core contains a Software Load Balancer (SLB) to distribute jobs to the FME engines in a balanced way.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>FME Server is probably best-known for its web-based abilities; but it has huge potential in processing large amounts of data in less time by creating multiple jobs on multiple engines.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="using-server-for-bulk-translations">
+  <span>Using Server for Bulk Translations</span>
+</h2>
+<p>By default, utilizing multiple engines is only possible when you have multiple workspaces to run. When you have only a single workspace and wish to process it more efficiently on FME Server, then you need to divide that workspace into multiple jobs.</p>
+<p>To do so, I can create a parent workspace that divides my source data into separate parts and sends each to a different worker job using the <strong>FMEServerJobSubmitter</strong> transformer.</p>
+<p>For example, I can calculate the bounds of tiles to be created and share the load over multiple server engines by running the workspace separately for each tile.</p>
+<h2 id="fme-cloud">
+  <span>FME Cloud</span>
+</h2>
+<p>FME Cloud is an installation of FME Server hosted by Safe Software on Amazon Web Services technology and used on a pay-as-you-go basis. The benefit is that you don’t have to purchase FME Server, merely make use of it whenever you have a job that can take advantage of its power.</p>
+<p>The key to automating this for performance benefits are the FME Cloud custom transformers available on the FME Store:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.028.FMECloudTransformers.png" alt class="image image-block image-center" /></p>
+<p>With the FMECloudInstanceLauncher transformer (or the FMECloudInstanceController), I can run my parent workspace, have it automatically start an FME Cloud instance and run one or more worker jobs on it.</p>
+<p>This way I can start a new instance for each job, or run several jobs on one instance, depending on the type of instance and how many engines it has running on it.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard asks...</td>
+    </tr>
+    <tr>
+      <td>
+        <p>Q) How many FME engines does FME Cloud have available?</p>A choice of two, four, or eightIt depends on the FME license chosenIt depends on the virtual machine specificationsThere are unlimited enginesCheckShow explanationShow correct answers
+      </td>
+    </tr>
+  </tbody>
+</table>

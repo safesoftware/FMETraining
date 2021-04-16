@@ -1,0 +1,61 @@
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><br />Exercise 2</td>
+      <td>Public Art in Parks - Feature Caching</td>
+    </tr>
+    <tr>
+      <td>Data</td>
+      <td>City Neighborhoods (Google KML)<br />Public Art (Microsoft Excel)<br />Parks (MapInfo Tab)<br />City Orthophotos (GeoTIFF)</td>
+    </tr>
+    <tr>
+      <td>Overall Goal</td>
+      <td>Examine a workspace that analyzes public art in city parks</td>
+    </tr>
+    <tr>
+      <td>Demonstrates</td>
+      <td>Analyzing Performance</td>
+    </tr>
+    <tr>
+      <td>Start Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex2-Begin.fmw</td>
+    </tr>
+    <tr>
+      <td>End Workspace</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+<p>As you'll recall, the provincial government has given the city a grant to fund new public art in parks.</p>
+<p>A colleague has created a workspace to analyze the amount of art in each city park and we are carrying out a code review to ensure that the workspace is efficient and well-designed.</p>
+<hr />
+<p><br /><strong>1) Open and Run Workspace</strong><br />Open your workspace from the previous exercise, or the workspace listed above. Previously we ran the workspace with caching turned on and it took about twenty seconds to run.</p>
+<p>Now - to test production performance - turn off feature caching. There are no Inspector or Logger transformers, and no parts are disabled. So simply re-run the workspace.</p>
+<p>You should find that the workspace runs a lot more quickly this time - perhaps in as little as five seconds:</p><pre>Translation was SUCCESSFUL with 2 warning(s) (70 feature(s) output) FME Session Duration: 4.8 seconds. (CPU: 3.3s user, 1.2s system) END - ProcessID: 2524, peak process memory usage: 452260 kB, current process memory usage: 146324 kB</pre>
+<p>This clearly shows the performance reduction that caching can cause. This is particularly true in a workspace processing large raster datasets. Caching shouldn't be required in a production workspace because the authoring and debugging phases of development should be complete.</p>
+<p><br /><strong>2) Assess Relative Performance</strong><br />Although the workspace now runs very quickly, we could assess the relative performance of each section anyway.</p>
+<p>Firstly disable all components after the readers, and run the workspace. Make a note of the time the workspace now takes to run:</p><pre>Translation was SUCCESSFUL with 1 warning(s) (0 feature(s) output) FME Session Duration: 1.4 seconds. (CPU: 1.0s user, 0.3s system) END - ProcessID: 7148, peak process memory usage: 116928 kB, current process memory usage: 107228 kB</pre>
+<p>Now enable all transformers, leaving only the writers disabled. Re-run the workspace and make a note of the performance:</p><pre>Translation was SUCCESSFUL with 2 warning(s) (0 feature(s) output) FME Session Duration: 1.7 seconds. (CPU: 1.1s user, 0.4s system) END - ProcessID: 1436, peak process memory usage: 146044 kB, current process memory usage: 142124 kB</pre>
+<p>From this we know that:</p>
+<ul>
+  <li>Reading data takes 1.4 seconds (the first partial run)</li>
+  <li>Transforming data takes 0.3 seconds (the second partial run minus the first partial run)</li>
+  <li>Writing data takes 3.1 seconds (the overall run minus the second partial run)</li>
+</ul>
+<p>So writing data takes the longest in this workspace, although the workspace isn't really that slow anyway.</p>
+<p>Still, in the next exercise we'll go on and see what we can change in the workspace to make it more efficient.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>CONGRATULATIONS</td>
+    </tr>
+    <tr>
+      <td>By completing this exercise, you have learned how to:<ul>
+          <li>Discover the performance liabilities of feature caching</li>
+          <li>Analyze a workspace for relative performance of different sections</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
