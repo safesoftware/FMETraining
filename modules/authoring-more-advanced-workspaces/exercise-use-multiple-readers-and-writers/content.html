@@ -1,0 +1,150 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Add a reader to a workspace.</li>
+  <li>Manage rejected features.</li>
+  <li>Set a writer parameter.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-use-multiple-readers-and-writers.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+</ul>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>Here we continue with a project to redefine garbage collection schedules.</p>
+<p>In the first exercise, we used various transformers to divide addresses into five separate groups. Now the task is to refine that work by estimating the number of residents per address based on the zone type it falls within:</p>
+<ul>
+  <li>Single-family residences: 2 adults</li>
+  <li>Two-family residences: 4 adults</li>
+  <li>Multi-family residences: 12 adults</li>
+  <li>Comprehensive development zone: 8 adults</li>
+  <li>Commercial properties: 1 adult</li>
+</ul>
+<p><br /><strong>1) Open Workspace</strong><br />Open your workspace from the previous exercise.</p>
+<p>Sake a copy of the workspace with a new version number. For example, if you saved the previous workspace as GarbageCollection-v1.fmw, then make a copy named GarbageCollection-v2.fmw and open that for editing.</p>
+<p>Alternatively, you can open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-use-multiple-readers-and-writers.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.214.Ex2.StartWorkspace.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.214.Ex2.StartWorkspace.png" alt class="image image-block image-center" /></a></p>
+<p>The remaining transformers in the "Transformers" bookmark are these:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.215.Ex2.StartWorkspaceTransformers.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.215.Ex2.StartWorkspaceTransformers.png" alt class="image image-block image-center" /></a></p>
+<p><br /><strong>2) Add Reader</strong><br />The first task here is to identify which planning zone each address falls inside. We need to read the zoning data and carry out a spatial join. To read a new dataset of data in a different format requires a new reader.</p>
+<p>So, select Readers &gt; Add Reader from the menu bar. When prompted enter the following parameters:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Reader Format</td>
+      <td>MapInfo TAB (MITAB)</td>
+    </tr>
+    <tr>
+      <td>Reader Dataset</td>
+      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Zoning.zip</a><br /></td>
+    </tr>
+  </tbody>
+</table>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.216.Ex2.ReaderDialog.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.216.Ex2.ReaderDialog.png" alt class="image image-block image-center" /></a></p>
+<p>A reader is added to the Navigator window and a feature type to the canvas. Move the feature type into the Zoning bookmark:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.217.Ex2.ZoningReaderAdded.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.217.Ex2.ZoningReaderAdded.png" alt class="image image-block image-center" /></a></p>
+<p><br /><strong>3) Create Spatial Join</strong><br />To carry out a spatial join we'll use a PointOnAreaOverlayer transformer; this is a type of join called Point-in-Polygon.</p>
+<p>So, move the PointOnAreaOverlayer transformer from the "Transformers" bookmark to the "Spatial Join" bookmark. Connect the newly added Zoning data to the Area port and the output from the Sampler to the Point port:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.218.Ex2.POAOCanvas.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.218.Ex2.POAOCanvas.png" alt class="image image-block image-center" /></a></p>
+<p>Inspect the PointOnAreaOverlayer parameters. Expand the Attribute Accumulation section and put a check mark against Merge Attributes:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.219.Ex2.POAOParams.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.219.Ex2.POAOParams.png" alt class="image image-block image-center" /></a></p>
+<p>This transformer is the first we've used that has a live &lt;Rejected&gt; port. For now, we'll leave it to stop the translation, since during testing we want to know about anything that causes a failure of the transformer.</p>
+<p>Run the translation, ignore the Invalid Transformer Parameters dialog that pops up and click Run. This dialog pops up because we have previously run the translation to the Aggregator, but now we have broken that connection. We will fix it shortly.</p>
+<p>Click on the PointOnAreaOverlayer:Point output port to view the data in the Visual Preview window. View both the Graphics and Table view. The overlay and attribute merging should cause each address to be given a zone name and category, click on any of the zones to confirm this.</p>
+<p><br /><strong>4) Calculate Residents</strong><br />The next step is to set how many residents live at a certain address according to its zoning type.</p>
+<p>We know that:</p>
+<table class="featureTable sort_table">
+  <thead class="thead sorted">
+    <tr>
+      <th scope="col">Zone Begins With</th>
+      <th scope="col">Zone Type</th>
+      <th scope="col">Residents</th>
+    </tr>
+  </thead>
+  <tbody class="tbody">
+    <tr>
+      <td>RS</td>
+      <td>Single Family</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>RT</td>
+      <td>Two Family</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>RM</td>
+      <td>Multiple Family</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>CD</td>
+      <td>Comprehensive</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>Commercial</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>For example, zones RS-1, RS-2, RS-3 are all single-family zones, and we assume a total of two adults per address. This assumption makes it slightly more complicated because we need to match a zone type using a "begins with" string comparison.</p>
+<p>This match can be done using an AttributeManager with <strong>Conditional Values</strong>.</p>
+<p>This step is slightly complex, but luckily the AttributeManager inside the "Transformers" bookmark is already set up for this purpose. So move the AttributeManager into the "Calculate Residents" bookmark and connect it to the PointOnAreaOverlayer:Point output port:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.220.Ex2.AttrManagerCanvas.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.220.Ex2.AttrManagerCanvas.png" alt class="image image-block image-center" /></a></p>
+<p>If you are interested in what Conditional Values look like, open the parameters dialog for the AttributeManager and click the drop-down arrow in the Attribute Value field for the Persons attribute. Choose Conditional Value:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.221.Ex2.AttrManagerParams.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.221.Ex2.AttrManagerParams.png" alt class="image image-block image-center" /></a></p>
+<p>Doing so opens a Tester-like dialog with multiple conditions that test for each zone type, and an attribute value to set them to:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.222.Ex2.AttrManagerConditional.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.222.Ex2.AttrManagerConditional.png" alt class="image image-block image-center" /></a></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you want to challenge yourself, try adding a blank AttributeManager instead of moving the existing one. Then create the conditional statements to match the image above.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><br /><strong>5) Create Residents</strong><br />We now know (or have approximated) the number of residents per address. However, we must use that number in a way that will affect the output. The simplest way to do this is to create multiple copies of each address, one for each resident.</p>
+<p>For example, for an address with eight residents, we'll create eight address points.</p>
+<p>We can do this very simply with a Cloner transformer. So, move the Cloner transformer from the "Transformers" bookmark to the "Calculate Residents" bookmark. Connect the AttributeManager to the Cloner's input and its output to the StatisticsCalculator:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.223.Ex2.ClonerCanvas.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.223.Ex2.ClonerCanvas.png" alt class="image image-block image-center" /></a></p>
+<p>Inspect the Cloner parameters. For the Number of Copies parameter, click the drop-down arrow and choose Attribute Value &gt; Persons:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.224.Ex2.ClonerParams.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.224.Ex2.ClonerParams.png" alt class="image image-block image-center" /></a></p>
+<p>Doing so will create <em>&lt;Persons&gt;</em> copies of the original addresses (note that the transformer doesn't output the original as well, so the output is <em>&lt;Persons&gt;</em> features, not <em>&lt;Persons&gt;+1</em>).</p>
+<p><br /><strong>6) Run Translation</strong><br />Make sure an Inspector is still attached to the Aggregator transformer and run the translation. The translation will fail with the error message:</p>
+<div><pre>Cloner_&lt;Rejected&gt;: Termination Message: 'Cloner output a &lt;Rejected&gt; feature.'</pre>
+</div>
+<p>The translation failed because addresses without a resident (for example, Industrial) have no Persons attribute and are being rejected by the Cloner transformer. The &lt;Rejected&gt; port is still set up to stop the translation, and so we get this error.</p>
+<p>There are various choices to handle this. We could:</p>
+<ol>
+  <li>Change the Workspace parameter <strong>Rejected Feature Handling</strong> to <em>Continue Translation</em></li>
+  <li>Add a transformer to handle the Cloner's rejected features</li>
+  <li>Set the Conditional Values to give a value of zero, instead of not including a value at all</li>
+</ol>
+<p>Setting the Conditional Values would be the best solution to deal with the problem directly. But there might be other causes for rejected data, and we want to deal with that without having the translation stopped.</p>
+<p>Setting the Rejected Feature Handling parameter means all &lt;Rejected&gt; ports would ignore rejected output. This setting might be useful in a production workspace, but in testing, we would probably want to stop the translation so that we can be aware of issues immediately.</p>
+<p>So for us, the better solution is to add a transformer to the Cloner &lt;Rejected&gt; port. We don't need to inspect or log these features because we know that they will exist. So connect the &lt;Rejected&gt; port to a small transformer called a Junction:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.225.Ex2.JunctionCanvas.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.225.Ex2.JunctionCanvas.png" alt class="image image-block image-center" /></a></p>
+<p>This Junction will handle the rejected output, but quietly drop it without further fuss.</p>
+<p>Re-run the translation. The output should be five groups of point feature again, but in a different pattern to the end of the previous exercise:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.226.Ex2.ResidentialResults.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.226.Ex2.ResidentialResults.png" alt class="image image-block image-center" /></a></p>
+<p><strong>7) Write the Output</strong></p>
+<p>Now to write some output. The simplest method is to connect the Aggregator output to the PostalAddress output feature type and re-run the workspace.</p>
+<p>However, it would also be useful to rename the output feature type and remove all of its attributes, since they are from the reader dataset and don't apply here. So open the writer feature type parameters dialog. In the Parameters tab rename the feature type to GarbageZones. In the User Attributes tab, remove all of the attributes that are being written:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.227.Ex2.EditedWriterFT.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.227.Ex2.EditedWriterFT.png" alt class="image image-block image-center" /></a></p>
+<p>Also, we should change the GeoPackage writer parameter Overwrite Database to overwrite the database each time we run the workspace. To do this, find the GarbageZones [GEOPACKAGE] reader in the Navigator, expand the Parameters, double-click Overwrite Database, and then check the box and click Ok:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.228.Ex2.EditedWriterParam.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.228.Ex2.EditedWriterParam.png" alt class="image image-block image-center" /></a></p>
+<p>Enabling this parameter means we won't accumulate more and more results in the same dataset.</p>
+<p>Congratulations. Now you have a dataset of addresses grouped by their new garbage collection zone. In the next exercise we will turn these points into non-overlapping polygons designating the zones.</p>
