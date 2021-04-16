@@ -1,0 +1,80 @@
+<h2 id="database-optimization">
+  <span>Database Optimization</span>
+</h2>
+<p>FME can only be as fast as the database it is reading from or writing to. This section will help FME increase its efficiency when working with databases.</p>
+<h2 id="database-reading">
+  <span>Database Reading</span>
+</h2>
+<p>Reading and filtering data (querying) from a database is nearly always faster when you can use the native functionality of the database. Just as previously mentioned you can use the search envelope and WHERE clauses to narrow down what is being read from the database into FME.</p>
+<hr />
+<h2 id="database-transformers">
+  <span>Database Transformers</span>
+</h2>
+<p>Besides readers, transformers can also be used to query database data. The best to use is the SQLExecutor (or SQLCreator) as these pass their queries to the database using native SQL. If you don’t want to write SQL then you can use the FeatureReader transformer, but be aware this transformer is more generic and won’t give quite the same performance.</p>
+<p>The SQLExecutor is particularly worth being aware of, as it issues a query for each incoming feature. This can be useful where you need to make multiple queries.</p>
+<p>For example, here a query is issued to the database for every Neighborhood feature that enters the SQLExecutor:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.026.DBPerformanceSQLExecutor.png" alt class="image image-block image-center" /></p>
+<p>Generally, the output from the SQLExecutor is an entirely new feature. If you want to simply retrieve attributes to attach to the incoming feature, then the DatabaseJoiner transformer is more appropriate.</p>
+<hr />
+<h2 id="database-writing">
+  <span>Database Writing</span>
+</h2>
+<p>Whereas the performance of reading from a database is largely dependent on the database setup itself, when writing to a database there are very many FME parameters that can help to fine-tune the overall performance.</p>
+<p>Remember that writing to a database incurs network overheads. There has to be a balance between various factors:</p>
+<ol>
+  <li>The amount of data and number of requests being sent (network traffic)</li>
+  <li>The amount of data stored by FME awaiting transfer to the database (FME performance)</li>
+  <li>The amount of data stored in the database awaiting committal (database performance)</li>
+  <li>The risk of losing uncommitted data</li>
+</ol>
+<p>Each database writer has a set of parameters for handling these components. Not every format supports these, but the two most common parameters are <em>Features per Transaction</em> and <em>Features per Bulk Write</em>.</p>
+<h2 id="features-per-bulk-write">
+  <span>Features per Bulk Write</span>
+</h2>
+<p>The Features per Bulk Write parameter controls the second factor in the list (the amount of data stored by FME awaiting transfer to the database).</p>
+<p>The parameter is defined by a numeric value. Features sent to an FME database writer get cached in memory until the number of features specified by this parameter is reached. Only then will they be sent to the database. This is also known as <em>chunk size</em>.</p>
+<p>This parameter is a way to balance network traffic with FME performance. A higher number means FME caches more features (so uses more system resources), but makes fewer requests to the database (and therefore causes less network traffic).</p>
+<p>A lower number means FME caches less data, but there are more requests made to the database.</p>
+<p>Features per Bulk Write also needs to be considered against the value of Features per Transaction.</p>
+<h2 id="features-per-transaction">
+  <span>Features Per Transaction</span>
+</h2>
+<p>Features per Transaction (also sometimes called Transaction Interval) controls the third factor in the list (the amount of data stored in the database awaiting committal).</p>
+<p>This too is defined by a numeric value. Features sent to the database by FME are cached in memory by the database. When the number of features specified by this parameter is reached, FME sends the command to commit them.</p>
+<p>Each commit adds delay to the writing process, so setting this parameter must balance the speed of the translation (set a higher number) against the risk that a translation may fail and features need to be rolled-back (set a lower number).</p>
+<h2 id="features-per-transaction-examples">
+  <span>Features Per Transaction Examples</span>
+</h2>
+<p>If Features Per Transaction is set to a value of 1, then each and every feature is committed individually. If the process fails then only the last feature will be lost from the database. The cost for this reduced risk is a matching reduction in performance.</p>
+<p>If Features Per Transaction is set to a very high value (more than the number of features being written) then only one commit takes place. If the process fails then all features submitted to the database are lost. The benefit of this increased risk is a matching increase in performance.</p>
+<h2 id="features-per-transaction-and-bulk-writes">
+  <span>Features Per Transaction and Bulk Writes</span>
+</h2>
+<p>There is an interaction between these two parameters that controls where features are cached.</p>
+<p>If Features per Transaction is less or equal to Features per Bulk Write, then FME caches a number of features and sends them to the database where they are immediately committed.</p>
+<p>If Features per Transaction is greater than Features per Bulk Write, then FME sends features to the database where they will be cached until the transaction commit total is reached.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>The Transaction and Chunk parameters can differ from format to format, so it’s very important that you check out the FME Readers and Writers Manual to confirm what parameters are available for your database, and how exactly they operate.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h2 id="writing-and-database-indexing">
+  <span>Writing and Database Indexing</span>
+</h2>
+<p>Whereas indexes can improve performance for reading data, for writing they can cause a great reduction in the speed of translation.</p>
+<p>That’s because the index gets updated by the database automatically with every feature that is written. This occurs on a per-feature basis, regardless of commit intervals.</p>
+<p>To remedy this it’s suggested that indexes are dropped (deleted) before carrying out bulk inserts of data into a database table. This can be done directly on the database, or using an FME SQLExecutor transformer.</p>
+<h2 id="writing-and-table-creation">
+  <span>Writing and Table Creation</span>
+</h2>
+<p>A writer feature type also has options to truncate or drop tables when writing to them:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.027.DBPerformanceDropTruncateParams.png" alt class="image image-block image-center" /></p>
+<p>As with the above, dropping a table is more efficient than truncating it because the drop action also removes the indexes.</p>
+<p>For similar reasons, you may want to turn off networking connectivity when writing data to a Geodatabase geometric network.</p>

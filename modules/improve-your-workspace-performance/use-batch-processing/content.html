@@ -1,0 +1,39 @@
+<h2 id="batch-processing">
+  <span>Batch Processing</span>
+</h2>
+<p>Batch processing is the action of processing multiple source datasets in the same workspace. By splitting each dataset into a separate process, performance can be improved. This is achieved with the WorkspaceRunner transformer.</p>
+<h2 id="batch-processing-using-the-workspace-runner">
+  <span>Batch Processing Using the WorkspaceRunner</span>
+</h2>
+<p>The WorkspaceRunner is a transformer that runs another FME workspace when used in a translation. One use of it is for chaining multiple workspaces to run one after another. However, it can be used to run multiple workspaces simultaneously, in a form of batch processing, and is especially effective used in conjunction with the Directory and File Pathname reader.</p>
+<p>For example, we have a workspace that reads in orthophoto tiles and clips them to neighborhood boundaries, writing them using a combination of tile and neighborhood as the output filename:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.029.BatchProcessingHelperWorkspace.png" alt class="image image-block image-center" /></p>
+<p>Imagine we get new orthophotos each week. Instead of changing the data in the previous workspace each time, we create a workspace to batch process all the new files. This allows FME to start multiple processes simultaneously so that the data is processed faster:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.030.WorkspaceRunnerOverview.png" alt class="image image-block image-center" /></p>
+<p>To set up the WorkspaceRunner in a workspace (the <em>Parent</em>), the FME Workspace parameter is pointed to the workspace to be batch processed (the <em>Worker</em> or <em>Helper</em>). The Source File parameter is set to <em>path_windows</em>, an attribute created by the Directory and File Pathnames Reader:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.031.WorkspaceRunnerParameters.png" alt class="image image-block image-center" /></p>
+<p>The option to Wait for Jobs to Complete ensures one job is completed before starting another. Setting this option prevents multiple Concurrent FME Processes.</p>
+<p>If the job order is unimportant, the parameter Maximum Number of Concurrent FME Processes can be set. This causes multiple FME processes (up to a maximum of seven) to be launched, and these can be seen in the Details tab of Windows Task Manager:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.032.TaskManagerFMEProcesses.png" alt class="image image-block image-center" /></p>
+<p>Notice that the FME Engine processes are completely separate to the FME Workbench and Data Inspector processes. One of the FME.EXE processes is running the parent workspace, the others are running the helpers.</p>
+<h2 id="batch-processing-using-the-batch-deploy-wizard">
+  <span>Batch Processing Using the Batch Deploy Wizard</span>
+</h2>
+<p>Batch deploy is available under the Run menu in FME Workbench. It supports both instant batch processing and the creation of batch files. This allows you to process a large number of source datasets in the current workspace and produce a separate output for each:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.033.RunBatchDeploy.png" alt class="image image-block image-center" /></p>
+<p>Batch deploy operates in the form of a Wizard. The user specifies the input and output datasets plus any other relevant settings such as a suffix for the output file names.</p>
+<p>If the process is not carried out right away, a batch .tcl file is created containing the batch process settings, as well as a .bat file which is used to start the process at a later date.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Batch Processing (on Desktop) can also be done using the command line or an FME Command File. These techniques are more advanced than we want to get into for this module, but if you are interested in learning more you can check out the Knowledge Base Article <a href="https://knowledge.safe.com/articles/1384/fme-batch-processing-methods-1.html" rel="noreferrer noopener" target="_blank">FME Batch Processing Methods</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
