@@ -6,7 +6,6 @@
   <span>Database Reading</span>
 </h2>
 <p>Reading and filtering data (querying) from a database is nearly always faster when you can use the native functionality of the database. Just as previously mentioned you can use the search envelope and WHERE clauses to narrow down what is being read from the database into FME.</p>
-<hr />
 <h2 id="database-transformers">
   <span>Database Transformers</span>
 </h2>
@@ -15,7 +14,6 @@
 <p>For example, here a query is issued to the database for every Neighborhood feature that enters the SQLExecutor:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.026.DBPerformanceSQLExecutor.png" alt class="image image-block image-center" /></p>
 <p>Generally, the output from the SQLExecutor is an entirely new feature. If you want to simply retrieve attributes to attach to the incoming feature, then the DatabaseJoiner transformer is more appropriate.</p>
-<hr />
 <h2 id="database-writing">
   <span>Database Writing</span>
 </h2>
@@ -27,12 +25,12 @@
   <li>The amount of data stored in the database awaiting committal (database performance)</li>
   <li>The risk of losing uncommitted data</li>
 </ol>
-<p>Each database writer has a set of parameters for handling these components. Not every format supports these, but the two most common parameters are <em>Features per Transaction</em> and <em>Features per Bulk Write</em>.</p>
+<p>Each database writer has a set of parameters for handling these components. Not every format supports these, but the two most common parameters are <em>Features per Transaction</em> and <em>Features per Bulk Write</em>.</p>
 <h2 id="features-per-bulk-write">
   <span>Features per Bulk Write</span>
 </h2>
 <p>The Features per Bulk Write parameter controls the second factor in the list (the amount of data stored by FME awaiting transfer to the database).</p>
-<p>The parameter is defined by a numeric value. Features sent to an FME database writer get cached in memory until the number of features specified by this parameter is reached. Only then will they be sent to the database. This is also known as <em>chunk size</em>.</p>
+<p>The parameter is defined by a numeric value. Features sent to an FME database writer get cached in memory until the number of features specified by this parameter is reached. Only then will they be sent to the database. This is also known as <em>chunk size</em>.</p>
 <p>This parameter is a way to balance network traffic with FME performance. A higher number means FME caches more features (so uses more system resources), but makes fewer requests to the database (and therefore causes less network traffic).</p>
 <p>A lower number means FME caches less data, but there are more requests made to the database.</p>
 <p>Features per Bulk Write also needs to be considered against the value of Features per Transaction.</p>
@@ -53,18 +51,20 @@
 <p>There is an interaction between these two parameters that controls where features are cached.</p>
 <p>If Features per Transaction is less or equal to Features per Bulk Write, then FME caches a number of features and sends them to the database where they are immediately committed.</p>
 <p>If Features per Transaction is greater than Features per Bulk Write, then FME sends features to the database where they will be cached until the transaction commit total is reached.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>The Transaction and Chunk parameters can differ from format to format, so it’s very important that you check out the FME Readers and Writers Manual to confirm what parameters are available for your database, and how exactly they operate.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>The Transaction and Chunk parameters can differ from format to format, so it’s very important that you check out the FME Readers and Writers Manual to confirm what parameters are available for your database, and how exactly they operate.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="writing-and-database-indexing">
   <span>Writing and Database Indexing</span>
 </h2>

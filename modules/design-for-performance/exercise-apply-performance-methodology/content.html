@@ -1,0 +1,85 @@
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Exercise 2</td>
+      <td>Methodology</td>
+    </tr>
+    <tr>
+      <td>Data</td>
+      <td>Addresses (Esri Geodatabase)<br />Crime Data (CSV - Comma Separated Value)<br />Parks (MapInfo TAB)<br />Swimming Pools (OSM - OpenStreetMap)</td>
+    </tr>
+    <tr>
+      <td>Overall Goal</td>
+      <td>Work on Vancouver Walkability Project</td>
+    </tr>
+    <tr>
+      <td>Demonstrates</td>
+      <td>Methodology Best Practice</td>
+    </tr>
+    <tr>
+      <td>Start Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex2-Begin.fmw</td>
+    </tr>
+    <tr>
+      <td>End Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex2-Complete.fmw</td>
+    </tr>
+  </tbody>
+</table>
+<p>Continuing from the previous exercise, you have been assigned to a project to calculate the "walkability" of each address in the city of Vancouver. Walkability is a measure of how easy it is to access local facilities on foot. The initial workspace analyzed crime in the area and distance to the nearest park. Then you were asked to calculate the distance to the nearest swimming pool instead of parks.</p>
+<p>In this exercise, we will modify our workspace to improve its performance.</p>
+<hr />
+<p><br /><strong>1) Continue Workspace</strong><br />Start FME Workbench and open the workspace from the previous exercise. Alternatively, you can open C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex2-Begin.fmw. Continuing in the workspace from Exercise 1, we will now try and make this workspace run faster.</p>
+<p><strong><em>Note:</em></strong> <em>If you open the starting workspace, you will need to run it to create the caches.</em></p>
+<p><strong><em>Note:</em></strong> <em>Remember, if you clicked the AutoLayout button in the first exercise, your workspace will look different. Pay close attention to transformer and port names.</em></p>
+<p><br /><strong>2) Determine Performance Improvements</strong><br />While editing the ExpressionEvaluator in the previous exercise, you might have noticed there was a lot of additional attributes like CrimeList{}.City or CrimeList{}.Block. These excess attributes clutter the display and inspecting the output becomes hard. These attributes can hardly be helping the performance of the workspace either - even if that's mitigated by using caches during development.</p>
+<p>Let's save the workspace as a template file. In the top menu go to File &gt; Save As Template. When prompted, be sure to have the Include Feature Caches option checked:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.219.Ex3.SaveCaches.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.219.Ex3.SaveCaches.png" alt class="image image-block image-center" /></a></p>
+<p>Now if we come back to this project later or share it, the user can reopen the template and have all our cached data ready for use.</p>
+<p>Check the size of the template file BestPractice-Ex2-Begin.fmwt that you just created. You'll see that it is almost 50mb in size, which is fairly large for a template. It's not a problem to have a large template file, but it does indicate a lot of data is being cached and that this could affect the workspace's performance.</p>
+<p>One aspect of data is the number of attributes and lists. Since there are a lot of additional attributes to remove but only a few we need to keep, we will use the AttributeKeeper transformer. Place the AttributeKeeper between the AttributeValueMapper_2 and the ExpressionEvaluator transformers:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.209.Ex2.AttributeKeeper.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.209.Ex2.AttributeKeeper.png" alt class="image image-block image-center" /></a></p>
+<p>Inspect the AttributeKeeper parameters and set them up to keep only CrimeValue, NoiseZoneScore, and PoolDistance. Take note of the names of the attributes that we are not keeping. We might be able to remove them earlier in the workspace.</p>
+<p><br /><strong>3) Remove Lists</strong><br />One attribute of interest is a list attribute called CrimeList{}, which doesn't appear necessary for any part of this translation. Track down its source by pressing Ctrl+F and search for CrimeList. The search results show up in the Navigator window, and there you will find the Aggregator transformer is creating CrimeList.</p>
+<p>Check the parameters for the Aggregator transformer and turn off the Generate List parameter, to prevent the list from being created. This step will cause many caches to become stale, but we will re-run the workspace shortly to solve this.</p>
+<p><br /><strong>4) Remove Extra Feature Types</strong><br />Another reason a workspace is running slowly is if you are reading in extra data that is not being used in the workspace. It looks like the original author read in the PostcodeBoundaries feature type from the Addresses.gdb. Additionally, we didn't remove the Parks feature type once we were done with it. Delete both of those now and click Yes on any warnings that pop up.</p>
+<p><br /><strong>5) Collapse the Bookmark</strong><br />Another source of excess caching are transformers producing output that we don't need to inspect. These can be prevented by hiding these transformers within a collapsed bookmark.</p>
+<p>Add a bookmark around all of the transformers between the PostalAddress reader and the FeatureJoiner, by selecting all the transformers and pressing ctrl+B on your keyboard. Then name the bookmark Prepare Addresses to Join:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.210.Ex2.AddABookmark.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.210.Ex2.AddABookmark.png" alt class="image image-block image-center" /></a></p>
+<p><strong><em>Note:</em></strong> <em>Bookmarks will be covered in greater detail later on in this chapter.</em></p>
+<p>Now we can collapse the bookmark and then when we re-run the translation only the last transformer will have a cache. To collapse the bookmark, click on the arrow beside the bookmark name:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.211.Ex2.CollapsedBookmarks.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.211.Ex2.CollapsedBookmarks.png" alt class="image image-block image-center" /></a></p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard Says...</td>
+    </tr>
+    <tr>
+      <td>If you want to work ahead, add a couple more bookmarks around other sections and then collapse them. We will be doing this in the next exercise, so you can see if your bookmarks are the same.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p><br /><strong>6) Run the Workspace</strong><br />Now run the workspace by clicking on the ExpressionEvaluator and choosing <em>Run to This</em> or just click the run button.</p>
+<p>The workspace will run and data will be cached, but for the collapsed bookmark, only one cache will be created for its five transformers. Attributes unnecessary to the output will also be removed by the AttributeKeeper.</p>
+<p>Save the workspace as a new template and check the option to include caches. Check the file size of the new template. It should be considerably smaller (around 16mb).</p>
+<p><strong><em>Note:</em></strong> <em>If you want to use the workspaces provided, just open them and save them as a template file to use for your comparison</em></p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>CONGRATULATIONS</td>
+    </tr>
+    <tr>
+      <td>By completing this exercise you have learned how to:<br />
+        <ul>
+          <li>Remove unnecessary attributes to improve performance</li>
+          <li>Track down unnecessary lists and remove them</li>
+          <li>Improve performance by collapsing bookmarks to prevent excess caching</li>
+          <li>Save a workspace as a template, including caches</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
