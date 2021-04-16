@@ -29,8 +29,50 @@
 <p>As you'll recall, the provincial government has given the city a grant to fund new public art in parks.</p>
 <p>A colleague has created a workspace to analyze the amount of art in each city park and we are carrying out a code review to ensure that the workspace is efficient and well-designed. Previously we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
 <p>Now let's look at some specific changes we can make to improve performance.</p>
-<hr />
-<p><br /><strong>1) Open and Run Workspace</strong><br />Open your workspace from the previous exercise, or the workspace listed above. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
+<p><strong>1) Open and Run Workspace</strong><br />Open your workspace from the previous exercise, or the workspace listed above. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
+<p>First let's first check if the readers are well-designed and don't read any excess data.</p>
+<ul>
+  <li>Check the Parks source data. We wish to identify parks without artwork, so we need all of these parks features.</li>
+  <li>Check the Neighborhoods data. Again, we need all of these features.</li>
+  <li>Check the Public Art data. Again, we need all of these features.<ul>
+      <li>It's important to note that artworks fall in one of six neighborhoods, and there are the same six neighborhoods in that dataset. There are no artworks outside one of these neighborhoods and no neighborhoods outside where we have artworks, so there is no excess data being read.</li>
+    </ul>
+  </li>
+  <li>Check the Orthophotos data. We're reading all the image files for the entire city. Are they any files we don't need?</li>
+</ul>
+<p>To check the orthophoto coverage, start the FME Data Inspector (it will be easier than the Visual Preview window). Select File &gt; Open Dataset and set the files to open as follows:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Reader Format</td>
+      <td>GeoTIFF (Geo-referenced Tagged Image File Format)</td>
+    </tr>
+    <tr>
+      <td>Reader Dataset</td>
+      <td>C:\FMEData2019\Data\Orthophotos\*.tif</td>
+    </tr>
+    <tr>
+      <td>Parameters</td>
+      <td>Feature Type Name(s): From File Name(s)</td>
+    </tr>
+  </tbody>
+</table>
+<p>In other words, select all of the TIF files in the Orthophotos folder. The Feature Type Name(s) parameter makes sure the Data Inspector lists files by name.</p>
+<p>Now select File &gt; Add Dataset and set that dialog up as follows:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Reader Format</td>
+      <td>Google KML</td>
+    </tr>
+    <tr>
+      <td>Reader Dataset</td>
+      <td>C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
+    </tr>
+  </tbody>
+</table>
+<p>Now you can check whether any GeoTIFF tiles fall outside the extents of the neighborhoods. If so, there are files being read that are not necessary.</p>
+<p><strong>2) Check Reader Methodology</strong><br />Open your workspace from the previous exercise, or the workspace listed above. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
 <p>First let's first check if the readers are well-designed and don't read any excess data.</p>
 <ul>
   <li>Check the Parks source data. We wish to identify parks without artwork, so we need all of these parks features.</li>
@@ -76,7 +118,7 @@
 <p><br /><strong>2) Switch GeoTIFF Reader to FeatureReader</strong><br />It appears that there are GeoTIFF files being unnecessarily read. This causes a performance hit, especially when Feature Caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed then this list might not be correct.</p>
 <p>So, instead delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt class="image image-block image-center" /></p>
-<p>Open the FeatureReader parameters. Set the format to GeoTIFF and select all of the TIF files as the source. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
+<p>Open the FeatureReader parameters. Set the format to GeoTIFF and select all of the TIF files as the source. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.206.Ex3.FeatureReaderDialog.png" alt class="image image-block image-center" /></p>
 <p>Close the dialog and the FeatureReader now has a GeoTIFF output port. Connect this to the RasterMosaicker:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.207.Ex3.FeatureReaderConnected.png" alt class="image image-block image-center" /></p>
@@ -118,7 +160,7 @@
   </tbody>
 </table>
 <hr />
-<p><br /><strong>5) Check Transformer Order</strong><br />Look at the bookmark labelled <em>Prepare Data for Excel Writer</em>:</p>
+<p><br /><strong>5) Check Transformer Order</strong><br />Look at the bookmark labelled <em>Prepare Data for Excel Writer</em>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.212.Ex3.PrepDataBookmark.png" alt class="image image-block image-center" /></p>
 <p>Inspect the transformers and you will see that data is sorted into order for writing first of all; then unnecessary features are filtered out and unnecessary attributes removed.</p>
 <p>This is not the correct order to maximize performance: unnecessary features with unnecessary attributes are being processed by the sorting action. Remember, the key order is Filter-Remove-Action.</p>
@@ -153,11 +195,11 @@
   </tbody>
 </table>
 <hr />
-<p>Can the AttributeManager transformer be moved? Well, it can't be <em>moved</em> because its renaming of the _overlaps attribute can only happen here. However, removing attributes could be carried out much earlier.</p>
+<p>Can the AttributeManager transformer be moved? Well, it can't be <em>moved</em> because its renaming of the _overlaps attribute can only happen here. However, removing attributes could be carried out much earlier.</p>
 <p>The simplest technique is to add an AttributeManager after every reader whose attributes can be removed:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.214.Ex3.RemoveAttributesBookmark.png" alt class="image image-block image-center" /></p>
 <p>So add an AttributeManager to each input that can be cleaned, and remove whatever attributes are not necessary to the workspace. You can tell if you remove a necessary attribute if a transformer (or writer feature type) further on in the stream is flagged as incomplete.</p>
-<p>One transformer that is legitimately incomplete is the original AttributeManager (in the Prepare Data bookmark). This no longer receives the attributes it expects. Simply open the parameters for that transformer and click the option for <em>Remove All Invalid 'Input Attribute' Rows</em>:</p>
+<p>One transformer that is legitimately incomplete is the original AttributeManager (in the Prepare Data bookmark). This no longer receives the attributes it expects. Simply open the parameters for that transformer and click the option for <em>Remove All Invalid 'Input Attribute' Rows</em>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.215.Ex3.RemoveDoNothingAttributes.png" alt class="image image-block image-center" /></p>
 <p>Now we have removed all unnecessary attributes from the workspace, as soon as possible.</p>
 <hr />
@@ -172,10 +214,10 @@
   </tbody>
 </table>
 <hr />
-<p><br /><strong>6) Check Transformer Performance Parameters</strong><br />As mentioned, a number of transformers have parameters specifically for performance benefits. These are often labelled as <strong>Group By Mode</strong> or <strong>&lt;Features First&gt;</strong></p>
+<p><br /><strong>6) Check Transformer Performance Parameters</strong><br />As mentioned, a number of transformers have parameters specifically for performance benefits. These are often labelled as <strong>Group By Mode</strong> or <strong>&lt;Features First&gt;</strong></p>
 <p>Check the transformers in this workspace. The two of particular interest are the Clipper and PointOnAreaOverlayer. Both of them have a Group By Mode and a Features First parameter:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.218.Ex3.PerformanceParameters.png" alt class="image image-block image-center" /></p>
-<p>The Group By Mode parameters don't apply, because neither transformer is using a Group By. However, the <em>Clippers First</em> and <em>Areas First</em> options are of interest. If we set these options we can get a performance boost, but we do have to confirm that either Clippers or Areas are the first features to arrive.</p>
+<p>The Group By Mode parameters don't apply, because neither transformer is using a Group By. However, the <em>Clippers First</em> and <em>Areas First</em> options are of interest. If we set these options we can get a performance boost, but we do have to confirm that either Clippers or Areas are the first features to arrive.</p>
 <p>In the PointOnAreaOverlayer, change the Areas First parameter to Yes. Re-run the workspace (either turn off caching or use re-run entire workspace). Notice that all Area features exit as &lt;Rejected&gt; features. They are rejected because they are not first!</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.219.Ex3.RejectedAreas.png" alt class="image image-block image-center" /></p>
 <p>One reason might be that the MapInfo park features are being read after the Excel records. So, in the Navigator window move the Parks reader to the top of the list:</p>
