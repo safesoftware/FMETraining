@@ -1,38 +1,64 @@
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Exercise 2</td>
-      <td>Methodology</td>
-    </tr>
-    <tr>
-      <td>Data</td>
-      <td>Addresses (Esri Geodatabase)<br />Crime Data (CSV - Comma Separated Value)<br />Parks (MapInfo TAB)<br />Swimming Pools (OSM - OpenStreetMap)</td>
-    </tr>
-    <tr>
-      <td>Overall Goal</td>
-      <td>Work on Vancouver Walkability Project</td>
-    </tr>
-    <tr>
-      <td>Demonstrates</td>
-      <td>Methodology Best Practice</td>
-    </tr>
-    <tr>
-      <td>Start Workspace</td>
-      <td>C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex2-Begin.fmw</td>
-    </tr>
-    <tr>
-      <td>End Workspace</td>
-      <td>C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex2-Complete.fmw</td>
-    </tr>
-  </tbody>
-</table>
-<p>Continuing from the previous exercise, you have been assigned to a project to calculate the "walkability" of each address in the city of Vancouver. Walkability is a measure of how easy it is to access local facilities on foot. The initial workspace analyzed crime in the area and distance to the nearest park. Then you were asked to calculate the distance to the nearest swimming pool instead of parks.</p>
+<p>C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex2-Complete.fmw</p>
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Remove unnecessary attributes to improve performance.</li>
+  <li>Track down unnecessary lists and remove them.</li>
+  <li>Improve performance by collapsing bookmarks to prevent excess caching.</li>
+  <li>Use workspace templates including caches to measure performance improvements.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li>Starting workspace</li>
+</ul>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>You have been assigned to a project to calculate the "walkability" of each address in the city of Vancouver. Walkability is a measure of how easy it is to access local facilities on foot. The starting workspace calculates a walkability score based on a number of criteria.</p>
 <p>In this exercise, we will modify our workspace to improve its performance.</p>
-<hr />
-<p><br /><strong>1) Continue Workspace</strong><br />Start FME Workbench and open the workspace from the previous exercise. Alternatively, you can open C:\FMEData2019\Workspaces\DesktopBasic\BestPractice-Ex2-Begin.fmw. Continuing in the workspace from Exercise 1, we will now try and make this workspace run faster.</p>
-<p><strong><em>Note:</em></strong> <em>If you open the starting workspace, you will need to run it to create the caches.</em></p>
-<p><strong><em>Note:</em></strong> <em>Remember, if you clicked the AutoLayout button in the first exercise, your workspace will look different. Pay close attention to transformer and port names.</em></p>
-<p><br /><strong>2) Determine Performance Improvements</strong><br />While editing the ExpressionEvaluator in the previous exercise, you might have noticed there was a lot of additional attributes like CrimeList{}.City or CrimeList{}.Block. These excess attributes clutter the display and inspecting the output becomes hard. These attributes can hardly be helping the performance of the workspace either - even if that's mitigated by using caches during development.</p>
+<h2 id="1-start-workbench">
+  <span>1) Start Workbench</span>
+</h2>
+<p>Start FME Workbench 2021.0 and open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-improving-workspace-style.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>. Run it to create feature caches while you complete step #2.</p>
+<h2 id="2-examine-workspace">
+  <span>2) Examine Workspace</span>
+</h2>
+<p>The workspace is pretty unorganized. Let’s examine it in sections to figure out how it works.</p>
+<p><img src="https://trailhead-cs-production-private-images.s3.amazonaws.com/00D30000000ePES/safe/modules/document-your-workspace/exercise-improving-workspace-style/images/cd1f25e7c803579f74d65fda41b763eb_68881-cd-1-1-d-93-40-e-2-b-8-c-5-21-cc-74-f-2-e-9-e-0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAQCWQ2ZQ4PMOG4SPY%2F20210416%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210416T223724Z&amp;X-Amz-Expires=43260&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=aa7dd72bf34eb149b20147086ae53a30634d16321995bab0a1baf199ec894948" width="624" height="248" alt="Workspace sections" class="image image-block image-center" /></p>
+<ol>
+  <li>PostalAddress and PostcodeBoundaries read from Addresses.gdb.</li>
+  <li>Transformers clean up attributes from the PostalAddress feature type to create a separate Number and Street attribute. Then the last two digits of the Number are being replaced by XX to create an attribute that will be the Join Key for joining the crime data.</li>
+  <li>Crime reads from Crime.csv. This dataset stores the street number for each crime incident with XX as the last two digits to protect anonymity.</li>
+  <li>The FeatureJoiner joins PostalAddress and the Crime data based on the Join Key attribute from section two and the Block attribute from Crime.</li>
+  <li>These transformers give the crime Type attribute a number based on severity and then calculate the total CrimeValue for each address block. Then the CenterPointReplacer extracts only one point if there are multiple crime incidents in the same location.</li>
+  <li>The workspace reads the Parks MapInfo TAB file. It will use this data to measure the walking distance from addresses to parks.</li>
+  <li>The NeighborFinder determines the park closest to each address.</li>
+  <li>The AttributeRenamer renames the _distance attribute from the NeighborFinder to ParkDistance.</li>
+  <li>The Creator and the FeatureReader read a Planning Restrictions OGC Geopackage, including noise restriction areas from the NoiseControlAreas layer.</li>
+  <li>The PointOnAreaOverlayer joins the point data containing the crime, distance to park, and addresses with the NoiseControlAreas polygons. This joined data assigns the noise restrictions to any overlapping points. The AttributeValueMapper is used to assign the zone with a score, creating the attribute NoiseZoneScore. This new attribute will reflect that addresses in noise-restricted areas are more walkable.</li>
+</ol>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>You can optionally use Tools &gt; Apply Auto-Layout or follow the instructions in <a href="https://safe.my.trailhead.com/content/safe/modules/document-your-workspace/exercise-improving-workspace-style" rel="noreferrer noopener" target="_blank">Exercise: Improving Workspace Style</a> to clean up the workspace if you want.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="3-determine-performance-improvements">
+  <span>3) Determine Performance Improvements</span>
+</h2>
+<p>While editing the ExpressionEvaluator in the previous exercise, you might have noticed there was a lot of additional attributes like CrimeList{}.City or CrimeList{}.Block. These excess attributes clutter the display and inspecting the output becomes hard. These attributes can hardly be helping the performance of the workspace either - even if that's mitigated by using caches during development.</p>
 <p>Let's save the workspace as a template file. In the top menu go to File &gt; Save As Template. When prompted, be sure to have the Include Feature Caches option checked:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.219.Ex3.SaveCaches.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.219.Ex3.SaveCaches.png" alt class="image image-block image-center" /></a></p>
 <p>Now if we come back to this project later or share it, the user can reopen the template and have all our cached data ready for use.</p>
@@ -40,10 +66,19 @@
 <p>One aspect of data is the number of attributes and lists. Since there are a lot of additional attributes to remove but only a few we need to keep, we will use the AttributeKeeper transformer. Place the AttributeKeeper between the AttributeValueMapper_2 and the ExpressionEvaluator transformers:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.209.Ex2.AttributeKeeper.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.209.Ex2.AttributeKeeper.png" alt class="image image-block image-center" /></a></p>
 <p>Inspect the AttributeKeeper parameters and set them up to keep only CrimeValue, NoiseZoneScore, and PoolDistance. Take note of the names of the attributes that we are not keeping. We might be able to remove them earlier in the workspace.</p>
-<p><br /><strong>3) Remove Lists</strong><br />One attribute of interest is a list attribute called CrimeList{}, which doesn't appear necessary for any part of this translation. Track down its source by pressing Ctrl+F and search for CrimeList. The search results show up in the Navigator window, and there you will find the Aggregator transformer is creating CrimeList.</p>
+<h2 id="3-remove-lists">
+  <span>3) Remove Lists</span>
+</h2>
+<p>One attribute of interest is a list attribute called CrimeList{}, which doesn't appear necessary for any part of this translation. Track down its source by pressing Ctrl+F and search for CrimeList. The search results show up in the Navigator window, and there you will find the Aggregator transformer is creating CrimeList.</p>
 <p>Check the parameters for the Aggregator transformer and turn off the Generate List parameter, to prevent the list from being created. This step will cause many caches to become stale, but we will re-run the workspace shortly to solve this.</p>
-<p><br /><strong>4) Remove Extra Feature Types</strong><br />Another reason a workspace is running slowly is if you are reading in extra data that is not being used in the workspace. It looks like the original author read in the PostcodeBoundaries feature type from the Addresses.gdb. Additionally, we didn't remove the Parks feature type once we were done with it. Delete both of those now and click Yes on any warnings that pop up.</p>
-<p><br /><strong>5) Collapse the Bookmark</strong><br />Another source of excess caching are transformers producing output that we don't need to inspect. These can be prevented by hiding these transformers within a collapsed bookmark.</p>
+<h2 id="4-remove-extra-feature-types">
+  <span>4) Remove Extra Feature Types</span>
+</h2>
+<p>Another reason a workspace is running slowly is if you are reading in extra data that is not being used in the workspace. It looks like the original author read in the PostcodeBoundaries feature type from the Addresses.gdb. Additionally, we didn't remove the Parks feature type once we were done with it. Delete both of those now and click Yes on any warnings that pop up.</p>
+<h2 id="5-collapse-the-bookmark">
+  <span>5) Collapse the Bookmark</span>
+</h2>
+<p>Another source of excess caching are transformers producing output that we don't need to inspect. These can be prevented by hiding these transformers within a collapsed bookmark.</p>
 <p>Add a bookmark around all of the transformers between the PostalAddress reader and the FeatureJoiner, by selecting all the transformers and pressing ctrl+B on your keyboard. Then name the bookmark Prepare Addresses to Join:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.210.Ex2.AddABookmark.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.210.Ex2.AddABookmark.png" alt class="image image-block image-center" /></a></p>
 <p><strong><em>Note:</em></strong> <em>Bookmarks will be covered in greater detail later on in this chapter.</em></p>
@@ -61,25 +96,10 @@
   </tbody>
 </table>
 <hr />
-<p><br /><strong>6) Run the Workspace</strong><br />Now run the workspace by clicking on the ExpressionEvaluator and choosing <em>Run to This</em> or just click the run button.</p>
+<h2 id="6-run-the-workspace">
+  <span>6) Run the Workspace</span>
+</h2>
+<p>Now run the workspace by clicking on the ExpressionEvaluator and choosing <em>Run to This</em> or just click the run button.</p>
 <p>The workspace will run and data will be cached, but for the collapsed bookmark, only one cache will be created for its five transformers. Attributes unnecessary to the output will also be removed by the AttributeKeeper.</p>
 <p>Save the workspace as a new template and check the option to include caches. Check the file size of the new template. It should be considerably smaller (around 16mb).</p>
 <p><strong><em>Note:</em></strong> <em>If you want to use the workspaces provided, just open them and save them as a template file to use for your comparison</em></p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>CONGRATULATIONS</td>
-    </tr>
-    <tr>
-      <td>By completing this exercise you have learned how to:<br />
-        <ul>
-          <li>Remove unnecessary attributes to improve performance</li>
-          <li>Track down unnecessary lists and remove them</li>
-          <li>Improve performance by collapsing bookmarks to prevent excess caching</li>
-          <li>Save a workspace as a template, including caches</li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
