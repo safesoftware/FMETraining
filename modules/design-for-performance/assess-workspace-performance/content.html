@@ -1,3 +1,12 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Measure how long a workspace takes to read data.</li>
+  <li>Measure how long a workspace takes to write data.</li>
+  <li>Measure how long a workspace's transformers take to run.</li>
+</ul>
 <h2 id="assess-workspace-performance">
   <span>Assess Workspace Performance</span>
 </h2>
@@ -5,7 +14,6 @@
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.006.WorkspaceForPerformanceAssessment.png" alt class="image image-block image-center" /></p>
 <p>...requires a bit of time and attention, but knowing how a workspace performs helps to make informed decisions on how to best design (or redesign) it.</p>
 <p>When testing for performance ensure that there is only one instance of FME running, and all other non-essential programs are closed. You'll also need to turn off feature caching, as that can have an effect on the results.</p>
-<hr />
 <h2 id="assessing-reader-performance">
   <span>Assessing Reader Performance</span>
 </h2>
@@ -15,7 +23,6 @@
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.007.AssessingReaderPerformanceDisabledWorkspace.png" alt class="image image-block image-center" /></p>
 <p>With the transformers disabled, the message now appears much sooner:</p><pre>2019-03-29 11:49:35|   1.2|  0.0|INFORM|Emptying factory pipeline</pre>
 <p>So we can tell that reading the data is only taking 1.2 seconds.</p>
-<hr />
 <h2 id="assessing-writer-performance">
   <span>Assessing Writer Performance</span>
 </h2>
@@ -26,18 +33,20 @@
 <p>If the original result was this:</p><pre>2019-03-29 11:54:14|  26.5|  0.0|INFORM|Translation was SUCCESSFUL with 19 warning(s) (148 feature(s) output) 2019-03-29 11:54:14|  26.5|  0.0|INFORM|FME Session Duration: 26.7 seconds. (CPU: 22.5s user, 4.0s system)</pre>
 <p>...and with the writer disabled it is now this:</p><pre>2019-03-29 11:56:48|  26.6|  0.0|INFORM|Translation was SUCCESSFUL with 19 warning(s) (0 feature(s) output) 2019-03-29 11:56:48|  26.6|  0.0|INFORM|FME Session Duration: 26.6 seconds. (CPU: 22.1s user, 4.4s system)</pre>
 <p>...then we can easily calculate that the writing process is taking merely 0.1 seconds.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>TIP</td>
-    </tr>
-    <tr>
-      <td>Another method is a two-step process.<br /><br />Firstly, add a Recorder as the final transformer, to preserve the data in FFS format at the moment it is about to be written. Run the workspace.<br /><br />Secondly, replace the Recorder with a Player transformer, to re-read the preserved FFS data. Disable everything else up to that point and re-run the workspace.<br /><br />The data is played back into the workspace and written to the output, giving us a measure of writer performance.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Another method is a two-step process.<br /><br />Firstly, add a Recorder as the final transformer, to preserve the data in FFS format at the moment it is about to be written. Run the workspace.<br /><br />Secondly, replace the Recorder with a Player transformer, to re-read the preserved FFS data. Disable everything else up to that point and re-run the workspace.<br /><br />The data is played back into the workspace and written to the output, giving us a measure of writer performance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="assessing-transformer-performance">
   <span>Assessing Transformer Performance</span>
 </h2>
@@ -49,14 +58,17 @@
 <p>The difference in elapsed time between reading the data and reading/transforming the data is the elapsed transformation time.</p>
 <p>It's important not to add an Inspector or Logger transformer to see what is happening to the output. This will slow the translation down and give you a false measure. You must also be sure to disable the actual writer and not just the feature types or connections to them.</p>
 <p>The only writer that is useful in this scenario is the Null format writer. This causes a writer to be present, but it does nothing except to count features and then discard them. The benefit is improved logging of feature counts, but without any data having to be written.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>WARNING</td>
-    </tr>
-    <tr>
-      <td>Naturally, where a FeatureReader or FeatureWriter transformer is used, assessing reading and writing requires a different procedure:<br /><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.009.FeatureReaderForPerformanceAssessment.png" class="image image-block image-center" /><br /><br />It would be necessary to run the workspace twice; once with everything disabled after that point, and once with everything disabled up to (and including) that point. Then subtract the two run-times to get the correct result.</td>
-    </tr>
-  </tbody>
-</table>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Naturally, where a FeatureReader or FeatureWriter transformer is used, assessing reading and writing requires a different procedure:<br /><br /><br /><br />It would be necessary to run the workspace twice; once with everything disabled after that point, and once with everything disabled up to (and including) that point. Then subtract the two run-times to get the correct result.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
