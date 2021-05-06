@@ -16,16 +16,16 @@
   <span>Filtering Input</span>
 </h2>
 <p>A common scenario in FME is to read data into a workspace and then filter out features (records) that are not required:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.028.DataFilterTester.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.028.DataFilterTester.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.028.DataFilterTester.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.028.DataFilterTester.png" alt="Filtering data using the Tester" class="image image-block image-center" /></a></p>
 <p>However, when data is read and immediately discarded, the resources used to read that data are a direct loss of performance.</p>
 <p>If data is filtered as it is read - rather than afterward - performance is much better, and many formats have parameters to do just that:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.029.DataFilterSQLWhere.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.029.DataFilterSQLWhere.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.029.DataFilterSQLWhere.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.029.DataFilterSQLWhere.png" alt="Filtering using a WHERE clause on a reader feature type" class="image image-block image-center" /></a></p>
 <p>Here a ‘WHERE Clause’ parameter applies the required filter directly to the Geodatabase reader. Only data that matches the where clause is read and enters the workspace.</p>
 <h2 id="excess-feature-types">
   <span>Excess Feature Types</span>
 </h2>
 <p>The schema of a source dataset is represented on the FME canvas by feature type objects:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.030.ExcessFeatureTypes.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.030.ExcessFeatureTypes.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.030.ExcessFeatureTypes.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.030.ExcessFeatureTypes.png" alt="Unused reader feature types" class="image image-block image-center" /></a></p>
 <p>Not connecting a feature type to other objects in your workspace is equivalent to reading and discarding data and is likewise detrimental to performance.</p>
 <p>When adding readers, FME prompts the user to select feature types to add to the translation. You should avoid adding feature types you don't need and remove ones that are already added but not connected.</p>
 <div class="box message info">
@@ -46,10 +46,10 @@
   <span>Excess Attributes and Lists</span>
 </h2>
 <p>Once data has been read into a workspace, it still can be reduced in size to assist performance. For example, attributes not defined in the output schema are not necessary to a workspace and can be removed:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.031.ExcessAttrs.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.031.ExcessAttrs.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.031.ExcessAttrs.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.031.ExcessAttrs.png" alt="Excess attributes" class="image image-block image-center" /></a></p>
 <p>Here a workspace author is calculating the number of addresses in each postcode (CFSAUID) of a city. The address attributes are not required in the output schema but are copied on to the postcode features, along with a list of addresses, and everything carried through to the end of the workspace.</p>
 <p>In this scenario the author should avoid the PointOnAreaOverlayer options for copying attributes and creating lists:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" alt="Turning off parameters to generate attributes" class="image image-block image-center" /></a></p>
 <p>This step will reduce the amount of memory required to run the translation, with no effect on its output.</p>
 <div class="box message info">
   <div class="inner">
