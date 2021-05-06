@@ -1,4 +1,3 @@
-<p>C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex2-Begin.fmw</p>
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
@@ -11,7 +10,7 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li>Starting workspace</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-assess-workspace-performance.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
 </ul>
 <h2 id="exercise">
   <span>Exercise</span>
@@ -21,23 +20,39 @@
 <h2 id="1-open-and-run-workspace">
   <span>1) Open and Run Workspace</span>
 </h2>
-<p>Start FME Workbench 2021.0 and open the <strong>starting workspace</strong>. Your colleague ran the workspace with caching turned on and informed you it took about twenty seconds to run.</p>
+<p>Start FME Workbench 2021.0 and open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-assess-workspace-performance.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>. Your colleague ran the workspace with caching turned on and informed you it took about twenty seconds to run. Try running it yourself with feature caching enabled and note the total runtime. It should look something like this:</p>
+<div><pre>2021-05-06 11:57:01|  14.5|  0.0|INFORM|Translation was SUCCESSFUL with 11 warning(s) (70 feature(s) output)
+2021-05-06 11:57:01|  14.5|  0.0|INFORM|FME Session Duration: 47.3 seconds. (CPU: 6.6s user, 7.9s system)
+2021-05-06 11:57:01|  14.5|  0.0|INFORM|END - ProcessID: 138924, peak process memory usage: 647444 kB, current process memory usage: 161712 kB</pre>
+</div>
 <p>Now - to test production performance - turn off feature caching. There are no Inspector or Logger transformers, and no parts are disabled. So simply re-run the workspace.</p>
-<p>You should find that the workspace runs a lot more quickly this time - perhaps in as little as five seconds:</p><pre>Translation was SUCCESSFUL with 2 warning(s) (70 feature(s) output) FME Session Duration: 4.8 seconds. (CPU: 3.3s user, 1.2s system) END - ProcessID: 2524, peak process memory usage: 452260 kB, current process memory usage: 146324 kB</pre>
-<p>This clearly shows the performance reduction that caching can cause. This is particularly true in a workspace processing large raster datasets. Caching shouldn't be required in a production workspace because the authoring and debugging phases of development should be complete.</p>
+<p>You should find that the workspace runs a lot more quickly this time - perhaps in as little as five seconds:</p>
+<div><pre>2021-05-06 11:53:44|   6.6|  0.0|INFORM|Translation was SUCCESSFUL with 4 warning(s) (70 feature(s) output)
+2021-05-06 11:53:44|   6.6|  0.0|INFORM|FME Session Duration: 46 seconds. (CPU: 2.7s user, 3.9s system)
+2021-05-06 11:53:44|   6.6|  0.0|INFORM|END - ProcessID: 150772, peak process memory usage: 499056 kB, current process memory usage: 155572 kB</pre>
+</div>
+<p>This clearly shows the performance reduction that caching can cause. In these examples running without caching results in a 54% decrease in total runtime. This is particularly true in a workspace processing large raster datasets. Caching shouldn't be required in a production workspace because the authoring and debugging phases of development should be complete.</p>
 <h2 id="2-assess-relative-performance">
   <span>2) Assess Relative Performance</span>
 </h2>
 <p>Although the workspace now runs very quickly, we could assess the relative performance of each section anyway.</p>
-<p>Firstly disable all components after the readers, and run the workspace. Make a note of the time the workspace now takes to run:</p><pre>Translation was SUCCESSFUL with 1 warning(s) (0 feature(s) output) FME Session Duration: 1.4 seconds. (CPU: 1.0s user, 0.3s system) END - ProcessID: 7148, peak process memory usage: 116928 kB, current process memory usage: 107228 kB</pre>
-<p>Now enable all transformers, leaving only the writers disabled. Re-run the workspace and make a note of the performance:</p><pre>Translation was SUCCESSFUL with 2 warning(s) (0 feature(s) output) FME Session Duration: 1.7 seconds. (CPU: 1.1s user, 0.4s system) END - ProcessID: 1436, peak process memory usage: 146044 kB, current process memory usage: 142124 kB</pre>
-<p>From this we know that:</p>
+<p>Firstly disable all components after the readers, and run the workspace. Make a note of the time the workspace now takes to run:</p>
+<div><pre>2021-05-06 12:08:27|   4.3|  0.0|INFORM|Translation was SUCCESSFUL with 3 warning(s) (0 feature(s) output)
+2021-05-06 12:08:27|   4.3|  0.0|INFORM|FME Session Duration: 35.5 seconds. (CPU: 1.8s user, 2.5s system)
+2021-05-06 12:08:27|   4.3|  0.0|INFORM|END - ProcessID: 68880, peak process memory usage: 150104 kB, current process memory usage: 128460 kB</pre>
+</div>
+<p>Now enable all transformers, leaving only the writers disabled. Re-run the workspace and make a note of the performance:</p>
+<div><pre>2021-05-06 12:11:23|   4.5|  0.0|INFORM|Translation was SUCCESSFUL with 4 warning(s) (0 feature(s) output)
+2021-05-06 12:11:23|   4.5|  0.0|INFORM|FME Session Duration: 33.6 seconds. (CPU: 1.8s user, 2.7s system)
+2021-05-06 12:11:23|   4.5|  0.0|INFORM|END - ProcessID: 11320, peak process memory usage: 186568 kB, current process memory usage: 154104 kB</pre>
+</div>
+<p>From this we can calculate the length of each stage of the workspace:</p>
 <ul>
-  <li>Reading data takes 1.4 seconds (the first partial run)</li>
-  <li>Transforming data takes 0.3 seconds (the second partial run minus the first partial run)</li>
-  <li>Writing data takes 3.1 seconds (the overall run minus the second partial run)</li>
+  <li>Reading data (the first partial run)</li>
+  <li>Transforming data (the second partial run minus the first partial run)</li>
+  <li>Writing data (the overall run minus the second partial run)</li>
 </ul>
-<p>So writing data takes the longest in this workspace, although the workspace isn't really that slow anyway.</p>
+<p>Do these calculations; you'll need the answers for the quiz.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
