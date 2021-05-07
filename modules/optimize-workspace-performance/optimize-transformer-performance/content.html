@@ -3,7 +3,11 @@
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li>d</li>
+  <li>Optimize performance using transformer order and filtering.</li>
+  <li>Optimize performance using Group By Mode. </li>
+  <li>Optimize performance using the Features First parameter.</li>
+  <li>Optimize performance by removing unneeded attributes and geometry.</li>
+  <li>Optimize performance using bulk mode.</li>
 </ul>
 <h2 id="optimizing-transformer-performance">
   <span>Optimizing Transformer Performance</span>
@@ -19,10 +23,10 @@
 <p>The best way to remember this is: <strong>Filter, Remove, Action!</strong></p>
 <p>In other words, filter first, then remove attributes, then carry out the action.</p>
 <h2 id="group-by-mode-parameter">
-  <span>Group-By Mode Parameter</span>
+  <span>Group By Mode Parameter</span>
 </h2>
-<p>A common parameter to most Group-Based transformers is called "Group By Mode" and appears near the Group By parameter in most transformer dialogs:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.021.TransformerPerformanceGroupedFeatureParam.png" alt class="image image-block image-center" /></p>
+<p>A common parameter to most group-based transformers is called "Group By Mode" and appears near the Group By parameter in most transformer dialogs:</p>
+<p><img src="images/1620425756709.png" class="image image-block image-center" /></p>
 <p>When set to Process at End (Blocking) then ALL of the features are stored in memory until they are all available. Then groups are formed. The transformer is literally blocking data from proceeding.</p>
 <p>When the parameter is set to Process When Group Changes (Advanced), then FME processes groups as they become available. That way less data is stored in memory and processing is more efficient.</p>
 <p>The condition for applying this parameter is that the groups of features are pre-sorted into their groups.</p>
@@ -54,7 +58,7 @@
 <h2 id="attributes-and-transformation">
   <span>Attributes and Transformation</span>
 </h2>
-<p>As mentioned (in Reader Performance) reducing data helps performance because it saves FME from either holding it in memory or caching it to a disk.</p>
+<p>As mentioned <a href="https://safe.my.trailhead.com/en/content/safe/modules/optimize-workspace-performance/optimize-reader-performance" rel="noreferrer noopener" target="_blank">earlier</a>, reducing data helps performance because it saves FME from either holding it in memory or caching it to a disk.</p>
 <p>However, this isn’t just helped by reducing the number of features; it is also helped by reducing the size of each individual feature.</p>
 <p>One aspect of this is attributes. Carrying attributes through a translation impacts performance, so if the attributes are not required in the output, it’s best to remove them <em>as early as possible</em> in the translation.</p>
 <p>For example, when the reader and writer schemas look like this:</p>
@@ -82,22 +86,27 @@
 <h2 id="bulk-mode-and-feature-tables">
   <span>Bulk Mode and Feature Tables</span>
 </h2>
-<p>FME's engine is gradually being updated to use a methodology we call Bulk Mode (also known as Feature Tables).</p>
-<p>It's not a tool designed for user control, rather bulk mode is a new way for features to be transported through the workspace. Bulk mode speeds up a workspace, its translations, and its transformations quite substantially. If you see a log message about Bulk Mode (or sometimes Feature Tables) then this technology is what it refers to.</p>
-<p>As more transformers support bulk mode, expect performance times to improve. However, you will need to upgrade transformers to get this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes Bulk Mode support:</p>
+<p>FME's engine is gradually being updated to use a methodology we call <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/Improving-Performance-Bulk-Mode.htm" rel="noreferrer noopener" target="_blank">bulk mode</a> (also known as feature tables).</p>
+<p>It's not a tool designed for user control, rather bulk mode is a new way for features to be transported through the workspace. Bulk mode speeds up a workspace, its translations, and its transformations quite substantially. If you see a log message about bulk mode (or sometimes feature tables) then this technology is what it refers to.</p>
+<p>As more transformers support bulk mode, expect performance times to improve. However, you will need to upgrade transformers to get this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes bulk mode support:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025b.TransformerPerformanceUpgrading.png" alt class="image image-block image-center" /></p>
-<div><img src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" class="image image-block image-center" />
-  <p>In FME2019.1, the Tester transformer includes Bulk Mode support and can be upgraded to improve performance.<br />However, this bulk mode support comes at a price: Feature order is no longer maintained the same way it was before.<br /><br />As an example, let's say we have features numbered 1 to 10, in that order. They enter a Tester. The test clauses are set up so that even numbers pass (emerge from the PASSED port), odd numbers fail (emerge from the FAILED port).<br /><br />Without bulk mode, the features would emerge in the order 1 (Failed port), 2 (Passed port), 3 (Failed), 4 (Passed), 5 (Failed) and so on. In other words, they emerge in the same order they entered.<br /><br />With bulk mode, the output order is less certain. The output of each port will still be in order, but we can't say that each port will occur in order. For example, the output order might be 1 (Failed), 3 (Failed), 5 (Failed), 7 (Failed), 9 (Failed), 2 (Passed), 4 (Passed) 6 (Passed), and so on.<br /><br />In other words, with bulk mode, features emerge from each port in the same order, but one port may output all of its features (or a bulk subset of them) before the next port starts.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Starting in FME2019.1, the Tester transformer includes bulk mode support and can be upgraded to improve performance. </p>
+            <p>However, this bulk mode support comes at a price: Feature order is no longer maintained the same way it was before.</p>
+            <p>As an example, let's say we have features numbered 1 to 10, in that order. They enter a Tester. The test clauses are set up so that even numbers pass (emerge from the PASSED port), odd numbers fail (emerge from the FAILED port).</p>
+            <p>Without bulk mode, the features would emerge in the order 1 (Failed port), 2 (Passed port), 3 (Failed), 4 (Passed), 5 (Failed) and so on. In other words, they emerge in the same order they entered.</p>
+            <p>With bulk mode, the output order is less certain. The output of each port will still be in order, but we can't say that each port will occur in order. For example, the output order might be 1 (Failed), 3 (Failed), 5 (Failed), 7 (Failed), 9 (Failed), 2 (Passed), 4 (Passed) 6 (Passed), and so on.</p>
+            <p>In other words, with bulk mode, features emerge from each port in the same order, but one port may output all of its features (or a bulk subset of them) before the next port starts.</p>
+            <p>If you have a workspace that relies on a certain port order from the Tester built before FME 2019.1, unexpected results may occur. In these scenarios, we recommend that you do not <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/Working_With_Transformer_Versions.htm" rel="noreferrer noopener" target="_blank">upgrade</a> the Tester to its 2019.1 or later version, or revise your workspaces so they do not rely on feature ordering from joined output ports. </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard asks...</td>
-    </tr>
-    <tr>
-      <td>
-        <p>Q) Which of these transformers have group-related parameters for improving performance (pick all that apply and see if you can get the answers without looking at the transformers)</p>StatisticsCalculatorSpikeRemoverLineOnLineOverlayerFeatureMerger
-      </td>
-    </tr>
-  </tbody>
-</table>
