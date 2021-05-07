@@ -32,7 +32,11 @@
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li>d</li>
+  <li>Improve performance by reducing the amount of data being read.</li>
+  <li>Improve performance by adjusting the order of writers in a workspace.</li>
+  <li>Improve performance by reordering transformers to get the best performance.</li>
+  <li>Improve performance by using performance-related transformer parameters.</li>
+  <li>Improve performance by adjust the order of readers in a workspace.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
@@ -43,10 +47,13 @@
 <h2 id="exercise">
   <span>Exercise</span>
 </h2>
-<p>As you'll recall, the provincial government has given the city a grant to fund new public art in parks.</p>
-<p>A colleague has created a workspace to analyze the amount of art in each city park and we are carrying out a code review to ensure that the workspace is efficient and well-designed. Previously we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
-<p>Now let's look at some specific changes we can make to improve performance.</p>
-<p><strong>1) Open and Run Workspace</strong><br />Open your workspace from the previous exercise, or the workspace listed above. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
+<p>The provincial government has given the city a grant to fund new public art in parks.</p>
+<p>A colleague has created a workspace to analyze the amount of art in each city park, and we are carrying out a code review to ensure that the workspace is efficient and well-designed. In <a href="https://safe.my.trailhead.com/en/content/safe/modules/design-for-performance/exercise-assess-workspace-performance" rel="noreferrer noopener" target="_blank">another exercise</a> we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
+<p>In this exercise we'll make some specific changes to improve performance.</p>
+<h2 id="1-open-and-run-workspace">
+  <span>1) Open and Run Workspace</span>
+</h2>
+<p>Open the starting workspace in FME Workbench 2021.0. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
 <p>First let's first check if the readers are well-designed and don't read any excess data.</p>
 <ul>
   <li>Check the Parks source data. We wish to identify parks without artwork, so we need all of these parks features.</li>
@@ -89,7 +96,10 @@
   </tbody>
 </table>
 <p>Now you can check whether any GeoTIFF tiles fall outside the extents of the neighborhoods. If so, there are files being read that are not necessary.</p>
-<p><strong>2) Check Reader Methodology</strong><br />Open your workspace from the previous exercise, or the workspace listed above. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
+<h2 id="2-check-reader-methodology">
+  <span>2) Check Reader Methodology</span>
+</h2>
+<p>Open your workspace from the previous exercise, or the workspace listed above. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
 <p>First let's first check if the readers are well-designed and don't read any excess data.</p>
 <ul>
   <li>Check the Parks source data. We wish to identify parks without artwork, so we need all of these parks features.</li>
@@ -132,7 +142,10 @@
   </tbody>
 </table>
 <p>Now you can check whether any GeoTIFF tiles fall outside the extents of the neighborhoods. If so, there are files being read that are not necessary.</p>
-<p><br /><strong>2) Switch GeoTIFF Reader to FeatureReader</strong><br />It appears that there are GeoTIFF files being unnecessarily read. This causes a performance hit, especially when Feature Caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed then this list might not be correct.</p>
+<h2 id="2-switch-geo-tiff-reader-to-feature-reader">
+  <span>2) Switch GeoTIFF Reader to FeatureReader</span>
+</h2>
+<p>It appears that there are GeoTIFF files being unnecessarily read. This causes a performance hit, especially when Feature Caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed then this list might not be correct.</p>
 <p>So, instead delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt class="image image-block image-center" /></p>
 <p>Open the FeatureReader parameters. Set the format to GeoTIFF and select all of the TIF files as the source. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
@@ -143,41 +156,55 @@
 <p>So add a Dissolver transformer between Reprojector_2 and FeatureReader. This will consolidate the neighborhoods into a single feature and ensure each GeoTIFF is only read once. Re-run the workspace:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.208.Ex3.DissolverConnected.png" alt class="image image-block image-center" /></p>
 <p>Now we only read 27 features, which is the correct amount. We are reading less data and so the workspace is performing better.</p>
-<p><br /><strong>3) Check Writer Order</strong><br />The simplest writer improvement we might make is to change the order of the writers. Currently the Excel spreadsheet is being written first. This means that GeoTIFF files - which are large in size - are being cached, instead of the smaller Excel file.</p>
+<h2 id="3-check-writer-order">
+  <span>3) Check Writer Order</span>
+</h2>
+<p>The simplest writer improvement we might make is to change the order of the writers. Currently the Excel spreadsheet is being written first. This means that GeoTIFF files - which are large in size - are being cached, instead of the smaller Excel file.</p>
 <p>So, adjust the order of the writers, so that the GeoTIFF writer comes first in the Navigator:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.209.Ex3.ReorderWriters.png" alt class="image image-block image-center" /></p>
 <p>Re-run the workspace. Although the workspace wasn't really slow to start with, you should notice it now runs slightly faster, using less memory.</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>TIP</td>
-    </tr>
-    <tr>
-      <td>One other writer feature to consider is whether the Excel dataset is being deleted/recreated, or just emptied of data. In theory it might be (very marginally) quicker to empty the sheets rather than creating the whole spreadsheet from scratch.<br /><br />To try this, change the writer parameter Overwrite Existing File to No, and change the writer feature type parameter for Truncate Existing Sheet to Yes:<br /><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.217.Ex3.OverwriteOrTruncate.png" class="image image-block image-center" /><br /><br />It's unlikely to make a very large performance improvement, but it is these sort of differences that you can consider when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<p><br /><strong>4) Upgrade Transformers</strong><br />Now let's look into transformers. This is where there are a lot of different changes we can make. The first is to check for old transformer versions. Notice in the Navigator window that two transformers are listed as "Upgradeable":</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>One other writer feature to consider is whether the Excel dataset is being deleted/recreated, or just emptied of data. In theory it might be (very marginally) quicker to empty the sheets rather than creating the whole spreadsheet from scratch.<br /><br />To try this, change the writer parameter Overwrite Existing File to No, and change the writer feature type parameter for Truncate Existing Sheet to Yes:<br /><br /><br /><br />It's unlikely to make a very large performance improvement, but it is these sort of differences that you can consider when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="4-upgrade-transformers">
+  <span>4) Upgrade Transformers</span>
+</h2>
+<p>Now let's look into transformers. This is where there are a lot of different changes we can make. The first is to check for old transformer versions. Notice in the Navigator window that two transformers are listed as "Upgradeable":</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.210.Ex3.UpgradeableTransformers.png" alt class="image image-block image-center" /></p>
 <p>In turn right-click each entry and choose to Upgrade Transformer. You will be prompted with a warning that you can ignore, and even choose to skip in future.</p>
 <p>A dialog will open to show the changes in GUI to the transformer, and you can click the Show Changes button to get a written list of changes:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.211.Ex3.UpgradeTransformerDialog.png" alt class="image image-block image-center" /></p>
 <p>Upgrading transformers doesn't always make them operate faster - some changes are either functional or cosmetic - and it might make their results slightly different. Therefore, it's not advisable to upgrade all transformers without first checking what the upgrade involves.</p>
 <p>However, in this case both transformers should be safe to upgrade, and the PointOnAreaOverlayer may even get an improved performance from the upgrade. So go ahead and upgrade both transformers.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>2019.1 UPDATE</td>
-    </tr>
-    <tr>
-      <td>As noted in the recent content, the Tester transformer has been updated for 2019.1 and can be upgraded to use the new Bulk Mode. You'll remember, however, that this might change the order of features emerging from the transformer.<br /><br />Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version, in order to get a performance boost.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<p><br /><strong>5) Check Transformer Order</strong><br />Look at the bookmark labelled <em>Prepare Data for Excel Writer</em>:</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>The Tester transformer was updated in 2019.1 and can be upgraded to use the new Bulk Mode. You'll remember, however, that this might change the order of features emerging from the transformer.<br /><br />Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version, in order to get a performance boost.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="5-check-transformer-order">
+  <span>5) Check Transformer Order</span>
+</h2>
+<p>Look at the bookmark labelled <em>Prepare Data for Excel Writer</em>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.212.Ex3.PrepDataBookmark.png" alt class="image image-block image-center" /></p>
 <p>Inspect the transformers and you will see that data is sorted into order for writing first of all; then unnecessary features are filtered out and unnecessary attributes removed.</p>
 <p>This is not the correct order to maximize performance: unnecessary features with unnecessary attributes are being processed by the sorting action. Remember, the key order is Filter-Remove-Action.</p>
@@ -185,33 +212,21 @@
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.213.Ex3.PrepDataBookmarkEdited.png" alt class="image image-block image-center" /></p>
 <p>Notice that the Sorter transformer is now flagged as incomplete. Inspect the parameters and you'll notice that the attribute _overlaps no longer exists; it was renamed by the AttributeManager to ArtWorks.</p>
 <p>So simply change the Sorter to sort by ArtWorks and the transformer will work again.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>2019.1 UPDATE</td>
-    </tr>
-    <tr>
-      <td>The Sorter has an intriguing update for FME2019.1. Notice that it has Group By and Group By Mode parameters that didn't exist in FME2019.0. These parameters give us a potential performance benefit. Can you see how? It's by using one of the sort attributes as a group by instead!<br /><br />Let's say we are sorting by attributes StreetNumber and StreetName. The features are already in StreetName order, but not StreetNumber order. We have to sort by both attributes because if we only sorted by StreeetNumber, then the StreetName order would be disrupted. Are you with me so far?<br /><br />So what we can do is Group-By StreetName and Sort By StreetNumber only. This is quicker on two counts: firstly a group by is quicker than a sort. Secondly we can make use of the Group By Mode parameter, setting it to Process When Group Changes.<br /><br />So... the question is, does this help here? For example, could we set Group By = Artworks and Sort By = Park Name? We could, but it wouldn't help. In fact, it would make the output incorrect. The problem is that the data isn't already in order as it enters the transformer. So, it doesn't help here, but it's a performance tip worth being aware of.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace?</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard asks...</td>
-    </tr>
-    <tr>
-      <td>
-        <p>Q) Can the Tester or DuplicateFilter be moved to earlier in the workspace?</p>The Tester can be moved, but not the DuplicateFilterThe DuplicateFilter can be moved, but not the TesterBoth can be movedNeither can be movedCheckShow explanationShow correct answers
-      </td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If the features coming into the Sorter were already grouped by one attribute, we could group by that attribute and sort by another for a performance improvement. But, in this case that would not work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace? Can the Tester transformer be moved? Note your answer: you'll need it for the Quiz.</p>
 <p>Can the AttributeManager transformer be moved? Well, it can't be <em>moved</em> because its renaming of the _overlaps attribute can only happen here. However, removing attributes could be carried out much earlier.</p>
 <p>The simplest technique is to add an AttributeManager after every reader whose attributes can be removed:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.214.Ex3.RemoveAttributesBookmark.png" alt class="image image-block image-center" /></p>
@@ -219,19 +234,24 @@
 <p>One transformer that is legitimately incomplete is the original AttributeManager (in the Prepare Data bookmark). This no longer receives the attributes it expects. Simply open the parameters for that transformer and click the option for <em>Remove All Invalid 'Input Attribute' Rows</em>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.215.Ex3.RemoveDoNothingAttributes.png" alt class="image image-block image-center" /></p>
 <p>Now we have removed all unnecessary attributes from the workspace, as soon as possible.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>TIP</td>
-    </tr>
-    <tr>
-      <td>An alternative solution for database-type formats is to not read the attributes at all. In our workspace the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes, and uncheck Name and Title:<br /><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.216.Ex3.UncheckAttrsToReadExcel.png" class="image image-block image-center" /><br /><br />If you do this then any AttributeManager you added could be removed.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<p><br /><strong>6) Check Transformer Performance Parameters</strong><br />As mentioned, a number of transformers have parameters specifically for performance benefits. These are often labelled as <strong>Group By Mode</strong> or <strong>&lt;Features First&gt;</strong></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>An alternative solution for database-type formats is to not read the attributes at all. In our workspace the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes, and uncheck Name and Title:<br /><br /><br /><br />If you do this then any AttributeManager you added could be removed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="6-check-transformer-performance-parameters">
+  <span>6) Check Transformer Performance Parameters</span>
+</h2>
+<p>As mentioned, a number of transformers have parameters specifically for performance benefits. These are often labelled as <strong>Group By Mode</strong> or <strong>&lt;Features First&gt;</strong></p>
 <p>Check the transformers in this workspace. The two of particular interest are the Clipper and PointOnAreaOverlayer. Both of them have a Group By Mode and a Features First parameter:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.218.Ex3.PerformanceParameters.png" alt class="image image-block image-center" /></p>
 <p>The Group By Mode parameters don't apply, because neither transformer is using a Group By. However, the <em>Clippers First</em> and <em>Areas First</em> options are of interest. If we set these options we can get a performance boost, but we do have to confirm that either Clippers or Areas are the first features to arrive.</p>
@@ -241,32 +261,21 @@
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.220.Ex3.ParksReaderTop.png" alt class="image image-block image-center" /></p>
 <p>Re-run the workspace. Notice that the park features are now first. This part of the workspace should be working more efficiently now.</p>
 <p>Try the same action on the Clipper transformer, to see if Clipper features are first so that the Clipper Type parameter can be set to Clippers First.</p>
-<p><br /><strong>7) Re-Run Workspace</strong><br />With Feature Caching off, re-run the entire workspace. Check if the log results show that the workspace is quicker and more memory efficient than it was before. The code review of your colleague's workspace is complete.</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says...</td>
-    </tr>
-    <tr>
-      <td>Overall, the difference might be very slight. The workspace may not be hugely faster or more memory efficient. However, it is better designed than the original workspace. This makes it more scalable, plus it will help to teach your colleague techniques that might, elsewhere, have a larger effect.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>CONGRATULATIONS</td>
-    </tr>
-    <tr>
-      <td>By completing this exercise, you have learned how to:<ul>
-          <li>Reduce the amount of data being read</li>
-          <li>Adjust the order of writers in a workspace</li>
-          <li>Reorder transformers to get the best performance</li>
-          <li>Use performance-related transformer parameters</li>
-          <li>Adjust the order of readers in a workspace</li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<h2 id="7-re-run-workspace">
+  <span>7) Re-Run Workspace</span>
+</h2>
+<p>With Feature Caching off, re-run the entire workspace. Check if the log results show that the workspace is quicker and more memory efficient than it was before. The code review of your colleague's workspace is complete.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Overall, the difference might be very slight. The workspace may not be hugely faster or more memory efficient. However, it is better designed than the original workspace. This makes it more scalable, plus it will help to teach your colleague techniques that might, elsewhere, have a larger effect.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
