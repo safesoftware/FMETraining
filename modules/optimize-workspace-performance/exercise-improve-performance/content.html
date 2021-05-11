@@ -1,106 +1,32 @@
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Exercise 3</td>
-      <td>Public Art in Parks - Feature Caching</td>
-    </tr>
-    <tr>
-      <td>Data</td>
-      <td>City Neighborhoods (Google KML)<br />Public Art (Microsoft Excel)<br />Parks (MapInfo Tab)<br />City Orthophotos (GeoTIFF)</td>
-    </tr>
-    <tr>
-      <td>Overall Goal</td>
-      <td>Examine a workspace that analyzes public art in city parks</td>
-    </tr>
-    <tr>
-      <td>Demonstrates</td>
-      <td>Improving Design and Performance</td>
-    </tr>
-    <tr>
-      <td>Start Workspace</td>
-      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex3-Begin.fmw</td>
-    </tr>
-    <tr>
-      <td>End Workspace</td>
-      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex3-Complete.fmw</td>
-    </tr>
-  </tbody>
-</table>
-<p> </p>
-<h2 id="learning-objectives">
-  <span>Learning Objectives</span>
-</h2>
+<p><span style="font-size:30px">Learning Objectives</span></p>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
   <li>Improve performance by reducing the amount of data being read.</li>
   <li>Improve performance by adjusting the order of writers in a workspace.</li>
   <li>Improve performance by reordering transformers to get the best performance.</li>
   <li>Improve performance by using performance-related transformer parameters.</li>
-  <li>Improve performance by adjust the order of readers in a workspace.</li>
+  <li>Improve performance by adjusting the order of readers in a workspace.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li>Starting workspace</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-improve-performance.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
 </ul>
 <h2 id="exercise">
   <span>Exercise</span>
 </h2>
 <p>The provincial government has given the city a grant to fund new public art in parks.</p>
-<p>A colleague has created a workspace to analyze the amount of art in each city park, and we are carrying out a code review to ensure that the workspace is efficient and well-designed. In <a href="https://safe.my.trailhead.com/en/content/safe/modules/design-for-performance/exercise-assess-workspace-performance" rel="noreferrer noopener" target="_blank">another exercise</a> we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
-<p>In this exercise we'll make some specific changes to improve performance.</p>
+<p>A colleague has created a workspace to analyze the amount of art in each city park, and we are carrying out a code review to ensure that the workspace is efficient and well-designed. In <a href="https://safe.my.trailhead.com/en/content/safe/modules/design-for-performance/exercise-assess-workspace-performance" rel="noreferrer noopener" target="_blank">another exercise</a>, we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
+<p>In this exercise, we'll make some specific changes to improve performance.</p>
 <h2 id="1-open-and-run-workspace">
   <span>1) Open and Run Workspace</span>
 </h2>
-<p>Open the starting workspace in FME Workbench 2021.0. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
-<p>First let's first check if the readers are well-designed and don't read any excess data.</p>
-<ul>
-  <li>Check the Parks source data. We wish to identify parks without artwork, so we need all of these parks features.</li>
-  <li>Check the Neighborhoods data. Again, we need all of these features.</li>
-  <li>Check the Public Art data. Again, we need all of these features.<ul>
-      <li>It's important to note that artworks fall in one of six neighborhoods, and there are the same six neighborhoods in that dataset. There are no artworks outside one of these neighborhoods and no neighborhoods outside where we have artworks, so there is no excess data being read.</li>
-    </ul>
-  </li>
-  <li>Check the Orthophotos data. We're reading all the image files for the entire city. Are they any files we don't need?</li>
-</ul>
-<p>To check the orthophoto coverage, start the FME Data Inspector (it will be easier than the Visual Preview window). Select File &gt; Open Dataset and set the files to open as follows:</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Reader Format</td>
-      <td>GeoTIFF (Geo-referenced Tagged Image File Format)</td>
-    </tr>
-    <tr>
-      <td>Reader Dataset</td>
-      <td>C:\FMEData2019\Data\Orthophotos\*.tif</td>
-    </tr>
-    <tr>
-      <td>Parameters</td>
-      <td>Feature Type Name(s): From File Name(s)</td>
-    </tr>
-  </tbody>
-</table>
-<p>In other words, select all of the TIF files in the Orthophotos folder. The Feature Type Name(s) parameter makes sure the Data Inspector lists files by name.</p>
-<p>Now select File &gt; Add Dataset and set that dialog up as follows:</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Reader Format</td>
-      <td>Google KML</td>
-    </tr>
-    <tr>
-      <td>Reader Dataset</td>
-      <td>C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
-    </tr>
-  </tbody>
-</table>
-<p>Now you can check whether any GeoTIFF tiles fall outside the extents of the neighborhoods. If so, there are files being read that are not necessary.</p>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-improve-performance.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> in FME Workbench 2021.0. Turn on feature caching (we're back in authoring mode now) and run the workspace.</p>
 <h2 id="2-check-reader-methodology">
   <span>2) Check Reader Methodology</span>
 </h2>
-<p>Open your workspace from the previous exercise, or the workspace listed above. Turn on feature caching (we're back in authoring mode now) and re-run the workspace.</p>
-<p>First let's first check if the readers are well-designed and don't read any excess data.</p>
+<p>First, let's first check if the readers are well-designed and don't read any excess data.</p>
 <ul>
   <li>Check the Parks source data. We wish to identify parks without artwork, so we need all of these parks features.</li>
   <li>Check the Neighborhoods data. Again, we need all of these features.</li>
@@ -114,52 +40,66 @@
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
-      <td>Reader Format</td>
+      <td><strong>Reader Format</strong></td>
       <td>GeoTIFF (Geo-referenced Tagged Image File Format)</td>
     </tr>
     <tr>
-      <td>Reader Dataset</td>
-      <td>C:\FMEData2019\Data\Orthophotos\*.tif</td>
+      <td><strong>Reader Dataset</strong></td>
+      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip</a><br /></td>
     </tr>
     <tr>
-      <td>Parameters</td>
+      <td><strong>Parameters</strong></td>
       <td>Feature Type Name(s): From File Name(s)</td>
     </tr>
   </tbody>
 </table>
-<p>In other words, select all of the TIF files in the Orthophotos folder. The Feature Type Name(s) parameter makes sure the Data Inspector lists files by name.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you find the reading is taking too long, you can download the .zip file, extract it, and select all the files in the folder instead. In other words, select all of the TIF files in the extracted Orthophotos folder. Reading the data locally will be faster.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>The Feature Type Name(s) parameter makes sure the Data Inspector lists files by name.</p>
 <p>Now select File &gt; Add Dataset and set that dialog up as follows:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
-      <td>Reader Format</td>
+      <td><strong>Reader Format</strong></td>
       <td>Google KML</td>
     </tr>
     <tr>
-      <td>Reader Dataset</td>
-      <td>C:\FMEData2019\Data\Boundaries\VancouverNeighborhoods.kml</td>
+      <td><strong>Reader Dataset</strong></td>
+      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Boundaries/VancouverNeighborhoods.kml" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Boundaries/VancouverNeighborhoods.kml</a><br /></td>
     </tr>
   </tbody>
 </table>
-<p>Now you can check whether any GeoTIFF tiles fall outside the extents of the neighborhoods. If so, there are files being read that are not necessary.</p>
-<h2 id="2-switch-geo-tiff-reader-to-feature-reader">
-  <span>2) Switch GeoTIFF Reader to FeatureReader</span>
+<p>Now you can check whether any GeoTIFF tiles fall outside the extents of the neighborhoods. Because some orthophotos do not overlap the neighborhood boundaries, our workspace is reading more orthophotos than is necessary.</p>
+<h2 id="3-switch-geo-tiff-reader-to-feature-reader">
+  <span>3) Switch GeoTIFF Reader to FeatureReader</span>
 </h2>
-<p>It appears that there are GeoTIFF files being unnecessarily read. This causes a performance hit, especially when Feature Caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed then this list might not be correct.</p>
-<p>So, instead delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
+<p>It appears that there are GeoTIFF files being read unnecessarily. This causes a performance hit, especially when Feature Caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed, then this list might not be correct.</p>
+<p>So, instead, delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt class="image image-block image-center" /></p>
-<p>Open the FeatureReader parameters. Set the format to GeoTIFF and select all of the TIF files as the source. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
+<p>Open the FeatureReader parameters. Set the format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip</a> as the source. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.206.Ex3.FeatureReaderDialog.png" alt class="image image-block image-center" /></p>
 <p>Close the dialog and the FeatureReader now has a GeoTIFF output port. Connect this to the RasterMosaicker:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.207.Ex3.FeatureReaderConnected.png" alt class="image image-block image-center" /></p>
 <p>If we run the workspace now the FeatureReader outputs 48 features. This is more than we had before (40) and occurs because GeoTIFF tiles that overlap two neighborhoods are being read twice.</p>
 <p>So add a Dissolver transformer between Reprojector_2 and FeatureReader. This will consolidate the neighborhoods into a single feature and ensure each GeoTIFF is only read once. Re-run the workspace:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.208.Ex3.DissolverConnected.png" alt class="image image-block image-center" /></p>
-<p>Now we only read 27 features, which is the correct amount. We are reading less data and so the workspace is performing better.</p>
-<h2 id="3-check-writer-order">
-  <span>3) Check Writer Order</span>
+<p>Now we only read 27 features, which is the correct amount. We are reading fewer photos and so the workspace is performing better.</p>
+<h2 id="4-check-writer-order">
+  <span>4) Check Writer Order</span>
 </h2>
-<p>The simplest writer improvement we might make is to change the order of the writers. Currently the Excel spreadsheet is being written first. This means that GeoTIFF files - which are large in size - are being cached, instead of the smaller Excel file.</p>
+<p>The simplest writer improvement we might make is to change the order of the writers. Currently, the Excel spreadsheet is being written first. This means that GeoTIFF files - which are large in size - are being cached, instead of the smaller Excel file.</p>
 <p>So, adjust the order of the writers, so that the GeoTIFF writer comes first in the Navigator:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.209.Ex3.ReorderWriters.png" alt class="image image-block image-center" /></p>
 <p>Re-run the workspace. Although the workspace wasn't really slow to start with, you should notice it now runs slightly faster, using less memory.</p>
@@ -170,23 +110,23 @@
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>One other writer feature to consider is whether the Excel dataset is being deleted/recreated, or just emptied of data. In theory it might be (very marginally) quicker to empty the sheets rather than creating the whole spreadsheet from scratch.<br /><br />To try this, change the writer parameter Overwrite Existing File to No, and change the writer feature type parameter for Truncate Existing Sheet to Yes:<br /><br /><br /><br />It's unlikely to make a very large performance improvement, but it is these sort of differences that you can consider when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</p>
+            <p>One other writer feature to consider is whether the Excel dataset is being deleted/recreated, or just emptied of data. In theory, it might be (very marginally) quicker to empty the sheets rather than creating the whole spreadsheet from scratch.<br /><br />To try this, change the writer parameter Overwrite Existing File to No, and change the writer feature type parameter for Truncate Existing Sheet to Yes:<br /><br /><br /><br />It's unlikely to make a very large performance improvement, but you should consider differences like these when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<h2 id="4-upgrade-transformers">
-  <span>4) Upgrade Transformers</span>
+<h2 id="5-upgrade-transformers">
+  <span>5) Upgrade Transformers</span>
 </h2>
 <p>Now let's look into transformers. This is where there are a lot of different changes we can make. The first is to check for old transformer versions. Notice in the Navigator window that two transformers are listed as "Upgradeable":</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.210.Ex3.UpgradeableTransformers.png" alt class="image image-block image-center" /></p>
-<p>In turn right-click each entry and choose to Upgrade Transformer. You will be prompted with a warning that you can ignore, and even choose to skip in future.</p>
+<p><img src="images/1620681589610.png" class="image image-block image-center" /></p>
+<p>In turn, right-click each entry and choose to Upgrade Transformer. You will be prompted with a warning that you can ignore, and even choose to skip in the future.</p>
 <p>A dialog will open to show the changes in GUI to the transformer, and you can click the Show Changes button to get a written list of changes:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.211.Ex3.UpgradeTransformerDialog.png" alt class="image image-block image-center" /></p>
+<p><img src="images/1620681668968.png" class="image image-block image-center" /></p>
 <p>Upgrading transformers doesn't always make them operate faster - some changes are either functional or cosmetic - and it might make their results slightly different. Therefore, it's not advisable to upgrade all transformers without first checking what the upgrade involves.</p>
-<p>However, in this case both transformers should be safe to upgrade, and the PointOnAreaOverlayer may even get an improved performance from the upgrade. So go ahead and upgrade both transformers.</p>
+<p>However, in this case, both transformers should be safe to upgrade, and they both may even get an improved performance from the upgrade. So go ahead and upgrade both transformers.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -194,7 +134,7 @@
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>The Tester transformer was updated in 2019.1 and can be upgraded to use the new Bulk Mode. You'll remember, however, that this might change the order of features emerging from the transformer.<br /><br />Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version, in order to get a performance boost.</p>
+            <p>The Tester transformer was updated in 2019.1 and can be upgraded to use bulk mode. You'll remember, however, that this might change the order of features emerging from the transformer.<br /><br />Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version, in order to get a performance boost.</p>
           </div>
         </div>
       </div>
@@ -204,9 +144,9 @@
 <h2 id="5-check-transformer-order">
   <span>5) Check Transformer Order</span>
 </h2>
-<p>Look at the bookmark labelled <em>Prepare Data for Excel Writer</em>:</p>
+<p>Look at the bookmark labeled <em>Prepare Data for Excel Writer</em>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.212.Ex3.PrepDataBookmark.png" alt class="image image-block image-center" /></p>
-<p>Inspect the transformers and you will see that data is sorted into order for writing first of all; then unnecessary features are filtered out and unnecessary attributes removed.</p>
+<p>Inspect the transformers and you will see that data is sorted into order for writing, then unnecessary features are filtered out and unnecessary attributes removed.</p>
 <p>This is not the correct order to maximize performance: unnecessary features with unnecessary attributes are being processed by the sorting action. Remember, the key order is Filter-Remove-Action.</p>
 <p>So, move the Sorter transformer after the AttributeManager:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.213.Ex3.PrepDataBookmarkEdited.png" alt class="image image-block image-center" /></p>
@@ -219,15 +159,15 @@
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>If the features coming into the Sorter were already grouped by one attribute, we could group by that attribute and sort by another for a performance improvement. But, in this case that would not work.</p>
+            <p>If the features coming into the Sorter were already grouped by one attribute, we could group by that attribute and sort by another for a performance improvement. But, in this case, that would not work.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace? Can the Tester transformer be moved? Note your answer: you'll need it for the Quiz.</p>
-<p>Can the AttributeManager transformer be moved? Well, it can't be <em>moved</em> because its renaming of the _overlaps attribute can only happen here. However, removing attributes could be carried out much earlier.</p>
+<p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace? Can the Tester transformer be moved? Note your answer: you'll need it for the quiz.</p>
+<p>Can the AttributeManager transformer be moved? Well, it can't be <em>moved</em> because it renames the _overlaps attribute, an action that can only happen here. However, removing attributes could be carried out much earlier.</p>
 <p>The simplest technique is to add an AttributeManager after every reader whose attributes can be removed:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.214.Ex3.RemoveAttributesBookmark.png" alt class="image image-block image-center" /></p>
 <p>So add an AttributeManager to each input that can be cleaned, and remove whatever attributes are not necessary to the workspace. You can tell if you remove a necessary attribute if a transformer (or writer feature type) further on in the stream is flagged as incomplete.</p>
@@ -241,7 +181,7 @@
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>An alternative solution for database-type formats is to not read the attributes at all. In our workspace the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes, and uncheck Name and Title:<br /><br /><br /><br />If you do this then any AttributeManager you added could be removed.</p>
+            <p>An alternative solution for database-type formats is to not read the attributes at all. In our workspace, the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes, and uncheck Name and Title:<br /><br />If you do this then any AttributeManager you added could be removed.</p>
           </div>
         </div>
       </div>
@@ -251,16 +191,18 @@
 <h2 id="6-check-transformer-performance-parameters">
   <span>6) Check Transformer Performance Parameters</span>
 </h2>
-<p>As mentioned, a number of transformers have parameters specifically for performance benefits. These are often labelled as <strong>Group By Mode</strong> or <strong>&lt;Features First&gt;</strong></p>
-<p>Check the transformers in this workspace. The two of particular interest are the Clipper and PointOnAreaOverlayer. Both of them have a Group By Mode and a Features First parameter:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.218.Ex3.PerformanceParameters.png" alt class="image image-block image-center" /></p>
-<p>The Group By Mode parameters don't apply, because neither transformer is using a Group By. However, the <em>Clippers First</em> and <em>Areas First</em> options are of interest. If we set these options we can get a performance boost, but we do have to confirm that either Clippers or Areas are the first features to arrive.</p>
-<p>In the PointOnAreaOverlayer, change the Areas First parameter to Yes. Re-run the workspace (either turn off caching or use re-run entire workspace). Notice that all Area features exit as &lt;Rejected&gt; features. They are rejected because they are not first!</p>
+<p>As mentioned, a number of transformers have parameters specifically for performance benefits. These are often labeled as <strong>Group By Mode</strong> or <strong>&lt;Features First&gt;</strong></p>
+<p>Check the transformers in this workspace. The two of particular interest are the Clipper and PointOnAreaOverlayer. Both of them have a Group Processing and a Features First parameter:</p>
+<p><img src="images/1620691052231.png" class="image image-block image-center" /></p>
+<p>The Group Processing parameter doesn't apply, because neither transformer is using a Group By. However, the <em>Clippers First</em> and <em>Areas First</em> options are of interest. If we set these options we can get a performance boost, but we do have to confirm that either Clippers or Areas are the first features to arrive.</p>
+<p>In the PointOnAreaOverlayer, change the Areas First parameter to Yes. Re-run the workspace (either turn off caching or use re-run the entire workspace). Notice that all Area features exit as &lt;Rejected&gt; features. They are rejected because they are not first!</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.219.Ex3.RejectedAreas.png" alt class="image image-block image-center" /></p>
 <p>One reason might be that the MapInfo park features are being read after the Excel records. So, in the Navigator window move the Parks reader to the top of the list:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.220.Ex3.ParksReaderTop.png" alt class="image image-block image-center" /></p>
 <p>Re-run the workspace. Notice that the park features are now first. This part of the workspace should be working more efficiently now.</p>
-<p>Try the same action on the Clipper transformer, to see if Clipper features are first so that the Clipper Type parameter can be set to Clippers First.</p>
+<p>Try the same action on the Clipper transformer, to see if Clipper features are first so that the Clipper Type parameter can be set to Clippers First. </p>
+<p>QUIZ question</p>
+<p>Reproj acting weird?</p>
 <h2 id="7-re-run-workspace">
   <span>7) Re-Run Workspace</span>
 </h2>
