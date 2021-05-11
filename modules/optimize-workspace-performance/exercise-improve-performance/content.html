@@ -17,7 +17,7 @@
   <span>Exercise</span>
 </h2>
 <p>The provincial government has given the city a grant to fund new public art in parks.</p>
-<p>A colleague has created a workspace to analyze the amount of art in each city park, and we are carrying out a code review to ensure that the workspace is efficient and well-designed. In <a href="https://safe.my.trailhead.com/en/content/safe/modules/design-for-performance/exercise-assess-workspace-performance" rel="noreferrer noopener" target="_blank">another exercise</a>, we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
+<p>Your colleague has created a workspace to analyze the amount of art in each city park, and we are carrying out a code review to ensure that the workspace is efficient and well-designed. In <a href="https://safe.my.trailhead.com/en/content/safe/modules/design-for-performance/exercise-assess-workspace-performance" rel="noreferrer noopener" target="_blank">another exercise</a>, we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
 <p>In this exercise, we'll make some specific changes to improve performance.</p>
 <h2 id="1-open-and-run-workspace">
   <span>1) Open and Run Workspace</span>
@@ -28,10 +28,10 @@
 </h2>
 <p>First, let's first check if the readers are well-designed and don't read any excess data.</p>
 <ul>
-  <li>Check the Parks source data. We wish to identify parks without artwork, so we need all of these parks features.</li>
+  <li>Check the Parks source data. We wish to identify parks without artwork, so we need these park features.</li>
   <li>Check the Neighborhoods data. Again, we need all of these features.</li>
   <li>Check the Public Art data. Again, we need all of these features.<ul>
-      <li>It's important to note that artworks fall in one of six neighborhoods, and there are the same six neighborhoods in that dataset. There are no artworks outside one of these neighborhoods and no neighborhoods outside where we have artworks, so there is no excess data being read.</li>
+      <li>It's important to note that artworks fall in one of six neighborhoods, and these are the same six neighborhoods in that dataset. There are no artworks outside one of these neighborhoods and no neighborhoods outside where we have artworks, so there is no excess data being read.</li>
     </ul>
   </li>
   <li>Check the Orthophotos data. We're reading all the image files for the entire city. Are they any files we don't need?</li>
@@ -60,7 +60,7 @@
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>If you find the reading is taking too long, you can download the .zip file, extract it, and select all the files in the folder instead. In other words, select all of the TIF files in the extracted Orthophotos folder. Reading the data locally will be faster.</p>
+            <p>If you find the reading is taking too long, you can download the .zip file, extract it, and select all of the TIF files in the extracted Orthophotos folder. Reading the data locally will be faster.</p>
           </div>
         </div>
       </div>
@@ -85,11 +85,11 @@
 <h2 id="3-switch-geo-tiff-reader-to-feature-reader">
   <span>3) Switch GeoTIFF Reader to FeatureReader</span>
 </h2>
-<p>It appears that there are GeoTIFF files being read unnecessarily. This causes a performance hit, especially when Feature Caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed, then this list might not be correct.</p>
+<p>It appears that there are GeoTIFF files being read unnecessarily. This causes a performance hit, especially when feature caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed, then this list might not be correct.</p>
 <p>So, instead, delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt class="image image-block image-center" /></p>
-<p>Open the FeatureReader parameters. Set the format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip</a> as the source. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.206.Ex3.FeatureReaderDialog.png" alt class="image image-block image-center" /></p>
+<p>Open the FeatureReader parameters. Set the Format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip</a> as the Dataset. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
+<p><img src="images/1620771001396.png" class="image image-block image-center" /></p>
 <p>Close the dialog and the FeatureReader now has a GeoTIFF output port. Connect this to the RasterMosaicker:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.207.Ex3.FeatureReaderConnected.png" alt class="image image-block image-center" /></p>
 <p>If we run the workspace now the FeatureReader outputs 48 features. This is more than we had before (40) and occurs because GeoTIFF tiles that overlap two neighborhoods are being read twice.</p>
@@ -110,7 +110,7 @@
         <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>One other writer feature to consider is whether the Excel dataset is being deleted/recreated, or just emptied of data. In theory, it might be (very marginally) quicker to empty the sheets rather than creating the whole spreadsheet from scratch.<br /><br />To try this, change the writer parameter Overwrite Existing File to No, and change the writer feature type parameter for Truncate Existing Sheet to Yes:<br /><br /><br /><br />It's unlikely to make a very large performance improvement, but you should consider differences like these when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</p>
+            <p>One other writer feature to consider is whether the Excel dataset is being deleted/recreated, or just emptied of data. In theory, it might be (very marginally) quicker to empty the sheets rather than creating the whole spreadsheet from scratch.<br /><br />To try this, change the writer parameter Overwrite Existing File to No, and change the writer feature type parameter for Truncate Existing Sheet to Yes:<br /><br />It's unlikely to make a very large performance improvement, but you should consider differences like these when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</p>
           </div>
         </div>
       </div>
@@ -200,9 +200,7 @@
 <p>One reason might be that the MapInfo park features are being read after the Excel records. So, in the Navigator window move the Parks reader to the top of the list:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.220.Ex3.ParksReaderTop.png" alt class="image image-block image-center" /></p>
 <p>Re-run the workspace. Notice that the park features are now first. This part of the workspace should be working more efficiently now.</p>
-<p>Try the same action on the Clipper transformer, to see if Clipper features are first so that the Clipper Type parameter can be set to Clippers First. </p>
-<p>QUIZ question</p>
-<p>Reproj acting weird?</p>
+<p>Try the same action on the Clipper transformer, to see if Clipper features are first so that the Clipper Type parameter can be set to Clippers First.</p>
 <h2 id="7-re-run-workspace">
   <span>7) Re-Run Workspace</span>
 </h2>
