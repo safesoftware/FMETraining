@@ -1,70 +1,50 @@
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Exercise 4</td>
-      <td>Garbage Collection Day Project</td>
-    </tr>
-    <tr>
-      <td>Data</td>
-      <td>Addresses (PostGIS or Esri Geodatabase)<br />Garbage Zones (Esri Geodatabase)</td>
-    </tr>
-    <tr>
-      <td>Overall Goal</td>
-      <td>Analyze and improve the workspace performance</td>
-    </tr>
-    <tr>
-      <td>Demonstrates</td>
-      <td>Database Optimization</td>
-    </tr>
-    <tr>
-      <td>Start Workspace</td>
-      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex4-PostGIS-Begin.fmw<br />C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex4-Geodatabase-Begin.fmw</td>
-    </tr>
-    <tr>
-      <td>End Workspace</td>
-      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex4-PostGIS-Complete.fmw<br />C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex4-Geodatabase-Complete.fmw</td>
-    </tr>
-  </tbody>
-</table>
-<h2 id="learning-objectives">
-  <span>Learning Objectives</span>
-</h2>
+<p><span style="font-size:30px">Learning Objectives</span></p>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li>d</li>
+  <li>Use a reader feature type WHERE clause to avoid reading unnecessary data</li>
+  <li>Use an SQLCreator to improve performance with more complex database queries.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li>Starting workspace</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" rel="noreferrer noopener" target="_blank">Starting workspace (PostGIS)</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" rel="noreferrer noopener" target="_blank">Starting workspace (Esri Geodatabase)</a></li>
 </ul>
 <h2 id="exercise">
   <span>Exercise</span>
 </h2>
 <p>Members of the public often call the city to ask what day their garbage collection is. To help the city has an internal system hosted on FME Server. Members of the planning department can lookup an address ID, enter it into a published parameter, and the system retrieves the garbage pickup information.</p>
 <p>The system works but is perhaps slower than it should be. Let’s run this short exercise to discover why.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says...</td>
-    </tr>
-    <tr>
-      <td>This exercise uses either a PostGIS database hosted on Amazon RDS or an ESRI Geodatabase. You can use either one (no extra license is required). Be sure to open the correct workspace and follow the correct instructions for your chosen format.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<p><br /><strong>1) Create Database Connection (PostGIS Only)</strong><br />To use a PostGIS database as source requires a connection to it. If you are using Geodatabase instead of PostGIS, you can skip to step 2.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>This exercise uses either a PostGIS database hosted on Amazon RDS or an Esri Geodatabase. You can use either one (no extra license is required). Be sure to open the correct workspace and follow the correct instructions for your chosen format.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="1-create-database-connection-post-gis-only">
+  <span>1) Create Database Connection (PostGIS Only)</span>
+</h2>
+<p>To use a PostGIS database as source requires a connection to it. If you are using Geodatabase instead of PostGIS, you can skip to step 2.</p>
 <p>In a web browser visit <a href="http://fme.ly/database" rel="noreferrer noopener" target="_blank">http://fme.ly/database</a> - this shows the parameters for a PostGIS database running on Amazon RDS.</p>
-<p>Start Workbench and select Tools &gt; FME Options from the menubar</p>
+<p>Start FME Workbench 2021.0 and select Tools &gt; FME Options from the menu bar.</p>
 <p>Click on the icon for the Database Connections category, then click the [+] button to create a new connection. In the "Add Database Connection" dialog enter the connection parameters obtained through the web browser.</p>
 <p>Give the connection a name (if you call it <em>FME Training Database Connection</em> it will match the starting workspace) and click Save.</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.221.Ex4.CreateDBConnection.png" alt class="image image-block image-center" /></p>
 <p><strong><em>NB:</em></strong> <em>Yes, the password is fmedata as well!</em></p>
 <p>Then click OK to close the FME Options dialog.</p>
-<p><br /><strong>2) Open and Run Workspace</strong><br />Open the workspace C:\FMEData2019\Workspaces\DesktopAdvanced\WorkspaceDesign-Ex4-PostGIS-Begin.fmw or WorkspaceDesign-Ex4-Geodatabase-Begin.fmw.</p>
+<h2 id="2-open-and-run-workspace">
+  <span>2) Open and Run Workspace</span>
+</h2>
+<p>Open the starting workspace of your choice (<a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" rel="noreferrer noopener" target="_blank">PostGIS</a> or <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" rel="noreferrer noopener" target="_blank">Esri Geodatabase</a>) in FME Workbench 2021.0.</p>
 <p>The workspace looks something like this:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.222.Ex4.InitialWorkspace.png" alt class="image image-block image-center" /></p>
 <p>Basically, a published parameter accepts an address ID. The postal address database is read and filtered against this ID. The chosen address is used in a spatial overlay against garbage zones. The result is formatted in HTML and written out with a Text File writer.</p>
@@ -72,43 +52,82 @@
 <p>The result, in a web browser, is this:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.223.Ex4.InitialOutput.png" alt class="image image-block image-center" /></p>
 <p>The performance will read like this:</p>
-<p><strong>PostGIS</strong></p><pre>INFORM|FME Session Duration: 8.0 seconds. (CPU: 1.7s user, 0.2s system) INFORM|END - ProcessID: 7540, peak process memory usage: 141808 kB, current process memory usage: 98924 kB</pre>
-<p><strong>Geodatabase</strong></p><pre>INFORM|FME Session Duration: 2.2 seconds. (CPU: 1.8s user, 0.3s system) INFORM|END - ProcessID: 724, peak process memory usage: 136420 kB, current process memory usage: 93684 kB</pre>
+<p><strong>PostGIS</strong></p><pre>INFORM|FME Session Duration: 8.0 seconds. (CPU: 1.7s user, 0.2s system)
+INFORM|END - ProcessID: 7540, peak process memory usage: 141808 kB, current process memory usage: 98924 kB</pre>
+<p><strong>Geodatabase</strong></p><pre>INFORM|FME Session Duration: 2.2 seconds. (CPU: 1.8s user, 0.3s system)
+INFORM|END - ProcessID: 724, peak process memory usage: 136420 kB, current process memory usage: 93684 kB</pre>
 <p>The Geodatabase is quicker because it is being read from your own file system, not a remote database.</p>
-<p><br /><strong>3) Set Up WHERE Clause</strong><br />Neither PostGIS or Geodatabase have a WHERE clause for the reader itself, but their feature types do. So inspect the properties for the PostalAddress reader feature type and in the WHERE Clause parameter enter:</p>
+<h2 id="3-set-up-where-clause">
+  <span>3) Set Up WHERE Clause</span>
+</h2>
+<p>Neither PostGIS or Geodatabase have a WHERE clause for the reader itself, but their feature types do. So inspect the properties for the PostalAddress reader feature type and in the WHERE Clause parameter enter:</p>
 <p><strong>PostGIS</strong></p><pre>"AddressId" = $(AddressID)</pre>
 <p><strong>Geodatabase</strong></p><pre>OBJECTID = $(AddressID)</pre>
 <p><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.224.Ex4.WhereClause.png" alt class="image image-block image-center" /></p>
 <p>For PostGIS, be sure to notice the lower-case "d" in the "Id" part of the field name! Also, note the difference in use of quotes between the two formats.</p>
-<p><br /><strong>4) Delete Tester</strong><br />Now we have the WHERE clause the Tester transformer is no longer required, so delete it.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>TIP</td>
-    </tr>
-    <tr>
-      <td>If you collapse the bookmark then delete the bookmark it deletes both the bookmark and the transformer in one step:<br /><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.225.Ex4.CollapseBookmarkDelete.png" class="image image-block image-center" /><br /></td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<p><br /><strong>5) Re-Run Workspace</strong><br />Re-run the workspace. This time only 1 feature is read from the database. The performance improves accordingly:</p>
-<p><strong>PostGIS</strong></p><pre>INFORM|FME Session Duration: 5.3 seconds. (CPU: 0.7s user, 0.3s system) INFORM|END - ProcessID: 7440, peak process memory usage: 138924 kB, current process memory usage: 96848 kB</pre>
-<p><strong>Geodatabase</strong></p><pre>INFORM|FME Session Duration: 0.9 seconds. (CPU: 0.5s user, 0.3s system) INFORM|END - ProcessID: 7224, peak process memory usage: 126632 kB, current process memory usage: 93180 kB</pre>
+<h2 id="4-delete-tester">
+  <span>4) Delete Tester</span>
+</h2>
+<p>Now we have the WHERE clause the Tester transformer is no longer required, so delete it.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you collapse the bookmark then delete the bookmark it deletes both the bookmark and the transformer in one step:<br /><br /><br /></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="5-re-run-workspace">
+  <span>5) Re-Run Workspace</span>
+</h2>
+<p>Re-run the workspace. This time only 1 feature is read from the database. The performance improves accordingly:</p>
+<p><strong>PostGIS</strong></p><pre>INFORM|FME Session Duration: 5.3 seconds. (CPU: 0.7s user, 0.3s system) 
+INFORM|END - ProcessID: 7440, peak process memory usage: 138924 kB, current process memory usage: 96848 kB</pre>
+<p><strong>Geodatabase</strong></p><pre>INFORM|FME Session Duration: 0.9 seconds. (CPU: 0.5s user, 0.3s system) 
+INFORM|END - ProcessID: 7224, peak process memory usage: 126632 kB, current process memory usage: 93180 kB</pre>
 <p>Memory usage hasn’t improved, but the translation ran faster.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>CONGRATULATIONS</td>
-    </tr>
-    <tr>
-      <td>By completing this exercise you have learned how to:<ul>
-          <li>Create a database connection</li>
-          <li>Use a SQL WHERE clause to avoid reading all data</li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<h2 id="6-use-sql-creator-post-gis-only">
+  <span>6) Use SQLCreator (PostGIS Only)</span>
+</h2>
+<p>SQL transformers can be faster than using database readers. Add an SQLCreator to your canvas above the PostGIS reader.</p>
+<p><img src="images/1620858090949.png" class="image image-block" /></p>
+<p>Double-click it to open its parameters. Select PostGIS for the Format and FME Training Database Connection for the Connection.</p>
+<p><img src="images/1620858176402.png" class="image image-block" /></p>
+<p>Click the ellipsis button next to SQL Statement. Enter the following SQL statement:</p>
+<div><pre>SELECT * FROM "public"."PostalAddress"
+WHERE "AddressId" = $(AddressID)</pre>
+</div>
+<p>This simple statement reads all the features in the PostalAddress table that have an AddressId matching the user parameter value. This statement accomplishes the same thing as the reader parameter, so its speed will ultimately be similar. But in more complex situations being able to read directly with SQL lets the database do the work.</p>
+<p>Click OK. </p>
+<p>We could run the translation at this point, but all the incoming attributes from the database would be unexposed. To make sure they get exposed, click the ellipsis button next to Attributes to Expose. Then click Populate from SQL Query...<img src="images/1620858462581.png" class="image image-block" /></p>
+<p>For this SQL statement, but remove the <code>WHERE</code> clause.</p>
+<div><pre>SELECT * FROM "public"."PostalAddress"</pre>
+</div>
+<p>Click OK. The Enter Attributes to Expose dialog will be populated with all the attributes present in the PostalAddress table. These will now be exposed properly.</p>
+<p><img src="images/1620858552172.png" class="image image-block" /></p>
+<p>Click OK twice to finish configuring the SQLCreator. Connect it to the PointOnAreaOverlayer and disable the PostGIS reader feature type. </p>
+<p><img src="images/1620858705268.png" class="image image-block" /></p>
+<p>Run your workspace. Performance will probably be similar, but if the query was more complex, this route could save valuable time.</p>
+<div><pre>2021-05-12 15:32:08|   1.0|  0.0|INFORM|FME Session Duration: 8.9 seconds. (CPU: 0.3s user, 0.7s system)
+2021-05-12 15:32:08|   1.0|  0.0|INFORM|END - ProcessID: 158936, peak process memory usage: 119556 kB, current process memory usage: 108624 kB</pre>
+</div>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>For more database performance tips, see the tutorial series <a href="https://community.safe.com/s/article/tutorial-let-the-database-do-the-work" rel="noreferrer noopener" target="_blank">Let the Database Do the Work</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
