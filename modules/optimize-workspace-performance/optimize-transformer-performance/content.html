@@ -18,7 +18,7 @@
 </h2>
 <p>Although the order of transformers can sometimes vary without affecting the result, at other times it is important to get the correct order for performance reasons.</p>
 <p>You’ll get better performance when you put the least amount of data into a group-based transformer as possible. One scenario is to put feature-based filter transformers <em>before</em> the group-based process, not after it:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.020.TransformerPerformanceCanvasOrder.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.020.TransformerPerformanceCanvasOrder.png" alt="Filter before processing" class="image image-block image-center" /></p>
 <p>For example, here the author is filtering data after statistics have been calculated on one set of data. It would be more sensible to filter the data before calculating the statistics, otherwise processing has been carried out on features that were eventually ignored.</p>
 <p>The best way to remember this is: <strong>Filter, Remove, Action!</strong></p>
 <p>In other words, filter first, then remove attributes, then carry out the action.</p>
@@ -26,7 +26,7 @@
   <span>Group By Mode Parameter</span>
 </h2>
 <p>A common parameter to most group-based transformers is called "Group By Mode" and appears near the Group By parameter in most transformer dialogs:</p>
-<p><img src="images/1620425756709.png" class="image image-block image-center" /></p>
+<p><img src="images/1620425756709.png" class="image image-block image-center" alt="Group By Mode options" /></p>
 <p>When set to Process at End (Blocking) then ALL of the features are stored in memory until they are all available. Then groups are formed. The transformer is literally blocking data from proceeding.</p>
 <p>When the parameter is set to Process When Group Changes (Advanced), then FME processes groups as they become available. That way less data is stored in memory and processing is more efficient.</p>
 <p>The condition for applying this parameter is that the groups of features are pre-sorted into their groups.</p>
@@ -52,7 +52,7 @@
 <p>For example, the PointOnAreaOverlayer transformer expects two sets of data: Points and Areas. By default, FME requires all incoming Points and Areas because it needs to be sure it has ALL of the Areas before it can process any Points.</p>
 <p>But, if FME knows the Area features will arrive first (i.e. the first Point feature signifies the end of the Areas) then it doesn’t need all Point features. It can process each one immediately because it knows there are no more Areas that it could match against.</p>
 <p>The user specifies that this is true using the parameter Areas First:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.022.TransformerPerformanceNeighborsFirst.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.022.TransformerPerformanceNeighborsFirst.png" alt="Areas First parameter" class="image image-block image-center" /></p>
 <p>But how does a user ensure the Area features arrive first? Well, like writers you can change the order of readers in the Navigator so that the reader at the top of the list is read first.</p>
 <p>Changing the reader order doesn’t improve performance <em>per se</em>, but it does let you apply performance-improving parameters like the above.</p>
 <h2 id="attributes-and-transformation">
@@ -62,12 +62,12 @@
 <p>However, this isn’t just helped by reducing the number of features; it is also helped by reducing the size of each individual feature.</p>
 <p>One aspect of this is attributes. Carrying attributes through a translation impacts performance, so if the attributes are not required in the output, it’s best to remove them <em>as early as possible</em> in the translation.</p>
 <p>For example, when the reader and writer schemas look like this:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.023.TransformerPerformanceAttrsSourceSchema.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.023.TransformerPerformanceAttrsSourceSchema.png" alt="Simplifying schema" class="image image-block image-center" /></p>
 <p>...it makes sense to remove excess attributes from the translation, as early as possible.</p>
 <p>There are two ways to remove attributes. Some reader formats (but not all) have a setting in the reader feature type to avoid reading excess attributes in the first place:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.024.TransformerPerformanceReadAttrs.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.024.TransformerPerformanceReadAttrs.png" alt="Manually unexposing reader feature type attributes" class="image image-block image-center" /></p>
 <p>With that, you can ensure that <em>only</em> attributes exposed are read. The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025.TransformerPerformanceRemovingAttrs.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025.TransformerPerformanceRemovingAttrs.png" alt="Removing unnecessary attributes with an AttributeManager" class="image image-block image-center" /></p>
 <p>This ensures that none of the extra attributes become a drain on resources by being processed by any further transformers.</p>
 <h2 id="lists">
   <span>Lists</span>
@@ -89,7 +89,7 @@
 <p>FME's engine is gradually being updated to use a methodology we call <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/Improving-Performance-Bulk-Mode.htm" rel="noreferrer noopener" target="_blank">bulk mode</a> (also known as feature tables).</p>
 <p>It's not a tool designed for user control, rather bulk mode is a new way for features to be transported through the workspace. Bulk mode speeds up a workspace, its translations, and its transformations quite substantially. If you see a log message about bulk mode (or sometimes feature tables) then this technology is what it refers to.</p>
 <p>As more transformers support bulk mode, expect performance times to improve. However, you will need to upgrade transformers to get this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes bulk mode support:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025b.TransformerPerformanceUpgrading.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025b.TransformerPerformanceUpgrading.png" alt="Showing Changes on an upgradable transformer" class="image image-block image-center" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">

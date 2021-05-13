@@ -38,7 +38,7 @@
 <p>Start FME Workbench 2021.0 and select Tools &gt; FME Options from the menu bar.</p>
 <p>Click on the icon for the Database Connections category, then click the [+] button to create a new connection. In the "Add Database Connection" dialog enter the connection parameters obtained through the web browser.</p>
 <p>Give the connection a name (if you call it <em>FME Training Database Connection</em> it will match the starting workspace) and click Save.</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.221.Ex4.CreateDBConnection.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.221.Ex4.CreateDBConnection.png" alt="Adding the FME Training Database Connection" class="image image-block image-center" /></p>
 <p><strong><em>NB:</em></strong> <em>Yes, the password is fmedata as well!</em></p>
 <p>Then click OK to close the FME Options dialog.</p>
 <h2 id="2-open-and-run-workspace">
@@ -46,11 +46,11 @@
 </h2>
 <p>Open the starting workspace of your choice (<a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" rel="noreferrer noopener" target="_blank">PostGIS</a> or <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" rel="noreferrer noopener" target="_blank">Esri Geodatabase</a>) in FME Workbench 2021.0.</p>
 <p>The workspace looks something like this:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.222.Ex4.InitialWorkspace.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.222.Ex4.InitialWorkspace.png" alt="Starting workspace" class="image image-block image-center" /></p>
 <p>Basically, a published parameter accepts an address ID. The postal address database is read and filtered against this ID. The chosen address is used in a spatial overlay against garbage zones. The result is formatted in HTML and written out with a Text File writer.</p>
 <p>To get a comparison, run the workspace. Use Prompt Mode to be prompted for an address ID. A suitable address ID to use is 127209 (PostGIS) or 6135 (Geodatabase).</p>
 <p>The result, in a web browser, is this:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.223.Ex4.InitialOutput.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.223.Ex4.InitialOutput.png" alt="Example output" class="image image-block image-center" /></p>
 <p>The performance will read like this:</p>
 <p><strong>PostGIS</strong></p><pre>INFORM|FME Session Duration: 8.0 seconds. (CPU: 1.7s user, 0.2s system)
 INFORM|END - ProcessID: 7540, peak process memory usage: 141808 kB, current process memory usage: 98924 kB</pre>
@@ -60,11 +60,11 @@ INFORM|END - ProcessID: 724, peak process memory usage: 136420 kB, current proce
 <h2 id="3-set-up-where-clause">
   <span>3) Set Up WHERE Clause</span>
 </h2>
-<p>Neither PostGIS or Geodatabase have a WHERE clause for the reader itself, but their feature types do. So inspect the properties for the PostalAddress reader feature type and in the WHERE Clause parameter enter:</p>
+<p>Neither PostGIS nor Geodatabase has a WHERE clause for the reader itself, but their feature types do. So, inspect the properties for the PostalAddress reader feature type and in the WHERE Clause parameter enter:</p>
 <p><strong>PostGIS</strong></p><pre>"AddressId" = $(AddressID)</pre>
 <p><strong>Geodatabase</strong></p><pre>OBJECTID = $(AddressID)</pre>
-<p><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.224.Ex4.WhereClause.png" alt class="image image-block image-center" /></p>
-<p>For PostGIS, be sure to notice the lower-case "d" in the "Id" part of the field name! Also, note the difference in use of quotes between the two formats.</p>
+<p><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.224.Ex4.WhereClause.png" alt="WHERE Clause" class="image image-block image-center" /></p>
+<p>For PostGIS, be sure to notice the lower-case "d" in the "Id" part of the field name! Also, note the difference in the use of quotes between the two formats.</p>
 <h2 id="4-delete-tester">
   <span>4) Delete Tester</span>
 </h2>
@@ -96,23 +96,23 @@ INFORM|END - ProcessID: 7224, peak process memory usage: 126632 kB, current proc
   <span>6) Use SQLCreator (PostGIS Only)</span>
 </h2>
 <p>SQL transformers can be faster than using database readers. Add an SQLCreator to your canvas above the PostGIS reader.</p>
-<p><img src="images/1620858090949.png" class="image image-block" /></p>
+<p><img src="images/1620858090949.png" class="image image-block" alt="SQLCreator" /></p>
 <p>Double-click it to open its parameters. Select PostGIS for the Format and FME Training Database Connection for the Connection.</p>
-<p><img src="images/1620858176402.png" class="image image-block" /></p>
+<p><img src="images/1620858176402.png" class="image image-block" alt="SQLCreator parameters" /></p>
 <p>Click the ellipsis button next to SQL Statement. Enter the following SQL statement:</p>
 <div><pre>SELECT * FROM "public"."PostalAddress"
 WHERE "AddressId" = $(AddressID)</pre>
 </div>
 <p>This simple statement reads all the features in the PostalAddress table that have an AddressId matching the user parameter value. This statement accomplishes the same thing as the reader parameter, so its speed will ultimately be similar. But in more complex situations being able to read directly with SQL lets the database do the work.</p>
 <p>Click OK. </p>
-<p>We could run the translation at this point, but all the incoming attributes from the database would be unexposed. To make sure they get exposed, click the ellipsis button next to Attributes to Expose. Then click Populate from SQL Query...<img src="images/1620858462581.png" class="image image-block" /></p>
+<p>We could run the translation at this point, but all the incoming attributes from the database would be unexposed. To make sure they get exposed, click the ellipsis button next to Attributes to Expose. Then click Populate from SQL Query...<img src="images/1620858462581.png" class="image image-block" alt="Populating Attributes to Expose from an SQL statement" /></p>
 <p>For this SQL statement, but remove the <code>WHERE</code> clause.</p>
 <div><pre>SELECT * FROM "public"."PostalAddress"</pre>
 </div>
 <p>Click OK. The Enter Attributes to Expose dialog will be populated with all the attributes present in the PostalAddress table. These will now be exposed properly.</p>
-<p><img src="images/1620858552172.png" class="image image-block" /></p>
+<p><img src="images/1620858552172.png" class="image image-block" alt="Attributes to Expose" /></p>
 <p>Click OK twice to finish configuring the SQLCreator. Connect it to the PointOnAreaOverlayer and disable the PostGIS reader feature type. </p>
-<p><img src="images/1620858705268.png" class="image image-block" /></p>
+<p><img src="images/1620858705268.png" class="image image-block" alt="Completed SQLCreator workspace" /></p>
 <p>Run your workspace. Performance will probably be similar, but if the query was more complex, this route could save valuable time.</p>
 <div><pre>2021-05-12 15:32:08|   1.0|  0.0|INFORM|FME Session Duration: 8.9 seconds. (CPU: 0.3s user, 0.7s system)
 2021-05-12 15:32:08|   1.0|  0.0|INFORM|END - ProcessID: 158936, peak process memory usage: 119556 kB, current process memory usage: 108624 kB</pre>

@@ -87,21 +87,21 @@
 </h2>
 <p>It appears that there are GeoTIFF files being read unnecessarily. This causes a performance hit, especially when feature caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed, then this list might not be correct.</p>
 <p>So, instead, delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt="Replacing the GeoTIFF reader with a FeatureReader" class="image image-block image-center" /></p>
 <p>Open the FeatureReader parameters. Set the Format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip</a> as the Dataset. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
-<p><img src="images/1620771001396.png" class="image image-block image-center" /></p>
+<p><img src="images/1620771001396.png" class="image image-block image-center" alt="Setting the FeatureReader parameters" /></p>
 <p>Close the dialog and the FeatureReader now has a GeoTIFF output port. Connect this to the RasterMosaicker:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.207.Ex3.FeatureReaderConnected.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.207.Ex3.FeatureReaderConnected.png" alt="Connecting the FeatureReader to the RasterMosaicker" class="image image-block image-center" /></p>
 <p>If we run the workspace now the FeatureReader outputs 48 features. This is more than we had before (40) and occurs because GeoTIFF tiles that overlap two neighborhoods are being read twice.</p>
 <p>So add a Dissolver transformer between Reprojector_2 and FeatureReader. This will consolidate the neighborhoods into a single feature and ensure each GeoTIFF is only read once. Re-run the workspace:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.208.Ex3.DissolverConnected.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.208.Ex3.DissolverConnected.png" alt="Dissolving fixes reading duplicate photos" class="image image-block image-center" /></p>
 <p>Now we only read 27 features, which is the correct amount. We are reading fewer photos and so the workspace is performing better.</p>
 <h2 id="4-check-writer-order">
   <span>4) Check Writer Order</span>
 </h2>
 <p>The simplest writer improvement we might make is to change the order of the writers. Currently, the Excel spreadsheet is being written first. This means that GeoTIFF files - which are large in size - are being cached, instead of the smaller Excel file.</p>
 <p>So, adjust the order of the writers, so that the GeoTIFF writer comes first in the Navigator:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.209.Ex3.ReorderWriters.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.209.Ex3.ReorderWriters.png" alt="Changing writer order" class="image image-block image-center" /></p>
 <p>Re-run the workspace. Although the workspace wasn't really slow to start with, you should notice it now runs slightly faster, using less memory.</p>
 <div class="box message info">
   <div class="inner">
@@ -121,10 +121,10 @@
   <span>5) Upgrade Transformers</span>
 </h2>
 <p>Now let's look into transformers. This is where there are a lot of different changes we can make. The first is to check for old transformer versions. Notice in the Navigator window that two transformers are listed as "Upgradeable":</p>
-<p><img src="images/1620681589610.png" class="image image-block image-center" /></p>
+<p><img src="images/1620681589610.png" class="image image-block image-center" alt="Upgradable transformers" /></p>
 <p>In turn, right-click each entry and choose to Upgrade Transformer. You will be prompted with a warning that you can ignore, and even choose to skip in the future.</p>
 <p>A dialog will open to show the changes in GUI to the transformer, and you can click the Show Changes button to get a written list of changes:</p>
-<p><img src="images/1620681668968.png" class="image image-block image-center" /></p>
+<p><img src="images/1620681668968.png" class="image image-block image-center" alt="Comparing transformer versions" /></p>
 <p>Upgrading transformers doesn't always make them operate faster - some changes are either functional or cosmetic - and it might make their results slightly different. Therefore, it's not advisable to upgrade all transformers without first checking what the upgrade involves.</p>
 <p>However, in this case, both transformers should be safe to upgrade, and they both may even get an improved performance from the upgrade. So go ahead and upgrade both transformers.</p>
 <div class="box message info">
@@ -145,11 +145,11 @@
   <span>5) Check Transformer Order</span>
 </h2>
 <p>Look at the bookmark labeled <em>Prepare Data for Excel Writer</em>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.212.Ex3.PrepDataBookmark.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.212.Ex3.PrepDataBookmark.png" alt="Prepare Data for Excel Writer bookmark" class="image image-block image-center" /></p>
 <p>Inspect the transformers and you will see that data is sorted into order for writing, then unnecessary features are filtered out and unnecessary attributes removed.</p>
 <p>This is not the correct order to maximize performance: unnecessary features with unnecessary attributes are being processed by the sorting action. Remember, the key order is Filter-Remove-Action.</p>
 <p>So, move the Sorter transformer after the AttributeManager:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.213.Ex3.PrepDataBookmarkEdited.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.213.Ex3.PrepDataBookmarkEdited.png" alt="Changing order to filter before processing" class="image image-block image-center" /></p>
 <p>Notice that the Sorter transformer is now flagged as incomplete. Inspect the parameters and you'll notice that the attribute _overlaps no longer exists; it was renamed by the AttributeManager to ArtWorks.</p>
 <p>So simply change the Sorter to sort by ArtWorks and the transformer will work again.</p>
 <div class="box message info">
@@ -169,10 +169,10 @@
 <p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace? Can the Tester transformer be moved? Note your answer: you'll need it for the quiz.</p>
 <p>Can the AttributeManager transformer be moved? Well, it can't be <em>moved</em> because it renames the _overlaps attribute, an action that can only happen here. However, removing attributes could be carried out much earlier.</p>
 <p>The simplest technique is to add an AttributeManager after every reader whose attributes can be removed:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.214.Ex3.RemoveAttributesBookmark.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.214.Ex3.RemoveAttributesBookmark.png" alt="Adding AttributeManagers to remove unnecessary attributes" class="image image-block image-center" /></p>
 <p>So add an AttributeManager to each input that can be cleaned, and remove whatever attributes are not necessary to the workspace. You can tell if you remove a necessary attribute if a transformer (or writer feature type) further on in the stream is flagged as incomplete.</p>
 <p>One transformer that is legitimately incomplete is the original AttributeManager (in the Prepare Data bookmark). This no longer receives the attributes it expects. Simply open the parameters for that transformer and click the option for <em>Remove All Invalid 'Input Attribute' Rows</em>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.215.Ex3.RemoveDoNothingAttributes.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.215.Ex3.RemoveDoNothingAttributes.png" alt="Removing invalid attributes quickly" class="image image-block image-center" /></p>
 <p>Now we have removed all unnecessary attributes from the workspace, as soon as possible.</p>
 <div class="box message info">
   <div class="inner">
@@ -193,12 +193,12 @@
 </h2>
 <p>As mentioned, a number of transformers have parameters specifically for performance benefits. These are often labeled as <strong>Group By Mode</strong> or <strong>&lt;Features First&gt;</strong></p>
 <p>Check the transformers in this workspace. The two of particular interest are the Clipper and PointOnAreaOverlayer. Both of them have a Group Processing and a Features First parameter:</p>
-<p><img src="images/1620691052231.png" class="image image-block image-center" /></p>
+<p><img src="images/1620691052231.png" class="image image-block image-center" alt="Setting Clipper Type and Areas First parameters for performance improvements" /></p>
 <p>The Group Processing parameter doesn't apply, because neither transformer is using a Group By. However, the <em>Clippers First</em> and <em>Areas First</em> options are of interest. If we set these options we can get a performance boost, but we do have to confirm that either Clippers or Areas are the first features to arrive.</p>
 <p>In the PointOnAreaOverlayer, change the Areas First parameter to Yes. Re-run the workspace (either turn off caching or use re-run the entire workspace). Notice that all Area features exit as &lt;Rejected&gt; features. They are rejected because they are not first!</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.219.Ex3.RejectedAreas.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.219.Ex3.RejectedAreas.png" alt="PointOnAreaOverlayer rejected features" class="image image-block image-center" /></p>
 <p>One reason might be that the MapInfo park features are being read after the Excel records. So, in the Navigator window move the Parks reader to the top of the list:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.220.Ex3.ParksReaderTop.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.220.Ex3.ParksReaderTop.png" alt="Changing reader order" class="image image-block image-center" /></p>
 <p>Re-run the workspace. Notice that the park features are now first. This part of the workspace should be working more efficiently now.</p>
 <p>Try the same action on the Clipper transformer, to see if Clipper features are first so that the Clipper Type parameter can be set to Clippers First.</p>
 <h2 id="7-re-run-workspace">
