@@ -45,7 +45,7 @@
 <h2 id="2-tidy-starting-workspace">
   <span>2) Tidy Starting Workspace</span>
 </h2>
-<p>This workspace is very messy as our colleague didn't follow any best practices. Follow the instructions in the Document Your Workspaces module to organize it, or click on the Autolayout button to quickly tidy it up:</p>
+<p>This workspace is very messy as our colleague didn't follow any best practices. Follow the instructions in the <a href="https://safe.my.trailhead.com/content/safe/modules/document-your-workspace" rel="noreferrer noopener" target="_blank">Document Your Workspaces</a> module to organize it, or click on the <strong>Autolayout</strong> button to quickly tidy it up:</p>
 <p><img alt="Autolayout button" src="images/69-fda-8-a-6-e-5-d-7-4-c-6-e-a-1-ef-acba-814-b-8543.png" width="353" height="74" class="image image-block image-center" /></p>
 <p>Note that this will change how your workspace looks compared to the instructions, so pay attention to the transformer names and ports:</p>
 <p><img alt="Workspace after applying Autolayout" src="images/68-f-26-cd-1-35-ff-4-cdf-9-ceb-f-697-fc-67347-a.png" class="image image-block image-center" /></p>
@@ -111,7 +111,7 @@ Result is set to null</pre>
 <p>There are no &lt;null&gt; values from the FeatureJoiner, so let's move along the translation. Check the cache for the AttributeValueMapper. This transformer sets values, so perhaps nulls are coming out of there?</p>
 <p>If you inspect the AttributeValueMapper cache, you'll see no &lt;null&gt; values for the CrimeValue or the crime Type attribute. There are also no nulls for the Aggregator and CenterPointReplacer caches.</p>
 <p>Checking each feature cache is a bit time-consuming; let's try a different method. Check the feature counts on each connection. There are 68,446 features tagged with a crime (FeatureJoiner:Joined), but then that is reduced to 9,899 after the Aggregator, and then there are 3,698 features without a crime (FeatureJoiner:UnjoinedLeft). That gives a total of 13,597, coming out of the NeighborFinder, which is correct.</p>
-<p>Do you see it yet? The 3,698 features that do not have a crime: what CrimeValue do they get? Inspect the UnjoinedLeft output from the FeatureJoiner, and you will see that they do not have the CrimeValue attribute. That's why the ExpressionEvaluator says that there are nulls. These features do not have a CrimeValue because they don't enter the AttributeValueMapper, which assigns the CrimeValue a value.</p>
+<p>For the 3,698 features that do not have a crime, what CrimeValue do they get? Inspect the UnjoinedLeft output from the FeatureJoiner, and you will see that they do not have the CrimeValue attribute. That's why the ExpressionEvaluator says that there are nulls. These features do not have a CrimeValue because they don't enter the AttributeValueMapper, which assigns the CrimeValue a value.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
