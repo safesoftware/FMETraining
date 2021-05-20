@@ -12,7 +12,7 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li>Starting workspace</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/PublishWorkflowsToTheWeb/exercise-publish-to-fme-server.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
 </ul>
 <h2 id="exercise">
   <span>Exercise</span>
@@ -35,82 +35,20 @@
     </div>
   </div>
 </div>
-<p><strong>1) Start FME Workbench</strong><br />Since this course is focused on FME Server, we will create a simple workspace in FME Desktop using a couple of formats.</p>
-<p><br />Start FME Workbench by selecting it from the Windows start menu. On a blank canvas, select Readers &gt; Add Reader to start adding a reader to the workspace. When prompted, enter the following details for the GML FireHalls dataset:</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Reader Format</td>
-      <td>OGC GML (Geography Markup Language)<br /></td>
-    </tr>
-    <tr>
-      <td>Reader Dataset</td>
-      <td>https://s3.amazonaws.com/FMEData/FMEData2021/Data/Emergency/FireHalls.gml<br /></td>
-    </tr>
-  </tbody>
-</table>
-<p><br /><strong>2) Add KML Data</strong><br />Now repeat the process one more time to add a reader for the KML Neighborhoods dataset:</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Reader Format</td>
-      <td>OGC / Google KML<br /></td>
-    </tr>
-    <tr>
-      <td>Reader Dataset</td>
-      <td>https://s3.amazonaws.com/FMEData/FMEData2021/Data/Boundaries/VancouverNeighborhoods.kml<br /></td>
-    </tr>
-  </tbody>
-</table>
-<p>While adding the KML dataset, you'll be prompted to choose which Feature Types (layers) to add to the workspace. The only one we need is called Neighborhoods:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.200.Ex1.KMLFTSelection.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.200.Ex1.KMLFTSelection.png" alt class="image image-block image-center" /></a></p>
-<p>You should now have two readers on the canvas:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.201.Ex1.TwoReaders.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.201.Ex1.TwoReaders.png" alt class="image image-block image-center" /></a></p>
-<p><br /><strong>3) Inspect the Data</strong><br />Before we proceed, we should inspect the data. Click on the FireHalls reader feature type to open the popup menu. On the popup menu, click on View Source Data, this will open the data in Visual Preview:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.202.Ex1.FireHallsViewSourceData.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.202.Ex1.FireHallsViewSourceData.png" alt class="image image-block image-center" /></a></p>
-<p>While viewing the data in Visual Preview, take note of the coordinate system in the bottom right corner of the Graphics window. Since we are working with more than one dataset, we will want to make sure that all of the datasets are in the same coordinate system:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.203.Ex1.FireHallsVisualPreview.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.203.Ex1.FireHallsVisualPreview.png" alt class="image image-block image-center" /></a></p>
-<p>Repeat the same steps to view the Neighborhoods reader feature type, and take note of the coordinate system.</p>
-<p><br /><strong>4) Add Reprojector Transformer</strong><br />The FireHalls dataset is in ESPG:26910, which is also known as UTM83-10, and the Neighborhoods is in LL84. Let's reproject the Neighborhoods dataset to UTM83-10, as it is a coordinate system more suited for this region.</p>
-<p>Add a Reprojector transformer to the workspace. You can do this by simply clicking on the canvas and starting to type Reprojector. Connect it to the Neighborhoods feature type:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.204.Ex1.WorkspaceConnectedReprojector.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.204.Ex1.WorkspaceConnectedReprojector.png" alt class="image image-block image-center" /></a></p>
-<p>In the Reprojector's parameters set the Destination Coordinate System to UTM83-10:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.205.Ex1.ReprojectorParameters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.205.Ex1.ReprojectorParameters.png" alt class="image image-block image-center" /></a></p>
-<p>This will ensure the Neighborhoods data is in the same coordinate system as the rest of the data.</p>
-<p><br /><strong>5) Add Writer</strong><br />Now we should add a writer to the workspace. For now, we'll just set up a dummy writer until we are more familiar with FME Server. To do this, select Writers &gt; Add Writer on the menu bar to add a writer and set it up with the following parameters:</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>Writer Format</td>
-      <td>NULL (Nothing)</td>
-    </tr>
-    <tr>
-      <td>Feature Class or Table Definition</td>
-      <td>Copy from Reader...</td>
-    </tr>
-  </tbody>
-</table>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.206.Ex1.AddWriterDialog.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.206.Ex1.AddWriterDialog.png" alt class="image image-block image-center" /></a></p>
-<p>Click OK. When prompted, select both FireHalls and Neighborhoods as the feature types to add and OK again:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.207.Ex1.AddWriterSelectFTs.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.207.Ex1.AddWriterSelectFTs.png" alt class="image image-block image-center" /></a></p>
-<p>The workspace will now look like this:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.208.Ex1.WorkspaceWithReadersWriters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.208.Ex1.WorkspaceWithReadersWriters.png" alt class="image image-block image-center" /></a></p>
-<p><br /><strong>6) Add Clipper Transformer</strong><br />Add a Clipper transformer to the workspace. This will be used to divide the FireHall data by Neighborhood.</p>
-<p>Connect the FireHalls feature type to the Clipper:Clippee port and the Reprojector:Reprojected output to the Clipper:Clipper port. You may wish to rearrange the feature types (or the port order) to avoid overlapping connections; this is done by right-clicking on the Clipper:Clipper port and selecting Move Down:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.209.Ex1.WorkspaceConnected.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.209.Ex1.WorkspaceConnected.png" alt class="image image-block image-center" /></a></p>
-<p>In the Clipper parameters, enable Merge Attributes, so that the neighborhood name is copied from the Neighborhood features to the FireHall features:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.210.Ex1.ClipperParameters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.210.Ex1.ClipperParameters.png" alt class="image image-block image-center" /></a></p>
-<p>Connect the Clipper:Inside port to the FireHalls writer feature type. Also make a connection from the Reprojector:Reprojected port to the Neighborhoods writer feature type:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.211.Ex1.WorkspaceAllConnected.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.211.Ex1.WorkspaceAllConnected.png" alt class="image image-block image-center" /></a></p>
-<p><br /><strong>7) Set Firehall Feature Type Name</strong><br />Finally, let's set the Feature Type Name for the FireHalls writer feature type.</p>
-<p>Inspect its parameters and under Feature Type Name either enter:</p><pre>FireHalls-@Value(NeighborhoodName)</pre>
-<p>...or click the drop-down and use the text editor dialog to enter that value. This will cause the fire halls in each neighborhood to be written to a different table/layer.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.212.Ex1.FireHallFeatureType.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.212.Ex1.FireHallFeatureType.png" alt class="image image-block image-center" /></a></p>
-<p><br /><strong>8) Run Workspace</strong><br />Here comes the Server part of the process.</p>
+<h2 id="1-start-fme-workbench">
+  <span>1) Start FME Workbench</span>
+</h2>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/PublishWorkflowsToTheWeb/exercise-publish-to-fme-server.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> in FME Workbench 2020.0. This workspace reads in a GML file of fire halls and a KML file of neighborhoods in the city of Vancouver. It then projects the neighborhoods to match the fire halls and clips the fire halls to the boundaries of the neighborhoods. Finally, it writes out the fire halls with a separate file for each neighborhood (a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/fanout_about.htm" rel="noreferrer noopener" target="_blank">feature type fanout</a>). Because the focus of this module is working with FME Server, the workspace uses a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/null/null.htm" rel="noreferrer noopener" target="_blank">NULL writer</a>.</p>
+<h2 id="2-run-workspace">
+  <span>2) Run Workspace</span>
+</h2>
 <p>First, save the workspace. It is always a good idea to save the workspace before publishing to FME Server. Next, ensure that Prompt for User Parameters is disabled, then run the workspace. If the workspace won't run on FME Desktop, then it is not likely to run on FME Server. If you get the Unexpected Input dialog, it is safe to ignore it.</p>
 <p>Once the workspace has been run, inspect the translation log. Your translation log should look like the one below:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.213.Ex1.Output.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.213.Ex1.Output.png" alt class="image image-block image-center" /></a></p>
-<p><br /><strong>9) Publish to Server: Create Connection</strong><br />Now we have a workspace and know that it works correctly, let's publish it to FME Server.</p>
+<h2 id="3-publish-to-server-create-connection">
+  <span>3) Publish to Server: Create Connection</span>
+</h2>
+<p>Now we have a workspace and know that it works correctly, let's publish it to FME Server.</p>
 <p>In FME Workbench, choose File &gt; Publish to FME Server from the menubar. As this is the first time we've connected to our FME Server, we'll need to create a new connection, so in the Publish to FME Server wizard select Add Web Connection from the drop-down menu:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.214.Ex1.AddWebConnection.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.214.Ex1.AddWebConnection.png" alt class="image image-block image-center" /></a></p>
 <div class="box message info">
@@ -137,15 +75,46 @@
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.215.Ex1.ServerConnection.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.215.Ex1.ServerConnection.png" alt class="image image-block image-center" /></a></p>
 <p>You may or may not (probably not) need to enter a port number with the hostname, depending on how the system is set up.</p>
 <p>Click Authenticate to confirm the connection and return to the previous dialog. Make sure the newly defined connection is selected and click Next to continue.</p>
-<p><br /><strong>10) Publish to Server: Repository Selection</strong><br />The next dialog prompts you to choose a repository in which to store the workspace.</p>
+<h2 id="4-publish-to-server-repository-selection">
+  <span>4) Publish to Server: Repository Selection</span>
+</h2>
+<p>The next dialog prompts you to choose a repository in which to store the workspace.</p>
 <p>For this exercise, we’ll create a new repository by clicking the New button. When prompted, enter the name Training.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.216.Ex1.NewRepository.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.216.Ex1.NewRepository.png" alt class="image image-block image-center" /></a></p>
-<p>Click OK to close the Create New Repository dialog. Enter a name for the workspace if it doesn't already have one. Place a checkmark against the Upload Data Files option:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.217.Ex1.UploadData.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.217.Ex1.UploadData.png" alt class="image image-block image-center" /></a></p>
-<p>Then click Next to continue the wizard.</p>
-<p><br /><strong>11) Publish to Server: Select Service</strong><br />In the final screen of the wizard, we can register the workspace for use with various services.</p>
+<p>Click OK to close the Create New Repository dialog. Enter a name for the workspace if it doesn't already have one. Click Next to continue the wizard.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If your workspace had data stored locally, you could check Upload data files to upload them along with your workspace. </p>
+            <p>But because this workspace uses data stored at a URL, this step isn't necessary.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="5-publish-to-server-select-service">
+  <span>5) Publish to Server: Select Service</span>
+</h2>
+<p>In the final screen of the wizard, we can register the workspace for use with various services.</p>
 <p>Select the Job Submitter service as this is the only service we are using for now:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.218.Ex1.SelectService.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.218.Ex1.SelectService.png" alt class="image image-block image-center" /></a></p>
 <p>... and click Publish to complete publishing the workspace.</p>
 <p>After a workspace is transferred to Server, the log window displays a message reporting which workspace has been published to which repository and for which services. It will look something like this:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.219.Ex1.PublishLog.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.219.Ex1.PublishLog.png" alt class="image image-block image-center" /></a></p>
+<div><pre>=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Publish Summary
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+FME Server URL      : http://localhost
+Username            : admin
+Repository          : Training
+Name                : exercise-publish-to-fme-server.fmw
+Direct Link         : http://localhost/fmeserver/#/workspaces/run/Training/exercise-publish-to-fme-server.fmw
+Uploaded Resources  : None
+Registered Services : Job Submitter
+Time                : Thu May 20 15:13:45 2021
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</pre>
+</div>
