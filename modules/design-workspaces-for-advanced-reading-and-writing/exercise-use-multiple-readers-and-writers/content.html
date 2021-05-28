@@ -26,7 +26,7 @@
   <li>Commercial properties: 1 adult</li>
 </ul>
 <p><br /><strong>1) Open Workspace</strong><br />Open your workspace from the previous exercise.</p>
-<p>Sake a copy of the workspace with a new version number. For example, if you saved the previous workspace as GarbageCollection-v1.fmw, then make a copy named GarbageCollection-v2.fmw and open that for editing.</p>
+<p>Save a copy of the workspace with a new version number. For example, if you saved the previous workspace as GarbageCollection-v1.fmw, then make a copy named GarbageCollection-v2.fmw and open that for editing.</p>
 <p>Alternatively, you can open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-use-multiple-readers-and-writers.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.214.Ex2.StartWorkspace.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.214.Ex2.StartWorkspace.png" alt="Staring workspace with several transformers already connected" class="image image-block image-center" /></a></p>
 <p>The remaining transformers in the "Transformers" bookmark are these:</p>
@@ -116,7 +116,7 @@
     </div>
   </div>
 </div>
-<p><br /><strong>5) Create Residents</strong><br />We now know (or have approximated) the number of residents per address. However, we must use that number in a way that will affect the output. The simplest way to do this is to create multiple copies of each address, one for each resident.</p>
+<p><strong>5) Create Residents</strong><br />We now know (or have approximated) the number of residents per address. However, we must use that number in a way that will affect the output. The simplest way to do this is to create multiple copies of each address, one for each resident.</p>
 <p>For example, for an address with eight residents, we'll create eight address points.</p>
 <p>We can do this very simply with a Cloner transformer. So, move the Cloner transformer from the "Transformers" bookmark to the "Calculate Residents" bookmark. Connect the AttributeManager to the Cloner's input and its output to the StatisticsCalculator:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.223.Ex2.ClonerCanvas.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.223.Ex2.ClonerCanvas.png" alt="Adding a Cloner" class="image image-block image-center" /></a></p>
@@ -142,9 +142,13 @@
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.226.Ex2.ResidentialResults.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.226.Ex2.ResidentialResults.png" alt="Viewing the five groups of points" class="image image-block image-center" /></a></p>
 <p><strong>7) Write the Output</strong></p>
 <p>Now to write some output. The simplest method is to connect the Aggregator output to the PostalAddress output feature type and re-run the workspace.</p>
-<p>However, it would also be useful to rename the output feature type and remove all of its attributes, since they are from the reader dataset and don't apply here. So open the writer feature type parameters dialog. In the Parameters tab rename the feature type to GarbageZones. In the User Attributes tab, remove all of the attributes that are being written:</p>
+<p>However, it would also be useful to rename the output feature type and remove all of its attributes, since they are from the reader dataset and don't apply here. So open the writer feature type parameters dialog. In the Parameters tab rename the feature type to GarbageZones. </p>
+<p><img src="images/1622238893073.png" class="image image-block image-center" alt="Rename feature type" /></p>
+<p>In the User Attributes tab, remove all of the attributes that are being written. </p>
+<p><img src="images/1622238953045.png" class="image image-block image-center" alt="Remove all attributes on the User Attributes tab" /></p>
+<p>Your writer feature type should look something like this:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.227.Ex2.EditedWriterFT.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.227.Ex2.EditedWriterFT.png" alt="Adding the GarabageZones writer feature type" class="image image-block image-center" /></a></p>
 <p>Also, we should change the GeoPackage writer parameter Overwrite Database to overwrite the database each time we run the workspace. To do this, find the GarbageZones [GEOPACKAGE] reader in the Navigator, expand the Parameters, double-click Overwrite Database, and then check the box and click Ok:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.228.Ex2.EditedWriterParam.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.228.Ex2.EditedWriterParam.png" alt="Enabling the Overwrite Database parameter for the Geopackage writer" class="image image-block image-center" /></a></p>
 <p>Enabling this parameter means we won't accumulate more and more results in the same dataset.</p>
-<p>Congratulations. Now you have a dataset of addresses grouped by their new garbage collection zone. In the next exercise we will turn these points into non-overlapping polygons designating the zones.</p>
+<p>Congratulations. Now you have a dataset of addresses grouped by their new garbage collection zone. In the next exercise, we will turn these points into non-overlapping polygons designating the zones.</p>
