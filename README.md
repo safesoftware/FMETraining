@@ -21,6 +21,31 @@ Current Academy content is available on the `main` branch. Past year's Academy c
   - `icon.png`: the trail icon
   - `trail.json`: a file describing the trail structure, including filters and module order
 
+## Content By FME Version
+
+|           FME Academy Trail          |                 FME Academy Module                 | FME Version |
+|:------------------------------------:|:--------------------------------------------------:|-------------|
+| N/A                                  | Welcome to the FME Academy                         | N/A         |
+| Integrate Data with the FME Platform | Why Data Integration?                              | 2020.1      |
+| Integrate Data with the FME Platform | Connect To Data                                    | 2020.1      |
+| Integrate Data with the FME Platform | Transform Data                                     | 2020.1      |
+| Integrate Data with the FME Platform | Why Data Integration?                              | 2020.1      |
+| Integrate Data with the FME Platform | Automate Workflows                                 | 2020.1      |
+| Transform Attributes                 | Create and Modify Attributes                       | 2020.1      |
+| Transform Attributes                 | Filter Data                                        | 2020.1      |
+| Transform Attributes                 | Join Tables                                        | 2020.1      |
+| Transform Attributes                 | Use Conditional Values                             | 2020.1      |
+| Integrate Spatial Data               | Learn Spatial Data Concepts                        | 2020.1      |
+| Integrate Spatial Data               | Turn Coordinates into Geometry                     | 2020.1      |
+| Integrate Spatial Data               | Analyze Spatial Data                               | 2020.1      |
+| Use Data Integration Best Practices  | Document Your Workspace                            | 2021.0      |
+| Use Data Integration Best Practices  | Debug Workspaces                                   | 2021.0      |
+| Use Data Integration Best Practices  | Design Workspaces for Advanced Reading and Writing | 2021.0      |
+| Use Data Integration Best Practices  | Design For Performance                             | 2021.0      |
+| Use Data Integration Best Practices  | Optimize Workspace Performance                     | 2021.0      |
+| N/A                                  | View Data                                          | 2020.1      |
+| N/A                                  | Digital Plan Submission                            | 2020.1      |
+
 ## Mapping Between Archived Manuals and Academy
 
 The FME Academy will eventually provide training modules on most of the skills covered by the now-archived  FME training manuals. This table indicates which new modules/trails cover what content from the manuals.
