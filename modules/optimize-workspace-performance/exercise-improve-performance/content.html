@@ -59,7 +59,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>If you find the reading the orthophotos is taking too long, you can download the .zip file, extract it, and select all of the TIF files in the extracted folder. Reading the data locally will be faster.</p>
@@ -90,7 +90,7 @@
 <p>It appears that there are GeoTIFF files being read unnecessarily. This causes a performance hit, especially when feature caching is turned on. We could just select the files we want to read, but if the neighborhoods dataset changed, then this list might not be correct.</p>
 <p>So, instead, delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt="Replacing the GeoTIFF reader with a FeatureReader" class="image image-block image-center" /></p>
-<p>Open the FeatureReader parameters. Set the Format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip</a> as the Dataset. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator Intersects Result</em>:</p>
+<p>Open the FeatureReader parameters. Set the Format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Orthophotos.zip</a> as the Dataset. Set the <strong>Spatial Filter</strong> parameter to <em>Initiator OGC-Intersects Result</em>:</p>
 <p><img src="images/1620771001396.png" class="image image-block image-center" alt="Setting the FeatureReader parameters" /></p>
 <p>Close the dialog and the FeatureReader now has a GeoTIFF output port. Connect this to the RasterMosaicker:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.207.Ex3.FeatureReaderConnected.png" alt="Connecting the FeatureReader to the RasterMosaicker" class="image image-block image-center" /></p>
@@ -109,7 +109,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>One other writer feature to consider is whether the Excel dataset is being deleted/recreated, or just emptied of data. In theory, it might be (very marginally) quicker to empty the sheets rather than creating the whole spreadsheet from scratch.<br /><br />To try this, change the writer parameter Overwrite Existing File to No, and change the writer feature type parameter for Truncate Existing Sheet to Yes:<br /><br />It's unlikely to make a very large performance improvement, but you should consider differences like these when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</p>
@@ -133,10 +133,11 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>The Tester transformer was updated in 2019.1 and can be upgraded to use bulk mode. You'll remember, however, that this might change the order of features emerging from the transformer.<br /><br />Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version, in order to get a performance boost.</p>
+            <p>The Tester transformer was updated in 2019.1 and can be upgraded to use bulk mode. You'll remember, however, that this might change the order of features emerging from the transformer.<br /><br />Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version, in order to get a performance boost. By default the new parameter Advanced &gt; Preserve Feature Order is set to Across Output Ports. This preserves feature order but does not allow the Tester to take advantage of bulk mode. To improve performance, change it to Per Output Port.</p>
+            <p><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/tester.htm" rel="noreferrer noopener" target="_blank">Learn More</a></p>
           </div>
         </div>
       </div>
@@ -147,18 +148,18 @@
   <span>6) Check Transformer Order</span>
 </h2>
 <p>Look at the bookmark labeled <em>Prepare Data for Excel Writer</em>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.212.Ex3.PrepDataBookmark.png" alt="Prepare Data for Excel Writer bookmark" class="image image-block image-center" /></p>
+<p><img src="images/1625607268417.png" class="image image-block image-center" /></p>
 <p>Inspect the transformers and you will see that data is sorted into order for writing, then unnecessary features are filtered out and unnecessary attributes removed.</p>
 <p>This is not the correct order to maximize performance: unnecessary features with unnecessary attributes are being processed by the sorting action. Remember, the key order is Filter-Remove-Action.</p>
-<p>So, move the Sorter transformer after the AttributeManager:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.213.Ex3.PrepDataBookmarkEdited.png" alt="Changing order to filter before processing" class="image image-block image-center" /></p>
-<p>Notice that the Sorter transformer is now flagged as incomplete. Inspect the parameters and you'll notice that the attribute _overlaps no longer exists; it was renamed by the AttributeManager to ArtWorks.</p>
+<p>So, move the Sorter transformer after the AttributeRenamer:</p>
+<p><img src="images/1625607299668.png" class="image image-block image-center" /></p>
+<p>Notice that the Sorter transformer is now flagged as incomplete. Inspect the parameters and you'll notice that the attribute _overlaps no longer exists; it was renamed by the AttributeRenamer to ArtWorks.</p>
 <p>So simply change the Sorter to sort by ArtWorks and the transformer will work again.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>If the features coming into the Sorter were already grouped by one attribute, we could group by that attribute and sort by another for a performance improvement. But, in this case, that would not work.</p>
@@ -169,21 +170,20 @@
   </div>
 </div>
 <p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace? Can the Tester transformer be moved? Note your answer: you'll need it for the quiz.</p>
-<p>Can the AttributeManager transformer be moved? Well, it can't be <em>moved</em> because it renames the _overlaps attribute, an action that can only happen here. However, removing attributes could be carried out much earlier.</p>
-<p>The simplest technique is to add an AttributeManager after every reader whose attributes can be removed:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.214.Ex3.RemoveAttributesBookmark.png" alt="Adding AttributeManagers to remove unnecessary attributes" class="image image-block image-center" /></p>
-<p>So add an AttributeManager to each input that can be cleaned, and remove whatever attributes are not necessary to the workspace. You can tell if you remove a necessary attribute if a transformer (or writer feature type) further on in the stream is flagged as incomplete.</p>
-<p>One transformer that is legitimately incomplete is the original AttributeManager (in the Prepare Data bookmark). This no longer receives the attributes it expects. Simply open the parameters for that transformer and click the option for <em>Remove All Invalid 'Input Attribute' Rows</em>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.215.Ex3.RemoveDoNothingAttributes.png" alt="Removing invalid attributes quickly" class="image image-block image-center" /></p>
+<p>Can the AttributeRemover and AttributeRenamer transformers be moved? Well, the AttributeRenamer can't be <em>moved</em> because it renames the _overlaps attribute, an action that can only happen here. However, removing attributes could be carried out much earlier.</p>
+<p>The simplest technique is to add an AttributeRemover after every reader whose attributes can be removed:</p>
+<p><img src="images/1625607492383.png" class="image image-block image-center" /></p>
+<p>So, remove the existing AttributeRemover and add an AttributeRemover to each input that can be cleaned, and remove whatever attributes are not necessary to the workspace. You can tell if you remove a necessary attribute if a transformer (or writer feature type) further on in the stream is flagged as incomplete.</p>
 <p>Now we have removed all unnecessary attributes from the workspace, as soon as possible.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>An alternative solution for database-type formats is to not read the attributes at all. In our workspace, the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes, and uncheck Name and Title:<br /><br />If you do this then any AttributeManager you added could be removed.</p>
+            <p>An alternative solution for database-type formats is to not read the attributes at all. In our workspace, the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes, and uncheck Name and Title:</p>
+            <p>If you do this then you do not need the AttributeRemover.</p>
           </div>
         </div>
       </div>
@@ -211,7 +211,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>Overall, the difference might be very slight. The workspace may not be hugely faster or more memory efficient. However, it is better designed than the original workspace. This makes it more scalable, plus it will help to teach your colleague techniques that might, elsewhere, have a larger effect.</p>
