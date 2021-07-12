@@ -1,0 +1,38 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Use temporary uploads to allow an end-user to select datasets at runtime.</li>
+  <li>Explain the difference between uploading and selecting temporary files.</li>
+  <li>Identify workspace limitations when designing workspaces for temporary datasets.</li>
+</ul>
+<h2 id="uploading-datasets-at-run-time">
+  <span>Uploading Datasets at Run Time</span>
+</h2>
+<p>Although it's easy for an author to publish data to an FME Server repository along with the workspace, it isn't a method that an end-user has access to.</p>
+<p>Therefore, for files (rather than a feed or database), functionality exists to allow the end-user to upload data at run-time.</p>
+<h2 id="uploading-source-data">
+  <span>Uploading Source Data</span>
+</h2>
+<p>This workspace was created with a dynamic Reader and Writer. That means it is possible to process any source dataset (of the right format) and have it translated:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.013.TempUploadDynamicWorkspace.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.013.TempUploadDynamicWorkspace.png" alt class="image image-block image-center" /></a></p>
+<p>Of course, in this scenario publishing the data with the workspace does not make much sense. It is better if the user uploads data at runtime.</p>
+<p>Provided the source dataset is a published parameter, this can be done easily in the Run Workspace page of the FME Server interface by dragging and dropping a file into the browser, or clicking the browse button:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.014.TempUploadBrowseButton.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.014.TempUploadBrowseButton.png" alt class="image image-block image-center" /></a></p>
+<p>This opens a dialog to select one or more files for the data type. To only upload the file temporarily, switch to the Temporary Uploads tab (1), then to upload the data click on the Upload Button (2). When uploading data that contains multiple files (like MapInfo Tab) ensure that you select all of the files. Once the data is uploaded to the Temporary Uploads, it will need to be added to the workspace, this is done by clicking on the green plus sign next to each file (3). Finally, before selecting OK, ensure all of the necessary files are selected (4). Note that all the files need to be uploaded, but only the main file needs to be selected for the workspace to run correctly, in this case, Parks.tab:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.015.TempUploadFileSelect.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.015.TempUploadFileSelect.png" alt class="image image-block image-center" /></a></p>
+<p>Now when the workspace runs, the selected user-uploaded data gets translated.</p>
+<h2 id="selecting-files">
+  <span>Selecting Files</span>
+</h2>
+<p>In the above example, the source dataset is in a format (MapInfo TAB) that consists of several files.<br />Although all files need to be uploaded, only the TAB file itself needs to be <strong>selected</strong>.<br /><br /><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.016.DeselectSourceFiles.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.016.DeselectSourceFiles.png" alt="undefined" class="image image-block image-center" /></a><br />The method to use is to deselect files under the section Selected Items; here the .dat, .id, and .map files.<br /><br />The files are still available, but FME won't treat each of them as a separate dataset, which is what would happen if they all remained selected.</p>
+<h2 id="cautions-and-limitations">
+  <span>Cautions and Limitations</span>
+</h2>
+<p>There are some cautions and limitations to be concerned about when data is uploaded for translation by the end-user:</p>
+<ul>
+  <li>Giving the user upload ability is risky because their dataset's schema has to match the workspace's schema definition; otherwise, the translation will fail with unexpected input. Alternatively - as above - a dynamic (and maybe generic) translation could be used to avoid such issues.</li>
+  <li>Data uploaded by the user is only temporarily available. The System Cleanup page shows us that such files are (by default) deleted when they become more than 24 hours old. User uploads are not a long-term solution.</li>
+  <li>Data uploaded by the user is, in theory, also accessible through the Resources page (more on that to come). However, in practice, it's in an obscure location where an end user would not be expected to find it. For that reason, temporary data should be considered inaccessible by any other means and unavailable for use by any other workspace.</li>
+</ul>
