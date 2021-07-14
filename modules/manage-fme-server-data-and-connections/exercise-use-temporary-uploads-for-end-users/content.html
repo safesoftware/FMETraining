@@ -4,22 +4,58 @@
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
   <li>Use temporary uploads to allow an end-user to select datasets at runtime.</li>
+  <li>Run a workspace using temporary uploaded data.</li>
+  <li>Select the source dataset to use when uploading multiple temporary files.</li>
 </ul>
 <h2 id="1-open-and-examine-workspace">
   <span>1) Open and Examine Workspace</span>
 </h2>
-<h2 id="2-upload-temporary-data">
-  <span>2) Upload Temporary Data</span>
+<p>Open the starting workspace template in FME Workbench (2021.1 or later).</p>
+<h2 id="2-create-temporary-data">
+  <span>2) Create Temporary Data</span>
 </h2>
-<p>Now let's pretend that the layer of VotingPlaces data has changed in some way. You can simulate that by simply opening a file browser and making a copy of the GML file.</p>
-<p>For example, rename C:\FMEData2020\Data\Elections\ElectionVoting.gml to NewElectionVoting.gml</p>
-<p><strong><em>NB:</em></strong> You don't also have to copy ElectionVoting.xsd - it's okay to use that schema file for the new GML dataset.*</p>
-<p>We wish to run the workspace with the new data. To use the new dataset for the Source GML prompt, click the browse option:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.211.Ex1.SelectSourceData.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.211.Ex1.SelectSourceData.png" alt class="image image-block image-center" /></a></p>
+<p>Let's pretend that the layer of VotingPlaces data has changed in some way. You can simulate that by simply opening a file browser and making a copy of the GML file.</p>
+<p>You can do this by downloading a copy of <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Elections/ElectionVoting.gml" rel="noreferrer noopener" target="_blank">ElectionVoting.gml</a>, or by expanding the "ElectionVoting [GML]" Reader in the Navigator, double-clicking "Source Geography Markup Language (GML) File(s)", copying the directory, and pasting it into your file explorer. This will navigate you to the temporary folder where the workspace template data is stored.</p>
+<p><img src="images/1626214759579.png" class="image image-block image-center" /></p>
+<p>In either case, once you have a local copy of ElectionVoting.gml, duplicate it and name the new file NewElectionVoting.gml.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>You don't also have to copy ElectionVoting.xsd - it's okay to use that schema file for the new GML dataset. We provide instructions on how to do this below.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="3-upload-temporary-data">
+  <span>3) Upload Temporary Data</span>
+</h2>
+<p>We wish to run the workspace with the new data. To use the new dataset for the Source GML prompt, first, open the workspace in FME Server (it was published in the last exercise). Then, click the Browse Resources button:</p>
+<p><img src="images/1626304543913.png" class="image image-block image-center" alt="Browse Resources on the Run Workspace page" /></p>
 <p>In the dialog that opens, click the Temporary Uploads tab and then on the Upload File button:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.212.Ex1.TempUploadButton.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.212.Ex1.TempUploadButton.png" alt class="image image-block image-center" /></a></p>
+<p><img src="images/1626304705082.png" class="image image-block image-center" alt="Click Temporary Uploads, click Upload File button" /></p>
 <p>Select both the files NewElectionVoting.gml and ElectionVoting.xsd and click Open to upload them. Now - back in the prior dialog - click the X button to deselect the XSD file:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.213.Ex1.TempUnselectFile.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.213.Ex1.TempUnselectFile.png" alt class="image image-block image-center" /></a></p>
-<p>The file needs to exist, but it doesn't need to be selected. Now click OK and then click the Run button.</p>
+<p><img src="images/1626305012757.png" class="image image-block image-center" alt="Deselecting the XSD file" /></p>
+<p>The file needs to be uploaded, but it doesn't need to be selected.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If ElectionVoting.xsd were selected, FME would try to use it as the input GML file, which would cause an error.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Now click OK and then click the Run button.</p>
 <p>The workspace will now run to completion using the uploaded dataset.</p>
 <p>However - and this is the important part - this was only a temporary upload. The workspace can be re-run immediately, and the data will still appear in the temporary upload section, but it is not a permanent solution. The data is likely to be cleaned up automatically within 24 hours, this is the default unless an FME Server Administrator has modified the clean-up task.</p>
