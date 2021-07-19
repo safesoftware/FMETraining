@@ -1,0 +1,142 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Define a database connection.</li>
+  <li>Configure a workspace to use a database connection.</li>
+  <li>Upload, edit and use a database connection in FME Server.</li>
+  <li>Define a web connection.</li>
+  <li>Configure a workspace to use a web connection.</li>
+  <li>Upload, edit and use a web connection in FME Server.</li>
+</ul>
+<h2 id="what-is-a-database-connection">
+  <span>What is a Database Connection?</span>
+</h2>
+<p>When the source data for a dataset is a database, you can optionally store connection parameters in a secure container called a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!NamedConnections/options_database_connections.htm" rel="noreferrer noopener" target="_blank">database connection</a>. That container can be either published to FME Server or recreated on it.</p>
+<p>Database connections are containers for a set of database connection parameters. These parameters include the database server, port number, username, password, and other parameters that vary according to the database type.</p>
+<p>The two main advantages of database connections are:</p>
+<ul>
+  <li>Connection parameters are no longer embedded in a workspace, meaning less of a security risk.<ul>
+      <li>For example, your parameters would not be exposed to anyone who downloaded the workspace.</li>
+    </ul>
+  </li>
+  <li>Connection parameters can be reused among multiple workspaces.<ul>
+      <li>For example, two workspaces that use the same database can use the same connection.</li>
+    </ul>
+  </li>
+</ul>
+<p>Database connections can be published with a workspace from FME Desktop, or they can be added directly within FME Server.</p>
+<h2 id="creating-database-connections">
+  <span>Creating Database Connections</span>
+</h2>
+<p>Creating a database connection usually starts in FME Desktop. The connections can be created using Tools &gt; FME Options &gt; Database Connections in the FME Workbench menubar. The defined connection can then be used in a reader, writer, or transformer. Alternatively, when the author adds a Transformer, Reader or Writer to FME Workbench that requires a Database Connection but there is no existing connection for this format, they are prompted with the option to add a Database Connection from within this wizard.</p>
+<p>As an example, this workspace has a connection for a PostGIS database, as seen in Navigator under the reader parameters and in the list of database connections:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.001.DatabaseConnectionInWB.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.001.DatabaseConnectionInWB.png" alt="Navigator showing the use of a Database Connection" class="image image-block image-center" /></a></p>
+<p>When the workspace is published to FME Server a new dialog asks the author whether they would also like to publish the database connection:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.002.DatabaseConnectionInWiz.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.002.DatabaseConnectionInWiz.png" alt="Publishing a database connection to FME Server" class="image image-block image-center" /></a></p>
+<p>The connection is then added to the connections container on FME Server.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Note that you don't have to upload the connection with the workspace. If a connection for that database already exists on FME Server you can use that. FME Workbench should recognize whether a connection with the same name is already available, if it is, by default the box will not be checked.<br /><br />If you don't upload the connection, and you don't already have one to use on FME Server, then you will need to use the Database Connections page to create one.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="managing-database-connections">
+  <span>Managing Database Connections</span>
+</h2>
+<p>FME Server has a page for managing database connections accessed through the main menu:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.003.ConnectionsMenu.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.003.ConnectionsMenu.png" alt="Viewing Database Connections" class="image image-block image-center" /></a></p>
+<p>This page allows workspace authors - but usually administrators - to create new connections and copy, delete or edit existing connections:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.004.DatabaseConnectionEditingInServer.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.004.DatabaseConnectionEditingInServer.png" alt="Editing a database connection on FME Server" class="image image-block image-center" /></a></p>
+<h2 id="using-database-connections">
+  <span>Using Database Connections</span>
+</h2>
+<p>When a workspace is run, if it has a database reader (for example) the end-user is prompted with a published parameter and can select the database connection to use:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.005.DatabaseConnectionInServerRun.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.005.DatabaseConnectionInServerRun.png" alt="Running a workspace using a database connection" class="image image-block image-center" /></a></p>
+<p>The workspace then runs to completion as normal.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Connections, like other objects on FME Server, have security permissions. Only the owner, someone with whom the connection is shared, or (by default) an administrator, can make use of it. It's not the case that any random user will be provided access to all database connections via the published parameter.</p>
+            <p>This fact becomes particularly important when creating FME Server workflows that require access to the Connection, for example, Server Apps (see <a href="https://safe.my.trailhead.com/en/content/safe/modules/create-no-code-web-apps" rel="noreferrer noopener" target="_blank">Create No-Code Web Apps</a>). Make sure you <a href="https://docs.safe.com/fme/2020.0/html/FME_Server_Documentation/WebUI/Server-Apps.htm" rel="noreferrer noopener" target="_blank">grant explicit permissions</a> to web and database connections when creating these workflows.<br /><br />This also means that a workspace can be tested in FME Desktop using the author's connection parameters, but then require the end-user's connection once published to Server; all in a way that is both easy and secure.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="what-is-a-web-connection">
+  <span>What is a Web Connection?</span>
+</h2>
+<p>Just as for databases, when the source data for a dataset is a web service, FME is capable of storing connection parameters in a secure container called a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!NamedConnections/options_web_service_connections.htm" rel="noreferrer noopener" target="_blank">web connection</a>. That container can be either published to FME Server or recreated on it.</p>
+<p>Web connections are containers for a set of web service connection parameters. These parameters include the service, username, password (or authenticated connection), and others that vary according to the service type.</p>
+<p>The two main advantages of web connections are:</p>
+<ul>
+  <li>Connection parameters are no longer embedded in a workspace, meaning less of a security risk<ul>
+      <li>For example, your parameters would not be exposed to anyone who downloaded the workspace</li>
+    </ul>
+  </li>
+  <li>Connection parameters can be reused among multiple workspaces<ul>
+      <li>For example, two workspaces that use the same web service can use the same connection</li>
+    </ul>
+  </li>
+</ul>
+<p>Web connections can be published with a workspace from FME Desktop, or they can be added directly within FME Server.</p>
+<h2 id="creating-web-connections">
+  <span>Creating Web Connections</span>
+</h2>
+<p>Creating a web connection often starts in FME Desktop. They can be created using Tools &gt; FME Options &gt; Web Connections in the FME Workbench menubar. The defined connection can then be used in a reader, writer, or transformer.</p>
+<p>For example, this workspace reads a CSV dataset using a connection to a Google Drive web service, as seen in the Navigator under both the reader parameters and the list of web connections:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.006.WebConnectionInWB.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.006.WebConnectionInWB.png" alt="Navigator with a writer using a web connection" class="image image-block image-center" /></a></p>
+<p>When the workspace is published to FME Server a new dialog asks the author whether they would also like to publish the web connection:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.007.WebConnectionInWiz.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.007.WebConnectionInWiz.png" alt="Publishing a web connection to FME Server" class="image image-block image-center" /></a></p>
+<p>The connection is then added to the connections container on FME Server.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p><strong>WARNING:</strong> While uploading a web service from Desktop is enough to run the connection, this service definition is provided by Safe Software for <strong>demonstration purposes</strong> and ease of use. The client id and client secret may become deactivated at any time. For production use, we recommend users obtain their own client id and client secret from the web service provider. Setting up the service definition for OAuth authentication is a task best left to system administrators. See the <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/AdminGuide/Planning-Access-to-Web-Services.htm" rel="noreferrer noopener" target="_blank">FME Server Administrator's Guide</a> for more information on how to carry this out.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="using-web-connections">
+  <span>Using Web Connections</span>
+</h2>
+<p>When a workspace is run, if it has a transformer or reader that references a web service then it will run correctly, just as on an FME Desktop installation.</p>
+<p>In the published parameters on FME Server, the web connection can be defined in the source dataset URL:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.008.UsingAWebConnection.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.008.UsingAWebConnection.png" alt="Using a web connection with a URL" class="image image-block image-center" /></a></p>
+<p>Or, it can appear in a dropdown menu item if used as a published parameter in a workspace:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.032.WebConnectionPublishParameter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.032.WebConnectionPublishParameter.png" alt="Using a web connection from a drop-down" class="image image-block image-center" /></a></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>As with database connections, this functionality allows a workspace to be tested in FME Desktop using the author's connection parameters, but then switched to a general account once published to Server; all in a way that is both easy and secure.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
