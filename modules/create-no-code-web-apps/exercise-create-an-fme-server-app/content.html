@@ -1,21 +1,93 @@
+<h2 id="change-question-to-remove-customization-fix-advanced">
+  <span>Change question to remove customization, fix advanced</span>
+</h2>
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
   <li>Create an FME Server App.</li>
-  <li>Customize an FME Server App.</li>
+  <li>Run an FME Server App.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li>Starting Workspace- in the exercise linked below users would normally have a workspace to upload. However, I think using a sample workspace would be a good choice (perhaps the earthquake extrusion one).</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/CreateDataIntegrationApps/earthquakesextrusion.fmw" rel="noreferrer noopener" target="_blank">earthquakesextrusion.fmw</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/CreateDataIntegrationApps/example.geojson" rel="noreferrer noopener" target="_blank">example.geojson</a> (a GeoJSON file of earthquake locations. This file can be used in the unlikely event the USGS Earthquake API goes down)</li>
+  <li>You will need Google Earth Pro installed to view the results of the Server App. You can download it for free <a href="https://www.google.com/earth/versions/#download-pro" rel="noreferrer noopener" target="_blank">here</a>.<ul>
+      <li>If you are taking an official Safe Software training course, it is already installed on your training machine.</li>
+    </ul>
+  </li>
 </ul>
-<h2 id="unit-content">
-  <span>Unit Content</span>
+<h2 id="introduction">
+  <span>Introduction</span>
 </h2>
-<ul>
-  <li>https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Exercise6.html</li>
-  <li><br /></li>
-</ul>
+<p>You have successfully published a workspace to FME Server that creates a 3D visualization of recent earthquakes around the world in KML format, using <a href="https://www.usgs.gov/natural-hazards/earthquake-hazards/earthquakes" rel="noreferrer noopener" target="_blank">data from the United States Geological Survey</a>. Now you are getting requests from other users who do not have FME Server accounts but want to be able to run the workspace on demand.</p>
+<p>Let's create an FME Server App so that anyone with the URL can run this workspace to get an up-to-date KML whenever they wish.</p>
+<h2 id="1-connect-to-server">
+  <span>1) Connect to Server</span>
+</h2>
+<p>Browse to the login page of the FME Server interface, and log in using the administrator account (admin/FMElearnings).</p>
+<h2 id="2-open-server-apps">
+  <span>2) Open Server Apps</span>
+</h2>
+<p>Expand Server Apps from the side menu, then click Build Workspace App, to create a new Workspace App.</p>
+<p><img src="images/1627340447679.png" class="image image-block image-center" /></p>
+<h2 id="3-configure-server-app">
+  <span>3) Configure Server App</span>
+</h2>
+<p>Set a Name, Title, and Description for your new Server App. The Name is what is displayed in the list of Workspace Apps and the Title and Description is what will be displayed on the actual App. Select the Samples Repository and the earthquakesextrusion.fmw workspace.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If for some reason your FME Server is missing this default included workspace, you can download it <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/CreateDataIntegrationApps/earthquakesextrusion.fmw" rel="noreferrer noopener" target="_blank">here</a><strong> </strong>and then publish it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>You can leave the expiration time at its default value, which will allow the API Token to expire after 10 years. You could set this to a shorter time if you only want to grant access for a smaller time window.</p>
+<p>Keep the Require Authentication toggle disabled. This setting will allow anyone with the URL to run the workspace.</p>
+<p>Keep the Users Can Upload toggle enabled. This setting will allow users to upload their own GeoJSON input file instead of using the USGS data.</p>
+<p><img src="images/1627342911002.png" class="image image-block image-center" /></p>
+<h2 id="4-check-the-parameters-section">
+  <span>4) Check the Parameters Section</span>
+</h2>
+<p>There are two collapsed sections below the first: Parameters and Customize. Click the Parameters section to expand it. You will see the workspace's user parameters, similar to how they appear on the Run Workspace page on FME Server. You can see the source dataset is set to a URL (<a href="http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson" rel="noreferrer noopener" target="_blank">http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson</a>), pulling the recent earthquake data directly from the USGS web service.</p>
+<p><img src="images/1627343252193.png" class="image image-block image-center" /></p>
+<p>We don't want to modify how this works.</p>
+<p>The Customize section lets you change the appearance of your Server App, but you will learn more about that in the next unit.</p>
+<p>Click OK to accept.</p>
+<h2 id="4-test-the-fme-server-app">
+  <span>4) Test the FME Server App</span>
+</h2>
+<p>Now that your App has been created, you'll see that a URL was generated for it.</p>
+<p><img src="images/1627344005891.png" class="image image-block image-center" /></p>
+<p>Click on the URL to open it. You will see that it opens a webpage very similar to the Run Workspace page in FME Server, but it has no options other than to run this one workspace and it does not require a user to enter a username and password to access it.</p>
+<p><img src="images/1627344560503.png" class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If the workspace failed, you should ensure that the source data is available. Check the FME Server logs for more clues. If for some reason the USGS source data is not available, you can use this <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/CreateDataIntegrationApps/example.geojson" rel="noreferrer noopener" target="_blank">example.geojson</a> file instead.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="advanced-exercise">
+  <span>Advanced Exercise</span>
+</h2>
+<p>We've been requested to create a webhook to share our workspace with customers in an email.</p>
+<p>From the Run Workspace page, ensure that the Workspace is set to earthquakesextrusion.fmw, then from the Workspace Actions drop-down select Create Webhook<img src="images/1627344718943.png" class="image image-block image-center" />On the Create Webhook page, we can just accept the defaults for the parameters. Optionally, you can add additional permissions for the user, such as access to the data folder. Click OK to create the Webhook.</p>
+<p>Before closing the Webhook URL page, ensure that you download your Webhook token and parameters as this will be the only time you can do so. If you forget to download it or lose the file, you will have to recreate the Webhook.</p>
