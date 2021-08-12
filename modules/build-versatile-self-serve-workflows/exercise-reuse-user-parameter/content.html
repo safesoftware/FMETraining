@@ -1,0 +1,68 @@
+<h2 id="needs-quiz">
+  <span>Needs quiz</span>
+</h2>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>Once a <a href="https://knowledge.safe.com/articles/1287/published-parameter-examples.html?smartspace=published-parameters" rel="noreferrer noopener" target="_blank">Published Parameter</a> has been created, it can be shared between readers, writers, or transformers. A shared parameter is used in two or more places. The user is only prompted once, but the value is used for each linked parameter. This is beneficial when running a workspace using multiple transformers with a repeating parameter that is dependent on the user. Shared parameters are also useful in the case of writing to the same location, as demonstrated in the example below.</p>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li>sharedparametersbegin.fmwt<em> Beginning Workspace</em></li>
+  <li>sharedparameterscomplete.fmwt<em> Completed Workspace</em></li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>In the "begin" workspace, two data flows branch from the BikePath_M shapefile. The LineJoiner is used to join multiple line segments into one. The StatisticsCalculator has been set to calculate the total number of segments per PathName, and the total length of these segments.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTLz" alt="beginoverview.jpg" class="image image-block image-center" /></p>
+<p>The task is to set up a shared published parameter, so that two writers (MapInfo and CSV) are set up to write to the same folder as defined by the user. Each run will prompt the user to enter a folder name that is used for both writers. Without setting a shared published parameter, the folder location would have to be specified individually.</p>
+<h2 id="1-open-the-workspace-in-fme-workbench">
+  <span>1) Open the Workspace in FME Workbench</span>
+</h2>
+<p>Open the sharedparametersbegin.fmwt workspace in FME Workbench.</p>
+<h2 id="2-create-a-published-parameter">
+  <span>2) Create a Published Parameter</span>
+</h2>
+<p>In the Navigator window, right-click on User Parameters and select Create User Parameter.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTM0" alt="createuserparam.jpg" class="image image-block image-center" /></p>
+<p>In the Add/Edit User Parameter dialog, enter the following parameters:</p>
+<p><strong>Type: </strong>Folder (Output)</p>
+<p><strong>Name: </strong>OutputFolder</p>
+<p><strong>Prompt: </strong>Folder Name to Write Data:</p>
+<p><strong>Attribute Assignment: </strong>Default</p>
+<p><strong>Default Value: </strong>SharedParameterExample</p>
+<p><strong>Published: </strong>Checked</p>
+<p><strong>Optional:</strong> Unchecked</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTM1" alt="publishedparam.jpg" class="image image-block image-center" /></p>
+<h2 id="3-add-the-writers">
+  <span>3) Add the Writers</span>
+</h2>
+<p>Add a CSV writer and leave the Dataset blank. Set the CSV File Definition to Automatic. Connect the writer to the Summary output port on the StatisticsCalculator.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTM2" alt="csvwriter.jpg" class="image image-block image-center" /></p>
+<p>Once connected, open the parameters for the CSV writer and change the filename to "Bike Path Statistics".</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTNz" alt="csvparams.jpg" class="image image-block image-center" /><br /></p>
+<p>Add a MapInfo MITAB writer and leave the Dataset blank. Set the Table Definition to Automatic. Connect this writer to the LineJoiner.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO0" alt="mapinfowriter.jpg" class="image image-block image-center" /></p>
+<p>Once connected, in the MapInfo parameters, change the Table Name to "Bike Paths".</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO1" alt="mapinfoparams.jpg" class="image image-block image-center" /></p>
+<h2 id="4-share-the-parameter">
+  <span>4) Share the Parameter</span>
+</h2>
+<p>In the Navigator, expand the CSV writer. Right-click on the Destination and select Link to User Parameter.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO2" alt="csvlink.jpg" class="image image-block image-center" /></p>
+<p>Select the OutputFolder parameter.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO3" alt="setuserparam.jpg" class="image image-block image-center" /></p>
+<p>Repeat this step for the MITAB Writer.</p>
+<p>Both writers are now sharing the OutputFolder User Parameter.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO4" alt="linkedparams.jpg" class="image image-block image-center" /></p>
+<h2 id="5-run-the-workspace">
+  <span>5) Run the Workspace</span>
+</h2>
+<p>Set the workspace to Prompt for User Parameters from the Run menu and enter a folder name.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO5" alt="prompt.jpg" class="image image-block image-center" /></p>
+<p>Right-click on one of the writers and select Open Containing Folder.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO6" alt="opencontainingfolder.jpg" class="image image-block image-center" /></p>
+<p>Both the MITAB files and CSV file are written to the same folder.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dNqh&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YTO7" alt="outputfolder.jpg" class="image image-block image-center" /></p>

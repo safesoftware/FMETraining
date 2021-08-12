@@ -1,0 +1,207 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>By completing this exercise you have learned how to:</p>
+<ul>
+  <li>View user parameters designed for FME Server workflows</li>
+  <li>Create a Geometry published parameter</li>
+  <li>Use a Geometry published parameter in a self-serve data download workflow</li>
+  <li>Publish a workspace and use published parameters</li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>As a technical analyst in the GIS department of a city, you have just commenced an initiative to allow other departments to download community mapping data, rather than having to ask you to create it for them. Not only will their requests be processed quicker, but you will also spend less time on that task.</p>
+<p>So far you have created a workspace that allows users to choose the format for their data download.</p>
+<p>Now you need to add a Geometry published parameter to let users interactively choose their area of interest.</p>
+<h2 id="1-open-workspace">
+  <span>1) Open Workspace</span>
+</h2>
+<p>Open C:\FMEData2020\Workspaces\ServerAuthoring\SelfServe-Ex3-Begin.fmw.</p>
+<h2 id="2-inspect-published-parameters">
+  <span>2) Inspect Published Parameters</span>
+</h2>
+<p>The starting workspace is in-progress. It already has a published parameter that lets users choose the output format. You can find them by looking at the Navigator &gt; User Parameters &gt; Published Parameters. Right-click FORMAT and choose Edit Definition to view its configuration:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.214.Ex3.FormatPublishedParameter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.214.Ex3.FormatPublishedParameter.png" alt class="image image-block image-center" /></a></p>
+<p>This parameter lets the user choose the output format for the data they receive. The default is Microsoft Excel. Click the ellipsis button next to Configuration to view the options for this Choice with Alias parameter.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.215.Ex3.FormatConfiguration.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.215.Ex3.FormatConfiguration.png" alt class="image image-block image-center" /></a></p>
+<p>This parameter gives the user the option of four output formats (GeoJSON, OGC GeoPackage, Esri Shapefile, or Microsoft Excel). Using Choice with Alias like this lets you provide a set of formats or coordinate systems to the user, instead of letting them pick from the entire list. This option can be beneficial as it is less overwhelming to the user and can prevent incorrect outcomes. Click Cancel twice to close the parameter dialog.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>TIP</td>
+    </tr>
+    <tr>
+      <td>You can learn how to create user parameters like this in <a href="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/4.00.AdvancedParameterUse.html" rel="noreferrer noopener" target="_blank">this chapter</a> from our FME Desktop Advanced training.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h2 id="3-create-a-geometry-published-parameter">
+  <span>3) Create a Geometry Published Parameter</span>
+</h2>
+<p>Now let's edit this workspace so the user can define the area where construction will be occurring. The first step is to add a Geometry published parameter. In the Navigator, right-click User Parameters and choose Create User Parameter:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.216.Ex3.CreateUserParameter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.216.Ex3.CreateUserParameter.png" alt class="image image-block image-center" /></a></p>
+<p>In the Add/Edit User Parameter window enter the following:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Type</strong></td>
+      <td>Geometry</td>
+    </tr>
+    <tr>
+      <td><strong>Name</strong></td>
+      <td>GEOM_COORDS</td>
+    </tr>
+    <tr>
+      <td><strong>Prompt</strong></td>
+      <td>Select construction area:</td>
+    </tr>
+    <tr>
+      <td><strong>Published</strong></td>
+      <td>Checked</td>
+    </tr>
+    <tr>
+      <td><strong>Optional</strong></td>
+      <td>Unchecked</td>
+    </tr>
+    <tr>
+      <td><strong>Attribute Assignment</strong></td>
+      <td>Off</td>
+    </tr>
+  </tbody>
+</table>
+<p>For Configuration, click on the ellipsis and enter the following:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Geometry Types</strong></td>
+      <td>Box, Polygon, Line</td>
+    </tr>
+    <tr>
+      <td><strong>Specify initial bounds for map display</strong></td>
+      <td>Checked</td>
+    </tr>
+    <tr>
+      <td><strong>Top (-90..90)</strong></td>
+      <td>49.2548</td>
+    </tr>
+    <tr>
+      <td><strong>Left (-180..180)</strong></td>
+      <td>-123.244</td>
+    </tr>
+    <tr>
+      <td><strong>Bottom (-90..90)</strong></td>
+      <td>49.3034</td>
+    </tr>
+    <tr>
+      <td><strong>Right (-180..180)</strong></td>
+      <td>-123.071</td>
+    </tr>
+  </tbody>
+</table>
+<p>The initial bounds will be the area shown in FME Server. Larger bounds will have the map zoomed out, and smaller bounds will have the map zoomed in.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.217.Ex3.GeometryConfiguration.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.217.Ex3.GeometryConfiguration.png" alt class="image image-block image-center" /></a></p>
+<p>Click OK twice to close the parameter dialogs.</p>
+<h2 id="4-create-the-area-of-interest-polygon">
+  <span>4) Create the Area of Interest Polygon</span>
+</h2>
+<p>Now that we have set up the geometry published parameter, we need to use it within the workflow. Add a GeometryReplacer in a new stream after the Creator transformer.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.218.Ex3.GeometryReplacer.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.218.Ex3.GeometryReplacer.png" alt class="image image-block image-center" /></a></p>
+<p>Open the parameters for the GeometryReplacer. Set the Geometry Encoding to GeoJSON and then set the Geometry Source to the GEOM_COORDS published parameter.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.219.Ex3.GeometryReplacerParameter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.219.Ex3.GeometryReplacerParameter.png" alt class="image image-block image-center" /></a></p>
+<p>Click OK.</p>
+<h2 id="5-reproject-the-area-of-interest">
+  <span>5) Reproject the Area of Interest</span>
+</h2>
+<p>We want to ensure that FME knows our data is in LL84, as this is what the Geometry published parameter accepts as values. Add a CoordinateSystemSetter transformer after the GeometryReplacer. In the parameters, set the Coordinate System to LL84.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.220.Ex3.CoordinateSystemSetter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.220.Ex3.CoordinateSystemSetter.png" alt class="image image-block image-center" /></a></p>
+<p>Our source address data is in UTM83-10. It is more appropriate to buffer and intersect data in a projected coordinate system, so we will reproject both streams of data to UTM83-10. Add the first Reprojector after the CoordinateSystemSetter. Set the Destination Coordinate System to UTM83-10.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.221.Ex3.Reprojector.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.221.Ex3.Reprojector.png" alt class="image image-block image-center" /></a></p>
+<p>Add a second Reprojector between the FeatureReader and the NotifyList writer feature type. We have to make a slight change to the address data coordinate system. Set the Destination Coordinate System to UTM83-10 and click OK.</p>
+<p>Your workspace should look like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.222.Ex3.Workspace.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.222.Ex3.Workspace.png" alt class="image image-block image-center" /></a></p>
+<h2 id="6-buffer-the-area-of-interest">
+  <span>6) Buffer the Area of Interest</span>
+</h2>
+<p>We need to add a 100-meter buffer around the area of interest to find which neighboring residents might be affected by construction noise and must be notified. Add a Bufferer transformer connected to the first Reprojector. In the parameters, set the Buffer Distance to 100 and set the Buffer Distance Units to Meters.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.223.Ex3.Bufferer.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.223.Ex3.Bufferer.png" alt class="image image-block image-center" /></a></p>
+<h2 id="7-clip-the-addresses-to-the-area-of-interest">
+  <span>7) Clip the Addresses to the Area of Interest</span>
+</h2>
+<p>Now we need to apply the buffered area of interest to our data. To do this we will use a Clipper transformer. Add a Clipper transformer to the canvas and connect the Bufferer's Buffered port to the Clipper input port. Then connect the Reprojector_2 to the Clippee input port. In the Clipper parameters, enable Merge Attributes.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.224.Ex3.Clipper.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.224.Ex3.Clipper.png" alt class="image image-block image-center" /></a></p>
+<p>Click OK.</p>
+<h2 id="8-clean-up-attributes">
+  <span>8) Clean up Attributes</span>
+</h2>
+<p>One final step before we can write out our data is to clean up the attributes. Add an AttributeKeeper to the canvas and connect it to the Inside output port on the Clipper.</p>
+<p>In the parameters, for Attributes to Keep, select:</p>
+<ul>
+  <li>OWNERNM1</li>
+  <li>PSTLADDRESS</li>
+  <li>PSTLCITY</li>
+  <li>PSTLPROV</li>
+  <li>POSTALCODE</li>
+</ul>
+<p>Click OK.</p>
+<h2 id="9-test-writing-results-to-shapefile">
+  <span>9) Test Writing Results to Shapefile</span>
+</h2>
+<p>Let's test our workspace by writing the results to a Shapefile. Connect the AttributeKeeper to the NotifyList writer feature type and run your workspace. Select Esri Shapefile as the output format.</p>
+<p>For the Geometry parameter, we have to supply GeoJSON to test on FME Desktop. On FME Server you can use a web map. Paste the following GeoJSON code in to test:</p><pre><code>{"type":"Polygon","coordinates":[[[-123.131762,49.282752],[-123.132148,49.282465],[-123.131579,49.282087],[-123.131139,49.282332],[-123.131762,49.282752]]]}
+</code>Copy</pre>
+<p>When the translation finishes, click the NotifyList writer feature type once to select it, and then click View Written Data. Specify Esri Shapefile for the Format and add NotifyList.shp to the end of the Dataset parameter:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.225.Ex3.ViewWrittenData.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.225.Ex3.ViewWrittenData.png" alt class="image image-block image-center" /></a></p>
+<p>Click OK. The addresses to notify, those within 100m of the area of interest, should appear in the Visual Preview window.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.226.Ex3.Results.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.226.Ex3.Results.png" alt class="image image-block image-center" /></a></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>We have provided GeoJSON code for testing the Geometry parameter. If you want to get your own GeoJSON to test, you can publish your unfinished workspace to FME Server, fill out the Geometry parameter, and copy the resulting GeoJSON code. Alternatively, you can use an online service to generate the GeoJSON for you, e.g. <a href="https://geojson.io/" rel="noreferrer noopener" target="_blank">https://geojson.io/</a>. Just remember the parameter expects a single feature.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="10-change-data-source-to-shared-resources-folder">
+  <span>10) Change Data Source to Shared Resources Folder</span>
+</h2>
+<p>To ensure everyone can run this workspace on FME Server, we should change the address GDB dataset parameter to look for the data on FME Server's Shared Resources Data folder instead of the C:\ drive. We will do this before publishing it to FME Server, and then we can upload the data there when we publish the workspace.</p>
+<p>Double-click the FeatureReader to open its parameters. Change the Dataset parameter to <code>$(FME_SHAREDRESOURCE_DATA)\Addresses.gdb</code>. This path will look for the GDB in the FME Server Data folder. To ensure the FeatureReader still works when reading from FME Server, click Output &gt; Output Ports &gt; Single Output Port.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.227.Ex3.FeatureReader.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.227.Ex3.FeatureReader.png" alt class="image image-block image-center" /></a></p>
+<p>Next, expand the Attribute and Geometry Handling dropdown. Then, expand the &lt;Generic&gt; Port dropdown as well. Since, FME Desktop read the Dataset file we need to import the schema for the file manually.</p>
+<p>Click the ... button beside the attributes to expose bar. Then, select Import... in the Attributes to Expose dialog.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.228.Ex3.Generic.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.228.Ex3.Generic.png" alt class="image image-block image-center" /></a></p>
+<p>Under Format, select Esri Geodatabase (File Geodb Open API). Then, under dataset enter C:\FMEData2020\Data\Addresses\Addresses.gdb</p>
+<p>Click Next to continue. Then, under Feature Types select PostalAddress. Then, click Next again.</p>
+<p>Under Attributes to Expose select Select all. Then, click Import to complete the process.</p>
+<p>Now click OK twice to exit the FeatureReader.</p>
+<p>Note that this workspace won't work on FME Desktop now, but it will run properly on Server. Click OK. The Addresses output port disappears; connect the &lt;Generic&gt; port to the Reprojector_2.</p>
+<h2 id="11-publish-to-fme-server">
+  <span>11) Publish to FME Server</span>
+</h2>
+<p>With the workspace complete, we can now publish to FME Server. Click on the Publish button on the toolbar. Select the Training FME Server connection and the Training repository. Select Data Download and Job Submitter as the Services.</p>
+<p>After publishing, make sure you upload the GDB to FME Server's Data folder. In FME Server, go to Files &amp; Connections: Resources. Then click the Data folder, then the Upload button, and choose Folder. Navigate to <code>C:\FMEData2020\Data\Addresses\Addresses.gdb</code> and upload it.</p>
+<h2 id="12-test-on-fme-server">
+  <span>12) Test on FME Server</span>
+</h2>
+<p>Click the Direct Link to the workspace in the Translation Log (<a href="http://localhost/fmeserver/#/workspaces/run/Training/SelfServe-Ex3-Complete.fmw/" rel="noreferrer noopener" target="_blank">http://localhost/fmeserver/#/workspaces/run/Training/SelfServe-Ex3-Complete.fmw/</a>) and login if necessary.</p>
+<p>Select Training as the Repository and set the Service to Data Download.</p>
+<p>For Published Parameters, you should see the Select construction area parameter. Click on the map icon to select the area.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.228.Ex3.ServerGeometryIcon.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.228.Ex3.ServerGeometryIcon.png" alt class="image image-block image-center" /></a></p>
+<p>When you click on the map icon, the Geometry Picker dialog will appear, which will have a map of the area set up in the published parameter, as well as options along the side to determine which geometry type you wish to use for your selection.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.229.Ex3.GeometryPicker.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.229.Ex3.GeometryPicker.png" alt class="image image-block image-center" /></a></p>
+<p>Zoom into the area of interest. For this example, we will zoom into downtown Vancouver and use the polygon tool to pick a small area of buildings.</p>
+<p>Note: For this workspace to run correctly, buildings with addresses need to be selected. If an area is selected without an address the workspace won’t write out any data. To close off an area in a polygon, double-click on the starting point.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.230.Ex3.GeometryPickerZoom.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.230.Ex3.GeometryPickerZoom.png" alt class="image image-block image-center" /></a></p>
+<p>Once the area is selected, click Confirm. GeoJSON coordinates will now be available in the Select construction area text box.</p>
+<p>Once the map area has been selected, click Run to run the workspace.</p>
+<p>When the workspace has finished running, click on the download link to get the data. Extract and open the data in Microsoft Excel or FME Data Inspector. This list can then be used to send letters to the residents affected by the construction.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.231.Ex3.ExcelResults.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.231.Ex3.ExcelResults.png" alt class="image image-block image-center" /></a></p>
