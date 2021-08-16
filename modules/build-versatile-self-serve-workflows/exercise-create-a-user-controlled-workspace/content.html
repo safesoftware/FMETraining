@@ -1,42 +1,39 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to: </p>
+<p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li>Give users options when using self-serve applications</li>
-  <li>Configure a self-serve service with published parameters</li>
+  <li>Give users options when using self-serve applications.</li>
+  <li>Configure a self-serve service with published parameters.</li>
 </ul>
-<h2 id="intro">
-  <span>Intro</span>
+<h2 id="introduction">
+  <span>Introduction</span>
 </h2>
-<h2 id="exercise">
-  <span>Exercise</span>
-</h2>
-<p>In <a href="https://community.safe.com/s/article/publish-a-workspace-to-fme-server-and-run-it" rel="noreferrer noopener" target="_blank"><strong>part 2</strong></a> , you learned how to publish a workspace to FME Server and run it from the Web User Interface. Now, in part 3, you will modify that workspace, so it allows for “self-serve” data access. This will be accomplished by creating published parameters in FME Workbench, publishing the workspace to FME Server, and seeing how to interact with the published parameters.</p>
-<p><br />Note: In Step 3 there are slightly different instructions if you are following this tutorial with FME Desktop 2021.0 or newer. The concepts are still the same but the interface is different because of the addition of the <a href="https://community.safe.com/s/article/Using-the-Parameter-Manager" rel="noreferrer noopener" target="_blank">Parameter Manager</a>. If you are following this tutorial with FME Desktop 2020.2 or older, the instructions are below the 2021.0 section.<br /> </p>
+<p>In a recent project, you had to compile a list of customers to notify that were affected by a water pump failure. After the list was compiled, the customers were manually notified. In anticipation of an event similar to this in the future, you would like to publish the workspace to FME Server to share with your colleagues, modify the workspace to accept an updated file, as well as automate it, so the workspace runs on a schedule.</p>
+<p>In this exercise, you will create user parameters before publishing the workspace to FME Server. </p>
 <h2 id="video">
   <span>Video</span>
 </h2>
 <p><span><iframe width="640" src="https://www.youtube.com/embed/r9WmYCSRwFg?wmode=opaque" height="360" title="Video Content"></iframe></span></p>
-<p><em>In part 3 of this tutorial, you'll learn how to enable an FME Workspace for self-serve data access so anyone can download your data. This involves creating published parameters in FME Workbench, publishing the workspace to FME Server, and running the workspace from the Web User Interface. Please note that this video was created with FME Server 2019.0, the interface may vary in other versions of FME.</em></p>
-<p> </p>
-<h2 id="step-by-step-instructions">
-  <span>Step-by-Step Instructions</span>
+<p><em>Note that this video was created with FME Server 2019.0; the interface varies in other versions of FME.</em></p>
+<h2 id="1-open-fme-workbench">
+  <span>1) Open FME Workbench</span>
 </h2>
-<p><strong>1. Open FME Workbench</strong></p>
 <p>Open the workspace from <a href="https://community.safe.com/s/article/publish-a-workspace-to-fme-server-and-run-it" rel="noreferrer noopener" target="_blank"><strong>part 2</strong></a> in FME Workbench. Alternatively, open the template attached to this article (CommunityMapping.fmwt) in FME Workbench.</p>
 <p>On the Generic Writer, the default writer format is set to Esri Shapefile. But, the goal is for the user to select the format of their choice, from a small list, at run time. This is accomplished with published parameters.</p>
 <p>Parameters in FME control how FME operates. They exist in many places, such as readers, writers, and transformers.</p>
-<p> </p>
-<p><strong>2. Open the Generic Writer Published Parameters</strong></p>
+<h2 id="2-open-the-generic-writer-published-parameters">
+  <span>2) Open the Generic Writer Published Parameters</span>
+</h2>
 <p>In the Navigator window, expand the GENERIC Writer by clicking the arrow to the left of it, then expand Parameters.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2F" alt="navigatorpane.png" class="image image-block image-center" /></p>
 <p> </p>
 <p>Double-click the Output Format parameter, this shows that it’s been set up so the user can select from any format in the formats gallery.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2G" alt="currentparam.png" class="image image-block image-center" /></p>
 <p>But that’s not what we want. The goal is to present the user with a list of 4 common formats. So, we will create a new user parameter and define it accordingly.</p>
-<p> </p>
-<p><strong>3. Create New User Parameter</strong></p>
+<h2 id="3-create-new-user-parameter">
+  <span>3. Create New User Parameter</span>
+</h2>
 <p><u>FME Desktop 2021.0 or newer:</u><br />In the Navigator window, right-click on User Parameters and select Manage User Parameters.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028cqe" alt="OpenParam.png" class="image image-block image-center" /><br /><br />Click on the Green plus sign then select Choice.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028cr8" alt="Choice.png" class="image image-block image-center" /><br /><br />On the right-hand side fill in the following parameter properties:<br /><strong>Parameter Identifier: </strong>Output_Format<br /><strong>Prompt: </strong>Enter an output format<br /><strong>Published:</strong> Enabled<br /><strong>Required:</strong> Disabled<br /><strong>Disable Attribute Assignment:</strong> Enabled<br /><strong>Choice Configuration:</strong> Drop-down<br /><br />Then for Choices enter the following:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
@@ -80,18 +77,24 @@
 <p>Back in the Add/Edit Parameter dialog, select Esri Shapefile for the default value. The completed parameter should look like this:</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2L" alt="completeparams.png" class="image image-block image-center" /></p>
 <p> </p>
-<p><strong>4. Link Published Parameter to Output Format Parameter</strong></p>
+<h2 id="4-link-published-parameter-to-output-format-parameter">
+  <span>4. Link Published Parameter to Output Format Parameter</span>
+</h2>
 <p>Our new Output_Format parameter appears under User Parameters &gt; Published Parameters, but we still have to link it to the Generic Writer’s Output Format parameter. Locate the Output [GENERIC] Writer, and expand it with the arrow to view the Parameters, the first one being Output Format. Right-click on Output Format, select Link to User Parameter.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2M" alt="linktoparam.png" class="image image-block image-center" /></p>
 <p> </p>
 <p>Select the new Output_Format parameter we just created.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2N" alt="selectoutputformat.png" class="image image-block image-center" /></p>
 <p> </p>
-<p><strong>5. Run the workspace</strong></p>
+<h2 id="5-run-the-workspace">
+  <span>5. Run the workspace</span>
+</h2>
 <p>If you run the workspace immediately, it will use the default value and output Esri Shapefile. However, if you select Prompt for User Parameters then click Run, you will be prompted to choose the output format. Notice only those four formats are presented now in the drop-down list. Pick GML. The workspace runs successfully.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2O" alt="promptforparams.png" class="image image-block image-center" /></p>
 <p> </p>
-<p><strong>6. Publish Features Types to Read Parameter</strong></p>
+<h2 id="6-publish-features-types-to-read-parameter">
+  <span>6. Publish Features Types to Read Parameter</span>
+</h2>
 <p>Now let’s set up the workspace so the user gets to choose which feature types they want to request.</p>
 <p>In the Navigator, expand the CommunityMap [FILEGDB] File Geodatabase Reader &gt; Parameters &gt; and double click Features to Read. This parameter lets the user decide which feature types to process when the workspace runs. Close the dialogue.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2P" alt="featuretypestoread.png" class="image image-block image-center" /></p>
@@ -99,12 +102,16 @@
 <p>Right-click on Feature Types to Read parameter and select Create User Parameter. Go with the defaults for the definition, and click OK. Confirm the new parameter appears under Published Parameters.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2Q" alt="modifyfeaturetypes.png" class="image image-block image-center" /></p>
 <p> </p>
-<p><strong>7. Run Workspace Again</strong></p>
+<h2 id="7-run-workspace-again">
+  <span>7. Run Workspace Again</span>
+</h2>
 <p>Ensure that Prompt for User Parameters is still enabled and rerun the workspace.</p>
 <p>Notice that this time there are two parameters to set. Set it to whatever parameters you wish, and then click Run. Confirm that the workspace runs correctly.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2R" alt="runwithprompt.png" class="image image-block image-center" /></p>
 <p> </p>
-<p><strong>8. Publish to FME Server</strong></p>
+<h2 id="8-publish-to-fme-server">
+  <span>8. Publish to FME Server</span>
+</h2>
 <p>Now that we have the parameters set up and confirmed that the workspace runs correctly, we can publish it to FME Server.</p>
 <p> </p>
 <p>Before publishing, save the workspace. Once saved, go to File &gt; Publish to FME Server on the top menu bar.</p>
@@ -113,24 +120,21 @@
 <p> </p>
 <p><strong>Note: </strong>If you did not complete the <a href="https://community.safe.com/s/article/publish-a-workspace-to-fme-server-and-run-it" rel="noreferrer noopener" target="_blank"><strong>previous tutorial</strong></a>, go back to the tutorial and follow the instructions in Step 3 to learn how to publish a workspace to FME Server.</p>
 <p> </p>
-<p><strong>8. Open the FME Server Web User Interface</strong></p>
+<h2 id="8-open-the-fme-server-web-user-interface">
+  <span>8. Open the FME Server Web User Interface</span>
+</h2>
 <p>Open and log into the FME Server Web User Interface. If this is your first time logging into FME Server, please see the instructions in <a rel="noreferrer noopener" target="_blank"><strong>Tutorial: Getting Started with FME Server</strong></a> to learn how to do this.</p>
 <p> </p>
-<p><strong>9. Run Workspace</strong></p>
+<h2 id="9-run-workspace">
+  <span>9. Run Workspace</span>
+</h2>
 <p>On the side menu bar in FME Server, click on Run Workspace. On the Run Workspace page, select Server Tutorial for the Repository and the CommunityMapping workspace. Select Data Download for the Service.</p>
 <p>Check out the Published Parameters. The two parameters that were set up and just tested in FME Workbench are shown. Just as before, select an output format, and select one or more feature types.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2S" alt="publishedparamsserver.png" class="image image-block image-center" /></p>
 <p> </p>
 <p>Once you have selected the parameters, click Run.</p>
 <p> </p>
-<p><strong>10. View the Results</strong></p>
-<p>The Data Download service presents a URL link to the translation results in a zip file. A quick inspection of the contents of the zip file confirms the results are what we expected.</p>
-<p> </p>
-<p><strong>Data Attribution</strong></p>
-<p>The data used here originates from open data made available by the <a href="https://opendata.vancouver.ca/pages/home/" rel="noreferrer noopener" target="_blank"><strong>City of Vancouver</strong></a> , British Columbia. It contains information licensed under the Open Government License - Vancouver.</p>
-<p> </p>
-<p> </p>
-<h2 id="continue-to-next-article">
-  <span>Continue to Next Article</span>
+<h2 id="10-view-the-results">
+  <span>10. View the Results</span>
 </h2>
-<p><a href="https://community.safe.com/s/article/schedule-a-workspace-to-run-with-fme-server" rel="noreferrer noopener" target="_blank">Schedule a Workspace to Run with FME Server Automations</a> ]</p>
+<p>The Data Download service presents a URL link to the translation results in a zip file. A quick inspection of the contents of the zip file confirms the results are what we expected.</p>
