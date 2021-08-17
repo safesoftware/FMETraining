@@ -6,6 +6,13 @@
   <li>Give users options when using self-serve applications.</li>
   <li>Configure a self-serve service with published parameters.</li>
 </ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/CreateDataIntegrationApps/exercise-create-a-user-controlled-workspace.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/CreateDataIntegrationApps/exercise-create-a-user-controlled-workspace-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
+</ul>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
@@ -19,22 +26,50 @@
 <h2 id="1-open-fme-workbench">
   <span>1) Open FME Workbench</span>
 </h2>
-<p>Open the workspace from <a href="https://community.safe.com/s/article/publish-a-workspace-to-fme-server-and-run-it" rel="noreferrer noopener" target="_blank"><strong>part 2</strong></a> in FME Workbench. Alternatively, open the template attached to this article (CommunityMapping.fmwt) in FME Workbench.</p>
-<p>On the Generic Writer, the default writer format is set to Esri Shapefile. But, the goal is for the user to select the format of their choice, from a small list, at run time. This is accomplished with published parameters.</p>
-<p>Parameters in FME control how FME operates. They exist in many places, such as readers, writers, and transformers.</p>
+<p>Open starting workspace in FME Workbench (2021.1 or later).</p>
 <h2 id="2-open-the-generic-writer-published-parameters">
   <span>2) Open the Generic Writer Published Parameters</span>
 </h2>
-<p>In the Navigator window, expand the GENERIC Writer by clicking the arrow to the left of it, then expand Parameters.</p>
+<p>Look at the Navigator window. This workspace uses a Generic writer, which can write to any FME-supported format. </p>
+<p>In the Navigator window, expand the Generic writer by clicking the arrow to the left of it, then expand Parameters.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2F" alt="navigatorpane.png" class="image image-block image-center" /></p>
-<p> </p>
-<p>Double-click the Output Format parameter, this shows that it’s been set up so the user can select from any format in the formats gallery.</p>
+<p>Currently, the default format is set to Esri Shapefile. But, the goal for this exercise is for the user to select the format of their choice from a small list, at run time. This step is accomplished with published parameters. </p>
+<p>Double-click the Output Format parameter, which shows that it’s been set up so the user can select from any format.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2G" alt="currentparam.png" class="image image-block image-center" /></p>
-<p>But that’s not what we want. The goal is to present the user with a list of 4 common formats. So, we will create a new user parameter and define it accordingly.</p>
+<p>But that’s not what we want. The goal is to present the user with a list of four common formats. So, we will create a new user parameter and define it accordingly.</p>
 <h2 id="3-create-new-user-parameter">
   <span>3. Create New User Parameter</span>
 </h2>
-<p><u>FME Desktop 2021.0 or newer:</u><br />In the Navigator window, right-click on User Parameters and select Manage User Parameters.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028cqe" alt="OpenParam.png" class="image image-block image-center" /><br /><br />Click on the Green plus sign then select Choice.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028cr8" alt="Choice.png" class="image image-block image-center" /><br /><br />On the right-hand side fill in the following parameter properties:<br /><strong>Parameter Identifier: </strong>Output_Format<br /><strong>Prompt: </strong>Enter an output format<br /><strong>Published:</strong> Enabled<br /><strong>Required:</strong> Disabled<br /><strong>Disable Attribute Assignment:</strong> Enabled<br /><strong>Choice Configuration:</strong> Drop-down<br /><br />Then for Choices enter the following:</p>
+<p>In the Navigator window, right-click on User Parameters and select Manage User Parameters.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028cqe" alt="OpenParam.png" class="image image-block image-center" /><br /><br />Click on the Green plus sign then select Choice.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028cr8" alt="Choice.png" class="image image-block image-center" /><br /><br />On the right-hand side fill in the following parameter properties:</p>
+<table style="width:100%" class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td style="width:50.0000%"><strong>Parameter Identifier</strong><br /></td>
+      <td style="width:50.0000%">Output_Format<br /></td>
+    </tr>
+    <tr>
+      <td style="width:50.0000%"><strong>Prompt</strong><br /></td>
+      <td style="width:50.0000%">Enter an output format:<br /></td>
+    </tr>
+    <tr>
+      <td style="width:50.0000%"><strong>Published</strong><br /></td>
+      <td style="width:50.0000%">Enabled<br /></td>
+    </tr>
+    <tr>
+      <td style="width:50.0000%"><strong>Required</strong><br /></td>
+      <td style="width:50.0000%">Disabled<br /></td>
+    </tr>
+    <tr>
+      <td style="width:50.0000%"><strong>Disable Attribute Assignment:</strong><br /></td>
+      <td style="width:50.0000%">Enabled<br /></td>
+    </tr>
+    <tr>
+      <td style="width:50.0000%"><strong>Choice Configuration</strong><br /></td>
+      <td style="width:50.0000%">Drop-down<br /></td>
+    </tr>
+  </tbody>
+</table>
+<p><br />Then for Choices enter the following:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
@@ -51,32 +86,11 @@
     </tr>
     <tr>
       <td colspan="1" rowspan="1">GML</td>
-      <td colspan="1" rowspan="1">GML</td>
+      <td colspan="1" rowspan="1">GML (Geography Markup Language)<br /></td>
     </tr>
   </tbody>
 </table>
-<p>Then select Esri Shapefile as the default value and click OK.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028crD" alt="OutputFormat.png" class="image image-block image-center" /><br /><br /><u>In FME Desktop 2020.2 or older:</u><br />In the Navigator window, right-click on User Parameters and select Create User Parameter.</p>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2H" alt="createnewparam.png" class="image image-block image-center" /></p>
-<p> </p>
-<p>In the Add/Edit User Parameter dialog, enter the following parameters:</p>
-<p><strong>Type:</strong> Choice with Alias</p>
-<p><strong>Name: </strong>Output_Format</p>
-<p><strong>Prompt: </strong>Enter an output format:</p>
-<p><strong>Published: </strong>Checked</p>
-<p><strong>Optional:</strong> Checked</p>
-<p>Next, click the ellipsis button for Configuration and we are going to import the formats we want the user to use.</p>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2I" alt="firstparams.png" class="image image-block image-center" /></p>
-<p> </p>
-<p>In the Edit Choice with Display Name dialog, click on Import, then Writer Formats. From here we will import the writer formats we want to use.</p>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2J" alt="importwriters.png" class="image image-block image-center" /></p>
-<p> </p>
-<p> </p>
-<p>Search and select Esri Shapefile, GML, Bentley Microstation Design V8, and MapInfo TAB (MITAB). Click OK, and OK again.</p>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2K" alt="selectformats.png" class="image image-block image-center" /></p>
-<p> </p>
-<p>Back in the Add/Edit Parameter dialog, select Esri Shapefile for the default value. The completed parameter should look like this:</p>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2L" alt="completeparams.png" class="image image-block image-center" /></p>
-<p> </p>
+<p>Then select Esri Shapefile as the default value and click OK.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028crD" alt="OutputFormat.png" class="image image-block image-center" /></p>
 <h2 id="4-link-published-parameter-to-output-format-parameter">
   <span>4. Link Published Parameter to Output Format Parameter</span>
 </h2>
@@ -85,11 +99,11 @@
 <p> </p>
 <p>Select the new Output_Format parameter we just created.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2N" alt="selectoutputformat.png" class="image image-block image-center" /></p>
-<p> </p>
+<p>Click OK.</p>
 <h2 id="5-run-the-workspace">
   <span>5. Run the workspace</span>
 </h2>
-<p>If you run the workspace immediately, it will use the default value and output Esri Shapefile. However, if you select Prompt for User Parameters then click Run, you will be prompted to choose the output format. Notice only those four formats are presented now in the drop-down list. Pick GML. The workspace runs successfully.</p>
+<p>If you run the workspace immediately, it will use the default value and output an Esri Shapefile. However, if you select Prompt for User Parameters then click Run, you will be prompted to choose the output format. Notice only those four formats are presented now in the drop-down list. Pick GML. The workspace runs successfully.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2O" alt="promptforparams.png" class="image image-block image-center" /></p>
 <p> </p>
 <h2 id="6-publish-features-types-to-read-parameter">
@@ -112,28 +126,21 @@
 <h2 id="8-publish-to-fme-server">
   <span>8. Publish to FME Server</span>
 </h2>
-<p>Now that we have the parameters set up and confirmed that the workspace runs correctly, we can publish it to FME Server.</p>
-<p> </p>
+<p>Now that we have the parameters set up and confirmed that the workspace runs correctly, we can publish it to FME Server. </p>
 <p>Before publishing, save the workspace. Once saved, go to File &gt; Publish to FME Server on the top menu bar.</p>
-<p> </p>
-<p>Connect to the same connection as the <a href="https://community.safe.com/s/article/publish-a-workspace-to-fme-server-and-run-it" rel="noreferrer noopener" target="_blank"><strong>previous tutorial</strong></a>. Select the Server Tutorial repository that we also created in the previous tutorial. We will keep the workspace name CommunityMapping.fmw and just overwrite the previously uploaded workspace.</p>
-<p> </p>
-<p><strong>Note: </strong>If you did not complete the <a href="https://community.safe.com/s/article/publish-a-workspace-to-fme-server-and-run-it" rel="noreferrer noopener" target="_blank"><strong>previous tutorial</strong></a>, go back to the tutorial and follow the instructions in Step 3 to learn how to publish a workspace to FME Server.</p>
-<p> </p>
+<p>Connect to your FME Server and publish to a repository called Training. Call the workspace CommunityMapping.fmw. Register it with the Data Download and Job Submitter services. </p>
 <h2 id="8-open-the-fme-server-web-user-interface">
   <span>8. Open the FME Server Web User Interface</span>
 </h2>
-<p>Open and log into the FME Server Web User Interface. If this is your first time logging into FME Server, please see the instructions in <a rel="noreferrer noopener" target="_blank"><strong>Tutorial: Getting Started with FME Server</strong></a> to learn how to do this.</p>
-<p> </p>
+<p>Open and log into the FME Server Web User Interface.</p>
 <h2 id="9-run-workspace">
   <span>9. Run Workspace</span>
 </h2>
-<p>On the side menu bar in FME Server, click on Run Workspace. On the Run Workspace page, select Server Tutorial for the Repository and the CommunityMapping workspace. Select Data Download for the Service.</p>
+<p>On the side menu bar in FME Server, click on Run Workspace. On the Run Workspace page, select Training for the Repository and the CommunityMapping workspace. Select Data Download for the Service.</p>
 <p>Check out the Published Parameters. The two parameters that were set up and just tested in FME Workbench are shown. Just as before, select an output format, and select one or more feature types.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lK8a&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YT2S" alt="publishedparamsserver.png" class="image image-block image-center" /></p>
 <p> </p>
 <p>Once you have selected the parameters, click Run.</p>
-<p> </p>
 <h2 id="10-view-the-results">
   <span>10. View the Results</span>
 </h2>
