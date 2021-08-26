@@ -1,0 +1,117 @@
+<h2 id="to-do">
+  <span>To-Do</span>
+</h2>
+<ul>
+  <li>Clarify step 8</li>
+  <li>Quiz</li>
+  <li>Projects</li>
+</ul>
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Add an Automations Writer to a workspace.</li>
+  <li>Set up an outgoing Email Action.</li>
+  <li>Trigger an Email notification through Automations.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-use-the-automations-writer.fmwt" rel="noreferrer noopener" target="_blank">Starting workspace template</a></li>
+  <li>Starting FME Server project</li>
+  <li>Complete FME Server project</li>
+  <li>C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex4-Begin.fsproject</li>
+  <li>C:\FMEData2020\Projects\ServerAuthoring\RealTime-Ex4-Complete.fsproject</li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>You have recently created an Automation in FME Server that processes building footprint updates with both the Directory Watch and Email Triggers. Now your supervisor is wondering if they can receive an email whenever the corporate database is updated.</p>
+<p>Using an external email server, you think that it is possible to configure the existing Automation in FME Server to satisfy this requirement. You also realize that you can use an Automations Writer in the workspace to include additional information about the updates made to the corporate database in the email that is sent.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>This is a great use-case for the Email External Action. However, those can be a bit tricky to configure due to email server security.</p>
+            <p>Therefore, for simplicity's sake, in this exercise we will just use the Log a Message Action in place of the Email External Action.</p>
+            <p>If you are still interested in learning how to use the email with Automations, please refer to the <a href="https://safe.my.trailhead.com/en/content/safe/modules/build-versatile-automations/run-workspaces-with-email-triggers" rel="noreferrer noopener" target="_blank">Run Workspaces with Email Triggers</a> unit.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="1-open-workspace-in-workbench">
+  <span>1) Open Workspace in Workbench</span>
+</h2>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-use-the-automations-writer.fmwt" rel="noreferrer noopener" target="_blank">starting workspace template</a> in FME Workbench (2021.1 or later).</p>
+<h2 id="2-create-summary-information-for-job">
+  <span>2) Create Summary Information for Job</span>
+</h2>
+<p>You are going to update this workspace to generate a summary of the number of records that were updated from the incoming Shapefile. Add an Aggregator transformer and connect it in parallel to the Shapefile Reader like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.439.Ex4.Aggregator.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.439.Ex4.Aggregator.png" alt class="image image-block image-center" /></a></p>
+<p><br />Open the Aggregator parameters dialog and set the Count Attribute to NumberOfUpdates.</p>
+<h2 id="3-add-automations-writer">
+  <span>3) Add Automations Writer</span>
+</h2>
+<p>Go to Writers &gt; Add Writer and select the FME Server Automations format. Set the Feature Type Definition to Automatic... and click OK to add the writer to the canvas. </p>
+<p>When prompted, set the Feature Type Name to JobSummary and click OK.</p>
+<p>Connect the Automations Writer feature type to the output port of the Aggregator transformer.</p>
+<h2 id="4-clean-up-automations-writer-attributes">
+  <span>4) Clean up Automations Writer Attributes</span>
+</h2>
+<p>After connecting the Automations writer, you'll notice that all the attributes from the Shapefile data are included on the writer. We don't need all that information within the Automation. Double-click JobSummary to open its parameter dialog, then go to User Attributes and select Manual under Attribute Definition.</p>
+<p>Remove all the attributes except for the one we created earlier, NumberOfUpdates. Set the Type for NumberOfUpdates to int, as this is a numeric value.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.440.Ex4.FeatureTypeDefinition.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.440.Ex4.FeatureTypeDefinition.png" alt class="image image-block image-center" /></a></p>
+<p>Click OK to apply that change. At this stage, there should be two attributes on the JobSummary Feature Type: NumberOfUpdates and fme_feature_type</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.441.Ex4.FeatureTypeFinal.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.441.Ex4.FeatureTypeFinal.png" alt class="image image-block image-center" /></a></p>
+<h2 id="5-save-and-publish-workspace">
+  <span>5) Save and Publish Workspace</span>
+</h2>
+<p>Save the workspace.</p>
+<p>Select File &gt; Publish it to FME Server. </p>
+<p>Choose your FME Server Connection to use. Click Next.</p>
+<p>Use the Training Repository (click New... and create it if it doesn't exist). Check Upload data files. Click Next.</p>
+<p>Ensure only the Job Submitter service is checked. Click Publish.</p>
+<h2 id="6-import-fme-server-project">
+  <span>6) Import FME Server Project</span>
+</h2>
+<p><strong>Need to update Server project for https://s3.amazonaws.com/gitbook/Server-Authoring-2019/ServerAuthoring4RealTime/Exercise3.html</strong></p>
+<p>We need to import the Automation you've already created that checks for building updates.</p>
+<p>Download the project here.</p>
+<p>Open the FME Server web interface and navigate to the Projects &gt; Manage Projects page. </p>
+<p><img src="images/1630020248642.png" class="image image-block image-center" /></p>
+<p>Click the Import button and select the project you just downloaded.</p>
+<h2 id="6-update-workspace-action">
+  <span>6) Update Workspace Action</span>
+</h2>
+<p>Navigate to Automations &gt; Manage Automations. Click the Incoming Building Footprints Automation to edit it. </p>
+<p>You can see that this Automation starts with either a Directory Watch Trigger with a Filter or an incoming Email (SMTP) Trigger. On success, both streams run the RealTime-Ex2-Complete.fmw workspace. We need to update this Action to use our new workspace.</p>
+<p>Click on the Workspace Action in the Automation to open its parameters. Change the Workspace parameter to your recently published workspace. Set the SpatialLite Database path to <code>$(FME_SHAREDRESOURCE_DATA)/Output/building_footprints.sl3</code> (the output SpatialLite database we just added using the Server Project). Click Apply. </p>
+<p>A new output port should appear in the Automation, created by the Automation Writer we just added to the workspace:</p>
+<p><img src="images/1630021086770.png" class="image image-block image-center" /></p>
+<h2 id="7-add-external-action">
+  <span>7) Add External Action</span>
+</h2>
+<p>The final step in the Automation is to add an email service External Action through which a response will be sent.</p>
+<p>Select the plus icon in the bottom left and drag an Action (orange) to the canvas. Connect this to the JobSummary output port of the Run Workspace node, which will now also act as a Trigger.</p>
+<p><strong><img src="images/1630021414965.png" class="image image-block image-center" /></strong></p>
+<p>Click the FME logo on Action to open its parameters. Choose Log a message for the Action. Enter the following for the Formatted Message:</p>
+<div><pre>The Building Footprints database has been updated! {route.JobSummary.NumberOfUpdates} records were updated from a file called {route.JobSummary.fme_feature_type}</pre>
+</div>
+<p>If you prefer, you can enter this manually using the Text Editor. You can access it by clicking the drop-down arrow next to Formatted Message and clicking Text Editor:</p>
+<p><img src="images/1630021830535.png" class="image image-block image-center" /></p>
+<p>Similar to the Text Editor in FME Workbench, you can construct values using the tree of keys on the left. Double-click to insert one.</p>
+<p><img src="images/1630021795718.png" class="image image-block image-center" /></p>
+<p>After entering in your Formatted Message, click Apply.</p>
+<h2 id="8-test-automation">
+  <span>8) Test Automation</span>
+</h2>
+<p>Test the Automation by uploading the ZIP file attachment (link) of the Shapefile datasets (.dbf, .prj, .shp, .shx) to FME Server's Shared Resources Data folder. When the update SHP files arrive, they will kick off the Automation and log the results.</p>
+<p>Upload steps</p>
+<p>Inspect log steps</p>
