@@ -29,14 +29,14 @@
   <span>Run Jobs in Sequence</span>
 </h2>
 <p>When actions are connected in sequence, they are connected in a string like this:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.019.Sequence.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.019.Sequence.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.019.Sequence.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.019.Sequence.png" alt="Jobs in a line" class="image image-block image-center" /></a></p>
 <p>When connected like this, these jobs will run sequentially. So, the first job will be submitted and FME Server will wait for it to run to completion. When it finishes, the next job will run to completion before the next action in the chain starts.</p>
 <p>In this example, since the second workspace is connected to the Success port of the action for the first workspace, it will only run if the first job completes successfully. You can add additional actions connected to the failed ports if you wanted to handle those failures in some way. For example, if you wanted to send an email out if one of the jobs in this Automation failed to complete.</p>
 <h2 id="run-jobs-in-parallel">
   <span>Run Jobs in Parallel</span>
 </h2>
 <p>When actions are connected in parallel, they are connected to a single starting point (this can be a Trigger or another Action within the Automation) instead of in a row:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.020.Parallel.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.020.Parallel.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.020.Parallel.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.020.Parallel.png" alt="Jobs in parallel" class="image image-block image-center" /></a></p>
 <p>When connected like this, both these jobs will be submitted at the same time.</p>
 <p>If there are at least two engines available on FME Server, then they will both run at the same time. If there is only one available engine, one job will run on that engine and the next job will wait in the queue until an engine becomes available. There is no guarantee as to which of these jobs will run first in this case (unless Job Queues have been configured for these workspaces to give them a priority).</p>
 <h2 id="conditional-processing">
@@ -44,9 +44,9 @@
 </h2>
 <p>There are two Action types that are particularly useful if you need to build some additional logic into your Automations. These are the Filter and Merge Actions.</p>
 <p>The Filter can be used to check if a simple condition is true or false. In the example below, we are using a Filter to check if an email contained a .dgn file as an attachment. If that is true, we will run one workspace and if it's false, we will run a different workspace.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.021.FilterTest.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.021.FilterTest.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.021.FilterTest.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.021.FilterTest.png" alt="Setting a Filter Action parameters" class="image image-block image-center" /></a></p>
 <p>The Merge Action can be used to merge two parallel streams together. This is useful if you want to trigger several jobs to run at the same time (in parallel), and then wait for all of them to complete before moving onto the next action:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.022.MergeAction.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.022.MergeAction.png" alt class="image image-block image-center" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.022.MergeAction.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.022.MergeAction.png" alt="Using a Merge action to bring messages together" class="image image-block image-center" /></a></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -123,7 +123,7 @@
     </div>
   </div>
 </div>
-<p><img src="images/1630352646910.png" class="image image-block image-center" /></p>
+<p><img src="images/1630352646910.png" class="image image-block image-center" alt="Configuring Directory Watch Details" /></p>
 <p>Click Apply.</p>
 <h2 id="4-add-workspace-action">
   <span>4) Add Workspace Action</span>
@@ -146,14 +146,14 @@
     </tr>
   </tbody>
 </table>
-<p><img src="images/1630355153408.png" class="image image-block image-center" style="width:600px" /></p>
+<p><img src="images/1630355153408.png" class="image image-block image-center" style="width:600px" alt="Configuring Run a Workspace Action Details" /></p>
 <h2 id="5-add-second-workspace-action">
   <span>5) Add Second Workspace Action</span>
 </h2>
 <p>Remember that a Workspace Action will always wait until the job finishes before moving onto the next Action within the Automation.</p>
 <p>To set up the second workspace to run, simply add a second Action and connect it to the Succeeded port on the Workspace Action we just added. Configure this one to run exercise-chain-multiple-jobs-in-an-automation-b.fmw in the Training repository.</p>
 <p>Your final Automation should look like this:</p>
-<p><img src="images/1630355281381.png" class="image image-block image-center" style="width:400px" /></p>
+<p><img src="images/1630355281381.png" class="image image-block image-center" style="width:400px" alt="Chain" /></p>
 <h2 id="6-save-and-start-automation">
   <span>6) Save and Start Automation</span>
 </h2>
@@ -164,4 +164,4 @@
 <p>Now you can test the Automation by uploading a modified version of the ElectionVoting.gml file to Resources.</p>
 <p>Open the Resources page and navigate to Data &gt; Election &gt; Input. Click on Upload &gt; Files and upload <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Elections/ElectionVoting.gml" rel="noreferrer noopener" target="_blank">this file</a>.</p>
 <p>Wait a minute or so and then View Triggered Jobs for your Automation. You should see that both chained workspaces successfully ran in order.</p>
-<p><img src="images/1630360370013.png" class="image image-block image-center" style="width:700px" /></p>
+<p><img src="images/1630360370013.png" class="image image-block image-center" style="width:700px" alt="Viewing Triggered Jobs" /></p>
