@@ -2,16 +2,19 @@
   <span>Learning Objectives</span>
 </h2>
 <ul>
-  <li>Identify JSON elements from an incoming Trigger message</li>
-  <li>Configure the Automation to run a workspace in response to a Trigger using part of this message</li>
-  <li>Chain actions by passing an element of the incoming JSON through a filter</li>
+  <li>Identify JSON elements from an incoming Trigger message.</li>
+  <li>Configure the Automation to run a workspace in response to a Trigger using part of this message.</li>
+  <li>Chain actions by passing an element of the incoming JSON through a filter.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a rel="noreferrer noopener" target="_blank">Begin Server Project</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Building Footprints Esri Shapefile</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-process-directory-watch-messages-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-process-directory-watch-messages.fsproject" rel="noreferrer noopener" target="_blank">Starting FME Server project</a></li>
+  <li>Complete FME Server project</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Building Footprints Esri Shapefiles</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip" rel="noreferrer noopener" target="_blank">update001.zip</a></li>
 </ul>
 <div class="box message info">
   <div class="inner">
@@ -20,7 +23,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>This exercise continues where <a href="https://safe.my.trailhead.com/trailmaker/contents/module/90d64ba1-398b-4b29-af5d-be87c9d1237f/unit/eeb14b95-1b8b-46e7-9616-4af9f0371b4c" rel="noreferrer noopener" target="_blank">Exercise: Create a Directory Watch Automation</a> left off. You must have completed the previous exercise to carry out this exercise, or upload the Begin Server Project to FME Server to start where the previous exercise left off.</p>
+            <p>This exercise continues where <a href="https://safe.my.trailhead.com/en/content/safe/modules/build-versatile-automations/exercise-create-a-directory-watch-automation" rel="noreferrer noopener" target="_blank">Exercise: Create a Directory Watch Automation</a> left off. You must have completed the previous exercise to carry out this exercise or upload the Starting FME Server Project to FME Server to start where the previous exercise left off.</p>
           </div>
         </div>
       </div>
@@ -30,13 +33,13 @@
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>As a technical analyst in the GIS department, you have realized the overhead associated with pushing manual updates to your corporate database. Having read up about automations in FME Server, you think that it should be possible to set up a system that automates this process.</p>
+<p>As a technical analyst in the GIS department, you have realized the overhead associated with pushing manual updates to your corporate database. Having read up about Automations in FME Server, you think that it should be possible to set up a system that automates this process.</p>
 <p>So far you have set up a system for added file notifications to be registered by FME Server. Now you must create a workspace to process these and publish it to FME Server. The workspace must then be triggered by the Directory Watch in Automations.</p>
 <p>You may have noticed that the Log Action in Automations actually submits a workspace to process this request. Therefore we have already - perhaps unknowingly - covered how to set up this response. Now it's time to create a new workspace to fit in with your overall goal: to provide real-time updates to your corporate database.</p>
 <h2 id="1-create-workspace">
   <span>1) Create Workspace</span>
 </h2>
-<p>Start FME Workbench and begin with an empty workspace.</p>
+<p>Start FME Workbench (2021.1 or later) and begin with an empty workspace.</p>
 <p>Select <strong>Readers &gt; Add Reader </strong>from the menu bar. When prompted set the parameters as follows:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
@@ -46,7 +49,7 @@
     </tr>
     <tr>
       <td>Reader Dataset</td>
-      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">C:\FMEData2021\Data\Engineering\BuildingFootprints\update001.shp</a></td>
+      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip</a><br /></td>
     </tr>
     <tr>
       <td>Workflow Options</td>
@@ -69,7 +72,7 @@
     </tr>
     <tr>
       <td>Writer Dataset</td>
-      <td>C:\FMEData2021\Data\Engineering\BuildingFootprints\building_footprints.sl3</td>
+      <td>C:\FMEData2021\Data\Engineering\BuildingFootprints\building_footprints.sl3<br />(Note: <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/building_footprints.sl3" rel="noreferrer noopener" target="_blank">download</a> and extract this file to this path if you do not already have FMEData loaded)</td>
     </tr>
     <tr>
       <td>Writer Parameters</td>
@@ -93,17 +96,17 @@
 <h2 id="4-publish-workspace">
   <span>4) Publish Workspace</span>
 </h2>
-<p>Save the workspace as RealTime-Ex2-Complete.fmw and publish it to the Training Repository in FME Server. We only need it to be run (not do anything special) so register it with the Job Submitter service only.</p>
+<p>Save the workspace as exercise-process-directory-watch-messages-complete.fmw and publish it to the Training Repository in FME Server. We only need it to be run (not do anything special) so register it with the Job Submitter service only.</p>
 <h2 id="5-add-dataset-to-fme-server">
   <span>5) Add Dataset to FME Server</span>
 </h2>
-<p><br />Since the purpose of this Automation is to <em>update</em> our database – let's make sure that it is accessible in FME Server. To do this, we will upload the <em>building_footprints.sl3</em> SpatiaLite database to FME Server's shared resources.</p>
-<p>Use the FME Server web interface to create a new folder <strong>Output</strong> in <strong>Resources &gt; Data</strong> and upload the file located at C:\FMEData2021\Data\Engineering\BuildingFootprints\building_footprints.sl3</p>
+<p>Since the purpose of this Automation is to <em>update</em> our database – let's make sure that it is accessible in FME Server. To do this, we will upload the <em>building_footprints.sl3</em> SpatiaLite database to FME Server's shared resources.</p>
+<p>Use the FME Server web interface to create a new folder <strong>Output</strong> in <strong>Resources &gt; Data</strong> and upload the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/building_footprints.sl3" rel="noreferrer noopener" target="_blank">database</a>.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.UploadDatabase.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.UploadDatabase.png" alt="Add building_footprints.sl3 to Resources" class="image image-block image-center" /></a></p>
 <h2 id="6-edit-automation">
   <span>6) Edit Automation</span>
 </h2>
-<p>Navigate to the Automations: Manage Automations page and select <strong>Incoming Building Footprints </strong>to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the Action parameter value to Run a workspace.</p>
+<p>Navigate to the Automations: Manage Automations page and select <strong>Incoming Building Footprints </strong>to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the Action parameter value to Run a workspace.</p>
 <p>Select the Training Repository and workspace uploaded in the previous step. The parameters should now include one for the Source Esri Shapefile and the output database.</p>
 <p>The source dataset needs to pick up the file path from the Directory Watch trigger. From the drop-down menu select<strong> File Path</strong> found under the Directory folder. This drop-down list is essentially the JSON flattened into its separate components.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.SourceDataset.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.SourceDataset.png" alt="Select File Path parameter" class="image image-block image-center" /></a></p>
@@ -112,7 +115,7 @@
 <h2 id="7-add-filter">
   <span>7) Add Filter</span>
 </h2>
-<p>The Esri Shapefile Reader will only accept .shp file extension types, however the Directory Watch will pass a message to the workspace for every file uploaded. To prevent the Automation triggering database update workspaces that will fail add a Filter action so that only the file path containing .shp is parsed to the Run Workspace action.</p>
+<p>The Esri Shapefile Reader will only accept .shp file extension types, however, the Directory Watch will pass a message to the workspace for every file uploaded. To prevent the Automation triggering database update workspaces that will fail, add a Filter action so that only the file path containing .shp is parsed to the Run Workspace action.</p>
 <p>Select the plus icon at the bottom of the canvas, drag an internal action (orange) onto the canvas.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex2.AddFilterAction.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex2.AddFilterAction.png" alt="drag an internal action (orange) onto the canvas" class="image image-block image-center" /></a></p>
 <p>Move the connection lines so that the Directory Watch enters this new Action node and the Run Workspace is connected to the Success Output port of this action.</p>
@@ -142,5 +145,6 @@
 <h2 id="9-inspect-the-output">
   <span>9) Inspect the Output</span>
 </h2>
-<p>In the FME Data Inspector, add a new dataset, and browse to the C:\ProgramData\Safe Software\FMEServer\resources\data\Output\ folder and add the building_footprints.sl3 dataset. Depending on which update file you added, you should see one of the three buildings added to the dataset:</p>
+<p>In the FME Data Inspector, click Open, set Format to SpatiaLite, click the downward-pointing arrow button next to Dataset, Select File from Web, click Browse FME Server..., navigate to Data &gt; Output, and select building_footprints.sl3. Click OK.</p>
+<p>Depending on which update file you added, you should see one of the three buildings added to the dataset:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" alt="Inspect the output" class="image image-block image-center" /></a></p>
