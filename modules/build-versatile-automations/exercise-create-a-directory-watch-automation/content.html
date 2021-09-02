@@ -20,7 +20,22 @@
 <h2 id="1-create-resources-folder">
   <span>1) Create Resources Folder</span>
 </h2>
-<p>Connect to FME Server (admin/FMElearnings). The first step is to create a Resources folder to upload the data. Open the FME Server web interface and navigate to the Files &amp; Connections &gt; Resources page.</p>
+<p>Login to the FME Server (2021.1 or later) web interface. </p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you are taking a Safe Software training course, the username is <code>admin</code> and the password is <code>FMElearnings</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>The first step is to create a Resources folder to upload the data. Open the FME Server web interface and navigate to the Files &amp; Connections &gt; Resources page.</p>
 <p>Browse to the Data folder and create a new subfolder called BuildingUpdates:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.400.Ex1.NewDataFolder.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.400.Ex1.NewDataFolder.png" alt="Create resources folder" class="image image-block image-center" /></a></p>
 <div class="box message info">
@@ -40,7 +55,7 @@
 <h2 id="2-create-automation">
   <span>2) Create Automation</span>
 </h2>
-<p>Now to create the Automation that will watch the BuildingUpdates Directory for incoming files. Navigate to Automations: Build Automation on the side menu bar. In the Getting Started dialog that appears when you go to the Automations page for the first time, click on the Build tab and click Create New to start a new Automation.</p>
+<p>Now to create the Automation that will watch the BuildingUpdates directory for incoming files. Navigate to Automations &gt; Build Automation on the side menu bar. In the Getting Started dialog that appears when you go to the Automations page for the first time, click on the Build tab, and click Create New to start a new Automation.</p>
 <p>By default, Automations starts in guided mode. This means that there is already a Trigger node on the canvas but it will still need to be configured.</p>
 <p>Start by double-clicking the Trigger and a parameter box will appear on the right-hand side of the canvas. Select Directory modified from the drop-down list as the Trigger for this Automation.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.401.Ex1.NewTriggerDialog.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.401.Ex1.NewTriggerDialog.png" alt="Select a Trigger Event" class="image image-block image-center" /></a></p>
@@ -68,7 +83,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>A trigger stores the incoming message event details as JSON however for the standard protocols FME is able to flatten the JSON down into its separate elements so the workspace or other subsequent action does not need to be able to handle this.<br />If your trigger contains information from a webhook that is buried in the JSON you can parse the entire message into a parameter to flatten using JSON transformers in FME Workbench.</p>
+            <p>A trigger stores the incoming message event details as JSON. However, for the standard protocols, FME is able to flatten the JSON down into its separate elements so the workspace or other subsequent action does not need to be able to handle this.<br />If your trigger contains information from a webhook that is buried in the JSON, you can parse the entire message into a parameter to flatten using JSON transformers in FME Workbench.</p>
           </div>
         </div>
       </div>
@@ -80,7 +95,8 @@
 <h2 id="5-start-automation">
   <span>5) Start Automation</span>
 </h2>
-<p>In order for FME Server to start watching the directory for incoming files, the Automation must be enabled. Select the Start Automation button in the top right corner. The button will turn red and an orange warning ribbon will appear across the canvas indicating that your Automation is currently running. This means FME Server is now checking that directory every 30 seconds for updates.</p>
+<p>In order for FME Server to start watching the directory for incoming files, the Automation must be enabled. Select the Start Automation button in the top right corner.</p>
+<p>The button will turn red and an orange warning ribbon will appear across the canvas indicating that your Automation is currently running. This means FME Server is now checking that directory every 30 seconds for updates.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.407.Ex1.StartAutomation.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.407.Ex1.StartAutomation.png" alt="Start automation" class="image image-block image-center" /></a></p>
 <div class="box message info">
   <div class="inner">
@@ -89,7 +105,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>As your Automation grows you may wish to turn off Guided mode, this can be done by selecting Hide Guides from the Menu drop-down list.</p>
+            <p>As your Automation grows you may wish to turn off Guided mode, this can be done by selecting Hide Guides from the Menu drop-down list when the Automation is stopped.</p>
           </div>
         </div>
       </div>
@@ -99,8 +115,8 @@
 <h2 id="6-test-automation">
   <span>6) Test Automation</span>
 </h2>
-<p>Now let's test the Automation. Locate the source Shapefile datasets in C:\FMEData2021\Data\Engineering\BuildingFootprints or <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">download them here</a>. Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.</p>
-<p>You can use the file system (by copying the files to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates) or use the FME Server web interface.</p>
+<p>Now let's test the Automation. <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Download the source Shapefile datasets here</a>. Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.</p>
+<p>You can use the file system (by copying the files to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates on the Server machine) or use the FME Server web interface (Resources &gt; Data &gt; BuildingUpdates &gt; Upload &gt; Files).</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.408.Ex1.DirectoryWatchDataInFolder.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.408.Ex1.DirectoryWatchDataInFolder.png" alt="Locate the source Shapefile datasets" class="image image-block image-center" /></a></p>
 <p>Check for updates in the log by selecting Menu &gt; View Log File from the Incoming Building Footprints Automation.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.409.Ex1.AutomationViewLogfile.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.409.Ex1.AutomationViewLogfile.png" alt class="image image-block image-center" /></a></p>
