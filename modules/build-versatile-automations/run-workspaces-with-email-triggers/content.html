@@ -4,89 +4,42 @@
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
   <li>Create an Email Trigger.</li>
-  <li>Explain differences between SMTP and IMAP.</li>
-  <li>Awareness of available email templates.</li>
   <li>Understand email in the context of both a Trigger and an Action.</li>
   <li>Know the difference between Workbench/Server Email options.</li>
 </ul>
-<p>FME has the capability to send email notifications to an external client, and this can either be done using the Emailer transformer in FME Workbench, or using the Email Action in Automations on FME Server. This article aims to provide an overview of why you may choose to use one method over the other depending on your use case.</p>
-<h2 id="an-introduction-to-email-in-automations">
-  <span>An Introduction to Email in Automations</span>
-</h2>
-<p>It’s important to cover email notifications in some detail because they are one of the most commonly used protocol types on FME Server.</p>
-<p>“Email” is a protocol that may be used by both Trigger and Action components in an Automations workflow. Email Triggers receive incoming emails from external clients, and Email Actions send emails out to an external account.</p>
-<h2 id="email-protocols">
-  <span>Email Protocols</span>
-</h2>
-<p>In fact, email is not a single protocol. There are several methods of email transfer that exist. FME Server supports two of these email-related protocols: <strong>SMTP</strong> and <strong>IMAP</strong>.</p>
-<p>SMTP (Simple Mail Transfer Protocol) is the ability to <em>directly</em> receive an email through an email server built into FME Server, or <em>indirectly</em> send an email through an SMTP service, for example, a Gmail account.</p>
-<p>IMAP (Internet Message Access Protocol) is an <em>indirect</em> process that connects to an email account on a server elsewhere. When that account receives an email, the IMAP protocol passes it on to FME Server.</p>
-<h2 id="smtp-trigger">
-  <span>SMTP Trigger</span>
-</h2>
-<p>SMTP Triggers are used when data is sent to FME Server via a direct email. FME Server receives an email and triggers an Action in response.</p>
-<p>Such triggers are possible because FME Server includes a built-in email server as one of its components. However, this does require that the hostname and domain of your FME Server should resolve to a publicly accessible IP or DNS.</p>
-<div class="box message info">
-  <div class="inner">
-    <div class="bd">
-      <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
-        <div class="mediaBd">
-          <div class="message-media-content">
-            <p>The steps to set up the built-in email server for notifications are documented in the FME Server Reference Manual.<br /><br />However, FME Cloud instances are automatically configured for email notifications, and have a public domain name too, so you don’t need to do any additional setup.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<h2 id="creating-an-smtp-trigger">
-  <span>Creating an SMTP Trigger</span>
-</h2>
-<p>Creating an SMTP Trigger is done in the Automations: Build Automation section of the FME Server web interface, by choosing the Email (SMTP) protocol as a new Trigger.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.023.SMTPTriggerSettings.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.023.SMTPTriggerSettings.png" alt="Email SMTP Details" class="image image-block image-center" /></a></p>
-<p>Once the protocol type is selected there, is only one parameter that must be configured, that is the Email User Name. This does not need to be an existing user or email; in the above example, it is set up to be AuthoringCourse. Note that you do not need to specify <em>@FMEServer-Hostname.com</em> in the Email User Name parameter.</p>
-<p>To construct the full email address, combine the Email Username with your FMEServer hostname. Now, for this example, whenever an email is sent to AuthoringCourse@<em>YourFMEServerHostname</em> this Automation will receive an incoming message that contains the entire contents of that email, including the from and to address, and any attachments. This information is all processed by FME Server so it can be used to trigger an Action downstream in the workspace.</p>
-<p>In the SMTP trigger, there is an Optional Parameter to specify the location to download any email attachments to. If this is not defined, the attachments will still be saved to a temporary location on FME Server.</p>
-<h2 id="imap-triggers">
-  <span>IMAP Triggers</span>
-</h2>
-<p>IMAP (Internet Message Access Protocol) is a variation on email for incoming notifications.</p>
-<p>Instead of using the built-in email server, an IMAP Trigger connects to another email server and monitors it for incoming email. When a new email arrives in that account, the Automation is triggered.</p>
-<h2 id="creating-an-imap-trigger">
-  <span>Creating an IMAP Trigger</span>
-</h2>
-<p>Like the SMTP protocol, IMAP Triggers are set up in the Automations: Build Automation section of the web interface by creating a new or adding to an existing Automation, but this time choosing the Email (IMAP) protocol:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.024.IMAPTriggerSettings.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.024.IMAPTriggerSettings.png" alt="Email IMAP details" class="image image-block image-center" /></a></p>
-<p>This Trigger has significantly more parameters, most are for defining the IMAP (Email) server connection.</p>
-<p>There are two important parameters that let you decide what and when to watch this Email Server. The Poll interval determines how often FME Server should check for emails and second, the Emails to fetch decides whether to fetch all unread emails or new emails only.</p>
-<p>Like the SMTP Protocol there is a parameter to select an FME Server resource location in which to store any email attachments.</p>
-<div class="box message info">
-  <div class="inner">
-    <div class="bd">
-      <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
-        <div class="mediaBd">
-          <div class="message-media-content">
-            <p>Most email servers support IMAP functionality, as do the majority of cloud-based email providers such as Gmail, Outlook.com, Yahoo!, etc.; so it’s very easy to have FME Server scan a Gmail account (for example) for incoming mail, and then act on its contents. FME Server has the option to load templates for these popular email providers.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 <h2 id="email-actions">
   <span>Email Actions</span>
 </h2>
+<p>FME has the capability to send email notifications to an external client, and this can either be done using the Emailer transformer in FME Workbench, or using the Email Action in Automations on FME Server. This unit aims to provide an overview of why you may choose to use one method over the other depending on your use case.</p>
 <p>Email Actions are designed to have FME Server send an email in response to a Trigger or Internal Action. The built-in email server in FME Server is only for incoming mail, as is the IMAP protocol, so messages need to be sent via an existing (external) SMTP email server.</p>
 <h2 id="setting-up-an-email-action">
   <span>Setting up an Email Action</span>
 </h2>
-<p>Creating an Email Action is done on the Automations page of the web interface, and must connect to an existing Trigger. You can either create a new Automation and first set up a Trigger, or view existing Automations through the Manage page, where you can then extend these workflows to include an email notification.</p>
+<p>Creating an Email Action is done on the Automations page of the web interface and must connect to an existing Trigger. You can either create a new Automation and first set up a Trigger, or view existing Automations through the Manage page, where you can then extend these workflows to include an email notification.</p>
 <p>There are many more parameters for outgoing mail because the full SMTP server connection parameters need to be defined. However, there is an option to load a template for some of the most common email services.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.025.EmailActionParameters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.025.EmailActionParameters.png" alt="Email details" class="image image-block image-center" /></a></p>
 <p>Various fields for the email itself (From, To, Subject, Template) can be hard-coded or passed through to the Action from the previous connection in the Automation, whether that be a Trigger or Internal Action. One important parameter is the Email Format, which can either be plain text or HTML.</p>
 <p>See the following sections for information on how to generate content for outgoing emails.</p>
+<h2 id="setting-up-an-emailer">
+  <span>Setting up an Emailer</span>
+</h2>
+<p>Configuring an Emailer transformer is similar to configuring an Email Action.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>See the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/emailer-pkg.htm" rel="noreferrer noopener" target="_blank">Emailer documentation</a> for full details.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000smKU&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YU5I" alt="Emailer transformer vs FME Server email" class="image image-block image-center" /></p>
+<p style="text-align:center"><em>Emailer vs. Email Action Parameters</em></p>
 <h2 id="who-what-when-where-why">
   <span>Who, What, When, Where, Why?</span>
 </h2>
@@ -102,10 +55,6 @@
   <li>When in the translation do you want to send the email?</li>
   <li>Why are you sending the email, do you even need to run a workspace?</li>
 </ul>
-<p> </p>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000smKU&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YU5I" alt="Emailer transformer vs FME Server email" class="image image-block image-center" /></p>
-<p><em>Emailer vs. Email Action Parameters</em></p>
-<p> </p>
 <h2 id="advantages-of-the-emailer">
   <span>Advantages of the Emailer</span>
 </h2>
