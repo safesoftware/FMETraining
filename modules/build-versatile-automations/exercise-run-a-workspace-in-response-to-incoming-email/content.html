@@ -9,12 +9,9 @@
 <h2 id="resources">
   <span>Resources</span>
 </h2>
-<p><em>Input files</em></p>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/BuildVersatileAutomations/Workspaces/esrishape2geojson.fmw" rel="noreferrer noopener" target="_blank">esrishape2geojson.fmw</a></p>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/BuildVersatileAutomations/Data/buildingupdate.zip" rel="noreferrer noopener" target="_blank">buildingUpdate.zip</a> (.shp with companion files)</p>
-<p><em>Finished Automation</em></p>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/BuildVersatileAutomations/Projects/processemailsautomation.fsproject" rel="noreferrer noopener" target="_blank">ProcessEmailsAutomation.fsproject</a></p>
-<p>(requires FME Server instance with public DNS record configured in Trigger to run as-is)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/BuildVersatileAutomations/Workspaces/exercise-run-a-workspace-in-response-to-incoming-email.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a> (C:\FMEData2021\Workspaces\AutomateWorkflows\exercise-run-a-workspace-in-response-to-incoming-email.fmw)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/BuildVersatileAutomations/Data/buildingupdate.zip" rel="noreferrer noopener" target="_blank">buildingupdate.zip</a> (.shps with companion files, C:\FMEData2021\Resources\BuildVersatileAutomations\Data\buildingupdate.zip)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-run-a-workspace-in-response-to-incoming-email.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project</a> (Requires FME Server instance with public DNS record configured in Trigger to run as-is, C:\FMEData2021\Workspaces\AutomateWorkflows\exercise-run-a-workspace-in-response-to-incoming-email.fsproject)</p>
 <h2 id="1-create-a-new-automation">
   <span>1) Create a New Automation</span>
 </h2>
@@ -42,7 +39,8 @@
   </div>
 </div>
 <p>On the Automations canvas, double-click the Trigger node. Select <strong>Email Received (SMTP) </strong>from the Select a Trigger Event drop-down menu. Input an <strong>Email User Name</strong> to assign an email address on the FME Server host system that will receive notification emails. There is no need to specify the domain; if you want an email sent to RunMyWorkspace42@fmeserverhost to trigger the Automation, enter only “RunMyWorkspace42”.</p>
-<p>Since you can create a unique email username for each Automation triggered by SMTP, no parameters to further filter messages are available in this Trigger. You may still set up Filter Actions downstream if you wish to do additional routing. Choose or create a Resource directory to which to download email attachments (e.g. <em>Data/Automations exercise data/incoming email/</em>), click <strong>Validate</strong> and (if valid) <strong>Apply</strong>.</p>
+<p>Since you can create a unique email username for each Automation triggered by SMTP, no parameters to further filter messages are available in this Trigger. You may still set up Filter Actions downstream if you wish to do additional routing. Create a Resource directory to which to download email attachments (e.g. <em>Data/Incoming Email/</em>).</p>
+<p><img src="images/unnamed.png" class="image image-block image-center" alt="Creating a folder" /> Click <strong>Validate</strong> and (if valid) <strong>Apply</strong>.</p>
 <p><strong>B. External email account via IMAP protocol</strong></p>
 <p>This method will poll an external email account for new mail. See the <a href="http://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Triggers/Trigger-Email-IMAP.htm" rel="noreferrer noopener" target="_blank">FME Server Documentation</a> for details.</p>
 <div class="box message info">
@@ -68,7 +66,21 @@
 <h2 id="3-publish-a-workspace-to-fme-server">
   <span>3) Publish a Workspace to FME Server</span>
 </h2>
-<p>Download and publish to FME Server the sample workspace above, or choose your own workspace that can accept zipped Shapefiles as input. </p>
+<p>Download and publish the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/BuildVersatileAutomations/Workspaces/exercise-run-a-workspace-in-response-to-incoming-email.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> to FME Server.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData2021\Workspaces\AutomateWorkflows\exercise-run-a-workspace-in-response-to-incoming-email.fmw</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <p>The sample workspace reads in a zipped Shapefile and outputs GeoJSON of the input features, with output filename based on input. It is important to archive (zip) your Shapefile (any single-file archive supported by FME will do) because the attachment file path passed from the Trigger to Actions downstream will only point at the first attached file.</p>
 <p>If multiple files must be accessed from the same incoming email, you can create an Automation to download all files to a directory, and then another Automation to watch for and route the files created there.</p>
 <h2 id="4-configure-an-action-to-run-the-workspace">
@@ -85,9 +97,26 @@
 <h2 id="6-test-email-and-view-log">
   <span>6) Test Email and View Log</span>
 </h2>
-<p>Send an email with a zipped Shapefile (one is provided above in the Downloads section) to the email account monitored by your Trigger. Ensure that the email subject contains the word “Shapefile” so it will pass the filter. Wait at least one polling interval, then check the Automation log. One way to do this is through <strong>Menu</strong> &gt; <strong>View Log File</strong> when your Automation is displayed on the screen. You can also navigate to <strong>Automations</strong> &gt; <strong>Manage</strong>, check the Automation’s box, and select <strong>Actions</strong> &gt; <strong>View Log File</strong>. It can be helpful to click the clock icon above the log to show timestamps for each log entry.</p>
+<p>Send an email with this <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/BuildVersatileAutomations/Data/buildingupdate.zip" rel="noreferrer noopener" target="_blank">zipped Shapefile</a> to the email account monitored by your Trigger.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData2021\Resources\BuildVersatileAutomations\Data\buildingupdate.zip</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><strong>If using SMTP</strong>, you will need to create the email based on your machine's public IP address or DNS. The address will look something like <code>RunMyWorkspace42@34.244.122.210</code>.</p>
+<p><strong>If using IMAP</strong>, enter your email address as normal and ensure that the email subject contains the word “Shapefile” so it will pass the filter.</p>
+<p>Wait at least one polling interval, then check the Automation log. One way to do this is through <strong>Menu</strong> &gt; <strong>View Log File</strong> when your Automation is displayed on the screen. You can also navigate to <strong>Automations</strong> &gt; <strong>Manage</strong>, check the Automation’s box, and select <strong>Actions</strong> &gt; <strong>View Log File</strong>. It can be helpful to click the clock icon above the log to show timestamps for each log entry.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO4H&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YU7L" alt="View Log File" class="image image-block image-center" /></p>
-<p>If you check the Automation log file, you should see a tag <em>&lt;PUBLISHED_PARAMETER name="SourceDataset_ESRISHAPE"&gt;</em> that contains the filepath of the Shapefile fed into your workspace. Paste the text above into the log search bar if you’re having trouble locating the entry. You can confirm the attached file was downloaded successfully by navigating to the Resource folder you specified in the Trigger and looking for a new subfolder named as in the log entry.</p>
+<p>If you check the Automation log file, you should see a tag <em>&lt;PUBLISHED_PARAMETER name="SourceDataset_ESRISHAPE"&gt;</em> that contains the file path of the Shapefile fed into your workspace. Paste the text above into the log search bar if you’re having trouble locating the entry. You can confirm the attached file was downloaded successfully by navigating to the Resource folder you specified in the Trigger and looking for a new subfolder named as in the log entry.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000dO4H&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YU7M" alt="Automation Log" class="image image-block image-center" /></p>
 <h2 id="conclusion">
   <span>Conclusion</span>
