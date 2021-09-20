@@ -12,7 +12,6 @@
 <ul>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-process-directory-watch-messages-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-process-directory-watch-messages.fsproject" rel="noreferrer noopener" target="_blank">Starting FME Server project</a></li>
-  <li>Complete FME Server project</li>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Building Footprints Esri Shapefiles</a></li>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip" rel="noreferrer noopener" target="_blank">update001.zip</a></li>
 </ul>
@@ -49,7 +48,7 @@
     </tr>
     <tr>
       <td>Reader Dataset</td>
-      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip</a><br /></td>
+      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints/update001.zip</a></td>
     </tr>
     <tr>
       <td>Workflow Options</td>
@@ -91,12 +90,32 @@
 <h2 id="3-inspect-data">
   <span>3) Inspect Data</span>
 </h2>
-<p>After adding the writer, click on the building_footprints feature type to bring up the popup menu. Then click the Inspect button to open the dataset in Visual Preview. There is already data in the building_footprints.sl3 dataset, but we should take note of what the data looks like so we will know where it has changed once we update the dataset with the new data. The area within the red box will be where the new data will be added:</p>
+<p>After adding the writer, right-click on the <strong>building_footprints</strong> feature type to bring up the popup menu. Then click <strong>View Written Data...</strong> to open the dataset in Visual Preview. </p>
+<p><img src="images/1631830734779.png" class="image image-block" alt="View written data" />There is already data in the building_footprints.sl3 dataset, but we should take note of what the data looks like so we will know where it has changed once we update the dataset with the new data. The area within the red box will be where the new data will be added:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.419.Ex3.SpatialLiteData.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.419.Ex3.SpatialLiteData.png" alt="View of the dataset" class="image image-block image-center" /></a></p>
 <h2 id="4-publish-workspace">
   <span>4) Publish Workspace</span>
 </h2>
-<p>Save the workspace as exercise-process-directory-watch-messages-complete.fmw and publish it to the Training Repository in FME Server. We only need it to be run (not do anything special) so register it with the Job Submitter service only.</p>
+<p>Save the workspace as exercise-process-directory-watch-messages-complete.fmw and publish it to the <strong>Training</strong> repository in FME Server. We only need it to be run (not do anything special) so register it with the <strong>Job Submitter</strong> service only.</p>
+<div>
+  <div class="box message info">
+    <div class="inner">
+      <div class="bd">
+        <div class="media">
+          <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+          <div class="mediaBd">
+            <div class="message-media-content">
+              <p>If you are taking a Safe Software training course, add an FME Server Connection with the following parameters if necessary:</p>
+              <p style="margin-left:80px">Server URL : <code>http://localhost</code></p>
+              <p style="margin-left:80px">Username: <code>admin</code> </p>
+              <p style="margin-left:80px">Password: <code>FMElearnings</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="5-add-dataset-to-fme-server">
   <span>5) Add Dataset to FME Server</span>
 </h2>
@@ -107,7 +126,7 @@
   <span>6) Edit Automation</span>
 </h2>
 <p>Navigate to the Automations: Manage Automations page and select <strong>Incoming Building Footprints </strong>to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the Action parameter value to Run a workspace.</p>
-<p>Select the Training Repository and workspace uploaded in the previous step. The parameters should now include one for the Source Esri Shapefile and the output database.</p>
+<p>Select the <strong>Training</strong> repository and workspace uploaded in the previous step. The parameters should now include one for the Source Esri Shapefile and the output database.</p>
 <p>The source dataset needs to pick up the file path from the Directory Watch trigger. From the drop-down menu select<strong> File Path</strong> found under the Directory folder. This drop-down list is essentially the JSON flattened into its separate components.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.SourceDataset.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.SourceDataset.png" alt="Select File Path parameter" class="image image-block image-center" /></a></p>
 <p>For the output database browse the Resource/Data/Output folder to locate the SpatiaLite database uploaded in the previous step:</p>
@@ -141,10 +160,24 @@
   <span>8) Test Solution</span>
 </h2>
 <p>Now test the solution by putting update001, update002 or update003.shp (and other extensions) into the BuildingUpdates folder. If these files already exist from an earlier exercise, delete them first, then re-add them. You will find that each dataset put into the folder is added to the SpatiaLite database.</p>
-<p>Check the Completed Jobs page to confirm that the workspace was run.</p>
+<p>Check the Completed Jobs page to confirm that the workspace was run. Alternatively, you can check the Automation Log or Triggered Job log to watch the progress of the Trigger &gt; Job Submitted &gt; Translation Successful. </p>
 <h2 id="9-inspect-the-output">
   <span>9) Inspect the Output</span>
 </h2>
 <p>In the FME Data Inspector, click Open, set Format to SpatiaLite, click the downward-pointing arrow button next to Dataset, Select File from Web, click Browse FME Server..., navigate to Data &gt; Output, and select building_footprints.sl3. Click OK.</p>
 <p>Depending on which update file you added, you should see one of the three buildings added to the dataset:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" alt="Inspect the output" class="image image-block image-center" /></a></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you haven't added a background map before, you can add a <strong>Stamen Maps</strong> background map using the instructions <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_DataInspector/DataInspector/Background_Map.htm" rel="noreferrer noopener" target="_blank">here</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
