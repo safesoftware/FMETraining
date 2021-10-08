@@ -26,11 +26,10 @@ Current Academy content is available on the `main` branch. Past year's Academy c
 |           FME Academy Trail          |                 FME Academy Module                 | FME Version |
 |:------------------------------------:|:--------------------------------------------------:|-------------|
 | N/A                                  | Welcome to the FME Academy                         | N/A         |
-| Integrate Data with the FME Platform | Why Data Integration?                              | 2020.1      |
-| Integrate Data with the FME Platform | Connect To Data                                    | 2020.1      |
-| Integrate Data with the FME Platform | Transform Data                                     | 2020.1      |
-| Integrate Data with the FME Platform | Why Data Integration?                              | 2020.1      |
-| Integrate Data with the FME Platform | Automate Workflows                                 | 2020.1      |
+| Integrate Data with the FME Platform | Why Data Integration?                              | 2021.1      |
+| Integrate Data with the FME Platform | Connect To Data                                    | 2021.1      |
+| Integrate Data with the FME Platform | Transform Data                                     | 2021.1      |
+| Integrate Data with the FME Platform | Automate Workflows                                 | 2021.1      |
 | Transform Attributes                 | Create and Modify Attributes                       | 2020.1      |
 | Transform Attributes                 | Filter Data                                        | 2020.1      |
 | Transform Attributes                 | Join Tables                                        | 2020.1      |
@@ -43,6 +42,15 @@ Current Academy content is available on the `main` branch. Past year's Academy c
 | Use Data Integration Best Practices  | Design Workspaces for Advanced Reading and Writing | 2021.0      |
 | Use Data Integration Best Practices  | Design For Performance                             | 2021.0      |
 | Use Data Integration Best Practices  | Optimize Workspace Performance                     | 2021.0      |
+| Publish Workflows to the Web         | What is FME Server?                                | 2021.1      |
+| Publish Workflows to the Web         | Publish Workflows to the Web                       | 2021.1      |
+| Create Data Integration Apps         | Build Basic Self-Serve Workflows                   | 2021.1      |
+| Create Data Integration Apps         | Build Versatile Self-Serve Workflows               | 2021.1      |
+| Create Data Integration Apps         | Manage FME Server Data and Connections             | 2021.1      |
+| Create Data Integration Apps         | Create No-Code Web Apps                            | 2021.1      |
+| Automate Data Integration Tasks      | Build Basic Automations                            | 2021.1      |
+| Automate Data Integration Tasks      | Build Versatile Automations                        | 2021.1      |
+| Automate Data Integration Tasks      | Connect Automations with Job Orchestration         | 2021.1      |
 | N/A                                  | View Data                                          | 2020.1      |
 | N/A                                  | Digital Plan Submission                            | 2020.1      |
 
