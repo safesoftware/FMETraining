@@ -1,0 +1,75 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Define a list attribute.</li>
+  <li>Explain when you might work with list attributes.</li>
+</ul>
+<h2 id="what-are-list-attributes-in-fme">
+  <span>What Are List Attributes in FME?</span>
+</h2>
+<p>List attributes, sometimes referred to as lists, are FME's way of allowing multiple values per attribute. For example, rather than creating a text field named FRUITS that stores the value “Apple, Orange, Pear”, a user can create a list, which is more structured and can be broken down into constituent parts for processing:</p><pre>Fruits{0}: Apple 
+Fruits{1}: Orange
+Fruits{2}: Pear </pre>
+<p>In FME, lists are denoted using curly brackets after the list name (e.g., this list is called <code>Fruits{}</code>), and a number inside the curly brackets represents the element's index inside the list (e.g. Orange is element 1 in the list). With this structure, lists can be reorganized, exploded into individual parts, analyzed statistically, and more.</p>
+<p>You can inspect list attributes using the Feature Information Window. Select the feature you want to inspect, then look for the attribute in the Feature Information Window under Attributes. Click the ellipsis button to view the values of the list.</p>
+<p><img src="images/1639011091694.png" class="image image-block image-center" /></p>
+<p><strong>Because they contain more values than can fit in a single cell of the Table View, list attributes cannot be exposed and will not appear in Table View or, in most cases, the written data.</strong></p>
+<h2 id="when-do-i-need-list-attributes">
+  <span>When Do I Need List Attributes?</span>
+</h2>
+<p>Because list attributes let a single attribute store multiple values per feature, they are often used to:</p>
+<p><strong>Express relationships</strong></p>
+<p>For example, listing the names of all the stores in a neighborhood in a list called <code>Stores_Names{}</code>. FME transformers that conduct spatial analysis, like the Overlayer family of transformers, often generate lists like this.</p>
+<p><strong>Represent a nested data structure within FME's feature-based paradigm </strong></p>
+<p>For example, the following JSON:</p>
+<div><pre>[{
+"name": "Apple",
+"scientificName": "Malus domestica"
+}, {
+"name": "Orange",
+"scientificName": "Citrus X sinensis"
+}, {
+"name": "Pear",
+"scientificName": "Pyrus"
+}]</pre>
+</div>
+<p>can be stored as an FME list attribute:</p><pre>Fruits{0}.name:           Apple
+Fruits{0}.scientificName: Malus domestica
+Fruits{1}.name:           Orange
+Fruits{1}.scientificName: Citrus X sinensis
+Fruits{2}.name:           Pear
+Fruits{2}.scientificName: Pyrus</pre>
+<h2 id="how-do-i-create-lists">
+  <span>How Do I Create Lists?</span>
+</h2>
+<p>Lists can be built manually, created automatically by a transformer, read and written by some formats (e.g. XML and JSON), or "exploded" back into single-value attributes. FME has 15 transformers for list manipulation (plus more on <a href="https://hub.safe.com/?page=1&amp;page_size=10&amp;order=relevance&amp;query=list" rel="noreferrer noopener" target="_blank">FME Hub</a>; see the next unit for details) and over 80 transformers can produce lists. Transformers often create a list when attributes from different features are grouped into a single feature. Transformers that create lists usually have a "Generate List" checkbox under the "Attribute Accumulation" section of their parameters dialog:<br /><br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000000lKBy&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000028s9M" alt="generate list.png" class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Checking "Generate List" can have significant impacts on workspace performance, as lists can drastically increase the size of individual features. It's best practice to only check this box when you need it, and to remove lists as soon as you can in your workspace so they are not unnecessarily slowing down your workflow. For more performance tips, check out the <a href="https://safe.my.trailhead.com/content/safe/modules/optimize-workspace-performance?trail_id=use-data-integration-best-practices" rel="noreferrer noopener" target="_blank">Optimize Workspace Performance module</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>To learn more, visit "<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/!List_Attributes/About-List-Attributes.htm" rel="noreferrer noopener" target="_blank">About List Attributes</a>" in the documentation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
