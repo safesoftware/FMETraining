@@ -1,0 +1,199 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Control the different data you can extract from versions.</li>
+  <li>Know how to push the deltas into the target database.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/ExtractingDifferencesFromArcSDE.zip" rel="noreferrer noopener" target="_blank">ExtractingDifferencesFromArcSDE.zip</a></li>
+</ul>
+<h2 id="video">
+  <span>Video</span>
+</h2>
+<p><iframe width="640" src="https://play.vidyard.com/wc8FphJkaMeZyDvNwG62kN.html?" height="360" title="Video Content"></iframe></p>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>FME has the capability to extract differences (or deltas) from an Enterprise Geodatabase (ArcSDE). The key functionality is:</p>
+<ul>
+  <li>Reading Transactional Version differences</li>
+  <li>Reading Historical Archive differences (i.e. Historical Date/Time and Historical Markers)</li>
+</ul>
+<p><br />This tutorial focuses on extracting differences from a transactional versioned Geodatabase. However, the principals are the same for reading differences from historical archives.<br />If you are not familiar with Esri Geodatabase versions or archiving then the following links will be useful:</p>
+<ul>
+  <li><a href="http://desktop.arcgis.com/en/arcmap/10.3/manage-data/geodatabases/an-overview-of-versioning.htm" rel="noreferrer noopener" target="_blank">Esri Geodatabase Versioning</a></li>
+  <li><a href="http://desktop.arcgis.com/en/arcmap/10.3/manage-data/geodatabases/geodatabase-archiving.htm" rel="noreferrer noopener" target="_blank">Esri Geodatabase Archives</a></li>
+</ul>
+<p>Versioning is only available in the Enterprise Geodatabase (ArcSDE).</p>
+<p>Being able to extract differences (or deltas) from a Geodatabase allows you to replicate or synchronize your Geodatabase with other databases in your organization.</p>
+<p>A versioned Geodatabase will often have a hierarchical structure as shown below:</p>
+<p><img src="images/1638890704515.png" class="image image-block" /></p>
+<p><br />In ArcPro this will look like:</p>
+<p><img src="images/1638890868133.png" class="image image-block" style="width:401px" alt="Inspect versions in ArcPro" /></p>
+<h2 id="transactional-version-differences">
+  <span>Transactional Version Differences</span>
+</h2>
+<p>The Esri Geodatabase (ArcSDE Geodb) reader parameters dialog has several parameters which control the different data you can extract from versions (see the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/geodatabase/GEODATABASE_SDE_reader.htm?Highlight=arcsde" rel="noreferrer noopener" target="_blank">FME User Documentation</a> for more details). Referring to the image of the Geodatabase reader parameters below...</p>
+<ul>
+  <li>Under the Version disclosure panel:<ul>
+      <li>Transactional Version: the version you want to read</li>
+    </ul>
+  </li>
+  <li>Under the Read Version Differences disclosure panel:<ul>
+      <li>Check Read Version Differences</li>
+      <li>Baseline Version Type: Transactional Version (Common Ancestor)</li>
+      <li>Baseline Transactional Version: the version you want to compare against</li>
+    </ul>
+  </li>
+</ul>
+<p><img src="images/1638890985270.png" class="image image-block" style="width:685px" alt="Reader parameters" /></p>
+<p>These parameters are also available in FME Data Inspector if you want to visualize the deltas in your geodatabase. </p>
+<h2 id="workspace-example">
+  <span>Workspace Example</span>
+</h2>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p><em>If you'd like to run the examples discussed in this tutorial, please go to the </em><em>addendum</em> <em>at the end of the tutorial and follow the example set-up instructions.</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>FME Workspaces for extracting differences are surprisingly straightforward. This example converts water utility data from Geodatabase (ArcSDE) to PostGIS. The key part of the workflow is based on the published parameters:</p>
+<p><img src="images/1638899716183.png" class="image image-block" alt="Translation parameter values" /></p>
+<p>In this example, the data is being read from the Transactional Version: DBO.WaterUpdates3 and compared against the Baseline Transactional Version DBO.DEFAULT.</p>
+<p>The following three images from FME Data Inspector illustrate the state of the Esri Geodatabase versions:</p>
+<div><span class="image image-block" style="width:618px"><span><img src="images/1638900020133.png" alt="Image 1: Original data - DBO.DEFAULTS version" /><span><em>Image 1: Original data - DBO.DEFAULTS version</em></span></span></span>
+  <p> </p>
+</div>
+<div><span class="image image-block" style="width:618px"><span><img src="images/1638900226704.png" alt="Image 2: Edited water mains data - DBO.WaterUpdates3 version" /><span><em>Image 2: Edited water mains data - DBO.WaterUpdates3 version</em></span></span></span>
+  <p> </p>
+  <div><span class="image image-block" style="width:618px"><span><img src="images/1638901538672.png" alt="Image 3: Differences between DBO.WaterUpdates3 and DBO.DEFAULTS versions" /><span><em>Image 3: Differences between DBO.WaterUpdates3 and DBO.DEFAULTS versions</em></span></span></span>
+    <p>  What you don't see in the images are the deleted objects, because they have no geometry. However, they are logged in the FME Data Inspector Table Viewer and Feature Information windows:</p>
+  </div>
+</div>
+<p><img src="images/1638902078737.png" class="image image-block" alt="Table view" /></p>
+<p><img src="images/1638902553217.png" class="image image-block" alt="Feature information" /></p>
+<p>Notice that the fme_db_operation attribute has been set to DELETE.</p>
+<h2 id="fme-db-operation">
+  <span>fme_db_operation</span>
+</h2>
+<p>When you extract differences from geodatabase transactional versions or archives, FME automatically sets the fme_db_operation attribute to INSERT, UPDATE or DELETE. Most FME database writers support fme_db_operation for incremental updates to the database. This means that it is straightforward to push the deltas into the target database. For more on how to use fme_db_operation see the article <a href="https://community.safe.com/s/article/incremental-database-updates-using-the-fme-format" rel="noreferrer noopener" target="_blank">Incremental Database Updates using the FME format attribute fme_db_operation</a>.<br /> </p>
+<h2 id="child-version-and-data-replication-workflows">
+  <span>Child Version and Data Replication Workflows</span>
+</h2>
+<p>The geodatabase reader has a Child Version parameter that can be used to create the next version for editing. In this example, we're reading the differences between DBO.WaterUpates3 and the DBO.DEFAULT versions. If we set the child version to be WaterUpdates4 then FME will create the new version which will then be your starting point for the next round of edits in your geodatabase. This allows you to set up a data replication workflow: extracting differences, creating a new version, undertake edits in the new version, next round of differences, etc.</p>
+<p><img src="images/1638903683242.png" class="image image-block" alt="Parameters" /></p>
+<p> </p>
+<h2 id="historical-archive-differences">
+  <span>Historical Archive Differences</span>
+</h2>
+<p>Working with historical archives is very similar to the transaction version described above. The geodatabase reader parameters dialog has several parameters (marked in the parameters dialog image above) which control the difference data you can extract from archives:</p>
+<ul>
+  <li>Under the Version panel:<ul>
+      <li>Transactional Version: the version you want to read - typically sde.Defaults</li>
+    </ul>
+  </li>
+  <li>Under the Read Version Differences panel:<ul>
+      <li>Check Read Version Differences</li>
+      <li>Baseline Version Type: Historical Marker <em>or</em> Specific Data and Time</li>
+      <li>Baseline Historical Marker or the Baseline Historical Date and Time</li>
+    </ul>
+  </li>
+</ul>
+<p> </p>
+<h2 id="gotchas">
+  <span>Gotchas</span>
+</h2>
+<p>When extracting differences from a versioned geodatabase, FME uses the concept of a common ancestor, so all differences are based on the common ancestor of the two versions you're working with. For this reason, it's not a good idea to extract differences between different branches in your versioned geodatabase as shown below:</p>
+<p><img src="images/1638904312886.png" class="image image-block" alt="SDE branches" /></p>
+<p>- you're likely to get unpredictable results!<br /> </p>
+<h2 id="step-by-step-instructions">
+  <span>Step-by-step Instructions</span>
+</h2>
+<p>The following instructions will walk you through how to create a workspace that will read your ArcSDE versions.<br /><br /><strong>1. Add an Esri Geodatabase(ArcSDE Geodb) Reader </strong><br />Open FME Workbench and start a blank workspace. Add an <strong>Esri Geodatabase (ArcSDE Geodb)</strong> reader to the canvas and open the Parameters.<br /><img src="images/1638905370265.png" class="image image-block" alt="Add reader" /><br />In the Parameters, browse to the FMETRAINING.sde Connection File. Next, enable <strong>Remove Table Qualifier</strong> and select all of the Tables by clicking on the ellipsis and selecting DBO.<br /><img src="images/1638905935348.png" class="image image-block" alt="Reader parameters" /></p>
+<p>Next, enable <strong>Read Version Differences</strong>. This will allow us to set a Baseline(either a Transactional Version or Historical time if using Archiving) which will be used as the 'parent' of the comparison version.<br />In order for the 'child' version to be compared against the Baseline, we need to ensure we set the Version on the Reader otherwise it will default to the version used in the SDE connection file. Most often this is the DEFAULT version. Click on the ellipsis next to <em>Baseline Transactional Version</em> and select <strong>dbo.DEFAULT</strong>. Click <strong>OK</strong> twice to add the reader.<br /><img src="images/1638906175281.png" class="image image-block" alt="Read version differences" /></p>
+<p><strong>2. Add Inspectors</strong><br />Now that we’ve added the data, we will want to inspect our versions using either Visual Preview or FME Data Inspector. Select all three reader feature types by clicking and dragging a box around them. Next, right-click on any one of the three and select Connect Inspectors.<br /><img src="images/1638906354945.png" class="image image-block" alt="Connect inspectors" /><br /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p><br />Sometimes when setting up the ArcSDE Reader the Version query option will error out with 'Unable to open the Geodatabase reader because the &lt;DATASET&gt; keyword was not found'. If you encounter this, you can work around it by typing in the Version name, for example: DBO.DEFAULT.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><br /><strong>3. Create User Parameters</strong><br />When we run the workspace, we want to select which versions to compare, for that we will use user parameters to quickly switch between versions. In the Navigator window, right-click on User Parameters and select Manage User Parameters. We will create two parameters, with the following setup:<br /><br /><strong>Parameter 1:</strong></p>
+<ul>
+  <li>Parameter Type: Choice</li>
+  <li>Parameter Identifier: TransactionalVersion</li>
+  <li>Prompt: Transactional Version</li>
+  <li>Published: Enabled</li>
+  <li>Optional: Disabled</li>
+  <li>Choice Configuration: Dropdown</li>
+  <li>Choice Values:<ul>
+      <li>DBO.DEFAULT</li>
+      <li>DBO.WaterUpdates1</li>
+      <li>DBO.WaterUpdates2</li>
+      <li>DBO.WaterUpdates3</li>
+    </ul>
+  </li>
+  <li>Default Value: DBO.DEFAULT</li>
+</ul>
+<p> <br /><strong>Parameter 2:</strong></p>
+<ul>
+  <li>Parameter Type: Choice</li>
+  <li>Parameter Identifier: BaselineTransactionalVersion</li>
+  <li>Prompt: Baseline Transactional Version</li>
+  <li>Published: Enabled</li>
+  <li>Optional: Disabled</li>
+  <li>Choice Configuration: Drop-down</li>
+  <li>Choice Values:<ul>
+      <li>DBO.DEFAULT</li>
+      <li>DBO.WaterUpdates1</li>
+      <li>DBO.WaterUpdates2</li>
+      <li>DBO.WaterUpdates3</li>
+    </ul>
+  </li>
+  <li>Default Value: Leave Blank</li>
+</ul>
+<p><img src="images/1638906741372.png" class="image image-block" alt="Parameters" /><br /><br /><strong>4. Assign User Parameters</strong><br />Now that we’ve created our user parameters, we need to assign them to the reader parameters. In the Navigator, expand the [GEODATABASE_SDE] reader and then expand Parameters, and expand Advanced. Right-click on <em>Transactional Version</em> and select <strong>Link to User Parameter</strong>.<br /><img src="images/1638906921088.png" class="image image-block" alt="Link to user parameter" /><br /><br />In the <em>Set to User Parameter</em> dialog, select <strong>TransactionalVersion</strong>.<br /><img src="images/1638907101351.png" class="image image-block" alt="Set to User Parameter dialog" /><br /><br />Repeat this step with <em>Baseline Transactional Version</em>, and set it to the <strong>BaselineTransactionalVersion</strong> parameter.<br /><br />We need to create one more user parameter, but we can do that from the Navigator panel. Right-click on Child Version Name and select Create User Parameter. In the Add/Edit User Parameter dialog, click OK as we can accept the default parameters.<br /><br />You should now have three parameters linked for the GEODATABASE_SDE reader.<br /><img src="images/1638907222021.png" class="image image-block" alt="three parameters linked for the GEODATABASE_SDE reader" /><br /><br /><strong>5. Save and Run Workspace</strong><br />Save the workspace, then run with Prompt for User Parameters enabled. Now each time you run the workspace, you can select which versions you wish to compare.<br /><img src="images/1638908123386.png" class="image image-block" alt="Translation parameter values" /><br /> </p>
+<h2 id="addendum-setting-up-the-example-in-an-arc-sde-geodatabase">
+  <span>Addendum: Setting up the example in an ArcSDE Geodatabase</span>
+</h2>
+<p>If you want to run the examples described above then you can use the following steps to load the sample data into your own Geodatabase (ArcSDE) environment. Use the package create-differences.zip . If you are not familiar with working with versioned Geodatabases then you might wish to review the article on <a href="http://desktop.arcgis.com/en/arcmap/10.3/manage-data/geodatabases/the-version-editing-process.htm" rel="noreferrer noopener" target="_blank">editing version data in ArcGIS</a>.</p>
+<ul>
+  <li>Use FME Workbench and the workspace "Load Data to ArcSDE.fmw" to <strong>import </strong>the GML data into your ArcSDE<ul>
+      <li>load a.CoV_Water_Default_seed_data.gml into the default version of your geodatabase.</li>
+    </ul>
+  </li>
+  <li>Version these tables – sde.DEFAULT<br />Right-click feature class, Manage -&gt; Register as Versioned</li>
+  <li>Using ArcCatalog and FME Workbench to create three new versions and load the sample GML data into each version. Use the workspace "Load Data to ArcSDE.fmw" to load the GML data into your ArcSDE<br />Right-click database, Administration -&gt; Administer Database<ul>
+      <li>create version WaterUpdates1</li>
+      <li>load b.CoV_Water_Default-WaterUpdates1.gml into version WaterUpdates1</li>
+      <li>create version WaterUpdates2</li>
+      <li>load c.CoV_Water_Default-WaterUpdates1-2.gml into version WaterUpdates2</li>
+      <li>create version WaterUpdates3</li>
+      <li>load d.CoV_Water_Default-WaterUpdates3.gml into version WaterUpdates3</li>
+    </ul>
+  </li>
+</ul>
+<p>Use the version hierarchy shown in the image:</p>
+<p><img src="images/1638908427480.png" class="image image-block" alt="Version hierarchy" /></p>
+<p><strong>Note</strong>: <em>You can't create all the versions and then load them, you have to create, load, create, load etc.</em></p>
