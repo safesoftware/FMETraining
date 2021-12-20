@@ -11,12 +11,12 @@
 <h2 id="relational-versus-object-oriented-data-models">
   <span>Relational Versus Object-Oriented Data Models</span>
 </h2>
-<p>There are a <a href="https://en.wikipedia.org/wiki/Database_model" rel="noreferrer noopener" target="_blank">variety of ways of modeling data in a database</a>. Two of the most common are relational and object-oriented databases. To generalize, relational databases store data in tables that can be linked to each other through defined relationships. Object-oriented databases, on the other hand, store data on objects, commonly as a key–value pair.</p>
+<p>There are a <a href="https://en.wikipedia.org/wiki/Database_model" rel="noreferrer noopener" target="_blank">variety of ways of modeling data in a database</a>. Two of the most common are relational and object-oriented databases. To generalize, relational databases store data in tables that can be linked to each other through defined relationships. Object-oriented databases, on the other hand, store data on objects, commonly as a key-value pair.</p>
 <p>Consider these examples from the <a href="https://www.fhwa.dot.gov/infrastructure/asstmgmt/010394.pdf" rel="noreferrer noopener" target="_blank">United States Department of Transportation</a>. A relational data model stores separate tables defining road maintenance activities and events. These tables can be linked by a shared key, in this case, an Activity Code:</p>
-<p><img src="images/1639785048801.png" style="width:500px" class="image image-block image-center" /></p>
+<p><img src="images/1639785048801.png" style="width:500px" class="image image-block image-center" alt="Relational data model" /></p>
 <p>However, the same data could instead be stored using an object-oriented model, where one object is a Maintenance Report and another is a definition of a Maintenance Activity. Data is stored as instances of these objects and can be linked by the values of certain key-value pairs, in this case, the value of Activity Code:</p>
-<p><img src="images/1639785036779.png" style="width:500px" class="image image-block image-center" /></p>
-<p>Object-oriented databases are useful because they are better suited to storing nested data, and they address the problem of <a href="https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch" rel="noreferrer noopener" target="_blank">object-relational impedance mismatch</a>. Relational databases encourage keeping applications separate from the database structure, often requiring developers to translate their relational data model into an object-oriented one through their applications. Object-oriented databases, on the other hand, can store data directly in objects easily accessible by applications without translation.</p>
+<p><img src="images/1639785036779.png" style="width:500px" class="image image-block image-center" alt="Object-oriented data model" /></p>
+<p>Object-oriented databases are useful because they are better suited to storing nested data, and they address the problem of <a href="https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch" rel="noreferrer noopener" target="_blank">object-relational impedance mismatch</a>. Relational databases encourage keeping applications separate from the database structure, often requiring developers to translate their relational data model into an object-oriented one through their applications. Object-oriented databases, on the other hand, can store data directly in objects easily accessible by applications without translation. But relational databases are valued for their simplicity and common workflow of SQL-based queries and joins.</p>
 <p>More broadly, many common data formats beyond databases can use relational or object-oriented models. For example, Microsoft Excel could be considered a simplified relational database, with each worksheet functioning like a table, while JSON and XML documents have object-oriented, nested data structures.</p>
 <p>Because both models have their advantages, both are in common use today. However, many data integration workflows have to integrate data between these two models, which can be challenging due to their differences.</p>
 <h2 id="what-are-list-attributes-in-fme">
@@ -30,7 +30,7 @@ Fruits{2}: Pear </pre>
   <span>How Do I Inspect List Attributes?</span>
 </h2>
 <p>You can inspect list attributes using the Feature Information Window. Select the feature you want to inspect. You will notice that lists are not included as attributes in Table View. Instead, look for the attribute in the Feature Information Window under Attributes. Each index and value will have it's own row in the tree. You can double-click an item to inspect the full value.</p>
-<p><img src="images/1639011091694.png" class="image image-block image-center" /></p>
+<p><img src="images/1639011091694.png" class="image image-block image-center" alt="Fruits list in the Feature Information Window" /></p>
 <p>Because they contain more values than can fit in a single cell of the Table View, list attributes cannot be exposed and will not appear in Table View or, in most cases, written data. Several transformers are available to help you extract data from lists and use it in your workspace or written data (see the next unit).</p>
 <h2 id="when-do-i-need-list-attributes">
   <span>When Do I Need List Attributes?</span>
@@ -72,6 +72,27 @@ Fruits{2}.scientificName: Pyrus</pre>
     </div>
   </div>
 </div>
+<p><strong>"Looping" with FME</strong></p>
+<p>Many new FME users ask how to create loops in a workspace. While custom transformers do support looping, in fact, you can almost always accomplish the desired goal using one of two methods:</p>
+<ul>
+  <li>The <a href="https://www.safe.com/blog/2014/10/fmeevangelist129/" rel="noreferrer noopener" target="_blank">"Cloner-Loop Technique"</a></li>
+  <li>Lists</li>
+</ul>
+<p>Lists can be used as a kind of loop by storing all the relevant values in a list and then using a list transformer like those shown here to explode, search, sort, or otherwise extract values to find the desired information.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>For an example of these techniques in action, check out <a href="https://community.safe.com/s/question/0D54Q0000848dtSSAQ/question-of-the-week-to-loop-or-not-to-loop" rel="noreferrer noopener" target="_blank">Question of the Week: To Loop or Not to Loop</a> from the FME Community.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="how-do-i-create-lists">
   <span>How Do I Create Lists?</span>
 </h2>
@@ -83,7 +104,7 @@ Fruits{2}.scientificName: Pyrus</pre>
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>Checking "Generate List" can have significant impacts on workspace performance, as lists can drastically increase the size of individual features. It's best practice to only check this box when you need it, and to remove lists as soon as you can so they are not unnecessarily slowing down your workspace. For more performance tips, check out the <a href="https://safe.my.trailhead.com/content/safe/modules/optimize-workspace-performance?trail_id=use-data-integration-best-practices" rel="noreferrer noopener" target="_blank">Optimize Workspace Performance module</a>.</p>
+            <p>Checking "Generate List" can have significant impacts on workspace performance, as lists can drastically increase the size of individual features. It's best practice to only check this box when you need it and to remove lists as soon as you can so they are not unnecessarily slowing down your workspace. For more performance tips, check out the <a href="https://safe.my.trailhead.com/content/safe/modules/optimize-workspace-performance?trail_id=use-data-integration-best-practices" rel="noreferrer noopener" target="_blank">Optimize Workspace Performance module</a>.</p>
           </div>
         </div>
       </div>
