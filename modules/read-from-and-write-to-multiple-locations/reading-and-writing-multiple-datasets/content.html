@@ -1,0 +1,123 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Use multiple readers to read data from multiple sources.</li>
+  <li>Use Source Dataset parameters to read from multiple datasets with one reader.</li>
+  <li>Use Merge Feature Type to read from multiple layers.</li>
+  <li>Use multiple writers to write data to multiple sources.</li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>Data integration workflows by their very nature usually bring together multiple datasets, often stored in different formats. With FME you can bring multiple datasets together using a number of techniques:</p>
+<ul>
+  <li>Multiple readers, multiple writers, or both</li>
+  <li>FeatureReader and/or FeatureWriter transformers</li>
+  <li>Integration transformers such as the DropboxConnector, Email, HTTPCaller, etc.</li>
+  <li>Reading from multiple datasets using the reader Source Dataset parameter</li>
+  <li>Reading from multiple datasets using the Directory and File Pathnames Reader and a FeatureReader</li>
+  <li>Reading from multiple layers by merging feature types</li>
+  <li>Writing to multiple layers or datasets using fanouts</li>
+</ul>
+<p>We'll cover some of these techniques in this unit.</p>
+<div>
+  <div class="box message info">
+    <div class="inner">
+      <div class="bd">
+        <div class="media">
+          <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+          <div class="mediaBd">
+            <div class="message-media-content">
+              <p>This unit summarizes some of the <a href="https://safe.my.trailhead.com/content/safe/modules/design-workspaces-for-advanced-reading-and-writing/create-workspaces-with-multiple-readers-and-writers" rel="noreferrer noopener" target="_blank">Create Workspaces With Multiple Readers and Writers</a> unit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="multiple-readers-and-or-writers">
+  <span>Multiple Readers and/or Writers</span>
+</h2>
+<p>An FME workspace is not limited to any particular number of readers or writers; readers and writers can be added to a workspace at any time, any number of formats can be used, and there does not need to be an equal number of readers and writers.</p>
+<p>For example, the Navigator window shows this workspace contains two readers and three writers, of different data types and formats!</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.011.MultiReadersWriters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.011.MultiReadersWriters.png" alt="Viewing multiple readers and writers in the Navigator" class="image image-block image-center" /></a></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Reminder: readers and writers don’t appear as objects on the Workbench canvas. Their feature types do, but readers and writers don't.</p>
+            <p>Instead, they are represented by entries in the Navigator window, as in the above screenshot.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="reading-from-multiple-sources-with-one-reader">
+  <span>Reading From Multiple Sources With One Reader</span>
+</h2>
+<p>It's possible to read multiple datasets or layers using a single reader. There are a few ways to accomplish this goal.</p>
+<p><strong>Reading from Multiple Files</strong></p>
+<p>If you wish to read more than one file at a time using a single reader, it's simply a matter of selecting multiple files. You can do this in three ways when specifying the Source Dataset parameter:</p>
+<p>Ctrl+ or Shift+click on Windows (or Cmd+ or Shift+click on Mac) when using the File Browser.</p>
+<p><img src="images/1640103676485.png" class="image image-block image-center" style="width:500px" alt="Selecting multiple files using the File Browser" /></p>
+<p>Click the drop-down and choose Select Multiple Folders/Files.</p>
+<p><img src="images/1640103706742.png" style="width:700px" class="image image-block image-center" alt="Select Multiple Folders/Files" /></p>
+<p>Provide a comma-delimited list of files, e.g., <code>C:\FMEData2021\Data\Orthophotos\02-03-HI.tif,C:\FMEData2021\Data\Orthophotos\02-03-JK.tif [...] etc.</code></p>
+<p>Regardless of the method, these files will be read as a single feature type.</p>
+<p><img src="images/1640103805401.png" style="width:200px" class="image image-block image-center" alt="Single reader feature type" /></p>
+<p>This technique is particularly useful when dealing with tiled or otherwise separated datasets (usually with the same schema) that you wish to process as a whole. For example, you might choose to read in multiple aerial or satellite photos to create a mosaic raster or to read and process multiple CAD files at once.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>The Source Dataset parameter for readers is a published parameter by default, letting end users select multiple files themselves at runtime.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><strong>Directory and File Pathnames Reader </strong></p>
+<p>A more advanced way to read multiple datasets is using the Directory and File Pathnames reader with a FeatureReader. This reader lets you generate source dataset paths using glob expressions, generating one feature per dataset path. You can then send these features into a FeatureReader to read the files at those locations.</p>
+<p><strong>Wildcards</strong></p>
+<p>What if you need to read multiple files, but you don't know their path in advance, or you want an easy way to "greedily" accept input datasets? </p>
+<p>You can accomplish this by using wildcards in the Source Dataset parameter. This technique will let you specify a rule-based method for reading in multiple datasets. You can use any of the special characters specified <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/path/PATH_reader.htm#SpecialCharsPathFilter" rel="noreferrer noopener" target="_blank">here</a>, allowing you to construct glob expressions to carefully specify which files to read.</p>
+<p><img src="images/1640104750413.png" style="width:600px" class="image image-block image-center" /></p>
+<p><strong>Need to verify wildcards in reader vs parameter</strong></p>
+<p><strong>Merging Feature Types</strong></p>
+<p>What if you have a large number of feature types (tables, layers, etc.) in your source data (again, usually with the same schema), but you want to apply the same processing to them all, or simply want to keep your workspace simple without a large number of reader feature types? In this case, you can merge feature types. </p>
+<p>You can merge feature types when adding a Reader and selecting Single Merged Feature Type under Workflow Options. </p>
+<p><img src="images/1640104901063.png" style="width:600px" class="image image-block image-center" /></p>
+<p>You can also merge feature types after adding a reader feature type by double-clicking it to open its parameters and checking Merge Feature Type.</p>
+<p><img src="images/1640105185444.png" style="width:600px" class="image image-block image-center" /></p>
+<p>By default, the Merge Filter is set to <code>*</code>, which will read all feature types in the source data. However, this filter also accepts exact match, wildcard, and regular expression Filter Types, giving you more control over which feature types to read.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>After merging, you can still access the name of the original feature type via the <code>fme_feature_type</code> attribute.</p>
+            <p>You can read more about merged feature types in the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!FeatureTypeProperties/Merging_Feature_Types.htm" rel="noreferrer noopener" target="_blank">FME Documentation</a>. </p>
+            <p>You can also learn how to use merged feature types to build dynamic workspaces in <a href="https://community.safe.com/s/article/dynamic-workflow-tutorial-introduction" rel="noreferrer noopener" target="_blank">this Knowledge Base article</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="writing-to-multiple-destinations">
+  <span>Writing To Multiple Destinations</span>
+</h2>
+<p>To write to multiple feature types or datasets, you can use fanouts. This technique will be covered in the remainder of the module.</p>
