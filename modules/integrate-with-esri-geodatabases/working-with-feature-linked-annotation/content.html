@@ -1,0 +1,91 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Write feature-linked annotation.</li>
+  <li>Know the limitations of writing feature-linked annotation.</li>
+  <li>Know how to preserve edited annotations.</li>
+</ul>
+<h2 id="requirements">
+  <span>Requirements</span>
+</h2>
+<p>This unit's exercise uses the Esri Geodatabase (File Geodb) reader/writer, which requires a licensed version of ArcGIS. For more information on required ArcGIS license levels, please see <a href="https://community.safe.com/s/article/required-arcgis-license-types-for-fme-geodatabase" rel="noreferrer noopener" target="_blank">Required ArcGIS License Types for FME Geodatabase Formats</a>.</p>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation.zip" rel="noreferrer noopener" target="_blank">Feature_Linked_Annotation.zip</a> (contains all required data)</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/Zones.zip" rel="noreferrer noopener" target="_blank">Zones (MapInfo TAB)</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/DESTINATION_GDB_TEMPLATE.XML" rel="noreferrer noopener" target="_blank">DESTINATION_GDB_TEMPLATE.XML</a></li>
+</ul>
+<h2 id="video">
+  <span>Video</span>
+</h2>
+<p><iframe width="640" src="https://play.vidyard.com/YkZZxmUaY2aWoPrfVj4Cg8.html?" height="360" title="Video Content"></iframe></p>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>Although annotations are stored in a separate feature layer in a geodatabase, they can be linked to other features through feature-linked annotations. Feature-linking occurs when there is a relationship between an annotation feature class and another feature class.</p>
+<p>Linking is carried out by defining a relationship through a common attribute. The geodatabase must already have the relationship defined before writing the data.</p>
+<p>How it works in FME: If the relationship for the annotation exists in the geodatabase, then FME will automatically create the annotation and the relationship. The FME geodatabase writer will retrieve the object ID of the new feature and then write the annotation feature and the relationship linking to it. The result is that you only need to write to the primary feature class (Zones in the example below), and the one FME feature contains enough information to write two features: one annotation feature (<strong>ZoneNames</strong>) and one primary feature (<strong>Zones</strong>). The annotation created is based on the annotation rules you've created in your target geodatabase in the annotation feature class (<strong>ZoneNames</strong>).</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p><br />FME can currently read ArcMap and ArcGIS Pro annotation but can only write ArcGIS Pro annotation. This tutorial walks through writing the original ArcGIS Desktop (ArcMap) Annotation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="step-by-step-instructions">
+  <span>Step-by-step Instructions</span>
+</h2>
+<p><strong>1. Set Up Destination Geodatabase</strong></p>
+<p>As mentioned above, feature-linking is carried out by defining a relationship through a common attribute. As such, it is necessary to determine the relationship between your features and annotations in a destination geodatabase before writing the data. This process would entail using ArcGIS to create an empty feature class to hold the Zone features, an empty feature-linked annotation class (designed with the required scale, placement properties, text size, etc.) to hold the Zone annotations, and a relationship class to link the two together.</p>
+<p><img src="images/1639495623688.png" class="image image-block image-center" alt="Feature_Linked in ArcCatalog" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Generating a feature-linked annotation class in ArcGIS should create the necessary relationship class.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>An XML workspace document<strong> </strong>is available from the Resources section above. The template file in this example is called <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/DESTINATION_GDB_TEMPLATE.XML" rel="noreferrer noopener" target="_blank">DESTINATION_GDB_TEMPLATE.XML</a> and will be used during the translation to apply the required schema to our destination geodatabase.</p>
+<p>Zoning feature geometry and annotations are read from the TAB source file using the MapInfo TAB (MITAB) reader, providing the features and annotations for the destination feature classes (Zones and ZoneNames) in the geodatabase. The <code>ZoneName</code> attribute in the source data will provide the annotation values.<br /><br /><strong>2. Read Source Data - MapInfo TAB (MITAB)</strong></p>
+<p>Create a new workspace in FME Workbench (2021.1 or later) and add a <strong>MapInfo TAB (MITAB) </strong>reader to the canvas. Browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/Zones.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a> dataset and click OK to add the reader.<br /><img src="images/1638396144237.png" class="image image-block image-center" alt="Add Reader" /></p>
+<p><strong>3. Inspect Source Data</strong></p>
+<p>Run the workspace and inspect the feature cache on the <strong>Zones</strong> reader type. It should look like this:</p>
+<p><img src="images/1638396107583.png" alt="Inspect Zones in Visual Preview" class="image image-block image-center" /></p>
+<p>The <code>ZoneName</code> attribute will provide the values for the feature-linked annotation.</p>
+<p><strong>4. Write Geodatabase Features and Feature-Linked Annotation</strong></p>
+<p>Now we can write the data out. Add an <strong>Esri Geodatabase (File Geodb) </strong>writer to the canvas. Browse to a location to save the geodatabase and call it feature_linked_anno.gdb, then open the <strong>Parameters</strong>.</p>
+<p><img src="images/1638396506675.png" class="image image-block image-center" alt="Add writer" /></p>
+<p>As mentioned above, we’ll use an ArcGIS XML Workspace Document rather than create the geodatabase from scratch. This template was created by exporting it from an existing geodatabase. In this case, we created the template file from a geodatabase containing a feature class, feature-linked annotation class, and relationship class.</p>
+<p>In the Parameters, set the <strong>Import XML Workspace Document (Schema Only)</strong> to <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/DESTINATION_GDB_TEMPLATE.XML" rel="noreferrer noopener" target="_blank">DESTINATION_GDB_TEMPLATE.XML</a>, available from the Resources section. Next, set the <strong>Transaction Type </strong>to Edit Session. We can only edit these complex features in an Edit Session or Version. Then click <strong>OK</strong> twice to add the writer.</p>
+<p><img src="images/1638726633674.png" class="image image-block image-center" alt="set the Import XML Workspace Document (Schema Only) to DESTINATION_GDB_TEMPLATE.XML" /></p>
+<p>Once the writer has been added to the canvas, connect it to the <strong>Zones</strong> reader feature type and double-click to open the parameters. Set the <strong>Geometry </strong>to geodb_annotation, then click <strong>OK</strong>.</p>
+<p><img src="images/1638726676152.png" class="image image-block image-center" alt="Set the Geometry to geodb_annotation" /></p>
+<p><strong>5. Save and Run Workspace</strong></p>
+<p>Now you can go ahead and save the workspace before running it. View the output in ArcMap.</p>
+<p><img src="images/1638726752391.png" class="image image-block image-center" alt="View the output in ArcMap" /></p>
+<h2 id="adding-the-writer-if-you-are-not-using-a-template-file">
+  <span>Adding the Writer If You Are NOT Using A Template File</span>
+</h2>
+<p>If a template file is not available and a destination geodatabase was created from scratch as mentioned in Step 1, when adding the <strong>Esri Geodatabase (File Geodb) </strong>writer, be sure to set the <strong>Add Feature Type(s) </strong>section of the writer dialog to Import from Dataset. Set the <strong>Transaction Type </strong>to Edit Session in the Parameters, then click <strong>OK</strong> twice.<br /><img src="images/1638726843734.png" class="image image-block image-center" alt="Import from Dataset" /><br />Set the <strong>Format </strong>and <strong>Dataset </strong>to the geodatabase created in Step 1 and click <strong>OK </strong>when prompted. FME will scan the geodatabase to confirm what tables exist. When prompted with a list of classes, select only the feature class you wish to populate with features.<br /><br />Once the writer is added, connect the output of the MapInfoTAB reader feature type to the geodatabase writer feature type. </p>
+<h2 id="geodatabase-to-geodatabase">
+  <span>Geodatabase to Geodatabase</span>
+</h2>
+<p>When converting one geodatabase to another, it is also possible to create new feature-linked annotations in the same way as described above. However, you may have edited your annotations in some cases and want to preserve those edits. In this case, you need to link the source annotations back to the primary feature and set the <code>geodb_&lt;anno&gt;</code> format attributes for the annotation characteristics you want to preserve. Also, ensure that the annotation does not automatically create on feature insert in your target geodatabase template. To do this, you need to edit the ArcGIS annotation properties and uncheck <strong>Create annotation when features are added</strong>. Then export that to your Esri XML Workspace Document that you'll use for your geodatabase template.<br /><img src="images/1638726889040.png" class="image image-block image-center" alt="uncheck &quot;Create annotation when features are added&quot;" /><br />In this example, the source geodatabase has the feature class <strong>Zones</strong> and feature-linked annotation <strong>ZoneNames</strong>. </p>
