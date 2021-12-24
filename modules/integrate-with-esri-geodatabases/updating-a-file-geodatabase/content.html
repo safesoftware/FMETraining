@@ -4,7 +4,7 @@
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
   <li>Configure the ChangeDetector transformer to identify changes.</li>
-  <li>Configure a database writer Feature Type to write changes.</li>
+  <li>Configure a database writer feature type to write changes.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
@@ -15,33 +15,34 @@
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>A common scenario that one may encounter when working with a  geodatabase is to receive a set of data that contains changes to the features and attributes of feature classes in an existing geodatabase. The following example will show how to use geodatabase functionality in order to update existing geodatabase features with an edited Mapinfo TAB dataset.<br /> </p>
+<p>A typical scenario that one may encounter when working with a geodatabase is to receive a set of data that contains changes to the features and attributes of feature classes in an existing geodatabase. The following example will show how to use geodatabase functionality to update existing geodatabase features with an edited Mapinfo TAB dataset.</p>
 <h2 id="requirements">
   <span>Requirements</span>
 </h2>
-<p>The Esri Geodatabase (File Geodb) reader/writer used in the following example requires that a licensed version of ArcGIS be available to the user. For more information on required ArcGIS license levels, please see <a href="https://community.safe.com/s/article/required-arcgis-license-types-for-fme-geodatabase" rel="noreferrer noopener" target="_blank">Required ArcGIS License Types for FME Geodatabase Formats</a> .  </p>
+<p>This unit’s exercise uses the Esri Geodatabase (File Geodb) reader/writer, which requires a licensed version of ArcGIS. For more information on required ArcGIS license levels, please see <a href="https://community.safe.com/s/article/required-arcgis-license-types-for-fme-geodatabase" rel="noreferrer noopener" target="_blank">Required ArcGIS License Types for FME Geodatabase Formats</a>.</p>
 <h2 id="video">
   <span>Video</span>
 </h2>
-<p><iframe width="640" src="https://play.vidyard.com/Y9saRfwmUb4p6MqXnieC23.html?" height="360" title="Video Content"></iframe><br title="Video Content" /> </p>
-<h2 id="source-data">
-  <span>Source Data</span>
-</h2>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/UpdatingAFileGeodatabase/GeodatabaseUpdates_Source.gdb.zip" rel="noreferrer noopener" target="_blank">Parks (Esri Geodatabase)</a></p>
-<p><img src="images/1638888943376.png" class="image image-block" alt="Inspect source data in Visual Preview" /></p>
+<p><iframe width="640" src="https://play.vidyard.com/Y9saRfwmUb4p6MqXnieC23.html?" height="360" title="Video Content"></iframe><br title="Video Content" /></p>
 <h2 id="step-by-step-instructions">
   <span>Step-by-step Instructions</span>
 </h2>
-<p><strong>1. Read Source Data</strong><br />Open FME Workbench and start a blank workspace. Add an <strong>Esri Geodatabase (File Geodb)</strong> reader to the canvas and browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/UpdatingAFileGeodatabase/GeodatabaseUpdates_Source.gdb.zip" rel="noreferrer noopener" target="_blank">GeodatabaseUpdates_Source.gdb</a> dataset from the Resources download. Then click <strong>OK</strong> to add the reader. Since there is only one feature type (feature class) in this dataset, it will automatically be selected.<br /><img src="images/1638889132260.png" class="image image-block" alt="Add reader" /><br />Updates to be applied to this dataset will be read from our <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/UpdatingAFileGeodatabase/Updates.zip" rel="noreferrer noopener" target="_blank">ParkUpdates.tab</a> Mapinfo TAB file. Add a <strong>MapInfo TAB (MITAB)</strong> reader to the canvas and browse to the ParksUpdates.tab dataset from the Resources download. Click <strong>OK</strong> to add the reader.<br /><img src="images/1638889163706.png" class="image image-block" alt="Add another reader" /><br /><br /><strong>2. Perform Change Detection</strong><br />Seeing as we have two datasets read in, our original data and our updated data, we can perform change detection to see what has changed between the two datasets. Add a ChangeDetector to the canvas. Connect the original DowntownParks reader feature type to the Original input port on the ChangeDetector, and then connect the ParksUpdates to the Revised input port.<br /><img src="images/1638889186839.png" class="image image-block" alt="Connect a ChangeDetector" /><br /><br />In the ChangeDetector parameters, set the <em>Update Detection Key</em> to <strong>parkid</strong>, this will ensure each feature that is similar is only compared with itself. Next, click on the ellipsis next to <em>Select Attributes</em> and select the following:</p>
+<p><strong>1. Read Source Data</strong></p>
+<p>Open FME Workbench (2021.1 or later) and create a new workspace. Add an <strong>Esri Geodatabase (File Geodb)</strong> reader to the canvas and browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/UpdatingAFileGeodatabase/GeodatabaseUpdates_Source.gdb.zip" rel="noreferrer noopener" target="_blank">GeodatabaseUpdates_Source.gdb</a> dataset from the Resources download. Then click <strong>OK</strong> to add the reader. Since there is only one feature type (feature class) in this dataset, it will automatically be selected.<br /><img src="images/1638889132260.png" class="image image-block image-center" alt="Add reader" /><br />We will read the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/UpdatingAFileGeodatabase/Updates.zip" rel="noreferrer noopener" target="_blank">ParkUpdates.tab</a> Mapinfo TAB file, which contains the updates for the geodatabase. Add a <strong>MapInfo TAB (MITAB)</strong> reader to the canvas and browse to the ParksUpdates.tab dataset from the Resources download. Click <strong>OK</strong> to add the reader.<br /><img src="images/1638889163706.png" class="image image-block image-center" alt="Add another reader" /></p>
+<p><strong>2. Inspect Source Data</strong></p>
+<p>Run the workspace and inspect DowntownParks. It should look something like this:</p>
+<p><img src="images/1638888943376.png" alt="Inspect source data in Visual Preview" class="image image-block image-center" /></p>
+<p><strong>3. Perform Change Detection</strong></p>
+<p>We have two datasets, our original data and our updated data, so we can perform change detection to find the differences between the two datasets. Add a <strong>ChangeDetector</strong> to the canvas. Connect the original <strong>DowntownParks</strong> reader feature type to the Original input port on the <strong>ChangeDetector</strong>, and then connect the <strong>ParksUpdates</strong> to the Revised input port.<br /><img src="images/1638889186839.png" class="image image-block image-center" alt="Connect a ChangeDetector" /><br /><br />In the <strong>ChangeDetector</strong> parameters, set the <strong>Update Detection Key</strong> to <code>parkid</code>; this setting means the ChangeDetector will only compare the original and updated versions of the same park, rather than compare all parks to all other parks. Next, click on the ellipsis next to <strong>Selected Attributes</strong> and select the following:</p>
 <ul>
-  <li>dogpark</li>
-  <li>parkname</li>
-  <li>specialfeatures</li>
-  <li>treecount</li>
-  <li>visitorcount</li>
-  <li>washrooms</li>
+  <li><code>dogpark</code></li>
+  <li><code>parkname</code></li>
+  <li><code>specialfeatures</code></li>
+  <li><code>treecount</code></li>
+  <li><code>visitorcount</code></li>
+  <li><code>washrooms</code></li>
 </ul>
-<p>Then uncheck <strong>Check Geometry</strong> and click <strong>OK</strong>.<br /><img src="images/1638889223395.png" class="image image-block" alt="ChangeDetector parameters" /><br /><br /><strong>4. Update Original Feature Class</strong><br />Add an <strong>Esri Geodatabase (File Geodb)</strong> writer to the workspace, browse to a location to save the dataset. Set the <em>Feature Class or Table Definition</em> to<strong> Copy from Reader</strong> and then open the <strong>Parameters</strong>.<br /><img src="images/1638889255357.png" class="image image-block" alt="Add writer" /><br /><br />In the <em>Parameters</em>, since we are using our original source geodatabase as a template, enable <strong>Overwrite Existing Geodatabase</strong> and for <em>Template File Geodatabase</em> select <strong>GeodatabaseUpdates_Source.gdb</strong>. When using a Geodatabase as a template, both the schema and data that are currently within the Geodatabase will be copied. Now this will overwrite the existing Geodatabase if it exists, however, this does not overwrite the template. Click <strong>OK</strong> twice to add the writer. </p>
+<p>Then uncheck <strong>Check Geometry</strong> and click <strong>OK</strong>.<br /><img src="images/1638889223395.png" class="image image-block image-center" alt="ChangeDetector parameters" /><br /><br /><strong>4. Update Original Feature Class</strong><br />Add an <strong>Esri Geodatabase (File Geodb)</strong> writer to the workspace, browse to a location to save the dataset. Set the<strong> </strong><strong>Feature Class or Table Definition</strong> to<strong> </strong>Copy from Reader and then open the <strong>Parameters</strong>.<br /><img src="images/1638889255357.png" class="image image-block image-center" alt="Add writer" /><br />Because we are using the original source geodatabase as a template, enable <strong>Overwrite Existing Geodatabase</strong> and select GeodatabaseUpdates_Source.gdb for <strong>Template File Geodatabase</strong>. When using a geodatabase as a template, both the schema and data within the geodatabase will be copied. FME will overwrite the existing geodatabase if it exists; however, it does not overwrite the template. Click <strong>OK</strong> twice to add the writer.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -49,21 +50,35 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>The Template and the Output Geodatabase should be two different files.</p>
+            <p>The template and the output geodatabase should be two different files.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<p><img src="images/1638889737494.png" class="image image-block" alt="Writer parameters" /></p>
-<p>In the <em>Select Feature Type</em> dialog appears, select <strong>DowntownParks</strong>. This will copy the schema from this reader feature type and apply it to our writer Feature type that we are going to write to.</p>
-<p>Once the writer has been added to the canvas, connect the Updated, Inserted, and Deleted Output ports from the ChangeDetector to the DowntownParks writer feature type.</p>
-<p><img src="images/1638889771317.png" class="image image-block" alt="connect the Updated, Inserted, and Deleted Output ports from the ChangeDetector to the DowntownParks writer feature type" /></p>
-<p>Now there is one more step before we can write out the changed data, we need to modify the writer feature type parameters to update the geodatabase. Open the writer feature type parameters, change the <em>Feature Operation </em>to <strong>fme_db_operation</strong>, then change the <em>Update Spatial Columns</em> to <strong>No</strong>. Next click on the ellipsis next to <em>Match Columns</em> and select <strong>parkid</strong>, then click<strong> OK</strong>.</p>
-<p><img src="images/1638890202206.png" class="image image-block" alt="Writer feature type parameters" /></p>
+<p><img src="images/1638889737494.png" class="image image-block image-center" alt="Writer parameters" /></p>
+<p>Once the writer feature type appears on the canvas, connect the Updated, Inserted, and Deleted Output ports from the <strong>ChangeDetector</strong> to the <strong>DowntownParks </strong>writer feature type.</p>
+<p><img src="images/1638889771317.png" class="image image-block image-center" alt="connect the Updated, Inserted, and Deleted Output ports from the ChangeDetector to the DowntownParks writer feature type" /></p>
+<p>There is one more step before we can write out the changed data. We need to modify the writer feature type parameters to update the geodatabase. Open the writer feature type parameters, change the <strong>Feature Operation </strong>to <code>fme_db_operation</code>, then change the <strong>Update Spatial Columns </strong>to No. </p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>The ChangeDetector automatically creates the <code>fme_db_operation</code> attribute, which stores the database operation required to apply the detected changes (e.g., UPDATE, INSERT. DELETE).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Next, click the ellipsis next to Match Columns, select <code>parkid</code><em>, and</em> click<strong> OK </strong>twice to confirm.</p>
+<p><img src="images/1638890202206.png" class="image image-block image-center" alt="Writer feature type parameters" /></p>
 <p><strong>5. Save and Run the Workspace</strong></p>
-<p>Now, save the workspace and then run it. View your output in FME Visual Preview or in Esri ArcCatalog to confirm that the changes have been applied.</p>
-<p>14 records will be updated, and one will be deleted.</p>
+<p>Now, save the workspace and then run it. View your output in FME Visual Preview or Esri ArcCatalog to confirm that FME applied the changes.</p>
+<p>You should see 14 updated records and one deleted record.</p>
 <p><img src="images/1638890236695.png" class="image image-block" alt="Run the workspace" /></p>
-<p><img src="images/1638890356192.png" class="image image-block" alt="Inspect output in Visual Preview" /></p>
+<p><img src="images/1638890356192.png" class="image image-block image-center" alt="Inspect output in Visual Preview" /></p>
