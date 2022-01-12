@@ -11,7 +11,17 @@
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>Data integration workflows by their very nature usually bring together multiple datasets, often stored in different formats. With FME you can bring multiple datasets together using a number of techniques:</p>
+<p>Data integration workflows by their very nature usually bring together multiple datasets, often stored in different formats. It's natural that most data integration workflows will read data from multiple locations in multiple formats. One can accomplish this using multiple readers in FME.</p>
+<p>One can also use multiple writers or multiple writer feature types to send data to multiple locations. This workflow can meet a number of common needs:</p>
+<ul>
+  <li>Split data output by function, end-user, language, etc.</li>
+  <li>Separate out poor quality data for automated or manual quality assurance</li>
+  <li>Quickly create many layers or tables</li>
+</ul>
+<h2 id="working-with-multiple-datasets-in-fme">
+  <span>Working with Multiple Datasets in FME</span>
+</h2>
+<p>With FME you can bring multiple datasets together using a number of techniques:</p>
 <ul>
   <li>Multiple readers, multiple writers, or both</li>
   <li>FeatureReader and/or FeatureWriter transformers</li>
@@ -88,18 +98,17 @@
   </div>
 </div>
 <p><strong>Directory and File Pathnames Reader </strong></p>
-<p>A more advanced way to read multiple datasets is using the Directory and File Pathnames reader with a FeatureReader. This reader lets you generate source dataset paths using glob expressions, generating one feature per dataset path. You can then send these features into a FeatureReader to read the files at those locations.</p>
-<p><strong>Wildcards</strong></p>
+<p>A more advanced way to read multiple datasets is using the Directory and File Pathnames reader with a FeatureReader. This reader lets you generate source dataset paths using <a href="https://en.wikipedia.org/wiki/Glob_(programming)" rel="noreferrer noopener" target="_blank">glob expressions</a>, generating one feature per dataset path. You can then send these features into a FeatureReader to read the files at those locations.</p>
+<p><strong>Wildcards and Glob Expressions</strong></p>
 <p>What if you need to read multiple files, but you don't know their path in advance, or you want an easy way to "greedily" accept input datasets? </p>
 <p>You can accomplish this by using wildcards in the Source Dataset parameter. This technique will let you specify a rule-based method for reading in multiple datasets. You can use any of the special characters specified <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/path/PATH_reader.htm#SpecialCharsPathFilter" rel="noreferrer noopener" target="_blank">here</a>, allowing you to construct glob expressions to carefully specify which files to read.</p>
-<p><img src="images/1640104750413.png" style="width:600px" class="image image-block image-center" /></p>
-<p><strong>Need to verify wildcards in reader vs parameter</strong></p>
+<p><img src="images/1640104750413.png" style="width:600px" class="image image-block image-center" alt="Using a glob pattern in the Source dataset parameter" /></p>
 <p><strong>Merging Feature Types</strong></p>
 <p>What if you have a large number of feature types (tables, layers, etc.) in your source data (again, usually with the same schema), but you want to apply the same processing to them all, or simply want to keep your workspace simple without a large number of reader feature types? In this case, you can merge feature types. </p>
 <p>You can merge feature types when adding a Reader and selecting Single Merged Feature Type under Workflow Options. </p>
-<p><img src="images/1640104901063.png" style="width:600px" class="image image-block image-center" /></p>
+<p><img src="images/1640104901063.png" style="width:600px" class="image image-block image-center" alt="Single Merged Feature Type option" /></p>
 <p>You can also merge feature types after adding a reader feature type by double-clicking it to open its parameters and checking Merge Feature Type.</p>
-<p><img src="images/1640105185444.png" style="width:600px" class="image image-block image-center" /></p>
+<p><img src="images/1640105185444.png" style="width:600px" class="image image-block image-center" alt="Wildcard Merge Filter" /></p>
 <p>By default, the Merge Filter is set to <code>*</code>, which will read all feature types in the source data. However, this filter also accepts exact match, wildcard, and regular expression Filter Types, giving you more control over which feature types to read.</p>
 <div class="box message info">
   <div class="inner">
