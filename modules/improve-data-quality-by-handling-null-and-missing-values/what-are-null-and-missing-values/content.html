@@ -1,0 +1,67 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li><br /></li>
+</ul>
+<h2 id="what-is-a-null-value">
+  <span>What is a Null Value?</span>
+</h2>
+<p>Null attributes are a very important part of FME’s attribute handling. Not every dataset has null values, and not every format supports them; but when they do exist it is important for FME to handle them correctly.</p>
+<p>In general, a null attribute value is the equivalent of <strong>nothing</strong>. However, it’s important to be precise in our terminology because there are many ways to represent nothing, for example:</p>
+<ul>
+  <li>An attribute has a particular <em>state</em> that indicates nothingness (null)</li>
+  <li>An attribute has a particular <em>value</em> that indicates nothingness (for example, -999)</li>
+  <li>An attribute exists but has no value (empty)</li>
+  <li>An attribute doesn’t exist (missing)</li>
+  <li>A numeric attribute is NaN (Not a Number)</li>
+  <li>A numeric attribute has a value of zero</li>
+  <li>A raster cell is set to nodata (which is essentially the raster equivalent of null)</li>
+</ul>
+<p>In fact, Safe Software’s developers identified fifteen (15) different ways for “nothing” to be represented in spatial and tabular data!</p>
+<p>So when we talk about <em>null</em>, it has a particular meaning. For us, null is a specific state that is deliberately set to signify that the information does not exist. It tells us that the lack of information is not a mistake, as a missing or empty value might be.</p>
+<p>Because there are so many different methods, this section will discuss ways to handle "nothing" attribute values, but with a particular emphasis on Null values.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>FME's three main methods are null, empty, and missing. To clarify with an analogy, let's consider the kitchen of your house.</p>
+            <p>Suppose there is no sink, there is no place to put a sink, and there is no plumbing for the sink. The builder foolishly decided there would be no sink, so the sink is <strong>missing</strong>.</p>
+            <p>If there was a place for the sink, and plumbing for the sink, but the sink was not there, then it would be <strong>null</strong>. The builder set aside space for the sink, but hasn't added it yet.</p>
+            <p>If there is a sink, but there is no water in it, then the sink exists, but it is <strong>empty</strong>.</p>
+            <p>You can find a more amusing version of this analogy by looking up <a href="https://twitter.com/iamelgringo/status/845027370864001024?lang=en" rel="noreferrer noopener" target="_blank">Null Toilet Roll!</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p></p>
+<h2 id="how-does-fme-represent-nothing">
+  <span>How does FME Represent Nothing?</span>
+</h2>
+<p>FME’s internal engine has its own state to represent null. However, when presented to the user, a null value is usually represented as &lt;null&gt;.</p>
+<p>For example, this feature in the Logger has &lt;null&gt; for the ParkName attribute:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.017.NullsInLog.png" alt class="image image-block image-center" /></p>
+<p>Similarly, the FME Data Inspector will depict nulls as &lt;null&gt;:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.018.NullsInDI.png" alt class="image image-block image-center" /></p>
+<p>Notice how we have a wide range of "nothing" values here. The ParkName is a true &lt;null&gt;, the RefParkId has a value of -9999, and Washrooms is &lt;missing&gt; (meaning the attribute doesn't exist).</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>&lt;missing&gt; is an interesting concept. You might be asking, "how do we know when an attribute is missing?" But a better question is "how do we know that the attribute should exist?"<br /><br />Using our previous analogy, we know the kitchen sink is missing because the house blueprints specified a sink. The sink should be there, but it isn't.<br /><br />In FME we know an attribute should exist because it appears in the reader schema. For example, in the above screenshot, Washrooms appears in the schema, but for some reason, certain features do not have that attribute. That makes the attribute &lt;missing&gt; from those features.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p></p>
