@@ -3,62 +3,64 @@
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li>d</li>
+  <li>Identify different forms of nothing values using the Tester.</li>
+  <li>Use transformers that have options for handling null and missing values.</li>
+  <li>Use join transformers that have options for handling null and missing values.</li>
 </ul>
-<h2 id="handling-nothing">
-  <span>Handling Nothing</span>
-</h2>
-<p>Besides representing all forms of nothing in its interface, FME also allows nothing to be a condition in various tests, lets users set nothing values, and allows bulk updates from one form of nothing to another.</p>
 <h2 id="recognizing-null-values">
   <span>Recognizing Null Values</span>
 </h2>
-<p>Various formats have various ways to represent nothing. However, if they support the concept of null, then FME will read any null attributes with a &lt;null&gt; value.</p>
+<p>Besides representing all forms of nothing in its interface, FME also allows nothing to be a condition in various tests, lets users set nothing values, and allows bulk updates from one form of nothing to another.</p>
+<p>Formats have various ways to represent nothing. However, if they support the concept of null, then FME will read any null attributes with a <code>&lt;null&gt;</code> value.</p>
 <p>For a workspace to check for incoming nulls, the Tester transformer has specific operators to test for null, empty, and missing values:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.019.TesterNothingTests.png" alt class="image image-block image-center" /></p>
 <p>Because the Tester interface is incorporated into many facets of FME (such as the TestFilter transformer or Conditional attributes/parameters), you can test for nulls wherever you find that interface.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>The "Attribute Has a Value" test returns true when an attribute is not null, AND is not empty, AND is not missing - saving you the inconvenience of having to use those three tests separately.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>The "Attribute Has a Value" test returns true when an attribute is not null, AND is not empty, AND is not missing - saving you the inconvenience of having to use those three tests separately.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="other-null-handling-transformers">
   <span>Other Null-Handling Transformers</span>
 </h2>
 <p>Many other transformers also allow testing for nulls. For example, the Matcher transformer has options as to whether null values constitute a match:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.020.MatcherNullOptions.png" alt class="image image-block image-center" /></p>
 <p>This parameter lets the workspace author decide whether null, empty, and missing values should be treated as different values.</p>
-<p>If set to No, then two features can match even if one has an attribute that is &lt;null&gt; and the other has an attribute that is &lt;missing&gt;.</p>
-<p>If set to Yes, then two features can only match when their attributes are the same type of nothing; i.e., when &lt;null&gt; one on feature is matched by &lt;null&gt; on the other.</p>
-<p>Another example is the AttributeFilter transformer, which has separate output ports for &lt;Empty&gt;, &lt;Missing&gt;, and &lt;Null&gt;:</p>
+<p>If set to No, then two features can match even if one has an attribute that is <code>&lt;null&gt;</code> and the other has an attribute that is <code>&lt;missing&gt;</code>.</p>
+<p>If set to Yes, then two features can only match when their attributes are the same type of nothing; i.e., when <code>&lt;null&gt;</code> one on feature is matched by <code>&lt;null&gt;</code> on the other.</p>
+<p>Another example is the AttributeFilter transformer, which has separate output ports for <code>&lt;Empty&gt;</code>, <code>&lt;Missing&gt;</code>, and <code>&lt;Null&gt;</code>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.021.AttributeFilterNullPorts.png" alt class="image image-block image-center" /></p>
-<hr />
 <h2 id="writing-null-values">
   <span>Writing Null Values</span>
 </h2>
 <p>It's often important to be able to test for and filter null values as part of a data validation process, or when a null value would cause problems in a calculation.</p>
 <p>However, it's also important to be able to filter out null values for writing data. That's because what happens when an attribute set to null is sent to a writer depends very much upon the data format.</p>
-<p>If the format supports &lt;null&gt; then the destination dataset will contain &lt;null&gt; attributes.</p>
-<p>If the format doesn’t support &lt;null&gt;, then FME will automatically convert the data to the closest representation that is supported.</p>
-<p>For example, MapInfo TAB does not have a concept of &lt;null&gt;; instead text attributes are not written (so FME will read them back as &lt;missing&gt;) and numeric attributes are written as -9999 (which is a MapInfo equivalent to null).</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>Be aware that FME only converts "null" values when the format does not support the current representation. For example, if a feature has an empty attribute value, and the format allows empty values, then FME will not convert the data to a true &lt;null&gt;.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<p>If the format supports <code>&lt;null&gt;</code> then the destination dataset will contain <code>&lt;null&gt;</code> attributes.</p>
+<p>If the format doesn’t support <code>&lt;null&gt;</code>, then FME will automatically convert the data to the closest representation that is supported.</p>
+<p>For example, MapInfo TAB does not have a concept of <code>&lt;null&gt;</code>; instead text attributes are not written (so FME will read them back as <code>&lt;missing&gt;</code>) and numeric attributes are written as -9999 (which is a MapInfo equivalent to null).</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Be aware that FME only converts "null" values when the format does not support the current representation. For example, if a feature has an empty attribute value, and the format allows empty values, then FME will not convert the data to a true <code>&lt;null&gt;</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="joining-with-null-attribute-keys-and-values">
   <span>Joining with Null Attribute Keys and Values</span>
 </h2>
