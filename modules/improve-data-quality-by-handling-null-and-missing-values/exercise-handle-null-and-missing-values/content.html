@@ -39,31 +39,31 @@
 </h2>
 <p>Open the starting workspace in FME Workbench (2021.1 or later).</p>
 <p>Using feature caching, run the workspace and inspect the source dataset as a table. You’ll see that the data is in order of <code>ParkId</code>, not <code>ParkName</code>, and that there are <code>&lt;missing&gt;</code> values scattered throughout:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.228.Ex4.InitialData.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.228.Ex4.InitialData.png" alt="Parks data with missing values scattered throughout" class="image image-block image-center" /></p>
 <p>To sort the <code>&lt;missing&gt;</code> data we'll need to set their <code>ParkName</code> attribute to something that appears at the bottom of a sorted list then set them back to <code>&lt;null&gt;</code> afterward.</p>
 <h2 id="2-add-null-attribute-mapper">
   <span>2) Add NullAttributeMapper</span>
 </h2>
 <p>Add a NullAttributeMapper transformer prior to the Sorter transformer. Inspect the parameters.</p>
 <p>Ensure “Map” is set to Selected Attributes, and choose the attribute <code>ParkName</code>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.229.Ex4.NullAttributeMapperParameters1.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.229.Ex4.NullAttributeMapperParameters1.png" alt="Choosing the Selected Attributes in the NullAttributeMapper" class="image image-block image-center" /></p>
 <p>Underneath that is a section of what to map to.</p>
 <p>We know the values in here are currently listed as <code>&lt;missing&gt;</code> so set the “If Attribute Value Is” parameter to Missing (Selected Attributes Only)</p>
 <p>We want to map these to a value that appears at the bottom of an alphabetically sorted list, so change “Map To” to New Value and enter ZZZ as the new value.</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.230.Ex4.NullAttributeMapperParameters2.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.230.Ex4.NullAttributeMapperParameters2.png" alt="Mapping missing attribute values to a new value of ZZZ" class="image image-block image-center" /></p>
 <p>Accept the parameter changes.</p>
 <h2 id="3-add-null-attribute-mapper">
   <span>3) Add NullAttributeMapper</span>
 </h2>
 <p>Now add a second NullAttributeMapper; this time it should be connected <em>after</em> the Sorter.</p>
 <p>Open the parameters and, once again, ensure “Map” is set to Selected Attributes and select the <code>ParkName</code> attribute. This time turn the ZZZ values back to nulls:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.231.Ex4.NullAttributeMapperParameters3.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.231.Ex4.NullAttributeMapperParameters3.png" alt="Mapping ZZZ to null" class="image image-block image-center" /></p>
 <p>Technically we could just turn them back into <code>&lt;missing&gt;</code>; the Geodatabase writer will write them out as nulls. However, assuming we didn’t know that, null is the safer option and bound to give us what we want.</p>
 <h2 id="4-save-and-run-workspace">
   <span>4) Save and Run Workspace</span>
 </h2>
 <p>Save the workspace and then run it. Inspect the output. This time the data should be sorted by <code>ParkName</code>, but with all null values at the end of the dataset:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.232.Ex4.SortedOutputData.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.232.Ex4.SortedOutputData.png" alt="Resulting data with null values at the bottom" class="image image-block image-center" /></p>
 <h2 id="5-fix-ref-park-id">
   <span>5) Fix RefParkId</span>
 </h2>
@@ -83,7 +83,7 @@
   </div>
 </div>
 <p>To do this open the parameters dialog for the first NullAttributeMapper. Add <code>RefParkId</code> to the list of attributes for processing. Then add -9999 to the "Or If Attribute Value Is" field:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.233.Ex4.NullAttributeMapperParamsForID.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.233.Ex4.NullAttributeMapperParamsForID.png" alt="Mapping missing or -9999 values to ZZZ" class="image image-block image-center" /></p>
 <p>Now open the second NullAttributeMapper and add <code>RefParkId</code> to the list of attributes for processing.</p>
 <p>Now, these values will get mapped to ZZZ with the missing <code>ParkName</code> values. Then they will be turned into true nulls by the second NullAttributeMapper.</p>
 <h2 id="challenge">
