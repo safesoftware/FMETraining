@@ -1,0 +1,238 @@
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Exercise 3</td>
+      <td>Custom Transformers and Published Parameters</td>
+    </tr>
+    <tr>
+      <td>Data</td>
+      <td>Neighborhoods (Google KML)</td>
+    </tr>
+    <tr>
+      <td>Overall Goal</td>
+      <td>Edit a custom transformer to use published parameters</td>
+    </tr>
+    <tr>
+      <td>Demonstrates</td>
+      <td>Published parameters and custom transformers</td>
+    </tr>
+    <tr>
+      <td>Start Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex3-Begin.fmw</td>
+    </tr>
+    <tr>
+      <td>End Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex3-Complete.fmw<br />C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex3-Complete-Advanced.fmw</td>
+    </tr>
+  </tbody>
+</table>
+<p>A colleague - with our help - has created a custom transformer that calculates density for a particular area. However, we need to work on it further to make it more generic - and to expand its capabilities.</p>
+<p>This transformer was created using the automatic schema handling parameter and the workspace will already be handling schema properly. So, to an extent we don't have to worry - but there are improvements we can make.</p>
+<p><br /><strong>1) Start Workbench</strong><br />Continue with the workspace from exercise 2, or open the workspace: C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex3-Begin.fmw</p>
+<p>Notice that, currently there are two instances of the custom transformer. Both produce an attribute with the same name (DensityResult). It would be helpful if the user of the custom transformer could define what the name of that attribute should be. Let's set up the transformer to allow that.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says...</td>
+    </tr>
+    <tr>
+      <td>This is why - so far - we've had the two transformers in parallel streams. If we had them in series in the same stream then the results of the second custom transformer would overwrite the results of the first.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p>Click on the tab labeled DensityEvaluator to switch the canvas to the custom transformer definition. Inspect the parameters for the ExpressionEvaluator. Next, to New Attribute (DensityResult) click the down-arrow and choose User Parameter &gt; Create User Parameter:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.209.Ex3.CTCreateUserParameter.png" alt class="image image-block image-center" /></p>
+<p>When prompted, click OK to accept the default settings. Return to the main tab and check the parameters for each DensityEvaluator instance. There should be the option to set the name of the attribute to output:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.210.Ex3.CTCreatedUserParameter.png" alt class="image image-block image-center" /></p>
+<p>You can now move the instances so they are joined in sequence (rather than parallel) and change the two output attribute names from DensityResult to something more specific for this scenario (PopulationDensity2001 and PopulationDensity2011):</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.211.Ex3.CTonCanvasSeries.png" alt class="image image-block image-center" /></p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>At first glance it might appear that we've simply reverted the custom transformer right back to where we started from. To an extent, that's true. However, the point is that we've now got a solution that can work in other scenarios (i.e. where something other than population density is being calculated).</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p><br /><strong>2) Set Parameter Prompts</strong><br />Looking at the custom transformer parameters we can also see that the prompt for the attribute to analyze is called "TotalPopulation2001". Obviously, this is not very generic.</p>
+<p>Return to the DensityEvaluator tab and browse the Navigator window to find the related published parameter. Right-click on the parameter and choose Edit Definition.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.212.Ex3.CTNavigatorEditParamDefinition.png" alt class="image image-block image-center" /></p>
+<p>In the dialog that opens set the parameter Name to <em>DensityAttribute</em> and the Prompt to <em>Attribute to Analyze</em>. Reset the Default Value to be an empty field:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.213.Ex3.CTEditParamDefinition.png" alt class="image image-block image-center" /></p>
+<p>Click OK to close the dialog. Return to the Main tab and check the custom transformer parameters to prove the label change worked. Notice, however, that there is now no attribute selected. So select the correct attributes:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.214.Ex3.CTParametersUpdated.png" alt class="image image-block image-center" /></p>
+<p>...and then run the workspace to show that the output is still correct.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>It's because we chose to handle schema automatically that we can simply change this user parameter name and not worry about where it is used. FME will handle the name change wherever is necessary.<br /><br />But you might be wondering why we set the Default Value to empty, causing each instance of the transformer to need its parameters set once more. That's because each transformer would have been changed anyway; if we left the default as TotalPopulation2001, then both transformers would have been reset to that. At least by emptying the default, we have a visual cue that the parameters need to be reset.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p><br /><strong>3) Implement Units Selection</strong><br />At the moment this workspace is calculating the number of items (in this exercise, persons) per square kilometer of land. This works for the original scenario, however, other uses of this transformer might find different units to be more useful.</p>
+<p>Therefore we’ll implement a parameter for users to be able to select their units of choice.</p>
+<p>In the DensityEvaluator tab, browse the Navigator window and right-click on the entry labeled User Parameters. Select the Create User Parameter option.</p>
+<p>In the Add/Edit User Parameter dialog, set the following parameters:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Type</td>
+      <td>Choice with Alias</td>
+    </tr>
+    <tr>
+      <td>Name</td>
+      <td>DensityUnits</td>
+    </tr>
+    <tr>
+      <td>Prompt</td>
+      <td>Density Units:</td>
+    </tr>
+  </tbody>
+</table>
+<p>Uncheck the checkbox parameter labeled Optional because the user has to select a value.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.215.Ex3.CTCreateParamDefinition.png" alt class="image image-block image-center" /></p>
+<p>Now click the [...] button to the right of the Configuration parameter. This opens a dialog in which to define choices for the user to select from. Make two entries into this dialog</p>
+<table class="featureTable sort_table">
+  <thead class="thead sorted">
+    <tr>
+      <th scope="col">Display Name</th>
+      <th scope="col">Value</th>
+    </tr>
+  </thead>
+  <tbody class="tbody">
+    <tr>
+      <td>Sq Meters</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Sq Kilometers</td>
+      <td>0.000001</td>
+    </tr>
+  </tbody>
+</table>
+<p>To save you counting, that's five zeros after the decimal place:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.216.Ex3.CTCreateParamUnitsDefinition.png" alt class="image image-block image-center" /></p>
+<p>Click OK to close that dialog.</p>
+<p>Back in the Add/Edit User Parameter dialog set:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Attribute Assignment</td>
+      <td>Off</td>
+    </tr>
+    <tr>
+      <td>Default Value</td>
+      <td>Sq Kilometers</td>
+    </tr>
+  </tbody>
+</table>
+<p>Then click OK to close this dialog and add the published parameter.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>Feel free to add any other units that you want. The units for this coordinate system are in metres, which is why that has a value of 1. So other units would need to be a fraction of that; for example, square miles would be 0.0000003861.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p><br /><strong>4) Implement Parameter</strong><br />Now we’ve defined a published parameter that the user can set the units with, but we still have to apply it in the custom transformer.</p>
+<p>Staying in the DensityEvaluator tab, inspect the parameters for the AreaCalculator transformer. For the Multiplier field, click the drop-down arrow and select the newly defined user parameter, DensityUnits:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.217.Ex3.CTUsingUserParameter.png" alt class="image image-block image-center" /></p>
+<p>Back in the main canvas the custom transformer now has a parameter for the end user to select the output density units:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.218.Ex3.CTExposedUserParameter.png" alt class="image image-block image-center" /></p>
+<p>Experiment by running the workspace using different units, to prove that the changes were implemented properly. Notice that, because Attribute Assignment was set to "Off" that the end-user isn't able to select an attribute.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Advanced Exercise</td>
+    </tr>
+    <tr>
+      <td>Although it’s not needed for this population density calculation, another useful function for this transformer would be the ability to apply a weighting to the density calculations. If you have time, carry out the following steps to set it up.<br /><br />The weighting will come from an incoming attribute, which means we need to be able to handle this in the custom transformer’s schema.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p><br /><strong>5) Add RandomNumberGenerator</strong><br />Our source data doesn't have any fields we could reasonably use for weighting the output. Therefore return to the Main canvas tab and add a RandomNumberGenerator transformer in order to generate a test attribute:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.219.Ex3.RandomNumberGeneratorOnCanvas.png" alt class="image image-block image-center" /></p>
+<p>Inspect the parameters dialog for the RandomNumberGenerator and, for the purposes of this exercise, set:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Minimum Value</td>
+      <td>0.1</td>
+    </tr>
+    <tr>
+      <td>Maximum Value</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Decimal Places</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Result Attribute</td>
+      <td>WeightedAttribute</td>
+    </tr>
+  </tbody>
+</table>
+<p><br /><strong>6) Expose Attribute in Custom Transformer</strong><br />Now we have an attribute we need to expose it in the custom transformer, in order to use it.</p>
+<p>Return to the DensityEvaluator tab where the transformer is defined. Inspect the parameters for the Input port object. Put a checkmark against the WeightingAttribute attribute:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.220.Ex3.CTExposeAttribute.png" alt class="image image-block image-center" /></p>
+<p>This will cause the attribute to be exposed in the custom transformer definition.</p>
+<p>It will also cause a user parameter to be created. Locate the parameter in the Navigator window (it should be called WEIGHTEDATTRIBUTE) right-click on it and choose Edit Definition.</p>
+<p>Put a checkmark in the Optional field, as this should not be compulsory (the user might not have an attribute to weight the results by):</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.221.Ex3.CTExposeParameter.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>7) Duplicate ExpressionEvaluator</strong><br />Now we can use the attribute inside the custom transformer.</p>
+<p>Make a duplicate copy of the existing ExpressionEvaluator and connect it in parallel to the current one. Then put a Tester in beforehand where the Passed port goes to one ExpressionEvaluator and the Failed port goes to the other:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.222.Ex3.CTWithWeightingTransformers.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>8) Set up Tester</strong><br />Inspect the Tester parameters and make a test for where WeightedAttribute &gt; 0</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.223.Ex3.CTWithWeightingTesterSetup.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>9) Adjust Equation</strong><br />Now that the attribute is exposed in the custom transformer, we can use it in the equation for calculating density. Inspect the parameters for the ExpressionEvaluator transformer connected to the Tester:Passed port.</p>
+<p>Change the equation to:</p><pre>@Value(TotalPopulation2001)/(@Value(NeighborhoodArea)*@Value(WeightedAttribute))</pre>
+<p>To clarify, multiply the existing NeighborhoodArea attribute by the WeightedAttribute and place parentheses around that part of the expression.</p>
+<p>Save the parameter changes and run the workspace to check the result. Remember – the results will be different every time because we’re generating the weighted attribute randomly at runtime!</p>
+<p>Experiment selecting the weighted attribute in the main canvas, and not selecting it. When no attribute is selected then the features should pass through the Failed port and no weighting is used in the calculation:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.224.Ex3.CTNoWeightAttrSelected.png" alt class="image image-block image-center" /></p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>It may seem odd – especially to experienced users – that we would use the attribute in the expression, and not the published parameter. But this is all part of how FME handles this behavior automatically. It avoids the author needing to know about published parameters and how to use them, and uses hidden functionality to replace the attribute with the published parameter wherever necessary.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>CONGRATULATIONS</td>
+    </tr>
+    <tr>
+      <td>By completing this exercise you have learned how to:<ul>
+          <li>Publish an FME parameter inside a custom transformer</li>
+          <li>Create a new user parameter inside a custom transformer</li>
+          <li>Expose attributes inside a custom transformer</li>
+          <li>Use an exposed attribute inside a custom transformer</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>

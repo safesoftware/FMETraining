@@ -1,0 +1,122 @@
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Exercise 4</td>
+      <td>Custom Transformer Modes</td>
+    </tr>
+    <tr>
+      <td>Data</td>
+      <td>Bicycle Routes (Esri Shapefile)</td>
+    </tr>
+    <tr>
+      <td>Overall Goal</td>
+      <td>Create a custom transformer to calculate the average length of a number of linear features</td>
+    </tr>
+    <tr>
+      <td>Demonstrates</td>
+      <td>Custom Transformer Modes</td>
+    </tr>
+    <tr>
+      <td>Start Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex4-Begin.fmw</td>
+    </tr>
+    <tr>
+      <td>End Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex4-Complete.fmw<br />C:\FMEData2019\Workspaces\DesktopAdvanced\AverageLengthCalculator.fmx</td>
+    </tr>
+  </tbody>
+</table>
+<p>You arrive early at the office for a meeting, but it is canceled at the last minute. Typical! Still, it gives you time to carry out an FME project that has been on your mind: a transformer to calculate the average length of linear features.</p>
+<p><br /><strong>1) Open Workspace</strong><br />Open the workspace C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex4-Begin.fmw</p>
+<p>You’ll see that the workspace is reading a set of bicycle path data, and then doing some minor processing to get it into a reasonable state for use in the custom transformer.</p>
+<p>You may want to run the workspace to examine the output and see what data we are dealing with, but remember the custom transformer we will create is to be designed to work on any linear data.</p>
+<p><br /><strong>2) Add LengthCalculator</strong><br />The contents of the transformer will be fairly straightforward and we’ll start out with just two transformers. So, simply add a LengthCalculator and a StatisticsCalculator transformer to the workspace.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.225.Ex4.CTWorkspaceWithTransformers.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>3) Create Custom Transformer</strong><br />Select the two newly placed transformers and turn them into a Custom Transformer called AverageLengthCalculator. Make sure the attribute references are handled automatically, although at the moment there aren’t any references to handle.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.226.Ex4.CTCreateCTDialog.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>4) Edit Custom Transformer</strong><br />Now we have a new custom transformer, let’s tidy it up and make it functional.</p>
+<p>Firstly rename the input port object to Lines (thus identifying what geometry is expected), then add an output port object (if you don’t have one already) and rename it to Output. It should be connected to the StatisticsCalculator:Complete port:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.227.Ex4.PartTidiedCT.png" alt class="image image-block image-center" /></p>
+<p>Inspect the StatisticsCalculator parameters. Set Attributes to Analyze to <em>_length</em>. Rename the Mean Attribute result to <em>AverageLength</em></p>
+<p>Finally, inspect the parameters for the Output port object. Change Attributes to Output to ‘Specified Attributes Only’ and ensure that AverageLength is output, but <em>_length</em> and any other StatisticsCalculator attributes are not:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.228.Ex4.CTOutputPortAttrs.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>5) Run Workspace</strong><br />Run the workspace and inspect the output (for Visual Preview you must return to the Main tab to do this) to ensure everything is working as expected.</p>
+<p><br /><strong>6) Export Custom Transformer</strong><br />Now let's experiment with different transformer modes.</p>
+<p>Return to the AverageLengthCalculator tab and select File &gt; Export as Custom Transformer from the menubar. In the Export as Custom Transformer dialog make sure the Insert Mode option is set to Linked by Default. Make sure the Save Location is the default for storing custom transformers (&lt;user&gt;\FME\Transformers):</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.229.Ex4.CTExportOptions.png" alt class="image image-block image-center" /></p>
+<p>Click OK to close the dialog. The custom transformer is saved (as AverageLengthCalculator.fmx) and this file opened up in a new instance of FME Workbench.</p>
+<p><br /><strong>7) Examine Workspace</strong><br />Go back to the instance of FME Workbench where the original workspace is open. The custom transformer is now a cyan color to denote that it is now a linked transformer (it's linked because we chose "Linked By Default"):</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.230.Ex4.CTLinkedOnCanvas.png" alt class="image image-block image-center" /></p>
+<p>Notice that you can right-click and choose to embed the transformer, and then switch back to the linked version. In a real-life scenario, the choice of mode usually depends on whether you are planning to share the transformer.</p>
+<p>In embed mode, right-click the transformer and choose Edit. You’ll find that you can no longer change back to Linked mode because the two definitions are now considered different!</p>
+<p>Delete the embedded transformer. You’ll be prompted whether you wish to delete the definition too. Click Yes.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>It’s important to realize that the definition of an embedded custom transformer can remain in the workspace, even if it’s not used. If you clicked "No" above, that's what would have happened. You’ll be able to tell if such a definition remains by looking in the Embedded Transformers section of the transformer gallery.<br /><br />You'd usually click No (and keep the definition) if you wanted to make use of it later. You'd usually click Yes (and remove the definition) if you decide that the custom transformer is no longer required.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p><br /><strong>8) Examine Custom Transformer</strong><br />Select Tools &gt; FME Options on the menubar. Click the Workbench section and locate the Transformer Options. Turn on the option to <strong>Display Transformer Version</strong>:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.231.Ex4.CTVersionOption.png" alt class="image image-block image-center" /></p>
+<p>Using the Quick Add menu or the Transformer Gallery, place a new instance of the AverageLengthCalculator custom transformer in the workspace (it will be linked by default, which is fine). If you hover the mouse cursor over the transformer the pop-up text will show that it is version 1.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.232.Ex4.CTLinkedVersionNum.png" alt class="image image-block image-center" /></p>
+<p>Return to the instance of Workbench where the fmx file is open. Move one of the objects about to activate the save button. Then save the file. Notice that you aren’t prompted to save a new version. That’s because versioning has not been applied yet. There is only one version of the transformer to make edits to.</p>
+<p>So, leaving Workbench open, close the fmx file. Next visit the start tab and select the fmx file from the Recent Files list, in order to reopen it. Now the transformer definition is in a new editing session, and we will be prompted to apply versioning when we save the transformer.</p>
+<p><br /><strong>9) Update Custom Transformer</strong><br />Rather than just jiggling objects about to prove a point, let’s make a real update to this transformer. One thing we could do is filter data by geometry, so we aren’t trying to measure the length of a point feature, or similar.</p>
+<p>So, add a GeometryFilter transformer, in front of the LengthCalculator. Inspect the parameters and select Line and Arc as the geometries to filter by:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.233.Ex4.CTGeometryFilterParams.png" alt class="image image-block image-center" /></p>
+<p>Adjust the feature mapping so that the Line and Arc ports are directed into the LengthCalculator. Add a second output port object by right-clicking on the canvas and selecting Insert Transformer Output. Call the newly placed port &lt;Rejected&gt; and connect the &lt;Unfiltered&gt; data to it, like so:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.234.Ex4.EditedCT.png" alt class="image image-block image-center" /></p>
+<p>Now click the save button to save the custom transformer. You’ll be prompted whether you want to create a new version. Click the button labeled New Version to do so:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.235.Ex4.SaveWithVersioning.png" alt class="image image-block image-center" /></p>
+<p>You can tell a new version is created by the information at the very top of the Workbench window.</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>TIP</td>
+    </tr>
+    <tr>
+      <td>If you when you saved you weren't prompted with the Save Transformer dialog box, this is because you forgot to close the first edit session. Undo your changes back to how the original custom transformer was (without the GeometryFilter and Rejected output port) and save again. This time close the .fmx file and re-open it. Now when you make your changes you will be prompted to create a new version.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p><br /><strong>10) Update Workspace</strong><br />Go back to the instance of FME Workbench where the original workspace is open. Click the refresh button on the Transformer Gallery in order for FME to scan all custom transformers and discover the new version we’ve just created:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.236.Ex4.TransformerGalleryRefresh.png" alt class="image image-block image-center" /></p>
+<p>Now right-click on the AverageLengthCalculator custom transformer and there should be an option to upgrade to the latest version. Choose this option:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.237.Ex4.CTUpgradeOption.png" alt class="image image-block image-center" /></p>
+<p>The transformer will be refreshed and updated, which you can tell by the presence of a Rejected port.</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>Now you have this custom transformer you have various options to share it.<br /><br />- You can put the transformer into a shared folder and then have other users use Tools &gt; FME Options &gt; Default Paths to link their FME to that shared folder.<br /><br />- You can send (email) the fmx file to other users and have them install it in their FME. They can install it either by double-clicking the file or saving it to their default FME resource folder.<br /><br />- You can publish the transformer to FME Server for you (and others) to use there.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>CONGRATULATIONS</td>
+    </tr>
+    <tr>
+      <td>By completing this exercise you have learned how to:<ul>
+          <li>Export a custom transformer</li>
+          <li>Switch the mode of a custom transformer instance</li>
+          <li>Delete an embedded custom transformer</li>
+          <li>Edit and create a new version of a linked custom transformer</li>
+          <li>Update a linked custom transformer instance to the latest version</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,71 @@
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>Exercise 1</td>
+      <td>Creating a Custom Transformer</td>
+    </tr>
+    <tr>
+      <td>Data</td>
+      <td>Neighborhoods (Google KML)</td>
+    </tr>
+    <tr>
+      <td>Overall Goal</td>
+      <td>Create a custom transformer out of a workspace</td>
+    </tr>
+    <tr>
+      <td>Demonstrates</td>
+      <td>Basic custom transformer creation</td>
+    </tr>
+    <tr>
+      <td>Start Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex1-Begin.fmw</td>
+    </tr>
+    <tr>
+      <td>End Workspace</td>
+      <td>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex1-Complete.fmw</td>
+    </tr>
+  </tbody>
+</table>
+<p>A colleague - new to FME - has created a workspace that calculates the population density for neighborhoods in the city of Vancouver, and comments that this technique could be reused for other projects.</p>
+<p>You mention custom transformers as a way of doing this and will now demonstrate to her how to turn this workspace into a general solution that calculates the average density of items in a known space.</p>
+<p><br /><strong>1) Start Workbench</strong><br />Start by opening your colleague's workspace: C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex1-Begin.fmw</p>
+<p>You may wish to run the workspace and examine the output to see what it does and how it works. Basically, it calculates the population density (persons per square kilometer) for the years 2001 and 2011:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.200.Ex1.OriginalOutput.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>2) Create Custom Transformer</strong><br />The key components for the custom transformer are the AreaCalculator and ExpressionEvaluator transformers. If you examine the workspace you’ll see two ExpressionEvaluators (one for the year 2001, one for 2011) but we don’t need to include both in the custom transformer.</p>
+<p>So select the AreaCalculator transformer and ExpressionEvaluator_2001 (the first ExpressionEvaluator), right-click on them, and choose the context menu option <em>Create Custom Transformer</em> (or just press Ctrl+T).</p>
+<p>In the Create Custom Transformer dialog enter a name, category, and description for the new custom transformer. A good name for the transformer will be the DensityEvaluator.</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>You can’t call it the DensityCalculator; FME already has one of those!</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<p>Be sure the Attribute References parameter is set to “Handle with Published Parameters” (more on that later) and click OK:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.201.Ex1.CreateCTDialog.png" alt class="image image-block image-center" /></p>
+<p>The custom transformer will now be created.</p>
+<p><br /><strong>3) Inspect Custom Transformer</strong><br />Flip back and forth between the DensityEvaluator tab and the Main tab to see how the custom transformer is constructed, and how it is placed in the workspace itself:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.202.Ex1.InitialCT.png" alt class="image image-block image-center" /></p>
+<p>Back in the Main tab, inspect the parameters for the custom transformer.</p>
+<p>The main parameter is one created automatically by FME to accept the attribute to be processed. You'll see it is automatically preset to the TotalPopulation2001 attribute:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.203.Ex1.InitialCTOnCanvas.png" alt class="image image-block image-center" /></p>
+<p><br /><strong>4) Run Workspace</strong><br />Save the workspace and then run the workspace, to ensure the output has not changed. However, note that this is just the start of this custom transformer, and we should tidy it up (make it more generic) before trying to reuse it in other scenarios.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>CONGRATULATIONS</td>
+    </tr>
+    <tr>
+      <td>By completing this exercise you have learned how to:<ul>
+          <li>Create custom transformers from a sequence of existing transformers</li>
+          <li>Handle attribute references automatically in a custom transformer</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
