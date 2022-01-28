@@ -1,0 +1,137 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li><br /></li>
+</ul>
+<h2 id="custom-transformer-types">
+  <span>Custom Transformer Types</span>
+</h2>
+<p>There are two types of custom transformers.</p>
+<p>An <strong>embedded</strong> transformer is one whose definition is stored in the workspace itself. Each instance of the custom transformer refers to that embedded definition. Only the workspace in which the definition is embedded has access to that custom transformer.</p>
+<p>A <strong>linked</strong> transformer is one whose definition is stored outside of the workspace, in its own file. Each instance of the custom transformer is linked to that definition. Any workspace can have access to that custom transformer.</p>
+<p>On a workspace canvas, embedded transformers are identified by their green color, while linked transformers are colored cyan:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.033.CustomTransformerTypes.png" alt class="image image-block image-center" /></p>
+<h2 id="linked-vs-embedded-transformers">
+  <span>Linked vs. Embedded Transformers</span>
+</h2>
+<p>Both types of transformers can be used in an FME workspace, and there are various advantages and disadvantages to each type.</p>
+<p><strong>Embedded Transformers</strong></p>
+<p>Embedded transformers are easier to manage, need no external files, and their definition is embedded into the workspace. They are particularly useful for tidying a workspace but also work for employing advanced functionality like parallel processing.</p>
+<p>However, sharing and re-use of content are not as simple with an embedded transformer. The custom transformer cannot easily be shared with other users, unless they are given a copy of the same workspace, and it is not easy to maintain a consistent definition among several users.</p>
+<p><strong>Linked Transformers</strong></p>
+<p>Linked transformers are perhaps a little harder to manage. They exist as a file (.fmx) outside of the workspace, which is less convenient, and when used to employ advanced functionality such as loops they can be more complex.</p>
+<p>However, a linked custom transformer is a little easier to edit (you open the .fmx file rather than the .fmw file) and is much easier to share among users. Not only can the file be given to any FME author to use, but any number of authors can actually point their FME to the same custom transformer file.</p>
+<p>Sharing the same file is useful because any changes made to the definition are automatically propagated to all workspaces that use it.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Like embedded transformers, linked transformers also show up in the transformer gallery and Quick Add dialog. Also notice that they have a special icon to signify that you are about to use a linked version, rather than the embedded version:<br /><br /><br /></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="creating-a-linked-custom-transformer">
+  <span>Creating a Linked Custom Transformer</span>
+</h2>
+<p>All custom transformers start out with an embedded definition. To create an external definition, the custom transformer is exported using the Export as Custom Transformer option on the menubar:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.035.CustomTransformerExport.png" alt class="image image-block image-center" /></p>
+<p>At this point a dialog opens in which you can confirm the transformer name and category, plus some other parameters including the save location:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.036.CustomTransformerExportDialog.png" alt class="image image-block image-center" /></p>
+<p>Name and category are fairly obvious, so let's look at some of the other different options...</p>
+<h2 id="insert-mode">
+  <span>Insert Mode</span>
+</h2>
+<p>We know that the definition of a custom transformer can be stored either in a workspace (embedded) or in a separate file (linked). Therefore each instance of a custom transformer points to either an embedded or linked definition.</p>
+<p>But it's important to know that each instance can change its definition source. For example, an instance of a custom transformer linked to a file definition can be switched to embedded (in which case the external definition gets embedded into the workspace).</p>
+<p>Likewise, an instance that points to an embedded definition, can be switched to point to an external file.</p>
+<p>When I am the author of a custom transformer I might want to control the initial state when an instance is placed for the first time. This is what the <strong>Insert Mode</strong> parameter does.</p>
+<p>There are four different modes:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.037.CustomTransformerExportDialogModes.png" alt class="image image-block image-center" /></p>
+<p>Let's say I export my custom transformer with Insert Mode set to one of the <strong>Embedded</strong> choices. The definition is now stored inside an FMX file and FME will recognize it as an available transformer. But when a user places a new instance to their workspace (say with Quick Add or the Transformer Gallery), the definition of the custom transformer is copied from the FMX file and embedded into the workspace.</p>
+<p>If I choose <em>Embedded By Default</em>, it means that although each instance of the transformer starts as Embedded, the user can switch the instance to "Linked" at any point.</p>
+<p>If I choose <em>Embedded Always</em> it means that each instance of the transformer starts as embedded, and must stay that way. It cannot be switched to Linked at a later point.</p>
+<p>Similarly, I could export my custom transformer in <strong>Linked</strong> mode. When a user places a new instance the definition of the transformer remains in my FMX file, with the instance linked to it.</p>
+<p>If I choose <em>Linked By Default</em>, each instance of the transformer starts as Linked but can be switched to Embedded at any time.</p>
+<p>If I choose <em>Linked Always</em>, each instance starts as Linked and stays that way. To cannot be switched to Embedded at a later point.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Insert Mode is an important parameter when I am the author of a custom transformer, who has created it for other workspace authors to use. It gives me control over how they will use that transformer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="which-mode-to-use">
+  <span>Which Mode to Use</span>
+</h2>
+<p><strong>Embedded Always</strong> is a good choice when the person using the transformer is less experienced with FME; it's easier for them to manage and if they make changes they won't affect other people. Embedded is also a good choice where the custom transformer is intended for use by individuals (i.e. not sharing it as a group).</p>
+<p><strong>Linked Always</strong> is a good choice when the custom transformer is intended to be shared among a group of users. Because it is linked, the users will always receive updates if the transformer definition is changed, and because the definition is shared, it becomes a standard that is applied to all users.</p>
+<p>Only when the end-user is experienced in FME and can understand the consequences, is it advisable to use a “By Default” setting and allow type switching.</p>
+<h2 id="password">
+  <span>Password</span>
+</h2>
+<p>The password field allows you to password-protect the custom transformer. This makes it impervious to edits from unauthorized persons. Additionally, the file contents are (very mildly) encrypted so that they cannot be copied by opening the source file in a text editor.</p>
+<p>This allows authors to make transformers available for purchase without any fear that their work will be copied or edited. Of course, it’s important not to forget or lose the password yourself, in case you wish to make edits!</p>
+<h2 id="save-location">
+  <span>Save Location</span>
+</h2>
+<p>FME has a specific installation folder in which custom transformer files can be saved. If a custom transformer is saved in this folder, then it becomes available in Workbench and can be used the same as any other transformer. If it is saved elsewhere then FME won't be able to find it unless that path is set under Tools &gt; FME Options &gt; Default Paths.</p>
+<h2 id="editing-a-linked-custom-transformer">
+  <span>Editing a Linked Custom Transformer</span>
+</h2>
+<p>When you click the OK button on the Export as Custom Transformer dialog, the transformer is exported to a separate (.fmx) file. That file is immediately opened inside a new instance of FME Workbench, for you to make edits.</p>
+<p>In essence editing a custom transformer works the same way as editing a workspace: you open the file in FME Workbench and make edits as required.</p>
+<p>The important part to remember is that each instance of the Custom Transformer that is linked to this file, will be affected by any changes that you make.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>It’s best to hunt for bugs in a custom transformer when its definition is embedded, before exporting it. That's because tools such as Feature Caching and Run with Breakpoints do not work inside exported transformers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="switching-custom-transformer-types">
+  <span>Switching Custom Transformer Types</span>
+</h2>
+<p>When the Insert Mode of a custom transformer allows type switching, the action is very straightforward. Simply right-click on the instance and choose the required type:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.039.CustomTransformerConvertToLinked.png" alt class="image image-block image-center" /></p>
+<p>In the above screenshot, the user is switching from Embedded to Linked. Of course, switching to Linked requires the custom transformer to be exported already. If not, there is no option to link the transformer because there is no file to link to!</p>
+<p>When you switch from embedded to linked then the embedded definition is closed. The transformer instance then points to the linked definition.</p>
+<p>When you switch from linked to embedded, the contents of the FMX file are copied and embedded in the workspace. The transformer instance then points to the embedded definition.</p>
+<p>If there is more than one instance of the Custom Transformer, you are asked whether you want to switch all of them:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.040.CustomTransformerConvertAllToLinked.png" alt class="image image-block image-center" /></p>
+<p>The usual answer to this is yes because having the same transformer both embedded and linked could be quite confusing! If you answer no, then be aware that the transformer you clicked on will be linked (but none of the other instances will).</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Switching from Embedded to Linked only works as long as the two versions are the same.<br /><br />In other words, if you embed a linked transformer and then make changes to the embedded definition, you won’t be able to revert to the linked version.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
