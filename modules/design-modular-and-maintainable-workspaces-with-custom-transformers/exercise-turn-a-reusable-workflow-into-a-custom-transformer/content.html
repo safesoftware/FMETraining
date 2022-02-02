@@ -10,25 +10,42 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex1-Begin.fmw </li>
-  <li>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex1-Complete.fmw</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/exercise-turn-a-reusable-workflow-into-a-custom-transformer.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/exercise-turn-a-reusable-workflow-into-a-custom-transformer-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Boundaries/VancouverNeighborhoods.kml" rel="noreferrer noopener" target="_blank">VancouverNeighborhoods.kml</a></li>
 </ul>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
 <p>A colleague - new to FME - has created a workspace that calculates the population density for neighborhoods in the city of Vancouver. They comment that your organization could reuse this technique for other projects.</p>
-<p>You mention custom transformers as a way of doing this. You will now demonstrate how to turn this workspace into a general solution that calculates the average density of items in a known space.</p>
+<p>You mention custom transformers as a way of doing this. You will now demonstrate how to turn this workspace into a general solution that calculates the average density of items in a given space.</p>
 <h2 id="1-start-workbench">
   <span>1) Start Workbench</span>
 </h2>
-<p>Start by opening your colleague’s workspace: C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex1-Begin.fmw</p>
+<p>Start by opening your <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/exercise-turn-a-reusable-workflow-into-a-custom-transformer.fmw" rel="noreferrer noopener" target="_blank">colleague's workspace</a> in FME Workbench (2021.1 or later).</p>
 <p>You may wish to run the workspace and examine the output to see what it does and how it works. It calculates the population density (persons per square kilometer) for the years 2001 and 2011:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.200.Ex1.OriginalOutput.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.200.Ex1.OriginalOutput.png" alt="Starting dataset" class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>You might get an Unexpected Input warning dialog when you run the workspace now or later in the exercise. That's OK, you can safely ignore it. It simply is reporting that the source dataset contained feature types that were read by the workspace but discarded because they were not defined on the Canvas.</p>
+            <p><a href="https://www.safe.com/blog/2011/05/fmeevangelist80/" rel="noreferrer noopener" target="_blank">Learn more about the Unexpected Input warning dialog</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="2-create-custom-transformer">
   <span>2) Create Custom Transformer</span>
 </h2>
-<p>The critical components for the custom transformer are the <strong>AreaCalculator </strong>and ExpressionEvaluator transformers. If you examine the workspace, you’ll see two ExpressionEvaluators (one for 2001 and one for 2011), but we don’t need to include both in the custom transformer.</p>
+<p>The critical components for the custom transformer are the AreaCalculator and ExpressionEvaluator transformers. If you examine the workspace, you’ll see two ExpressionEvaluators (one for 2001 and one for 2011), but we don’t need to include both in the custom transformer.</p>
 <p>So select the <strong>AreaCalculator </strong>transformer and <strong>ExpressionEvaluator_2001 </strong>(the first ExpressionEvaluator), right-click on them, and choose the context menu option <strong>Create Custom Transformer</strong> (or press Ctrl+T).</p>
+<p><img src="images/1643738617968.png" class="image image-block image-center" alt="Right-click &gt; Create Custom Transformer" /></p>
 <p>Enter a <strong>Name</strong>, <strong>Category</strong>, and <strong>Description </strong>for the new custom transformer in the <strong>Create Custom Transformer</strong> dialog. A good name for the transformer will be the DensityEvaluator.</p>
 <div class="box message info">
   <div class="inner">
@@ -45,16 +62,16 @@
   </div>
 </div>
 <p>Set <strong>Attribute References to </strong>“Handle with Published Parameters” (more on that in a later unit) and click OK:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.201.Ex1.CreateCTDialog.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.201.Ex1.CreateCTDialog.png" alt="The filled out Create Custom Transformer dialog" class="image image-block image-center" /></p>
 <p>The custom transformer appears in a new tab.</p>
 <h2 id="3-inspect-custom-transformer">
   <span>3) Inspect Custom Transformer</span>
 </h2>
 <p>Flip back and forth between the <strong>DensityEvaluator</strong> tab and the <strong>Main </strong>tab to see how the custom transformer appears and its place in the workspace itself:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.202.Ex1.InitialCT.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.202.Ex1.InitialCT.png" alt="The new DensityEvaluator custom transformer" class="image image-block image-center" /></p>
 <p>Back in the <strong>Main </strong>tab, inspect the parameters for the custom transformer.</p>
 <p>FME automatically creates the main parameter to accept the attribute to be processed. It automatically has a value of the <code>TotalPopulation2001</code> attribute:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.203.Ex1.InitialCTOnCanvas.png" alt class="image image-block image-center" /></p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.203.Ex1.InitialCTOnCanvas.png" alt="The DensityEvaluator Parameters dialog, including a new attribute" class="image image-block image-center" /></p>
 <h2 id="4-run-workspace">
   <span>4) Run Workspace</span>
 </h2>
