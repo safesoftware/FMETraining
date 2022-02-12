@@ -3,94 +3,107 @@
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li><br /></li>
+  <li>Assess a workspace’s potential for parallel processing.</li>
+  <li>Select an attribute (or substring) suitable for grouping data.</li>
+  <li>Create and use parallel processing in a custom transformer.</li>
+  <li>Read data inside a parallel process.</li>
+  <li>Confirm with the task manager that FME is launching worker processes.</li>
+  <li>Experiment with different settings to produce a more efficient result.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex5-Begin.fmw</li>
-  <li>C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex5-Complete.fmw</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Addresses/Addresses.gdb.zip" rel="noreferrer noopener" target="_blank">Addresses.gdb</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/OpenStreetMap/building.osm" rel="noreferrer noopener" target="_blank">building.osm</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a></li>
 </ul>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>The city is investigating the incorporation of OpenStreetMap data into their own spatial datasets and open data portals. The first dataset under consideration is buildings. A workspace has been generated to validate the OpenStreetMap data and compare it to other, existing city datasets.</p>
-<p>You see this workspace and wonder if parallel processing might make it more efficient. Let's check that out...</p>
-<p><br /><strong>1) Open Workspace</strong><br />Open the workspace C:\FMEData2019\Workspaces\DesktopAdvanced\CustomTransformers-Ex5-Begin.fmw.</p>
-<p>As you’ll see, this workspace reads OpenStreetMap building data and then carries out a number of validation tasks. Firstly, it overlays it with the city address database, to confirm whether it has a matching address. Secondly, it tests the building geometry with a GeometryValidator transformer. Finally, it overlays the buildings against the city zoning data, to see if it properly falls inside a single zone:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.238.Ex5.InitialWorkspace.png" alt class="image image-block image-center" /></p>
-<p>Turn on Feature Caching and run the workspace. Inspect the data at each step to become familiar with what it is doing. Specifically take note of the feature counts, so that we can be sure that any changes we make do not affect the results:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.239.Ex5.InitialResults.png" alt class="image image-block image-center" /></p>
-<p>Although the workspace does not take long to run, consider how it might be set up as a custom transformer with parallel processing.</p>
-<p><br /><strong>2) Create Custom Transformer</strong><br />The first thing to consider is how data might be managed as separate groups for parallel processing. Because OSM is crowdsourced data, there's no guarantee that any particular attribute will have values. In fact, if you check the source OSM data, you'll notice that it has very few values for any attribute.</p>
-<p>However, one of the early steps in the workspace copies address records onto each building. Because the address data is a city dataset, we can take that as the definitive data and trust its contents. One of the attributes that it copies is POSTALCODE:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.240.Ex5.CTPostcodeAttr.png" alt class="image image-block image-center" /></p>
-<p>Postcodes - or at least the first three characters of a postcode - are a good way to divide data into groups.</p>
-<p>So, select all of the objects after the PointOnAreaOverlayer (where POSTALCODE is obtained) but before the final writer feature type. Notice this includes the feature type for the MapInfo TAB reader:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.241.Ex5.TransformersToSelect.png" alt class="image image-block image-center" /></p>
-<p>Press Ctrl+T to turn the selected objects into a custom transformer. Give the transformer a name like BuildingValidator and ensure that Attribute References are Handle(d) with Published Parameters.</p>
-<p>Click OK to create the custom transformer.</p>
-<p><br /><strong>2) Define Parallel Processing Group</strong><br />Inspect the custom transformer to see if its contents are what you are expecting. Interestingly the reader feature type does not appear in the definition, but is piped in through a separate input port:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.242.Ex5.InitialCustomTransformer.png" alt class="image image-block image-center" /></p>
-<p>This shows that readers are not permitted inside a custom transformer. We'll leave it for now, but it might be important to re-consider this later, when we start parallel processing.</p>
-<p>Speaking of which, we need an attribute to group data by. Postcode (for example V3E1J4) is too precise. It would be a building by building level of precision. However, the first three characters (V3E) would be much more suitable.</p>
-<p>So, back in the main workspace canvas, place a SubstringExtractor transformer between the PointOnAreaOverlayer and the newly created BuildingValidator. Use it to extract the first three characters of the POSTALCODE attribute into a new attribute:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.243.Ex5.SubstringExtractor.png" alt class="image image-block image-center" /></p>
-<p>Notice that characters are counted from zero, so we need characters from 0 (zero) to 2 (two). Also note that the author is writing the result to an attribute called PostcodePrefix.</p>
-<p><br /><strong>3) Turn on Parallel Processing</strong><br />Return to the custom transformer definition (the BuildingValidator tab). Look in the Navigator window for the Parallel Processing parameter. Double-click it and set the level of processing to Moderate:</p>
+<p>The City is investigating the incorporation of OpenStreetMap data into its spatial datasets and open data portals. The first dataset under consideration is buildings. A colleague has already created a workspace to validate the OpenStreetMap data and compare it to other city datasets.</p>
+<p>You see this workspace and wonder if parallel processing might make it more efficient. Let’s check it out!</p>
+<h2 id="1-open-workspace">
+  <span>1) Open Workspace</span>
+</h2>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>.</p>
+<p>As you’ll see, this workspace reads OpenStreetMap building data and then carries out several validation tasks. Firstly, it overlays it with the city address database to see if it has a matching address. Secondly, it tests the building geometry with a <strong>GeometryValidator </strong>transformer. Finally, it overlays the buildings against the city zoning data to see if it properly falls inside a single zone:</p>
+<p><img src="images/1644348622334.png" class="image image-block image-center" alt="Starting workspace" /></p>
+<p>Turn on feature caching and run the workspace. Inspect the data at each step to become familiar with what it is doing. Specifically, take note of the feature counts so that we can be sure that any changes we make do not affect the results:</p>
+<p><img src="images/1644348640900.png" class="image image-block image-center" alt="Starting feature counts" /></p>
+<p>Although the workspace does not take long to run, consider that a custom transformer with parallel processing might improve performance.</p>
+<h2 id="2-create-custom-transformer">
+  <span>2) Create Custom Transformer</span>
+</h2>
+<p>The first thing to consider is managing data as separate groups for parallel processing. Because OSM is crowdsourced data, there’s no guarantee that any particular attribute will have values. If you check the source OSM data, you’ll notice that it has very few values for any attribute.</p>
+<p>However, one of the early steps in the workspace copies address records onto each building. Because the address data is a city dataset, we can take that as the definitive data and trust its contents. One of the attributes that it copies is <code>POSTALCODE</code>:</p>
+<p><img src="images/1644348674659.png" class="image image-block image-center" alt="POSTALCODE attribute" /></p>
+<p>Postcodes - or at least the first three characters of a postcode - are an excellent way to divide data into groups.</p>
+<p>So, select all objects after the <strong>PointOnAreaOverlayer </strong>(where <code>POSTALCODE</code> is obtained) but before the final writer feature type. Notice this includes the feature type for the MapInfo TAB reader:</p>
+<p><img src="images/1644348706836.png" class="image image-block image-center" alt="Selecting transformers to create a custom transformer" /></p>
+<p>Press Ctrl+T to turn the selected objects into a custom transformer. Give the transformer a name like <strong>BuildingValidator </strong>and set <strong>Attribute References </strong>to Handle with Published Parameters.</p>
+<p>Click <strong>OK </strong>to create the custom transformer.</p>
+<h2 id="3-define-parallel-processing-group">
+  <span>3) Define Parallel Processing Group</span>
+</h2>
+<p>Inspect the custom transformer to see if its contents are what you are expecting. Interestingly the reader feature type does not appear in the definition but is piped in through a separate input port:</p>
+<p><img src="images/1644348794087.png" class="image image-block image-center" alt="Note that the reader is not present in the custom transformer definition" /></p>
+<p>This result shows that you cannot have readers inside a custom transformer. We’ll leave it for now, but we might need to reconsider this later when we start parallel processing.</p>
+<p>Speaking of which, we need an attribute for grouping data. <code>POSTCODE</code> (for example, V3E1J4) is too precise. It would be a building-by-building level of precision. However, the first three characters (V3E) would be more suitable.</p>
+<p>So, back in the main workspace canvas, place a <strong>SubstringExtractor </strong>transformer between the <strong>PointOnAreaOverlayer </strong>and the newly created <strong>BuildingValidator</strong>. Use it to extract the first three characters of the <code>POSTALCODE</code> attribute into a new attribute:</p>
+<p><img src="images/1644348859466.png" class="image image-block image-center" alt="Setting SubstringExtractor parameters" /></p>
+<p>Notice that the transformer counts characters from zero, so we need characters from 0 (zero) to 2 (two). Note that the author is writing the result to an attribute called <code>PostcodePrefix</code>.</p>
+<h2 id="4-turn-on-parallel-processing">
+  <span>4) Turn on Parallel Processing</span>
+</h2>
+<p>Return to the custom transformer definition (the <strong>BuildingValidator </strong>tab). Look in the <strong>Navigator </strong>window for the <strong>Parallel Processing</strong> parameter. Double-click it and set the level of processing to Moderate:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.244.Ex5.ParallelProcessingParam.png" alt class="image image-block image-center" /></p>
-<p>Now return to the main canvas window. Open the parameters for the BuildingValidator custom transformer. For the Group By parameter select the attribute PostcodePrefix:</p>
+<p>Now return to the main canvas window. Open the parameters for the <strong>BuildingValidator </strong>custom transformer. For the <strong>Group By</strong> parameter, select the attribute <code>PostcodePrefix</code>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.245.Ex5.ParallelProcessingGroups.png" alt class="image image-block image-center" /></p>
-<p>If you don't have a PostcodePrefix attribute, then it will be the attribute created by the SubstringExtractor (_substring is the default).</p>
-<p><br /><strong>4) Run Workspace</strong><br />Now it's time to run the workspace. However, before you do, turn off Feature Caching. Also turn off Stop at Breakpoints if it is somehow set.</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>WARNING</td>
-    </tr>
-    <tr>
-      <td>Absolutely do NOT run this with either Feature Caching or Stop at Breakpoints turned on. If you do, parallel processing won't work!</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<p>The log window will now show several processes being started and stopped. You can open the task or process manager for your system to look for multiple FME processes running (note that some processes related to FME Server may exist, if you have it installed and active).</p>
-<p>Once complete, check the results. You won't have feature counts in the custom transformer because it is running in parallel processing mode. You can instead inspect the output dataset. Check if the number of features with a _ValidationZones attribute set to "Unzoned Building" matches the number of features (it might be easier to look for this sort of thing in the full Data Inspector, rather than Visual Preview).</p>
-<p>Here the author is using the Filter tool to test for unzoned buildings:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.246.Ex5.ParallelProcessingResults1.png" alt class="image image-block image-center" /></p>
-<p>It appears there are quite a lot of unzoned buildings (4,712). This is a lot more than when the workspace was originally run (250) so what is going on? Can you guess?</p>
-<p>OK, the problem is related to the MapInfo TAB reader, which is reading the zoning data. We are parallel processing in groups of postal codes, but the zoning data does not have the same postcode prefix attribute. So one solution is to assign a postcode to each zone feature.</p>
-<p>However, another solution is to ensure that each parallel process gets its own set of zoning data. We can do that by replacing the MapInfo reader with a FeatureReader transformer, and moving it inside the custom transformer.</p>
-<p><br /><strong>5) Fix Reader</strong><br />Firstly, in the main tab, delete the Zones feature type. This will cause FME to prompt you to remove the MapInfo reader, which you should agree to.</p>
-<p>Now switch to the BuildingValidator definition tab. Add a Creator transformer and a FeatureReader transformer, and connect them together. Open the FeatureReader parameters and set it up to read the MapInfo TAB dataset Zones.tab:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.247.Ex5.FeatureReader.png" alt class="image image-block image-center" /></p>
-<p>Now connect the Zones output from the FeatureReader, into the SpatialRelator:Supplier port (in place of the SpatialRelator_Support Input object, which can now be deleted):</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.248.Ex5.FeatureReaderConnected.png" alt class="image image-block image-center" /></p>
-<p>Now re-run the workspace and check the output. This time only 250 features should have a value of <em>Unzoned building</em> for the _ValidationZones attribute; and 219 features should have a value of <em>Overlapping zones building</em>.</p>
+<p>If you don’t have a <code>PostcodePrefix</code> attribute, then it will be the attribute created by the <strong>SubstringExtractor </strong>(<code>_substring</code> is the default).</p>
+<h2 id="5-run-workspace">
+  <span>5) Run Workspace</span>
+</h2>
+<p>Now it’s time to run the workspace. However, before you do, disable feature caching. Also, turn off <strong>Stop at Breakpoints</strong> if it is enabled.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p><strong>Do</strong><strong> not </strong>run this with either feature caching or breakpoints enabled. If you do, parallel processing won’t work!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>The log window will now show several processes being started and stopped. You can open the task or process manager for your system to look for multiple FME processes running (note that some processes related to FME Server may exist if you have it installed and active). Look for fmeworker.exe, one of which should be running for each group.</p>
+<p>Once complete, check the results. You won’t have feature counts in the custom transformer because it is in parallel processing mode. You can instead inspect the output dataset. Check if the number of features with a <code>_ValidationZones</code> attribute set to Unzoned Building matches the number of features (it might be easier to look for this sort of thing in the Data Inspector rather than Visual Preview).</p>
+<p>Here the author is using the <strong>Filter</strong> tool to test for unzoned buildings:</p>
+<p><img src="images/1644349067074.png" class="image image-block image-center" alt="Filtering to test for unzoned buildings in Data Inspector" /></p>
+<p>It appears there are quite a lot of unzoned buildings (4,712). This result is a lot more than when you ran the workspace initially (250), so what is going on? Can you guess?</p>
+<p>OK, the problem is the MapInfo TAB reader, which is reading the zoning data. We are parallel processing in groups of postal codes, but the zoning data does not have the same postcode prefix attribute. So one solution is to assign a postcode to each zone feature.</p>
+<p>However, another solution is to ensure that each parallel process gets its own set of zoning data. We can do that by replacing the MapInfo reader with a FeatureReader transformer and moving it inside the custom transformer.</p>
+<h2 id="6-fix-reader">
+  <span>6) Fix Reader</span>
+</h2>
+<p>Firstly, in the main tab, delete the <strong>Zones </strong>feature type. This deletion will cause FME to prompt you to remove the MapInfo reader; click <strong>Yes</strong>.</p>
+<p>Now switch to the <strong>BuildingValidator </strong>definition tab. Add a <strong>Creator </strong>transformer and a <strong>FeatureReader </strong>transformer, and connect them. Open the <strong>FeatureReader </strong>parameters and set it up to read the MapInfo TAB dataset Zones.tab:</p>
+<p><img src="images/1644349344134.png" class="image image-block image-center" alt="Setting Zones.tab path in FeatureReader" /></p>
+<p>Now connect the Zones output from the <strong>FeatureReader</strong>, into the <strong>SpatialRelator:Supplier </strong>port (in place of the <strong>SpatialRelator_Support </strong>Input object, which you can now delete):</p>
+<p><img src="images/1644349366727.png" class="image image-block image-center" alt="Replacing Input port with FeatureReader" /></p>
+<p>Now re-run the workspace and check the output. This time only 250 features should have a value of <em>Unzoned building </em>for the <code>_ValidationZones</code> attribute, and 219 features should have a value of <em>Overlapping zones building</em>.</p>
 <p>The workspace is now producing the correct results and in a set of parallel processes. But was it worth making these changes?</p>
-<p><br /><strong>6) Assess Parallel Processing</strong><br />Since the initial workspace ran in a fairly quick time anyway, the need for parallel processing was already low. The choice of the first three characters of the postcode gave us 17 groups. That's not unreasonable, but it does mean FME had to start 17 different processes, which takes time.</p>
+<h2 id="7-assess-parallel-processing">
+  <span>7) Assess Parallel Processing</span>
+</h2>
+<p>Since the initial workspace ran reasonably fast, the need for parallel processing was already low. The choice of the first three characters of the postcode gave us 17 groups. That’s not unreasonable, but it does mean FME had to start 17 different processes, which takes time.</p>
 <p>We also chose Moderate processing, giving only one process per core. Perhaps our machines can handle more?</p>
-<p>Plus, because the FeatureReader appears inside the transformer definition, we are reading the zoning data in every separate process. Is that overhead too great? If not, could/should we do the same with the Geodatabase reader?</p>
+<p>Plus, because the FeatureReader appears inside the transformer definition, we read the zoning data in every separate process. Is that overhead too significant? If not, could/should we do the same with the Geodatabase reader?</p>
 <p>So, if you have time, re-run the workspace with a different processing level, say Aggressive. Does it run any quicker than the Moderate processing level? If not, why might that be? Does adjusting the number of tiles make it better or worse?</p>
-<p>Also try using just the first two characters of a postal code for our group (simply change the SubstringExtractor to fetch only characters 0-1). That produces fewer groups (only 4), but is it faster?</p>
-<p>In summary, we've seen that parallel processing can require some careful thought and consideration when setting up. However, the rewards can be very great.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>CONGRATULATIONS</td>
-    </tr>
-    <tr>
-      <td>By completing this exercise you have learned how to:<ul>
-          <li>Assess a workspace's potential for parallel processing</li>
-          <li>Select an attribute (or substring) suitable for grouping data by</li>
-          <li>Create and use parallel processing in a custom transformer</li>
-          <li>Read data inside a parallel process</li>
-          <li>Confirm with the task manager that FME is launching worker processes</li>
-          <li>Experiment with different settings to produce a more efficient result</li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<p>Also, try using just the first two characters of a postal code for our group (change the SubstringExtractor to fetch only characters 0-1). That produces fewer groups (only 4), but is it faster?</p>
+<p>In summary, we’ve seen that parallel processing can require some careful thought and consideration when setting up. However, the rewards can be worth the setup time.</p>
