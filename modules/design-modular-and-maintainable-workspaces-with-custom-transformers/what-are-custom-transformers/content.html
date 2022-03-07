@@ -3,121 +3,129 @@
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li><br /></li>
+  <li>Define a custom transformer.</li>
+  <li>Explain when to use a custom transformer.</li>
+  <li>Create a custom transformer and set its properties.</li>
+  <li>Reuse a custom transformer in multiple places in a workspace.</li>
 </ul>
-<h2 id="custom-transformers">
-  <span>Custom Transformers</span>
+<h2 id="what-are-custom-transformers">
+  <span>What Are Custom Transformers?</span>
 </h2>
-<p>Custom Transformers are very powerful tools at either a basic or an advanced level.</p>
-<h2 id="what-is-a-custom-transformer">
-  <span>What is a Custom Transformer?</span>
-</h2>
-<p>A custom transformer is a sequence of standard transformers condensed into a single transformer. Any existing sequence of transformers can be turned into a custom transformer.</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.001.CustomTransformer.png" alt class="image image-block image-center" /></p>
-<p>Custom transformers can be shared by users. For example, this MeasureInterpolator custom transformer is shared via the <a href="https://hub.safe.com/transformers/measureinterpolator" rel="noreferrer noopener" target="_blank">FME Hub</a>.</p>
-<hr />
+<p>A custom transformer is a sequence of standard transformers condensed into a single transformer. You can turn any existing sequence of transformers into a custom transformer.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.001.CustomTransformer.png" alt="Turning many transformers into a custom transformer" class="image image-block image-center" /></p>
+<p>Users can share custom transformers. For example, the workspace above has a MeasureInterpolator custom transformer, which a user shared via the <a href="https://hub.safe.com/transformers/measureinterpolator" rel="noreferrer noopener" target="_blank">FME Hub</a>.</p>
 <h2 id="custom-transformer-purposes">
   <span>Custom Transformer Purposes</span>
 </h2>
-<p>Among other functions, custom transformers help to:</p>
+<p>Custom transformers let you:</p>
 <ul>
   <li>Reuse Content<ul>
-      <li>A sequence of transformers encapsulated in a single object can be reused throughout a workspace and shared with colleagues.</li>
+      <li>After encapsulating a sequence of transformers in a single object, you can reuse it throughout a workspace and share it with colleagues.</li>
     </ul>
   </li>
   <li>Employ Advanced Functionality<ul>
-      <li>Using a Custom Transformer enables additional functionality to be used, such as looping and parallel processing</li>
+      <li>You can use a custom transformer to access additional functionality, such as looping and parallel processing.</li>
     </ul>
   </li>
   <li>Tidy Workspaces<ul>
-      <li>By condensing chunks of content, the workspace canvas becomes less cluttered</li>
+      <li>You can declutter your workspace canvas by condensing chunks of content into custom transformers.</li>
     </ul>
   </li>
 </ul>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>Welcome to this chapter on Custom Transformers. As you'll see, Custom Transformers are excellent tools for carrying out Best Practices in FME, both speeding up your projects and reducing clutter in the Workbench canvas.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<p>This module will teach you the basics of creating a custom transformer, controlling its input and output ports, and using parameters to let users control how it works.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you want to learn more about sharing custom transformers, check out <a href="https://safe.my.trailhead.com/content/safe/modules/build-a-shared-library-of-custom-transformers" rel="noreferrer noopener" target="_blank">Build a Shared Library of Custom Transformers</a>. </p>
+            <p>If you want to learn how to use custom transformers with looping, check out <a href="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/5.11.CustomTransformerLoops.html" rel="noreferrer noopener" target="_blank">Custom Transformers and Loops</a>.</p>
+            <p>If you want to learn how to use custom transformers to improve your performance with parallel processing, check out <a href="https://safe.my.trailhead.com/content/safe/modules/design-for-performance" rel="noreferrer noopener" target="_blank">Design for Performance</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="creating-a-custom-transformer">
   <span>Creating a Custom Transformer</span>
 </h2>
-<p>A Custom Transformer can be created from scratch – i.e. you start with an empty custom transformer and add content into it – or can be created from an existing sequence of transformers.</p>
-<p>Custom transformers are created by either selecting Create Custom Transformer from the canvas context (right-click) menu or by selecting Transformers &gt; Create Custom Transformer from the menubar. The shortcut key for this function is Ctrl+T.</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.002.CustomTransformerMenubar.png" alt class="image image-block image-center" /></p>
-<p>If a number of existing transformers are selected when you issue the Create Custom Transformer command, then they are automatically added to the new custom transformer; otherwise, the new custom transformer is created empty except for an input and output port.</p>
+<p>You can create a custom transformer from scratch – i.e., start with an empty custom transformer and add content into it, or create it from an existing sequence of transformers.</p>
+<p>Custom transformers are created by either selecting<strong> Create Custom Transformer </strong>from the canvas context (right-click) menu or by selecting<strong> Transformers </strong>&gt; <strong>Create Custom Transformer </strong>from the menubar. The shortcut key for this function is Ctrl + T (or Cmd ⌘ + T on a Mac).</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.002.CustomTransformerMenubar.png" alt="Transformers &gt; Create Custom Transformer" class="image image-block image-center" /></p>
+<p>If several transformers are selected when you issue the<strong> Create Custom Transformer </strong>command, the new custom transformer will automatically contain them. Otherwise, the new custom transformer will be empty except for an input and output port.</p>
 <p>Here a user is creating a new custom transformer based on a series of existing ones:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.003.CustomTransformerContextMenu.png" alt class="image image-block image-center" /></p>
-<p>The new custom transformer will be pre-populated with these three transformers.</p>
-<hr />
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.003.CustomTransformerContextMenu.png" alt="Right-click &gt; Create Custom Transformer" class="image image-block image-center" /></p>
+<p>The new custom transformer will contain these three transformers.</p>
 <h2 id="naming-a-custom-transformer">
   <span>Naming a Custom Transformer</span>
 </h2>
-<p>All Custom Transformers require a name and (optionally) a category and description. A dialog in which to define these automatically appears when you create a new custom transformer.</p>
-<p>The category can be set to match any existing category of FME transformers or a custom category of your own.</p>
-<p>Notice also the “Use Extended Description” parameter. This allows you to enter extra information about the custom transformer, such as requirements for use, development history, and legal terms and conditions; in fields that support the use of either rich text or Markdown.</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.004.CustomTransformerNaming.png" alt class="image image-block image-center" /></p>
-<p>These fields are particularly important when you intend to share the custom transformer with work colleagues or clients.</p>
+<p>All custom transformers require a name and (optionally) a category and description. A dialog to define these automatically appears when you create a new custom transformer.</p>
+<p>You can set the category to match any existing FME transformer category or a custom category of your own.</p>
+<p>The<strong> Use Markdown </strong>parameter lets you enter information about the custom transformer, such as requirements for use, development history, and legal terms and conditions, using <a href="https://daringfireball.net/projects/markdown/syntax" rel="noreferrer noopener" target="_blank">Markdown</a>.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.004.CustomTransformerNaming.png" alt="Create Custom Transformer dialog" class="image image-block image-center" /></p>
+<p>These fields are critical when you intend to share the custom transformer with work colleagues or clients or with the larger FME Community on the <a href="https://hub.safe.com/" rel="noreferrer noopener" target="_blank">FME Hub</a>.</p>
 <h2 id="the-new-custom-transformer">
   <span>The New Custom Transformer</span>
 </h2>
 <p>A newly created custom transformer then looks like this:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.005.NewCustomTransformer.png" alt class="image image-block image-center" /></p>
-<p>Notice that it appears under a new tab on the Workbench canvas and consists of the original transformers with additional input and output objects.</p>
-<p>When you click on the Main tab, to return to the main canvas view, the original transformers have now been replaced by a custom transformer object that is automatically connected to the existing workspace:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.006.CustomTransformeronCanvas.png" alt class="image image-block image-center" /></p>
-<p>This custom transformer looks and behaves in the same way as any standard FME transformer; with input and output ports (that match the input/output objects in the custom transformer tab), plus a parameters dialog.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.005.NewCustomTransformer.png" alt="Editing a custom transformer" class="image image-block image-center" /></p>
+<p>It appears under a new tab on the Workbench canvas and consists of the original transformers with additional input and output objects.</p>
+<p>When you click on the Main tab to return to the main canvas view, you will see that Workbench has replaced the original transformers with a custom transformer object:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.006.CustomTransformeronCanvas.png" alt="Custom transformer on the canvas" class="image image-block image-center" /></p>
+<p>This custom transformer looks and behaves in the same way as any standard FME transformer, with input and output ports (that match the input/output objects in the custom transformer tab), plus a parameters dialog.</p>
 <h2 id="editing-a-custom-transformer">
   <span>Editing a Custom Transformer</span>
 </h2>
-<p>To edit the contents of a custom transformer, simply click on the tab for that transformer. This opens the transformer definition and you may edit the content in the same way that you would in the main canvas.</p>
+<p>To edit the contents of a custom transformer, click on the tab for that transformer. This action opens the transformer definition, and you may edit the content in the same way you would in the main canvas.</p>
 <p>In the Navigator window, where a workspace would have a section labeled Workspace Parameters, a custom transformer has Transformer Parameters:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.007.CustomTransformerNavWindow.png" alt class="image image-block image-center" /></p>
-<p>This is where the information – name, category, description, etc. – that was entered earlier can be edited.</p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>If a custom transformer has been created from scratch, without any original transformers selected, it would start out empty and look like this:<br /><br /><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.008.NewCustomTransformerEmpty.png" class="image image-block image-center" /><br /><br />Then you can start building or editing the transformer from scratch. There is not a lot of difference between creating content in the main canvas and turning it into a custom transformer, and creating an empty custom transformer and creating the content in there.<br /><br /><br /></td>
-    </tr>
-  </tbody>
-</table>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.007.CustomTransformerNavWindow.png" alt="Custom transformer Navigator" class="image image-block image-center" /></p>
+<p>In this section, you can edit the information you entered earlier – name, category, description, etc.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you created a custom transformer from scratch, without any original transformers selected, it would start empty and look like this:<br /><br />Then you can start building or editing the transformer from scratch. There is not much difference between creating content in the main canvas and turning it into a custom transformer and creating an empty custom transformer and creating the content in there.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="using-custom-transformers">
   <span>Using Custom Transformers</span>
 </h2>
-<p>Once a custom transformer is created, it is placed into the main canvas and - apart from a different color - looks just like a normal FME transformer would.</p>
-<p>However, the resemblance to a normal transformer is not just in appearance. In the same way that multiple instances of a transformer can be used in a workspace, a custom transformer can be used any number of times too. This makes Custom Transformers not just a way to tidy a workspace, but also as a way of re-using content.</p>
-<p>To place extra copies of a custom transformer you use - again like a normal transformer - the Transformer Gallery (look under a section labeled “Embedded Transformers):</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.009.CustomTransformersInGallery.png" alt class="image image-block image-center" /></p>
+<p>Once you create a custom transformer, it appears on the main canvas and - apart from a different color - looks just like a standard FME transformer.</p>
+<p>However, the resemblance to a standard transformer is not just in appearance. In the same way that you can use multiple instances of a transformer in a workspace, you can use a custom transformer any number of times. This feature means custom transformers let you tidy a workspace and reuse content.</p>
+<p>To place extra copies of a custom transformer you use - again like a standard transformer - the Transformer Gallery (look under a section labeled “Embedded Transformers):</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.009.CustomTransformersInGallery.png" alt="Custom transformer in the Transformer Gallery" class="image image-block image-center" /></p>
 <p>...or you can use Quick Add:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.010.CustomTransformersQuickAdd.png" alt class="image image-block image-center" /></p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>The transformer name, category, and description all appear in the Quick Add tool - as well as appearing in the help window - so it is definitely worthwhile setting these parameters.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
-<h2 id="editing-a-re-used-custom-transformer">
-  <span>Editing a Re-used Custom Transformer</span>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.010.CustomTransformersQuickAdd.png" alt="Adding a custom transformer with Quick Add" class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>The transformer name, category, and description appear in both the Quick Add tool and the help window, so it is worth setting these parameters.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="editing-a-reused-custom-transformer">
+  <span>Editing a Reused Custom Transformer</span>
 </h2>
-<p>Multiple instances of a custom transformer all use the same core definition; i.e. there may be multiple instances on the Main canvas, but only a single definition exists for all of them</p>
-<p>A key benefit of this approach is that <em>every</em> instance is updated or edited when the custom transformer definition is changed.</p>
-<p>For example, if a parameter is changed for the Aggregator inside this custom transformer:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.011.ExampleParameterEdit.png" alt class="image image-block image-center" /></p>
-<p>...then the parameter automatically changes for ALL instances of the transformer that have been placed.</p>
-<p>Editing is simpler because changes only need to be made once, no matter how many times that custom transformer has been used.</p>
+<p>Multiple instances of a custom transformer all use the same core definition, i.e., there may be multiple instances on the Main canvas, but only a single definition exists for all of them.</p>
+<p>An essential benefit of this approach is that <em>every</em> instance is updated or edited when the custom transformer definition is changed.</p>
+<p>For example, if you change a parameter for the Aggregator inside this custom transformer:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.011.ExampleParameterEdit.png" alt="Editing a reused custom transformer" class="image image-block image-center" /></p>
+<p>...then the parameter automatically changes for <em>all</em> instances of the transformer in the workspace.</p>
+<p>Editing is more straightforward because changes only need to be made once, no matter how many times you have used that custom transformer.</p>

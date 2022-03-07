@@ -1,44 +1,53 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Explain when parallel processing with custom transformers can be beneficial.</li>
+  <li>Determine the maximum number of processes possible in your workspace.</li>
+  <li>Use parameters to control parallel processing in your workspace.</li>
+  <li>Use artificial groups to control parallel processing in your workspace.</li>
+</ul>
 <h2 id="parallel-processing">
   <span>Parallel Processing</span>
 </h2>
-<p>Parallel Processing is a way to improve performance on high-end machines, by running multiple actions at once as a set of separate processes. A system architecture of multiple processors with multiple cores is useful because each process can be assigned to a different core. With multiple processes running on multiple cores, the whole translation can run several times quicker than it used to.</p>
+<p>Parallel processing is a way to improve performance on high-end machines by running multiple actions at once as a set of separate processes. A system architecture of multiple processors with multiple cores is helpful because the system can assign each process to a different core. With multiple processes running on multiple cores, the entire translation can run several times quicker than on a single core.</p>
 <h2 id="parallel-processing-and-fme">
   <span>Parallel Processing and FME</span>
 </h2>
-<p>Parallel processing in FME covers not an entire workspace, but just a specific subsection of workspace. This is defined using a custom transformer, which is a natural method to subdivide a large translation.</p>
-<p>Parallel processing is achieved by forming groups of features on the basis of attribute values, in a similar way to a Group-Based transformer. Each group is assigned to a separate process.</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>To process multiple workspaces in parallel, you would use multiple engines on FME Server.</td>
-    </tr>
-  </tbody>
-</table>
+<p>Parallel processing in FME covers not an entire workspace but just a specific subsection of workspace. You control where parallel processing occurs through custom transformers, a natural method to subdivide a large translation.</p>
+<p>Parallel processing runs on features grouped by attribute values, similar to Group-Based transformers. Custom transformers using parallel processing assign each group to a separate process.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>To process multiple workspaces in parallel, you would use multiple engines on FME Server.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="activating-parallel-processing">
   <span>Activating Parallel Processing</span>
 </h2>
-<p>Each custom transformer has a set of parameters - located in the Navigator window - that relates explicitly to parallel processing. Here you can determine the level of parallel processing, and an attribute that defines groups of data that will be transformed as a separate process:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.048.CTParallelOption.png" alt class="image image-block image-center" /></p>
+<p>Each custom transformer has a set of parameters - located in the Navigator window - that relates explicitly to parallel processing. Here you can determine the level of parallel processing and the Group By attribute that define the parallel processing groups:</p>
+<p><img src="images/1644342139136.png" class="image image-block image-center" alt="Parallel Processing setting in the Navigator" /></p>
 <h2 id="parallel-processing-levels">
   <span>Parallel Processing Levels</span>
 </h2>
-<p>The parameter that controls parallel processing allows different levels of effort to be applied. Each level specifies the number of processes to run simultaneously, in relation to the number of cores available:</p>
+<p>The parameter that controls parallel processing allows different levels of effort to be applied. Each level specifies the number of processes to run simultaneously relative to the number of cores available:</p>
 <table class="featureTable sort_table">
-  <thead class="thead sorted">
-    <tr>
-      <th scope="col">2 Cores</th>
-      <th scope="col">4 Cores</th>
-      <th scope="col">8 Cores</th>
-    </tr>
-  </thead>
   <thead class="thead sorted">
     <tr>
       <th rowspan="2" scope="col">Parameter</th>
       <th rowspan="2" scope="col">Processes</th>
-      <th colspan="3" scope="col">Examples</th>
+      <th style="width:20.0647%" scope="col">2 Cores</th>
+      <th scope="col">4 Cores</th>
+      <th scope="col">8 Cores</th>
     </tr>
   </thead>
   <tbody class="tbody">
@@ -79,21 +88,16 @@
     </tr>
   </tbody>
 </table>
-<p>As in the above example, on a quad-core machine, minimal parallelism results in two simultaneous FME processes. Extreme parallelism would result in eight (assuming there <em>are</em> eight tasks that can be processed simultaneously).</p>
+<p>As mentioned above, minimal parallelism results in two simultaneous FME processes on a quad-core machine. Extreme parallelism would result in eight (assuming the workspace <em>has </em>eight tasks to process simultaneously).</p>
 <p>There is also a hard cap for each FME license level:</p>
 <table class="featureTable sort_table">
   <thead class="thead sorted">
     <tr>
-      <th scope="col">2 Cores</th>
-      <th scope="col">4 Cores</th>
-      <th scope="col">8 Cores</th>
-    </tr>
-  </thead>
-  <thead class="thead sorted">
-    <tr>
       <th rowspan="2" scope="col">FME Edition</th>
       <th rowspan="2" scope="col">Process Cap</th>
-      <th colspan="3" scope="col">Examples</th>
+      <th style="width:21.521%" scope="col">2 Cores</th>
+      <th scope="col">4 Cores</th>
+      <th scope="col">8 Cores</th>
     </tr>
   </thead>
   <tbody class="tbody">
@@ -120,60 +124,83 @@
     </tr>
   </tbody>
 </table>
-<p>So, if you have a Base Edition license, you are never going to get more than four processes at one time, regardless of machine type and the parallelism parameter. The quad-core machine in the above example can never have more than eight processes since that is the maximum that "extreme" parallel processing allows.</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>These numbers - we should note - are the maximum number of processes <strong>at any one time</strong>. It's possible to divide data into many more groups and process them separately, but they won't all occur simultaneously. For example, given a quad-core machine, moderate processing, and 20 groups of features; there will be a total of 20 processes, but only four will run at any one time. When one of the four finishes, a new one is started.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<p>So, if you have a Base Edition license, you can never have more than four processes at one time, regardless of machine type and the parallelism parameter. The quad-core machine in the above example can never have more than eight processes since that is the maximum that “extreme” parallel processing allows.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>These numbers - we should note - are the maximum number of processes <strong>at any one time</strong>. It’s possible to divide data into many more groups and process them separately, but they won’t coincide. For example, given a quad-core machine, moderate processing, and 20 groups of features, there will be a total of 20 processes, but only four will run at any one time. When one of the four finishes, a new one is started.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="parallel-processing-groups">
   <span>Parallel Processing Groups</span>
 </h2>
 <p>The Parallel Process By parameter requires the author to select an attribute, and - as already covered - selecting attributes for a custom transformer parameter requires some consideration.</p>
-<p>In particular, this parameter is designed so that you cannot simply pick an attribute to use:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.050.CTParallelParamNoAttrs.png" alt class="image image-block image-center" /></p>
-<p>Instead, this parameter (and one for Group By Mode) is published to make it available as one of the custom transformer parameters:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.051.CTParallelOptionUserParam.png" alt class="image image-block image-center" /></p>
-<hr />
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>Parallel Processing is most effective in two specific scenarios. The first scenario is a small number of groups, each with a large amount of processing to do. Parallel processing is less effective where there are a large number of small groups. Having said that, the second scenario is a large number of small tasks being offloaded elsewhere. For example, when features are being passed to a web service HTTPFetcher transformer, then it's most efficient to have FME fire off as many requests as it can, as quickly as possible.</td>
-    </tr>
-  </tbody>
-</table>
-<hr />
+<p>In particular, you cannot simply pick an attribute to use for this parameter’s value:</p>
+<p><img src="images/1644343241839.png" class="image image-block image-center" alt="FME_PROCESS_GROUP_BY cannot be set to an attribute" /></p>
+<p>Instead, you can publish this parameter (and one for Group By Mode) to make them available as one of the custom transformer parameters:</p>
+<p><img src="images/1644343322634.png" class="image image-block image-center" alt="Publishing this parameter makes parallel processing mode available in custom transformers" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Parallel processing is most effective in two specific scenarios. A first scenario is a small number of groups, each with a large amount of processing. Parallel processing is less effective where there are a large number of small groups. A second scenario is many small tasks that the workspace is offloading elsewhere. For example, when the workspace passes features to a web service HTTPCaller transformer, it’s most efficient to have FME fire off as many requests as it can, as quickly as possible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="parallel-processing-and-custom-transformer-design">
   <span>Parallel Processing and Custom Transformer Design</span>
 </h2>
-<p>The keys to parallel processing are designing a custom transformer to be a standalone subsection, and the definition of groups to be processed.</p>
-<p>In essence, features are split into groups on reaching the custom transformer, processed as a separate action, then combined back into a single group on exiting the custom transformer.</p>
-<p>It's important to be aware that because each group is processed independently, there can be no relationship between features in different groups. If features are related, and their results depend on each other, then they must be in the same group.</p>
-<p>The easiest way to think of this is that the Custom Transformer itself is a Group-Based transformer. Because it is a wrapper for all the individual FME transformers in the definition, it allows those transformers to operate in groups, even if they are Feature-Based.</p>
+<p>The keys to parallel processing are designing a custom transformer as a standalone subsection and defining the processing groups.</p>
+<p>In essence, the custom transformer splits features into groups, processes each as a separate action, and then combines them back into a single group on exit.</p>
+<p>It’s essential to be aware that there can be no relationship between features in different groups because each group is processed independently. If features are related, and their results depend on each other, they must be in the same group.</p>
+<p>The easiest way to think of this is that the custom transformer itself is a Group-Based transformer. Because it is a wrapper for all the individual FME transformers in the definition, it allows those transformers to operate in groups, even if they are Feature-Based.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Learn more about <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Group_Based_Transformers.htm" rel="noreferrer noopener" target="_blank">Group-Based</a> and <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Feature_Based_Transformers.htm" rel="noreferrer noopener" target="_blank">Feature-Based</a> transformers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="creating-artificial-groups">
   <span>Creating Artificial Groups</span>
 </h2>
-<p>Sometimes none of the incoming data is related to each other, and can be split into arbitrary groups for processing. In these cases, where there is no identifier to define groups, one can be created manually by generating attributes with the ModuloCounter or RandomNumberGenerator transformers.</p>
-<p>For example, here the workspace author has a large number of address features from which to create labels. To speed the process they activate parallel processing:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.049.ParallelProcessingModuloCount.png" alt class="image image-block image-center" /></p>
-<p>They could group by PostalCode, but choose not to because all addresses fall inside only one of two postal codes. Therefore they create an artificial group using the ModuloCounter. Note the Group By parameter in the custom transformer is set to the <em>_modulo_count</em> attribute.</p>
-<p>In such a scenario, it's best to create only one group per intended FME process. For example, on a quad-core (four core) computer, with an FME Professional license and Extreme parallel processing, a maximum of eight processes at a time are permitted. Therefore - as shown here - the optimum number of groups to use is also eight.</p>
-<table class="featureTable sort_table">
-  <tbody class="tbody">
-    <tr>
-      <td>FME Lizard says…</td>
-    </tr>
-    <tr>
-      <td>See <strong><a href="https://blog.safe.com/2016/12/parallel-processing-tips-evangelist159/" rel="noreferrer noopener" target="_blank">this blog article</a></strong> for more information about - and some special techniques for - generating parallel processing groups. It's particularly useful for a custom transformer with multiple input ports.</td>
-    </tr>
-  </tbody>
-</table>
+<p>Sometimes none of the incoming data is related to each other and must be split into arbitrary groups for processing. In these cases, where there is no identifier to define groups, one can be created manually by generating attributes with the ModuloCounter or RandomNumberGenerator transformers.</p>
+<p>For example, the author of the workspace below has many address features from which to create labels. To speed the process, they activate parallel processing:</p>
+<p><img src="images/1644343823423.png" class="image image-block image-center" alt="Using parallel processing to speed use of a custom transformer" /></p>
+<p>They could group by <code>PostalCode</code> but choose not to because all addresses fall inside only one of two postal codes. Therefore they create an artificial group using the ModuloCounter. Note the Group By parameter in the custom transformer is set to the <code>_modulo_count</code> attribute.</p>
+<p>In such a scenario, it’s best to create only one group per intended FME process. For example, on a quad-core (four-core) computer, with an FME Professional license and Extreme parallel processing, a maximum of eight processes at a time are permitted. Therefore - as shown here - the optimum number of groups to use is also eight.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>See <strong><a href="https://blog.safe.com/2016/12/parallel-processing-tips-evangelist159/" rel="noreferrer noopener" target="_blank">this blog article</a></strong> for more information about - and some special techniques for - generating parallel processing groups. It’s beneficial for a custom transformer with multiple input ports.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
