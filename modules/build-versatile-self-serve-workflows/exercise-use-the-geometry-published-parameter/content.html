@@ -165,28 +165,12 @@
     </div>
   </div>
 </div>
-<h2 id="10-change-data-source-to-shared-resources-folder">
-  <span>10) Change Data Source to Shared Resources Folder</span>
-</h2>
-<p>To ensure everyone can run this workspace on FME Server, we should change the address GDB dataset parameter to look for the data on FME Server's Shared Resources Data folder instead of the C:\ drive. We will do this before publishing it to FME Server, and then we can upload the data there when we publish the workspace.</p>
-<p>Double-click the FeatureReader to open its parameters. Change the Dataset parameter to <code>$(FME_SHAREDRESOURCE_DATA)\Addresses.gdb</code>. This path will look for the GDB in the FME Server Data folder. To ensure the FeatureReader still works when reading from FME Server, click Output &gt; Output Ports &gt; Single Output Port.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.227.Ex3.FeatureReader.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.227.Ex3.FeatureReader.png" alt="Setting up the FeatureReader" class="image image-block image-center" /></a></p>
-<p>Next, expand the Attribute and Geometry Handling dropdown. Then, expand the &lt;Generic&gt; Port dropdown as well. Because we are using a single output port, we need to import the schema for the file manually.</p>
-<p>Click the ... button next to the Attributes to Expose field. Then, select Import... in the Attributes to Expose dialog.</p>
-<p><img src="images/1629225153676.png" class="image image-block image-center" alt="Setting up Attributes to Expose in the FeatureReader" /></p>
-<p>Under Format, select Esri Geodatabase (File Geodb Open API). Then, under dataset enter <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Addresses/Addresses.gdb.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Addresses/Addresses.gdb.zip</a>.</p>
-<p>Click Next to continue. Then, under Feature Types select PostalAddress. Then, click Next again.</p>
-<p>Under Attributes to Expose select Select all. Then, click Import to complete the process.</p>
-<p>Now click OK twice to exit the FeatureReader.</p>
-<p>The connection between the FeatureReader and Reprojector_2 has broken because we changed the FeatureReader to a single output port. Connect the FeatureReader's &lt;Generic&gt; port to the Reprojector_2.</p>
-<p>Note that this workspace won't work on FME Desktop now, but it will run properly on Server.</p>
-<h2 id="11-publish-to-fme-server">
-  <span>11) Publish to FME Server</span>
+<h2 id="10-publish-to-fme-server">
+  <span>10) Publish to FME Server</span>
 </h2>
 <p>With the workspace complete, we can now publish to FME Server. Click on the Publish button on the toolbar. Select the Training FME Server connection and the Training repository. Select Data Download and Job Submitter as the Services.</p>
-<p>After publishing, make sure you upload the GDB to FME Server's Data folder. First, download <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Addresses/Addresses.gdb.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2021/Data/Addresses/Addresses.gdb.zip</a>. Then, in FME Server, go to Files &amp; Connections: Resources. Then click the Data folder, then the Upload button, and choose Folder. Upload the Addresses.gdb folder to FME Server.</p>
-<h2 id="12-test-on-fme-server">
-  <span>12) Test on FME Server</span>
+<h2 id="11-test-on-fme-server">
+  <span>11) Test on FME Server</span>
 </h2>
 <p>Click the Direct Link to the workspace in the Translation Log (<a href="http://localhost/fmeserver/#/workspaces/run/Training/exercise-use-the-geometry-published-parameter.fmw" rel="noreferrer noopener" target="_blank">http://localhost/fmeserver/#/workspaces/run/Training/exercise-use-the-geometry-published-parameter.fmw</a>) and log in if necessary.</p>
 <p>Select Training as the Repository and set the Service to Data Download.</p>
