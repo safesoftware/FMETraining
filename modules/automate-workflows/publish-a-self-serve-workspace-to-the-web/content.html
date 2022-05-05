@@ -11,7 +11,7 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/IntegrateDataWithTheFMEPlatform/publish-your-self-serve-workspace.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
 </ul>
 <h2 id="video">
   <span>Video</span>
@@ -44,9 +44,9 @@
   <span>Preparing a Workspace to Publish to FME Server</span>
 </h2>
 <p>Frank already has <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/IntegrateDataWithTheFMEPlatform/publish-your-self-serve-workspace.fmw" rel="noreferrer noopener" target="_blank">a workspace</a> that is working well. However, Jennifer notices a problem that he needs to address before publishing to FME Server. She explains that creating the correct user parameters before publishing makes a much better experience for users running the workspace using FME Server.</p>
-<p>The path for the output data in the workspace is currently hardcoded to “C:\FMEData2020\Output\Training\Training.xlsx”. Frank confirms this in the <strong>Navigator </strong>&gt; <strong>Training [Generic]</strong> writer &gt; <strong>Destination Generic (Any Format) Folder </strong>parameter. Having this hard coded is fine when he just runs it on his own machine. When he publishes a workspace to FME Server, the workspace will try to write data to the C:\ drive of the machine that is hosting FME Server. However, he can’t assume access to a C:\ drive: it could be restricted for security purposes, or if it’s a Linux machine it won’t even exist! Jennifer informs him it’s best practice to instead read and write data that exists in FME Server’s shared <strong>Resources</strong> folder.</p>
+<p>The path for the output data in the workspace is currently hardcoded to “C:\FMEData2022\Output\Training\Training.xlsx”. Frank confirms this in the <strong>Navigator </strong>&gt; <strong>Training [Generic]</strong> writer &gt; <strong>Destination Generic (Any Format) Folder </strong>parameter. Having this hard coded is fine when he just runs it on his own machine. When he publishes a workspace to FME Server, the workspace will try to write data to the C:\ drive of the machine that is hosting FME Server. However, he can’t assume access to a C:\ drive: it could be restricted for security purposes, or if it’s a Linux machine it won’t even exist! Jennifer informs him it’s best practice to instead read and write data that exists in FME Server’s shared <strong>Resources</strong> folder.</p>
 <p>To fix this, Frank double-clicks on the <strong>Destination Generic (Any Format) Folder </strong>parameter and enters “$(FME_SHAREDRESOURCE_DATA)\CommunityMapping.zip”. This path includes the “FME_SHAREDRESOURCE_DATA” user parameter (viewable under <strong>User Parameters </strong>&gt; <strong>FME Server Parameters</strong>) and sets the workspace to write out its results to a ZIP file called CommunityMapping. When the workspace is published to FME Server, the data will be written out to the shared <strong>Data </strong>folder for all users to access. We’ll take advantage of that feature in a later unit.</p>
-<p><img alt="Setting writer path to FME Server Shared Resources Data folder" src="https://content.screencast.com/users/Ryan.Cragg/folders/Snagit/media/87e4896f-3ebb-4dfc-a748-68d42922c467/2021-06-14_15-57-30.png" class="image image-block image-center" /></p>
+<p><img src="images/1651783641825.png" class="image image-block image-center" alt="Editing Destination Folder parameter" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -114,7 +114,7 @@
   </div>
 </div>
 <p>The <strong>FME Server Connection </strong>dialog opens and he fills it out to connect to FME Server running on his own machine:</p>
-<p><img alt="Filling in FME Server Connection parameters" src="images/fb-4-b-95-dd-5954-48-b-0-b-28-a-9-fbc-578-f-59-b-0.png" class="image image-block image-center" /></p>
+<p><img src="images/1651787015197.png" class="image image-block image-center" alt="Adding an FME Server Web Connection" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -150,14 +150,14 @@
 <p>Now that he’s set up a web connection, Frank can finish publishing his workspace. He renames it <strong>CommunityMapping.fmw </strong>by typing in the <strong>Workspace Name</strong> field.</p>
 <p>Workspaces in FME Server are stored in <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/ReferenceManual/Repositories.htm" rel="noreferrer noopener" target="_blank">repositories</a>. To create a new repository for his workspace, Frank clicks <strong>New… </strong>and makes a new repository called “Self-Serve”. He clicks <strong>OK</strong> twice to finish creating his new repository.</p>
 <p><img alt="Creating a new repository" src="images/3-f-980-c-75-2-ef-5-49-da-a-01-d-a-1969-c-31-a-7-e-7.png" class="image image-block image-center" /></p>
-<p>Jennifer reminds Frank to consider how his workspace will access data after he publishes it to FME Server. Many workspaces use data stored locally on the author’s computer, such as C:\FMEData2020\Data. However, FME Server is usually run on a different machine that doesn’t have access to that directory. Therefore, data used in workspaces published to FME Server should also be added to FME Server.</p>
+<p>Jennifer reminds Frank to consider how his workspace will access data after he publishes it to FME Server. Many workspaces use data stored locally on the author’s computer, such as C:\FMEData2022\Data. However, FME Server is usually run on a different machine that doesn’t have access to that directory. Therefore, data used in workspaces published to FME Server should also be added to FME Server.</p>
 <p>To accomplish this, Frank clicks the <strong>Select </strong><strong>Files… </strong>button.</p>
 <p><img alt="Selecting files to upload" src="images/3-eb-054-de-d-65-b-4-d-57-88-d-3-56840783-c-58-b.png" class="image image-block image-center" /></p>
 <p>This action opens the <strong>Select Files to Upload </strong>dialog, which Frank sees he can use to add the geodatabase to the shared <strong>Data </strong>folder in FME Server. Frank does this by clicking the <strong>Select Location… </strong>button, then choosing the <strong>Upload to a shared resource folder </strong>option. Finally, he clicks the <strong>Data </strong>folder to select it and then presses <strong>OK</strong>.</p>
-<p><img alt="Selecting data upload location" src="images/f-61246-ad-0-d-69-451-f-b-2-c-8-ecd-2-b-3-b-8-b-36-c.png" class="image image-block image-center" /></p>
+<p><img src="images/1651787416719.png" class="image image-block image-center" alt="Select Files to Upload dialog" /></p>
 <p><img alt="Uploading to a shared resource folder" src="images/bab-4-ef-7-b-eaba-4-b-7-c-bbe-1-8-d-9799-bf-9-df-7.png" class="image image-block image-center" /></p>
 <p>He’s indicated where he wants to upload the data but now has to confirm which datasets to upload. He does this by checking the geodatabase.</p>
-<p><img alt="Selecting files to upload" src="images/70-d-061-d-4-68-c-0-4-ffd-bcb-3-d-67-d-612-a-71-e-0.png" class="image image-block image-center" /></p>
+<p><img src="images/1651787465436.png" class="image image-block image-center" alt="Checking CommunityMap geodatabase" /></p>
 <p>With a destination for the geodatabase on FME Server selected, he clicks <strong>OK </strong>and then <strong>Next</strong>.</p>
 <div class="box message info">
   <div class="inner">
@@ -216,10 +216,10 @@
 <h2 id="view-a-published-workspace">
   <span>View a Published Workspace</span>
 </h2>
-<p>Frank can access his workspace in a web browser using the<strong> Direct Link </strong>provided in the <strong>Translation Log</strong>: <a href="http://localhost/fmeserver/%23/workspaces/run/Self-Serve/CommunityMapping.fmw" rel="noreferrer noopener" target="_blank">http://localhost/fmeserver/#/workspaces/run/Self-Serve/CommunityMapping.fmw</a>.</p>
-<p><img alt="Viewing workspace Direct Link in Translation Log" src="images/37-daa-3-e-9-c-516-4-ac-4-99-ec-ced-816-ae-3-b-5-c.png" class="image image-block image-center" /></p>
-<p>He clicks the link to open FME Server. This link directs Frank to the <strong>Run Workspace </strong>page. Here he can choose which workspace to run, which service to use, optionally provide an email to send the results to, and set the published parameters. Here he sees why published parameters are important - creating them in FME Workbench allows him to customize the experience for users running his workspace on the web.</p>
-<p><img alt="Running workspace" src="images/8787-b-84-c-402-c-4692-b-018-f-2-beba-9-f-5-f-19-2.png" class="image image-block image-center" /></p>
+<p>Frank can access his workspace in a web browser using the<strong> Direct Link </strong>provided in the <strong>Translation Log</strong>: <a href="http://localhost/fmeserver/#/workspaces/run/Self-Serve/CommunityMapping.fmw" rel="noreferrer noopener" target="_blank">http://localhost/fmeserver/#/workspaces/run/Self-Serve/CommunityMapping.fmw</a>.</p>
+<p><img src="images/1651787577474.png" class="image image-block image-center" alt="Direct Link to workspace provided in the Translation Log" /></p>
+<p>He clicks the link to open FME Server and logs in, if required. This link directs Frank to the <strong>Run Workspace </strong>page. Here he can choose which workspace to run, which service to use, optionally provide an email to send the results to, and set the published parameters. Here he sees why published parameters are important - creating them in FME Workbench allows him to customize the experience for users running his workspace on the web.</p>
+<p><img src="images/1651787666470.png" class="image image-block image-center" alt="Run Workspace page" /></p>
 <h2 id="exercise">
   <span>Exercise</span>
 </h2>
