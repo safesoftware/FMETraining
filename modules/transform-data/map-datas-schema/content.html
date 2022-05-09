@@ -12,20 +12,20 @@
 </h2>
 <ul>
   <li><a href="http://ior.ad/6UOI" rel="noreferrer noopener" target="_blank">Interactive tutorial to help you follow along</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
 </ul>
 <h2 id="video">
   <span>Video</span>
 </h2>
-<p><span><iframe width="640" height="360" src="https://play.vidyard.com/d2GotjdZkCeZZs61gEc4DP?" allowfullscreen class="image-center" title="Video Content"></iframe></span></p>
+<p><span><iframe width="640" height="360" src="https://play.vidyard.com/d2GotjdZkCeZZs61gEc4DP?" allowfullscreen title="Video Content" class="image-center"></iframe></span></p>
 <h2 id="determine-schema-mapping-goals">
   <span>Determine Schema Mapping Goals</span>
 </h2>
 <p>Now that Jennifer has created a <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" rel="noreferrer noopener" target="_blank">workspace</a> that edits the PostGIS data’s schema, she has to map it, telling FME how the original and new schemas are related.</p>
-<p>She opens the workspace in FME Workbench (2021.0 or later) and notices the triangle icon on her writer feature type has turned red.</p>
-<p><img alt="Red triangle on writer feature type" src="images/1112-fe-41-de-86-4588-8-abe-06-fb-6-cb-07-d-5-b.png" class="image image-block image-center" /></p>
+<p>She opens the workspace in FME Workbench (2022.0 or later) and notices the triangle icon on her writer feature type has turned red.</p>
+<p><img src="images/1652132768522.png" class="image image-block image-center" alt="Expanding BusinessOwners attributes list" /></p>
 <p>She clicks the triangle to expand the list of attributes entering the feature type.</p>
-<p><img alt="Expanded writer feature type attributes with red triangle" src="images/3-a-3449-f-8-c-255-4-f-3-f-b-6-d-8-003-f-86887-d-7-c.png" class="image image-block image-center" /></p>
+<p><img src="images/1652132798770.png" class="image image-block image-center" alt="Expanded attributes" /></p>
 <p>FME uses colored ports to indicate the status of schema mapping. In this case, the red port means an attribute exists on the writer feature type, but not on the features entering the feature type. An attribute with a red port will not cause an error when the workspace is run, but it will not have any values in the written data.</p>
 <p>To ensure her new <strong>first_name </strong>attribute gets the same values as her existing <strong>first </strong>attribute, we have to map the new schema onto the old schema. We can use the AttributeManager transformer for that.</p>
 <div class="box message info">
@@ -51,7 +51,7 @@
   <span>Add an AttributeManager</span>
 </h2>
 <p>Jennifer clicks the black<strong> <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/Including_Transformers_in_a_Workspace.htm" rel="noreferrer noopener" target="_blank">feature connection line</a> </strong>between the reader feature type and the <strong>GeometryFilter </strong>to select it. She observes the light blue highlight indicating the line is selected.</p>
-<p><img alt="Selecting a feature connection line" src="images/4-e-7-b-24-a-9-1-aa-3-4503-9083-93-e-87-c-770009.png" class="image image-block image-center" /></p>
+<p><img src="images/1652132857985.png" class="image image-block image-center" alt="Selected connection line" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -69,7 +69,7 @@
 <p>When any object on the canvas is selected, using Quick Add will automatically connect the new object. With the feature connection line selected, Jennifer types in “AttributeManager”. The Quick Add dialog appears, letting her search transformers, readers, and writers. She finds the AttributeManager and presses Enter to add it.</p>
 <p><img alt="Adding an AttributeManager" src="images/6-ecee-5-bb-2-f-11-4392-a-597-ce-5-acb-81-ef-44.png" class="image image-block image-center" /></p>
 <p>The AttributeManager appears on the canvas. Jennifer double-clicks it to open its <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!Transformer_Parameters/transformer_parameters.htm" rel="noreferrer noopener" target="_blank">Parameters dialog</a>.</p>
-<p><img alt="Double-clicking an AttributeManager to open its parameters" src="images/05-d-2-aa-45-4-bcd-4-b-21-a-1-c-3-a-037-a-294440-e.png" class="image image-block image-center" /></p>
+<p><img src="images/1652132925289.png" class="image image-block image-center" alt="AttributeManager added" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -92,7 +92,7 @@
 <p>First, she clicks in the<strong> Output Attribute</strong> column for the first attribute and renames it “first_name”. Then she clicks the <strong>Move Down </strong>button to change the attribute order. Then she Shift + clicks the <strong>latitude </strong>and <strong>longitude </strong>attribute rows and clicks the <strong>Remove Row </strong>button to delete them. Her dialog looks like this:</p>
 <p><img alt="Removing attributes in an AttributeManager" src="images/96723664-e-1-f-1-43-a-6-8-cf-4-9-d-30773-a-8890.png" class="image image-block image-center" /></p>
 <p>She clicks <strong>OK</strong>. Now the attribute ports on the writer feature type all turn green, showing her schema is mapped.</p>
-<p><img alt="Schema is mapped" src="images/04-f-64-f-01-670-a-4-e-0-d-b-337-27-e-2-f-454107-a.png" class="image image-block image-center" /></p>
+<p><img src="images/1652133120123.png" class="image image-block image-center" alt="Schema is mapped" /></p>
 <p>However, Jennifer notices a slight problem: <strong>BusinessOwners </strong>looks good, but <strong>BusinessOwners_incomplete </strong>still has its original schema. How can she quickly update the schema to match the incoming features?</p>
 <p>Jennifer knows she can use <strong>Automatic Attribute Definition</strong> mode for this task. She double-clicks on <strong>BusinessOwners_incomplete </strong>and then clicks the<strong> User Attributes</strong> tab. The first section of this dialog is <strong>Attribute Definition</strong>. By default, this is in <strong>Manual </strong>mode. However, changing this to <strong>Automatic </strong>mode will tell the feature type to simply adopt the schema of whatever features are connected to it.</p>
 <p>Why didn’t Jennifer do this first if it was so easy? Well, she had to first edit the schema upstream using the <strong>AttributeManager</strong>. As the data flows from the reader feature type, it gets edited in the <strong>AttributeManager</strong>. These changes will be reflected automatically in the writer feature type when it is set to <strong>Automatic </strong>mode. If she left it on <strong>Manual</strong>, she would have to repeat the edits on the writer feature type.</p>
