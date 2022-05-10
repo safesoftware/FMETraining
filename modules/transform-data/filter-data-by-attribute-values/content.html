@@ -12,7 +12,8 @@
 </h2>
 <ul>
   <li><a href="http://ior.ad/6V9D" rel="noreferrer noopener" target="_blank">Interactive tutorial to help you follow along</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
 </ul>
 <h2 id="video">
   <span>Video</span>
@@ -23,7 +24,7 @@
 </h2>
 <p>FME workspaces send data from left to right across the canvas from reader feature types to writer feature types. The simplest workspace only has one “stream” of data: features are read in, all processed in the same way, and then written out. However, workspaces can have multiple streams of data, splitting and merging features as required. </p>
 <p>In Jennifer's workspace, the <strong>GeometryFilter </strong>created multiple streams when it split the PostGIS features into point and null geometry. She now has two streams coming out of the <strong>GeometryFilter</strong>: #1 contains point geometry features going to the <strong>BusinessOwners </strong>feature type, and #2 contains features missing geometry going to the <strong>BusinessOwners_incomplete</strong> feature type.</p>
-<p><img alt="Multiple streams of data on the canvas" src="images/8-d-5-dbea-2-fd-8-c-4-b-0-e-8-e-23-40-afe-240-fff-4.png" class="image image-block image-center" /></p>
+<p><img src="images/1652201725141.png" class="image image-block image-center" alt="Two streams" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -31,7 +32,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>The name of the transformer in stream #1 above is obscured because it is the answer to a previous quiz question.</p>
+            <p>The name of the transformer in stream #2 above is obscured because it is the answer to a previous quiz question.</p>
           </div>
         </div>
       </div>
@@ -64,7 +65,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>You can follow along with Jennifer now using this <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> in FME Workbench (2021.0 or later)</p>
+            <p>You can follow along with Jennifer now using this <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> in FME Workbench (2022.0 or later)</p>
           </div>
         </div>
       </div>
@@ -72,7 +73,7 @@
   </div>
 </div>
 <p>Jennifer adds a <strong>Tester </strong>between the <strong>FeatureJoiner </strong>and the <strong>GeometryFilter </strong>using<strong> Quick Add </strong>so she can filter out the stream of data to get all businesses with valid licenses only.</p>
-<p><img alt="Adding a Tester" src="images/1-b-5783-c-5-ee-92-4-c-7-e-bc-71-1-c-0-b-28-eb-16-ce.png" class="image image-block image-center" /></p>
+<p><img src="images/1652203374536.png" class="image image-block image-center" alt="Added a Tester" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -146,14 +147,14 @@
 <h2 id="inspect-final-results">
   <span>Inspect Final Results</span>
 </h2>
-<p>Now that her workspace is complete, Jennifer turns off feature caching from the toolbar (<strong>Run</strong> &gt; uncheck <strong>Enable Feature Caching</strong>) and then clicks <strong>Run</strong>. Her entire workspace runs successfully.</p>
+<p>Now that her workspace is complete, Jennifer turns off feature caching from the toolbar (<strong>Run</strong> &gt; uncheck <strong>Enable Feature Caching</strong>) and then clicks <strong>Run</strong>. Her entire workspace runs successfully.</p>
 <p>Then she clicks the <strong>BusinessOwners </strong>writer feature type to select it and clicks <strong>View Written Data</strong>. This shows the 96 valid records that were written to this feature class. Note that FME automatically added the required <strong>OBJECTID </strong>column to the data as required by the geodatabase format.</p>
 <p><img alt="View Written Data button" src="images/f-5-e-86276-188-c-4-d-07-84-c-5-6-bee-0-b-0004-c-9.png" class="image image-block image-center" /></p>
 <p><img alt="Viewing the new OBJECTID column in Table View" src="images/064-e-592-e-33-ca-4-afe-a-80-b-09-ee-3-f-6-df-631.png" class="image image-block image-center" /></p>
 <p>Using the same method to inspect <strong>BusinessOwners_incomplete </strong>shows the 71 features with missing values.</p>
 <p><img alt="71 features with missing values" src="images/f-97272-d-2-e-7-bf-4-ca-0-9-b-74-24233-d-5-c-7135.png" class="image image-block image-center" /></p>
 <p>Jennifer clicks one of the writer feature types and then <strong>Open Containing Folder</strong>, viewing the geodatabase in her file browser. From there she can open the geodatabase in ArcCatalog, ArcMap, or ArcGIS Pro.</p>
-<p><img alt="Viewing the geodatabase in ArcCatalog" src="images/a-48-b-7112-26-aa-4-ab-2-bcd-7-cf-9187742-b-01.png" class="image image-block image-center" /></p>
+<p><img src="images/1652204162848.png" class="image image-block image-center" /></p>
 <h2 id="exercise">
   <span>Exercise</span>
 </h2>
