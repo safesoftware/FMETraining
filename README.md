@@ -30,7 +30,7 @@ This list of modules is presented with their FME version. It is also roughly in 
 | N/A                                  | Welcome to the FME Academy                                          | N/A         |
 | Integrate Data with the FME Platform | Why Data Integration?                                               | 2022.0      |
 | Integrate Data with the FME Platform | Connect To Data                                                     | 2022.0      |
-| Integrate Data with the FME Platform | Transform Data                                                      | 2021.1      |
+| Integrate Data with the FME Platform | Transform Data                                                      | 2022.0      |
 | Integrate Data with the FME Platform | Automate Workflows                                                  | 2022.0      |
 | Transform Attributes                 | Create and Modify Attributes                                        | 2020.1      |
 | Transform Attributes                 | Filter Data                                                         | 2020.1      |
