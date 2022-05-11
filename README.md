@@ -33,7 +33,7 @@ This list of modules is presented with their FME version. It is also roughly in 
 | Integrate Data with the FME Platform | Transform Data                                                      | 2022.0      |
 | Integrate Data with the FME Platform | Automate Workflows                                                  | 2022.0      |
 | Transform Attributes                 | Create and Modify Attributes                                        | 2022.0      |
-| Transform Attributes                 | Filter Data                                                         | 2020.1      |
+| Transform Attributes                 | Filter Data                                                         | 2022.0      |
 | Transform Attributes                 | Join Tables                                                         | 2020.1      |
 | Transform Attributes                 | Use Conditional Values                                              | 2020.1      |
 | Integrate Spatial Data               | Learn Spatial Data Concepts                                         | 2020.1      |
