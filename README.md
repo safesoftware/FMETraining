@@ -40,7 +40,7 @@ This list of modules is presented with their FME version. It is also roughly in 
 | Integrate Spatial Data               | Turn Coordinates into Geometry                                      | 2020.1      |
 | Integrate Spatial Data               | Analyze Spatial Data                                                | 2020.1      |
 | Use Data Integration Best Practices  | Document Your Workspace                                             | 2022.0      |
-| Use Data Integration Best Practices  | Debug Workspaces                                                    | 2021.0      |
+| Use Data Integration Best Practices  | Debug Workspaces                                                    | 2022.0      |
 | Use Data Integration Best Practices  | Design Workspaces for Advanced Reading and Writing                  | 2021.0      |
 | Use Data Integration Best Practices  | Visually Compare and Merge Workflows                                | 2022.0      |
 | Use Data Integration Best Practices  | Design For Performance                                              | 2021.0      |
