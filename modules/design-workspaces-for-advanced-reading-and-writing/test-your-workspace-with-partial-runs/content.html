@@ -11,7 +11,7 @@
 </h2>
 <p>When developing a workspace incrementally, or making edits to a structured workspace, a lot of testing will take place. Each time a change is made the author will wish to test the change, and this process of change/test repeats itself again and again.</p>
 <p>To effectively and efficiently carry out this process, there are a number of tools available in FME Workbench.</p>
-<p>The first set of tools are for inspecting data as it changes. The second set of tools are for defining which parts of the workspace need to be tested.</p>
+<p>The first set of tools is for inspecting data as it changes. The second set of tools is for defining which parts of the workspace need to be tested.</p>
 <h2 id="partial-runs">
   <span>Partial Runs</span>
 </h2>
@@ -20,6 +20,21 @@
 <p>The technical aspect of partial runs is covered in other modules (see <a href="https://safe.my.trailhead.com/content/safe/modules/view-data/viewing-part-of-your-workflow" rel="noreferrer noopener" target="_blank">Viewing Part of Your Workflow</a>). However, using partial runs is an important part of workspace testing. You should use partial runs to develop your workspace incrementally, testing each new section to ensure it works.</p>
 <p>A partial run is particularly useful in avoiding re-reading data from its source; especially when the data comes from a slow, remote location such as a web service. Creating a cache can help increase the development of your workspace.</p>
 <p>Finally, caches can be saved with the workspace when it is saved as a template (File &gt; Save As Template, enable Include Feature Caches). That means the workspace can be re-run using the caches from a previous session or even from another author!</p>
+<h2 id="data-aware-transformer-dialogs">
+  <span>Data-Aware Transformer Dialogs</span>
+</h2>
+<p>Starting in FME 2021.0, when you have feature caches in your workspace, you can browse unique values to make filling in transformers easier. The first step is to ensure you have feature caches:</p>
+<p><img alt="Feature cache" src="https://community.safe.com/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&amp;versionId=0684Q00000BOpLf&amp;operationContext=CHATTER&amp;contentId=05T4Q00000gXoZo&amp;page=0" class="image image-block image-center" /></p>
+<p> </p>
+<p>Then add a Tester, TestFilter, AttributeExposer, or any other transformer that uses test clauses. The AttributeManager is also supported. Once connected, open the parameters. In the parameters, select the Left Value attribute. For this example, I’m using Common Name. Then select your Operator. </p>
+<p>To retrieve the cached attributes, click on the drop-down arrow for Right Value, then select Cached Values. If there are only a few values for the attribute, a drop-down list will be available. If there are lots of values, a popup list will appear. </p>
+<p> </p>
+<p><img src="images/1652908832501.png" class="image image-block image-center" alt="Cached values" /></p>
+<p> </p>
+<p>Then select the value you want to test for.</p>
+<p><img src="images/1652908980607.png" class="image image-block image-center" alt="Selecting a value" /></p>
+<p> Once the value is selected, click OK to create another test or click OK again to accept the parameters. </p>
+<p> You can continue to build your workspace as normal. To use this feature again later in the workspace, remember to run with feature caching up to the point where the transformer is about to be added.</p>
 <h2 id="disabled-objects">
   <span>Disabled Objects</span>
 </h2>
