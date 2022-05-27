@@ -14,11 +14,11 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Addresses/Addresses.gdb.zip" rel="noreferrer noopener" target="_blank">Addresses.gdb</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/OpenStreetMap/building.osm" rel="noreferrer noopener" target="_blank">building.osm</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Addresses/Addresses.gdb.zip" rel="noreferrer noopener" target="_blank">Addresses.gdb</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/OpenStreetMap/building.osm" rel="noreferrer noopener" target="_blank">building.osm</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a></li>
 </ul>
 <h2 id="introduction">
   <span>Introduction</span>
@@ -28,7 +28,7 @@
 <h2 id="1-open-workspace">
   <span>1) Open Workspace</span>
 </h2>
-<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>.</p>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>.</p>
 <p>As you’ll see, this workspace reads OpenStreetMap building data and then carries out several validation tasks. Firstly, it overlays it with the city address database to see if it has a matching address. Secondly, it tests the building geometry with a <strong>GeometryValidator </strong>transformer. Finally, it overlays the buildings against the city zoning data to see if it properly falls inside a single zone:</p>
 <p><img src="images/1644348622334.png" class="image image-block image-center" alt="Starting workspace" /></p>
 <p>Turn on feature caching and run the workspace. Inspect the data at each step to become familiar with what it is doing. Specifically, take note of the feature counts so that we can be sure that any changes we make do not affect the results:</p>
@@ -38,10 +38,10 @@
   <span>2) Create Custom Transformer</span>
 </h2>
 <p>The first thing to consider is managing data as separate groups for parallel processing. Because OSM is crowdsourced data, there’s no guarantee that any particular attribute will have values. If you check the source OSM data, you’ll notice that it has very few values for any attribute.</p>
-<p>However, one of the early steps in the workspace copies address records onto each building. Because the address data is a city dataset, we can take that as the definitive data and trust its contents. One of the attributes that it copies is <code>POSTALCODE</code>:</p>
+<p>However, one of the early steps in the workspace copies address records onto each building. Because the address data is a city government dataset, we can take that as the definitive data and trust its contents. One of the attributes that it copies is <code>POSTALCODE</code>:</p>
 <p><img src="images/1644348674659.png" class="image image-block image-center" alt="POSTALCODE attribute" /></p>
 <p>Postcodes - or at least the first three characters of a postcode - are an excellent way to divide data into groups.</p>
-<p>So, select all objects after the <strong>PointOnAreaOverlayer </strong>(where <code>POSTALCODE</code> is obtained) but before the final writer feature type. Notice this includes the feature type for the MapInfo TAB reader:</p>
+<p>So, select all objects after the <strong>PointOnAreaOverlayer </strong>(where <code>POSTALCODE</code> is obtained) but before the final writer feature type. Notice this includes the reader feature type for the MapInfo TAB reader:</p>
 <p><img src="images/1644348706836.png" class="image image-block image-center" alt="Selecting transformers to create a custom transformer" /></p>
 <p>Press Ctrl+T to turn the selected objects into a custom transformer. Give the transformer a name like <strong>BuildingValidator </strong>and set <strong>Attribute References </strong>to Handle with Published Parameters.</p>
 <p>Click <strong>OK </strong>to create the custom transformer.</p>
@@ -62,7 +62,20 @@
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.244.Ex5.ParallelProcessingParam.png" alt="Setting Parallel Processing parameter in the Navigator" class="image image-block image-center" /></p>
 <p>Now return to the main canvas window. Open the parameters for the <strong>BuildingValidator </strong>custom transformer. For the <strong>Group By</strong> parameter, select the attribute <code>PostcodePrefix</code>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.245.Ex5.ParallelProcessingGroups.png" alt="Setting the Group By for parallel processing" class="image image-block image-center" /></p>
-<p>If you don’t have a <code>PostcodePrefix</code> attribute, then it will be the attribute created by the <strong>SubstringExtractor </strong>(<code>_substring</code> is the default).</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>If you don’t have a <code>PostcodePrefix</code> attribute, make sure you follow the steps for the <strong>SubstringExtractor </strong>above.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="5-run-workspace">
   <span>5) Run Workspace</span>
 </h2>
@@ -92,12 +105,12 @@
   <span>6) Fix Reader</span>
 </h2>
 <p>Firstly, in the main tab, delete the <strong>Zones </strong>feature type. This deletion will cause FME to prompt you to remove the MapInfo reader; click <strong>Yes</strong>.</p>
-<p>Now switch to the <strong>BuildingValidator </strong>definition tab. Add a <strong>Creator </strong>transformer and a <strong>FeatureReader </strong>transformer, and connect them. Open the <strong>FeatureReader </strong>parameters and set it up to read the MapInfo TAB dataset Zones.tab:</p>
-<p><img src="images/1644349344134.png" class="image image-block image-center" alt="Setting Zones.tab path in FeatureReader" /></p>
-<p>Now connect the Zones output from the <strong>FeatureReader</strong>, into the <strong>SpatialRelator:Supplier </strong>port (in place of the <strong>SpatialRelator_Support </strong>Input object, which you can now delete):</p>
+<p>Now switch to the <strong>BuildingValidator </strong>tab. Add a <strong>Creator </strong>transformer and a <strong>FeatureReader </strong>transformer, and connect them. Open the <strong>FeatureReader </strong>parameters and set it up to read the MapInfo TAB dataset <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a>:</p>
+<p><img src="images/1653674525169.png" class="image image-block image-center" alt="Configuring FeatureReader" /></p>
+<p>Now connect the Zones output from the <strong>FeatureReader</strong>, into the <strong>SpatialRelator:Supplier </strong>port (in place of the <strong>SpatialRelator_Supplier </strong>Input object, which you can now delete):</p>
 <p><img src="images/1644349366727.png" class="image image-block image-center" alt="Replacing Input port with FeatureReader" /></p>
-<p>Now re-run the workspace and check the output. This time only 250 features should have a value of <em>Unzoned building </em>for the <code>_ValidationZones</code> attribute, and 219 features should have a value of <em>Overlapping zones building</em>.</p>
-<p>The workspace is now producing the correct results and in a set of parallel processes. But was it worth making these changes?</p>
+<p>Now re-run the workspace and check the output. This time only 250 features should have a value of <em>Unzoned building </em>for the <code>_ValidationZones</code> attribute, and 218 features should have a value of <em>Overlapping zones building</em>.</p>
+<p>The workspace is now producing the correct results using parallel processing. But was it worth making these changes?</p>
 <h2 id="7-assess-parallel-processing">
   <span>7) Assess Parallel Processing</span>
 </h2>
