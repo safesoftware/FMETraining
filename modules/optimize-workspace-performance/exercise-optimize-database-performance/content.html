@@ -10,8 +10,10 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" rel="noreferrer noopener" target="_blank">Starting workspace (PostGIS)</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" rel="noreferrer noopener" target="_blank">Starting workspace (Esri Geodatabase)</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" rel="noreferrer noopener" target="_blank">Starting workspace (PostGIS)</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace (PostGIS)</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" rel="noreferrer noopener" target="_blank">Starting workspace (Esri Geodatabase)</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace (Esri Geodatabase)</a></li>
 </ul>
 <h2 id="exercise">
   <span>Exercise</span>
@@ -37,16 +39,29 @@
 </h2>
 <p>To use a PostGIS database as source requires a connection to it. If you are using Geodatabase instead of PostGIS, you can skip to step 2.</p>
 <p>In a web browser visit <a href="http://fme.ly/database" rel="noreferrer noopener" target="_blank">http://fme.ly/database</a> - this shows the parameters for a PostGIS database running on Amazon RDS.</p>
-<p>Start FME Workbench 2021.0 and select Tools &gt; FME Options from the menu bar.</p>
+<p>Start FME Workbench (2022.0 or later) and select Tools &gt; FME Options from the menu bar.</p>
 <p>Click on the icon for the Database Connections category, then click the [+] button to create a new connection. In the "Add Database Connection" dialog enter the connection parameters obtained through the web browser.</p>
 <p>Give the connection a name (if you call it <em>FME Training Database Connection</em> it will match the starting workspace) and click Save.</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.221.Ex4.CreateDBConnection.png" alt="Adding the FME Training Database Connection" class="image image-block image-center" /></p>
-<p><strong><em>NB:</em></strong> <em>Yes, the password is fmedata as well!</em></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Yes, the password is fmedata as well!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <p>Then click OK to close the FME Options dialog.</p>
 <h2 id="2-open-and-run-workspace">
   <span>2) Open and Run Workspace</span>
 </h2>
-<p>Open the starting workspace of your choice (<a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" rel="noreferrer noopener" target="_blank">PostGIS</a> or <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" rel="noreferrer noopener" target="_blank">Esri Geodatabase</a>) in FME Workbench 2021.0.</p>
+<p>Open the starting workspace of your choice (<a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" rel="noreferrer noopener" target="_blank">PostGIS</a> or <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" rel="noreferrer noopener" target="_blank">Esri Geodatabase</a>) in FME Workbench (2022.0 or later).</p>
 <p>The workspace looks something like this:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.222.Ex4.InitialWorkspace.png" alt="Starting workspace" class="image image-block image-center" /></p>
 <p>Basically, a published parameter accepts an address ID. The postal address database is read and filtered against this ID. The chosen address is used in a spatial overlay against garbage zones. The result is formatted in HTML and written out with a Text File writer.</p>
@@ -88,7 +103,7 @@ INFORM|END - ProcessID: 724, peak process memory usage: 136420 kB, current proce
 <h2 id="5-re-run-workspace">
   <span>5) Re-Run Workspace</span>
 </h2>
-<p>Re-run the workspace. This time only 1 feature is read from the database. The performance improves accordingly:</p>
+<p>Re-run the workspace. This time FME only reads one feature from the database. The performance improves accordingly:</p>
 <p><strong>PostGIS</strong></p><pre>INFORM|FME Session Duration: 5.3 seconds. (CPU: 0.7s user, 0.3s system)
 INFORM|END - ProcessID: 7440, peak process memory usage: 138924 kB, current process memory usage: 96848 kB</pre>
 <p><strong>Geodatabase</strong></p><pre>INFORM|FME Session Duration: 0.9 seconds. (CPU: 0.5s user, 0.3s system)
@@ -128,8 +143,8 @@ WHERE "AddressId" = $(AddressID)</pre>
 </div>
 <p>Click OK. The Enter Attributes to Expose dialog will be populated with all the attributes present in the PostalAddress table. These will now be exposed properly.</p>
 <p><img src="images/1620858552172.png" class="image image-block" alt="Attributes to Expose" /></p>
-<p>Click OK twice to finish configuring the SQLCreator. Connect it to the PointOnAreaOverlayer and disable the PostGIS reader feature type. </p>
-<p><img src="images/1620858705268.png" class="image image-block" alt="Completed SQLCreator workspace" /></p>
+<p>Click OK twice to finish configuring the SQLCreator. Connect it's Result port to the PointOnAreaOverlayer Point port and disable the PostGIS reader feature type. </p>
+<p><img src="images/1653693862712.png" class="image image-block image-center" alt="Using an SQLCreator instead of a reader" /></p>
 <p>Run your workspace. Performance will probably be similar, but if the query was more complex, this route could save valuable time.</p>
 <div><pre>2021-05-12 15:32:08|   1.0|  0.0|INFORM|FME Session Duration: 8.9 seconds. (CPU: 0.3s user, 0.7s system)
 2021-05-12 15:32:08|   1.0|  0.0|INFORM|END - ProcessID: 158936, peak process memory usage: 119556 kB, current process memory usage: 108624 kB</pre>
