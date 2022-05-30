@@ -43,9 +43,9 @@ This list of modules is presented with their FME version. It is also roughly in 
 | Use Data Integration Best Practices  | Debug Workspaces                                                    | 2022.0      |
 | Use Data Integration Best Practices  | Design Workspaces for Advanced Reading and Writing                  | 2022.0      |
 | Use Data Integration Best Practices  | Visually Compare and Merge Workflows                                | 2022.0      |
-| Use Data Integration Best Practices  | Design For Performance                                              | 2021.0      |
-| Use Data Integration Best Practices  | Optimize Workspace Performance                                      | 2021.0      |
-| Use Data Integration Best Practices  | Design Modular and Maintainable Workspaces with Custom Transformers | 2021.1      |
+| Use Data Integration Best Practices  | Design For Performance                                              | 2022.0      |
+| Use Data Integration Best Practices  | Optimize Workspace Performance                                      | 2022.0      |
+| Use Data Integration Best Practices  | Design Modular and Maintainable Workspaces with Custom Transformers | 2022.0      |
 | Use Data Integration Best Practices  | Build a Shared Library of Custom Transformers                       | 2021.1      |
 | Build Advanced Workflows             | Read From and Write To Multiple Locations                           | 2021.1      |
 | Build Advanced Workflows             | Work with Multiple Data Models Using Lists                          | 2021.1      |
