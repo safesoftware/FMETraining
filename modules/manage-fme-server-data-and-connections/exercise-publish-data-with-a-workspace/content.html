@@ -10,8 +10,8 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" rel="noreferrer noopener" target="_blank">Starting workspace template</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace-complete.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" rel="noreferrer noopener" target="_blank">Starting workspace template</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace-complete.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project</a></li>
 </ul>
 <h2 id="introduction">
   <span>Introduction</span>
@@ -21,7 +21,7 @@
 <h2 id="1-open-and-examine-workspace">
   <span>1) Open and Examine Workspace</span>
 </h2>
-<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" rel="noreferrer noopener" target="_blank">starting workspace template</a> using FME Workbench 2021.1 (or later). </p>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" rel="noreferrer noopener" target="_blank">starting workspace template</a> using FME Workbench 2022.0 (or later). </p>
 <p><img src="images/1626123961573.png" class="image image-block" alt="Starting workspace" /></p>
 <p>You can see the workspace reads in Neighborhood polygons from KML and reprojects them to UTM83-10 to match VotingPlaces points (read from GML). The Clipper then clips VotingPlaces by the Neighborhoods boundaries and writes out a separate layer of voting places for each neighborhood. The neighborhood boundaries are also written as a layer.</p>
 <p>In order for this workspace to run properly on FME Server, the Server machine needs access to VotingPlaces and Neighborhoods. In this example, these datasets are included in the workspace template. However, if the workspace was published as-is to Server, these datasets would not be available and the job would fail. In the remainder of the exercise, we'll go over how to upload the data when you publish the workspace.</p>
@@ -47,13 +47,13 @@
   <span>3) Publish to Server</span>
 </h2>
 <p>Publish the workspace to FME Server.</p>
-<p>If it's saved, choose the previously created FME Server connection. Or, select Add Web Connection again from the dropdown menu to reconnect with the provided credentials:</p>
+<p>If it's saved, choose the previously created FME Server connection. Or, select Add Web Connection again from the dropdown menu to reconnect. If you are taking a Safe Software course, you can use these credentials:</p>
 <ul>
   <li><strong>FME Server URL:</strong> <a href="http://localhost/" rel="noreferrer noopener" target="_blank">http://localhost</a></li>
   <li><strong>Username:</strong> admin</li>
   <li><strong>Password:</strong> FMElearnings</li>
 </ul>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.214.Ex1.ServerConnection.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.214.Ex1.ServerConnection.png" alt="FME Server Connection dialog filled out" class="image image-block image-center" /></a></p>
+<p><img src="images/a-7-ee-12-b-1-f-39-d-4-bbc-859-a-7-cb-8-b-0458-f-21.png" width="313" height="389" class="image image-block image-center" alt="Server Connection configuration" /><br /></p>
 <p>Create a repository by clicking the New... button, enter the name "Training". Enter a name for the workspace if it doesn't already have one.</p>
 <p>You could check "Upload data files" to upload all the data files. But we want to make sure the correct data is being uploaded, so click the Select Files button:</p>
 <p><img src="images/1626126545310.png" class="image image-block image-center" alt="Select files button to choose which files to upload" /></p>
@@ -75,17 +75,31 @@
 </div>
 <p>In the final dialog of the publishing wizard, choose Job Submitter as the service to register the workspace against, then click Publish.</p>
 <p><img src="images/1626126925153.png" class="image image-block image-center" alt="Selecting the Job Submitter service" /></p>
-<h2 id="3-examine-files">
-  <span>3) Examine Files</span>
+<h2 id="4-examine-files">
+  <span>4) Examine Files</span>
 </h2>
 <p>If you have access to the FME Server computer itself, open a file browser and browse to the location that repository data is stored. Here it is C:\ProgramData\Safe Software\FME Server\repositories\Training:</p>
-<p><img src="images/1626131841269.png" class="image image-block image-center" alt="Finding the repository on a Windows FME Server installation" /></p>
+<p><img src="images/85-ee-45-d-4-32-ed-43-ff-b-624-d-0-a-77016-de-10.png" width="521" height="99" class="image image-block image-center" alt="Folder" /><br /></p>
 <p>You'll see that each workspace is saved to a separate folder. If you inspect the contents of a folder, you'll see the uploaded datasets within it.</p>
 <p>This is how a workspace has access to files published with it. It can also, with some manual effort, access files stored with another workspace in the same repository, but this is not recommended.</p>
-<h2 id="4-run-workspace">
-  <span>4) Run Workspace</span>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Files and folders in the FME Server folder may be hidden when using Windows. Make sure you turn on hidden files and folders if you wish to view them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="5-run-workspace">
+  <span>5) Run Workspace</span>
 </h2>
-<p>Log in to FME Server (2021.1 or later) and then locate and run the workspace. In the Run dialog notice that the parameters for the source data paths include an FME environment variable, <code>$(FME_MF_DIR)</code>:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.210.Ex1.RepositoryFileSelection.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.210.Ex1.RepositoryFileSelection.png" alt="The $(FME_MF_DIR) user parameter in use on the Run Workspace page" class="image image-block image-center" /></a></p>
+<p>Log in to FME Server (2022.0 or later) and then locate and run the workspace. In the Run dialog notice that the parameters for the source data paths include an FME environment variable, <code>$(FME_MF_DIR)</code>:</p>
+<p><img src="images/9128-c-6-e-1-119-f-4-a-06-85-f-7-ff-27-a-7806026.png" width="624" height="332" class="image image-block image-center" alt="Selecting source files" /><br /></p>
 <p>This variable tells FME to look in the same folder as the workspace for the source data files. As you can see, it isn't particularly user-friendly to handle data in this way, even though the workspace will run just fine.</p>
 <p>Click Run and the workspace should successfully find the data and run to completion.</p>
