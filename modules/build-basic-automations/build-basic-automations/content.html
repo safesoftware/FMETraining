@@ -8,13 +8,15 @@
   <li>Understand how to find and add nodes into an Automation.</li>
 </ul>
 <h2 id="how-to-build-an-automation">
-  <span>How To Build an Automation?</span>
+  <span>How to Build an Automation?</span>
 </h2>
 <p>Automations are built using a drag-and-drop interface similar to FME Workbench. Your Automations can consist of the following components:</p>
 <p><img src="images/1644000461700.png" class="image image-block" alt="Manual Trigger icon" /><strong>Manual Trigger.</strong> Allows the automation to be run on demand rather than in response to a schedule or event. Extremely useful for testing as it allows sample JSON messages to be passed downstream.</p>
 <p><img src="images/1644000475072.png" class="image image-block" alt="Trigger icon" /><br /><strong>Triggers. </strong>A Trigger listens for and receives messages from an external client or from within FME Server. Every automation begins with a Trigger.</p>
 <p><img src="images/1644000486750.png" class="image image-block" alt="Action icon" /><br /><strong>Actions.</strong> Process messages from a trigger with an FME workspace or other tool hosted on the Server.</p>
-<p><img src="images/1644000496075.png" class="image image-block" alt="External action icon" /><br /><strong>External Actions. </strong>Sends a message to an external client or another process in FME Server. What happens afterward is no longer part of this Automation.</p>
+<p><img src="images/1644000496075.png" class="image image-block" alt="External action icon" /><strong>Split-Merge Block</strong>. Combines messages from multiple workspace actions. The message includes content from workspaces that run a single job, or multiple jobs, depending on the input message and workspace behavior.</p>
+<p><img src="images/1654816502809.png" class="image image-block" /></p>
+<p><strong>External Actions. </strong>Sends a message to an external client or another process in FME Server. What happens afterward is no longer part of this Automation.</p>
 <p><img src="images/1644000505617.png" class="image image-block" alt="Annotation icon" /><br /><strong>Annotations.</strong> Add annotations to the automation canvas just like FME Workbench which can be stand-alone or attached to components.</p>
 <p><img src="images/1644000514332.png" class="image image-block" alt="Bookmark icon" /><br /><strong>Bookmarks. </strong>Organizes your workflow by grouping and separating components.</p>
 <div>
@@ -38,30 +40,30 @@
   <span>Clients</span>
 </h2>
 <p>A client is a user or system that sends or receives a message to/from FME Server. The client may be a physical person or may just be a component in a computer system. Either way, the majority of the time, a client is not a core part of FME Server, rather someone or something that interacts with it. There are two trigger protocol exceptions to this (Schedules and System Events) whereby FME Server is also the client sending the message.</p>
-<p><img src="images/1629503484971.png" class="image image-block image-center" alt="Diagram of sending and receiving applications as clients" /></p>
+<p><img src="images/1654876839740.png" class="image image-block image-center" /></p>
 <p>For example, a database update might cause a trigger to send a notification to FME Server, in which case the database system is the client. However, a client could also be a person who, for example, triggers a notification by sending an email to FME Server.</p>
-<p>Likewise, FME Server can send a notification for another client system to receive. Alternatively, this client can also be a real person, who might receive a notification in the form of an email.</p>
+<p>Likewise, FME Server can send a notification for another client system. Alternatively, this client can also be a real person, who might receive a notification in the form of an email.</p>
 <h2 id="trigger">
   <span>Trigger</span>
 </h2>
 <p>A trigger is an FME Server component that receives incoming notifications from a client.</p>
-<p><img src="images/1644000662332.png" class="image image-block image-center" alt="Triggers in context diagram" /></p>
-<p>To set up a trigger in FME Server, a workspace author (or administrator) must build a new Automation. You can create an Automation ing the FME Server Web Interface on the Automations &gt; Build Automation page:</p>
-<p><img src="images/1644000787720.png" class="image image-block image-center" alt="Example Trigger in FME Automation" /></p>
+<p><img src="images/1654877270019.png" class="image image-block image-center" alt="Trigger diagram" /></p>
+<p>To set up a trigger in FME Server, a workspace author (or administrator) must build a new Automation. You can create an Automation in the FME Server Web Interface on the Automations &gt; Build Automation page:</p>
+<p><img src="images/1654878519371-2.png" alt="Automations canvas" class="image image-block image-center" /></p>
 <h2 id="action">
   <span>Action</span>
 </h2>
 <p>An action is an FME Server component that sends outgoing notifications to a client.</p>
-<p><img src="images/1644000746745.png" class="image image-block image-center" alt="Actions in diagram" /></p>
+<p><img src="images/1654877358077.png" class="image image-block image-center" alt="Actions diagram" /></p>
 <p>To send a notification in FME Server, a workspace author (or administrator) must first create an Automation that contains a trigger, the output of this node is then connected to the action - just like how you connect transformers in FME Workbench.</p>
-<p><img src="images/1644000817249.png" class="image image-block image-center" alt="Example actions in Automation" /></p>
-<p>Comparable to the FME Workbench canvas, Automations are constructed in a user-friendly drag-and-drop interface. Triggers and actions are displayed on the canvas as nodes identifiable by their different color. Input and output ports are used to create connections that will pass messages from the trigger to the associated action. The user must configure a series of parameters for the Automation to succeed dependent on the protocol.</p>
+<p><img src="images/1654881641262.png" class="image image-block image-center" alt="Adding an External Action" /></p>
+<p>Comparable to the FME Workbench canvas, Automations are constructed in a user-friendly drag-and-drop interface. Triggers and actions are displayed on the canvas as nodes identifiable by their different color. Input and output ports are used to create connections that will pass messages from the trigger to the associated action. The user must configure a series of parameters for the Automation to succeed depending on the protocol.</p>
 <h2 id="protocols">
   <span>Protocols</span>
 </h2>
 <p>A protocol is a system of data exchange between FME Server and a client.</p>
 <p>We know that FME sends and receives messages. Protocols are the method by which these messages are sent and received. Each Trigger and Action is defined using a particular communication protocol.</p>
-<p>To trigger an incoming message by email – for example – you would create an Automation using an Email Trigger. To send a notification to a Java Message Service, you would create an Automation that contains a JMS message Action.</p>
+<p>To trigger an incoming message by email – for example – you would create an Automation using an Email - SMTP Trigger. To send a notification to a Java Message Service, you would create an Automation that contains a JMS Message Action.</p>
 <p>There are many different protocols available in FME Server; some of them are only for use as a Trigger, others are only available as Actions, and some of them can be used with both types.</p>
 <p>This table lists the different Trigger and Action protocols and the following pages go into greater detail on some of the most commonly used types.</p>
 <table class="featureTable sort_table">
@@ -214,12 +216,11 @@
     </tr>
   </tbody>
 </table>
-<hr />
 <p>Protocols are pre-defined components in the FME Server architecture and do not need to be defined in the web interface.</p>
 <p>However, a number of fields are made available to configure when an Automation is created.</p>
-<p>For example, here are the parameters for a Directory modified Trigger:</p>
-<p><img src="images/1644000870507.png" class="image image-block image-center" alt="Setting Trigger parameters" /></p>
-<p>These parameters must be set when the Automation is created as they are needed in order for FME to be able to watch and receive notifications about this Directory. Without configuring these parameters the Automation will have no behave as anticipated when enabled.</p>
+<p>For example, here are the parameters for a Resource or Network Directory (updated) Trigger:</p>
+<p><img src="images/25-e-6-d-68-f-7-db-3-4-c-82-9265-731-a-7-ff-3-ee-3-e.PNG" width="415" height="620" class="image image-block image-center" alt="Resource or Network Directory Details pane" /><br /></p>
+<p>You must set these parameters set when the Automation is created as they are needed for FME to watch and receive notifications about this Directory. If you don't configure these parameters, the Automation will not behave as anticipated when you enable it.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -234,3 +235,4 @@
     </div>
   </div>
 </div>
+<p><img src="images/1654878519371-2.png" alt="Automations canvas" class="image image-block image-center" /></p>
