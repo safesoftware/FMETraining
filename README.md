@@ -53,13 +53,13 @@ This list of modules is presented with their FME version. It is also roughly in 
 | Build Advanced Workflows             | Improve Data Quality by Handling Null and Missing Values            | 2021.1      |
 | Build Advanced Workflows             | Build a Shared Library of Custom Transformers                       | 2021.1      |
 | Build Advanced Workflows             | Design Modular and Maintainable Workspaces with Custom Transformers | 2021.1      |
-| Publish Workflows to the Web         | What is FME Server?                                                 | 2021.1      |
-| Publish Workflows to the Web         | Publish Workflows to the Web                                        | 2021.1      |
-| Create Data Integration Apps         | Build Basic Self-Serve Workflows                                    | 2021.1      |
+| Publish Workflows to the Web         | What is FME Server?                                                 | 2022.0      |
+| Publish Workflows to the Web         | Publish Workflows to the Web                                        | 2022.0      |
+| Create Data Integration Apps         | Build Basic Self-Serve Workflows                                    | 2022.0      |
+| Create Data Integration Apps         | Manage FME Server Data and Connections                              | 2022.0      |
 | Create Data Integration Apps         | Build Versatile Self-Serve Workflows                                | 2021.1      |
-| Create Data Integration Apps         | Manage FME Server Data and Connections                              | 2021.1      |
-| Create Data Integration Apps         | Create No-Code Web Apps                                             | 2021.1      |
-| Automate Data Integration Tasks      | Build Basic Automations                                             | 2021.1      |
+| Automate Data Integration Tasks      | Build Basic Automations                                             | 2022.0      |
+| Create Data Integration Apps         | Create No-Code Web Apps                                             | 2022.0      |
 | Automate Data Integration Tasks      | Build Versatile Automations                                         | 2021.1      |
 | Automate Data Integration Tasks      | Connect Automations with Job Orchestration                          | 2021.1      |
 | N/A                                  | View Data                                                           | 2020.1      |
