@@ -4,14 +4,14 @@
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
   <li>Create a new Automation.</li>
-  <li>Use Directory Watch to poll an FME Server Resource.</li>
-  <li>Test a Directory Watch trigger by reading a log.</li>
+  <li>Use a Resources or Network Directory (updated) Trigger to poll an FME Server Resource.</li>
+  <li>Test a Resources or Network  Directory (updated) Trigger by reading a log.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Building Footprint Esri Shapefiles</a> (C:\FMEData2021\Data\Engineering\BuildingFootprints)</li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Building Footprint Esri Shapefiles</a> (C:\FMEData2022\Data\Engineering\BuildingFootprints)</li>
 </ul>
 <div class="box message info">
   <div class="inner">
@@ -34,7 +34,7 @@
 <h2 id="1-create-resources-folder">
   <span>1) Create Resources Folder</span>
 </h2>
-<p>Login to the FME Server (2021.1 or later) web interface. </p>
+<p>Login to the FME Server (2022.0 or later) web interface. </p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -59,7 +59,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>This exercise utilizes the FME Server Resource folders, but you could also watch a Directory outside of FME Server Resources by creating a Resource Connection or reference a shared UNC path.<br />There is also native support in FME Server to watch for new resources in Amazon S3 Buckets, Dropbox, and FTP. Using the same concepts described here, you could use one of these protocols instead of Directory Watch.</p>
+            <p>This exercise utilizes the FME Server Resource folders, but you could also watch a Directory outside of FME Server Resources by creating a Resource Connection or reference a shared UNC path.<br />There is also native support in FME Server to watch for new resources in Amazon S3 Buckets, Dropbox, and FTP. Using the same concepts described here, you could use one of these protocols instead of the Resource or Network Directory Watch.</p>
           </div>
         </div>
       </div>
@@ -71,25 +71,25 @@
 </h2>
 <p>Now to create the Automation that will watch the BuildingUpdates directory for incoming files. Navigate to Automations &gt; Build Automation on the side menu bar. In the Getting Started dialog that appears when you go to the Automations page for the first time, click on the Build tab, and click Create New to start a new Automation.</p>
 <p>By default, Automations starts in guided mode. This means that there is already a Trigger node on the canvas but it will still need to be configured.</p>
-<p>Start by double-clicking the Trigger and a parameter box will appear on the right-hand side of the canvas. Select Directory modified from the drop-down list as the Trigger for this Automation.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.401.Ex1.NewTriggerDialog.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.401.Ex1.NewTriggerDialog.png" alt="Select a Trigger Event" class="image image-block image-center" /></a></p>
+<p>Start by double-clicking the Trigger and a parameter box will appear on the right-hand side of the canvas. Select Resource or Network Directory (updated) from the drop-down list as the Trigger for this Automation.</p>
+<p><img src="images/1657135173343.png" class="image image-block image-center" alt="Selecting a Resource or Network Directory (updated) Trigger Event" /></p>
 <h2 id="3-define-trigger-parameters">
   <span>3) Define Trigger Parameters</span>
 </h2>
 <p>After selecting a Trigger type a list of configurable parameters appears in the dialog. Click the ellipsis button to browse the FME Server Resources and set the Directory to Watch parameter. Select the newly created BuildingUpdates folder under the Data subfolder:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.402.Ex1.DirectoryToWatch1.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.402.Ex1.DirectoryToWatch1.png" alt="Select folder for Directory to Watch" class="image image-block image-center" /></a></p>
+<p><img src="images/1657135310164.png" class="image image-block image-center" alt="Selecting a Directory to Watch" /></p>
 <p>Leave the Watch Subdirectories and Watch Folders parameters set to No, since we are only interested in monitoring for files in the BuildingUpdates folder directly.</p>
 <p>Then for the Events to Watch for parameter remove the MODIFY and DELETE actions. Since we are looking to add to the corporate database, in this example we are only interested in monitoring for new files arriving, not old ones being changed or removed:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.403.Ex1.DirectoryWatchFilter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.403.Ex1.DirectoryWatchFilter.png" alt="Watch for Create events" class="image image-block image-center" /></a></p>
-<p>Lastly, change the Poll Interval to 30 Seconds, and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas the Trigger node will update to show it is a Directory Watch.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.404.Ex1.CompleteDirectoryWatch.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.404.Ex1.CompleteDirectoryWatch.png" alt="Change Poll Interval" class="image image-block image-center" /></a></p>
+<p><img src="images/1657135345893.png" class="image image-block image-center" alt="Choosing to watch for CREATE events only" /></p>
+<p>Lastly, change the Poll Interval to 30 Seconds, and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas, the Trigger node will update to show it is a Resource or Network Directory (updated) Trigger.</p>
+<p><img src="images/1657135406916.png" class="image image-block image-center" alt="Canvas updates with new Trigger name" /></p>
 <p>Save the Automation by selecting Menu &gt; Save As and name the Automation "Incoming Building Footprints".</p>
 <h2 id="4-log-message">
   <span>4) Log Message</span>
 </h2>
-<p>Before we start the Automation, we need to add an Action so the Trigger protocol can parse the notifications onwards. Before processing the data we first want to check the Directory Watch trigger is working as expected. To do this we can send the incoming messages to a log file located on FME Server.</p>
-<p>Select the Next Action node and set the Action to Log a message.</p>
-<p>Click on the drop-down arrow for the Message parameter and select Event &gt; Event as JSON because in this instance we want to record the entire incoming message from the Directory Watch protocol.</p>
+<p>Before we start the Automation, we need to add an Action so the Trigger protocol can parse the notifications onwards. Before processing the data we first want to check the Resource or Network Directory (updated) Trigger is working as expected. To do this we can send the incoming messages to a log file located on FME Server.</p>
+<p>Select the Next Action node from the Success Output port and set the Action to Log a message.</p>
+<p>Click on the drop-down arrow for the Message parameter and select Event &gt; Event as JSON because in this instance we want to record the entire incoming message from the Resource or Network Directory (updated) protocol.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -105,13 +105,13 @@
   </div>
 </div>
 <p>Click <strong>Apply</strong> to save this Log configuration.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.406.Ex1.CompleteLogMessage.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.406.Ex1.CompleteLogMessage.png" alt="Save Log configuration" class="image image-block image-center" /></a></p>
+<p><img src="images/1657135509411.png" class="image image-block image-center" alt="Added a Log Action" /></p>
 <h2 id="5-start-automation">
   <span>5) Start Automation</span>
 </h2>
 <p>In order for FME Server to start watching the directory for incoming files, the Automation must be enabled. Select the Start Automation button in the top right corner.</p>
 <p>The button will turn red and an orange warning ribbon will appear across the canvas indicating that your Automation is currently running. This means FME Server is now checking that directory every 30 seconds for updates.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.407.Ex1.StartAutomation.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.407.Ex1.StartAutomation.png" alt="Start automation" class="image image-block image-center" /></a></p>
+<p><img src="images/1657135590570.png" class="image image-block image-center" alt="Automation is running" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -129,7 +129,7 @@
 <h2 id="6-test-automation">
   <span>6) Test Automation</span>
 </h2>
-<p>Now let's test the Automation. <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Download the source Shapefile datasets here</a>. </p>
+<p>Now let's test the Automation. <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Engineering/BuildingFootprints.zip" rel="noreferrer noopener" target="_blank">Download the source Shapefile datasets here</a>.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -137,7 +137,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData2021\Data\Engineering\BuildingFootprints</code>.</p>
+            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData2022\Data\Engineering\BuildingFootprints</code>.</p>
           </div>
         </div>
       </div>
@@ -146,10 +146,10 @@
 </div>
 <p>Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.</p>
 <p>You can use the file system (by copying the files to C:\ProgramData\Safe Software\FME Server\resources\data\BuildingUpdates on the Server machine) or use the FME Server web interface (Resources &gt; Data &gt; BuildingUpdates &gt; Upload &gt; Files).</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.408.Ex1.DirectoryWatchDataInFolder.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.408.Ex1.DirectoryWatchDataInFolder.png" alt="Locate the source Shapefile datasets" class="image image-block image-center" /></a></p>
+<p><img src="images/1657135755399.png" class="image image-block image-center" alt="Resources with uploaded updated files" /></p>
 <p>Check for updates in the log by selecting Menu &gt; View Log File from the Incoming Building Footprints Automation.</p>
 <p>If the log is not yet present, select the refresh button until it appears. You will see four CREATE messages from the Logger showing the individual file paths.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.410.Ex1.ViewAutomationsLog.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.410.Ex1.ViewAutomationsLog.png" alt="Automation Log" class="image image-block image-center" /></a></p>
+<p><img src="images/1657135784250.png" class="image image-block image-center" alt="Viewing Automation Log to confirm the Automation was triggered" /></p>
 <p>When you view this log file you might also notice reports of the Automation sending Jobs to FME Engine. This is because FME Server is actually performing the Log action using a simple FME Workspace.</p>
 <div class="box message info">
   <div class="inner">
@@ -165,4 +165,4 @@
     </div>
   </div>
 </div>
-<p>Now we know how the Directory Watch Trigger works! We will see in subsequent exercises how to process this information.</p>
+<p>Now we know how the Resource or Network Directory Watch Trigger works! We will see in subsequent exercises how to process this information.</p>
