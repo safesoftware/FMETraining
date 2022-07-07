@@ -9,9 +9,9 @@
 <h2 id="resources">
   <span>Resources</span>
 </h2>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">Starting FME Server project</a> (C:\FMEData2021\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject)</p>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-merge-action.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using the Merge Action</a> (C:\FMEData2021\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-merge-action.fsproject)</p>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using a Split-Merge Block</a> (C:\FMEData2021\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">Starting FME Server project</a> (C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-merge-action.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using the Merge Action</a> (C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-merge-action.fsproject)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using a Split-Merge Block</a> (C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject)</p>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
@@ -19,12 +19,12 @@
 <p>With Automations, many workspaces may be chained together to run in series (and/or parallel) after a triggering event. Merge Actions are available that will cause an Automation to wait until all jobs upstream of the Merge point have been completed, as long as they were triggered by the same event. New to FME Server 2021.1, Split-Merge Blocks make an Automation wait until all jobs contained within a block are complete.  When complete, a single, unified message (per input) is returned from the Split-Merge Block. We’ll take a look at how this works later. Provided more than one engine is available to FME Server, multiple jobs can be processed at once, increasing the speed of the Automation. These components are particularly useful when an output requires many data processing steps, but not all of the jobs need to run in series.</p>
 <p>In this unit, there are five workspaces; we will coordinate their running to produce a (fictional) final data product. The sample workspaces contain Decelerator transformers in order to demonstrate how an Automation would handle different job timing in a production workflow.</p>
 <p> </p>
-<p><img alt="Parallel versus chained workflows" src="images/5231132-f-d-7-ce-4-bd-8-8039-ff-05361-e-6383.png" width="624" height="261" class="image image-block image-center" /></p>
+<p><img src="images/1657153496908.png" class="image image-block image-center" /></p>
 <p> </p>
 <h2 id="1-download-and-import-fme-server-project">
   <span>1) Download and Import FME Server Project</span>
 </h2>
-<p>Download <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">this starting FME Server project</a>. </p>
+<p>Download <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">this starting FME Server project</a>.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -32,15 +32,15 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData2021\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject</code>.</p>
+            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject</code>.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<p>Open FME Server (2021.1 or later) and import it by clicking Projects &gt; Projects, then Import.</p>
-<p><img alt="Importing an FME Server project" src="images/2096277-f-e-0-eb-473-a-b-3-fc-3-b-707-e-752030.png" width="624" height="329" class="image image-block image-center" /></p>
+<p>Open FME Server (2022.0 or later) and import it by clicking Projects &gt; Projects, then Import.</p>
+<p><img src="images/1657153551243.png" class="image image-block image-center" alt="Importing a Project" /></p>
 <p>Import the downloaded project to add five workspaces to FME Server.</p>
 <h2 id="2-create-a-new-automation">
   <span>2) Create a New Automation</span>
@@ -63,55 +63,53 @@
     </div>
   </div>
 </div>
-<p>On the Automations canvas, double-click the Trigger node. In this exercise, configure a Schedule Initiated Trigger on a daily interval. Once the Automation is running, we’ll be able to test it manually whenever we want. Alternatively, you can add a Manual Trigger to the canvas.</p>
-<p><img alt="Setting up a Schedule Trigger" src="images/23-c-49804-e-89-a-4754-ae-28-1-d-24864132-b-6.png" width="624" height="433" class="image image-block image-center" /></p>
+<p>On the Automations canvas, double-click the Trigger node. In this exercise, configure an FME Server Schedule (initiated) Trigger on a daily interval. Once the Automation is running, we’ll be able to test it manually whenever we want. Alternatively, you can add a Manual Trigger to the canvas.</p>
+<p><img src="images/1657153591733.png" class="image image-block image-center" alt="Configuring a Schedule trigger" /></p>
 <p> </p>
 <h2 id="4-add-an-action">
   <span>4) Add an Action</span>
 </h2>
 <p>Configure the next Action as a Run Workspace. Look in the repository created when importing the server project (Automations Exercises), and add SpeedyDataUpdate.fmw. There are no published parameters to configure for this workspace.</p>
-<p><img alt="Setting Run Workspace Action #1" src="images/76-fb-11-c-7-386-c-4909-b-9-c-9-5-d-721-e-33-c-2-e-2.png" width="624" height="575" class="image image-block image-center" /></p>
+<p><img src="images/1657153623094.png" class="image image-block image-center" alt="Configuring the run a workspace action" /></p>
 <p> </p>
 <h2 id="5-add-a-parallel-action">
   <span>5) Add a Parallel Action</span>
 </h2>
-<p>If the node tray is not already expanded, click the <img alt="1557334018786.png" src="images/8-a-28-ac-08-d-5-ef-4-a-85-99-dc-e-0-bd-1-f-091-d-41.png" width="32" height="32" class="image" />symbol and drag another <img alt="1557334041066.png" src="images/23-bac-451-830-a-4-a-85-9-c-62-8-de-20-a-5-bf-465.png" width="32" height="32" class="image" />Action onto the canvas downstream of the Trigger. Click the output port of the Trigger and drag a connection to the input port of the new Action. Configure this new Action as a Run Workspace. This time, add LongerDataUpdate.fmw. There are no published parameters to configure for this workspace.</p>
-<p><img alt="Step5.pngSetting Run Workspace Action #2" src="images/0-a-60-fd-2-d-5-df-1-483-b-ad-66-087-af-6838-c-0-f.png" width="624" height="576" class="image image-block image-center" /></p>
-<p> </p>
+<p>If the node tray is not already expanded, click the <img alt="1557334018786.png" src="images/8-a-28-ac-08-d-5-ef-4-a-85-99-dc-e-0-bd-1-f-091-d-41.png" width="32" height="32" class="image" />symbol and drag another <img alt="1557334041066.png" src="images/23-bac-451-830-a-4-a-85-9-c-62-8-de-20-a-5-bf-465.png" width="32" height="32" class="image" />Action onto the canvas downstream of the Trigger. Click the output port of the Trigger and drag a connection to the input port of the new Action. Configure this new Action as a Run Workspace. This time, add LongerDataUpdate.fmw. There are no published parameters to configure for this workspace.</p>
+<p> <img src="images/1657153736111.png" class="image image-block image-center" alt="Configuring the parallel run a workspace action" /></p>
 <h2 id="6-chain-a-third-action">
   <span>6) Chain a Third Action</span>
 </h2>
-<p>Drag out a third Action node and configure it as a Run Workspace downstream of the success port of LongerDataUpdate.fmw. Run PostProcessing_LDU.fmw here.</p>
-<p><img alt="Setting Run Workspace Action #3" src="images/948691-a-7-3627-49-cc-a-40-c-085-b-9-fb-43-e-7-b.png" width="624" height="419" class="image image-block image-center" /></p>
-<p> </p>
+<p>Drag out a third Action node and configure it as a Run Workspace downstream of the success port of LongerDataUpdate.fmw. Run PostProcessing_LDU.fmw here.</p>
+<p><img src="images/1657153766235.png" class="image image-block image-center" alt="Adding a third action" /></p>
 <h2 id="7-add-a-merge-action">
   <span>7) Add a Merge Action</span>
 </h2>
 <p>Downstream of all three Run Workspace Actions, place a Merge Action. Connect it to the success ports of both branches of your Automation.</p>
-<p><img alt="Setting Merge Action" src="images/dab-8132-a-2598-41-c-6-89-d-5-f-817-b-8540485.png" width="624" height="308" class="image image-block image-center" /></p>
+<p><img src="images/1657153792283.png" class="image image-block image-center" alt="Adding a Merge action" /></p>
 <p> </p>
 <p>An alternate workflow incorporates the new Split-Merge Block <img alt="SMB_Icon.png" src="images/15-abb-52-b-655-c-4251-b-1-fc-ea-533-e-73-c-817.png" width="32" height="32" class="image" />. The Split-Merge Block is designed for running collections of workspaces and waiting for all jobs to complete before carrying on with downstream actions.</p>
-<p><img alt="Using a Split-Merge Block" src="images/4-f-80-e-69-e-a-478-49-ae-98-a-4-5-c-84-b-872-ab-5-b.png" width="596" height="388" class="image image-block image-center" /></p>
+<p><img src="images/1657153815404.png" class="image image-block image-center" alt="Adding a Split-Merge Block" /></p>
 <h2 id="8-should-i-use-the-merge-action-or-a-split-merge-block">
   <span>8) Should I use the Merge Action or a Split-Merge Block?</span>
 </h2>
-<p>What’s the difference between the Merge Action and Split-Merge Block? The main advantages of the Split-Merge Block are that it can merge Automation Writer outputs and wait for all triggered jobs within the block to finish before continuing with downstream actions. Right now, Split-Merge Blocks are limited to just workspace actions. In contrast, the Merge Action cannot be connected to multiple triggers or workflows that use Automation Writer messages.</p>
+<p>What’s the difference between the Merge Action and Split-Merge Block? The main advantages of the Split-Merge Block are that it can merge Automations Writer outputs and wait for all triggered jobs within the block to finish before continuing with downstream actions. Right now, Split-Merge Blocks are limited to just workspace actions. In contrast, the Merge Action cannot be connected to multiple triggers or workflows that use Automations Writer messages.</p>
 <p>When should you use the Split-Merge Block?  Consider the following scenario...</p>
 <p>You would like to process statistics for each city block, in each county, of a state. You only want to process one summary report per county, but there are 60 counties containing 15 blocks, each representing a single feature. If a workspace runs for every feature, this will result in more reports being created than required. Specifically, the county-processing workspace (ProcessCounty.fmw) will run 60 times and the block-processing workspace (ProcessBlock.fmw) will run 900 times! </p>
-<p>With a Split-Merge Block, all 900 block-level jobs will run before outputting a merged message for each county. This reduces the output messages to 60 (one for each county), and downstream workspaces can process the reports according to this message data. This workflow is impossible with the Merge Action because it uses Automation Writers.</p>
-<p><img alt="Example with one Split-Merge Block" src="images/8180-d-08-a-4-f-6-c-4822-8786-e-4-ca-97-f-69-c-34.png" width="624" height="212" class="image image-block image-center" /></p>
+<p>With a Split-Merge Block, all 900 block-level jobs will run before outputting a merged message for each county. This reduces the output messages to 60 (one for each county), and downstream workspaces can process the reports according to this message data. This workflow is impossible with the Merge Action because it uses Automations Writers.</p>
+<p><img src="images/1657153881538.png" class="image image-block image-center" alt="Single Split-Merge block" /></p>
 <p>Nested blocks are also supported for further message merging. If we reimagine the previous example to receive an email notification when the Automation completes, we can add another Split-Merge Block that surrounds all the workspaces. The output from the block would be 1 message since the Trigger initiates the workflow with 1 message, and this single message can be used to send an email.</p>
-<p><img alt="Example with two Split-Merge Blocks" src="images/6-eadd-422-cb-6-d-4-f-94-b-9-bf-2-c-5-aca-643574.png" width="624" height="235" class="image image-block image-center" /></p>
-<p>The Split-Merge Block opens new doors for handling Automation Writer outputs, allows control over the granularity of message merging for downstream processes, and can drastically improve the efficiency of your workflows when combined with Queue Control. To see this scenario in action, download and import the FME Server project named <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject</a>.</p>
+<p><img src="images/1657153911130.png" class="image image-block image-center" alt="Nested Split-Merge blocks" /></p>
+<p>The Split-Merge Block opens new doors for handling Automations Writer outputs, allows control over the granularity of message merging for downstream processes, and can drastically improve the efficiency of your workflows when combined with Queue Control. To see this scenario in action, download and import the FME Server project named <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject</a>.</p>
 <h2 id="9-add-two-final-run-workspace-actions">
   <span>9) Add Two Final Run Workspace Actions</span>
 </h2>
 <p>Downstream of the Merge, configure a Run Workspace Action to run Validation.fmw. Now that all the planned updates to the database are prepared, it is time for a validation routine before the changes are reconciled and posted. Downstream of the success port of the Action that runs the data validation workspace, configure a Run Workspace to run MakeDataProduct.fmw. Imagine that you’re now set up to generate a nightly report that will be ready in the morning with the previous day’s work incorporated!</p>
-<p><img alt="Adding final Run Workspace Actions" src="images/6-c-8-a-2-dc-4-6-a-30-43-c-2-9-fc-0-9-d-8-e-073-fc-0-d-5.png" width="624" height="212" class="image image-block image-center" /></p>
+<p><img src="images/1657153936085.png" class="image image-block image-center" alt="Adding final run workspace actions" /></p>
 <h2 id="10-add-an-external-action">
   <span>10) Add an External Action</span>
 </h2>
-<p>Downstream of the failure port of the Validation.fmw Action, configure a Send an Email External Action (or another external notification of your choice) to alert you if the night’s data upload has failed validation.</p>
+<p>Downstream of the failure port of the Validation.fmw Action, configure a Send an Email (send) External Action (or another external notification of your choice) to alert you if the night’s data upload has failed validation.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -160,7 +158,7 @@
   <span>11) Save Your Work and Start the Automation</span>
 </h2>
 <p>To preserve your progress, click Menu above the Automations canvas, then Save As. Choose a name and add some descriptive tags (optional), then click OK. Finally, click Start Automation in the upper right.</p>
-<p><img alt="Start Automation button" src="images/93-e-7-fb-91-cfba-418-d-bfd-4-de-96-e-1-f-87-f-04.png" width="161" height="42" class="image image-block image-center" /></p>
+<p><img src="images/1657153967771.png" class="image image-block image-center" alt="Start Automation button" /></p>
 <p> </p>
 <h2 id="12-view-logs-and-verify-order-of-events">
   <span>12) View Logs and Verify Order of Events</span>
@@ -171,7 +169,7 @@
 <p><img alt="Viewing source of job" src="images/14-cff-998-9-ae-3-4291-9025-d-78-da-9-a-2-cfe-5.png" width="624" height="179" class="image image-block image-center" /></p>
 <p>The job logs will tell you what happened while a particular workspace was run, but for the big picture of what the Automation did when, return to Automations &gt; Manage, tick the checkbox for your parallel workflows Automation, and select View Log File from the Actions menu.</p>
 <p>For future troubleshooting, you can search or filter the Automation log with the tools above the log entries. For now, click the clock button to show timestamps for each log entry. After the single-Action branch finishes its job, you should see a log entry, “(Automations) Received 1 of 2 notifications for merge action.” From the timestamps, you’ll see that the second chained job is not sent to an Engine to be processed until after the upstream job is complete and that once the third job completes, there is another entry, “(Automations) Received 2 of 2 notifications for merge action.”, after which any Actions after the Merge are processed.</p>
-<p><img alt="Confirming job run order in Automations log" src="images/4-a-20-abfe-5750-4453-911-e-1-cf-099-aa-33-bd.png" width="624" height="372" class="image image-block image-center" /></p>
+<p><img src="images/1657153993768.png" class="image image-block image-center" alt="Log showing successful use of merges" /></p>
 <p> </p>
 <h2 id="conclusion">
   <span>Conclusion</span>
