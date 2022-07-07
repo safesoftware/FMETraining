@@ -57,11 +57,11 @@ This list of modules is presented with their FME version. It is also roughly in 
 | Publish Workflows to the Web         | Publish Workflows to the Web                                        | 2022.0      |
 | Create Data Integration Apps         | Build Basic Self-Serve Workflows                                    | 2022.0      |
 | Create Data Integration Apps         | Manage FME Server Data and Connections                              | 2022.0      |
-| Create Data Integration Apps         | Build Versatile Self-Serve Workflows                                | 2021.1      |
-| Automate Data Integration Tasks      | Build Basic Automations                                             | 2022.0      |
+| Create Data Integration Apps         | Build Versatile Self-Serve Workflows                                | 2022.0      |
 | Create Data Integration Apps         | Create No-Code Web Apps                                             | 2022.0      |
-| Automate Data Integration Tasks      | Build Versatile Automations                                         | 2021.1      |
-| Automate Data Integration Tasks      | Connect Automations with Job Orchestration                          | 2021.1      |
+| Automate Data Integration Tasks      | Build Basic Automations                                             | 2022.0      |
+| Automate Data Integration Tasks      | Build Versatile Automations                                         | 2022.0      |
+| Automate Data Integration Tasks      | Connect Automations with Job Orchestration                          | 2022.0      |
 | N/A                                  | View Data                                                           | 2020.1      |
 | N/A                                  | Digital Plan Submission                                             | 2020.1      |
 
