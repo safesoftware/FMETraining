@@ -41,20 +41,20 @@
 <p>You can give your readers the option to choose an existing boundary, like a county or a service area, and download the data within that area. There are several ways to accomplish this with FME, but the most effective is to use a WHERE Clause on the reader feature type combined with either a FeatureReader or a Clipper transformer.</p>
 <p><strong>WHERE Clause</strong></p>
 <p>Many reader feature types have the option to apply an <a href="https://www.w3schools.com/sql/sql_where.asp" rel="noreferrer noopener" target="_blank">SQL WHERE clause</a> to the data before reading it into the workspace. For example, this reader feature type has a WHERE clause that means only garbage zones in the blue zone and the north subzone will be read:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.028.ReaderWhereClause.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.028.ReaderWhereClause.png" alt="Viewing a WHERE clause on a reader feature type" class="image image-block image-center" /></a></p>
+<p><img src="images/1658347573846.png" class="image image-block image-center" alt="Viewing a WHERE clause on a reader feature type" /></p>
 <p>You can easily publish this WHERE Clause parameter to give users control over what existing boundary is used as the area of interest.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.029.PublishWhereClause.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.029.PublishWhereClause.png" alt="Creating a published parameter for the WHERE clause" class="image image-block image-center" /></a></p>
+<p><img src="images/1658347617410.png" class="image image-block image-center" alt="Creating a published parameter for the WHERE clause" /></p>
 <p>Even better, you could create specific user parameters that are then used within a WHERE clause that is already written. That way the user doesn't need to know how to write a WHERE clause.</p>
 <p>For example, you might create one Choice user parameter called Zone and one called Subzone and then include them in the WHERE Clause parameter through the WHERE Clause Builder:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.030.WhereClauseWithParameters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.030.WhereClauseWithParameters.png" alt="Combining multiple published parameters in the WHERE clause" class="image image-block image-center" /></a></p>
+<p><img src="images/1658347642110.png" class="image image-block image-center" alt="Combining multiple published parameters in the WHERE clause" /></p>
 <p><strong>FeatureReader</strong></p>
 <p>Once you have set up a WHERE clause to let the user choose which boundaries to use, you then need to ensure they only receive their desired data within those boundaries. You can do this using a FeatureReader.</p>
 <p>The polygon area of interest feature (or features) is routed into the FeatureReader Initiator port.</p>
 <p>Here a single garbage schedule area (blue zone, north subzone) is passed to the FeatureReader for use as a filter. The idea is to return only addresses that fall inside that garbage collection zone. The parameters are set up like this:</p>
-<p><img src="images/1657131954476.png" class="image image-block image-center" /></p>
+<p><img src="images/1657131954476.png" class="image image-block image-center" alt="Configuring FeatureReader" /></p>
 <p>Notice that the FeatureReader is set to read from an address geodatabase. The Spatial Filter parameter tells the transformer to only read features (addresses) inside the incoming polygon feature (garbage collection zone).</p>
 <p>These features are output through a port dynamically added to the FeatureReader:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.032.FeatureReaderOutput.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.032.FeatureReaderOutput.png" alt="Using the FeatureReader to filter the GarbageSchedule reader feature type" class="image image-block image-center" /></a></p>
+<p><img src="images/1658347764080.png" class="image image-block image-center" alt="Using the FeatureReader to filter the GarbageSchedule reader feature type" /></p>
 <p>The feature counts here show that there are 955 addresses inside that garbage collection zone. The user can pick a zone and subzone and just receive the data from that area.</p>
 <h2 id="ad-hoc-boundary">
   <span>Ad Hoc Boundary</span>
@@ -84,7 +84,7 @@
   <li>At this point, the features have quite a few attributes the construction company won't need, so we employ an AttributeKeeper to keep only the necessary attributes.</li>
   <li>Finally, we add an Excel writer feature type to create a spreadsheet that can be used by the construction company to notify affected addresses.</li>
 </ol>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.033.GeometryWorkspace.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.033.GeometryWorkspace.png" alt="Example workspace using the Geometry published parameter" class="image image-block image-center" /></a></p>
+<p><img src="images/1658347784738.png" class="image image-block image-center" alt="Example workspace using the Geometry published parameter" /></p>
 <p>When this workspace is run on FME Server, the user can select their area of interest using an interactive web map:</p>
 <p><img src="images/1657132445398.png" class="image image-block image-center" alt="Select Geometry parameter" /></p>
 <div class="box message info">
