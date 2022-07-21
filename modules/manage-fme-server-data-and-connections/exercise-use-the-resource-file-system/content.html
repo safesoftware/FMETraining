@@ -22,7 +22,7 @@
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>You have already created a workspace to carry out a translation, and published it to FME Server; both with data and using data uploaded temporarily.</p>
+<p>You have already created a workspace to translate data and published it to FME Server, both with data and using data uploaded temporarily.</p>
 <p>However, such data management tools are not particularly suited to a long-term project, so the task here is to upgrade workspaces to use datasets stored in a Resources folder. There we can store source data and write destination data.</p>
 <h2 id="1-open-fme-server-web-interface">
   <span>1) Open FME Server Web Interface</span>
@@ -31,14 +31,14 @@
 <h2 id="2-create-folder">
   <span>2) Create Folder</span>
 </h2>
-<p>In most cases data should be stored under the Data folder, so click on Data in the Resources dialog to open that folder. To avoid mixing datasets, our data should go into its own subfolder. So click on the +New button and create a folder called Election:</p>
+<p>In most cases, data should be stored under the Data folder, so click on Data in the Resources dialog to open that folder. To avoid mixing datasets, our data should go into its own subfolder. So click on the +New button and create a folder called Election:</p>
 <p><img src="images/41-b-6899-a-1-e-3-d-4627-876-a-48-b-2-a-35186-e-0.png" width="624" height="257" class="image image-block image-center" alt="Creating a new folder" /><br /></p>
-<p>Next click on the Election folder and within there create <strong>new</strong> subfolders called Input and Output:</p>
+<p>Next, click on the Election folder, and then create <strong>new</strong> subfolders called Input and Output:</p>
 <p><img src="images/f-2-dcb-465-8358-4637-9-a-69-dfa-2-de-11450-e.png" width="624" height="328" class="image image-block image-center" alt="Input and Output folders created" /><br /></p>
 <h2 id="3-upload-source-datasets">
   <span>3) Upload Source Datasets</span>
 </h2>
-<p>Browse to the Input folder and click the Upload button and then select Files. Download these files (right-click &gt; Save link as...) and then upload the source datasets for the current translation:</p>
+<p>Browse to the Input folder, click the Upload button, and select Files. Download the files below (right-click &gt; Save link as...) and then upload them as the source datasets for the current translation:</p>
 <ul>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Elections/ElectionVoting.gml" rel="noreferrer noopener" target="_blank">ElectionVoting.gml</a></li>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Elections/ElectionVoting.xsd" rel="noreferrer noopener" target="_blank">ElectionVoting.xsd</a></li>
@@ -49,7 +49,7 @@
 <h2 id="4-add-writer">
   <span>4) Add Writer</span>
 </h2>
-<p>Up until now all of our workspaces have had only a NULL (dummy) writer. Now we know about Resources, we can add a proper writer and point the output dataset to the Resources Output folder.</p>
+<p>Until now, our workspaces have only had a NULL (dummy) writer. Now we know about Resources, we can add a proper writer and point the output dataset to the Resources Output folder.</p>
 <p>So, open the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" rel="noreferrer noopener" target="_blank">starting workspace template</a> in FME Workbench (2022.0 or later) and then select Writers &gt; Add Writer on the menu bar and set up a new writer with the following parameters:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
@@ -67,16 +67,16 @@
     </tr>
   </tbody>
 </table>
-<p>The reason we do not add feature types yet is that we can move the existing ones from the NULL writer. So when you click OK the workspace will look no different, but there will be a new writer in the Navigator window:</p>
+<p>We do not add feature types yet because we can move the existing ones from the NULL writer. So when you click OK, the workspace will look no different, but there will be a new writer in the Navigator window:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.217.Ex2.AddedGeodatabaseWriter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.217.Ex2.AddedGeodatabaseWriter.png" alt="New FILEGDB Writer in the Navigator" class="image image-block image-center" /></a></p>
 <h2 id="5-move-feature-types">
   <span>5) Move Feature Types</span>
 </h2>
-<p>Inspect the parameters dialog for each writer feature type in turn. For each type move it from the NULL writer to the FILE GDB writer, like so:</p>
+<p>Inspect the parameters dialog for each writer feature type in turn. For each type, move it from the NULL writer to the FILE GDB writer, like so:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.218.Ex2.MoveAFeatureType.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.218.Ex2.MoveAFeatureType.png" alt="Moving a feature type from the NULL writer to the FILEGDB writer" class="image image-block image-center" /></a></p>
-<p>This will expose a number of extra parameters. The key one to set is Geometry. For the Neighborhoods they should be set to geodb_polygon:</p>
+<p>This will expose several extra parameters. The key one to set is Geometry. Set the Neighborhoods feature type Geometry parameter to geodb_polygon:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.219.Ex2.NeighborFeatureType.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.219.Ex2.NeighborFeatureType.png" alt="Setting the Geometry parameter" class="image image-block image-center" /></a></p>
-<p>For the VotingPlaces feature type, the Geometry parameter should be set to geodb_point.</p>
+<p>Set the VotingPlaces feature type Geometry parameter to geodb_point.</p>
 <p>Now the two feature types belong to the Geodatabase writer, and the NULL writer can be deleted from the Navigator window if you wish.</p>
 <h2 id="6-set-geodatabase-parameter">
   <span>6) Set Geodatabase Parameter</span>
@@ -87,16 +87,15 @@
 <h2 id="7-run-workspace">
   <span>7) Run Workspace</span>
 </h2>
-<p>Test run the workspace in FME Workbench. Inspect the output in Visual Preview. If it is not already selected click Toggle Display Control on the left-hand side of the visual preview page. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).</p>
+<p>Test run the workspace in FME Workbench. Inspect the output in Visual Preview. If it is not already selected, click Toggle Display Control on the left-hand side of the visual preview page. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.221.Ex2.OutputTables.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.221.Ex2.OutputTables.png" alt="Viewing results with multiple feature types" class="image image-block image-center" /></a></p>
 <h2 id="8-publish-and-run-workspace">
   <span>8) Publish and Run Workspace</span>
 </h2>
 <p>Publish the workspace to FME Server (2022.0 or later). Do not upload data unless you have not completed the previous exercises. Register the workspace against the Job Submitter service.</p>
-<p>Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog. Notice how all the dataset parameters are blank. This is because the paths referenced the original file locations through a mapped drive. If the default file path value does not reference a file using a UNC path or Resource Connection, FME Server will strip out that value, since FME Server does not have access to those files:</p>
-<p><img src="images/1626471369219.png" class="image image-block image-center" alt="Published Parameters looking for a dataset path" /></p>
-<p>However, because we already uploaded them to the Resources folders, we can use those files.</p>
-<p>So, for each file, click the browse button, browse to the Input subfolder in Resources, and select/set the file location. Since the Geodatabase does not exist yet, For the Geodatabase output location you'll need to type the file name manually:</p><pre>$(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb</pre>
+<p>Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog.</p>
+<p><img src="images/1658422234261.png" class="image image-block image-center" alt="Published parameters" /></p>
+<p>For each file, click the Browse Resources button, browse to the Input subfolder in Resources, and select/set the file location. Since the Geodatabase does not exist yet, For the Geodatabase output location, you'll need to type the file name manually:</p><pre>$(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb</pre>
 <p><img src="images/1654815122277.png" class="image image-block image-center" alt="Specifying destination folder" /></p>
 <p>Now when the workspace is run, a completed Geodatabase file should appear in the folder Resources\Data\Election\Output:</p>
 <p><img src="images/1654815173123.png" class="image image-block image-center" alt="Written geodatabase appears in Resources folder" /></p>
@@ -104,14 +103,14 @@
   <span>9) Apply FME Server Parameter</span>
 </h2>
 <p>Although the workspace ran correctly and used the data in the resources folder, that's only because we selected that data at runtime. It is not a permanent feature of the workspace.</p>
-<p>It would be much better if the workspace was programmed to look into the resources folders automatically.</p>
+<p>It would be much better if we designed the workspace to look into the resources folders automatically.</p>
 <p>So, return to the workspace in FME Workbench.</p>
-<p>If we do set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window locate the three parameters for source and destination datasets and delete them:</p>
+<p>If we set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window, locate the three parameters for source and destination datasets and delete them:</p>
 <p><img src="images/1626471541836.png" class="image image-block image-center" alt="Deleting the Source Google KML File or URL user parameter" /></p>
 <h2 id="10-set-source-destination-parameters">
   <span>10) Set Source/Destination Parameters</span>
 </h2>
-<p>Now, in turn, locate the source and destination dataset parameters for the two readers and one writer. Double-click each in turn and change them to:</p>
+<p>Now, locate the source and destination dataset parameters for the two readers and one writer. Double-click each and change them to:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
