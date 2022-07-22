@@ -19,7 +19,7 @@
 <p>With Automations, many workspaces may be chained together to run in series (and/or parallel) after a triggering event. Merge Actions are available that will cause an Automation to wait until all jobs upstream of the Merge point have been completed, as long as they were triggered by the same event. New to FME Server 2021.1, Split-Merge Blocks make an Automation wait until all jobs contained within a block are complete.  When complete, a single, unified message (per input) is returned from the Split-Merge Block. We’ll take a look at how this works later. Provided more than one engine is available to FME Server, multiple jobs can be processed at once, increasing the speed of the Automation. These components are particularly useful when an output requires many data processing steps, but not all of the jobs need to run in series.</p>
 <p>In this unit, there are five workspaces; we will coordinate their running to produce a (fictional) final data product. The sample workspaces contain Decelerator transformers in order to demonstrate how an Automation would handle different job timing in a production workflow.</p>
 <p> </p>
-<p><img src="images/1657153496908.png" class="image image-block image-center" /></p>
+<p><img src="images/1657153496908.png" class="image image-block image-center" alt="Parallel versus chained workflows" /></p>
 <p> </p>
 <h2 id="1-download-and-import-fme-server-project">
   <span>1) Download and Import FME Server Project</span>
@@ -75,7 +75,7 @@
 <h2 id="5-add-a-parallel-action">
   <span>5) Add a Parallel Action</span>
 </h2>
-<p>If the node tray is not already expanded, click the <img alt="1557334018786.png" src="images/8-a-28-ac-08-d-5-ef-4-a-85-99-dc-e-0-bd-1-f-091-d-41.png" width="32" height="32" class="image" />symbol and drag another <img alt="1557334041066.png" src="images/23-bac-451-830-a-4-a-85-9-c-62-8-de-20-a-5-bf-465.png" width="32" height="32" class="image" />Action onto the canvas downstream of the Trigger. Click the output port of the Trigger and drag a connection to the input port of the new Action. Configure this new Action as a Run Workspace. This time, add LongerDataUpdate.fmw. There are no published parameters to configure for this workspace.</p>
+<p>If the node tray is not already expanded, click the <img alt="Add plus icon" src="images/8-a-28-ac-08-d-5-ef-4-a-85-99-dc-e-0-bd-1-f-091-d-41.png" width="32" height="32" class="image" />symbol and drag another <img alt="Action icon" src="images/23-bac-451-830-a-4-a-85-9-c-62-8-de-20-a-5-bf-465.png" width="32" height="32" class="image" />Action onto the canvas downstream of the Trigger. Click the output port of the Trigger and drag a connection to the input port of the new Action. Configure this new Action as a Run Workspace. This time, add LongerDataUpdate.fmw. There are no published parameters to configure for this workspace.</p>
 <p> <img src="images/1657153736111.png" class="image image-block image-center" alt="Configuring the parallel run a workspace action" /></p>
 <h2 id="6-chain-a-third-action">
   <span>6) Chain a Third Action</span>
@@ -88,7 +88,7 @@
 <p>Downstream of all three Run Workspace Actions, place a Merge Action. Connect it to the success ports of both branches of your Automation.</p>
 <p><img src="images/1657153792283.png" class="image image-block image-center" alt="Adding a Merge action" /></p>
 <p> </p>
-<p>An alternate workflow incorporates the new Split-Merge Block <img alt="SMB_Icon.png" src="images/15-abb-52-b-655-c-4251-b-1-fc-ea-533-e-73-c-817.png" width="32" height="32" class="image" />. The Split-Merge Block is designed for running collections of workspaces and waiting for all jobs to complete before carrying on with downstream actions.</p>
+<p>An alternate workflow incorporates the new Split-Merge Block <img alt="Split-Merge Block icon" src="images/15-abb-52-b-655-c-4251-b-1-fc-ea-533-e-73-c-817.png" width="32" height="32" class="image" />. The Split-Merge Block is designed for running collections of workspaces and waiting for all jobs to complete before carrying on with downstream actions.</p>
 <p><img src="images/1657153815404.png" class="image image-block image-center" alt="Adding a Split-Merge Block" /></p>
 <h2 id="8-should-i-use-the-merge-action-or-a-split-merge-block">
   <span>8) Should I use the Merge Action or a Split-Merge Block?</span>
