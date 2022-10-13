@@ -1,0 +1,146 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Read a dataset from a URL.</li>
+  <li>Read a dataset using the Select File From Web option.</li>
+  <li>Create and manage web connections.</li>
+  <li>Interact with web data using Connector transformers.</li>
+</ul>
+<h2 id="web-based-datasets">
+  <span>Web-Based Datasets</span>
+</h2>
+<p>There can be no doubt about the trend toward storing data in the cloud, including spatial data. For that reason, FME has comprehensive tools for reading web-based datasets.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Pure web data is usually accessed via APIs and returned as JSON or XML. FME supports reading that kind of data, but in this module, we focus on reading file formats stored on the web.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="simple-url-selection">
+  <span>Simple URL Selection</span>
+</h2>
+<p>The easiest way to read a web-based dataset is to paste the URL into the source Dataset parameter.</p>
+<p><img src="images/1664817121192.png" class="image image-block image-center" alt="Reading from a URL" /></p>
+<p>Here the workspace author is adding a reader to read a MapInfo TAB dataset directly from an open data catalog stored on Amazon S3.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>A folder-based dataset must be compressed to a single zip file for FME to read it from the web like this; the above perfectly illustrates that requirement. Datasets can be read from non-zipped datasets, but only when the dataset consists of a single file (such as an AutoCAD DWG file).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>The URL entered into a source dataset field may refer to any resource on a web-based file storage system. For example, here, a user is reading the same MapInfo TAB dataset directly from a Dropbox link:</p>
+<p><img src="images/1664817174296.png" class="image image-block image-center" alt="Reading from a Dropbox URL" /></p>
+<p>The key is forcing the web service to provide a direct link to the file rather than its web interface. For example, to force Dropbox to provide a direct link, you should <a href="https://help.dropbox.com/share/force-download" rel="noreferrer noopener" target="_blank">set the dl query parameter</a> to 1 in the URL, as in the above screenshot, instead of the default value of 0 (zero).</p>
+<p>If data is read from a website data needing authentication, most readers have parameters to enter such information:</p>
+<p><img src="images/1664817250122.png" class="image image-block image-center" alt="Use Network Authentication parameter" /></p>
+<p>However, there are better ways to read data from a web service.</p>
+<h2 id="web-services">
+  <span>Web Services</span>
+</h2>
+<p>Besides being able to read from a URL, FME can directly access certain web services to read data. Direct access to a web service is achieved with functionality inside FME called <strong>w</strong><strong>eb connections</strong>.</p>
+<p>Web Connections are created by selecting Tools &gt; FME Options &gt; Web Connections on the FME Workbench menu bar and clicking the plus button in the Web Connections dialog:</p>
+<p><img src="images/1664821615717.png" class="image image-block image-center" alt="Adding a Web Connection" /></p>
+<p>New web service support is added regularly to FME. With the new <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/options-FME-packages.htm?gclid=Cj0KCQjwkOqZBhDNARIsAACsbfLlulUHfO4CTQh47ewg_FLmUnJEGJQg_T28OtVru0o1ZMRZH5xPXacaAocuEALw_wcB" rel="noreferrer noopener" target="_blank">FME packages</a> system, <a href="https://community.safe.com/s/article/fme-packages-faq#WebConnections" rel="noreferrer noopener" target="_blank">web connections can be updated</a> without needing to update all of FME. You can also define custom web connections and share them with other users on <a href="https://hub.safe.com/?page=1&amp;types=web_connections&amp;order=updated_at_desc" rel="noreferrer noopener" target="_blank">the FME Hub</a>.</p>
+<p>FME supports connections for a large number of web services - and the Manage Services button allows you to integrate any other web service you require - but some key ones are:</p>
+<ul>
+  <li>Amazon S3</li>
+  <li>Autodesk A360</li>
+  <li>Box</li>
+  <li>Dropbox</li>
+  <li>FME Server</li>
+  <li>Google Drive</li>
+  <li>HDSF</li>
+  <li>Microsoft OneDrive </li>
+</ul>
+<p>These are key types because they are capable of storing data in a way that can be accessed directly from the Add Reader dialogs:</p>
+<p><img src="images/1664821770426.png" class="image image-block image-center" alt="Select File from Web dialog" /></p>
+<p>In the above screenshot, an author is adding a MapInfo dataset from Amazon S3. This action opens a dialog in which they can browse Amazon S3 for the required file:</p>
+<p><img src="images/1664821790386.png" class="image image-block image-center" alt="Selecting data from S3" /></p>
+<p>The reader is then added to the workspace and functions like any other.</p>
+<p>Note that if you wish to use a FeatureReader transformer instead of a reader, then the same "Select File From Web" option is available.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Usually, you need to authenticate when adding a new web service connection into FME. Suppose the workspace is published to FME Server or copied to another FME Desktop installation. In that case, you must re-authenticate the new location. You can also <a href="https://community.safe.com/s/article/making-database-and-web-connections-public" rel="noreferrer noopener" target="_blank">make database and web connections public</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="connector-transformers">
+  <span>Connector Transformers</span>
+</h2>
+<p>Besides being able to direct a reader to a web service, various transformers exist that can read files. These are similar to the list supported by readers:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>AzureBlobStorageConnector</td>
+      <td>DropboxConnector</td>
+      <td>ProjectWiseWSGConnector</td>
+    </tr>
+    <tr>
+      <td>AzureFileStorageConnector</td>
+      <td>FMEServerResourceConnector</td>
+      <td>S3Connector</td>
+    </tr>
+    <tr>
+      <td>AutodeskA360Connector</td>
+      <td>GoogleDriveConnector</td>
+      <td>SalesForceConnector</td>
+    </tr>
+    <tr>
+      <td>BoxConnector</td>
+      <td>HDFSConnector</td>
+      <td>SlackConnector</td>
+    </tr>
+    <tr>
+      <td>CesiumIonConnector</td>
+      <td>OneDriveConnector</td>
+      <td><br /></td>
+    </tr>
+  </tbody>
+</table>
+<p>These transformers don't <em>read</em> data in the traditional FME sense. Instead, they copy a selected file and either add its contents to an attribute or download the file to the local filesystem.</p>
+<p>Here, for example, an author is using a Creator transformer to trigger the reading of a file from Google Drive:</p>
+<p><img src="images/1664822033931.png" class="image image-block image-center" alt="Creator plus GoogleDriveConnector" /></p>
+<p>FME adds the file's contents to an attribute you can process as required. For example, maybe it is a snippet of XML that can be decoded with an XML transformer.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Connector transformers can also upload a file, list the contents of a web service, and delete files from that service.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>Given the "Select File From Web" tool on readers, Connector transformers are not generally intended for reading source data. However, they could be used to download a file that is then read using a FeatureReader.</p>
+<p>Another use would be to retrieve a list of files that are then read directly using a FeatureReader.</p>
+<p>However, the more likely use is to transfer written data to the web. Writers don't have an equivalent "Select File From Web" option. The best alternative is to write data with a FeatureWriter transformer and then use a Connector transformer to transfer that data to a web service of choice.</p>

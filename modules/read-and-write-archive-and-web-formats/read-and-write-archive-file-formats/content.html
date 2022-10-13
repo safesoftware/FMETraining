@@ -1,0 +1,48 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Read archive file formats with FME Workbench.</li>
+  <li>Write archive file formats with FME Workbench.</li>
+  <li>Identify when writing to an archive file format is helpful. </li>
+</ul>
+<h2 id="archive-file-handling">
+  <span>Archive File Handling</span>
+</h2>
+<p>Both FME readers and writers are capable of working with compressed, archived files of various formats. As well as a size reduction, these file types are a convenient way to store datasets that need handling as a single unit; for example, a set of multiple dataset files contained within a single zip file.</p>
+<h2 id="archive-file-reading">
+  <span>Archive File Reading</span>
+</h2>
+<p>The dataset a reader reads is defined by the Source Dataset/Files parameter in the Navigator window:</p>
+<p><img src="images/1664815600379.png" class="image image-block image-center" alt="Reading a zip file" /></p>
+<p>As in the above screenshot, this dataset parameter can point to an archived file. You simply select the archive file in the source parameter, and FME will extract the data when it is being read.</p>
+<p>This technique works regardless of whether the archived dataset is file-based (like a single AutoCAD file) or folder-based (like the set of files that make up a Shapefile dataset).</p>
+<p>The only difficulty in setting this up is to remember that the file browser does not display archive files by default and that the file extension being viewed must be changed:</p>
+<p><img src="images/1664815661785.png" class="image image-block image-center" alt="Selecting archive formats in the file filter" /></p>
+<h2 id="archive-file-writing">
+  <span>Archive File Writing</span>
+</h2>
+<p>Writing data as an archive file is particularly useful for where the output data needs to be post-processed. For example, if you use a shutdown script to move or copy output data to a new location, handling a single archive file is more convenient than multiple data files.</p>
+<p>The simplest way to create an archived output is to change the file extension in the output dataset field:</p>
+<p><img src="images/1664815705535.png" class="image image-block image-center" alt="Setting a path with a zip ending" /></p>
+<p>You can also specify the filename to be written inside the archive file. A shortcut button does this for you for Zip format archives:</p>
+<p><img src="images/1664815765171.png" class="image image-block image-center" alt="Using the zip shortcut button" /></p>
+<p>Notice the small icon in the dataset field that indicates the zipped status.</p>
+<p>When the workspace is run, the log file reports the file creation at various points:</p><pre>MULTI_WRITER: Output will be zipped Zipping contents of temporary dataset Finished updating output zip file: `C:\FMEData2022\Output\Parks.zip'</pre>
+<p>...and the output is, indeed, an archived dataset:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.004.ZippedOutputDataset.png" alt="Output Parks.zip" class="image image-block image-center" /></p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Some users may want to archive data to move or copy it to a different location as a single entity. A user parameter can be used in a TCL or Python shutdown script to find the name of the file just written, and the FeatureWriter transformer also provides the name of the dataset as an attribute.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
