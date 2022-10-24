@@ -89,14 +89,14 @@
 <p>The Cloner will create three copies of our coastline dataset, giving us three features instead of one. We will now give each feature a different value for the buffer, creating three buffer zones of different sizes without looping.</p>
 <p>We will store the buffer distances in an attribute. Add an ExpressionEvaluator connected to the Cloner. Set Result to Distance. For the expression, enter <code>(@Value(_copynum) + 1) * 100</code>. </p>
 <p><img src="images/1660070459887.png" class="image image-block image-center" alt="Calculating a new Distance attribute" /></p>
-<p>Click OK. This expression will add one to the copy number from the Cloner (as counts from 0-2 instead of 1-3) and then multiply it by 100. The result is values of 100, 200, and 300, the buffer lengths we want. You can confirm this by clicking the ExpressionEvaluator, clicking Run To This, and inspecting the Distance attribute on the ExpressionEvaluator:Output cache.</p>
+<p>Click <strong>OK</strong>. This expression will add one to the copy number from the Cloner (as counts from 0-2 instead of 1-3) and then multiply it by 100. The result is values of 100, 200, and 300, the buffer lengths we want. You can confirm this by clicking the ExpressionEvaluator, clicking Run To This, and inspecting the Distance attribute on the ExpressionEvaluator:Output cache.</p>
 <p><img src="images/1612304746677.png" class="image image-block image-center" alt="Inspecting ExpressionEvaluator output" /></p>
 <h2 id="3-add-bufferer">
   <span>3) Add Bufferer</span>
 </h2>
 <p>Add a Bufferer after the ExpressionEvaluator. Set Buffer Distance to the Distance attribute. </p>
 <p><img src="images/1612304872537.png" class="image image-block image-center" alt="Setting Bufferer parameters" /></p>
-<p>Click OK and use Run To This on the Bufferer. Inspect the cache to confirm you have three buffer zones.</p>
+<p>Click <strong>OK</strong> and use Run To This on the Bufferer. Inspect the cache to confirm you have three buffer zones.</p>
 <p><img src="images/1612305074071.png" class="image image-block image-center" alt="Inspecting Bufferer output" /></p>
 <div class="box message info">
   <div class="inner">
@@ -124,7 +124,7 @@
 </h2>
 <p>We are ready to overlay the address points on the coastline buffer zones. Through this spatial join, we can add an attribute to our points that records which coastal distance band they overlap. Add a PointOnAreaOverlayer and connect the Clipper:Inside port to the Area port and the Postal Addresses feature type to the Points port. </p>
 <p><img src="images/1612305893735.png" class="image image-block image-center" alt="Adding and connecting a PointOnAreaOverlayer" /></p>
-<p>Now double-click the PointOnAreaOverlayer to edit its parameters. Expand the Attribute Accumulation section and enable the Merge Attributes parameter. With this parameter enabled, the PointOnAreaOverlayer adds attributes from the areas to the points.</p>
+<p>Now double-click the <strong>PointOnAreaOverlayer</strong> to edit its parameters. Expand the Attribute Accumulation section and enable the Merge Attributes parameter. With this parameter enabled, the PointOnAreaOverlayer adds attributes from the areas to the points.</p>
 <p>Also, check the Generate List On Output 'Point' parameter. Set 'Point' List Name to DistanceList and choose Distance as the Selected Attribute. </p>
 <p><img src="images/1660080215881.png" class="image image-block image-center" alt="Configuring PointOnAreaOverlayer" /></p>
 <div class="box message info">
@@ -138,7 +138,7 @@
             <ul>
               <li>if you change other parts of your workspace,</li>
               <li>with transformer or reader upgrades, or</li>
-              <li>if the underlying data changes. </li>
+              <li>if the underlying data changes.</li>
             </ul>
             <p>It's often hard to identify feature order problems, meaning it's best to avoid them first and make your workspace future-proof.</p>
             <p>Therefore, in this scenario, we will use a more robust list-based method that will be more flexible if the underlying data changes.</p>
@@ -148,7 +148,7 @@
     </div>
   </div>
 </div>
-<p>Click OK.</p>
+<p>Click <strong>OK</strong>.</p>
 <h2 id="6-add-list-transformers">
   <span>6) Add list transformers</span>
 </h2>
@@ -157,10 +157,10 @@
 <p>We need to find the lowest value in DistanceList.Distance and set it to Distance. We can do that using a ListSorter and ListIndexer.</p>
 <p>Add a ListSorter and connect it to the PointOnAreaOverlayer:Point port. Set List Attribute to DistanceList{}.Distance, Sort Type to Numeric, and Sort Order to Ascending. This will sort the list so the lowest entry is element 0.</p>
 <p><img src="images/1660082022843.png" class="image image-block image-center" alt="ListSorter parameters" /></p>
-<p>Click OK.</p>
+<p>Click <strong>OK</strong>.</p>
 <p>Add a ListIndexer and connect it to the ListSorter:Output port. Set List Attribute to DistanceList{} and List Index to Copy to 0. This will set the value of Distance to the lowest distance band of the feature.</p>
 <p><img src="images/1660082128092.png" class="image image-block image-center" alt="ListIndexer parameters" /></p>
-<p>Click OK.</p>
+<p>Click <strong>OK</strong>.</p>
 <p>Use Run to This on the ListIndexer. Inspect the results; you can see the Distance attribute on each point. Points not within 300 m of the shore will have &lt;missing&gt; values for Distance; let's fix that.</p>
 <p><img src="images/1612306034205.png" class="image image-block image-center" alt="Inspecting Distance attribute on the PointOnAreaOverlayer output" /></p>
 <h2 id="7-add-tester">
@@ -195,7 +195,7 @@
 </h2>
 <p>This transformer will output an elevation value on our address points. However, because raster data can have multiple bands, you will not immediately see an Elevation attribute. A list called _band stores the elevation value. We can turn this list value into an exposed attribute with an AttributeRenamer. Add one connected to the PointOnRasterValueExtractor and open its parameters. For Input Attribute enter <code>_band{0}.value</code>, and for Output Attribute, enter Elevation.</p>
 <p><img src="images/1612481607617.png" class="image image-block image-center" alt="Setting AttributeRenamer parameters" /></p>
-<p>Click OK and then Run To This on the AttributeRenamer and inspect to confirm you now have an Elevation attribute.<img src="images/1612481651315.png" class="image image-block image-center" alt="Inspecting AttributeRenamer output" /></p>
+<p>Click <strong>OK</strong> and then Run To This on the AttributeRenamer and inspect to confirm you now have an Elevation attribute.<img src="images/1612481651315.png" class="image image-block image-center" alt="Inspecting AttributeRenamer output" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -220,7 +220,7 @@
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.220.Ex2.FinalAttrManagerDialog.png" alt="Finding the FloodRisk attribute in the AttributeManager parameters" class="image image-block image-center" /></p>
 <p>We've already filled out the dialog with a series of Test Conditions, viewable by clicking the 6 Possible Values &gt; ellipsis [. . .] button. These tests will provide a value to FloodRisk 1-5 based on the combination of Zone and Elevation. These Conditional Values translate the table above into a form FME can understand.</p>
 <p><img src="images/1612292209637.png" class="image image-block image-center" alt="Looking at the already-established Condition Statements in the AttributeManager" /></p>
-<p>You can click Cancel to exit these dialogs as they are already configured and ready to use.</p>
+<p>You can click <strong>Cancel</strong> to exit these dialogs as they are already configured and ready to use.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
