@@ -77,7 +77,7 @@
   <span>2) Locate Snowfall Dataset</span>
 </h2>
 <p>In a web browser, browse to the City of Interopolis <strong><a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" rel="noreferrer noopener" target="_blank">Open Data Portal</a></strong> (<a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html</a>).</p>
-<p>Locate the dataset for Snowfall Predictions, right-click on where it says Excel Spreadsheet, and choose to copy the URL:</p>
+<p>Locate the dataset for Snowfall Predictions, right-click on where it says <strong>Excel Spreadsheet</strong>, and choose to copy the URL:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.200.Ex1.CopyURLFromWebsite.png" alt="Copying link location" class="image image-block image-center" /></p>
 <p>The exact command will vary by the web browser.</p>
 <h2 id="3-add-database-joiner-transformer">
@@ -157,7 +157,7 @@
     </tr>
   </tbody>
 </table>
-<p>Then click on the dropdown arrow to the right of the Dataset parameter, and choose the option to Zip Output:</p>
+<p>Then click on the dropdown arrow to the right of the Dataset parameter, and choose the option to <strong>Zip Output</strong>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.204.Ex1.FeatureWriterParams1.png" alt="Zip output" class="image image-block image-center" /></p>
 <p>This configuration instructs the transformer to write data directly to a zipped (compressed/archived) file. You can manually type in a path including .zip, if you prefer.</p>
 <p>As a final step in this transformer, rename the output feature type to SnowfallPredictions:</p>
@@ -184,10 +184,10 @@
 </h2>
 <p>Add an FMEServerResourceConnector transformer and connect it to the FeatureWriter:Summary output port. The workspace should now look like this (KMLStyler optional):</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.206.Ex1.WorkspaceWithServerTransformer.png" alt="Adding the FMEServerResourceConnector" class="image image-block image-center" /></p>
-<p>In the parameters dialog, ensure that the FME Server Action is set to Upload. For the FME Server Account, open the drop-down menu and click Add Web Connection:</p>
+<p>In the parameters dialog, ensure that the FME Server Action is set to Upload. For the FME Server Account, open the drop-down menu and click <strong>Add Web Connection</strong>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.207.Ex1.AddWebConnection.png" alt="Add Web Connection" class="image image-block image-center" /></p>
-<p>In the FME Server Connection Dialog, change the Connection Name if desired. Then set the following parameters and click Authenticate:</p>
-<table style="width:100%" class="featureTable sort_table">
+<p>In the FME Server Connection Dialog, change the Connection Name if desired. Then set the following parameters and click <strong>Authenticate</strong>:</p>
+<table class="featureTable sort_table" style="width:100%">
   <tbody class="tbody">
     <tr>
       <td style="width:50.0000%">Server URL</td>
@@ -219,9 +219,9 @@
 </div>
 <p>Ensure the Source Upload parameter is set to File. For File to Upload parameter, click the drop-down icon and select Attribute Value &gt; _dataset:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.208.Ex1.SourceFileToUpload.png" alt="Setting File to Upload to _dataset" class="image image-block image-center" /></p>
-<p>Finally, for the FME Server Destination, click on the ellipsis next to Folder ID. This will connect to your FME Server Resources folder. Click on the Data folder to select it and click OK:</p>
+<p>Finally, for the FME Server Destination, click on the ellipsis next to Folder ID. This will connect to your FME Server Resources folder. Click on the <strong>Data</strong> folder to select it and click <strong>OK</strong>:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.209.Ex1.FMEServerFolderSelect.png" alt="Finding the Data folder" class="image image-block image-center" /></p>
-<p>The parameter is now set to upload to the <code>FME_SHAREDRESOURCE_DATA/filesys</code> folder. That was the final part of the FMEServerResourceConnector setup, so click OK to close its parameters dialog.</p>
+<p>The parameter is now set to upload to the <code>FME_SHAREDRESOURCE_DATA/filesys</code> folder. That was the final part of the FMEServerResourceConnector setup, so click <strong>OK</strong> to close its parameters dialog.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -246,7 +246,7 @@
 <p>We can see the FMEServerResourceConnector output a feature to the &lt;Rejected&gt; port. If we inspect that feature, it has a value for fme_rejection_code of:</p><pre>ERROR_DURING_PROCESSING</pre>
 <p>Not very helpful, but if we dig around, the problem is that the path only needs to point to the zip file, not the file within it. Let's fix that.</p>
 <p>Add a StringReplacer transformer between the FeatureWriter and FMEServerResourceConnector transformers. Set it up with the following parameters:</p>
-<table style="width:100%" class="featureTable sort_table">
+<table class="featureTable sort_table" style="width:100%">
   <tbody class="tbody">
     <tr>
       <td style="width:50.0000%">Attributes</td>
@@ -281,8 +281,8 @@
           <div class="message-media-content">
             <p>You could test the result in a few other ways:</p>
             <ol>
-              <li>Create a second workspace. Place a Creator and FMEServerResourceConnector combination and - this time - set the FME Server Action to Download. Click the ellipsis next to FME Server Source Object ID to open a file browser and then browse to the Data folder to locate the SnowfallPredictions KML dataset. Click OK and run the workspace. The file will be downloaded as an attribute.</li>
-              <li>Log in to the FME Server web interface at http://localhost, and browse to Files and Connections &gt; Resources &gt; Data. You should see the ZIP file there.</li>
+              <li style="margin-left:40px">Create a second workspace. Place a Creator and FMEServerResourceConnector combination and - this time - set the FME Server Action to Download. Click the ellipsis next to FME Server Source Object ID to open a file browser and then browse to the Data folder to locate the SnowfallPredictions KML dataset. Click <strong>OK</strong> and run the workspace. The file will be downloaded as an attribute.</li>
+              <li style="margin-left:40px">Log in to the FME Server web interface at http://localhost, and browse to Files and Connections &gt; Resources &gt; Data. You should see the ZIP file there.</li>
             </ol>
           </div>
         </div>
