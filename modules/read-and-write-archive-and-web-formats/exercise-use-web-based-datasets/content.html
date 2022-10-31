@@ -40,19 +40,19 @@
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
-      <td>Reader Format</td>
+      <td><strong>Reader Format</strong></td>
       <td>Autodesk AutoCAD DWG/DXF</td>
     </tr>
     <tr>
-      <td>Reader Dataset</td>
+      <td><strong>Reader Dataset</strong></td>
       <td>https://s3.amazonaws.com/FMEData/FMEData2022/Data/Transportation/CompleteRoads.dwg</td>
     </tr>
     <tr>
-      <td>Parameters</td>
+      <td><strong>Parameters</strong></td>
       <td>Group Entities By: Attribute Schema</td>
     </tr>
     <tr>
-      <td>Workflow Options</td>
+      <td><strong>Workflow Options</strong></td>
       <td>Single Merged Feature Type</td>
     </tr>
   </tbody>
@@ -78,7 +78,7 @@
 </h2>
 <p>In a web browser, browse to the City of Interopolis <strong><a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" rel="noreferrer noopener" target="_blank">Open Data Portal</a></strong> (<a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html</a>).</p>
 <p>Locate the dataset for Snowfall Predictions, right-click on where it says <strong>Excel Spreadsheet</strong>, and choose to copy the URL:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.200.Ex1.CopyURLFromWebsite.png" alt="Copying link location" class="image image-block image-center" /></p>
+<p><img src="images/1667239041586.png" class="image image-block image-center" alt="Copying a link" /></p>
 <p>The exact command will vary by the web browser.</p>
 <h2 id="3-add-database-joiner-transformer">
   <span>3) Add DatabaseJoiner Transformer</span>
@@ -88,11 +88,11 @@
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
-      <td>Reader Format</td>
+      <td><strong>Reader Format</strong></td>
       <td>Microsoft Excel</td>
     </tr>
     <tr>
-      <td>Reader Dataset</td>
+      <td><strong>Reader Dataset</strong></td>
       <td>https://s3.amazonaws.com/FMEData/Interopolis/Snowfall.xlsx</td>
     </tr>
   </tbody>
@@ -100,7 +100,7 @@
 <p>...where, of course, you can paste the URL you copied from the web browser.</p>
 <p>Click the Parameters button and check that the data is being read correctly. The Preview table should show records with the correct columns (StreetId, EstimatedSnowfall, etc.).</p>
 <p>Back in the main DatabaseJoiner dialog, select Snowfall as the join table and select StreetId as both the Feature Attribute and Table Field to be joined:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.201.Ex1.DatabaseJoinerParameters.png" alt="Configured DatabaseJoiner" class="image image-block image-center" /></p>
+<p><img src="images/1667239069690.png" class="image image-block image-center" alt="Configured DatabaseJoiner" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
@@ -116,7 +116,7 @@
   </div>
 </div>
 <p>The final parameters to set in the DatabaseJoiner are <em>Fields to Add</em> and <em>Cardinality</em>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.202.Ex1.DatabaseJoinerCardinality.png" alt="Fields to Add" class="image image-block image-center" /></p>
+<p><img src="images/1667239086340.png" class="image image-block image-center" alt="Fields to Add" /></p>
 <p>Select the following Fields to Add:</p>
 <ul>
   <li>EstimatedSnowfall</li>
@@ -148,20 +148,20 @@
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
-      <td>Writer Format</td>
+      <td><strong>Writer Format</strong></td>
       <td>Google KML</td>
     </tr>
     <tr>
-      <td>Writer Dataset</td>
+      <td><strong>Writer Dataset</strong></td>
       <td>C:\FMEData2022\Output\Training\RoadSnowfall.kml</td>
     </tr>
   </tbody>
 </table>
 <p>Then click on the dropdown arrow to the right of the Dataset parameter, and choose the option to <strong>Zip Output</strong>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.204.Ex1.FeatureWriterParams1.png" alt="Zip output" class="image image-block image-center" /></p>
+<p><img src="images/1667239108281.png" class="image image-block image-center" alt="Zip output" /></p>
 <p>This configuration instructs the transformer to write data directly to a zipped (compressed/archived) file. You can manually type in a path including .zip, if you prefer.</p>
 <p>As a final step in this transformer, rename the output feature type to SnowfallPredictions:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.205.Ex1.FeatureWriterParams2.png" alt="Renaming to SnowfallPredictions" class="image image-block image-center" /></p>
+<p><img src="images/1667239128321.png" class="image image-block image-center" alt="Renaming to SnowfallPredictions" /></p>
 <p>Now when the workspace is run, a dataset will be written. The FeatureWriter will create an attribute called <em>_dataset</em> to record the name and path of the dataset. The next step is to upload this file to a web service...</p>
 <div class="box message info">
   <div class="inner">
@@ -183,22 +183,22 @@
   <span>5) Add FMEServerResourceConnector Transformer</span>
 </h2>
 <p>Add an FMEServerResourceConnector transformer and connect it to the FeatureWriter:Summary output port. The workspace should now look like this (KMLStyler optional):</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.206.Ex1.WorkspaceWithServerTransformer.png" alt="Adding the FMEServerResourceConnector" class="image image-block image-center" /></p>
+<p><img src="images/1667239154110.png" class="image image-block image-center" alt="Adding the FMEServerResourceConnector" /></p>
 <p>In the parameters dialog, ensure that the FME Server Action is set to Upload. For the FME Server Account, open the drop-down menu and click <strong>Add Web Connection</strong>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.207.Ex1.AddWebConnection.png" alt="Add Web Connection" class="image image-block image-center" /></p>
+<p><img src="images/1667239178693.png" class="image image-block image-center" alt="Add Web Connection" /></p>
 <p>In the FME Server Connection Dialog, change the Connection Name if desired. Then set the following parameters and click <strong>Authenticate</strong>:</p>
 <table class="featureTable sort_table" style="width:100%">
   <tbody class="tbody">
     <tr>
-      <td style="width:50.0000%">Server URL</td>
+      <td style="width:50.0000%"><strong>Server URL</strong></td>
       <td style="width:50.0000%"><a href="http://localhost" rel="noreferrer noopener" target="_blank">http://localhost</a></td>
     </tr>
     <tr>
-      <td style="width:50.0000%">Username</td>
+      <td style="width:50.0000%"><strong>Username</strong></td>
       <td style="width:50.0000%">admin</td>
     </tr>
     <tr>
-      <td style="width:50.0000%">Password</td>
+      <td style="width:50.0000%"><strong>Password</strong></td>
       <td style="width:50.0000%">FMElearnings</td>
     </tr>
   </tbody>
@@ -218,9 +218,9 @@
   </div>
 </div>
 <p>Ensure the Source Upload parameter is set to File. For File to Upload parameter, click the drop-down icon and select Attribute Value &gt; _dataset:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.208.Ex1.SourceFileToUpload.png" alt="Setting File to Upload to _dataset" class="image image-block image-center" /></p>
+<p><img src="images/1667239198390.png" class="image image-block image-center" alt="Setting File to Upload to _dataset" /></p>
 <p>Finally, for the FME Server Destination, click on the ellipsis next to Folder ID. This will connect to your FME Server Resources folder. Click on the <strong>Data</strong> folder to select it and click <strong>OK</strong>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.209.Ex1.FMEServerFolderSelect.png" alt="Finding the Data folder" class="image image-block image-center" /></p>
+<p><img src="images/1667239221111.png" class="image image-block image-center" alt="Finding the Data folder" /></p>
 <p>The parameter is now set to upload to the <code>FME_SHAREDRESOURCE_DATA/filesys</code> folder. That was the final part of the FMEServerResourceConnector setup, so click <strong>OK</strong> to close its parameters dialog.</p>
 <div class="box message info">
   <div class="inner">
@@ -249,21 +249,21 @@
 <table class="featureTable sort_table" style="width:100%">
   <tbody class="tbody">
     <tr>
-      <td style="width:50.0000%">Attributes</td>
+      <td style="width:50.0000%"><strong>Attributes</strong></td>
       <td style="width:50.0000%">_dataset</td>
     </tr>
     <tr>
-      <td style="width:50.0000%">Mode</td>
+      <td style="width:50.0000%"><strong>Mode</strong></td>
       <td style="width:50.0000%">Replace Regular Expression</td>
     </tr>
     <tr>
-      <td style="width:50.0000%">Text to Replace</td>
+      <td style="width:50.0000%"><strong>Text to Replace</strong></td>
       <td style="width:50.0000%">\\[^\\]*$</td>
     </tr>
   </tbody>
 </table>
 <p>Leave the Replacement Text field empty. That regular expression will look for the final \ character in the string and replace everything after it with the replacement text (which is nothing):</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.210.Ex1.StringReplacer.png" alt="Using a StringReplacer to fix the _dataset path" class="image image-block image-center" /></p>
+<p><img src="images/1667239296546.png" class="image image-block image-center" alt="Using a StringReplacer to fix the _dataset path" /></p>
 <p>Now when we run our workspace, the data will write to our local disk but also upload the output file onto FME Server, where any of our colleagues can download it.</p>
 <p>Run the workspace.</p>
 <h2 id="7-test-upload">
