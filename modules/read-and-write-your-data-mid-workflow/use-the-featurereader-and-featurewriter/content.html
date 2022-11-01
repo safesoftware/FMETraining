@@ -9,21 +9,21 @@
   <span>FeatureReader and FeatureWriter</span>
 </h2>
 <p>Besides being able to read data with a reader and writer, FME has transformers specifically designed to read and write data. These are the FeatureReader and FeatureWriter transformers.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.012.FeatureReaderWriterCanvas.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.012.FeatureReaderWriterCanvas.png" alt class="image image-block image-center" /></a></p>
+<p><img src="images/1667237751897.png" class="image image-block image-center" alt="FeatureReader and FeatureWriter" /></p>
 <p>The advantage of these transformers is that they have an input port (FeatureReader) and output ports (FeatureWriter). So where a reader is always the first action in a workspace, and a writer is always the last, a FeatureReader and FeatureWriter can read and write data at any point in a translation.</p>
 <h2 id="feature-reader">
   <span>FeatureReader</span>
 </h2>
 <p>The FeatureReader is set up with parameters to read a specific dataset:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.013.FeatureReaderParameters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.013.FeatureReaderParameters.png" alt class="image image-block image-center" /></a></p>
+<p><img src="images/1667238401416.png" class="image image-block image-center" alt="FeatureReader parameters" /></p>
 <p>Any feature that enters the Initiator input port will cause the data to be read, like here, where a Creator supplies a null feature to trigger reading:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.014.FeatureReaderCreatorInput.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.014.FeatureReaderCreatorInput.png" alt class="image image-block image-center" /></a></p>
+<p><img src="images/1667238484123.png" class="image image-block image-center" alt="Using a Creator with a FeatureReader" /></p>
 <p>The Creator creates a single feature that triggers the FeatureReader to read a dataset of park features. If the Creator created ten features for some reason, then the data would be read ten times, resulting in 800 output features!</p>
 <h2 id="dataset-from-an-attribute">
   <span>Dataset from an Attribute</span>
 </h2>
 <p>A common case with the FeatureReader is to supply the dataset to read as an attribute:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.015.FeatureReaderFilename.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.015.FeatureReaderFilename.png" alt class="image image-block image-center" /></a></p>
+<p><img src="images/1667238502473.png" class="image image-block image-center" alt="Using the Dataset parameter" /></p>
 <p>This example includes both reader and FeatureReader. The workspace reads a Shapefile dataset containing an index of orthophoto datasets. Each feature in the Shapefile is a polygon representing the orthophoto boundary with an attribute that points to a GeoTIFF file containing that orthophoto.</p>
 <p>The FeatureReader is set up to use the attribute as the filename to read. The result is that 37 features are read from the Shapefile, and the equivalent 37 GeoTIFF images exit the FeatureReader.</p>
 <p>The source features do not need to be spatial. For example, an Excel spreadsheet with a list of files to read is just as valid.</p>
@@ -31,17 +31,17 @@
   <span>Spatial Filters</span>
 </h2>
 <p>A key parameter in the FeatureReader sets a spatial filter on the data being read:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.016.FeatureReaderSpatialFilter.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.016.FeatureReaderSpatialFilter.png" alt class="image image-block image-center" /></a></p>
+<p><img src="images/1667238588601.png" class="image image-block image-center" alt="Spatial Filter with FeatureReader" /></p>
 <p>The Initiator Contains Result filter (for example) means that features output the FeatureReader if their geometry falls inside the geometry of the initiator feature. For example, here:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.017.FeatureReaderSpatiallyFiltered.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.017.FeatureReaderSpatiallyFiltered.png" alt class="image image-block image-center" /></a></p>
-<p>A dataset of parks supplies input features that trigger reading from a database address table. A spatial filter is applied so that the only addresses emerging fall inside a park.</p>
+<p><img src="images/1667238608786.png" class="image image-block image-center" alt="FeatureReader filter results" /></p>
+<p>A dataset of parks supplies input features that trigger reading from a database address table. The FeatureReader applies a spatial filter so that it only reads addresses inside a park.</p>
 <h2 id="feature-writer">
   <span>FeatureWriter</span>
 </h2>
 <p>The FeatureWriter is set up with parameters to write a specific dataset:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.018.FeatureWriterParameters.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.018.FeatureWriterParameters.png" alt class="image image-block image-center" /></a></p>
+<p><img src="images/1667238694244.png" class="image image-block image-center" alt="FeatureWriter parameters with multiple output feature types" /></p>
 <p>The dialog allows the definition of the format and dataset to write, plus the feature types that are to be written and their attributes. In short, the parameters, settings, and schema definition required for a writer appear in this single dialog.</p>
-<p>Feature types can be manually defined within the dialog itself or can be added automatically by connecting to the <em>Connect Input</em> input port:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.019.FeatureWriterCanvas.png" rel="noreferrer noopener" target="_blank"><img src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.019.FeatureWriterCanvas.png" alt class="image image-block image-center" /></a></p>
+<p>Feature types can be manually defined within the dialog itself or can be added automatically by connecting to the <em>Connect Input</em> input port:</p>
+<p><img src="images/1667238721146.png" class="image image-block image-center" alt="Continuing to use features after writing" /></p>
 <p>Notice also that an important part of the FeatureWriter is that its exit ports can be connected to other transformers for further processing. In the above screenshot, parks data is written, and a single summary feature is used to trigger an Emailer transformer. The Emailer sends a copy of the data to a user.</p>
 <p>The data is then used as the input to a FeatureReader to read all addresses that fall inside a park, the results of which are then written by a FeatureWriter.</p>
