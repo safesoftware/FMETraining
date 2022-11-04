@@ -6,7 +6,6 @@
   <li>Add and configure a FeatureReader.</li>
   <li>Use a FeatureReader with multiple initiator features.</li>
   <li>Add and configure a FeatureWriter.</li>
-  <li>Use a FeatureWriter with multiple initiator features.</li>
   <li>Use a Connector transformer.</li>
 </ul>
 <h2 id="resources">
@@ -38,7 +37,7 @@
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>In this exercise, we'll look at some common use cases for the FeatureReader and FeatureWriter and use a Connector transformer.</p>
+<p>In this exercise, we'll look at common use cases for the FeatureReader and FeatureWriter and use a Connector transformer.</p>
 <p>The scenario is we have a folder full of orthophotos in GeoTIFF format. However, we want to extract the orthophotos as individual rasters covering the area of several downtown neighborhoods. </p>
 <h2 id="1-start-workbench">
   <span>1) Start Workbench</span>
@@ -53,7 +52,7 @@
   <li>We will add the FeatureReader to read the photos based on the areas of the neighborhoods.</li>
   <li>It will mosaic the rasters into one image using the RasterMosaicker.</li>
   <li>Then it will clip the neighborhood features out to create individual raster features using the Clipper.</li>
-  <li>Then it will process the rasters to set a NoData band, so the areas outside the photo are transparent.</li>
+  <li>Then it will process the rasters to set a NoData band so the areas outside the photo are transparent.</li>
   <li>Then we need to configure a FeatureWriter to write out the individual raster files.</li>
   <li>Then we can use a Connector transformer to upload the files to a web storage location.</li>
 </ol>
@@ -63,7 +62,7 @@
 </h2>
 <p>Add a FeatureReader to the Orthophotos bookmark above the Dissolver. Connect the Dissolver:Area port to the FeatureReader Initiator port.</p>
 <p><img src="images/1667247198676.png" class="image image-block image-center" alt="Connecting Dissolver to FeatureReader" /></p>
-<p>Double-click the FeatureReader to open it's Parameters dialog. Configure it as follows:</p>
+<p>Double-click the FeatureReader to open its Parameters dialog. Configure it as follows:</p>
 <table style="width:100%" class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
@@ -88,7 +87,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>In this case, we want to read each photo that intersects any neighborhood and just read it once. That is why we used a Dissolver to get a single initiator feature. But the FeatureReader can also be used in scenarios with multiple initiators. If we skipped the Dissolver in this case, we'd read some of the photos multiple times, as we would read intersecting photos for each neighborhood feature separately. Feel free to try that out if you want to see how it works.</p>
+            <p>In this case, we want to read each photo that intersects any neighborhood and just read it once. That is why we used a Dissolver to get a single initiator feature. But the FeatureReader can also be used in scenarios with multiple initiators. If we skipped the Dissolver in this case, we'd read some of the photos multiple times, as we would read intersecting photos for each neighborhood feature separately. Try that out - you'll need the number of features to answer a Quiz question below.</p>
           </div>
         </div>
       </div>
@@ -131,7 +130,7 @@
 <p>With this configuration, the FeatureWriter will use a feature-type fanout to create a separate GeoTIFF file for each neighborhood. Click OK.</p>
 <p>You'll see the name of the port change again, this time to @Value(NeighbohoodName), reflecting the feature type fanout setting.</p>
 <p>Run your workspace to write out the images. Click the FeatureWriter once to select it and click the Open Containing Folder button to see the written images:</p>
-<p><img src="images/1667253029859.png" class="image image-block image-center" /></p>
+<p><img src="images/1667253029859.png" class="image image-block image-center" alt="Open Containing Folder and output files" /></p>
 <h2 id="6-add-a-connector-transformer">
   <span>6) Add a Connector Transformer</span>
 </h2>
@@ -143,7 +142,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>For this example, we'll use an FMEServerResourceConnector to upload the files to FME Server, but if you have an account, you could try using a GoogleDriveConnector, DropBoxConnector, etc.</p>
+            <p>For this example, we'll use an FMEServerResourceConnector to upload the files to FME Server, which you will need access to. If you don't have FME Server, you can try another Connector for which you have an account, e.g., GoogleDriveConnector, DropBoxConnector, etc.</p>
           </div>
         </div>
       </div>
@@ -154,7 +153,7 @@
 <p><img src="images/1667340469910.png" alt="_dataset parameter" class="image image-block image-center" /></p>
 <p>Add an FMEServerResourceConnector after the FeatureWriter and connect it to the Summary port.</p>
 <p><img src="images/1667340324672.png" class="image image-block image-center" alt="Added an FMEServerResourceConnector" /></p>
-<p>Before configuring the FMEServerResourceConnector, we need an FME Server Web Connection. If you don't already have one saved. on Safe Software training machines, you can add an FME Server Web Connection using the following credentials under Tools &gt; Web Connections &gt; Plus button:</p>
+<p>Before configuring the FMEServerResourceConnector, we need an FME Server Web Connection. If you don't already have one saved, on Safe Software training machines, you can add an FME Server Web Connection using the following credentials under Tools &gt; Web Connections &gt; Plus button:</p>
 <ul>
   <li><strong>Connection Name:</strong> Training FME Server</li>
   <li><strong>FME Server URL:</strong> <a href="http://localhost/" rel="noreferrer noopener" target="_blank">http://localhost</a></li>
@@ -186,4 +185,4 @@
 <p>Click OK.</p>
 <p>Run your workspace. The entire folder of recently-written files will be uploaded to FME Server. You can log into the web interface (<a href="http://localhost/" rel="noreferrer noopener" target="_blank">localhost</a> on Safe Software training machines) and navigate to Files &amp; Connections &gt; Resources &gt; Data &gt; Orthophotos to confirm:</p>
 <p><img src="images/1667341554475.png" class="image image-block image-center" alt="Recently-uploaded orthophotos on FME Server" /></p>
-<p>Here is the key advantage of the FeatureWriter: your workspace can continue to do stuff after you write your data.</p>
+<p>Here is the key advantage of the FeatureWriter: your workspace can continue after you write data.</p>
