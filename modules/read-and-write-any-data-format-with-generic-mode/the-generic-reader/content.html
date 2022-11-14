@@ -1,0 +1,80 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you'll be able to:</p>
+<ul>
+  <li>Add a Generic Reader to a Workspace.</li>
+  <li>Identify the limitations of the Generic Reader.</li>
+  <li>Overcome limitations of the Generic Reader.</li>
+</ul>
+<h2 id="overview">
+  <span>Overview</span>
+</h2>
+<p>The Generic Reader and Generic Writer allow FME workspaces to be freed from format restrictions.</p>
+<p>Where all other readers and writers are tied to a specific format of data, the Generic Reader and Generic Writer are not. The Generic Reader is capable of reading almost any format of data, and the Generic Writer is capable of writing almost any format of data.</p>
+<p>In that way, a single workspace can be used to process different data formats without being specifically set up for that format.</p>
+<h2 id="the-generic-reader">
+  <span>The Generic Reader</span>
+</h2>
+<p>The Generic reader acts as a wrapper for the true reader which will be used when the translation is done. At run-time, once the actual reader is known, the Generic reader will do its best to represent the intention of the translation in the chosen input format.</p>
+<p>The Generic reader takes a file or multiple files, folder, URL, or database name as the input dataset. If the format that is ultimately targeted requires an input folder, the Generic reader will turn the input filename into a folder by removing the file name part of the path.</p>
+<p><strong>Tip: </strong>The format that the Generic reader will read from is (by default) a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/published_private_parameters.htm" rel="noreferrer noopener" target="_blank">Published Parameter</a>. To set up specific data flows for a particular format, workspace authors can use the ParameterFetcher transformer to retrieve the name of the format that is being read, and then potentially route features to other transformers using this value. The Generic reader simply reads the features using the underlying reader. See the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/parameterfetcher.htm" rel="noreferrer noopener" target="_blank">ParameterFetcher</a> help for more information.</p>
+<p>Adding an additional reader or a schema reader to a workspace</p>
+<p>It is sometimes useful to pre-configure parameters that are specific to individual input formats. For example, to read from a database, a collection of connection parameters must be specified.</p>
+<p>You can add an additional reader or a schema reader to the workspace. The first reader in the multi-reader will be the Generic one, and this one will contain all the input feature types. The second reader may or may not have feature types, but will be used to communicate any format-specific reader settings to the Generic reader, when that format is used as the format for the Generic reader.</p>
+<p>For example, if the Input Format here is set to Microsoft SQL Server Spatial, the settings specified for the Microsoft SQL Server Spatial reader will be transferred to the Microsoft SQL Server Spatial reader that the Generic reader will use.</p>
+<p>A Generic Reader is used in the same way as any other reader; by specifying the format in the Add Reader or Generate Workspace dialogs, or in Quick Add:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.025.SettingGenericReader.png" alt="Add Reader dialog showing Generic as selected" class="image image-block image-center" /></p>
+<p>This source dataset is an AutoCAD DWG dataset, but FME does not know that yet. When the workspace is run FME examines the extension of the file chosen to determine this for itself.</p>
+<p>At a later time the end-user might then choose a different file - in a completely different format - to be read, like so:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.026.GenericReaderDataSelect.png" alt="Generic Reader Source Dataset set to TrafficSignalsDGN.dgn" class="image image-block image-center" /></p>
+<p>Again, at runtime FME examines the file extension to identify the format of data and then - having discovered it is MicroStation DGN - reads it just as if it were a true DGN reader.</p>
+<p>That way a single reader can be made to read any format of data.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>You're thinking there must be a catch, right? Well, it's true. Firstly this technique only works with file-based formats (it won't work on a database or web format). Secondly, the Generic Reader is not immune from the Unexpected Input Remover, so switching datasets - regardless of format - only works with a compatible schema (see below).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="generic-reader-feature-types">
+  <span>Generic Reader Feature Types</span>
+</h2>
+<p>The Unexpected Input Remover is the function in FME that filters incoming data against the list of permitted feature types. If the incoming data is not defined in the workspace, then it is dropped from the translation.</p>
+<p>In the previous example, traffic signals in the AutoCAD dataset were stored on a layer called "TrafficSignals", and the workspace names the reader feature type so. But, if the MicroStation file stored data on a different layer, then this would be the result:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.027.GenericReaderUnexpectedInput.png" alt class="image image-block image-center" /></p>
+<p>All 778 records were dropped from the translation. So, although the Generic Reader allows you to read datasets of different formats, the limitation is that each dataset must have its layers defined as feature types in the workspace.</p>
+<p>Of course, an easy way to allow all layers to pass is to set a Merge Feature Type in the Feature Type Properties:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.028.GenericReaderMergeFilter.png" alt="Set a Merge Feature Type in the Feature Type Properties" class="image image-block image-center" /></p>
+<p>With that setup, any layer of data can be passed into the workspace, regardless of format. Of course, even then you need to be careful about assuming what attributes will be available!</p>
+<h2 id="tips-for-using-the-generic-reader">
+  <span>Tips for Using the Generic Reader</span>
+</h2>
+<p>The Generic reader does not allow you to specify parameters that define the reader's behavior for any specific format. However, you can bypass this limitation by using the Generic reader in conjunction with adding a reader as a resource.</p>
+<p>For example, when a Generic reader reads GML data, you may want to specify a particular SRS axis order. To accomplish this task, select Readers &gt; Add Reader as Resource from the Workbench menu bar, specify the GML format, and any GML dataset (which dataset does not matter). In the parameters dialog, specify the value you want for GML SRS Axis Order.</p>
+<p><img src="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/Resources/Images/Generic-Reader-as-Resource1.png" alt="In the parameters dialog, specify the value you want for GML SRS Axis Order." class="image image-block image-center" /></p>
+<p>When you finish creating the resource reader, it appears in the Navigator, under Workspace Resources, along with all of its parameters:</p>
+<p><img src="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/Resources/Images/Generic-Reader-as-Resource2.png" alt="The desired SRS axis order appears in the Navigator, under Workspace Resources" class="image image-block image-center" /></p>
+<p>When the workspace runs, the Generic reader uses this resource to read GML data with the desired SRS axis order.</p>
+<p>For more information about resource readers, see <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/reader_adding_as_resource.htm" rel="noreferrer noopener" target="_blank">Adding a Reader as a Resource</a> in the FME Workbench help.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Generic Readers by nature only deal with a flexible format, but can also be set up to be flexible with layers using a Merge Filter.<br />However, each dataset being read must have the same attribute schema. This part is not flexible.<br />Flexible attribute schemas require the use of a Dynamic Translation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
