@@ -1,0 +1,101 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Understand the difference between Merge Attributes and Generate List... options in Overlayer transformers.</li>
+  <li>Create a list attribute using an Overlayer transformer.</li>
+  <li>View a list attribute in the Feature Information Window.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><strong><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank"></a></strong><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank"></a><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank">Starting workspace</a><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank"></a><strong><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank"></a></strong></li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>Many FME transformers have a <em>Generate List</em> checkbox under the <em>Attribute Accumulation</em> section of their parameters dialog. For example:<img src="images/1639088915106.png" class="image image-block image-center" alt="Generate List checkbox" /></p>
+<p>For query transformers that can return multiple results, like the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/pointonareaoverlayer.htm" rel="noreferrer noopener" target="_blank">PointOnAreaOverlayer</a>, these parameters can be used to generate a list to store the results.</p>
+<p>In this scenario, we want to create park polygons that have attributes telling us what trees exist in each park. To do this, we will merge tree points with park polygons using the PointOnAreaOverlayer. However, it isn't enough to simply copy attributes from each tree to their respective park polygons, because what if there is more than one tree per park? List attributes are perfect for this scenario: if more than one tree falls within the same park polygon, we can use a list attribute to store information for <em>all</em> trees. The PointOnAreaOverlayer allows us to generate a list that stores the values for all points overlaid on the area.</p>
+<p>The workspace will:</p>
+<ul>
+  <li>Read point data with information about trees.</li>
+  <li>Read polygon data with information about Vancouver parks.</li>
+  <li>Overlay the points and polygons using the PointOnAreaOverlayer.</li>
+  <li>Use list attributes to store the values of all tree points within each park.</li>
+</ul>
+<h2 id="1-open-fme-workbench">
+  <span>1) Open FME Workbench</span>
+</h2>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank">starting workspace</a> <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank"></a><strong><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Workspaces/AdvancedDataTransformation/park_trees_start.fmwt" rel="noreferrer noopener" target="_blank"></a></strong>in FME Workbench (2021.0 or later). The workspace is set up so you can inspect the source data on the first run.</p>
+<h2 id="2-run-the-workspace-and-inspect-the-data">
+  <span>2) Run the Workspace and Inspect the Data</span>
+</h2>
+<p>Run the workspace and view the data in Visual Preview or the Data Inspector. Note how some parks contain multiple point features. For example, China Creek Park North contains two coincident trees, as shown in the Table View:</p>
+<p><img src="images/1644277215826.png" class="image image-block image-center" alt="Viewing the two trees of China Creek Park in Visual Preview" />For the next steps, we won’t need to inspect the source data anymore, so right-click the pink bookmark titled <em>Initial Data Inspection </em>and click <em>Disable All Objects in Bookmark.</em> Right-click the data inspector output called <em>Result </em>and enable it<em>.</em></p>
+<h2 id="3-set-point-on-area-overlayer-parameters-merge-attributes">
+  <span>3) Set PointOnAreaOverlayer Parameters: Merge Attributes</span>
+</h2>
+<p>Double-click the PointOnAreaOverlayer to open its parameters. By default, the checkboxes under <em>Attribute Accumulation </em>are unchecked, which means the area and point attributes are not being merged and no list attributes are being created. Check <em>Merge Attributes</em>.</p>
+<p><img src="images/1644277252844.png" class="image image-block image-center" alt="Merge Attributes, don't generate lists" /></p>
+<p>Click OK to close the parameters.</p>
+<h2 id="4-run-the-workspace">
+  <span>4) Run the Workspace</span>
+</h2>
+<p>Run the workspace and inspect China Creek Park North again, which contains two tree points. The PointOnAreaOverlayer adds an <code>_overlaps</code> attribute that counts the number of points in each area. In the Feature Information pane, we can see that it has two overlaps, but attributes from only one of the tree species have been added:</p>
+<p><img src="images/1644277315400.png" class="image image-block image-center" alt="Attributes from one tree species" /><br />This is the result of merging the incoming features. To include all trees in a given park, we will need to create a list.</p>
+<h2 id="5-set-point-on-area-overlayer-parameters-generate-list">
+  <span>5) Set PointOnAreaOverlayer Parameters: Generate List</span>
+</h2>
+<p>Open the PointOnAreaOverlayer parameters and uncheck <em>Merge Attributes</em>. Instead, check<em> Generate List on Output ‘Area’</em>. Name the list <code>_trees</code> and use <em>Selected Attributes </em>to select the first six attributes.<br /><img src="images/1644277421197.png" class="image image-block image-center" alt="Don't Merge Attributes, Generate List on Area" /><br /><br />Click OK to close the parameters.</p>
+<h2 id="6-run-the-workspace">
+  <span>6) Run the Workspace</span>
+</h2>
+<p>Run the workspace and inspect China Creek Park North again. The Feature Information pane shows a list attribute, <code>_trees{}</code>, which contains information from both tree points in the park:<br /><img src="images/1644277446469.png" class="image image-block image-center" alt="Tree list" /><br /><br />We successfully used the PointOnAreaOverlayer to create a list called <code>_trees{}</code>, which stores the values of multiple tree points that fall within each park polygon. Note how each numbered list element contains the same set of attributes: <code>CommonName</code>, <code>Diameter</code>, etc.</p>
+<h2 id="next-steps">
+  <span>Next Steps</span>
+</h2>
+<p>The next step is to process and analyze the data. For example, a TestFilter can be used to filter out parks that contain no tree points, and then list manipulation transformers can be used for tasks like the following:<br /> </p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Operation</strong></td>
+      <td><strong>Transformer</strong></td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Count the number of trees in each park</td>
+      <td colspan="1" rowspan="1">ListElementCounter</td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Find the maximum tree diameter</td>
+      <td colspan="1" rowspan="1">ListSorter &amp; ListIndexer</td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Find the count of each species</td>
+      <td colspan="1" rowspan="1">ListHistogrammer</td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Create a list of species</td>
+      <td colspan="1" rowspan="1">ListConcatentaor</td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Find which parks have an Oak tree</td>
+      <td colspan="1" rowspan="1">ListSearcher</td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Create a table of park trees with the park name</td>
+      <td colspan="1" rowspan="1">ListExploder</td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Find the average tree height in a park</td>
+      <td colspan="1" rowspan="1">ListSummer</td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="1">Find the minimum/maximum of tree diameters</td>
+      <td colspan="1" rowspan="1">ListRangeExtractor</td>
+    </tr>
+  </tbody>
+</table>
+<p>You can learn to use these transformers in the next unit.</p>
