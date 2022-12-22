@@ -1,0 +1,161 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you'll be able to:</p>
+<ul>
+  <li>Add a Generic Writer to a workspace.</li>
+  <li>Set the initial format of a Generic Writer.</li>
+  <li>Create a Choice with Alias parameter that prompts for a writer format.</li>
+  <li>Use a Choice with Alias parameter for the Generic Writer output format.</li>
+  <li>Use a feature type fanout on fme_feature_type to return features to their original layer.</li>
+  <li>Use a .zip extension to create zipped output datasets.</li>
+</ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/CommunityMapping/CommunityMap.gdb.zip" rel="noreferrer noopener" target="_blank">Community Map File Geodatabase</a>
+    <ul>
+      <li style="margin-left:20px">If your computer has FMEData2022, the file path is C:\FMEData2022\Data\CommunityMapping\CommunityMap.gdb</li>
+    </ul>
+  </li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-let-the-user-choose-the-output-format-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a>
+    <ul>
+      <li style="margin-left:20px">C:\Users\sam.walker_safe\Documents\GitHub\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-let-the-user-choose-the-output-format-complete.fmw</li>
+    </ul>
+  </li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>As the resident FME expert, you are often asked to translate data (mainly the community map) between formats. You realize that it would be much simpler if you created a workspace to do this - regardless of format - and let the end users translate the data themselves. In the future, this would make an excellent use for an FME Server Data Download service, but for now, we'll let the users run the workspace in FME Workbench. Your task is to create a workspace to translate Community Mapping data to a format of the end-user's choice and zip it.</p>
+<h2 id="1-start-workbench">
+  <span>1) Start Workbench</span>
+</h2>
+<p>Start FME Workbench (2022.1 or later) and begin with an empty canvas. Select Readers &gt; Add Reader from the menu bar and add the following:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Reader Format</strong></td>
+      <td>Esri Geodatabase (File Geodb Open API)</td>
+    </tr>
+    <tr>
+      <td><strong>Reader Dataset</strong></td>
+      <td>C:\FMEData2022\Data\CommunityMapping\CommunityMap.gdb <em>or </em><br />https://s3.amazonaws.com/FMEData/FMEData2022/Data/CommunityMapping/CommunityMap.gdb.zip</td>
+    </tr>
+    <tr>
+      <td><strong>Workflow Options</strong></td>
+      <td>Single Merged Feature Type</td>
+    </tr>
+  </tbody>
+</table>
+<p>By selecting the single merged feature type option, we will have a workspace that is nice and compact, plus it will allow the user to select which tables they want to read from the source.</p>
+<p>Click <strong>OK</strong> to close the dialog and add the reader.</p>
+<h2 id="2-add-writer">
+  <span>2) Add Writer</span>
+</h2>
+<p>Select Writers &gt; Add Writer from the menu bar and add a Generic Writer:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Writer Format</strong></td>
+      <td>Generic (Any Format)</td>
+    </tr>
+    <tr>
+      <td><strong>Writer Dataset</strong></td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td><strong>Writer Parameters</strong></td>
+      <td>Output Format: Esri Shapefile</td>
+    </tr>
+    <tr>
+      <td><strong>Add Feature Types</strong></td>
+      <td>Feature Type Definition: Automatic</td>
+    </tr>
+  </tbody>
+</table>
+<p>You don’t have to select an output location, but you will have to open the parameters dialog and set an original output format; so do that and select a format like Esri Shapefile.</p>
+<p>In the "Add Feature Types" section of the dialog, select Automatic for feature type definitions:</p>
+<p><img src="images/1671729538222.png" class="image image-block image-center" alt="Adding a Generic writer" /></p>
+<p>Click <strong>OK</strong>, and the Feature Type Properties dialog for the new writer will open automatically. Set the Geometry field to fme_any. This will allow any data to be written to this feature type:</p>
+<p><img src="images/1671729580158.png" class="image image-block image-center" alt="Using fme_any for Geometry" /></p>
+<p>Click <strong>OK</strong> to close the dialog and add the new feature type. Connect it to the source feature type. When you make the connection, the attribute schema will automatically be updated to match the connected reader feature type:</p>
+<p><img src="images/1671729612292.png" class="image image-block image-center" alt="Attributes update when using Automatic mode" /></p>
+<h2 id="3-check-user-parameters">
+  <span>3) Check User Parameters</span>
+</h2>
+<p>Look in the Navigator window at the user parameters that were created automatically with the reader and writer:</p>
+<p><img src="images/1671729636843.png" class="image image-block image-center" alt="Automatically-created User Parameters" /></p>
+<p>The parameter for SourceDataset_FILEGDB is something we won’t ever need (this translation will always use the same dataset) ,so delete it.</p>
+<p>Another automatically created parameter is called Feature Types to Read. This is very useful because when the user runs the workspace, they will be prompted to select which tables to read from the source Geodatabase, so keep this parameter.</p>
+<p>Similarly, keep the Destination Dataset parameter.</p>
+<p>The Output Format parameter is interesting. Double-click on it as if you were going to set a value. Notice that the "More Formats..." option in the drop-down list opens up the complete FME formats list:</p>
+<p><img src="images/1671729738060.png" class="image image-block image-center" alt="Setting the Output Format parameter" /></p>
+<p>It wouldn’t be fair to the end-user to expose so many formats when they don’t need to see or select most of them. It would be better to restrict this list. So, delete this user parameter, and we’ll create a new - more restrictive - one.</p>
+<h2 id="4-add-user-parameter">
+  <span>4) Add User Parameter</span>
+</h2>
+<p>Add a new User Parameter by right-clicking on User Parameters and selecting Manage User Parameters...</p>
+<p>In the dialog that opens, click the Plus button and choose to add a Choice parameter. Configure it as follows:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Parameter Identifier</strong></td>
+      <td>OutputFormat</td>
+    </tr>
+    <tr>
+      <td><strong>Published</strong></td>
+      <td>Yes (checked)</td>
+    </tr>
+    <tr>
+      <td><strong>Required</strong></td>
+      <td>Yes (checked)</td>
+    </tr>
+    <tr>
+      <td><strong>Prompt</strong></td>
+      <td>Select Output Format:</td>
+    </tr>
+  </tbody>
+</table>
+<p>For the <em>choice configuration</em> field, click the Import button and choose Writer Formats. Select a handful of the most common spatial formats, such as Esri Shapefile, AutoCAD DWG, GML, and MapInfo TAB, then click <strong>OK</strong>.</p>
+<p>Then click <strong>OK</strong> until all the dialogs are closed.</p>
+<h2 id="5-link-parameter">
+  <span>5) Link Parameter</span>
+</h2>
+<p>Now, in the Navigator window, expand the parameters for the Generic Writer. Locate the Output Format parameter. Right-click it and choose Link to User Parameter.</p>
+<p>Select the newly created OutputFormat parameter and click <strong>OK</strong>:</p>
+<p><img src="images/1671729791042.png" class="image image-block image-center" alt="Linking Generic Writer to the new OutputFormat user parameter with restricted choices" /></p>
+<p>Now when the workspace is run, the choice of the output format will be among these few:</p>
+<p><img src="images/1671729821973.png" class="image image-block image-center" alt="Using the restricted options for Output Format" /></p>
+<h2 id="6-set-fanout-using-a-format-attribute">
+  <span>6) Set Fanout using a Format Attribute</span>
+</h2>
+<p>The final task we can do here is to output the features to their original table. To do this, we need to know where they came from, and that is obtained from a format attribute called <em>fme_feature_type</em>.</p>
+<p>Inspect the properties for the writer feature type. Set a fanout by choosing <em>fme_feature_type</em> as the attribute supplying the feature type name.</p>
+<p><img src="images/1671729858082.png" class="image image-block image-center" alt="Setting feature type name using fme_feature_type" /></p>
+<h2 id="7-save-and-run-workspace">
+  <span>7) Save and Run Workspace</span>
+</h2>
+<p>Save the workspace and then run it with the prompt option set. When prompted, select some source tables to read (include at least the GarbageSchedule plus one other).</p>
+<p>Then for Destination Generic (Any Format) Folder, we will create a zipped folder to contain all of our files. Set the location of an output folder (such as C:\FMEData2022\Output\Training), then at the end, type:</p><pre>    \CommunityMapping.zip</pre>
+<p>This will create a zipped file called CommunityMapping.</p>
+<p>Finally, set Esri Shapefile as the format to write:</p>
+<p><img src="images/1671729942234.png" class="image image-block image-center" alt="Setting the Destination parameter to write a zipped file" /></p>
+<p>Click the Run button to run the translation. Examine the output folder. A zipped folder has been created which contains all the selected tables in Shapefile format:</p>
+<p><img src="images/1671729972213.png" class="image image-block image-center" alt="Selected tables have been written to Shapefile format" /></p>
+<p>Now you have a solution that almost anyone can open and run for themselves. Also, if you published the workspace to FME Server, users could run the workspace and have access to the same user parameters and options.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Did you notice that FME handled the different geometry types and output the files with the geometry as part of the name? It’s a Shapefile format thing. FME can never – and will never – write more than one geometry type to the same Shapefile .shp file.<br /><br />The one drawback with the output is that each Shapefile has <strong>all</strong> of the attributes of <strong>all</strong> of the source tables. To avoid that, you would need to use a dynamic translation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

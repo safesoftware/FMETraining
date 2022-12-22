@@ -10,40 +10,34 @@
 <h2 id="the-generic-writer">
   <span>The Generic Writer</span>
 </h2>
-<p>The Generic writer allows FME to reroute output to any FME writer dynamically when a translation is run. The name of the true writer is supplied as an argument to the Generic Writer.</p>
-<p>The Generic writer allows translations and transformations to be completely specified independent of output format, and is very useful for solving problems where the schemas and transformations are known at design time, but the output format is not.</p>
+<p>The Generic writer allows FME to reroute output to any FME writer dynamically when a translation is run. The actual writer's name is supplied as an argument to the Generic Writer.</p>
+<p>The Generic writer allows translations and transformations to be specified entirely independent of the output format and is very useful for solving problems where the schemas and transformations are known at design time, but the output format is not.</p>
 <p>A Generic Writer is used in the same way as any other writer; by specifying the format in the Add Reader (or Generate Workspace) dialog:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.031.SettingGenericWriter.png" alt="Generic format in the Add Writer dialog" class="image image-block image-center" /></p>
+<p><img src="images/1671728625398.png" class="image image-block image-center" alt="Setting a Writer to Generic" /></p>
 <p>There the destination dataset is specified as a folder. FME does not know the format to be written yet and so will not know whether it is file-based or folder-based.</p>
 <p>The format required to be written can be specified by the author through a parameter when the writer is added:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.032.GenericWriterSetFormat.png" alt="Generic Writer parameters" class="image image-block image-center" /></p>
-<p>Output format can also be set by the author in the Navigator window, or the end-user can specify it at runtime using an automatically created user parameter:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.033.GenericWriterUserParameter.png" alt="Set output format" class="image image-block image-center" /></p>
+<p><img src="images/1671728636076.png" class="image image-block image-center" alt="Setting the default Output Format" /></p>
+<p>The output format can also be set by the author in the Navigator window, or the end-user can specify it at runtime using an automatically created user parameter:</p>
+<p><img src="images/1671728659973.png" class="image image-block image-center" alt="Setting Output Format in the Translation Parameter Values dialog" /></p>
 <p>That way a single writer can be made to write any format of data, the format being chosen by the end-user at runtime.</p>
 <h2 id="tips-for-using-the-generic-writer">
   <span>Tips for Using the Generic Writer</span>
 </h2>
-<h2 id="geometry">
-  <span>Geometry</span>
-</h2>
+<p><strong>Geometry</strong></p>
 <p>The Generic writer supports the full range of point, line, polyline, arc, ellipse, rectangle, rounded rectangle, region (polygon), text, null, and raster geometric data. Similarly, it supports the full range of attribute types. Individual writers may be unable to support all data types, and errors may result if unresolvable incompatibilities are encountered.</p>
-<p>The Generic writer will allow different types of geometry to be written to an single output feature type – if the true writer at run-time does not allow this, separate output feature types will be created by appending a geometry-name suffix to the base feature type in order to separate features with different geometries from each other. For example, if the Esri Shapefile writer was chosen at run-time as the target writer, and a single feature type called rivers was set up to accommodate multiple geometries, then any linear features sent to the rivers feature type would end up in a shapefile named rivers_line.shp, and any point features would be sent to rivers_point.shp.</p>
-<h2 id="feature-type-definitions">
-  <span>Feature Type Definitions</span>
-</h2>
-<p>The output feature type definitions for the Generic writer are usually explicitly specified, but the writer also offers a <em>Dynamic Schema</em> setting, in which the output features’ definitions are based on schema information from the workspace’s source readers.</p>
+<p>The Generic writer will allow different types of geometry to be written to a single output feature type – if the true writer at run-time does not allow this, separate output feature types will be created by appending a geometry-name suffix to the base feature type to separate features with different geometries from each other. For example, if the Esri Shapefile writer was chosen at run-time as the target writer, and a single feature type called rivers was set up to accommodate multiple geometries, any linear features sent to the rivers feature type would end up in a shapefile named rivers_line.shp, and any point features would be sent to rivers_point.shp.</p>
+<p><strong>Feature Type Definitions</strong></p>
+<p>The output feature type definitions for the Generic writer are usually explicitly specified. But, the writer also offers a <em>Dynamic Schema</em> setting, in which the output features’ definitions are based on schema information from the workspace’s source readers.</p>
 <p>For more information on this setting in Workbench, see <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!FeatureTypeProperties/workspaces_dynamic_about.htm" rel="noreferrer noopener" target="_blank">About Dynamic Workspaces</a>.</p>
-<h2 id="writing-to-multiple-formats">
-  <span>Writing to Multiple Formats</span>
-</h2>
-<p>When the Generic writer is used, it is sometimes useful to pre-configure parameters that are specific to individual output formats. For example, to write to a Design file, a seed file must be specified.</p>
-<p>To do this, add an additional writer to a workspace. This causes Workbench to think that there is more than one output format, and forces Workbench to create a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/multiwriter/multiwriter.htm" rel="noreferrer noopener" target="_blank">Multiwriter</a> for the workspace. The first writer in the multi-writer will be the Generic writer, and this one should have all the output feature types. The second writer will have no feature types, but will be used to communicate any format-specific writer settings to the Generic writer, when that format is used as the format for the Generic writer.</p>
-<p>If the Generic writer is configured to write to a format requiring a filename as a dataset, the Generic writer will turn the output folder into a filename by appending a file extension to the last portion of the folder name. When format-specific settings are present, this extension is taken from the dataset specified for the specific format. The rest of the dataset is ignored.</p>
+<p><strong>Writing to Multiple Formats</strong></p>
+<p>When the Generic writer is used, it is sometimes helpful to pre-configure parameters specific to individual output formats. For example, a seed file must be specified to write a Design file.</p>
+<p>To do this, add an additional writer to a workspace. This causes Workbench to think that there is more than one output format and forces Workbench to create a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/multiwriter/multiwriter.htm" rel="noreferrer noopener" target="_blank">Multiwriter</a> for the workspace. The first writer in the multi-writer will be the Generic writer, and this one should have all the output feature types. The second writer will have no feature types but will be used to communicate any format-specific writer settings to the Generic writer when that format is used for the Generic writer.</p>
+<p>Suppose the Generic writer is configured to write to a format requiring a filename as a dataset. In that case, the Generic writer will turn the output folder into a filename by appending a file extension to the last portion of the folder name. When format-specific settings are present, this extension is taken from the dataset specified for the specific format. The rest of the dataset is ignored.</p>
 <h2 id="notes">
   <span>Notes</span>
 </h2>
 <ul>
-  <li>You can only specify one output format in the Generic writer when you set up a workspace. You can publish the format as a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/published_private_parameters.htm" rel="noreferrer noopener" target="_blank">Published Parameter</a>, and then select the output format each time the workspace runs.</li>
+  <li>You can only specify one output format in the Generic writer when you set up a workspace. You can publish the format as a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/published_private_parameters.htm" rel="noreferrer noopener" target="_blank">Published Parameter</a> and select the output format each time the workspace runs.</li>
   <li>You can also set up one dedicated writer for multiple output formats and use a <a href="https://www.safe.com/transformers/tester/" rel="noreferrer noopener" target="_blank">Tester</a>/<a href="https://www.safe.com/transformers/test-filter/" rel="noreferrer noopener" target="_blank">TestFilter</a> to route features to the desired writer (for example, based on a published parameter).</li>
   <li>The <a href="https://community.safe.com/s/global-search/%40uri#q=%22generic%20writer%22&amp;sort=relevancy&amp;f:@commonsource=[FME%20Community]" rel="noreferrer noopener" target="_blank">FME Community</a> contains some information about using Generic writers.</li>
 </ul>
@@ -55,7 +49,7 @@
           <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
           <div class="mediaBd">
             <div class="message-media-content">
-              <p>Generic Readers and Writers by nature only deal with a flexible format, but can also be set up to be flexible with layers using a Merge Filter or Fanout.<br />However, each dataset being read must have the same attribute schema. Additionally, each dataset written receives an identical attribute schema. This part is not flexible.<br />Flexible attribute schemas require the use of either Automatic Attribute Definitions or a Dynamic Translation.</p>
+              <p>Generic Readers and Writers only deal with a flexible format but can also be set up to be flexible with layers using a Merge Filter or Fanout.<br />However, each dataset being read must have the same attribute schema. Additionally, each dataset written receives an identical attribute schema. This part is not flexible.<br />Flexible attribute schemas require using either Automatic Attribute Definitions or a Dynamic Translation.</p>
             </div>
           </div>
         </div>
