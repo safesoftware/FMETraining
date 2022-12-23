@@ -1,0 +1,97 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Understand why dynamic reading is simpler than dynamic writing.</li>
+  <li>List the three major components of a schema as defined in FME Workbench.</li>
+  <li>Control schema definition using the Schema Sources parameter on writer feature types.</li>
+  <li>Control schema definition using a resource reader.</li>
+</ul>
+<h2 id="schema-handling-in-dynamic-translations">
+  <span>Schema Handling in Dynamic Translations</span>
+</h2>
+<p>Checking the feature type properties for a dynamic translation reveals the checkboxes that turn on this behavior.</p>
+<p>For a reader, all that is happening is the merge feature-type setting is turned on:</p>
+<p><img src="images/1671752049409.png" class="image image-block image-center" alt="Setting a Merge Feature Type on a reader feature type" /></p>
+<p>Unchecking that box turns off the entire behavior, and there are not many parameters to adjust. However, for a writer, the dialog is a bit more complex:</p>
+<p><img src="images/1671752074509.png" class="image image-block image-center" alt="The various elements of schema on a writer feature type" /></p>
+<p>The three components of schema - 1) feature type, 2) attributes, and 3) geometry - all have different ways in which they can be set.</p>
+<h2 id="dynamic-feature-types">
+  <span>Dynamic Feature Types</span>
+</h2>
+<p>There are three main components of a schema:</p>
+<ul>
+  <li>Feature Type</li>
+  <li>Attributes</li>
+  <li>Geometry</li>
+</ul>
+<p>This unit examines feature types and how a workspace author can change the feature types written in a dynamic translation.</p>
+<p><strong>Defining Feature Type Names</strong></p>
+<p>In static writer feature types, the feature type name is usually a fixed value. However, it can also be defined by an attribute (or string constructed from attributes). We call that a Fanout.</p>
+<p>In a dynamic translation, a fanout is set automatically. By default, an FME attribute called <em>fme_feature_type</em> is used as the feature type name:</p>
+<p><img src="images/1671752246269.png" class="image image-block image-center" alt="Default writer feature type fanout used in dynamic workspaces" /></p>
+<p><strong>fme_feature_type</strong> is an FME attribute that stores the name of the original feature type on incoming features. It makes sense to default to this attribute because all data is written to the same feature type as it came from, and we get an output duplicating the input.</p>
+<p>However, should you wish, there's no reason why you can't use a different attribute to define a different set of output feature types:</p>
+<p><img src="images/1671752439537.png" class="image image-block image-center" alt="Defining a custom fanout" /></p>
+<p>For example, the author above uses NeighborhoodName to supply the name of the layers to create. Features might have the value Downtown, West End, or Fairview.</p>
+<p>FME looks in each Schema Source at runtime to find a Downtown table. It will use the schema of that table to define the attributes and geometry allowed in the dynamic writer's output.</p>
+<p><strong>Schema Requirements</strong></p>
+<p>Of course, be aware that this isn't the same as a fanout. A fanout creates layers from a static definition. A dynamic workspace fetches that definition from somewhere else (the schema source). Therefore, the feature type names <strong>must</strong> match a layer in that source schema.</p>
+<p>Failure to do so will lead to the data being dropped - instead of written - with a log message reporting the problem. For example, if the NeighborhoodName attribute had values (like "Downtown" or "Kitsilano") that didn't exist as a table in the schema source, there would be log messages like this:</p><pre>FileGDB Writer: A feature with feature type `Downtown' could not be written 
+FileGDB Writer: A feature with feature type `Kitsilano' could not be written</pre>
+<p>What the author must ensure is that the schema used contains these layers. Then the translation will proceed as expected.</p>
+<h2 id="schema-sources">
+  <span>Schema Sources</span>
+</h2>
+<p>By default, the writer schema in a dynamic translation is defined not in the workspace but by the source dataset. So whatever dataset is chosen as input defines the chosen output structure.</p>
+<p>However, the parameters in a writer feature type let us alter how that schema is defined. We can take the structure from an entirely different dataset to the source. Alternatively, we can individually define each component of our schema (Feature Types, Attributes, Geometry) in various ways.</p>
+<p>The writer feature type has a dynamic parameter labeled Schema Sources:</p>
+<p><img src="images/1671753154765.png" class="image image-block image-center" alt="Schema Sources parameter on a writer feature type" /></p>
+<p>This parameter defines from where the destination schema is going to be obtained. By default, this parameter is set to whatever source dataset is being read. That way, the output schema always duplicates the input.</p>
+<p>However, it can be set to use any reader dataset – in any format – as the source for the outgoing schema.</p>
+<p><img src="images/1671753210064.png" class="image image-block image-center" alt="Selecting schema sources" /></p>
+<p>For example, here, the workspace author is converting parks data to an Esri Geodatabase but has chosen an Excel spreadsheet as the required structure for the output dataset.</p>
+<p>If the data is fanned out (say by NeighborhoodName), then the Excel spreadsheet should have a different sheet for each neighborhood, and that structure is used as the schema of the output in this workspace.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Let me make it clear if it isn't already. In this scenario, the user is not writing to those Excel sheets; the user is writing to a File Geodatabase. However, the output Geodatabase receives the same schema (structure) as the matching Excel sheets.<br /><br />It's called “Dynamic” because the destination schema gets fetched at runtime. For example, if the Excel sheets were to change in structure and the workspace ran a second time, it would produce Geodatabase feature types to match the changes. The best part is that the workspace does not need updating to do so.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><strong>Resource Readers</strong></p>
+<p>The Schema Source parameter can be set to point to any reader as the source of a dynamic schema. However, in most cases, all we need from the dataset is the schema, not the data.</p>
+<p>This is where Resource Readers can be used.</p>
+<p>A Resource Reader is a reader that returns the schema of a dataset but no data. One is added using Readers &gt; Add Reader as Resource on the menubar:</p>
+<p><img src="images/1671753240830.png" class="image image-block image-center" alt="Readers &gt; Add Reader as a Resource" /></p>
+<p>Here the user adds an Excel spreadsheet database as a resource, and it appears in the Navigator window:</p>
+<p><img src="images/1671753263918.png" class="image image-block image-center" alt="A reader as a resource in the Navigator" /></p>
+<p>Once available, the resource reader can be used as the source of a schema for a dynamic writer.</p>
+<p><strong>Why Use an External Schema?</strong></p>
+<p>The main reason for using an external dataset schema is to adhere to a fixed standard. Perhaps the most beneficial aspect of this is that if the schema of the dataset changes, the workspace automatically uses it. There's no need to update the workspace manually because the output requirements have changed.</p>
+<p>However, as noted above, the written data must match that standard or risk being dropped. So, data transformation is likely required in the workspace to coax the input data into the required output schema.</p>
+<p>The <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/schemamapper.htm" rel="noreferrer noopener" target="_blank">SchemaMapper transformer</a> helps reconcile data with the required schema. It can also use an external lookup table, meaning that the dynamic workspace can be changed to meet any required output schema without having to edit in Workbench!</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>Geometry will be discussed shortly. However, for now, be aware that permitted geometry types are (by default) obtained from the schema source. If the schema source changes, you may not want its geometry type.</p>
+            <p>Therefore, set Geometry to "First Feature Defines Geometry Type" to avoid issues.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/3.11.DynamicSchemaSources.html" target="_blank" rel="noreferrer noopener"></a><a href="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/3.13.DynamicGeometryHandling.html" rel="noreferrer noopener" target="_blank"><br /></a></p>

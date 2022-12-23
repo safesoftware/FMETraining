@@ -1,0 +1,84 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>d</li>
+</ul>
+<h2 id="dynamic-geometry">
+  <span>Dynamic Geometry</span>
+</h2>
+<p>In this section, we'll examine how you can decide which geometries are valid for a particular feature type.</p>
+<h2 id="schema-geometry-definition">
+  <span>Schema Geometry Definition</span>
+</h2>
+<p>The geometry permitted in an output dataset depends on the format used. Some formats allow any geometry - or mix of geometries - to exist in a feature type.</p>
+<p>However, some formats do not allow a mix of geometries in a single feature type, and that can cause problems.</p>
+<p>For example, a standard (static) Geodatabase writer feature type allows you to pick the geometry allowed in that file:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.055.NonDynamicGeometrySetting.png" alt class="image image-block image-center" /></p>
+<p>In a dynamic workspace, this changes. The geometry type can be chosen manually, depending on the first feature, or depending on the chosen schema definition:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.056.DynamicGeometrySetting.png" alt class="image image-block image-center" /></p>
+<p>In Schema Definition mode, and when the data being read provides the schema, then the permitted geometry is a duplicate of that source dataset's schema.</p>
+<p>But when the Schema Source parameter is changed to point to another dataset, then the permitted geometry is defined by that dataset's schema.</p>
+<p>If the geometry of the data to be written is different from that schema, and the destination format does not support multiple geometry types, then features would be dropped instead of written.</p>
+<hr />
+<h2 id="fixed-geometry-definition">
+  <span>Fixed Geometry Definition</span>
+</h2>
+<p>Even in a dynamic translation, the workspace author may set the dynamic schema parameter for permitted geometry back to a fixed value. For example, the author could choose geodb_polygon (for a Geodatabase) or shape_polygon (for a Shapefile).</p>
+<p>This will override the geometry defined by the chosen schema source, so that polygon features (but only polygon features) can be written.</p>
+<hr />
+<h2 id="first-feature-geometry-definition">
+  <span>First Feature Geometry Definition</span>
+</h2>
+<p>The other option for defining geometry type is First Feature Defines Geometry Type.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.057.FirstFeatureGeometrySetting.png" alt class="image image-block image-center" /></p>
+<p>Geometry type can be difficult to handle in a dynamic translation because there is a degree of uncertainty about what geometry types might be in the source data, and how well they will match up to the geometry types specified in the source schema. However, this same uncertainty makes it difficult to set a fixed geometry definition.</p>
+<p>The First Feature Defines Geometry Type option solves this. When selected, the first feature to arrive at the writer gets to set the geometry type. That way the author does not need to know in advance what geometry is being processed or what geometry the schema permits.</p>
+<p>For example, if the first feature is a polygon, then the geometry type for that feature type is set to polygon only; subsequent features destined for the same feature type are refused if they do not have the same polygon geometry.</p>
+<hr />
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td>FME Lizard says…</td>
+    </tr>
+    <tr>
+      <td>If you've understood everything so far about dynamic translations, without having to read each section at least twice, then you are doing very well. This is a very advanced topic, and not everyone understands it the first time.<br /><br />To summarize, all of these settings allow us to create an output dataset whose schema is defined not by the source data, but in multiple other ways.<br /><br />If you can keep that idea in your head when faced with schema handling beyond the usual static workspace, you'll know what functionality is required and can look it up in this manual or in the <a href="https://knowledge.safe.com/index.html" rel="noreferrer noopener" target="_blank">FME Knowledgebase</a>, and be able to figure out what techniques match your particular need.<br /><br />Also, remember this key table...<br />
+        <table class="featureTable sort_table">
+          <tbody class="tbody">
+            <tr>
+              <td><br /></td>
+              <td>I know the format</td>
+              <td>I don't know the format</td>
+              <td><br /></td>
+            </tr>
+            <tr>
+              <td>I know the feature types</td>
+              <td>Static</td>
+              <td>Generic + Static</td>
+              <td>I know the attributes</td>
+            </tr>
+            <tr>
+              <td>I don't know the feature types</td>
+              <td>Fanout</td>
+              <td>Generic + Fanout</td>
+              <td>I know the attributes</td>
+            </tr>
+            <tr>
+              <td>I know the feature types</td>
+              <td>Dynamic</td>
+              <td>Generic + Dynamic</td>
+              <td>I don't know the attributes</td>
+            </tr>
+            <tr>
+              <td>I don't know the feature types</td>
+              <td>Dynamic</td>
+              <td>Generic + Dynamic</td>
+              <td>I don't know the attributes</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
