@@ -1,0 +1,92 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Define schema from an external lookup table.</li>
+  <li>Define schema from a FeatureReader schema feature.</li>
+  <li>Define schema from a schema feature created in the workspace.</li>
+</ul>
+<h2 id="alternative-dynamic-schema-sources">
+  <span>Alternative Dynamic Schema Sources</span>
+</h2>
+<p>In general, the schema for a dynamic translation comes from either the source dataset itself or from a different dataset (such as the database table the data is being written to).</p>
+<p>However, there are other scenarios for providing the output schema:</p>
+<ul>
+  <li>A schema can come from a lookup table (text file or spreadsheet) in which definitions are stored</li>
+  <li>A schema can come from a schema feature created by a FeatureReader</li>
+  <li>A schema can come from a dynamically-defined schema feature created from a list of attributes in a workspace</li>
+</ul>
+<h2 id="table-based-schemas">
+  <span>Table-Based Schemas</span>
+</h2>
+<p>In this scenario, the output schema is stored as some form of a table in a text file or spreadsheet; for example:</p>
+<p><img src="images/1673641301989.png" class="image image-block image-center" alt="Storing schema as a table" /></p>
+<p>Here the author has listed a series of feature types, attributes, and geometry types that define the output schema. In FME they would use this schema by adding a Resource Reader. The format of the Resource Reader would be Schema (From Table):</p>
+<p><img src="images/1673641338853.png" class="image image-block image-center" alt="Adding a reader as a resource" /></p>
+<p>In the parameters dialog for this reader there are parameters to specify which fields in the table represent which parts of the schema:</p>
+<p><img src="images/1673641365745.png" class="image image-block image-center" alt="Specifying columns" /></p>
+<p>Geometry type is optional but used in this example.</p>
+<p>Attribute sequence is another optional parameter. It defines a field in the table that records the order that attributes should appear in.</p>
+<p>Then, of course, this reader must be used as the source for the output schema:</p>
+<p><img src="images/1673641376024.png" class="image image-block image-center" alt="Setting Schema Source as schema from table" /></p>
+<p>As always, the incoming attributes must be mapped to the outgoing schema. The best way here is the SchemaMapper transformer since it too can use a lookup table to create its mappings.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>A significant advantage of this method is that you don’t need to edit the workspace, or edit a dataset, to make schema changes. Once you change the output schema in the table, then that is automatically applied in the FME translation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="feature-reader-schema-feature">
+  <span>FeatureReader Schema Feature</span>
+</h2>
+<p>Explain</p>
+<h2 id="constructed-attribute-schemas">
+  <span>Constructed Attribute Schemas</span>
+</h2>
+<p>This scenario is a way to construct an attribute schema using lists in FME. The schema is defined by using attributes in the list, for example:</p>
+<p><img src="images/1673641387010.png" class="image image-block image-center" alt="Constructing a schema feature" /></p>
+<p>The writer is told to use this schema in preference to any others by selecting it as the Source Schema:</p>
+<p><img src="images/1673641398492.png" class="image image-block image-center" alt="Setting Schema Source to Schema From Schema Feature" /></p>
+<h2 id="fme-data-types">
+  <span>FME Data Types</span>
+</h2>
+<p>Both of the two preceding tools allow the user to define attribute type in an output schema. There are a set of valid datatypes in FME, which are as follows:</p>
+<table class="featureTable sort_table">
+  <thead class="thead sorted">
+    <tr>
+      <th scope="col">General Field Type</th>
+      <th scope="col">Specific Field Types</th>
+    </tr>
+  </thead>
+  <tbody class="tbody">
+    <tr>
+      <td>Character Fields</td>
+      <td>fme_varchar(width), fme_char(width), fme_char</td>
+    </tr>
+    <tr>
+      <td>Integer Fields</td>
+      <td>fme_uint8, fme_int16, fme_uint16, fme_int32, fme_uint32, fme_int64,fme_uint64</td>
+    </tr>
+    <tr>
+      <td>Numeric Fields</td>
+      <td>fme_decimal(width,decimal), fme_real32, fme_real64</td>
+    </tr>
+    <tr>
+      <td>Date-Time Fields</td>
+      <td>fme_datetime, fme_time, fme_date</td>
+    </tr>
+    <tr>
+      <td>Other Fields</td>
+      <td>fme_buffer, fme_boolean</td>
+    </tr>
+  </tbody>
+</table>
