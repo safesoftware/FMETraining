@@ -48,18 +48,41 @@
 <h2 id="feature-reader-schema-feature">
   <span>FeatureReader Schema Feature</span>
 </h2>
-<p>Explain</p>
+<p>A common source of schema for dynamic workspaces is the FeatureReader transformer. Because you can supply initiator features to control what the FeatureReader reads, you might not always know in advance what schema you will receive back. In those cases, you can use the &lt;Schema&gt; output port to send a schema feature to a dynamic writer feature type. This feature type can then use that feature, which contains a list of attributes and their types, to set the output schema.</p>
+<p>Consider this example. You might be reading querying an API that returns a list of URLs to attachments stored in CSV format. You then want to read those CSVs and write them out to a local folder, but you don't know the schema in advance. You can accomplish this with a FeatureReader. Your workspace might look like this:</p>
+<p><img src="images/1673652076875.png" class="image image-block image-center" alt="Example using schema features with the FeatureReader" /></p>
+<p>There are a few key settings behind this workspace:</p>
+<ul>
+  <li>The CSV reader in the FeatureReader has Feature Type Name(s) set to From File Name(s). This means the fme_feature_type attribute on the schema and data features will have the file name. That can then be used in the writer feature type to fanout the output into three separate CSVs.</li>
+  <li>The FeatureReader Output Ports parameter is set to Single Output Port. This is the &lt;Generic&gt; port. It will send all the received features out of this port. They are distinguished from one another by the value of their fme_feature_type attribute.</li>
+  <li>The writer feature type has the CSV File Name set to fme_feature_type and the Schema Source set to Schema From Schema Feature. This tells the writer feature type to use the schema from the features coming out of the FeatureReader's &lt;Schema&gt; port, and to split them into separate CSV files based on the feature type names.</li>
+</ul>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>You can learn more about working with schema features in the next module in this trail, <a href="https://safe.my.trailhead.com/content/safe/modules/construct-schema-dynamically-with-the-schemascanner" rel="noreferrer noopener" target="_blank">Construct Schema Dynamically with the SchemaScanner</a>.</p>
+            <p>For more on the specific kind of workflow shown in the example above, see <a href="https://community.safe.com/s/article/dynamic-workflow-tutorial-destination-schema-is-de-3" rel="noreferrer noopener" target="_blank">this article</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <h2 id="constructed-attribute-schemas">
   <span>Constructed Attribute Schemas</span>
 </h2>
-<p>This scenario is a way to construct an attribute schema using lists in FME. The schema is defined by using attributes in the list, for example:</p>
+<p>You can also manually construct schema features using lists in FME. The schema is defined by using attributes in the list, for example:</p>
 <p><img src="images/1673641387010.png" class="image image-block image-center" alt="Constructing a schema feature" /></p>
 <p>The writer is told to use this schema in preference to any others by selecting it as the Source Schema:</p>
 <p><img src="images/1673641398492.png" class="image image-block image-center" alt="Setting Schema Source to Schema From Schema Feature" /></p>
 <h2 id="fme-data-types">
   <span>FME Data Types</span>
 </h2>
-<p>Both of the two preceding tools allow the user to define attribute type in an output schema. There are a set of valid datatypes in FME, which are as follows:</p>
+<p>All of these methods allow the user to define attribute type in an output schema. There are a set of valid datatypes in FME, which are as follows:</p>
 <table class="featureTable sort_table">
   <thead class="thead sorted">
     <tr>
