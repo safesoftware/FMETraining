@@ -10,7 +10,7 @@
 <h2 id="alternative-dynamic-schema-sources">
   <span>Alternative Dynamic Schema Sources</span>
 </h2>
-<p>In general, the schema for a dynamic translation comes from either the source dataset itself or from a different dataset (such as the database table the data is being written to).</p>
+<p>Generally, the schema for a dynamic translation comes from either the source dataset itself or from a different dataset (such as the database table where FME is writing the data).</p>
 <p>However, there are other scenarios for providing the output schema:</p>
 <ul>
   <li>A schema can come from a lookup table (text file or spreadsheet) in which definitions are stored</li>
@@ -22,11 +22,11 @@
 </h2>
 <p>In this scenario, the output schema is stored as some form of a table in a text file or spreadsheet; for example:</p>
 <p><img src="images/1673641301989.png" class="image image-block image-center" alt="Storing schema as a table" /></p>
-<p>Here the author has listed a series of feature types, attributes, and geometry types that define the output schema. In FME they would use this schema by adding a Resource Reader. The format of the Resource Reader would be Schema (From Table):</p>
+<p>Here the author has listed a series of feature types, attributes, and geometry types that define the output schema. In FME, they would use this schema by adding a Resource Reader. The format of the Resource Reader would be Schema (From Table):</p>
 <p><img src="images/1673641338853.png" class="image image-block image-center" alt="Adding a reader as a resource" /></p>
-<p>In the parameters dialog for this reader there are parameters to specify which fields in the table represent which parts of the schema:</p>
+<p>In the parameters dialog for this reader, there are parameters to specify which fields in the table represent which parts of the schema:</p>
 <p><img src="images/1673641365745.png" class="image image-block image-center" alt="Specifying columns" /></p>
-<p>Geometry type is optional but used in this example.</p>
+<p>The geometry type is optional but used in this example.</p>
 <p>Attribute sequence is another optional parameter. It defines a field in the table that records the order that attributes should appear in.</p>
 <p>Then, of course, this reader must be used as the source for the output schema:</p>
 <p><img src="images/1673641376024.png" class="image image-block image-center" alt="Setting Schema Source as schema from table" /></p>
@@ -48,14 +48,14 @@
 <h2 id="feature-reader-schema-feature">
   <span>FeatureReader Schema Feature</span>
 </h2>
-<p>A common source of schema for dynamic workspaces is the FeatureReader transformer. Because you can supply initiator features to control what the FeatureReader reads, you might not always know in advance what schema you will receive back. In those cases, you can use the &lt;Schema&gt; output port to send a schema feature to a dynamic writer feature type. This feature type can then use that feature, which contains a list of attributes and their types, to set the output schema.</p>
+<p>A common source of the schema for dynamic workspaces is the FeatureReader transformer. Because you can supply initiator features to control what the FeatureReader reads, you might not always know what schema you will receive back in advance. In those cases, you can use the &lt;Schema&gt; output port to send a schema feature to a dynamic writer feature type. This feature type can then use that feature, which contains a list of attributes and their types, to set the output schema.</p>
 <p>Consider this example. You might be reading querying an API that returns a list of URLs to attachments stored in CSV format. You then want to read those CSVs and write them out to a local folder, but you don't know the schema in advance. You can accomplish this with a FeatureReader. Your workspace might look like this:</p>
 <p><img src="images/1673652076875.png" class="image image-block image-center" alt="Example using schema features with the FeatureReader" /></p>
-<p>There are a few key settings behind this workspace:</p>
+<p>There are a few critical settings behind this workspace:</p>
 <ul>
-  <li>The CSV reader in the FeatureReader has Feature Type Name(s) set to From File Name(s). This means the fme_feature_type attribute on the schema and data features will have the file name. That can then be used in the writer feature type to fanout the output into three separate CSVs.</li>
+  <li>The CSV reader in the FeatureReader has Feature Type Name(s) set to From File Name(s). This means the fme_feature_type attribute on the schema and data features will have the file name. That can then be used in the writer feature type to fanout the output into three separate CSVs with the correct file names.</li>
   <li>The FeatureReader Output Ports parameter is set to Single Output Port. This is the &lt;Generic&gt; port. It will send all the received features out of this port. They are distinguished from one another by the value of their fme_feature_type attribute.</li>
-  <li>The writer feature type has the CSV File Name set to fme_feature_type and the Schema Source set to Schema From Schema Feature. This tells the writer feature type to use the schema from the features coming out of the FeatureReader's &lt;Schema&gt; port, and to split them into separate CSV files based on the feature type names.</li>
+  <li>The writer feature type has the CSV File Name set to fme_feature_type and the Schema Source set to Schema From Schema Feature. This tells the writer feature type to use the schema from the features coming out of the FeatureReader's &lt;Schema&gt; port and to split them into separate CSV files based on the feature type names.</li>
 </ul>
 <div class="box message info">
   <div class="inner">
@@ -65,7 +65,7 @@
         <div class="mediaBd">
           <div class="message-media-content">
             <p>You can learn more about working with schema features in the next module in this trail, <a href="https://safe.my.trailhead.com/content/safe/modules/construct-schema-dynamically-with-the-schemascanner" rel="noreferrer noopener" target="_blank">Construct Schema Dynamically with the SchemaScanner</a>.</p>
-            <p>For more on the specific kind of workflow shown in the example above, see <a href="https://community.safe.com/s/article/dynamic-workflow-tutorial-destination-schema-is-de-3" rel="noreferrer noopener" target="_blank">this article</a>.</p>
+            <p>See <a href="https://community.safe.com/s/article/dynamic-workflow-tutorial-destination-schema-is-de-3" rel="noreferrer noopener" target="_blank">this article</a> for more on the specific kind of workflow shown in the example above. You can also view the example here <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DesktopAdvanced/dynamic-schema-feature-example.fmw" rel="noreferrer noopener" target="_blank">dynamic-schema-feature-example.fmw</a> (C:\FMEData2022\Resources\DesktopAdvanced\dynamic-schema-feature-example.fmw).</p>
           </div>
         </div>
       </div>
