@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this unit, you'll be able to:</p>
 <ul>
   <li>Create a dynamic workspace with multiple readers.</li>
   <li>Add a Resource Reader.</li>
@@ -27,8 +27,8 @@
   <span>Introduction</span>
 </h2>
 <p>In previous exercises, you worked with the community mapping dataset, which the planning department uses for various community mapping tasks.</p>
-<p>However, as time has moved on, this dataset has become out of date. The planning department, therefore, wants to start building a new community mapping dataset. The dataset will have new data but use the existing schema where possible. They also – to use an open standard – want a format change to GML.</p>
-<p>Currently, two source datasets have been identified as being required in the new community mapping "database." They are fire halls (source format: GML) and city parks (source format: MapInfo TAB). There was already parks data in the community map, but this new dataset consists of polygon geometry, not point. The fire halls data is entirely new for the community map.</p>
+<p>However, as time has passed, this dataset has become outdated. The planning department, therefore, wants to start building a new community mapping dataset. The dataset will have new data but use the existing schema where possible. They also – to use an open standard – want a format change to GML.</p>
+<p>The department has identified two source datasets as required in the new community mapping "database." They are fire halls (source format: GML) and city parks (source format: MapInfo TAB). There was already parks data in the community map, but this new dataset consists of polygon geometry, not point. The fire halls data is entirely new for the community map.</p>
 <p>So, let's create a new workspace to generate this new dataset.</p>
 <h2 id="1-start-workbench">
   <span>1) Start Workbench</span>
@@ -58,11 +58,11 @@
     </tr>
   </tbody>
 </table>
-<p>The dynamic option is chosen so we can define our writer schema using a different dataset than the one we are reading.</p>
+<p>We chose the dynamic option so we can define our writer schema using a different dataset than the one we are reading.</p>
 <h2 id="2-add-reader">
   <span>2) Add Reader</span>
 </h2>
-<p>So far, so good. Now let’s add a reader for the new parks data by selecting Readers &gt; Add Reader and using the following details:</p>
+<p>So far, so good. Now let's add a reader for the new parks data by selecting Readers &gt; Add Reader and using the following details:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
     <tr>
@@ -71,7 +71,7 @@
     </tr>
     <tr>
       <td><strong>Reader Dataset</strong></td>
-      <td>C:\FMEData2022\Data\Parks\Parks.tab</td>
+      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Parks.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2022/Data/Parks.zip</a> or C:\FMEData2022\Data\Parks\Parks.tab</td>
     </tr>
     <tr>
       <td><strong>Workflow Options</strong></td>
@@ -81,11 +81,11 @@
 </table>
 <p>Connect the new reader feature type up to the existing writer feature type, and add an annotation for the reader feature types for easier recognition:</p>
 <p><img src="images/1673635251989.png" class="image image-block image-center" alt="New reader feature type attached" /></p>
-<p>Ensure caching is on and run the workspace. This will load up the source dataset caches. Inspect the two source datasets in Visual Preview to become familiar with them.</p>
+<p>Ensure caching is on and run the workspace. This step will load up the source dataset caches. Inspect the two source datasets in Visual Preview to become familiar with them.</p>
 <h2 id="3-add-resource-reader">
   <span>3) Add Resource Reader</span>
 </h2>
-<p>One of the requirements is to use the existing community mapping schema where possible. With the fire halls, this isn’t possible since that data never existed in the original CommunityMapping Geodatabase. However, the parks dataset did exist in that Geodatabase, so we’ll need to use that schema.</p>
+<p>One of the requirements is to use the existing community mapping schema where possible. With the fire halls, this isn't possible since that data never existed in the original CommunityMapping Geodatabase. However, the parks dataset did exist in that Geodatabase, so we'll need to use that schema.</p>
 <p>So, select Readers &gt; Add Reader as Resource and, when prompted, enter the following details:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
@@ -113,26 +113,26 @@
     </div>
   </div>
 </div>
-<p>Click OK, and the reader is added as a Resource:</p>
+<p>Click OK, and the Navigator shows the reader as a Resource:</p>
 <p><img src="images/1673639990634.png" class="image image-block image-center" alt="FILEGBD Resource Reader" /></p>
 <h2 id="4-adjust-dynamic-parameters">
   <span>4) Adjust Dynamic Parameters</span>
 </h2>
-<p>Now we need to make sure that the resource schema is being used.</p>
-<p>Inspect the properties for the writer feature type. Click the Schema Sources browse button. Put a checkmark against CommunityMap. Ensure Parks is NOT checked but that FireHalls is:</p>
+<p>Now we need to ensure that the writer feature type uses the resource schema.</p>
+<p>Inspect the properties for the writer feature type. Click the Schema Sources browse button. Put a checkmark against CommunityMap. Ensure you have <strong>not </strong>checked Parks but <strong>have </strong>checked FireHalls:</p>
 <p><img src="images/1673635339382.png" class="image image-block image-center" alt="Setting CommunityMap as the schema source" /></p>
-<p>Inspect the other dynamic parameters. Since we are writing both points and polygons, for some formats, we might have to change a Geometry setting. But since GML can cope with both geometry types, we won't have to take any action; there will not even be a parameter for geometry type! Accept the parameter changes to close the dialog.</p>
+<p>Inspect the other dynamic parameters. Since we are writing both points and polygons, we might have to change a Geometry setting for some formats. But since GML can cope with both geometry types, we won't have to take any action; there will not even be a parameter for geometry type! Accept the parameter changes to close the dialog.</p>
 <h2 id="5-save-and-run-workspace">
   <span>5) Save and Run Workspace</span>
 </h2>
 <p>Save the workspace and then use Run &gt; Rerun Entire Workspace.</p>
 <p>Inspect the output. There should be two layers: one for fire halls and the other for parks. The parks dataset should have the schema from the CommunityMapping Geodatabase (not the MapInfo TAB Parks dataset), including attributes for ParkName, ParkAddress, and ParkURL (even if there is no data to fill some fields yet):</p>
 <p><img src="images/1673635357675.png" class="image image-block image-center" alt="Inspecting the output and noting missing attribute values" /></p>
-<p>Notice that it also has OBJECTID, which came from the Geodatabase, and we don’t need.</p>
+<p>Notice that it also has OBJECTID, which came from the Geodatabase, and we don't need it.</p>
 <h2 id="6-delete-attribute">
   <span>6) Delete Attribute</span>
 </h2>
-<p>Revisit the writer feature type parameters. Click the button for Attributes to Remove and type OBJECTID into the first row of the dialog that opens. You won’t be able to select it from the drop-down list because it comes from a resource reader, not a real reader:</p>
+<p>Revisit the writer feature type parameters. Click the button for Attributes to Remove and type OBJECTID into the first row of the dialog that opens. You won't be able to select it from the drop-down list because it comes from a resource reader, not a real reader:</p>
 <p><img src="images/1673635380353.png" class="image image-block image-center" alt="Removing OBJECTID" /></p>
 <p>Click OK to close this dialog, but don't close the feature type dialog yet.</p>
 <h2 id="7-add-attribute">
@@ -142,8 +142,8 @@
 <p>So, click on the User Attributes tab and add this new attribute. Make it a 30-character string.</p>
 <p><img src="images/1673635394402.png" class="image image-block image-center" alt="Adding the LastUpdatedBy attribute" /></p>
 <p>As you can see, there is no need to change the attribute definition mode - it should stay as <em>dynamic</em>.</p>
-<h2 id="9-re-run-workspace">
-  <span>9) Re-Run Workspace</span>
+<h2 id="9-rerun-workspace">
+  <span>9) Rerun Workspace</span>
 </h2>
 <p>Save the workspace and rerun it.</p>
-<p>Inspect the output. Notice that OBJECTID will not appear as an attribute. LastUpdatedBy does appear - on both Parks and Firehalls - albeit that it doesn’t have a value yet. We'll fix that problem in a later exercise.</p>
+<p>Inspect the output. Notice that OBJECTID will not appear as an attribute. LastUpdatedBy does appear - on both Parks and Firehalls - albeit that it doesn't have a value yet. We'll fix that problem in a later exercise.</p>

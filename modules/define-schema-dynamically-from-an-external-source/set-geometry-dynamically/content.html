@@ -1,10 +1,10 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this unit, you'll be able to:</p>
 <ul>
   <li>Set a static geometry type on a writer feature type.</li>
-  <li>Define dynamic geometry from schema definition.</li>
+  <li>Define dynamic geometry from a schema definition.</li>
   <li>Define dynamic geometry from the first feature.</li>
 </ul>
 <h2 id="dynamic-geometry">
@@ -20,26 +20,26 @@
 <p><img src="images/1673388246767.png" class="image image-block image-center" alt="Defining geometry on a writer feature type" /></p>
 <p>In a dynamic workspace, this changes. The geometry type can be chosen manually, depending on the first feature, or depending on the chosen schema definition:</p>
 <p><img src="images/1673388278252.png" class="image image-block image-center" alt="Defining Geometry From Schema Definition" /></p>
-<p>In Schema Definition mode, when the data being read provides the schema, the permitted geometry is a duplicate of that source dataset's schema.</p>
+<p>In Schema Definition mode, when the read data provides the schema, the permitted geometry duplicates that source dataset's schema.</p>
 <p>But when the Schema Source parameter is changed to point to another dataset, then the permitted geometry is defined by that dataset's schema.</p>
-<p>If the geometry of the data to be written is different from that schema and the destination format does not support multiple geometry types, then features would be dropped instead of written.</p>
+<p>If the geometry of the written data is different from that schema and the destination format does not support multiple geometry types, then FME drops features instead of writing them.</p>
 <h2 id="fixed-geometry-definition">
   <span>Fixed Geometry Definition</span>
 </h2>
 <p>Even in a dynamic translation, the workspace author may set the dynamic schema parameter for permitted geometry back to a fixed value. For example, the author could choose geodb_polygon (for a Geodatabase) or shape_polygon (for a Shapefile).</p>
-<p>This will override the geometry defined by the chosen schema source, so that polygon features (but only polygon features) can be written.</p>
+<p>This step overrides the geometry defined by the chosen schema source so that the writer writes only polygon features.</p>
 <h2 id="first-feature-geometry-definition">
   <span>First Feature Geometry Definition</span>
 </h2>
 <p>The other option for defining geometry type is First Feature Defines Geometry Type.</p>
 <p><img src="images/1673388310928.png" class="image image-block image-center" alt="Defining Geometry with First Feature Defines Geometry Type" /></p>
 <p>Geometry type can be challenging to handle in a dynamic translation because there is a degree of uncertainty about what geometry types might be in the source data and how well they will match up to the geometry types specified in the source schema. However, this same uncertainty makes it difficult to set a fixed geometry definition.</p>
-<p>The First Feature Defines Geometry Type option solves this. When selected, the first feature to arrive at the writer gets to set the geometry type. That way, the author does not need to know in advance what geometry is being processed or what geometry the schema permits.</p>
-<p>For example, if the first feature is a polygon, then the geometry type for that feature type is set to polygon only; subsequent features destined for the same feature type are refused if they do not have the same polygon geometry.</p>
+<p>The First Feature Defines Geometry Type option solves this. When selected, the first feature to arrive at the writer gets to set the geometry type. That way, the author does not need to know in advance what geometry the writer will encounter or what geometry the schema will permit.</p>
+<p>For example, if the first feature is a polygon, then the geometry type for that feature type is set to polygon only; the writer will refuse subsequent features destined for the same feature type if they do not have the same polygon geometry.</p>
 <h2 id="summary">
   <span>Summary</span>
 </h2>
-<p>If you've understood everything so far about dynamic translations without having to read each section at least twice, then you are doing very well. This is a very advanced topic; not everyone understands it the first time.<br /><br />To summarize, these settings allow us to create an output dataset whose schema is defined not by the source data but in multiple other ways.<br /><br />Remember this: when faced with schema handling beyond the usual static workspace, you'll know what functionality is required and can refer to the documentation, this module, or the <a href="https://community.safe.com/s/knowledge-base" rel="noreferrer noopener" target="_blank">FME Knowledge Base</a>. These resources will help you find the proper techniques for your particular need.</p>
+<p>If you've understood everything so far about dynamic translations without having to read each section at least twice, then you are doing very well. This topic is very advanced; not everyone understands it the first time.<br /><br />To summarize, these settings allow us to create an output dataset whose schema is defined not by the source data but in multiple other ways.<br /><br />Remember this: when faced with schema handling beyond the usual static workspace, you'll know what functionality is required and can refer to the documentation, this module, or the <a href="https://community.safe.com/s/knowledge-base" rel="noreferrer noopener" target="_blank">FME Knowledge Base</a>. These resources will help you find the proper techniques for your particular need.</p>
 <p>Also, remember this key table:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
