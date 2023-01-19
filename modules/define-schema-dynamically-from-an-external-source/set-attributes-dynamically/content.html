@@ -2,9 +2,9 @@
   <h2 id="learning-objectives">
     <span>Learning Objectives</span>
   </h2>
-  <p>After completing this unit, you’ll be able to:</p>
+  <p>After completing this unit, you'll be able to:</p>
   <ul>
-    <li>Set attribute names and types on a dynamic writer feature type using the Schema Sources parameter.</li>
+    <li>Set attribute names and types using the Schema Sources parameter on a dynamic writer feature type.</li>
     <li>Override schema source attributes on a dynamic writer feature type using the Schema Definition Name parameter.</li>
     <li>Add attributes to a dynamic writer feature type with the User Attributes tab.</li>
     <li>Remove attributes from a dynamic writer feature type using the Attributes to Remove parameter. </li>
@@ -16,16 +16,16 @@
   <h2 id="defining-attribute-names">
     <span>Defining Attribute Names</span>
   </h2>
-  <p>This is probably the most complex part of dynamic translations, so let's take the explanation step by step, going back over some old ground where necessary.</p>
-  <p>As we've seen, in a dynamic translation, each incoming feature has an attribute (either <em>fme_feature_type</em> or another attribute) that specifies to which feature type the data is to be written.</p>
+  <p>Defining attribute names is probably the most complex part of dynamic translations, so let's take the explanation step by step, going back over some old ground where necessary.</p>
+  <p>As we've seen, in a dynamic translation, each incoming feature has an attribute (either <em>fme_feature_type</em> or another attribute) that tells FME which feature type to use when writing the data.</p>
   <p>The Schema Sources parameter defines where those feature types exist and uses them to define the attributes and geometry types written to the output.</p>
   <p><img src="images/1671755017890.png" class="image image-block image-center" alt="Dynamic Schema Definition - Schema Sources parameter on a writer feature type" /></p>
-  <p>Here, for example, we have a set of parks data being written to Esri Geodatabase. Notice the output feature type (table) name is set to the NeighborhoodName attribute.</p>
-  <p>The schema is obtained from an Excel spreadsheet added as a Resource Reader. If, for a particular feature, NeighborhoodName = "Strathcona," then the writer looks for a sheet in the Excel spreadsheet file called Strathcona and writes the feature using the same attributes as that table.</p>
-  <p>However... underneath the Schema Source parameter in this dialog is a setting for Schema Definition Name. The Schema Definition Name overrides attribute definitions:</p>
+  <p>For example, here we are writing a set of parks data to Esri Geodatabase. Notice that we set the output feature type (table) name to the NeighborhoodName attribute.</p>
+  <p>The writer will obtain the schema from an Excel spreadsheet added as a Resource Reader. If NeighborhoodName = "Strathcona" for a particular feature, the writer looks for a sheet in the Excel spreadsheet file called Strathcona and writes the feature using the same attributes as that table.</p>
+  <p>However, underneath the Schema Source parameter in this dialog is a setting for Schema Definition Name. The Schema Definition Name overrides attribute definitions:</p>
   <p><img src="images/1671755181676.png" class="image image-block image-center" alt="Using Schema Definition Name to override attribute definitions" /></p>
   <p>For example, the user still specifies NeighborhoodName to provide the feature type to be written but overrides the attributes by saying they must come from a table called Parks.</p>
-  <p>What's interesting is that the feature type specified by NeighborhoodName no longer needs to exist; i.e. the "Strathcona" sheet does not have to exist to get a "Strathcona" feature type in the output Geodatabase. It is enough that the Parks sheet does exist.</p>
+  <p>What's interesting is that the feature type specified by NeighborhoodName no longer needs to exist; i.e., the "Strathcona" sheet does not have to exist to get a "Strathcona" feature type in the output Geodatabase. It is enough that the Parks sheet does exist.</p>
   <div class="box message info">
     <div class="inner">
       <div class="bd">
@@ -33,7 +33,7 @@
           <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
           <div class="mediaBd">
             <div class="message-media-content">
-              <p>In the above example, the Schema Definition Name was a fixed value; i.e. all output feature types got the same attribute definitions. However, the Schema Definition Name can also come from an attribute, meaning one attribute defines the feature type name, and another attribute defines a feature type from which the attribute schema is to come!</p>
+              <p>In the above example, the Schema Definition Name was a fixed value; i.e., all output feature types got the same attribute definitions. However, the Schema Definition Name can also come from an attribute, meaning one attribute defines the feature type name, and another attribute defines a feature type from which the attribute schema is to come!</p>
             </div>
           </div>
         </div>
@@ -43,7 +43,7 @@
   <h2 id="adding-or-deleting-attributes">
     <span>Adding or Deleting Attributes</span>
   </h2>
-  <p>Besides specifying which attribute to use, sometimes - even in a dynamic translation - you need to add or delete specific attributes. This is very simple to do.</p>
+  <p>Besides specifying which attribute to use, sometimes - even in a dynamic translation - you need to add or delete specific attributes. This step is easy to do.</p>
   <h2 id="adding-a-new-attribute">
     <span>Adding a New Attribute</span>
   </h2>
@@ -56,10 +56,10 @@
   </h2>
   <p>Deleting an existing attribute is done through the dynamic Schema Definition dialog. At the foot of that dialog is a field for removing attributes:</p>
   <p><img src="images/1671755274524.png" class="image image-block image-center" alt="Attributes to Remove parameter" /></p>
-  <p>The edit [...] button opens a dialog in which to select or manually enter attributes that are in the source schema but that you don’t want in the output:</p>
+  <p>The edit [...] button opens a dialog in which to select or manually enter attributes that are in the source schema but that you don't want in the output:</p>
   <p><img src="images/1671755327678.png" class="image image-block image-center" alt="Selecting attributes to remove" /></p>
   <p>Here the user manually enters Country (an attribute from the external schema) to remove it from the output. They also select RefParkId not to be output.</p>
   <p>The result of all of the above changes is as follows:</p>
   <p><img src="images/1671755354719.png" class="image image-block image-center" alt="Results of adding and removing attributes" /></p>
-  <p>The feature gets various attributes from the Excel schema (City had to be set manually because the input had no such attribute) and adds ParkArea manually. Country and RefParkId have either been removed or chosen not to appear in the output schema.</p>
+  <p>The feature gets various attributes from the Excel schema (the user had to set City manually because the input had no such attribute) and adds ParkArea manually. Country and RefParkId have either been removed or chosen not to appear in the output schema.</p>
 </div>
