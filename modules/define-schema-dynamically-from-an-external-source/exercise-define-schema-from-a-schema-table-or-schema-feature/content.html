@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this unit, you'll be able to:</p>
 <ul>
   <li>Set up a spreadsheet for use as a dynamic translation schema.</li>
   <li>Use the Schema (from Table) reader to read a schema from a spreadsheet.</li>
@@ -46,7 +46,7 @@
   <span>1) Inspect Spreadsheet</span>
 </h2>
 <p>Open and examine the spreadsheet <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DesktopAdvanced/CommunityMapSchema.xlsx" rel="noreferrer noopener" target="_blank">CommunityMapSchema.xlsx</a> (or C:\FMEData2022\Resources\DesktopAdvanced\CommunityMapSchema.xlsx).</p>
-<p>If you don’t have Excel, open it in the FME Data Inspector and switch to Table View.</p>
+<p>If you don't have Excel, open it in the FME Data Inspector and switch to Table View.</p>
 <p><img src="images/1673653632337.png" class="image image-block image-center" alt="Schema defined in an Excel table" /></p>
 <p>The table has schema definitions for Firehalls, Parks, and Zones feature types. You can see how each new table has a series of attributes defined for it (each attribute is a separate row in the spreadsheet), including attribute type and attribute order. Geometry type only needs to be defined once per table.</p>
 <h2 id="2-start-workbench">
@@ -104,7 +104,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>You can give the fields in such a lookup table any name you desire. In this example, we used the same name as the parameter to make the relationship obvious. Some of them (Geometry Type and Attribute Sequence) are optional and don’t have to be part of the schema definition if not needed.</p>
+            <p>You can give the fields in such a lookup table any name you desire. In this example, we used the same name as the parameter to make the relationship obvious. Some of them (Geometry Type and Attribute Sequence) are optional and don't have to be part of the schema definition if not needed.</p>
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@
   <span>5) Set Dynamic Parameters</span>
 </h2>
 <p>Now inspect the feature type parameters for the writer feature type.</p>
-<p>Under the User Attributes tab, remove the LastUpdatedBy attribute, as we’ve added this to the spreadsheet definition for each type and no longer need it here.</p>
+<p>Under the User Attributes tab, remove the LastUpdatedBy attribute, as we've added this to the spreadsheet definition for each type and no longer need it here.</p>
 <p>In the Parameters tab, click the Schema Sources edit button. Uncheck FireHalls and check CommunityMapSchema [SCHEMA_FROM_TABLE]:</p>
 <p><img src="images/1673654516191.png" class="image image-block image-center" alt="Setting Schema Source to Schema From Table" /></p>
 <p>Accept the changes to these parameters.</p>
@@ -142,4 +142,77 @@
 </h2>
 <p>Save the workspace and then run it.</p>
 <p>Inspect the output. Notice that FME has written all three feature types, and their attribute schema matches what we defined in the Excel spreadsheet, including the LastUpdatedBy field for each one.</p>
-<p>However, we still have not instructed FME on how to link the new, externally defined schema and the existing one. For this reason, all of the new attributes defined in the external schema table have missing values in the output data. We’ll examine how to address this issue using the SchemaMapper in the next exercise.</p>
+<p>However, we still have not instructed FME on how to link the new, externally defined schema and the existing one. For this reason, all of the new attributes defined in the external schema table have missing values in the output data. We'll examine how to address this issue using the SchemaMapper in the next exercise.</p>
+<h2 id="8-use-a-feature-reader-and-schema-feature">
+  <span>8) Use a FeatureReader and Schema Feature</span>
+</h2>
+<p>Before we address the schema mapping issue, let's try using a FeatureReader and schema feature to define the output schema in a dynamic workspace.</p>
+<p>We'll keep the existing objects in the workspace and use them in the next exercise. But let's add a new Creator and FeatureReader to show a different way to configure a dynamic workspace.</p>
+<p>Connect the Creator to the FeatureReader and configure the FeatureReader like this:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Reader Format</strong></td>
+      <td>MapInfo TAB (MITAB)</td>
+    </tr>
+    <tr>
+      <td><strong>Reader Dataset</strong></td>
+      <td><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2022/Data/Zoning.zip</a>,<a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Parks.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2022/Data/Parks.zip</a> or C:\FMEData2022\Data\Zoning\Zones.tab,C:\FMEData2022\Data\Parks\Parks.tab</td>
+    </tr>
+    <tr>
+      <td><strong>Output Ports</strong></td>
+      <td>Single Output Port</td>
+    </tr>
+  </tbody>
+</table>
+<p>Click OK and run your workspace. This section of your workspace should look like this:</p>
+<p><img src="images/1674518334280.png" class="image image-block image-center" alt="Creator and FeatureReader" /></p>
+<p>If you inspect the output ports, you will notice two things:</p>
+<ol>
+  <li>The &lt;Schema&gt; output port contains two schema features. They have unexposed attributes that describe this schema.</li>
+  <li>The &lt;Generic&gt; output port exports all the features from the two source datasets. They do not have exposed attributes. If you inspect them, you'll find they contain the source schema attributes as unexposed attributes. They also have the unexposed attribute fme_feature_type, which correctly names their source table, Parks or Zones.</li>
+</ol>
+<p>We can use these two sets of features to write our data using a generic writer.</p>
+<h2 id="9-add-and-configure-another-dynamic-writer">
+  <span>9) Add and Configure Another Dynamic Writer</span>
+</h2>
+<p>Use Writers &gt; Add Writer to add a writer. Configure it like this:</p>
+<table class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td><strong>Writer Format</strong></td>
+      <td>OGC GML (Geography Markup Language)<br /></td>
+    </tr>
+    <tr>
+      <td><strong>Writer Dataset</strong></td>
+      <td>C:\FMEData2022\Output\Training\NewCommunityMapSchemaFeature.gml<br /></td>
+    </tr>
+    <tr>
+      <td><strong>Feature Type Definition</strong></td>
+      <td>Dynamic (Advanced)</td>
+    </tr>
+  </tbody>
+</table>
+<p>Click OK to add the writer feature type. Move it next to your FeatureReader and connect it to the &lt;Schema&gt; and &lt;Generic&gt; ports.</p>
+<p><img src="images/1674600518487.png" class="image image-block image-center" alt="Writer added" /></p>
+<p>Double-click the writer feature type. You will see that it is automatically configured to use the fme_feature_type attribute to define the destination feature type names. That is correct. However, it is currently using the readers as Schema Sources. Click the ellipsis next to Schema Sources and choose only Schema From Schema Feature.</p>
+<p><img src="images/1674600691480.png" class="image image-block image-center" alt="Changing Schema Source" /></p>
+<p>Click OK twice to close the dialogs. </p>
+<h2 id="10-save-and-rerun-entire-workspace">
+  <span>10) Save and Rerun Entire Workspace</span>
+</h2>
+<p>Rerun the entire workspace. Inspect the output of the &lt;Dynamic&gt; writer feature type you just configured. You will find both the Parks and Zoning layers written out to GML with their original schemas.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>The schema feature method, as illustrated here, allows you to write out the results of any data read in by a FeatureReader without modifying the underlying schema or having to use a SchemaMapper. It's limited to a single format in this example, though you could combine it with a Generic writer or multiple writers to handle multiple output formats. We'll look more at using schema features in the next module in the trail, <a href="https://safe.my.trailhead.com/content/safe/modules/construct-schema-dynamically-with-the-schemascanner" rel="noreferrer noopener" target="_blank">Construct Schema Dynamically with the SchemaScanner</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

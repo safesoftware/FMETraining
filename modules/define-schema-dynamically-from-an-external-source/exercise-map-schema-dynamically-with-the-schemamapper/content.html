@@ -6,9 +6,50 @@
   <li>Understand the use cases for the SchemaMapper transformer.</li>
   <li>Map attributes in a dynamic workspace using a SchemaMapper transformer.</li>
 </ul>
+<h2 id="resources">
+  <span>Resources</span>
+</h2>
+<ul>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-map-schema-dynamically-with-the-schemamapper.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a>
+    <ul>
+      <li>If your computer has FMEData2022, the file path is C:\FMEData2022\Workspaces\AdvancedReadingAndWriting\exercise-map-schema-dynamically-with-the-schemamapper.fmw</li>
+    </ul>
+  </li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-map-schema-dynamically-with-the-schemamapper-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a>
+    <ul>
+      <li>C:\FMEData2022\Workspaces\AdvancedReadingAndWriting\exercise-map-schema-dynamically-with-the-schemamapper-complete.fmw</li>
+    </ul>
+  </li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Emergency/FireHalls.gml" rel="noreferrer noopener" target="_blank">FireHalls.gml</a>
+    <ul>
+      <li>C:\FMEData2022\Data\Emergency\FireHalls.gml</li>
+    </ul>
+  </li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DesktopAdvanced/CommunityMapSchema.xlsx" rel="noreferrer noopener" target="_blank">CommunityMapSchema.xlsx</a>
+    <ul>
+      <li>C:\FMEData2022\Resources\DesktopAdvanced\CommunityMapSchema.xlsx</li>
+    </ul>
+  </li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DesktopAdvanced/CommunityMapAdvancedSchema.xlsx" rel="noreferrer noopener" target="_blank">CommunityMapAdvancedSchema.xlsx</a>
+    <ul>
+      <li>C:\FMEData2022\Resources\DesktopAdvanced\CommunityMapSchema.xlsx</li>
+    </ul>
+  </li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DesktopAdvanced/CommunityMapAdvancedSchema.csv" rel="noreferrer noopener" target="_blank">CommunityMapAdvancedSchema.csv</a>
+    <ul>
+      <li>C:\FMEData2022 \Resources\DesktopAdvanced\CommunityMapAdvancedSchema.csv</li>
+    </ul>
+  </li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zoning.zip</a>
+    <ul>
+      <li>C:\FMEData2022\Data\Zoning\Zones.tab</li>
+    </ul>
+  </li>
+</ul>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
+<p>You may run into schema mapping issues if you define your schema using an external source. We saw this in the previous exercise, where the writer feature type could successfully adopt an externally-defined schema, but the schema of the features entering the feature type didn't match, so all the values were missing. You can address this problem using the <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/schemamapper.htm" rel="noreferrer noopener" target="_blank">SchemaMapper</a> transformer, which converts the existing schema of features to a new structure based on mappings defined in an external lookup table. It's a bit like mapping attributes manually using a transformer like the AttributeManager, but the advantage is you can define the mapping in an external source.</p>
 <h2 id="1-update-spreadsheet">
   <span>1) Update Spreadsheet</span>
 </h2>
@@ -25,7 +66,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>If you don't have Excel, instead of this step merely change the Resource Reader to use the advanced schema version of the file, C:\FMEData2019\Resources\DesktopAdvanced\CommunityMapAdvancedSchema.xlsx</p>
+            <p>If you don't have Excel, change the Resource Reader to use the advanced schema version of the file: C:\FMEData2022\Resources\DesktopAdvanced\CommunityMapAdvancedSchema.xlsx.</p>
           </div>
         </div>
       </div>
@@ -35,8 +76,8 @@
 <h2 id="2-update-spreadsheet-again">
   <span>2) Update Spreadsheet Again</span>
 </h2>
-<p>If you run the workspace now, it will run to completion, but there will be no values in the renamed fields of the FireHall table. That’s because FME had no way to tell how to map the source data to the new schema.</p>
-<p>We could just add an AttributeRenamer transformer to handle this change, but the better way is to use the SchemaMapper. That way it can be made a little more dynamic.</p>
+<p>If you run the workspace now, it will run to completion, but there are no values in the renamed fields of the FireHall table. That’s because FME had no way to tell how to map the source data to the new schema.</p>
+<p>We could add an AttributeRenamer transformer to handle this change, but the better way is to use the SchemaMapper. That way, the workspace is a little more dynamic.</p>
 <p>So, in sheet 2 of the spreadsheet, enter:</p>
 <table class="featureTable sort_table">
   <tbody class="tbody">
@@ -58,7 +99,7 @@
     </tr>
   </tbody>
 </table>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.234.Ex5.UpdatedSpreadsheetSheet2.png" alt class="image image-block image-center" /></p>
+<p><img src="images/1674605863022.png" class="image image-block image-center" alt="Schema mapping in Excel" /></p>
 <p>Then save the spreadsheet.</p>
 <div class="box message info">
   <div class="inner">
@@ -67,7 +108,7 @@
         <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>Again, if you don't have Excel the advanced version of the Excel file has the correct updates already made.</p>
+            <p>Again, if you don't have Excel, the advanced version of the Excel file already has the correct updates made.</p>
           </div>
         </div>
       </div>
@@ -77,12 +118,57 @@
 <h2 id="3-add-schema-mapper">
   <span>3) Add SchemaMapper</span>
 </h2>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-map-schema-dynamically-with-the-schemamapper.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> in FME Workbench (2022.1 or later), or continue using the workspace from the previous exercise.</p>
 <p>Add a SchemaMapper transformer to the workspace, connected to the output feature type:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.235.Ex5.WorkspaceWithSchemaMapper.png" alt class="image image-block image-center" /></p>
-<p>Inspect the SchemaMapper's parameters. It is a wizard, rather than a single dialog. In the format panel select the edited Excel file. In the next panel select Sheet 2 as the table to use.</p>
-<p>In the final panel, select + &gt; Attribute Map:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.236.Ex5.AddAttributeMap.png" alt class="image image-block image-center" /></p>
-<p>When prompted, select OldAttrName as the source field and NewAttrName as the Destination field. Check the box to Remove the original attributes (i.e. this is a renaming, not copying):</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced3AdvancedRW/Images/Img3.237.Ex5.SchemaMapperAttributeMapping.png" alt class="image image-block image-center" /></p>
-<p>What this does is tell FME to rename attributes with the <em>OldAttrName</em> to attributes with a <em>NewAttrName</em>. Click OK to close this dialog, then click Finish. Now save and rerun the workspace.</p>
-<p>Run the workspace. This time the output will have its attributes properly mapped. So now the planning department can translate their data, decide on the output schema, and map source to destination attributes dynamically; all by editing this one Excel spreadsheet. If either the existing source attributes change, they can be handled by editing the same spreadsheet.</p>
+<p><img src="images/1674605883023.png" class="image image-block image-center" alt="SchemaMapper added to the workspace" /></p>
+<p>Inspect the SchemaMapper's parameters. It is a wizard rather than a single dialog. Configure the Locate Schema Mapping Table step as follows:</p>
+<table style="width:100%" class="featureTable sort_table">
+  <tbody class="tbody">
+    <tr>
+      <td style="width:50.0000%"><strong>Format</strong><br /></td>
+      <td style="width:50.0000%">Microsoft Excel<br /></td>
+    </tr>
+    <tr>
+      <td style="width:50.0000%"><strong>Dataset</strong></td>
+      <td style="width:50.0000%"><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DesktopAdvanced/CommunityMapAdvancedSchema.xlsx" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DesktopAdvanced/CommunityMapAdvancedSchema.xlsx</a> or C:\FMEData2022\Resources\DesktopAdvanced\CommunityMapAdvancedSchema.xlsx<br /></td>
+    </tr>
+    <tr>
+      <td style="width:50.0000%"><strong>Parameters &gt; Sheets to Read</strong></td>
+      <td style="width:50.0000%">Uncheck Sheet1</td>
+    </tr>
+  </tbody>
+</table>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>You could typically specify the sheet in a separate step of the wizard, but a minor bug in FME 2022.1 means we have to specify the sheet in the reader parameters instead. This issue is fixed in FME 2023.0.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p>In the second panel, click the plus (+) icon and choose Attribute Map:</p>
+<p><img src="images/1674605904990.png" class="image image-block image-center" alt="Adding an Attribute Map" /></p>
+<p>When prompted, select OldAttrName as the source field and NewAttrName as the Destination field. For Source Attribute, choose Remove. This will remove the Source attributes (i.e., we are renaming, not copying):</p>
+<p><img src="images/1674858464183.png" class="image image-block image-center" alt="Filled out Create Attribute Map dialog" /></p>
+<p>These settings tell FME to rename attributes with the <em>OldAttrName</em> to attributes with a <em>NewAttrName</em>. Click OK to close this dialog, then click Finish. Now save and rerun the workspace.</p>
+<p>Run the workspace. This time the output will have its attributes properly mapped. So now the planning department can translate their data, decide on the output schema, and dynamically map source to destination attributes, all by editing this one Excel spreadsheet. If the existing source attributes change, they can be handled by editing the same spreadsheet.</p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>This example is simple. If you are interested in learning more advanced uses of the SchemaMapper, check out the <a href="https://community.safe.com/s/article/schemamapper-transformer-tutorial" rel="noreferrer noopener" target="_blank">Tutorial: SchemaMapper Transformer</a> article series.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
