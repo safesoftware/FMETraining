@@ -1,6 +1,6 @@
 # FME Training Content
 
-This repository contains Safe Software's training content, including archived course manuals (2016-2020) and content for the [FME Academy online learning platform](https://community.safe.com/s/academy).
+This repository contains Safe Software's training content, including archived course manuals (2016-2023) and content for the [FME Academy online learning platform](https://community.safe.com/s/academy).
 
 ## FME Academy Content
 
@@ -75,7 +75,7 @@ Partners are free to adapt and reuse this content according to the [License](LIC
 
 ## Data
 
-Training data is provided in the [FMEData repository](https://github.com/safesoftware/FMEData/). FME Academy workspaces and links point to an [S3-hosted version of the data](https://s3.amazonaws.com/FMEData/FMEData2021/index.html) where possible so that users do not have to download the entire FMEData repository to use the content.
+Training data is provided in the [FMEData repository](https://github.com/safesoftware/FMEData/). FME Academy workspaces and links point to an [S3-hosted version of the data](https://s3.amazonaws.com/FMEData/FMEData2022/index.html) where possible so that users do not have to download the entire FMEData repository to use the content.
 
 ## Archived Training Manuals
 
