@@ -15,7 +15,7 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation.zip" rel="noreferrer noopener" target="_blank">Feature_Linked_Annotation.zip</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation.zip" rel="noreferrer noopener" target="_blank">Feature_Linked_Annotation.zip</a></li>
 </ul>
 <h2 id="video">
   <span>Video</span>
@@ -61,9 +61,9 @@
     </div>
   </div>
 </div>
-<p>An XML workspace document<strong> </strong>is available from the Resources section above. The template file in this example is called <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/DESTINATION_GDB_TEMPLATE.XML" rel="noreferrer noopener" target="_blank">DESTINATION_GDB_TEMPLATE.XML</a> and will be used during the translation to apply the required schema to our destination geodatabase.</p>
+<p>An XML workspace document<strong> </strong>is available from the Resources section above. The template file in this example is called <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/DESTINATION_GDB_TEMPLATE.XML" rel="noreferrer noopener" target="_blank">DESTINATION_GDB_TEMPLATE.XML</a> and will be used during the translation to apply the required schema to our destination geodatabase.</p>
 <p>Zoning feature geometry and annotations are read from the TAB source file using the MapInfo TAB (MITAB) reader, providing the features and annotations for the destination feature classes (Zones and ZoneNames) in the geodatabase. The <code>ZoneName</code> attribute in the source data will provide the annotation values.<br /><br /><strong>2. Read Source Data - MapInfo TAB (MITAB)</strong></p>
-<p>Create a new workspace in FME Workbench (2021.1 or later) and add a <strong>MapInfo TAB (MITAB) </strong>reader to the canvas. Browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/Zones.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a> dataset and click OK to add the reader.<br /><img src="images/1638396144237.png" class="image image-block image-center" alt="Add Reader" /></p>
+<p>Create a new workspace in FME Workbench (2021.1 or later) and add a <strong>MapInfo TAB (MITAB) </strong>reader to the canvas. Browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/Zones.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a> dataset and click OK to add the reader.<br /><img src="images/1638396144237.png" class="image image-block image-center" alt="Add Reader" /></p>
 <p><strong>3. Inspect Source Data</strong></p>
 <p>Run the workspace and inspect the feature cache on the <strong>Zones</strong> reader type. It should look like this:</p>
 <p><img src="images/1638396107583.png" alt="Inspect Zones in Visual Preview" class="image image-block image-center" /></p>
@@ -72,7 +72,7 @@
 <p>Now we can write the data out. Add an <strong>Esri Geodatabase (File Geodb) </strong>writer to the canvas. Browse to a location to save the geodatabase and call it feature_linked_anno.gdb, then open the <strong>Parameters</strong>.</p>
 <p><img src="images/1638396506675.png" class="image image-block image-center" alt="Add writer" /></p>
 <p>As mentioned above, we’ll use an ArcGIS XML Workspace Document rather than create the geodatabase from scratch. This template was created by exporting it from an existing geodatabase. In this case, we created the template file from a geodatabase containing a feature class, feature-linked annotation class, and relationship class.</p>
-<p>In the Parameters, set the <strong>Import XML Workspace Document (Schema Only)</strong> to <a href="https://s3.amazonaws.com/FMEData/FMEData2021/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/DESTINATION_GDB_TEMPLATE.XML" rel="noreferrer noopener" target="_blank">DESTINATION_GDB_TEMPLATE.XML</a>, available from the Resources section. Next, set the <strong>Transaction Type </strong>to Edit Session. We can only edit these complex features in an Edit Session or Version. Then click <strong>OK</strong> twice to add the writer.</p>
+<p>In the Parameters, set the <strong>Import XML Workspace Document (Schema Only)</strong> to <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/Feature_Linked_Annotation/DESTINATION_GDB_TEMPLATE.XML" rel="noreferrer noopener" target="_blank">DESTINATION_GDB_TEMPLATE.XML</a>, available from the Resources section. Next, set the <strong>Transaction Type </strong>to Edit Session. We can only edit these complex features in an Edit Session or Version. Then click <strong>OK</strong> twice to add the writer.</p>
 <p><img src="images/1638726633674.png" class="image image-block image-center" alt="set the Import XML Workspace Document (Schema Only) to DESTINATION_GDB_TEMPLATE.XML" /></p>
 <p>Once the writer has been added to the canvas, connect it to the <strong>Zones</strong> reader feature type and double-click to open the parameters. Set the <strong>Geometry </strong>to geodb_annotation, then click <strong>OK</strong>.</p>
 <p><img src="images/1638726676152.png" class="image image-block image-center" alt="Set the Geometry to geodb_annotation" /></p>
