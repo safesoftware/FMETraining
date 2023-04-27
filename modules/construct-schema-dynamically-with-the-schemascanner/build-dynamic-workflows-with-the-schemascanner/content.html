@@ -1,0 +1,48 @@
+<h2 id="learning-objectives">
+  <span>Learning Objectives</span>
+</h2>
+<p>After completing this unit, you’ll be able to:</p>
+<ul>
+  <li>Define schema.</li>
+  <li>Explain the basics of how the SchemaScanner transformer works in dynamic workflows.</li>
+  <li>Understand the scenarios where the SchemaScanner is useful.</li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>With the SchemaScanner, you can easily extract and manipulate the schema of your datasets, tackling dynamic workspace issues such as schema standardization and <a href="https://www.safe.com/webinars/database-tips-tricks-strategies-for-detecting-and-handling-schema-drift/" rel="noreferrer noopener" target="_blank">schema drift</a>. How does it work? The SchemaScanner gives you a list attribute with attribute names and data types. Downstream in your workspace, you can use this list attribute to manipulate your schema and create flexible workflows. Instead of defining a fixed schema on your writers, you can use the schema from the list attribute to flexibly define the schema at runtime. Quality assurance and schema drift handling just got easier!</p>
+<h2 id="what-is-a-schema">
+  <span>What is a Schema?</span>
+</h2>
+<p>A schema, sometimes referred to as the "data model," can be described as the structure of a dataset or, more accurately, a formal definition of a dataset’s structure.</p>
+<p>Each dataset has its unique schema, which includes feature types, permitted geometries, user-defined attributes, and other rules that define or restrict its content. However, for most users, the most important aspect of schema is attribute names and data types.</p>
+<h2 id="using-the-schema-scanner">
+  <span>Using the SchemaScanner</span>
+</h2>
+<p>The SchemaScanner processes features and retrieves their schema by scanning for the attribute name and its data type. It will either scan all features or just a specified number of them. There’s also the option to exclude attributes using a Regular Expression to ensure a clean schema output.</p>
+<p>The resulting output is a new schema feature output via the &lt;Schema&gt; output port. This new feature is also given the special attribute and value: fme_schema_handling = ‘schema_only’, which allows the feature to be recognized by a dynamic writer as a schema feature. If you wish to continue using the original input features, these are passed via the Output port. </p>
+<div class="box message info">
+  <div class="inner">
+    <div class="bd">
+      <div class="media">
+        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <div class="mediaBd">
+          <div class="message-media-content">
+            <p>For more technical information on the SchemaScanner, check out the <a href="https://docs.safe.com/fme/2021.1/html/FME_Desktop_Documentation/FME_Transformers/Transformers/schemascanner.htm" rel="noreferrer noopener" target="_blank">documentation</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p><strong>Why you might want to use the SchemaScanner in your workspace:</strong><a name="whyyouwant" target="_blank" rel="noreferrer noopener"></a></p>
+<ul>
+  <li>You want to ensure your <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!FeatureTypeProperties/workspaces_dynamic_about.htm" rel="noreferrer noopener" target="_blank">dynamic writer</a> is receiving a valid schema</li>
+  <li>You don’t know the schema of incoming data and want to make sure it meets certain standards before being used in a dynamic writer</li>
+  <li>You want to modify the schema before it reaches the writer</li>
+</ul>
+<p><strong>Key things to remember:</strong><a name="keythings" target="_blank" rel="noreferrer noopener"></a></p>
+<ul>
+  <li>When used in a dynamic workspace, schema features should be output from the SchemaScanner first using the Output Schema Features Before Data parameter</li>
+  <li>Most schemas contain attributes you don’t need in your final output dataset, so be sure to use the Ignore Attributes Containing parameter</li>
+</ul>
