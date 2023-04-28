@@ -3,8 +3,91 @@
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li>Dd</li>
+  <li>Learn how adding additional input files affects dynamic workflows.</li>
+  <li>Use writer feature type and SchemaScanner parameters to create a dynamic fanout.</li>
+  <li>Set the SchemaScanner Empty Attributes parameter to control how empty attributes are handled when creating dynamic schemas.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
+<ul>
+  <li>Starting workspace<ul>
+      <li>If your computer has FMEData2022, the file path is C:\FMEData2022\Workspaces\AdvancedReadingAndWriting\exercise-build-dynamic-workflows-with-a-multi-dataset-schemascanner.fmw</li>
+    </ul>
+  </li>
+  <li>Complete workspace<ul>
+      <li>C:\FMEData2022\Workspaces\AdvancedReadingAndWriting\exercise-build-dynamic-workflows-with-a-multi-dataset-schemascanner-complete.fmw</li>
+    </ul>
+  </li>
+  <li>Greater Vancouver Food Bank.csv<ul>
+      <li>C:\FMEData2022\Resources\DynamicWorkflows\Data\Greater Vancouver Food Bank.csv</li>
+    </ul>
+  </li>
+</ul>
+<h2 id="introduction">
+  <span>Introduction</span>
+</h2>
+<p>At a basic level, the SchemaScanner is fairly simple to operate. However, more complex scenarios revolve around how the different parameters are used and the exact values of incoming data.</p>
+<p>The Empty attributes parameter controls the schema when incoming data has missing values:</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EJY" alt="SchemaScannerB1.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>However, this only applies to data where the entire dataset is missing a particular attribute value. In this dataset, for example, every value for MarketType is null. MergedAddress also has null values, but not for every record:</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EJd" alt="SchemaScannerB2.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>Given the above parameters, the output schema will not contain the MarketType field because there are no values at all for it:</p>
+<p><img src="images/1682700370238.png" class="image image-block image-center" alt="Attributes with some missing" style="width:500px" /></p>
+<p>However, MergedAddress <em>is </em>included because some records still do have values.</p>
+<p>Now, say, for example, that we wanted to include MarketType in the output even though there are no values. There are two alternatives to the Ignore option:</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EIv" alt="SchemaScannerB4.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>Because there are no data values, the SchemaScanner cannot scan the data to guess the data type. Instead, it can either use a default data type (a varchar of unknown length) or trace back through the workspace to find any clues to the data type.</p>
+<p>In this case, the reader itself has that information:</p>
+<p><img src="images/1682700251065.png" class="image image-block image-center" alt="Attributes with Width defined on the reader feature type" style="width:550px" /></p>
+<p>…so the SchemaScanner will use that and create an output schema where MarketType = varchar(22).</p>
+<h2 id="exercise">
+  <span>Exercise</span>
+</h2>
+<p>This exercise aims to add more data to the <a href="https://safe.my.trailhead.com/content/safe/modules/construct-schema-dynamically-with-the-schemascanner/exercise-build-dynamic-workflows-with-the-schemascanner" rel="noreferrer noopener" target="_blank">previous exercise's</a> output by merging different source data sets.</p>
+<h2 id="1-open-workspace">
+  <span>1. Open Workspace</span>
+</h2>
+<p>Continue with the workspace from the <a href="https://safe.my.trailhead.com/content/safe/modules/construct-schema-dynamically-with-the-schemascanner/exercise-build-dynamic-workflows-with-the-schemascanner" rel="noreferrer noopener" target="_blank">previous exercise</a> or open the starting workspace in FME Workbench (2022.1 or later). Now let's add the Vancouver Farmers Market CSV dataset, keeping the existing Cedar Cottage data. You can do this in one of two ways:</p>
+<p><strong>1a. Add a New CSV Reader.</strong></p>
+<p>Either use Reader &gt; Add Reader from the menu bar or drag/drop the CSV file into the workspace canvas. Connect the new feature type to the AttributeManager input port.</p>
+<p><strong>1b. Edit the Existing CSV Reader</strong></p>
+<p>In the Navigator window, double-click the Source CSV parameter for the existing CSV Reader. When it opens, click the drop-down arrow and choose Select Multiple Folders/Files:</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000003dSxK" alt="SchemaScannerB11.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>In the dialog, click Add Files and choose the file Vancouver Farmers Market CSV. Because the existing reader is dynamic, you won’t have to add a new feature type.</p>
+<h2 id="2-run-workspace">
+  <span>2. Run Workspace</span>
+</h2>
+<p>Run the workspace and inspect the output. You’ll notice that the Vancouver Farmers Market data has no values for MarketType, so their values are Null. Also, notice that the data has an extra field called Offerings, which Cedar Cottage is missing:</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EEj" alt="SchemaScannerB6.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>These fields were included in the output CSV, even though not all data possessed them. That’s because the SchemaScanner creates an inclusive schema, i.e., if only one feature possesses an attribute, it will be included in the output.</p>
+<h2 id="3-create-different-outputs-for-each-day">
+  <span>3. Create Different Outputs for Each Day</span>
+</h2>
+<p>Now let’s create a different file for each day of the week, i.e., we wish to divide food markets into different outputs depending on which day they take place.</p>
+<p>Open the parameters dialog for the writer feature type.</p>
+<p>Change the CSV File Name parameter from fme_feature_type to the Day attribute by clicking the drop-down arrow. </p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EKg" alt="SchemaScannerB7.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>Re-run the workspace and inspect the outputs in a Text Editor. </p>
+<p>In the Saturday and Sunday files, some fields have null values, but the fields still exist because not every record is null:</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000003dSxo" alt="SchemaScannerB12.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>In the Wednesday and Thursday files, some fields are entirely null. However, the fields still exist because there is only one output schema, and every output dataset uses it.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000003dSy8" alt="SchemaScannerB13.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>Let’s see how we could give each output a different schema.</p>
+<h2 id="4-update-schema-scanner-to-group-features">
+  <span>4. Update SchemaScanner to Group Features</span>
+</h2>
+<p>View the SchemaScanner parameters. Enable Group Processing, and under Group By, choose the Day attribute.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EKq" alt="SchemaScannerB8.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>Re-run the workspace. Notice that there are now four schema features, one per day of the week:</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EKv" alt="SchemaScannerB9.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>Notice that fme_feature_type_name - the attribute that sets the schema's name - defines the difference between each feature.</p>
+<p>Inspect the output. If a dataset was missing an entire attribute, then that attribute is now absent in the output. Each dataset has its own schema, and the SchemaScanner is set to Ignore Empty Attributes.</p>
+<h2 id="5-output-individual-schemas">
+  <span>5. Output Individual Schemas</span>
+</h2>
+<p>Finally, let’s say we wanted to give each output its own schema, but we didn’t want empty attributes to be ignored. How would we do that?</p>
+<p>View the SchemaScanner parameters again. Change the Empty Attributes parameter from “Ignore” to “Interpret Upstream Schema (Advanced).” Now FME will include those attributes, obtaining the information to create the schema from wherever it can find that upstream in the workspace.</p>
+<p>Once again, run the workspace and inspect the Schema features, particularly the one for Thursday markets.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DWyw&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040EL5" alt="SchemaScannerB10.png" style="font-family:&quot;Source Sans Pro&quot;;font-style:normal;font-weight:400" class="image image-block image-center" /></p>
+<p>Previously the Thursday market did not have a MarketType attribute in its schema. Now it does, even though all of the values are empty. The type is fme_varchar(22) because FME could determine that from the reader schema.</p>
