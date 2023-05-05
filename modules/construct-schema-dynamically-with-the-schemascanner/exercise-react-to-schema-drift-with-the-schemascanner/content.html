@@ -3,42 +3,42 @@
 </h2>
 <p>After completing this unit, you’ll be able to:</p>
 <ul>
-  <li>d</li>
-  <li>d</li>
+  <li>Route features that fail schema checks to different locations.</li>
+  <li>Build a schema change report using HTML transformers.</li>
 </ul>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-react-to-schema-drift-with-the-schemascanner.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-react-to-schema-drift-with-the-schemascanner.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a>
     <ul>
-      <li>If your computer has FMEData2022, the file path is C:\FMEData2022\Workspaces\AdvancedReadingAndWriting\exercise-react-to-schema-drift-with-the-schemascanner.fmw<a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-detect-schema-drift-with-the-schemascanner-complete.fmw" rel="noreferrer noopener" target="_blank"><br /></a></li>
+      <li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-react-to-schema-drift-with-the-schemascanner.fmw<a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-detect-schema-drift-with-the-schemascanner-complete.fmw" rel="noreferrer noopener" target="_blank"><br /></a></li>
     </ul>
   </li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AdvancedReadingAndWriting/exercise-react-to-schema-drift-with-the-schemascanner-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-react-to-schema-drift-with-the-schemascanner-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a>
     <ul>
-      <li>If your computer has FMEData2022, the file path is C:\FMEData2022\Workspaces\AdvancedReadingAndWriting\exercise-react-to-schema-drift-with-the-schemascanner-complete.fmw</li>
+      <li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-react-to-schema-drift-with-the-schemascanner-complete.fmw</li>
     </ul>
   </li>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DynamicWorkflows/Data/BikePaths_L.zip" rel="noreferrer noopener" target="_blank">BikePaths_L.zip</a>
     <ul>
-      <li>C:\FMEData2022\Resources\DynamicWorkflows\Data\BikePaths_L.zip </li>
+      <li>C:\FMEData\Resources\DynamicWorkflows\Data\BikePaths_L.zip </li>
     </ul>
   </li>
   <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/DynamicWorkflows/Data/BikePaths_L.zip" rel="noreferrer noopener" target="_blank">Updated_BikePaths_L.zip</a>
     <ul>
-      <li>C:\FMEData2022\Resources\DynamicWorkflows\Data\Updated_BikePaths_L.zip</li>
+      <li>C:\FMEDataResources\DynamicWorkflows\Data\Updated_BikePaths_L.zip</li>
     </ul>
   </li>
 </ul>
 <h2 id="exercise">
   <span>Exercise</span>
 </h2>
-<p>So far in our workflow, we’ve exposed the schemas of our datasets and compared them against each other to reveal which attributes have changed. In the next part of this exercise, we create a report on the changes in the schema. This report could be sent to users as part of an Automation or FME Server App if the data they submitted caused schema drift, or it could be run on multiple datasets regularly to test for and report on schema drift. The method is flexible and lets you create a system for monitoring for, and even correcting, drift.</p>
+<p>So far in our workflow, we’ve exposed our datasets' schemas and compared them against each other to reveal which attributes have changed. In this exercise, we create a report on the changes in the schema. This report could be sent to users as part of an Automation or FME Server App if the data they submitted caused schema drift, or it could be run on multiple datasets regularly to test for and report on schema drift. The method is flexible and lets you create a system for monitoring for, and even correcting, drift.</p>
 <h2 id="1-add-an-attribute-creator">
   <span>1. Add an AttributeCreator</span>
 </h2>
-<p>We want to create a message for each attribute added to the original schema. Add an <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/attributecreator.htm?Highlight=attributecreator" rel="noreferrer noopener" target="_blank">AttributeCreator</a> transformer to your workspace and connect it to the ChangeDetector Inserted port.</p>
+<p>We want to create a message for each attribute added to the original schema. Add an <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/attributecreator.htm?Highlight=attributecreator" rel="noreferrer noopener" target="_blank">AttributeCreator</a> transformer to your workspace and connect it to the ChangeDetector's Inserted port.</p>
 <p>Open the AttributeCreator parameters and create a New Attribute called _message. For Attribute Value, enter the following:</p><pre>Unexpected Attribute: `@Value(name)' encountered in the input dataset.</pre>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pj8" alt="AttributeCreator parameters" class="image image-block image-center" /><br />Press OK to accept the parameters and close the transformer.</p>
 <h2 id="2-add-a-second-attribute-creator">
@@ -55,7 +55,7 @@
 </h2>
 <p>Now that we’ve bundled our messages into a list that will be presentable in an HTML document, we can create the report.</p>
 <p>Add an <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/htmlreportgenerator.htm" rel="noreferrer noopener" target="_blank">HTMLReportGenerator</a> to your workspace and connect both the AttributeCreators to it.</p>
-<p>Open up the HTMLReportGenerator parameters. Under Page Contents, change the existing Chart(Bar) page to Header by clicking it and selecting Header. Click anywhere on the right side of the dialog to confirm the page change; the parameters on the right side will change to the Header parameters. Set the Header Content Settings as follows:</p>
+<p>Open the HTMLReportGenerator parameters. Under Page Contents, change the existing Chart (Bar) page to Header by clicking it and selecting Header. Click anywhere on the right side of the dialog to confirm the page change; the parameters on the right side will change to the Header parameters. Set the Header Content Settings as follows:</p>
 <ul>
   <li><strong>Text: </strong>Schema Check Failed</li>
   <li><strong>Header Level:</strong> H4</li>
@@ -63,8 +63,8 @@
   <li><strong>Color:</strong> 0,0,0</li>
 </ul>
 <p>Now that we’ve set up a simple header, we can add our list of messages.</p>
-<p>Add another page by clicking on the small plus (+) symbol in the bottom left, setting it to Custom HTML. Under Content Settings, set the Custom HTML as follows:</p><pre>The upload was halted because the source schema has been changed! Please check the daily input and log for more details. &lt;br&gt; Below you can find more details on missing or unexpected attributes.&lt;br&gt; &lt;br&gt;</pre>
-<p>Next, add another page. Set it as a Table and change the Table Style to Striped. Under Column Settings, set Column Contents to the _message attribute, and set the Column Name to:</p><pre>Missing or Unexpected Attributes</pre>
+<p>Add another section to the page by clicking on the small plus (+) symbol in the bottom left, setting it to Custom HTML. Under Content Settings, set the Custom HTML as follows:</p><pre>The upload was halted because the source schema has been changed! Please check the daily input and log for more details. &lt;br&gt; Below you can find more details on missing or unexpected attributes.&lt;br&gt; &lt;br&gt;</pre>
+<p>Next, add another section. Set it as a Table and change the Table Style to Striped. Under Column Settings, set Column Contents to the _message attribute, and set the Column Name to:</p><pre>Missing or Unexpected Attributes</pre>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pm2" alt="HTMLReportGenerator Table parameters" class="image image-block image-center" />Below this, add another page and set it to a Separator. Set the thickness to 2.</p>
 <p>Add one last page and set it to Custom HTML: Set the Custom HTML as follows:</p><pre>&lt;br&gt;Thanks for your cooperation.</pre>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pm7" alt="HTMLReportGenerator parameters" class="image image-block image-center" /></p>
@@ -76,8 +76,8 @@
 <h2 id="6-create-an-html-report-for-valid-schemas">
   <span>6. Create an HTML Report for Valid Schemas</span>
 </h2>
-<p>We also want our users to be notified if their schema is valid, not just if their schema has failed. The message must go both ways to make the user understand what actions to take next. Add another HTMLReportGenerator to the canvas and connect it to the NoFeaturesTester NOINPUT port.</p>
-<p>Open up the HTMLReportGenerator_2 parameters. Under Page Contents, change the existing Chart(Bar) page to Header by clicking on it and selecting Header. Click anywhere on the right side of the dialog to confirm the page change; the parameters on the right side will change to the Header parameters. Set the Header Content Settings as follows:</p>
+<p>We also want our users to be notified if their schema is valid, not just if their schema has failed. The message must go both ways to make the user understand what actions to take next. Add another HTMLReportGenerator to the canvas and connect it to the NoFeaturesTester's NOINPUT port.</p>
+<p>Open up the HTMLReportGenerator_2 parameters. Under Page Contents, change the existing Chart(Bar) page to Header by clicking it and selecting Header. Click anywhere on the right side of the dialog to confirm the page change; the parameters on the right side will change to the Header parameters. Set the Header Content Settings as follows:</p>
 <ul>
   <li><strong>Text:</strong> Schema Check Passed</li>
   <li><strong>Header Level: </strong>H4</li>
@@ -92,7 +92,7 @@ Thanks for your cooperation.</pre>
   <span>7. Output the HTML Report Back to the User</span>
 </h2>
 <p>Whether you plan to use this workspace in a workspace app or create a simple HTML document, we need to add a writer to output our final schema report!</p>
-<p>Add a writer to your workspace and set the Format to HTML. Browse to an output file location and then name the file schema_failed.html. Press OK to add the writer to your workspace. Now, let's connect the HTMLLayouter to the HTML writer feature type.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Po3" alt="HTML Writer parameters" class="image image-block image-center" /></p>
+<p>Add a writer to your workspace and set the Format to HTML. Set the Dataset parameter to C:\FMEData\Output\Training\schema_failed.html. Press OK to add the writer to your workspace. Now, let's connect the HTMLLayouter to the HTML writer feature type.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Po3" alt="HTML Writer parameters" class="image image-block image-center" /></p>
 <p>We can repeat the process above to create an HTML writer for the valid schema report. Add another HTML writer to your workspace. Set the Dataset parameter location to the same output location as above, then name the file schema_passed.html.</p>
 <p>Everything in our workspace is complete, and we can output our data to produce the report. Connect the schema_passed writer feature type to the HTMLLayouter_2.</p>
 <h2 id="8-run-the-workspace-and-inspect-the-results">
@@ -101,7 +101,7 @@ Thanks for your cooperation.</pre>
 <p>Now that we’ve set up our workspace to both detect changes in the schema and produce a report on the condition of the schema, we can try running the workspace to see our results! Try running the workspace, and click Open Containing Folder on the HTML Writer that receives features from its HTMLLayouter.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040PoI" alt="Step 8 Workspace" class="image image-block image-center" /></p>
 <p>Open up the resulting HTML file in your web browser by double-clicking it. You should see a Schema Check Failed report.</p>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pw7" alt="Schema Change Report example" class="image image-block image-center" /></p>
+<p><img src="images/1683322724867.png" class="image image-block image-center" alt="Schema Check Failed report" /></p>
 <h2 id="conclusion">
   <span>Conclusion</span>
 </h2>
