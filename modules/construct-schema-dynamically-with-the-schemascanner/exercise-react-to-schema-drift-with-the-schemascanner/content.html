@@ -25,7 +25,7 @@
       <li>C:\FMEData\Resources\DynamicWorkflows\Data\BikePaths_L.zip </li>
     </ul>
   </li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/BikePaths_L.zip" rel="noreferrer noopener" target="_blank">Updated_BikePaths_L.zip</a>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Updated_BikePaths_L.zip" rel="noreferrer noopener" target="_blank">Updated_BikePaths_L.zip</a>
     <ul>
       <li>C:\FMEDataResources\DynamicWorkflows\Data\Updated_BikePaths_L.zip</li>
     </ul>
@@ -39,17 +39,17 @@
   <span>1. Add an AttributeCreator</span>
 </h2>
 <p>We want to create a message for each attribute added to the original schema. Add an <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/attributecreator.htm?Highlight=attributecreator" rel="noreferrer noopener" target="_blank">AttributeCreator</a> transformer to your workspace and connect it to the ChangeDetector's Inserted port.</p>
-<p>Open the AttributeCreator parameters and create a New Attribute called _message. For Attribute Value, enter the following:</p><pre>Unexpected Attribute: `@Value(name)' encountered in the input dataset.</pre>
-<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pj8" alt="AttributeCreator parameters" class="image image-block image-center" /><br />Press OK to accept the parameters and close the transformer.</p>
+<p>Open the <strong>AttributeCreator</strong> parameters and create a New Attribute called <strong>_message</strong>. For Attribute Value, enter the following:</p><pre>Unexpected Attribute: `@Value(name)' encountered in the input dataset.</pre>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pj8" alt="AttributeCreator parameters" class="image image-block image-center" /><br />Press <strong>OK</strong> to accept the parameters and close the transformer.</p>
 <h2 id="2-add-a-second-attribute-creator">
   <span>2. Add a Second AttributeCreator</span>
 </h2>
-<p>We also want to create a message for each attribute deleted from the original schema. To do so, we can add another AttributeCreator and connect it to the ChangeDetector’s Deleted port. Open the AttributeCreator_2 parameters and create a New Attribute called _message. For Attribute Value, enter the following:</p><pre>Missing Attribute: `@Value(name)' is not present in the input dataset.</pre>
+<p>We also want to create a message for each attribute deleted from the original schema. To do so, we can add another <strong>AttributeCreator</strong> and connect it to the ChangeDetector’s <strong>Deleted</strong> port. Open the <strong>AttributeCreator_2</strong> parameters and create a New Attribute called <strong>_message</strong>. For <em>Attribute Value</em>, enter the following:</p><pre>Missing Attribute: `@Value(name)' is not present in the input dataset.</pre>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040PlY" alt="AttributeCreator_2 parameters" class="image image-block image-center" /></p>
 <h2 id="3-filtering-for-a-valid-schema">
   <span>3. Filtering for a Valid Schema</span>
 </h2>
-<p>We need to test if any features are coming from the ChangeDetector. If no features are output from the two AttributeCreators, then the schema is valid, and no error messages were produced.<br />Add a <a href="https://hub.safe.com/publishers/safe-lab/transformers/nofeaturestester" rel="noreferrer noopener" target="_blank">NoFeaturesTester</a> custom transformer to the workspace (FME will automatically download the transformer from the FME Hub). Connect both the AttributeCreators to it.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Plx" alt="NoFeaturesTester workflow" class="image image-block image-center" /></p>
+<p>We need to test if any features are coming from the <strong>ChangeDetector</strong>. If no features are output from the two <strong>AttributeCreators</strong>, then the schema is valid, and no error messages were produced.<br />Add a <a href="https://hub.safe.com/publishers/safe-lab/transformers/nofeaturestester" rel="noreferrer noopener" target="_blank">NoFeaturesTester</a> custom transformer to the workspace (FME will automatically download the transformer from the FME Hub). Connect both the <strong>AttributeCreators</strong> to it.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Plx" alt="NoFeaturesTester workflow" class="image image-block image-center" /></p>
 <h2 id="4-create-an-html-report-for-failed-schemas">
   <span>4. Create an HTML Report for Failed Schemas</span>
 </h2>
@@ -72,12 +72,12 @@
 <h2 id="5-cleaning-up-the-html-layout">
   <span>5. Cleaning up the HTML Layout</span>
 </h2>
-<p>Before sending the HTML to the HTML writer, we want to clean up and organize the layout. Add an <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/htmllayouter.htm?Highlight=htmllayouter" rel="noreferrer noopener" target="_blank">HTMLLayouter</a> to the canvas and connect it to the HTMLReportGenerator. We can use the default parameters. The HTMLLayouter is commonly paired with the HTMLReportGenerator to create a bootstrap grid or vertical layouts. In this case, the default parameters will provide a vertical layout.</p>
+<p>Before sending the HTML to the HTML writer, we want to clean up and organize the layout. Add an <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/htmllayouter.htm?Highlight=htmllayouter" rel="noreferrer noopener" target="_blank">HTMLLayouter</a> to the canvas and connect it to the <strong>HTMLReportGenerator</strong>. We can use the default parameters. The HTMLLayouter is commonly paired with the HTMLReportGenerator to create a bootstrap grid or vertical layouts. In this case, the default parameters will provide a vertical layout.</p>
 <h2 id="6-create-an-html-report-for-valid-schemas">
   <span>6. Create an HTML Report for Valid Schemas</span>
 </h2>
 <p>We also want our users to be notified if their schema is valid, not just if their schema has failed. The message must go both ways to make the user understand what actions to take next. Add another HTMLReportGenerator to the canvas and connect it to the NoFeaturesTester's NOINPUT port.</p>
-<p>Open up the HTMLReportGenerator_2 parameters. Under Page Contents, change the existing Chart(Bar) page to Header by clicking it and selecting Header. Click anywhere on the right side of the dialog to confirm the page change; the parameters on the right side will change to the Header parameters. Set the Header Content Settings as follows:</p>
+<p>Open up the <strong>HTMLReportGenerator_2</strong> parameters. Under <em>Page Contents</em>, change the existing Chart(Bar) page to <strong>Header</strong> by clicking it and selecting Header. Click anywhere on the right side of the dialog to confirm the page change; the parameters on the right side will change to the Header parameters. Set the Header Content Settings as follows:</p>
 <ul>
   <li><strong>Text:</strong> Schema Check Passed</li>
   <li><strong>Header Level: </strong>H4</li>
@@ -92,7 +92,7 @@ Thanks for your cooperation.</pre>
   <span>7. Output the HTML Report Back to the User</span>
 </h2>
 <p>Whether you plan to use this workspace in a workspace app or create a simple HTML document, we need to add a writer to output our final schema report!</p>
-<p>Add a writer to your workspace and set the Format to HTML. Set the Dataset parameter to C:\FMEData\Output\Training\schema_failed.html. Press OK to add the writer to your workspace. Now, let's connect the HTMLLayouter to the HTML writer feature type.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Po3" alt="HTML Writer parameters" class="image image-block image-center" /></p>
+<p>Add a writer to your workspace and set the Format to HTML. Set the Dataset parameter to C:\FMEData\Output\Training\schema_failed.html. Press <strong>OK</strong> to add the writer to your workspace. Now, let's connect the HTMLLayouter to the HTML writer feature type.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Po3" alt="HTML Writer parameters" class="image image-block image-center" /></p>
 <p>We can repeat the process above to create an HTML writer for the valid schema report. Add another HTML writer to your workspace. Set the Dataset parameter location to the same output location as above, then name the file schema_passed.html.</p>
 <p>Everything in our workspace is complete, and we can output our data to produce the report. Connect the schema_passed writer feature type to the HTMLLayouter_2.</p>
 <h2 id="8-run-the-workspace-and-inspect-the-results">

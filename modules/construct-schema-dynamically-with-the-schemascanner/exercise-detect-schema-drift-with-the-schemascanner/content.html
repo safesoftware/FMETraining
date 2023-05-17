@@ -20,7 +20,7 @@
       <li>C:\FMEData\Resources\DynamicWorkflows\Data\BikePaths_L.shp</li>
     </ul>
   </li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/BikePaths_L.zip" rel="noreferrer noopener" target="_blank">Updated_BikePaths_L.zip</a>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Updated_BikePaths_L.zip" rel="noreferrer noopener" target="_blank">Updated_BikePaths_L.zip</a>
     <ul>
       <li>C:\FMEData\Resources\DynamicWorkflows\Data\Updated_BikePaths_L.shp</li>
     </ul>
@@ -55,33 +55,33 @@
   <span>2. Add a Shapefile Reader</span>
 </h2>
 <p>Add a reader to the workspace and set the Format to Esri Shapefile. Set Dataset to <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/BikePaths_L.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/BikePaths_L.zip</a> (or C:\FMEData\Resources\DynamicWorkflows\Data\BikePaths_L.shp).</p>
-<p>. Press OK to add the reader to the canvas.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pgx" alt="Shapefile Reader parameters - original dataset" class="image image-block image-center" /></p>
+<p>Press OK to add the reader to the canvas.<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pgx" alt="Shapefile Reader parameters - original dataset" class="image image-block image-center" /></p>
 <h2 id="3-add-another-shapefile-reader">
   <span>3. Add Another Shapefile Reader</span>
 </h2>
 <p>Now that we have the original dataset in our workspace, we want to add the updated data to the workspace to compare against it. Again, add a reader to the canvas and select Esri Shapefile as the Format. Set Dataset to <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Updated_BikePaths_L.zip" rel="noreferrer noopener" target="_blank">https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Updated_BikePaths_L.zip</a> (or C:\FMEData\Resources\DynamicWorkflows\Data\Updated_BikePaths_L.shp). Because the dataset may change at any time, we want to ensure we can read the data dynamically. To do so, change Workflow Options to Single Merged Feature Type. Press OK to add the reader to the canvas.<img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Ph2" alt="Shapefile Reader parameters - new upload dataset" class="image image-block image-center" /></p>
-<p><strong>Improving workspace performance tip:</strong> Since we only need to receive one feature from the reader to extract the dataset’s schema, we can limit the reader to reading a single feature. To do this, go to the Navigator Window, expand the reader’s parameters, click on Parameters &gt; Features to Read, and set Max Features to Read to 1. You can do this for both the shapefile readers.</p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040PhC" alt="Workspace performance tip" class="image image-block image-center" />
-<p></p>
+<p><strong>Improving workspace performance tip:</strong> Since we only need to receive one feature from the reader to extract the dataset’s schema, we can limit the reader to reading a single feature. To do this, go to the Navigator Window, expand the reader’s parameters, click on Parameters &gt; Features to Read, and set Max Features to Read to 1. You can do this for both the shapefile readers.</p>
+<p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040PhC" alt="Workspace performance tip" class="image image-block image-center" /></p>
 <h2 id="4-add-a-schema-scanner-transformer">
   <span>4. Add a SchemaScanner Transformer</span>
 </h2>
-<p>Next, we need to extract the schema from the source base dataset and prepare it for comparison against the newly uploaded dataset. To do this, add a SchemaScanner to our workspace and connect the BikePaths_L shapefile feature type to it.</p>
+<p>Next, we need to extract the schema from the source base dataset and prepare it for comparison against the newly uploaded dataset. To do this, add a <strong>SchemaScanner</strong> to our workspace and connect the <strong>BikePaths_L</strong> shapefile feature type to it.</p>
 <p><img src="images/1682714465680.png" class="image image-block image-center" alt="SchemaScanner added to workspace" style="width:400px" /></p>
 <h2 id="5-set-the-schema-scanner-parameters">
   <span>5. Set the SchemaScanner Parameters</span>
 </h2>
 <p>The SchemaScanner won’t work with default settings because it includes unexposed attributes in the schema feature. We want to keep only the original exposed attributes and remove any additional attributes within the schema related to FME or the format itself.<br /><br />Open the SchemaScanner parameters. For Ignore Attributes Containing, set the value to:</p><pre>^multi|^fme|^shape</pre>
 <p>This will remove any attributes that contain "multi", "fme", or "shape" from being output as part of the scanned schema.</p>
-<p>Press OK to accept the new parameters.<img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Phq" alt="SchemaScanner parameters" class="image image-block image-center" /></p>
+<p>Press <strong>OK</strong> to accept the new parameters.<img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Phq" alt="SchemaScanner parameters" class="image image-block image-center" /></p>
 <h2 id="6-add-a-list-exploder">
   <span>6. Add a ListExploder</span>
 </h2>
 <p>If we were to run the workspace, the output schemas from the SchemaScanner would not be visible in the Visual Preview table as they remain part of the attributes{} list; they would only be visible in the Feature Information window. Add a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listexploder.htm" rel="noreferrer noopener" target="_blank">ListExploder</a> transformer to your workspace and connect it to the SchemaScanner &lt;Schema&gt; port.</p>
-<p>In the parameters, set the List Attribute to attribute{}.<img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Phv" alt="ListExploder parameters" class="image image-block image-center" /></p>
+<p>In the parameters, set the <em>List Attribute</em> to <strong>attribute{}</strong>.<img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Phv" alt="ListExploder parameters" class="image image-block image-center" /></p>
 <h2 id="7-duplicate-the-schema-scanner-amp-list-exploder">
   <span>7. Duplicate the SchemaScanner &amp; ListExploder</span>
 </h2>
-<p>We also want to extract the schema from the Updated dataset for comparison against the original dataset. Hold the CTRL key and select both the SchemaScanner and the ListExploder. Then, duplicate (CTRL+D or right-click &gt; Duplicate) the transformers. Connect the Updated_BikePaths_L dataset to SchemaScanner_2. Ensure that the SchemaScanner_2 is connected to the ListExploder_2 transformer. Your workspace should now look like this:<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pi0" alt="Workspace with duplicated SchemaScanner and ListExploder" class="image image-block image-center" /></p>
+<p>We also want to extract the schema from the Updated dataset for comparison against the original dataset. Hold the CTRL key and select both the <strong>SchemaScanner</strong> and the <strong>ListExploder</strong>. Then, duplicate (CTRL+D or right-click &gt; Duplicate) the transformers. Connect the <strong>Updated_BikePaths_L</strong> dataset to <strong>SchemaScanner_2</strong>. Ensure that the <strong>SchemaScanner_2</strong> is connected to the <strong>ListExploder_2</strong> transformer. Your workspace should now look like this:<br /><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pi0" alt="Workspace with duplicated SchemaScanner and ListExploder" class="image image-block image-center" /></p>
 <h2 id="8-inspect-output">
   <span>8. Inspect Output</span>
 </h2>
@@ -104,9 +104,9 @@
   <span>9. Detecting Changes in the Schema</span>
 </h2>
 <p>Now that we’ve extracted the schemas from our datasets into a set of attributes, we can use the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/changedetector.htm" rel="noreferrer noopener" target="_blank">ChangeDetector</a> transformer to compare the schemas.</p>
-<p>Add a ChangeDetector transformer to your workspace. Connect the ListExploder for the original dataset to the Original input port. Connect the ListExploder_2 for the updated dataset to the Revised input port. Open the ChangeDetector parameters. Under Check Attributes, click the ellipsis next to Selected Attributes and select name.</p>
+<p>Add a ChangeDetector transformer to your workspace. Connect the <strong>ListExploder</strong> for the original dataset to the <strong>Original</strong> input port. Connect the <strong>ListExploder_2</strong> for the updated dataset to the <strong>Revised</strong> input port. Open the <strong>ChangeDetector</strong> parameters. Under Check Attributes, click the ellipsis next to Selected Attributes and select <strong>name</strong>.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040PiZ" alt="ChangeDetector parameters" class="image image-block image-center" /></p>
-<p>Press OK twice to accept the transformer parameters.</p>
+<p>Press <strong>OK</strong> twice to accept the transformer parameters.</p>
 <p>Run the workspace. You should see that the schema has changed. One new attribute has been Inserted, two attributes have been Deleted, and two remain Unchanged.</p>
 <p><img src="https://community.safe.com/servlet/rtaImage?eid=ka14Q000001DXNr&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040Pio" alt="Final workspace with ChangeDetector" class="image image-block image-center" /></p>
 <p>This workspace can now detect schema drift. In the next exercise, we'll react to this schema drift by producing a report for the user, notifying them that schema drift has been detected.</p>
