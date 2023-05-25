@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this lesson, you’ll be able to:</p>
 <ul>
   <li>Connect FME Desktop to FME Server using a web connection.</li>
   <li>Publish a workspace to the web.</li>
@@ -11,7 +11,7 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
 </ul>
 <h2 id="video">
   <span>Video</span>
@@ -25,10 +25,10 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>The rest of this module assumes you have access to an FME Server. If you need help installing, licensing, and creating an account for FME Server, please <a href="https://knowledge.safe.com/articles/22489/getting-started-with-fme-server.html" rel="noreferrer noopener" target="_blank">follow these instructions</a>. Options for accessing FME Server include:</p>
+            <p>The rest of this course assumes you have access to an FME Server. If you need help installing, licensing, and creating an account for FME Server, please <a href="https://knowledge.safe.com/articles/22489/getting-started-with-fme-server.html" rel="noreferrer noopener" target="_blank">follow these instructions</a>. Options for accessing FME Server include:</p>
             <ul>
               <li>Install FME Server on your own machine ( <a href="https://www.safe.com/fme/fme-server/trial-download/" rel="noreferrer noopener" target="_blank">a free trial is available</a>)</li>
               <li>Access your organization’s Server</li>
@@ -43,15 +43,15 @@
 <h2 id="preparing-a-workspace-to-publish-to-fme-server">
   <span>Preparing a Workspace to Publish to FME Server</span>
 </h2>
-<p>Frank already has <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateDataWithTheFMEPlatform/publish-your-self-serve-workspace.fmw" rel="noreferrer noopener" target="_blank">a workspace</a> that is working well. However, Jennifer notices a problem that he needs to address before publishing to FME Server. She explains that creating the correct user parameters before publishing makes a much better experience for users running the workspace using FME Server.</p>
-<p>The path for the output data in the workspace is currently hardcoded to “C:\FMEData2022\Output\Training\Training.xlsx”. Frank confirms this in the <strong>Navigator </strong>&gt; <strong>Training [Generic]</strong> writer &gt; <strong>Destination Generic (Any Format) Folder </strong>parameter. Having this hard coded is fine when he just runs it on his own machine. When he publishes a workspace to FME Server, the workspace will try to write data to the C:\ drive of the machine that is hosting FME Server. However, he can’t assume access to a C:\ drive: it could be restricted for security purposes, or if it’s a Linux machine it won’t even exist! Jennifer informs him it’s best practice to instead read and write data that exists in FME Server’s shared <strong>Resources</strong> folder.</p>
-<p>To fix this, Frank double-clicks on the <strong>Destination Generic (Any Format) Folder </strong>parameter and enters “$(FME_SHAREDRESOURCE_DATA)\CommunityMapping.zip”. This path includes the “FME_SHAREDRESOURCE_DATA” user parameter (viewable under <strong>User Parameters </strong>&gt; <strong>FME Server Parameters</strong>) and sets the workspace to write out its results to a ZIP file called CommunityMapping. When the workspace is published to FME Server, the data will be written out to the shared <strong>Data </strong>folder for all users to access. We’ll take advantage of that feature in a later unit.</p>
+<p>Frank already has <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-your-self-serve-workspace.fmw" rel="noreferrer noopener" target="_blank">a workspace</a> that is working well. However, Jennifer notices a problem that he needs to address before publishing to FME Server. She explains that creating the correct user parameters before publishing makes a much better experience for users running the workspace using FME Server.</p>
+<p>The path for the output data in the workspace is currently hardcoded to “C:\FMEData\Output\Training\Training.xlsx”. Frank confirms this in the <strong>Navigator </strong>&gt; <strong>Training [Generic]</strong> writer &gt; <strong>Destination Generic (Any Format) Folder </strong>parameter. Having this hard coded is fine when he just runs it on his own machine. When he publishes a workspace to FME Server, the workspace will try to write data to the C:\ drive of the machine that is hosting FME Server. However, he can’t assume access to a C:\ drive: it could be restricted for security purposes, or if it’s a Linux machine it won’t even exist! Jennifer informs him it’s best practice to instead read and write data that exists in FME Server’s shared <strong>Resources</strong> folder.</p>
+<p>To fix this, Frank double-clicks on the <strong>Destination Generic (Any Format) Folder </strong>parameter and enters “$(FME_SHAREDRESOURCE_DATA)\CommunityMapping.zip”. This path includes the “FME_SHAREDRESOURCE_DATA” user parameter (viewable under <strong>User Parameters </strong>&gt; <strong>FME Server Parameters</strong>) and sets the workspace to write out its results to a ZIP file called CommunityMapping. When the workspace is published to FME Server, the data will be written out to the shared <strong>Data </strong>folder for all users to access. We’ll take advantage of that feature in a later lesson.</p>
 <p><img src="images/1651783641825.png" class="image image-block image-center" alt="Editing Destination Folder parameter" /></p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>FME has many useful built-in parameters similar to <strong>FME_SHAREDRESOURCE_DATA </strong>that let you access information about FME itself, such as the FME build number used to run the workspace or the location of the temporary data folder on the machine running the workspace. These parameters can be used for customizing how FME runs in different environments or for creating customized reporting on workspace runs.</p>
@@ -67,7 +67,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>All file- and folder-based FME formats can be <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/zip_files.htm" rel="noreferrer noopener" target="_blank">read as or written to ZIP files</a>. Simply provide a ZIP file for the <strong>Dataset</strong> parameter of your reader or add “.zip” into the <strong>Dataset </strong>file path of your writer.</p>
@@ -85,7 +85,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>Remember that <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!NamedConnections/Using_Database_Connections.htm" rel="noreferrer noopener" target="_blank">database</a> and <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!NamedConnections/Using_Web_Service_Connections.htm" rel="noreferrer noopener" target="_blank">web connections</a> save authentication information to connect to databases, web services, and APIs. They are stored on the user’s operating system profile, so authentication information can be stored separately from the workspace. They can also be published to FME Server to allow multiple users to share them without exposing any passwords. The FME Server web connection works the same way as other web connections.</p>
@@ -103,7 +103,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>You can manage Database and Web Connections under Tools &gt; FME Options from the Workbench menu bar if you are running a Windows machine, or FME Workbench &gt; Preferences if you are running a Mac. You can also create them where they are needed, such as in a reader or transformer dialog.</p>
@@ -119,7 +119,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>If you are attending a Safe Software training course, the password is FMElearnings.</p>
@@ -133,7 +133,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>You can connect to your own organization’s FME Server if you have permission. Get the connection details from your FME Server Administrator. If you are using FME Server on your own machine, use <a href="http://localhost" rel="noreferrer noopener" target="_blank">http://localhost</a> and your own username and password set <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/AdminGuide/Performing-an-Installation.htm" rel="noreferrer noopener" target="_blank">during installation</a>.</p>
@@ -150,7 +150,7 @@
 <p>Now that he’s set up a web connection, Frank can finish publishing his workspace. He renames it <strong>CommunityMapping.fmw </strong>by typing in the <strong>Workspace Name</strong> field.</p>
 <p>Workspaces in FME Server are stored in <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/ReferenceManual/Repositories.htm" rel="noreferrer noopener" target="_blank">repositories</a>. To create a new repository for his workspace, Frank clicks <strong>New… </strong>and makes a new repository called “Self-Serve”. He clicks <strong>OK</strong> twice to finish creating his new repository.</p>
 <p><img alt="Creating a new repository" src="images/3-f-980-c-75-2-ef-5-49-da-a-01-d-a-1969-c-31-a-7-e-7.png" class="image image-block image-center" /></p>
-<p>Jennifer reminds Frank to consider how his workspace will access data after he publishes it to FME Server. Many workspaces use data stored locally on the author’s computer, such as C:\FMEData2022\Data. However, FME Server is usually run on a different machine that doesn’t have access to that directory. Therefore, data used in workspaces published to FME Server should also be added to FME Server.</p>
+<p>Jennifer reminds Frank to consider how his workspace will access data after he publishes it to FME Server. Many workspaces use data stored locally on the author’s computer, such as C:\FMEData\Data. However, FME Server is usually run on a different machine that doesn’t have access to that directory. Therefore, data used in workspaces published to FME Server should also be added to FME Server.</p>
 <p>To accomplish this, Frank clicks the <strong>Select </strong><strong>Files… </strong>button.</p>
 <p><img alt="Selecting files to upload" src="images/3-eb-054-de-d-65-b-4-d-57-88-d-3-56840783-c-58-b.png" class="image image-block image-center" /></p>
 <p>This action opens the <strong>Select Files to Upload </strong>dialog, which Frank sees he can use to add the geodatabase to the shared <strong>Data </strong>folder in FME Server. Frank does this by clicking the <strong>Select Location… </strong>button, then choosing the <strong>Upload to a shared resource folder </strong>option. Finally, he clicks the <strong>Data </strong>folder to select it and then presses <strong>OK</strong>.</p>
@@ -163,10 +163,10 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>Frank could have published his data directly to the Self-Serve repository, but that comes with a number of challenges. See the <a href="https://safe.my.trailhead.com/content/safe/modules/manage-fme-server-data-and-connections" rel="noreferrer noopener" target="_blank">Manage FME Server Data and Connections</a> module for more information.</p>
+            <p>Frank could have published his data directly to the Self-Serve repository, but that comes with a number of challenges. See the <a href="https://safe.my.trailhead.com/content/safe/modules/manage-fme-server-data-and-connections" rel="noreferrer noopener" target="_blank">Manage FME Server Data and Connections</a> course for more information.</p>
           </div>
         </div>
       </div>
@@ -178,7 +178,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>An<strong> FME Server service</strong> is an interface for interacting with FME Server.</p>
@@ -203,7 +203,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>Most of these actions (uploading data, controlling services, and running workspaces) can also be controlled using the <a href="https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html" rel="noreferrer noopener" target="_blank">FME Server REST API</a>. The one exception is publishing workspaces, which must be done through FME Workbench.</p>

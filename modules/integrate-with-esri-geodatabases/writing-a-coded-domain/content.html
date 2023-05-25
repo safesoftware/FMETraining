@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this lesson, you’ll be able to:</p>
 <ul>
   <li>Read domains from a Geodatabase.</li>
   <li>Write to an existing table using an existing domain.</li>
@@ -10,12 +10,12 @@
 <h2 id="requirements">
   <span>Requirements</span>
 </h2>
-<p>This unit's exercise uses the Esri Geodatabase (File Geodb) reader/writer, which requires a licensed version of ArcGIS. For more information on required ArcGIS license levels, please see <a href="https://community.safe.com/s/article/required-arcgis-license-types-for-fme-geodatabase" rel="noreferrer noopener" target="_blank">Required ArcGIS License Types for FME Geodatabase Formats</a>.</p>
+<p>This lesson's exercise uses the Esri Geodatabase (File Geodb) reader/writer, which requires a licensed version of ArcGIS. For more information on required ArcGIS license levels, please see <a href="https://community.safe.com/s/article/required-arcgis-license-types-for-fme-geodatabase" rel="noreferrer noopener" target="_blank">Required ArcGIS License Types for FME Geodatabase Formats</a>.</p>
 <h2 id="resources">
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingACodedDomain.zip" rel="noreferrer noopener" target="_blank">WritingACodedDomain.zip</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingACodedDomain.zip" rel="noreferrer noopener" target="_blank">WritingACodedDomain.zip</a></li>
 </ul>
 <h2 id="video">
   <span>Video</span>
@@ -37,7 +37,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p><strong>If you can, we would recommend using an XML Workspace Document or geodatabase template as described in </strong><a href="https://safe.my.trailhead.com/en/content/safe/modules/integrate-with-esri-geodatabases/how-to-use-an-esri-template" rel="noreferrer noopener" target="_blank"><strong>How to Use an Esri Template</strong></a><strong>.</strong> This is generally easier and more flexible than defining domains within FME feature types.</p>
@@ -80,7 +80,7 @@
   <span>Exercise</span>
 </h2>
 <p><strong>1. Read Source Data</strong></p>
-<p>Create a blank workspace in FME Workbench (2021.1 or later), add an <strong>Autodesk AutoCAD DWG/DXF</strong> writer to the canvas, and set Dataset to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingACodedDomain/roads.zip" rel="noreferrer noopener" target="_blank">Roads.zip</a> dataset provided in the Resources section above; you can leave the file zipped.</p>
+<p>Create a blank workspace in FME Workbench (2021.1 or later), add an <strong>Autodesk AutoCAD DWG/DXF</strong> writer to the canvas, and set Dataset to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingACodedDomain/roads.zip" rel="noreferrer noopener" target="_blank">Roads.zip</a> dataset provided in the Resources section above; you can leave the file zipped.</p>
 <p>Change Workflow Options to <strong>Single Merged Feature Type</strong>. Then click <strong>Parameters</strong>.</p>
 <p><img src="images/1638387463316.png" class="image image-block image-center" alt="Add Reader" />In the parameters, set <strong>Group Entities By </strong>to Attribute Schema, then click <strong>OK</strong> twice to add the reader.<br /><img src="images/1638388231769.png" class="image image-block image-center" alt="Select Attribute Schema" />Once the reader has been added to the workspace canvas, double-click on the reader feature type to open the parameters. Switch to the <strong>Format Attributes </strong>tab and enable <code>autocad_layer</code>, then click <strong>OK</strong>.<br /><img src="images/1638388928416.png" class="image image-block image-center" alt="expose autocad_layer" /></p>
 <p><strong>2. Inspect Source Data</strong></p>
@@ -145,7 +145,7 @@
 <p>As an alternative to the step described above, one could instead use an <strong>AttributeManager</strong>, to take the value from the source DWG file and map it to the domain definition based on the domain definitions resolved value. To do so, add an <strong>AttributeManager </strong>to the workspace and open the parameters dialog. Rename <code>autocad_layer</code> to <code>StreetCategory_resolved</code> - the resolved version of the domain.</p>
 <p><img src="images/1638389057005.png" class="image image-block image-center" alt="create StreetCategory_resolved" />The above tends to be most applicable when your workflow falls under Scenario #1 (writing to an existing table using an existing domain definition) or Scenario #2 (writing to a new table in the geodatabase using an existing domain). In both scenarios, one assumes that one does not know the domain codes contained in the domain definition and instead knows the resolved value.<br /><br /><strong>4. Write Features and Create Domain</strong></p>
 <p>Add an <strong>Esri Geodatabase (File Geodb)</strong> writer to the canvas and browse to a location to save the geodatabase. Leave the <strong>Feature Class or Table Definition </strong>set to Copy from Reader, then open the parameters.</p>
-<p>In the parameters, enable <strong>Overwrite Existing Geodatabase</strong>, then browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingACodedDomain/RoadsTemplate.gdb.zip" rel="noreferrer noopener" target="_blank">RoadsTemplate.gdb</a> for the <strong>Template File Geodatabase</strong>. Next, expand the <strong>Advanced </strong>section and set <strong>Validate Features to Write </strong>to Yes. This setting will ensure that the incoming source data adheres to our domain definition. Then click <strong>OK</strong> twice to add the writer.<br /><img src="images/1638390056807.png" class="image image-block image-center" alt="Esri Geodatabase writer parameters" />Connect the writer to the <strong>AttributeValueMapper </strong>(option one above) or the <strong>AttributeManager </strong>(option two above), then open the writer feature type parameters.</p>
+<p>In the parameters, enable <strong>Overwrite Existing Geodatabase</strong>, then browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingACodedDomain/RoadsTemplate.gdb.zip" rel="noreferrer noopener" target="_blank">RoadsTemplate.gdb</a> for the <strong>Template File Geodatabase</strong>. Next, expand the <strong>Advanced </strong>section and set <strong>Validate Features to Write </strong>to Yes. This setting will ensure that the incoming source data adheres to our domain definition. Then click <strong>OK</strong> twice to add the writer.<br /><img src="images/1638390056807.png" class="image image-block image-center" alt="Esri Geodatabase writer parameters" />Connect the writer to the <strong>AttributeValueMapper </strong>(option one above) or the <strong>AttributeManager </strong>(option two above), then open the writer feature type parameters.</p>
 <p>In the feature type parameters, change the <strong>Feature Class or Table Name </strong>to something more meaningful such as Streets.</p>
 <p>Next, switch to the <strong>User </strong><strong>Attributes </strong>tab and rename <code>autocad_layer</code> to <code>StreetCategory</code> and click <strong>OK</strong>.<br /><img src="images/1638390136488.png" class="image image-block image-center" alt="rename autocad_layer to StreetCategory" /></p>
 <p><strong>5. Save and Run the Workspace</strong></p>

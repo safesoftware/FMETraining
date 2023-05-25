@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this lesson, you’ll be able to:</p>
 <ul>
   <li>Use the Bufferer to buffer your spatial data.</li>
   <li>Use the Clipper to filter your spatial data.</li>
@@ -13,7 +13,7 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateSpatialData/exercise-analyze-spatial-data.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/exercise-analyze-spatial-data.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
 </ul>
 <h2 id="exercise">
   <span>Exercise</span>
@@ -64,7 +64,7 @@
 <h2 id="1-start-workbench">
   <span>1) Start Workbench</span>
 </h2>
-<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/IntegrateSpatialData/exercise-analyze-spatial-data.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> in FME Workbench 2022.0.  This workspace contains the datasets you will be working with: a Digital Elevation Model (DEM) file for the elevation, an Esri ArcGIS Geodatabase for the addresses, an Esri shapefile of the land boundary, and a GML for the coastline. Note that the DEM is an example of raster data, while the other datasets are vector data.</p>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/exercise-analyze-spatial-data.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a> in FME Workbench 2022.0.  This workspace contains the datasets you will be working with: a Digital Elevation Model (DEM) file for the elevation, an Esri ArcGIS Geodatabase for the addresses, an Esri shapefile of the land boundary, and a GML for the coastline. Note that the DEM is an example of raster data, while the other datasets are vector data.</p>
 <p>Turn on feature caching and run the workspace. Inspect the results of each dataset to get familiar with your data. You should notice that each separate dataset contains a piece of information we need for our final result. We'll use spatial filtering and joining to combine them into the desired shape.</p>
 <h2 id="2-create-bufferer-distance-attribute">
   <span>2) Create Bufferer distance attribute</span>
@@ -74,7 +74,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>Looping is available via <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/transformers_custom_looping.htm" rel="noreferrer noopener" target="_blank">custom transformers</a> and the <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/pythoncaller.htm" rel="noreferrer noopener" target="_blank">PythonCaller</a>, but you do not need to use looping in FME workspaces in most cases.</p>
@@ -102,7 +102,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>Some buffering scenarios require non-overlapping buffers. The Bufferer does not produce these, but if you want to create them quickly, the <a href="https://hub.safe.com/publishers/safe-lab/transformers/multibufferer" rel="noreferrer noopener" target="_blank">MultiBufferer</a> custom transformer on the <a href="https://hub.safe.com" rel="noreferrer noopener" target="_blank">FME Hub</a> can accomplish it. You can add it to a workspace by searching directly in the Quick Add menu. Note, however, that sometimes you do not need to worry about overlaps. In the use case for this exercise, simply having the smaller buffers created on top of the larger ones ensures that the PointOnAreaOverlayer will only identify one distance for each point.</p>
@@ -131,7 +131,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>Spatial analysis can get a bit tricky. With these settings, FME will generate a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!List_Attributes/About-List-Attributes.htm" rel="noreferrer noopener" target="_blank">list attribute</a> for every area the point overlaps. Because the buffer polygons are not discrete (i.e., they overlap), some points overlap multiple buffer polygons. We could rely on feature order to correctly assign values to Distance, which would work properly in this case. However, relying on feature order in your workspaces is not good practice because it can change:</p>
@@ -175,7 +175,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>You can inspect multiple caches like in this screenshot to see two layers simultaneously by Ctrl-clicking (⌘ Command-clicking on Mac) multiple caches.</p>
@@ -200,7 +200,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>You can read more about exposing list attributes <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!List_Attributes/Exposing-List-Attributes.htm" rel="noreferrer noopener" target="_blank">here</a>.</p>
@@ -214,7 +214,7 @@
   <span>10) Connect AttributeManager</span>
 </h2>
 <p>Now that our points have both a distance and an elevation value, we can assign them to a flood risk zone, 1-5. We'll do this according to the table at the start of the exercise.</p>
-<p>The transformer we will use is an AttributeManager. Because this unit's focus is spatial analysis, not attribute manipulation, we've provided this transformer in the starting workspace and already configured it using Conditional Values. Connect the AttributeManager transformer to the AttributeRenamer. </p>
+<p>The transformer we will use is an AttributeManager. Because this lesson's focus is spatial analysis, not attribute manipulation, we've provided this transformer in the starting workspace and already configured it using Conditional Values. Connect the AttributeManager transformer to the AttributeRenamer. </p>
 <p><img src="images/1612481709487.png" class="image image-block image-center" alt="Connecting an AttributeManager" /></p>
 <p>Then, open the AttributeManager parameters. Find the FloodRisk attribute:</p>
 <p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.220.Ex2.FinalAttrManagerDialog.png" alt="Finding the FloodRisk attribute in the AttributeManager parameters" class="image image-block image-center" /></p>
@@ -225,10 +225,10 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>The <a href="https://safe.my.trailhead.com/content/safe/modules/use-conditional-values" rel="noreferrer noopener" target="_blank">Use Conditional Values</a> unit can show you how to set up dialogs like this.</p>
+            <p>The <a href="https://safe.my.trailhead.com/content/safe/modules/use-conditional-values" rel="noreferrer noopener" target="_blank">Use Conditional Values</a> lesson can show you how to set up dialogs like this.</p>
           </div>
         </div>
       </div>

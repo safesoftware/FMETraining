@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this lesson, you’ll be able to:</p>
 <ul>
   <li>Assess a workspace’s potential for parallel processing.</li>
   <li>Select an attribute (or substring) suitable for grouping data.</li>
@@ -14,11 +14,11 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Addresses/Addresses.gdb.zip" rel="noreferrer noopener" target="_blank">Addresses.gdb</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/OpenStreetMap/building.osm" rel="noreferrer noopener" target="_blank">building.osm</a></li>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">Starting workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing-complete.fmw" rel="noreferrer noopener" target="_blank">Complete workspace</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" rel="noreferrer noopener" target="_blank">Addresses.gdb</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/building.osm" rel="noreferrer noopener" target="_blank">building.osm</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a></li>
 </ul>
 <h2 id="introduction">
   <span>Introduction</span>
@@ -28,7 +28,7 @@
 <h2 id="1-open-workspace">
   <span>1) Open Workspace</span>
 </h2>
-<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>.</p>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" rel="noreferrer noopener" target="_blank">starting workspace</a>.</p>
 <p>As you’ll see, this workspace reads OpenStreetMap building data and then carries out several validation tasks. Firstly, it overlays it with the city address database to see if it has a matching address. Secondly, it tests the building geometry with a <strong>GeometryValidator </strong>transformer. Finally, it overlays the buildings against the city zoning data to see if it properly falls inside a single zone:</p>
 <p><img src="images/1644348622334.png" class="image image-block image-center" alt="Starting workspace" /></p>
 <p>Turn on feature caching and run the workspace. Inspect the data at each step to become familiar with what it is doing. Specifically, take note of the feature counts so that we can be sure that any changes we make do not affect the results:</p>
@@ -66,7 +66,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>If you don’t have a <code>PostcodePrefix</code> attribute, make sure you follow the steps for the <strong>SubstringExtractor </strong>above.</p>
@@ -84,7 +84,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p><strong>Do</strong><strong> not </strong>run this with either feature caching or breakpoints enabled. If you do, parallel processing won’t work!</p>
@@ -105,7 +105,7 @@
   <span>6) Fix Reader</span>
 </h2>
 <p>Firstly, in the main tab, delete the <strong>Zones </strong>feature type. This deletion will cause FME to prompt you to remove the MapInfo reader; click <strong>Yes</strong>.</p>
-<p>Now switch to the <strong>BuildingValidator </strong>tab. Add a <strong>Creator </strong>transformer and a <strong>FeatureReader </strong>transformer, and connect them. Open the <strong>FeatureReader </strong>parameters and set it up to read the MapInfo TAB dataset <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a>:</p>
+<p>Now switch to the <strong>BuildingValidator </strong>tab. Add a <strong>Creator </strong>transformer and a <strong>FeatureReader </strong>transformer, and connect them. Open the <strong>FeatureReader </strong>parameters and set it up to read the MapInfo TAB dataset <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" rel="noreferrer noopener" target="_blank">Zones.tab</a>:</p>
 <p><img src="images/1653674525169.png" class="image image-block image-center" alt="Configuring FeatureReader" /></p>
 <p>Now connect the Zones output from the <strong>FeatureReader</strong>, into the <strong>SpatialRelator:Supplier </strong>port (in place of the <strong>SpatialRelator_Supplier </strong>Input object, which you can now delete):</p>
 <p><img src="images/1644349366727.png" class="image image-block image-center" alt="Replacing Input port with FeatureReader" /></p>

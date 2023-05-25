@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this lesson, you’ll be able to:</p>
 <ul>
   <li>Author a 1:M relationship class translation in FME.</li>
   <li>Insert data into a M:N or attributed relationship.</li>
@@ -11,18 +11,18 @@
   <span>Resources</span>
 </h2>
 <ul>
-  <li><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses.zip" rel="noreferrer noopener" target="_blank">WritingRelationshipClasses.zip</a></li>
+  <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses.zip" rel="noreferrer noopener" target="_blank">WritingRelationshipClasses.zip</a></li>
 </ul>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>This article contains several examples of writing geodatabase relationship classes. It includes demos for concepts covered in the previous unit, <a href="https://safe.my.trailhead.com/content/safe/modules/integrate-with-esri-geodatabases/working-with-relationship-classes" rel="noreferrer noopener" target="_blank">Working with Geodatabase Relationship Classes</a>. Examples cover 1:M relationships, inserting into a M:N M:N or attributed relationships, and advanced M:N relationships.</p>
+<p>This article contains several examples of writing geodatabase relationship classes. It includes demos for concepts covered in the previous lesson, <a href="https://safe.my.trailhead.com/content/safe/modules/integrate-with-esri-geodatabases/working-with-relationship-classes" rel="noreferrer noopener" target="_blank">Working with Geodatabase Relationship Classes</a>. Examples cover 1:M relationships, inserting into a M:N M:N or attributed relationships, and advanced M:N relationships.</p>
 <p>We assume we have already created the relationships in ArcGIS for the following examples. Making them that way is required, as FME cannot create the relationships but merely populate them.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p><br />FME cannot create the relationship class in the target geodatabase. Either create the relationship class in ArcMap/ArcGIS Pro or use a <strong><a href="https://safe.my.trailhead.com/en/content/safe/modules/integrate-with-esri-geodatabases/how-to-use-an-esri-template" rel="noreferrer noopener" target="_blank"></a></strong><a href="https://safe.my.trailhead.com/en/content/safe/modules/integrate-with-esri-geodatabases/how-to-use-an-esri-template" rel="noreferrer noopener" target="_blank"></a><a href="https://safe.my.trailhead.com/en/content/safe/modules/integrate-with-esri-geodatabases/how-to-use-an-esri-template" rel="noreferrer noopener" target="_blank">template</a><a href="https://safe.my.trailhead.com/en/content/safe/modules/integrate-with-esri-geodatabases/how-to-use-an-esri-template" rel="noreferrer noopener" target="_blank"></a><strong><a href="https://safe.my.trailhead.com/en/content/safe/modules/integrate-with-esri-geodatabases/how-to-use-an-esri-template" rel="noreferrer noopener" target="_blank"></a>.</strong></p>
@@ -35,7 +35,7 @@
 <h2 id="requirements">
   <span>Requirements</span>
 </h2>
-<p>This unit’s exercise uses the Esri Geodatabase (File Geodb) reader/writer, which requires a licensed version of ArcGIS. For more information on required ArcGIS license levels, please see <a href="https://community.safe.com/s/article/required-arcgis-license-types-for-fme-geodatabase" rel="noreferrer noopener" target="_blank">Required ArcGIS License Types for FME Geodatabase Formats</a>. </p>
+<p>This lesson’s exercise uses the Esri Geodatabase (File Geodb) reader/writer, which requires a licensed version of ArcGIS. For more information on required ArcGIS license levels, please see <a href="https://community.safe.com/s/article/required-arcgis-license-types-for-fme-geodatabase" rel="noreferrer noopener" target="_blank">Required ArcGIS License Types for FME Geodatabase Formats</a>. </p>
 <h2 id="video">
   <span>Video</span>
 </h2>
@@ -43,12 +43,12 @@
 <h2 id="1-m-relationship">
   <span>1:M Relationship</span>
 </h2>
-<p>As mentioned in the <a href="https://safe.my.trailhead.com/content/safe/modules/integrate-with-esri-geodatabases/working-with-relationship-classes" rel="noreferrer noopener" target="_blank">previous unit</a>, when dealing with a 1:M relationship class, there is no intermediate table to keep track of these relationships. The relationships are bound to each other through the primary and foreign keys. </p>
+<p>As mentioned in the <a href="https://safe.my.trailhead.com/content/safe/modules/integrate-with-esri-geodatabases/working-with-relationship-classes" rel="noreferrer noopener" target="_blank">previous lesson</a>, when dealing with a 1:M relationship class, there is no intermediate table to keep track of these relationships. The relationships are bound to each other through the primary and foreign keys. </p>
 <h2 id="exercise-1-m">
   <span>Exercise: 1:M</span>
 </h2>
 <p><strong>1. Open FME Workbench</strong></p>
-<p>Open FME Workbench (2021.1 or later) and start a blank workspace. Add an <strong>Esri Geodatabase (File Geodb) </strong>reader to the canvas and browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/1ManyRelationshipStart.gdb.zip" rel="noreferrer noopener" target="_blank">1ManyRelationshipStart.gdb</a>. There are no additional parameters to set for this reader, so click OK.<img src="images/1638849414946.png" class="image image-block image-center" alt="Add Reader" /></p>
+<p>Open FME Workbench (2021.1 or later) and start a blank workspace. Add an <strong>Esri Geodatabase (File Geodb) </strong>reader to the canvas and browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/1ManyRelationshipStart.gdb.zip" rel="noreferrer noopener" target="_blank">1ManyRelationshipStart.gdb</a>. There are no additional parameters to set for this reader, so click OK.<img src="images/1638849414946.png" class="image image-block image-center" alt="Add Reader" /></p>
 <p>In the Select Feature Types dialog, select both feature classes (<strong>A_A_Parcels</strong> and <strong>A_Neighborhoods</strong>) and click <strong>OK</strong>.</p>
 <p><strong>2. Create geodb_feature_has_relationships Attribute</strong></p>
 <p>Add an <strong>AttributeCreator</strong> to the canvas and connect it to the <strong>A_A_Parcels</strong> reader feature type. In the parameters, create a new attribute <code>geodb_feature_has_relationships</code> with the value of yes. Next, create another attribute called <code>geodb_oid</code>, set it to the attribute <code>OBJECTID</code>, and click <strong>OK</strong>.</p>
@@ -58,9 +58,9 @@
 <p><strong>3. Write to Geodatabase</strong></p>
 <p>Add an <strong>Esri File Geodatabase (File Geodb)</strong> writer to the canvas and select a folder for the output. For this example, we named the geodatabase 1_to_many.gdb. Set the <strong>Feature Class or Table Definition </strong>to Import from Dataset, then open the <strong>Parameters</strong>.</p>
 <p><img src="images/1638849526022.png" class="image image-block image-center" alt="Add writer" /></p>
-<p>In the Parameters, enable <strong>Overwrite Existing Geodatabase</strong>, then for <strong>Import XML Workspace Document (Schema Only)</strong> browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/XMLWORKSPACETEMPLATE.XML" rel="noreferrer noopener" target="_blank">XMLWORKSPACETEMPLATE.XML</a>. Click <strong>OK</strong> twice to add the writer.</p>
+<p>In the Parameters, enable <strong>Overwrite Existing Geodatabase</strong>, then for <strong>Import XML Workspace Document (Schema Only)</strong> browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/XMLWORKSPACETEMPLATE.XML" rel="noreferrer noopener" target="_blank">XMLWORKSPACETEMPLATE.XML</a>. Click <strong>OK</strong> twice to add the writer.</p>
 <p><img src="images/1638849553337.png" class="image image-block image-center" alt=" Import XML Workspace Document" /></p>
-<p>In the Import Writer Feature Types dialog, change the format to <strong>Esri Geodatabase (XML Workspace Document),</strong> then browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/XMLWORKSPACETEMPLATE.XML" rel="noreferrer noopener" target="_blank">XMLWORKSPAPCETEMPLATE.XML</a>.</p>
+<p>In the Import Writer Feature Types dialog, change the format to <strong>Esri Geodatabase (XML Workspace Document),</strong> then browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/XMLWORKSPACETEMPLATE.XML" rel="noreferrer noopener" target="_blank">XMLWORKSPAPCETEMPLATE.XML</a>.</p>
 <p><img src="images/1638849579233.png" class="image image-block image-center" alt="import writer feature types" /></p>
 <p>In the Select Feature Types dialog, select both the feature types and click <strong>OK</strong>.</p>
 <p>Connect the writer feature types to their corresponding <strong>AttributeCreators</strong>.</p>
@@ -80,9 +80,9 @@
   <span>Exercise: M:N</span>
 </h2>
 <p><strong>1. Review Geodatabase in ArcGIS</strong></p>
-<p>Before we create the relationship in FME, let’s review the data structure in ArcCatalog. Open Esri ArcCatalog, and navigate to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyInput.gdb</a> file from the Resources zip file. We will use this geodatabase in FME.</p>
+<p>Before we create the relationship in FME, let’s review the data structure in ArcCatalog. Open Esri ArcCatalog, and navigate to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyInput.gdb</a> file from the Resources zip file. We will use this geodatabase in FME.</p>
 <p>Looking at the geodatabase, we can see two tables (<strong>Structure</strong> and <strong>ADDRESS</strong>) and a relationship class (<strong>Structure_to_Address_rel</strong>).<br /><img src="images/1638849698158.png" class="image image-block image-center" alt="looking at the geodatabase we can see two tables" /><br />Here you can see that the relationship class already exists. You can learn more about the relationship by opening the properties of the relationship class in ArcGIS. Right-click the <strong>Structure_to_Address_rel</strong> relationship class &gt; <strong>Properties</strong>. As a reminder, you must create relationship classes in ArcGIS and then populate them using FME.<br /><img src="images/1638849732778.png" class="image image-block image-center" alt="Inspect relationship class properties in ArcMap" /><br /><strong>2. Add Geodatabase to FME Workbench</strong></p>
-<p>Now that we’ve inspected our geodatabase in ArcGIS and know the relationship we are working with, we can move to FME Workbench. Open a blank workspace in FME Workbench (2021.1 or later). Add an <strong>Esri Geodatabase (File Geodb)</strong> reader to the canvas and browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyInput.gdb</a> dataset, then click <strong>OK</strong>.<br /><img src="images/1638849769899.png" class="image image-block image-center" alt="Add reader" /><br />In the Select Feature Types dialog, select only <strong>ADDRESS</strong> and <strong>Structure</strong>, then click <strong>OK</strong>.</p>
+<p>Now that we’ve inspected our geodatabase in ArcGIS and know the relationship we are working with, we can move to FME Workbench. Open a blank workspace in FME Workbench (2021.1 or later). Add an <strong>Esri Geodatabase (File Geodb)</strong> reader to the canvas and browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyInput.gdb</a> dataset, then click <strong>OK</strong>.<br /><img src="images/1638849769899.png" class="image image-block image-center" alt="Add reader" /><br />In the Select Feature Types dialog, select only <strong>ADDRESS</strong> and <strong>Structure</strong>, then click <strong>OK</strong>.</p>
 <p><img src="images/1638849788691.png" class="image image-block image-center" alt="Select feature types" /><br /><strong>3. Modify Attributes to Reflect Relationship Class</strong></p>
 <p>Because this is a M:N relationship, we need to ensure FME will write the features to the relationship class with the required attributes:</p>
 <ul>
@@ -95,7 +95,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>These newly created values are not explicitly written to the geodatabase but rather help FME process how the features are related to the relationship. We need to add an AttributeCreator per feature class to store these features.</p>
@@ -113,7 +113,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>If you were dealing with an attributed relationship, you would set the value to geodb_attributed_relationship.</p>
@@ -125,7 +125,7 @@
 </div>
 <p>Add an <strong>AttributeCreator</strong> to the canvas and connect it to the <strong>Joined</strong> output port on the <strong>FeatureJoiner</strong>. In the parameters, create a new attribute called <code>geodb_type</code> and set the <strong>Value</strong> to geodb_relationship, then click <strong>OK</strong>.<br /><br /><strong>6. Write out to File Geodatabase</strong></p>
 <p>Finally, we can write out to a geodatabase. Add an <strong>Esri Geodatabase (File Geodb)</strong> writer to the canvas and browse to a location to save the geodatabase. Change the <strong>Feature Class or Table Definition </strong>to Import from Database and then open the <strong>Parameters</strong>.</p>
-<p><img src="images/1638849884007.png" class="image image-block image-center" alt="Add writer" /><br />In the Parameters, enable <strong>Overwrite Existing Geodatabase</strong> and then for <strong>Template File Geodatabase </strong>browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyTemplate.gdb</a> dataset. Click <strong>OK</strong> twice to add the writer.<br /><img src="images/1638849943436.png" class="image image-block image-center" alt="enable Overwrite Existing Geodatabase" /><br />In the Import Writer Feature Types dialog, browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyTemplate.gdb</a>, then click <strong>OK</strong>.<br /><img src="images/1638849970524.png" class="image image-block image-center" alt="import writer feature types" /><br />Then in the Select Feature Types dialog, only select <strong>Structure_to_Address_rel</strong>, and click <strong>OK</strong>.<br /><img src="images/1638849996073.png" class="image image-block image-center" alt=" only select Structure_to_Address_rel" /><br />Once the <strong>Structure_to_Address_rel </strong>writer feature type appears, connect it to the <strong>AttributeCreator_3</strong>.</p>
+<p><img src="images/1638849884007.png" class="image image-block image-center" alt="Add writer" /><br />In the Parameters, enable <strong>Overwrite Existing Geodatabase</strong> and then for <strong>Template File Geodatabase </strong>browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyTemplate.gdb</a> dataset. Click <strong>OK</strong> twice to add the writer.<br /><img src="images/1638849943436.png" class="image image-block image-center" alt="enable Overwrite Existing Geodatabase" /><br />In the Import Writer Feature Types dialog, browse to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many2ManyInput.gdb.zip" rel="noreferrer noopener" target="_blank">Many2ManyTemplate.gdb</a>, then click <strong>OK</strong>.<br /><img src="images/1638849970524.png" class="image image-block image-center" alt="import writer feature types" /><br />Then in the Select Feature Types dialog, only select <strong>Structure_to_Address_rel</strong>, and click <strong>OK</strong>.<br /><img src="images/1638849996073.png" class="image image-block image-center" alt=" only select Structure_to_Address_rel" /><br />Once the <strong>Structure_to_Address_rel </strong>writer feature type appears, connect it to the <strong>AttributeCreator_3</strong>.</p>
 <p>At this stage of the workspace, we are writing directly to the relationship table. To do this correctly, we need the values we set earlier:</p>
 <ul>
   <li><code>geodb_rel_origin_oid</code></li>
@@ -138,7 +138,7 @@
   <span>Advanced M:N Relationship Example</span>
 </h2>
 <p>In the M:N example above, the data already existed, and we were populating the relationship table to create the relation between the addresses and structures.</p>
-<p>If you want to insert the data into a new geodatabase with a relationship class, you require a combination of the 1:M relationship workspace and updating a M:N relationship workspace. Again, you need to use ArcGIS to create the relationship class in the destination geodatabase (or geodatabase template) before translation. You can view an example of such a workspace in the <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many_To_ManyAdvanced.fmwt" rel="noreferrer noopener" target="_blank">Many2ManyAdvanced</a> template (see the Resources section above).<br /><img src="images/1638850073108.png" class="image image-block image-center" alt="the ‘Many2ManyAdvanced’ template" /></p>
+<p>If you want to insert the data into a new geodatabase with a relationship class, you require a combination of the 1:M relationship workspace and updating a M:N relationship workspace. Again, you need to use ArcGIS to create the relationship class in the destination geodatabase (or geodatabase template) before translation. You can view an example of such a workspace in the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/EsriGeodatabaseTransformations/WritingRelationshipClasses/Many_To_ManyAdvanced.fmwt" rel="noreferrer noopener" target="_blank">Many2ManyAdvanced</a> template (see the Resources section above).<br /><img src="images/1638850073108.png" class="image image-block image-center" alt="the ‘Many2ManyAdvanced’ template" /></p>
 <h2 id>
   <span></span>
 </h2>

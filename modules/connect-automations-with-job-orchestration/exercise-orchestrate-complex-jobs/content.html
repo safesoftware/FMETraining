@@ -1,7 +1,7 @@
 <h2 id="learning-objectives">
   <span>Learning Objectives</span>
 </h2>
-<p>After completing this unit, you’ll be able to:</p>
+<p>After completing this lesson, you’ll be able to:</p>
 <ul>
   <li>Use the split-merge block in Automations.</li>
   <li>Use the Automations writer to pass information between workspaces.</li>
@@ -9,30 +9,30 @@
 <h2 id="resources">
   <span>Resources</span>
 </h2>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">Starting FME Server project</a> (C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject)</p>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-merge-action.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using the Merge Action</a> (C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-merge-action.fsproject)</p>
-<p><a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using a Split-Merge Block</a> (C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">Starting FME Server project</a> (C:\FMEData\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-merge-action.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using the Merge Action</a> (C:\FMEData\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-merge-action.fsproject)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">Complete FME Server project using a Split-Merge Block</a> (C:\FMEData\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject)</p>
 <h2 id="introduction">
   <span>Introduction</span>
 </h2>
-<p>In this unit, you’ll create an Automation that will trigger two parallel workflows with different processing times, wait for both to complete, then proceed as one unified process. This type of workflow may be of particular interest when, for example, updating several feature types in a database. Instead of one large job submitted to one FME engine, enjoy the performance gains of splitting your workflow into separate jobs to be processed by many engines in parallel! Separating workflows into several smaller jobs, rather than one large one, can also increase fault tolerance (if one job fails, other parts of the operation can continue).</p>
+<p>In this lesson, you’ll create an Automation that will trigger two parallel workflows with different processing times, wait for both to complete, then proceed as one unified process. This type of workflow may be of particular interest when, for example, updating several feature types in a database. Instead of one large job submitted to one FME engine, enjoy the performance gains of splitting your workflow into separate jobs to be processed by many engines in parallel! Separating workflows into several smaller jobs, rather than one large one, can also increase fault tolerance (if one job fails, other parts of the operation can continue).</p>
 <p>With Automations, many workspaces may be chained together to run in series (and/or parallel) after a triggering event. Merge Actions are available that will cause an Automation to wait until all jobs upstream of the Merge point have been completed, as long as they were triggered by the same event. New to FME Server 2021.1, Split-Merge Blocks make an Automation wait until all jobs contained within a block are complete.  When complete, a single, unified message (per input) is returned from the Split-Merge Block. We’ll take a look at how this works later. Provided more than one engine is available to FME Server, multiple jobs can be processed at once, increasing the speed of the Automation. These components are particularly useful when an output requires many data processing steps, but not all of the jobs need to run in series.</p>
-<p>In this unit, there are five workspaces; we will coordinate their running to produce a (fictional) final data product. The sample workspaces contain Decelerator transformers in order to demonstrate how an Automation would handle different job timing in a production workflow.</p>
+<p>In this lesson, there are five workspaces; we will coordinate their running to produce a (fictional) final data product. The sample workspaces contain Decelerator transformers in order to demonstrate how an Automation would handle different job timing in a production workflow.</p>
 <p> </p>
 <p><img src="images/1657153496908.png" class="image image-block image-center" alt="Parallel versus chained workflows" /></p>
 <p> </p>
 <h2 id="1-download-and-import-fme-server-project">
   <span>1) Download and Import FME Server Project</span>
 </h2>
-<p>Download <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">this starting FME Server project</a>.</p>
+<p>Download <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs.fsproject" rel="noreferrer noopener" target="_blank">this starting FME Server project</a>.</p>
 <div class="box message info">
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
-            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData2022\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject</code>.</p>
+            <p>If you are using a Safe Software training machine or downloaded FMEData, you can use <code>C:\FMEData\Workspaces\AutomateWorkflows\exercise-orchestrate-complex-jobs.fsproject</code>.</p>
           </div>
         </div>
       </div>
@@ -53,7 +53,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>The example workspaces included here are purely illustrative – they don't really carry out any data integration. However, the Automation design follows a common pattern: process data on a schedule in parallel, conduct some post-processing, validate, and load. It would fit a workflow such as conducting a nightly database backup.</p>
@@ -100,7 +100,7 @@
 <p><img src="images/1657153881538.png" class="image image-block image-center" alt="Single Split-Merge block" /></p>
 <p>Nested blocks are also supported for further message merging. If we reimagine the previous example to receive an email notification when the Automation completes, we can add another Split-Merge Block that surrounds all the workspaces. The output from the block would be 1 message since the Trigger initiates the workflow with 1 message, and this single message can be used to send an email.</p>
 <p><img src="images/1657153911130.png" class="image image-block image-center" alt="Nested Split-Merge blocks" /></p>
-<p>The Split-Merge Block opens new doors for handling Automations Writer outputs, allows control over the granularity of message merging for downstream processes, and can drastically improve the efficiency of your workflows when combined with Queue Control. To see this scenario in action, download and import the FME Server project named <a href="https://s3.amazonaws.com/FMEData/FMEData2022/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject</a>.</p>
+<p>The Split-Merge Block opens new doors for handling Automations Writer outputs, allows control over the granularity of message merging for downstream processes, and can drastically improve the efficiency of your workflows when combined with Queue Control. To see this scenario in action, download and import the FME Server project named <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject" rel="noreferrer noopener" target="_blank">exercise-orchestrate-complex-jobs-complete-split-merge-block.fsproject</a>.</p>
 <h2 id="9-add-two-final-run-workspace-actions">
   <span>9) Add Two Final Run Workspace Actions</span>
 </h2>
@@ -114,7 +114,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>If you prefer not to set up an Email Action, you can use a Log Action instead.</p>
@@ -144,7 +144,7 @@
   <div class="inner">
     <div class="bd">
       <div class="media">
-        <img class="img mtm" role="presentation" src="https://res.cloudinary.com/hy4kyit2a/image/upload/doc/trailhead/en-usb473bb5ea1b7e61dfb07e6a7e547de6b.gif" alt="Note" />
+        <img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
         <div class="mediaBd">
           <div class="message-media-content">
             <p>If you used a Log Action instead of an Email Action, you can set the log message to the email body above. It will then appear in the Automation log when triggered.</p>

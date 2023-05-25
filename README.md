@@ -6,26 +6,26 @@ This repository contains Safe Software's training content, including archived co
 
 Current FME Academy content is available on the `main` branch. Past year's Academy content will be archived in `fme-academy-YEAR` branches. The directory structure contains:
 
-- `badges`: PNG and SVG versions of the FME Academy badges and trail icons
-- `modules`: each folder is a separate module (each associated with a badge). These chunks of content take 30 minutes to 2 hours to complete. They roughly correspond to a chapter or major chapter section in the archived training manuals. Module folders contain:
+- `badges`: PNG and SVG versions of the FME Academy badges and Learning Path icons
+- `courses`: each folder is a separate course (each associated with a badge). These chunks of content take 30 minutes to 2 hours to complete. They roughly correspond to a chapter or major chapter section in the archived training manuals. Course folders contain:
   - Unit folders: each is named after their unit. A unit is 5-20 minutes of content covering a single skill. Some have Exercise sections. All have a Quiz. Unit folders contain:
     - `images`: a folder containing unit images
-    - `content.html`: the module text and images
+    - `content.html`: the course text and images
     - `evaluation.json`: a JSON format quiz
     - `toc.html`: an HTML snippet containing links to section headings
-  - `labels\labels.yml`: a YAML file containing module metadata
-  - `badge.png`: the module badge
-  - `module.json`: a file describing the module structure including filters, unit order, and time estimates
-- `trails`: each folder is a separate trail. Trails are learning paths that link together two or more modules. Modules can belong to more than one trail. A trail is roughly equivalent to an entire manual or several chapters in the archived training manuals. Each trail folder contains:
-  - `labels\labels.yml`: a YAML file containing trail metadata
-  - `icon.png`: the trail icon
-  - `trail.json`: a file describing the trail structure, including filters and module order
+  - `labels\labels.yml`: a YAML file containing course metadata
+  - `badge.png`: the course badge
+  - `module.json`: a file describing the course structure including filters, unit order, and time estimates
+- `Learning Paths`: each folder is a separate Learning Path. Learning Paths are learning paths that link together two or more courses. Courses can belong to more than one Learning Path. A Learning Path is roughly equivalent to an entire manual or several chapters in the archived training manuals. Each Learning Path folder contains:
+  - `labels\labels.yml`: a YAML file containing Learning Path metadata
+  - `icon.png`: the Learning Path icon
+  - `Learning Path.json`: a file describing the Learning Path structure, including filters and course order
 
 ## Content By FME Version
 
-This list of modules is presented with their FME version. It is also roughly in the order we recommend learning the content.
+This list of courses is presented with their FME version. It is also roughly in the order we recommend learning the content.
 
-|           FME Academy Trail          |                             FME Academy Module                      | FME Version |
+|           FME Academy Learning Path          |                             FME Academy Course                      | FME Version |
 |:------------------------------------:|:-------------------------------------------------------------------:|-------------|
 | N/A                                  | Welcome to the FME Academy                                          | N/A         |
 | Integrate Data with the FME Platform | Why Data Integration?                                               | 2022.0      |
@@ -67,7 +67,7 @@ This list of modules is presented with their FME version. It is also roughly in 
 
 ## Mapping Between Archived Manuals and Academy
 
-We have now published trails for [FME Desktop Basic](https://safe.my.trailhead.com/en/content/safe/trails/fme-desktop-basic), [FME Desktop Advanced](https://safe.my.trailhead.com/en/content/safe/trails/fme-desktop-advanced), and [FME Server Authoring](https://safe.my.trailhead.com/en/content/safe/trails/fme-server-authoring). Basic and Authoring are complete; Advanced has most of the previous content, but some user parameter sections are only available in the context of the Authoring trail.
+We have now published Learning Paths for [FME Desktop Basic](https://safe.my.Learning Pathhead.com/en/content/safe/Learning Paths/fme-desktop-basic), [FME Desktop Advanced](https://safe.my.Learning Pathhead.com/en/content/safe/Learning Paths/fme-desktop-advanced), and [FME Server Authoring](https://safe.my.Learning Pathhead.com/en/content/safe/Learning Paths/fme-server-authoring). Basic and Authoring are complete; Advanced has most of the previous content, but some user parameter sections are only available in the context of the Authoring Learning Path.
 
 ## Reuse
 
@@ -75,7 +75,7 @@ Partners are free to adapt and reuse this content according to the [License](LIC
 
 ## Data
 
-Training data is provided in the [FMEData repository](https://github.com/safesoftware/FMEData/). FME Academy workspaces and links point to an [S3-hosted version of the data](https://s3.amazonaws.com/FMEData/FMEData2022/index.html) where possible so that users do not have to download the entire FMEData repository to use the content.
+Training data is provided in the [FMEData repository](https://github.com/safesoftware/FMEData/). FME Academy workspaces and links point to an [S3-hosted version of the data](https://s3.amazonaws.com/FMEData/FMEData/index.html) where possible so that users do not have to download the entire FMEData repository to use the content.
 
 ## Archived Training Manuals
 
