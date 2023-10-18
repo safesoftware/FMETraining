@@ -1,10 +1,10 @@
 # FME Training Content
 
-This repository contains Safe Software's training content, including archived course manuals (2016-2023) and content for the [FME Academy online learning platform](https://community.safe.com/s/academy).
+This repository contains an archive of Safe Software's training content, including archived course manuals (2016-2020) and content for the [first FME Academy online learning platform](https://community.safe.com/s/academy) (2020-2022). Material on the new [FME Academy](https://academy.safe.com/) is not provided here for technical reasons but is re-usable under the same [Terms of Use](https://engage.safe.com/legal/terms-and-conditions/fme-training/) as before.
 
 ## FME Academy Content
 
-Current FME Academy content is available on the `main` branch. Past year's Academy content will be archived in `fme-academy-YEAR` branches. The directory structure contains:
+FME Academy content as of June 2023 is available on the `main` branch. Past year's Academy content is archived in `fme-academy-YEAR` branches. The directory structure contains:
 
 - `badges`: PNG and SVG versions of the FME Academy badges and trail icons
 - `modules`: each folder is a separate module (each associated with a badge). These chunks of content take 30 minutes to 2 hours to complete. They roughly correspond to a chapter or major chapter section in the archived training manuals. Module folders contain:
@@ -71,7 +71,7 @@ We have now published trails for [FME Desktop Basic](https://safe.my.trailhead.c
 
 ## Reuse
 
-Partners are free to adapt and reuse this content according to the [License](LICENSE.md).
+Partners can adapt and reuse this content according to the [License](LICENSE.md).
 
 ## Data
 
@@ -83,4 +83,4 @@ Other branches contain annual release versions of archived training manuals buil
 
 ## Issues/Questions
 
-Any issues or questions can be directed to train@safe.com or through opening a GitHub Issue.
+Any issues or questions can be directed to train@safe.com or by opening a GitHub Issue.
