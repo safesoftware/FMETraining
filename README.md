@@ -1,4 +1,4 @@
-# FME Training Content
+# FME Training Content Archive
 
 This repository contains an archive of Safe Software's training content, including archived course manuals (2016-2020) and content for the [first FME Academy online learning platform](https://community.safe.com/s/academy) (2020-2022). Material on the new [FME Academy](https://academy.safe.com/) is not provided here for technical reasons but is re-usable under the same [Terms of Use](https://engage.safe.com/legal/terms-and-conditions/fme-training/) as before.
 
