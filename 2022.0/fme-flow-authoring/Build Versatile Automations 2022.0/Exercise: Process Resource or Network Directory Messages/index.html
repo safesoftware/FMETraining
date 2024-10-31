@@ -1,0 +1,174 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<ul>
+<li>Identify JSON elements from an incoming Trigger message.</li>
+<li>Configure the Automation to run a workspace in response to a Trigger using part of this message.</li>
+<li>Chain actions by passing an element of the incoming JSON through a filter.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-process-resource-or-network-directory-messages-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>&nbsp;(C:\FMEData\Workspaces\AutomateWorkflows\exercise-process-resource-or-network-directory-messages-complete.fmw)</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-process-resource-or-network-directory-messages.fsproject" target="_blank" rel="noreferrer noopener">Starting FME Server project</a>&nbsp;(C:\FMEData\Workspaces\AutomateWorkflows\exercise-process-resource-or-network-directory-messages.fsproject)</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Building Footprints Esri Shapefiles</a>&nbsp;(C:\FMEData\Data\Engineering\BuildingFootprints)</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/update001.zip" target="_blank" rel="noreferrer noopener">update001.zip</a>&nbsp;(C:\FMEData\Data\Engineering\BuildingFootprints\update001.zip)</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/building_footprints.sl3" target="_blank" rel="noreferrer noopener">building_footprints.sl3</a>&nbsp;(C:\FMEData\Data\Engineering\BuildingFootprints\building_footprints.sl3)</li>
+</ul>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>This exercise continues where&nbsp;<a href="https://safe.my.trailhead.com/en/content/safe/modules/build-versatile-automations/exercise-create-a-resources-or-network-directory-watch-automation" target="_blank" rel="noreferrer noopener">Exercise: Create a Resources or Network Directory Automation</a>&nbsp;left off. You must have completed the previous exercise to carry out this exercise or upload the Starting FME Server Project to FME Server to start where the previous exercise left off.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>As a technical analyst in the GIS department, you have realized the overhead associated with pushing manual updates to your corporate database. Having read up about Automations in FME Server, you think that it should be possible to set up a system that automates this process.</p>
+<p>So far you have set up a system for added file notifications to be registered by FME Server. Now you must create a workspace to process these and publish it to FME Server. The workspace must then be triggered by the Resource or Network Directory (updated) Trigger in Automations.</p>
+<p>You may have noticed that the Log Action in Automations actually submits a workspace to process this request. Therefore we have already - perhaps unknowingly - covered how to set up this response. Now it's time to create a new workspace to fit in with your overall goal: to provide real-time updates to your corporate database.</p>
+<h2 id="1-create-workspace">1) Create Workspace</h2>
+<p>Start FME Workbench (2022.0 or later) and begin with an empty workspace.</p>
+<p>Select&nbsp;<strong>Readers &gt; Add Reader&nbsp;</strong>from the menu bar. When prompted set the parameters as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>Reader Format</td>
+<td>Esri Shapefile</td>
+</tr>
+<tr>
+<td>Reader Dataset</td>
+<td><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/update001.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/update001.zip</a>&nbsp;(C:\FMEData\Data\Engineering\BuildingFootprints\update001.zip )</td>
+</tr>
+<tr>
+<td>Workflow Options</td>
+<td>Single Merged Feature Type</td>
+</tr>
+</tbody>
+</table>
+<p>It doesn't matter what Shapefile we use as the source right now; setting the source dataset in this step is only to satisfy the shapefile reader requirements. At runtime, the source dataset will be replaced by the file path recorded in the Resource or Network Directory (updated) message.</p>
+<p>Setting the Workflow options to Single Merged Feature Type means it will be possible to process any source dataset (of the right format) and have it translated.</p>
+<h2 id="2-add-writer">2) Add Writer</h2>
+<p>Having read the data from a Shapefile, we can now add it to the corporate database.</p>
+<p>Select<strong>&nbsp;Writers &gt; Add Writer</strong>&nbsp;from the menubar. When prompted set the parameters as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>Writer Format</td>
+<td>SpatiaLite</td>
+</tr>
+<tr>
+<td>Writer Dataset</td>
+<td>
+<p>C:\FMEData\Data\Engineering\BuildingFootprints\building_footprints.sl3</p>
+(Note:&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/building_footprints.sl3" target="_blank" rel="noreferrer noopener">download</a>&nbsp;and extract this file to this path if you do not already have FMEData loaded)</td>
+</tr>
+<tr>
+<td>Writer Parameters</td>
+<td>Overwrite Existing Database: No</td>
+</tr>
+<tr>
+<td>Add Feature Types</td>
+<td>Table Definition: Manual</td>
+</tr>
+</tbody>
+</table>
+<p>In the new feature type that is created, change the Table Name parameter to&nbsp;<em>building_footprints</em>:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.417.Ex3.FeatureTypeName.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.417.Ex3.FeatureTypeName.png" alt="Set Table Name" /></a></p>
+<p>Set geometry to&nbsp;<em>db_polygon</em>.</p>
+<div><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-process-resource-or-network-directory-messages/images/1658429296209.png" alt="Setting geometry on writer feature type" />
+<p>&nbsp;</p>
+</div>
+<p>Ensure that the Table Handling is set to "Create If Needed". Click&nbsp;<strong>OK</strong>&nbsp;to close the dialog and then connect the new feature type to the output port of the Shapefile Reader.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.418.Ex3.FinalWorkspace.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.418.Ex3.FinalWorkspace.png" alt="The Canvas feature types" /></a></p>
+<h2 id="3-inspect-data">3) Inspect Data</h2>
+<p>After adding the writer, right-click on the&nbsp;<strong>building_footprints</strong>&nbsp;feature type to bring up the popup menu. Then click&nbsp;<strong>View Written Data...</strong>&nbsp;to open the dataset in Visual Preview.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-process-resource-or-network-directory-messages/images/1631830734779.png" alt="View written data" />There is already data in the building_footprints.sl3 dataset, but we should note what the data looks like so we will know where it has changed once we update the dataset with the new data. The area within the red box will be where the new data will be added:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.419.Ex3.SpatialLiteData.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.419.Ex3.SpatialLiteData.png" alt="View of the dataset" /></a></p>
+<h2 id="4-publish-workspace">4) Publish Workspace</h2>
+<p>Save the workspace as exercise-process-directory-watch-messages-complete.fmw and publish it to the&nbsp;<strong>Training</strong>&nbsp;repository in FME Server. We only need it to be run (not do anything special) so register it with the&nbsp;<strong>Job Submitter</strong>&nbsp;service.</p>
+<div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If you are taking a Safe Software training course, add an FME Server Connection with the following parameters if necessary:</p>
+<p>Server URL :&nbsp;<code>http://localhost</code></p>
+<p>Username:&nbsp;<code>admin</code>&nbsp;</p>
+<p>Password:&nbsp;<code>FMElearnings</code></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="5-add-dataset-to-fme-server">5) Add Dataset to FME Server</h2>
+<p>Since this Automation aims to&nbsp;<em>update</em>&nbsp;our database, let's ensure that it is accessible in FME Server. To do this, we will upload the&nbsp;<em>building_footprints.sl3</em>&nbsp;SpatiaLite database to FME Server's shared resources.</p>
+<p>Use the FME Server web interface to create a new folder&nbsp;<strong>Output</strong>&nbsp;in&nbsp;<strong>Resources &gt; Data</strong>&nbsp;and upload the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/building_footprints.sl3" target="_blank" rel="noreferrer noopener">database</a>.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-process-resource-or-network-directory-messages/images/1657136802786.png" alt="Building footprints database uploaded" /></p>
+<h2 id="6-edit-automation">6) Edit Automation</h2>
+<p>Navigate to the Automations: Manage Automations page and select&nbsp;<strong>Incoming Building Footprints&nbsp;</strong>to open the Automation for editing. Before you can make any changes stop the Automation using the button in the top right corner. Instead of adding a new action node, simply select the Log node and change the Action parameter value to Run a workspace.</p>
+<p>Select the&nbsp;<strong>Training</strong>&nbsp;repository and workspace uploaded in the previous step. The parameters should now include one for the Source Esri Shapefile and the output database.</p>
+<p>The source dataset must pick up the file path from the Resource or Network Directory (updated) trigger. From the drop-down menu next to&nbsp;<strong>Source Esri Shapefiles(s)</strong>,<strong>&nbsp;</strong>select<strong>&nbsp;File Path</strong>&nbsp;found under the Directory folder. This drop-down list is essentially the JSON flattened into its separate components.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.SourceDataset.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.421.Ex2.SourceDataset.png" alt="Select File Path parameter" /></a></p>
+<p>For&nbsp;<strong>SpatialLite Database</strong>, browse the Resource/Data/Output folder to locate the SpatiaLite database uploaded in the previous step:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-process-resource-or-network-directory-messages/images/1657136851143.png" alt="Choosing the destination to match the database uploaded in the previous step" /></p>
+<h2 id="7-add-filter">7) Add Filter</h2>
+<p>The Esri Shapefile Reader will only accept .shp file extension types. However, the Resource or Network Directory (updated) Trigger will pass a message to the workspace for every file uploaded. To prevent the Automation from triggering database update workspaces that will fail, add a Filter action so that only the file path containing .shp is parsed to the Run Workspace action.</p>
+<p>Select the plus icon at the bottom of the canvas and drag an internal action (orange) onto the canvas.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-process-resource-or-network-directory-messages/images/1657136938197.png" alt="Select an Action to add" /></p>
+<p>Move the connection lines so that the Network Directory (updated) Trigger &nbsp;Success Output port enters this new Action node, and the Run Workspace is connected to the Success Output port of this action.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-process-resource-or-network-directory-messages/images/1657136961840.png" alt="Connecting the new Action" /></p>
+<p>Click on the action to configure the filter and set the Action to Filter messages. There are two parameter values required. Similar to how the Source dataset of the workspace was set, specify the File Path as the Key. In Contains, set the string to search for to .shp.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-process-resource-or-network-directory-messages/images/1657137003288.png" alt="Filter message to file paths containing .shp" /></p>
+<p>Click Apply to save the changes. Click Start Automation again to restart the automation.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Instead of using a filter action we could have zipped up the update002.shp/.dbf/.shx/.prj files so that the Resource or Network Directory (updated) Trigger was only triggered once. Much like the Log Action notice, the Filter submits a FilterMessage.fmw workspace for each incoming message; therefore, if you handle a high volume of incoming data, zipping files may be the preferred option.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="8-test-solution">8) Test Solution</h2>
+<p>Test the solution by putting update001, update002, or update003 .shp/.dbf/.shx/.prj files into the BuildingUpdates folder. If these files already exist from an earlier exercise, delete them first, then re-add them. You will find that each dataset put into the folder is added to the SpatiaLite database.</p>
+<p>Check the Completed Jobs page to confirm that the workspace was run. Alternatively, you can check the Automation Log or Triggered Job log to watch the progress of the Trigger &gt; Job Submitted &gt; Translation Successful.&nbsp;</p>
+<h2 id="9-inspect-the-output">9) Inspect the Output</h2>
+<p>In the FME Data Inspector, click Open, set Format to SpatiaLite, click the downward-pointing arrow button next to Dataset, Select File from Web, click Browse FME Server..., navigate to Data &gt; Output, and select building_footprints.sl3. Click OK.</p>
+<p>Depending on which update file you added, you should see one of the three buildings added to the dataset:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" alt="Inspect the output" /></a></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If you haven't added a background map before, you can add a&nbsp;<strong>Stamen Maps</strong>&nbsp;background map using the instructions&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_DataInspector/DataInspector/Background_Map.htm" target="_blank" rel="noreferrer noopener">here</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

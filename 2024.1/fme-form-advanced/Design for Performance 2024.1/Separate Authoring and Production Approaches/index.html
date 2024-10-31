@@ -1,0 +1,35 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Distinguish between an authoring and production environment.</li>
+<li>Improve performance in production by removing debugging transformers.</li>
+<li>Improve performance in production by disabling feature caching.</li>
+<li>Improve performance in production by disabling sections of your workspace.</li>
+</ul>
+<h2 id="workspace-authoring-versus-production-performance">Workspace Authoring versus Production Performance</h2>
+<p>Workspaces are authored in FME Workbench and often run in FME Workbench. However, wherever a workspace is run, the production version should look quite different from when it was authored.</p>
+<p>That's because when authors build and test a workspace, they use several features designed to help them create and debug. However, these features often slow the translation, so avoiding them in a production-ready workspace is essential.</p>
+<p>Many of these features don't appear to hinder performance during workspace development because development usually occurs on a small subset of data. However, scaling up to production levels of data also scales up the impact on performance.</p>
+<p>In short, it's essential to think of development and production as two entirely different stages and design workspaces appropriately for each stage.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">There are always exceptions to any rule, and you may disagree with some of the content below. However, you should try as much as possible to remove any functionality used for debugging before putting a workspace into production.</span></p>
+</blockquote>
+<h2 id="logger-and-inspector-transformers">Logger and Inspector Transformers</h2>
+<p>Logger and Inspector transformers are commonly used to inspect data during authoring.</p>
+<p>The Logger writes information to the log file, while the Inspector sends data to the FME Data Inspector. Both should be avoided in a production workflow for two reasons. First, such inspection techniques are only sometimes needed in a production workflow, and second, both will reduce performance. The Inspector, in particular, can use many system resources to send data to the Data Inspector.</p>
+<p>All Logger and Inspector transformers can be removed in one action by using Tools &gt; Remove... &gt; Inspectors or Loggers in the menu bar:</p>
+<p><img class="image image-block image-center" src="images/1724954611281.png" alt="Removing all Loggers using the Tools &gt; Remove menu option" width="456" height="401" /></p>
+<p>There is a more pressing need to remove these transformers from a workspace run in FME Form. When run on FME Flow, the Inspector transformers will be ignored, as there is no visualization tool on that platform.</p>
+<h2 id="feature-caching">Feature Caching</h2>
+<p>Running a workspace with Feature Caching enabled takes a huge performance hit because each transformer caches data. It is, again, a debugging tool, so it is best to turn this feature off when authoring and testing are complete and the workspace is put into production. This is so important that the log window even records when feature caching is turned on:</p>
+<p><img class="image image-block image-center" src="images/1724954675156.png" alt="Feature caching warning" width="776" height="279" /></p>
+<p>If feature caching was used to aid feature inspection, it should not be required in a production workflow. If feature caching was used for a partial run,&nbsp;only the required section of the workspace should be put into production.</p>
+<p>As with Inspector transformers, feature caching does not affect a workspace run on FME Flow. Additionally, feature caching being enabled or disabled is not stored in the workspace file itself; the user controls it via the Workbench Run menu.</p>
+<h2 id="disabled-sections">Disabled Sections</h2>
+<p>In some cases, parts of a workspace are disabled&mdash;or separated from the main workflow by a disabled connection&mdash;to test specific sections. This is different from what should be maintained in a production workspace.</p>
+<p>If the components were disabled for testing only, they should be activated for production work. If the components are not needed now, consider storing them in a separate workspace or saving a separate workspace version without them.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If parts of a workspace are unnecessary, why not use a user parameter to divert data? In software development, these are called </span><strong style="font-family: inherit; font-size: 1em;">Feature Flags</strong><span style="font-family: inherit; font-size: 1em;">, and </span><strong style="font-family: inherit; font-size: 1em;"><a href="https://john-byrne-jb.medium.com/feature-flags-in-fme-95304302fd14" target="_blank" rel="noopener">this blog</a></strong><span style="font-family: inherit; font-size: 1em;">&nbsp;by an FME user explains how to implement them in a workspace.</span></p>
+</blockquote>

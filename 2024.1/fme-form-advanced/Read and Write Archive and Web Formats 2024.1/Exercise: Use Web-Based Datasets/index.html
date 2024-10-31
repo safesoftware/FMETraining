@@ -1,0 +1,242 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Carry out a data join with a web-based dataset.</li>
+<li>Write data to a compressed output using the FeatureWriter transformer.</li>
+<li>Create a web connection.</li>
+<li>Upload data to FME Flow (or another online service) using a workspace.</li>
+<li>Download data from FME Flow (or another online service) using a workspace.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Transportation/CompleteRoads.dwg" target="_blank" rel="noreferrer noopener">CompleteRoads.dwg</a>
+<ul>
+<li>C:\FMEData\Data\Transportation\CompleteRoads.dwg</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/Interopolis/Snowfall.xlsx" target="_blank" rel="noreferrer noopener">Snowfall.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Transportation\Snowfall.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-use-web-based-datasets-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-use-web-based-datasets-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>In this exercise, we're joining snowfall data to a set of road features and writing the results to an FME Flow Resource folder for other users to access. We'll create a workspace that joins local data to an online dataset, processes the data, and writes it to a different web destination.</p>
+<h2 id="1-add-reader">1) Add Reader</h2>
+<p>Start FME Workbench (2024.1 or later), and in a blank workspace, add a reader with these parameters:</p>
+<table class="featureTable sort_table" style="width: 45.8846%; height: 282.172px;">
+<tbody class="tbody">
+<tr style="height: 32.5px;">
+<td style="width: 19.0678%; height: 32.5px;"><strong>Reader Format</strong></td>
+<td style="width: 80.7403%; height: 32.5px;">Autodesk AutoCAD DWG/DXF</td>
+</tr>
+<tr style="height: 136.422px;">
+<td style="width: 19.0678%; height: 136.422px;"><strong>Reader Dataset</strong></td>
+<td style="width: 80.7403%; height: 136.422px;">
+<p>https://s3.amazonaws.com/FMEData/FMEData/Data/Transportation/CompleteRoads.dwg</p>
+<p>or&nbsp;</p>
+<p>C:\FMEData\Data\Transportation\CompleteRoads.dwg</p>
+</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 19.0678%; height: 32.5px;"><strong>Parameters</strong></td>
+<td style="width: 80.7403%; height: 32.5px;">Group Entities By: Attribute Schema</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 19.0678%; height: 32.5px;"><strong>Coord. System</strong></td>
+<td style="width: 80.7403%; height: 32.5px;">UTM84-10N</td>
+</tr>
+<tr style="height: 48.25px;">
+<td style="width: 19.0678%; height: 48.25px;"><strong>Workflow Options</strong></td>
+<td style="width: 80.7403%; height: 48.25px;">Single Merged Feature Type</td>
+</tr>
+</tbody>
+</table>
+<p>The Group Entities parameter is an AutoCAD-specific option. It ensures we have attributes from the AutoCAD source data exposed in Workbench.</p>
+<p>The Merged Feature Type option treats all the road data as a single map layer, which is fine because we don't want to handle multiple layers separately.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">We are just reading a file from a URL here. If you can access a cloud data storage provider such as Google Drive or Dropbox, try copying CompleteRoads.dwg to a folder on that service. Then, use the Select File From Web functionality to authenticate, connect, and read the data.</span></p>
+</blockquote>
+<h2 id="2-locate-snowfall-dataset">2) Locate Snowfall Dataset</h2>
+<p>In a web browser, browse to the City of Interopolis&nbsp;<strong><a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" target="_blank" rel="noreferrer noopener">Open Data Portal</a></strong>&nbsp;(<a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html</a>).</p>
+<p>Locate the dataset for Snowfall Predictions, right-click on where it says&nbsp;<strong>Excel Spreadsheet</strong>, and choose to copy the URL:</p>
+<p><img class="image image-block image-center" src="images/1723226402703.png" alt="Copying a link" width="569" height="353" /></p>
+<p>The exact command will vary by the web browser.</p>
+<h2 id="3-add-database-joiner-transformer">3) Add DatabaseJoiner Transformer</h2>
+<p>Back in FME Workbench, add a DatabaseJoiner transformer and connect it to the roads feature type. Open the DatabaseJoiner parameters.</p>
+<p>Set the parameters as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Reader Format</strong></td>
+<td>Microsoft Excel</td>
+</tr>
+<tr>
+<td><strong>Reader Dataset</strong></td>
+<td>https://s3.amazonaws.com/FMEData/Interopolis/Snowfall.xlsx</td>
+</tr>
+</tbody>
+</table>
+<p>...where you can paste the URL you copied from the web browser.</p>
+<p>Click the Parameters button and check that the data is being read correctly. The Preview table should show records with the correct columns (StreetId, EstimatedSnowfall, etc.).</p>
+<p>Back in the main DatabaseJoiner dialog, select Snowfall as the join table and select StreetId as both the Feature Attribute and Table Field to be joined:</p>
+<p><img class="image image-block image-center" src="images/1723226701885.png" alt="Configured DatabaseJoiner" width="477" height="404" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If no attributes are available under the Feature Attribute field, you failed to use the Group Entities By: Attribute Schema parameter when adding the AutoCAD reader. To resolve this, the simplest method is to delete and re-add the reader, using the correct options this time.</span></p>
+</blockquote>
+<p>The final parameters to set in the DatabaseJoiner are&nbsp;<em>Fields to Add</em>&nbsp;and&nbsp;<em>Cardinality</em>:</p>
+<p><img class="image image-block image-center" src="images/1723226795094.png" alt="Fields to Add" width="538" height="57" /></p>
+<p>Select the following Fields to Add:</p>
+<ul>
+<li>EstimatedSnowfall</li>
+<li>LastTreated</li>
+<li>Temperature</li>
+<li>WeatherStation</li>
+</ul>
+<p>Ensure Cardinality is set to&nbsp;<strong>Match First (1:0...1+)</strong>; each road feature will be joined to the first matching database record FME finds. This option is least likely to lead to error messages in the log.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The project aims to write the data to KML format. As a training exercise, we're only interested in how and where we write the data. However, a realistic requirement would be to set the color and style of the spatial data being written (in spatial terms, we sometimes call this </span><em style="font-family: inherit; font-size: 1em;">symbology</em><span style="font-family: inherit; font-size: 1em;">). Try adding a KMLStyler and setting features' Color using conditional values. For example, make streets with 0 EstimatedSnowfall green, between 0 and 150 yellow, and over 150 red.</span></p>
+</blockquote>
+<h2 id="4-add-feature-writer-transformer">4) Add FeatureWriter Transformer</h2>
+<p>Now, it's time to write the data. Writing data directly to a web service is more complex, so we'll create a zipped, file-based dataset and then upload it to a web service.</p>
+<p>So, add a FeatureWriter transformer and connect it to the KMLStyler transformer (if you added one) or the DatabaseJoiner transformer (if you didn't).</p>
+<p>Open the parameters and set the writer up as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Writer Format</strong></td>
+<td>OGC / Google KML</td>
+</tr>
+<tr>
+<td><strong>Writer Dataset</strong></td>
+<td>C:\FMEData\Output\Training\RoadSnowfall.kml</td>
+</tr>
+</tbody>
+</table>
+<p>Then click on the dropdown arrow to the right of the Dataset parameter, and choose the option to&nbsp;<strong>Zip Output</strong>:</p>
+<p><img class="image image-block image-center" src="images/1723226950369.png" alt="Zip output" width="721" height="442" /></p>
+<p>This configuration instructs the transformer to write data directly to a zipped (compressed/archived) file. You can manually type in a path, including .zip if you prefer.</p>
+<p>As a final step in this transformer, rename the output feature type to SnowfallPredictions:</p>
+<p><img class="image image-block image-center" src="images/1723227056300.png" alt="Renaming to SnowfallPredictions" width="486" height="233" /></p>
+<p>When you run the workspace, FME will write a dataset. The FeatureWriter will create an attribute called&nbsp;<em>_dataset</em> to record the dataset's name and path. The next step is to upload this file to a web service.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can copy the data to any web service you can access; you'll need to use the appropriate connector transformer. For example, use the DropboxConnector to copy data to Dropbox or the GoogleDriveConnector to copy it to Google Drive.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>The rest of this exercise will use FME Flow and the FMEFlowResourceConnector, using connection settings that assume FME Flow is installed on the same system as FME Form, which would be the case if you are using one of Safe Software's virtual machines. You can request one from the footer on the <a href="https://academy.safe.com/" target="_self">FME Academy homepage</a>.</p>
+<p>You can choose any supported web service you use regularly; the general workflow will be the same.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="5-add-fme-server-resource-connector-transformer">5) Add FMEFlowResourceConnector Transformer</h2>
+<p>Add an FMEFlowResourceConnector transformer (renamed the FMEFlowResourceConnector in newer versions of FME) and connect it to the FeatureWriter's Summary output port. The workspace should now look like this (KMLStyler optional):</p>
+<p><img class="image image-block image-center" src="images/1723227567036.png" alt="Adding the FMEServerResourceConnector" width="1062" height="119" /></p>
+<p>Please ensure the FME Flow Action is set to <strong>Upload </strong>in the parameters dialog.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you are using an FME Academy virtual machine or taking a Safe Software training course, use the existing <strong>Training FME Flow</strong> web connection for the FME Flow Account. You can skip creating the FME Flow Web Connection.</p>
+</blockquote>
+<p>To create an FME Flow web connection, open the drop-down menu and click <strong>Add Web Connection</strong>:</p>
+<p><img class="image image-block image-center" src="images/1723227752244.png" alt="Add Web Connection" width="386" height="114" /></p>
+<p>In the FME Flow Connection Dialog, change the Connection Name if desired. Then, set the following parameters and click <strong>Authenticate</strong>:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>FME Flow URL</strong></td>
+<td><a href="http://localhost/" target="_blank" rel="noreferrer noopener">http://localhost</a></td>
+</tr>
+<tr>
+<td><strong>Username</strong></td>
+<td>admin</td>
+</tr>
+<tr>
+<td><strong>Password</strong></td>
+<td>FMElearnings</td>
+</tr>
+</tbody>
+</table>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Again, this web connection will only work if you have FME Flow running on your local machine and have a user configured with these credentials.</p>
+</blockquote>
+<p><span style="font-family: inherit; font-size: 1em;">Ensure the Source Upload parameter is set to File. For the File to Upload parameter, click the drop-down icon and select Attribute Value &gt; _dataset:</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><img class="image image-block image-center" src="images/1723228450167.png" alt="Setting File to Upload to _dataset" width="832" height="310" /></p>
+<p>Finally, for the FME Flow Destination, click on the ellipsis next to the Folder ID. This will connect to your FME Flow Resources folder. Click on the <strong>Data</strong>&nbsp;folder to select it and click&nbsp;<strong>OK</strong>:</p>
+<p><img class="image image-block image-center" src="images/1723228498493.png" alt="Finding the Data folder" width="552" height="394" /></p>
+<p>The parameter is now set to upload to the&nbsp;<code>FME_SHAREDRESOURCE_DATA/filesys</code> folder. That was the final part of the FMEFlowResourceConnector setup, so click <strong>OK</strong> to close its parameters dialog.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learn more about managing data on FME Flow in the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/manage-fme-flow-data-and-connections" target="_blank" rel="noopener">Manage FME Flow Data and Connections course</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="6-run-translation">6) Run Translation</h2>
+<p>Save the workspace and then run it.</p>
+<p>Oops! There are some error messages. The key one is:</p>
+<div>
+<pre><code>FMEFlowResourceConnector_&lt;Rejected&gt; (TeeFactory): FMEFlowResourceConnector_&lt;Rejected&gt;: Termination Message: 'FMEFlowResourceConnector output a &lt;Rejected&gt; feature. &nbsp;To continue translation when features are rejected, change 'Workspace Parameters' &gt; Translation &gt; 'Rejected Feature Handling' to 'Continue Translation''</code><br /><br /></pre>
+</div>
+<p>The FMEFlowResourceConnector outputs a feature to the &lt;Rejected&gt; port. If we inspect that feature, it has a value for <em>fme_rejection_code </em>of:</p>
+<pre><code>ERROR_DURING_PROCESSING</code><br /><br /></pre>
+<p>Not very helpful, but if we dig around, the problem is that the path only needs to point to the zip file, not the file within it. Let's fix that.</p>
+<p>Add a StringReplacer transformer between the FeatureWriter and FMEFlowResourceConnector transformers. Set it up with the following parameters:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Attributes</strong></td>
+<td>_dataset</td>
+</tr>
+<tr>
+<td><strong>Mode</strong></td>
+<td>Replace Regular Expression</td>
+</tr>
+<tr>
+<td><strong>Text to Replace</strong></td>
+<td>\\[^\\]*$</td>
+</tr>
+</tbody>
+</table>
+<p>Leave the Replacement Text field empty. That regular expression will look for the final \ character in the string and replace everything after it with the replacement text (which is nothing):</p>
+<p><img class="image image-block image-center" src="images/1723228833021.png" alt="Using a StringReplacer to fix the _dataset path" width="656" height="559" /></p>
+<p>When we run our workspace, FME writes the data to our local disk and uploads the output file onto FME Flow, where our colleagues can download it.</p>
+<p>Run the workspace.</p>
+<h2 id="7-test-upload">7) Test Upload</h2>
+<p>Check the workspace results in Visual Preview. The FMEFlowResourceConnector's output will be a single feature with an attribute storing a link to the data on Flow.</p>
+<p>Copy the contents of the _direct_download_link attribute to the system clipboard (you can double-click the cell to open the full value and copy it). Paste the copied link into the address bar of a web browser and press the Enter/Return key.</p>
+<p>Enter the username and password you entered into the FME Flow connection. The uploaded file will be downloaded from FME Flow.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You could test the result in a few other ways:</span></p>
+<ol>
+<li><span style="font-family: inherit; font-size: 1em;">Create a second workspace. Place a Creator and FMEFlowResourceConnector combination and - this time - set the FME Flow Action to Download. Click the ellipsis next to FME Flow Source Object ID to open a file browser and then browse to the Data folder to locate the SnowfallPredictions KML dataset. Click </span><strong style="font-family: inherit; font-size: 1em;">OK</strong><span style="font-family: inherit; font-size: 1em;"> and run the workspace. The file will be downloaded as an attribute.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Log in to the FME Flow web interface at <a href="http://localhost" target="_self">http://localhost</a> and browse to Files and Connections &gt; Resources &gt; Data. You should see the ZIP file there.</span></li>
+</ol>
+</blockquote>
+<p>Congratulations! You have successfully read and written data using web data connectors.</p>

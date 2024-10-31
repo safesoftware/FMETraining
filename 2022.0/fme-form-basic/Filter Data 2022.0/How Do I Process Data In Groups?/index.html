@@ -1,0 +1,41 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain how the Group By parameter lets you process features in groups.</li>
+<li>Explain the difference between the Process at End and Process When Group Changes Group By modes.</li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/QMFPApNZWy8Hx8JkU5TpHb" width="640" height="360" allowfullscreen=""></iframe></p>
+<h2 id="what-is-group-by">What is Group By?</h2>
+<p>Group By parameters allow features to be processed in groups by a single FME transformer.</p>
+<p>FME transformers carry out transformations on either one feature at a time, or on a whole set of features at once.</p>
+<p>For example, the&nbsp;<em>AreaCalculator</em>&nbsp;transformer operates on one feature at a time (to measure the area of a single polygon feature). We call it a&nbsp;<strong><em>feature-based transformer</em></strong>.</p>
+<p>The&nbsp;<em>StatisticsCalculator</em>&nbsp;operates on multiple features at a time (to calculate an average value for them all). In FME we call this set of features a&nbsp;<strong><em>group</em></strong>&nbsp;and the transformer is a&nbsp;<strong><em>group-based transformer</em></strong>.</p>
+<h2 id="creating-groups">Creating Groups</h2>
+<p>So a group is simply a defined set of features being processed by a transformer. By default, a group-based transformer treats ALL the features that it is fed, as a single group.</p>
+<p>However, such transformers also have a&nbsp;<strong><em>Group By</em></strong>&nbsp;parameter. This parameter lets the user define several groups based upon the value of an attribute.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>To illustrate groups let's consider calculating the mean age of FME users. The default group for the calculation includes&nbsp;<strong>all</strong>&nbsp;FME users.</p>
+</blockquote>
+<p>But you could instead divide everyone into their nationality and calculate the average age per country.</p>
+<p>This is the same as having a nationality attribute in a dataset and selecting that in an FME Group By parameter.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Here, a Dissolver transformer is being used to dissolve (merge) a number of polygon features. The selected Group By attribute is&nbsp;<em>ViewDescription</em>:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic2Transformation/Images/Img2.035.GroupByParameter.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic2Transformation/Images/Img2.035.GroupByParameter.png" alt="Setting a Group By parameter" /></a></p>
+<p>FME creates a series of groups for overlaying, where the features in each group share the same value for the&nbsp;<em>ViewDescription</em>&nbsp;attribute. The practical outcome is that polygon dissolving takes place only where line features share the same description:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic2Transformation/Images/Img2.035b.GroupByResults.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic2Transformation/Images/Img2.035b.GroupByResults.png" alt="Example of results of using a Dissolver on geometry" /></a></p>
+<h2 id="group-by-mode">Group By Mode</h2>
+<p>When grouping features, there are two different ways the transformer can handle the group. The first way is to hold all of the features until all of the features have come through the transformer, this is referred to as blocking. This is set by using the Process at End (Blocking) Group By Mode.</p>
+<p>The other way is to pre-sort your data into groups first by using a transformer like the Sorter. Then once your data is grouped, use the Process When Group Changes (Advanced) Group By Mode. This mode will push the features through the transformer after each group which will help speed up performance. Only use this option when your data is pre-sorted.</p>

@@ -1,0 +1,64 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Open a workspace to compare using Workspace Comparison.</li>
+<li>View the list of changes using Workspace Comparison and find them on the canvas.</li>
+<li>View parameter changes using Workspace Comparison.</li>
+<li>Merge selected changes using Workspace Comparison.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-compare-workspaces-v1.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>If you are taking a Safe Software-hosted training course, you can also find this workspace on your training machine: C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-compare-workspaces-v1.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-compare-workspaces-v2.fmw" target="_blank" rel="noopener">Updated workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-compare-workspaces-v2.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-compare-workspaces-v3.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-compare-workspaces-v3.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>You created a workspace to do attribute cleanup on 3-1-1 call data. <a href="https://en.wikipedia.org/wiki/3-1-1" target="_blank" rel="noreferrer noopener">3-1-1</a>&nbsp;is a special phone number used by municipalities in Canada and the United States to manage non-emergency municipal service calls.</p>
+<p>A few weeks later, your colleague modified the workspace to summarize the call records and join them to spatial data. They&rsquo;ve added a few feature types and added/modified transformers. Now, you have two versions and want to rectify them into an accepted shared workspace version. You can use FME 2023.0&rsquo;s Workspace Comparison tool for this task.</p>
+<h2 id="1-open-workbench">1) Open Workbench</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-compare-workspaces-v1.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench (2024.1 or later).</p>
+<p><img class="image image-block image-center" src="images/1724791534209.png" alt="Starting workspace" width="1351" height="437" /></p>
+<h2 id="2-open-workspace-comparison">2) Open Workspace Comparison</h2>
+<p>Click <strong>Tools &gt; Compare Workspaces</strong>.</p>
+<p><img src="images/1724791635570.png" alt="Tools &gt; Compare Workspaces" width="353" height="423" /></p>
+<p>Add the v1 workspace as the Editable workspace, and <strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-compare-workspaces-v2.fmw" target="_blank" rel="noopener">exercise-compare-workspaces-v2.fmw</a> </strong>(C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-compare-workspaces-v2.fmw)as the Read-only workspace.</p>
+<p><img src="images/1694454243858.png" alt="Compare Workspaces dialog filled out" /></p>
+<p>Then click <strong>OK</strong>.</p>
+<p>The workspaces open in the <strong>Compare Workspaces</strong>&nbsp;tab.</p>
+<p><img src="images/1724791821976.png" alt="Compare Workspaces open" width="974" height="791" /></p>
+<h2 id="3-find-a-specific-change">3) Find a Specific Change</h2>
+<p>Look at the list of differences below the Read-Only workspace.</p>
+<p>One of the differences under <strong>Transformers </strong>indicates that the<strong>&nbsp;FeatureJoiner&nbsp;</strong>was modified (yellow means modified). Find it in the list.</p>
+<p><img src="images/1724791903894.png" alt="FeatureJoiner in list of differences" width="438" height="254" /></p>
+<p>After finding it, click it once to highlight the transformer with changes on the canvas.</p>
+<p><img src="images/1724791957328.png" alt="Finding a differences on both canvases" width="974" height="993" /></p>
+<h2 id="4-view-changed-parameters">4) View Changed Parameters</h2>
+<p>Double-click the&nbsp;<strong>FeatureJoiner&nbsp;</strong>change in the list of changes to open the <strong>'FeatureJoiner' Properties Comparison </strong>dialog.</p>
+<p><img src="images/1724791996169.png" alt="'FeatureJoiner' Properties Comparison dialog" width="947" height="503" /></p>
+<p>Here, you can confirm that in the v1 workspace, the FeatureJoiner is not configured. However, the v2 workspace joins tabular CSV data of 3-1-1 call records to local planning area polygons read from a KML file. The shared key is the name of the local planning area stored in attributes <code>Name</code>&nbsp;and&nbsp;<code>Local Area</code>, respectively.</p>
+<p>Click&nbsp;<strong>Close</strong>.</p>
+<h2 id="5-select-changes-to-merge">5) Select Differences to Copy</h2>
+<p>Browse the rest of the differences. They are all necessary for the new workspace, which summarizes calls by local area.&nbsp;</p>
+<p>Copy all changes from the v2 to v1 workspace by selecting all the objects on the Read-Only canvas. You can do that by clicking and dragging around all objects on the canvas or using the Ctrl+A shortcut after selecting a single change in the list of changes. Then click the Copy To Left Button between the two lists of changes:</p>
+<p><img src="images/1724792063305.png" alt="Copy to Left button" width="960" height="254" /></p>
+<p>FME will prompt you to ensure you want to merge the changes. Click&nbsp;<strong>OK</strong>.</p>
+<p><img src="images/1724792086573.png" alt="Compare Workspaces warning" width="502" height="254" /></p>
+<p>FME will also inform you that Copy to Left does not make changes to Runtime Order. If we desired, we could modify that in the Navigator:</p>
+<p><img src="images/1724792180963.png" alt="Runtime Order differences detected dialog" /></p>
+<p>You will see the new, modified version of the workspace. You can save it to store the merged changes.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In this scenario, you could also have decided to compare changes, confirm they were all correct, delete the v1 workspace, and continue using v2. Which method you choose depends on whether you want to accept </span><em style="font-family: inherit; font-size: 1em;">all</em><span style="font-family: inherit; font-size: 1em;">&nbsp;changes or just&nbsp;</span><em style="font-family: inherit; font-size: 1em;">some&nbsp;</em><span style="font-family: inherit; font-size: 1em;">of them (essentially creating a &ldquo;fork&rdquo; or parallel development path) and if you maintain separate copies of similar workspaces in your organization.</span></p>
+</blockquote>

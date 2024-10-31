@@ -1,0 +1,62 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Identify null and missing attribute values.</li>
+<li>Set null and missing attribute values.</li>
+<li>Filter out null and missing attribute values from your data.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-handle-null-and-missing-values.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-handle-null-and-missing-values.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-handle-null-and-missing-values-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-handle-null-and-missing-values-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>In this workspace, a colleague tries to write a list of parks to a Geodatabase dataset. The parks must be in alphabetical order &ndash; according to their name &ndash; and features with no park names must be written as null and appear last in the dataset.</p>
+<p>However, their workspace needs to be configured correctly. The parks are sorted alphabetically, but unnamed parks always appear first.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">By default, FME will display&nbsp;</span><code>&lt;null&gt;</code><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><code>&lt;missing&gt;</code><span style="font-family: inherit; font-size: 1em;">, and empty values at the top of attribute columns sorted alphabetically or, naturally, ascending. This sorting behavior applies to Visual Preview manual attribute column sorting and the Sorter transformer output. This feature is helpful when working with your data, as you'll be more likely to spot them quickly when inspecting data. However, in cases where you need to ensure they are written last, you must do some attribute handling.</span></p>
+</blockquote>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Open the starting workspace in FME Workbench (2024.1 or later).</p>
+<p>Using feature caching, run the workspace and inspect the source dataset as a table. You&rsquo;ll see that the data is in order of&nbsp;<code>ParkId</code>, not&nbsp;<code>ParkName</code>, and that there are <code>&lt;missing&gt;</code>&nbsp;values scattered throughout:</p>
+<p><img class="image image-block image-center" src="images/1724357260582.png" alt="Parks data with missing values scattered throughout" width="812" height="338" /></p>
+<p>To sort the&nbsp;<code>&lt;missing&gt;</code> data, we'll need to set their ParkName attribute to something that appears at the bottom of a sorted list,&nbsp;then set them back to&nbsp;<code>&lt;null&gt;</code>&nbsp;afterward.</p>
+<h2 id="2-add-null-attribute-mapper">2) Add NullAttributeMapper</h2>
+<p>Add a NullAttributeMapper transformer before the Sorter transformer. Inspect the parameters.</p>
+<p>Ensure &ldquo;Map&rdquo; is set to Selected Attributes, and choose the attribute&nbsp;<code>ParkName</code>:</p>
+<p><img class="image image-block image-center" src="images/1724357266575.png" alt="Choosing the Selected Attributes in the NullAttributeMapper" width="484" height="94" /></p>
+<p>Underneath is a section on what to map to.</p>
+<p>We know the values here are currently listed as <code>&lt;missing&gt;</code>, so set the &ldquo;If Attribute Value Is&rdquo; parameter to Missing (Selected Attributes Only).</p>
+<p>We want to map these to a value at the bottom of an alphabetically sorted list, so change &ldquo;Map To&rdquo; to New Value and enter ZZZ as the new value.</p>
+<p><img class="image image-block image-center" src="images/1724357272639.png" alt="Mapping missing attribute values to a new value of ZZZ" width="483" height="180" /></p>
+<p>Click OK to accept the parameter changes.</p>
+<h2 id="3-add-null-attribute-mapper">3) Add NullAttributeMapper</h2>
+<p>Now add a second NullAttributeMapper; this time, it should be connected <em>after</em>&nbsp;the Sorter.</p>
+<p>Open the parameters and, once again, ensure &ldquo;Map&rdquo; is set to Selected Attributes and select the&nbsp;<code>ParkName</code> attribute. This time, turn the ZZZ values back to nulls:</p>
+<p><img class="image image-block image-center" src="images/1724357278124.png" alt="Mapping ZZZ to null" width="484" height="179" /></p>
+<p>Technically, we could turn them back into <code>&lt;missing&gt;</code>; the Geodatabase writer will write them out as nulls. However, assuming we didn&rsquo;t know that, null is the safer option and will give us what we want.</p>
+<h2 id="4-save-and-run-workspace">4) Save and Run the Workspace</h2>
+<p>Save the workspace and then run it. Inspect the output. This time, the data should be sorted by <code>ParkName</code>, but with all null values at the end of the dataset:</p>
+<p><img class="image image-block image-center" src="images/1724357283941.png" alt="Resulting data with null values at the bottom" width="812" height="460" /></p>
+<h2 id="5-fix-ref-park-id">5) Fix RefParkId</h2>
+<p>Your colleague is now asking you to fix the <code>RefParkId</code> field. You'll have noticed that many of the values are -9999. That's the MapInfo equivalent of "nothing," but it would be better to set these to proper nulls for the&nbsp;Geodatabase.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">That's very simple to do. Before you look at the instructions, take a moment to think about how to fix it.</span></p>
+</blockquote>
+<p>To do this, open the parameters dialog for the first NullAttributeMapper. Add <code>RefParkId</code>&nbsp;to the list of attributes for processing. Then add -9999 to the "Or If Attribute Value Is" field:</p>
+<p><img class="image image-block image-center" src="images/1724357290138.png" alt="Mapping missing or -9999 values to ZZZ" width="529" height="255" /></p>
+<p>Now open the second NullAttributeMapper and add&nbsp;<code>RefParkId</code>&nbsp;to the list of attributes for processing.</p>
+<p>These values will get mapped to ZZZ with the missing <code>ParkName</code> values. Then, they will be turned into true nulls by the second NullAttributeMapper.</p>
+<h2 id="challenge">Challenge</h2>
+<p>The requirements have changed! Edit the workspace to filter out any features with null values for <code>ParkName</code> or <code>RefParkID</code> and write them to a separate Feature Type (table) in the Geodatabase. Try this out; you'll need to do it to answer a quiz question below.</p>

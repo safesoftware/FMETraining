@@ -1,0 +1,125 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create folders and upload datasets to Resources using the Upload button.</li>
+<li>Run a workspace on FME Server using data uploaded to Resources.</li>
+<li>Author workspaces that automatically use data uploaded to Resources when running a workspace on FME Server.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" target="_blank" rel="noreferrer noopener">Starting workspace template</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace-complete.fsproject" target="_blank" rel="noreferrer noopener">Starting FME Server project</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace-complete.fmwt" target="_blank" rel="noreferrer noopener">Complete workspace template</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-use-the-resource-file-system-complete.fsproject" target="_blank" rel="noreferrer noopener">Complete FME Server project</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">ElectionVoting.gml</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_blank" rel="noreferrer noopener">ElectionVoting.xsd</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>You have already created a workspace to translate data and published it to FME Server, both with data and using data uploaded temporarily.</p>
+<p>However, such data management tools are not particularly suited to a long-term project, so the task here is to upgrade workspaces to use datasets stored in a Resources folder. There we can store source data and write destination data.</p>
+<h2 id="1-open-fme-server-web-interface">1) Open FME Server Web Interface</h2>
+<p>Log in to the FME Server (2022.0 or later) web interface using an administrator account (admin/FMElearnings on Safe Software training machines). Click Files &amp; Connections &gt; Resources on the menu bar to navigate to the resources management pages.</p>
+<h2 id="2-create-folder">2) Create Folder</h2>
+<p>In most cases, data should be stored under the Data folder, so click on Data in the Resources dialog to open that folder. To avoid mixing datasets, our data should go into its own subfolder. So click on the +New button and create a folder called Election:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/41-b-6899-a-1-e-3-d-4627-876-a-48-b-2-a-35186-e-0.png" alt="Creating a new folder" width="624" height="257" /></p>
+<p>Next, click on the Election folder, and then create&nbsp;<strong>new</strong>&nbsp;subfolders called Input and Output:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/f-2-dcb-465-8358-4637-9-a-69-dfa-2-de-11450-e.png" alt="Input and Output folders created" width="624" height="328" /></p>
+<h2 id="3-upload-source-datasets">3) Upload Source Datasets</h2>
+<p>Browse to the Input folder, click the Upload button, and select Files. Download the files below (right-click &gt; Save link as...) and then upload them as the source datasets for the current translation:</p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">ElectionVoting.gml</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_blank" rel="noreferrer noopener">ElectionVoting.xsd</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a></li>
+</ul>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/1654814991993.png" alt="Uploaded source datasets" /></p>
+<p>So we now have both source datasets and a folder to write the output data to.</p>
+<h2 id="4-add-writer">4) Add Writer</h2>
+<p>Until now, our workspaces have only had a NULL (dummy) writer. Now we know about Resources, we can add a proper writer and point the output dataset to the Resources Output folder.</p>
+<p>So, open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" target="_blank" rel="noreferrer noopener">starting workspace template</a>&nbsp;in FME Workbench (2022.0 or later) and then select Writers &gt; Add Writer on the menu bar and set up a new writer with the following parameters:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Writer Format</strong></td>
+<td>Esri Geodatabase (File Geodb Open API)</td>
+</tr>
+<tr>
+<td><strong>Writer Dataset</strong></td>
+<td>C:\FMEData\Output\Training\DepartmentData.gdb</td>
+</tr>
+<tr>
+<td><strong>Feature Class or Table Definition</strong></td>
+<td>None (Advanced)</td>
+</tr>
+</tbody>
+</table>
+<p>We do not add feature types yet because we can move the existing ones from the NULL writer. So when you click OK, the workspace will look no different, but there will be a new writer in the Navigator window:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.217.Ex2.AddedGeodatabaseWriter.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.217.Ex2.AddedGeodatabaseWriter.png" alt="New FILEGDB Writer in the Navigator" /></a></p>
+<h2 id="5-move-feature-types">5) Move Feature Types</h2>
+<p>Inspect the parameters dialog for each writer feature type in turn. For each type, move it from the NULL writer to the FILE GDB writer, like so:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.218.Ex2.MoveAFeatureType.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.218.Ex2.MoveAFeatureType.png" alt="Moving a feature type from the NULL writer to the FILEGDB writer" /></a></p>
+<p>This will expose several extra parameters. The key one to set is Geometry. Set the Neighborhoods feature type Geometry parameter to geodb_polygon:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.219.Ex2.NeighborFeatureType.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.219.Ex2.NeighborFeatureType.png" alt="Setting the Geometry parameter" /></a></p>
+<p>Set the VotingPlaces feature type Geometry parameter to geodb_point.</p>
+<p>Now the two feature types belong to the Geodatabase writer, and the NULL writer can be deleted from the Navigator window if you wish.</p>
+<h2 id="6-set-geodatabase-parameter">6) Set Geodatabase Parameter</h2>
+<p>One last thing to change: locate the Geodatabase writer in the Navigator window and expand its list of parameters. Find the parameter labeled Overwrite Existing Geodatabase and enable it.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/c-677-e-794-279-f-4042-b-041-6-b-03010-bf-20-f.png" alt="Enable Overwrite Existing Geodatabase" width="471" height="246" /></p>
+<p>This ensures we aren't continually adding data to the same dataset if we run the workspace more than once.</p>
+<h2 id="7-run-workspace">7) Run Workspace</h2>
+<p>Test run the workspace in FME Workbench. Inspect the output in Visual Preview. If it is not already selected, click Toggle Display Control on the left-hand side of the visual preview page. You should find the output is a Geodatabase containing seven tables (the Neighborhoods table and a separate table for each set of voting places).</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.221.Ex2.OutputTables.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.221.Ex2.OutputTables.png" alt="Viewing results with multiple feature types" /></a></p>
+<h2 id="8-publish-and-run-workspace">8) Publish and Run Workspace</h2>
+<p>Publish the workspace to FME Server (2022.0 or later). Do not upload data unless you have not completed the previous exercises. Register the workspace against the Job Submitter service.</p>
+<p>Return to the FME Server web interface. Locate the workspace under the Run Workspace dialog.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/1658422234261.png" alt="Published parameters" /></p>
+<p>For each file, click the Browse Resources button, browse to the Input subfolder in Resources, and select/set the file location. Since the Geodatabase does not exist yet, For the Geodatabase output location, you'll need to type the file name manually:</p>
+<pre>$(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb</pre>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/1654815122277.png" alt="Specifying destination folder" /></p>
+<p>Now when the workspace is run, a completed Geodatabase file should appear in the folder Resources\Data\Election\Output:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/1654815173123.png" alt="Written geodatabase appears in Resources folder" /></p>
+<h2 id="9-apply-fme-server-parameter">9) Apply FME Server Parameter</h2>
+<p>Although the workspace ran correctly and used the data in the resources folder, that's only because we selected that data at runtime. It is not a permanent feature of the workspace.</p>
+<p>It would be much better if we designed the workspace to look into the resources folders automatically.</p>
+<p>So, return to the workspace in FME Workbench.</p>
+<p>If we set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window, locate the three parameters for source and destination datasets and delete them:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/1626471541836.png" alt="Deleting the Source Google KML File or URL user parameter" /></p>
+<h2 id="10-set-source-destination-parameters">10) Set Source/Destination Parameters</h2>
+<p>Now, locate the source and destination dataset parameters for the two readers and one writer. Double-click each and change them to:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>KML Reader</td>
+<td>$(FME_SHAREDRESOURCE_DATA)\Election\Input\VancouverNeighborhoods.kml</td>
+</tr>
+<tr>
+<td>GML Reader</td>
+<td>$(FME_SHAREDRESOURCE_DATA)\Election\Input\ElectionVoting.gml</td>
+</tr>
+<tr>
+<td>Geodatabase Writer</td>
+<td>$(FME_SHAREDRESOURCE_DATA)\Election\Output\DepartmentData.gdb</td>
+</tr>
+</tbody>
+</table>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/exercise-use-the-resource-file-system/images/1626471708448.png" alt="Setting all paths using the FME Server parameter" /></p>
+<p>Save the workspace and publish it back to FME Server.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If you try running this workspace in FME Workbench now that you've updated the dataset parameters to use the FME Server Shared Resource parameter, you will get an error because Workbench won't recognize that FME Server parameter.</p>
+</blockquote>
+<p>If you still want to be able to test this workspace in Workbench, you can set a value for the FME_SHAREDRESOURCE_DATA parameter. Configure it to point to a local file path that matches the folder structure used on FME Server. The workspace will still run on FME Server as Server will automatically override any value for that parameter and replace it with the correct path.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="11-re-run-workspace">11) Re-Run Workspace</h2>
+<p>Now run the workspace on FME Server. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used from the resources folders just the same.</p>

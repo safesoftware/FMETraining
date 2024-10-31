@@ -1,0 +1,210 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain how user parameters can give end-users control over how workspaces run.</li>
+<li>Define an FME parameter.</li>
+<li>Define a user parameter.</li>
+<li>Distinguish between published and private parameters.</li>
+<li>Create a user parameter using the Parameter Manager.</li>
+</ul>
+<h2 id="self-serve-and-parameters">Self-Serve and Parameters</h2>
+<p>Parameters control how FME operates: how data is read in, transformed and written out using various FME components. This lesson will explain the different types of published parameters available within FME as well as go through an example on how to create a published parameter. Workspace parameters are the key to giving the end-user control over self-serve workspaces.</p>
+<h2 id="what-are-parameters">What are Parameters?</h2>
+<p>Parameters are what control FME translations and transformations. Remember that a translation has a hierarchy of different translation components:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1644016258947.png" alt="Workspace hierarchy" /></p>
+<p>Each different level of the hierarchy has a set of parameters that belong to it. That means there are:</p>
+<ul>
+<li>Workspace Parameters</li>
+<li>Reader Parameters</li>
+<li>Writer Parameters</li>
+<li>Feature Type Parameters</li>
+</ul>
+<p>Most of the available parameters are determined by the author of the workspace.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Order food at a restaurant and the chef will decide how long it needs to be cooked, at what temperature, and using what equipment. They will also decide the amount of seasoning it needs and what plate to present it on. Like an FME author, these are the parameters that control the results, and as the creator of the meal I get to choose how best to set them.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="published-parameters">Published Parameters</h2>
+<p>Although workspace authors set&nbsp;<em>most</em>&nbsp;of the parameters, in some cases, the end-user needs to be able to set some of them.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>To continue the restaurant metaphor: of course, the chef will let you have some decisions on your meal. For example, they'll let you decide how your steak should be cooked - rare, medium, or well done - and what sauce you wish to add. They'll also let you select the side dishes. These are the parameters in FME that the user gets to wield instead of the author.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>To enable users to select the requirements for their translation, FME includes functionality called&nbsp;<strong>user parameters</strong>. User parameters are methods for getting input into a workspace.</p>
+<p>When a user parameter is made available to the end-user, it is called a&nbsp;<strong>published parameter</strong>. In a self-serve application, published parameters are important for letting the end-user control how the data is served.</p>
+<h2 id="parameter-uses-in-fme-server">Parameter Uses in FME Server</h2>
+<p>For self-serve systems, published parameters are most commonly used to set:</p>
+<ul>
+<li>What coordinate systems to deliver data in.</li>
+<li>What feature types (layers) to deliver.</li>
+<li>What geographic area (Bounding Box or Area of Interest) to deliver.</li>
+<li>Any other Reader, Writer, or Transformer parameters of use to the user.</li>
+</ul>
+<p>With FME Server, the key to successful workspace authoring is flexibility. Workspaces need to be flexible to allow end-users to make choices without seeing all of the complexity of the workspace or the data behind it. Parameters are one way to accomplish this.</p>
+<h2 id="types-of-published-parameters">Types of Published Parameters</h2>
+<p>There are two types of published parameters in FME: FME parameters and user parameters.</p>
+<p>FME Parameters are built into the FME Workbench interface and directly control the translation. Examples of FME Parameters include the WHERE clause, Search Envelope coordinates, and Character Encoding.</p>
+<div><span class="image image-block image-center"><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1644016300287.png" alt="FME Parameters" /><em>FME Parameters</em></span>&nbsp;User Parameters, as the name suggests, are intended for a workspace user. These parameters are created by the workspace author for user input in the translation. These can be tied to an FME parameter, giving a user limited control over readers, transformers, or writers. User Parameters can be linked to provide values to transformers and attributes in a workspace.</div>
+<p>There are two types of User Parameters, published and private. A published parameter is visible by the end-user, while a private parameter is visible by the author creating the workspace. User Parameters are optional by default. Setting a parameter to be not optional means a user must enter a value otherwise FME will not run the translation.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628888802088.png" alt="Viewing a user parameter in the Navigator" /></p>
+<p><em>A published and private user parameter. Note the lock icon on the private parameter.</em></p>
+<p>Any parameter in FME can be published and presented to the user as a choice to be made when running a workspace.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Parameters are published in FME Workbench for use on FME Server, but the Translation Parameter Values dialog will prompt the user to supply values to published parameters even when running on FME Desktop.&nbsp;</p>
+</blockquote>
+<p>You will recognize this dialog, as it appears by default when you press the Run button in any workspace that has a reader and/or writer. The dialog appears because readers and writers automatically have a published parameter for their source or destination file path, letting the user choose which data to use/create at runtime.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="publishing-a-parameter">Publishing a Parameter</h2>
+<p>In FME Workbench, parameters are located in several places, but the FME Workbench Navigator window is the one place where you will find them gathered in a single location:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1654890699321.png" alt="Parameters in the Navigator" /></p>
+<p>As you can see, there are parameters for the source data location (1) and the destination dataset (2), which is the one that the Data Download service overrides. There are also parameters for controlling the coordinate system (3), general Reader and Writer parameters (4), parameters for each feature type (5), and parameters for transformers (6).</p>
+<p>Parameters are published by right-clicking on them and choosing &ldquo;Create User Parameter.&rdquo; For example, here a workspace author is publishing a parameter on the AreaCalculator transformer:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628810014784.png" alt="Creating a User Parameter from an FME parameter" /></p>
+<p>The author gets to choose if the parameter will be published or private, if it will be required to run the workspace, the user prompt, and the default value.</p>
+<p>When the workspace is run on FME Server the end-user will now be able to decide what value to use:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/8141-ec-34-e-7-e-4-4-ad-5-afed-ce-507-d-0949-a-7.png" alt="Published Parameters in FME Server" width="459" height="167" /></p>
+<p>Transformer parameters can also be published directly in transformer dialogs:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628809779355.png" alt="Creating a User Parameter from a transformer parameter" /></p>
+<p>When you create a user parameter this way, FME will automatically choose the options available to the user. You can see that the options for the AreaCalculator's Type parameter, Plane Area or Sloped Area, are automatically created. Creating user parameters this way is fast and you are guaranteed that whatever input the user chooses will be valid.&nbsp;</p>
+<p>However, it can also create problems. For example, if you wanted to create a user parameter for a numerical value (e.g., the Bufferer's Buffer Distance), by default the user could enter any numerical value. You might prefer to do some validation by restricting the options. In order to accomplish this, you can create your own user parameter using the Parameter Manager, explained below.</p>
+<h2 id="the-parameter-manager">The Parameter Manager</h2>
+<p>You can add, configure, reorder, and group parameters in the Parameter Manager dialog. You can access the Parameter Manager by right-clicking User Parameters in the Navigator and choosing Manage User Parameters...</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628875926900.png" alt="Manage User Parameters option in the Navigator" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>In FME 2021.0, we have introduced a new way to manage and work with user parameters in FME Desktop. For information on creating parameters in FME 2020 and older, please see&nbsp;<a href="https://community.safe.com/s/article/published-parameter-examples" target="_blank" rel="noreferrer noopener">Introduction to Published Parameter</a>.</p>
+</blockquote>
+<p>Support for groups in FME Server will be coming in a future release. For now, parameters within groups appear as ungrouped parameters.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="parameter-manager-overview">Parameter Manager Overview</h2>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1644016496804.png" alt="Parameter Manager overview" /></p>
+<p>The left-hand side of the Parameter Manager is where all of your created parameters are shown, as well as options to add new ones, copy and paste, reorder and delete.&nbsp;</p>
+<p>The right-hand side is the parameters for the newly created or selected parameter.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>The right side is similar to how you would have created or edited parameters in past versions of FME (2020.2 or older), with some slight modifications in wording.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="creating-user-parameters">Creating User Parameters</h2>
+<p>To create a new user parameter in the Parameter Manager you first click the Plus icon in the top-left of the dialog. Then, choose a parameter type:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628876840038.png" alt="Creating a user parameter in the Parameter Manager" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>You'll learn more about these different types in a later lesson,&nbsp;<a href="https://safe.my.trailhead.com/en/content/safe/modules/build-versatile-self-serve-workflows/choose-the-correct-parameter-type" target="_blank" rel="noreferrer noopener">Choose the Correct Parameter Type</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>After choosing your parameter type, you can configure the new parameter on the right side of the dialog.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628876974683.png" alt="Filling out the right side of the Parameter Manager" /></p>
+<p>While the exact configuration varies by parameter type, the shared options include:</p>
+<ul>
+<li><strong>Parameter Identifier</strong>: a short, unique name for the parameter. This name is used to reference the parameter in values (for example,<code>&nbsp;$(myIdentifier)</code>) and menus.</li>
+<li><strong>Prompt</strong>: the prompt for the parameter that appears when an end-user runs the workspace on Desktop or Server.</li>
+<li><strong>Published</strong>: if checked, the parameter is created as a published parameter. If unchecked, the parameter is created as a private parameter.</li>
+<li><strong>Required</strong>: if checked, the workspace does not run unless the user inputs a value. If unchecked, an input value is not required for this parameter.</li>
+<li><strong>Disable Attribute Assignment</strong>: This setting controls whether the end-user can select an attribute to provide values to a user parameter.</li>
+<li><strong>Default Value</strong>: choose the default value that will be used.</li>
+</ul>
+<p>After configuring your user parameter you can click OK to close the dialog or the plus to add another. You can use the other buttons to move and remove parameters.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628877235349.png" alt="The Parameter Manager buttons" /></p>
+<h2 id="linking-user-parameters">Linking User Parameters</h2>
+<p>After creating user parameters using the Parameter Manager, they will appear in the Navigator under User Parameters. At this point, the user parameter exists, but it does not actually control anything. To use it to control your workspace, you need to link it to a parameter elsewhere in the workspace. Find the parameter, right-click it, and choose User Parameter &gt; Link to User Parameter. Here we are linking a Text user parameter named Delimiter to the Delimiter Character parameter of a CSV reader:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628883558769.png" alt="Linking an FME parameter to a user parameter" /></p>
+<p>You can also link user parameters directly in transformer dialogs using the drop-down arrow and choosing User Parameter:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/design-user-controlled-workspaces/images/1628883023875.png" alt="Linking to a user parameter from a transformer dialog" /></p>
+<h2 id="comparison-of-parameters-before-and-after-2021-0">Comparison of Parameters Before and After 2021.0</h2>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>User parameter configuration changed with the release of FME 2021.0. If you have not used versions of FME prior to 2021.0, you can skip this section.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Overall, user parameters still function the same, and the end-user will have the same experience, but now as a user parameter author, you will have a few more options to fine-tune your parameters.&nbsp;</p>
+<ul>
+<li>The Type is selected in the + drop-down menu.</li>
+<li>Name is now called the Parameter Identifier; this is the name you will see when you select parameters through transformers or readers/writers.</li>
+<li>The Prompt is still the same; this is what is displayed to the user when the workspace is run, as well as on the left-hand side of the Parameter Manager.</li>
+<li>Published and private parameters are still the same and are controlled by selecting/deselecting the Published option.</li>
+<li>Optional has now been renamed to Required. Any Required parameters will be indicated by a red asterisk * next to the prompt.</li>
+<li>Attribute Assignment is now controlled by a check box called Disable Attribute Assignment; this is the same as previously setting the Attribute Assignment to Off.</li>
+<li>Default values are still handled the same.</li>
+<li>With the new Parameter Manager, for certain parameter types, additional configurations have been added to increase parameter functionality. For the Text parameter type, there are additional text configurations such as allowing an Arithmetic Expression or what format the text input would be in, such as plain text, Python, JavaScript, etc.</li>
+</ul>

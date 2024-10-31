@@ -1,0 +1,95 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Remove attributes from features.</li>
+<li>Rename attributes on features.</li>
+<li>Create new attributes on features.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-create-and-modify-attributes.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can also find it on your training machine: C:\FMEData\Workspaces\TransformAttributes\exercise-create-and-modify-attributes.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-create-and-modify-attributes-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\exercise-create-and-modify-attributes-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>City councilors have voted to amend noise control laws, and residents living in affected areas must be informed of these changes.</p>
+<p>Your manager recommended you take on the task of finding all affected addresses. There's a tight deadline, and at least three city councilors are watching you work. The pressure is on, and it's up to you to deliver!</p>
+<p>This exercise is the first part of the project. You know that the address database for the city is stored in an Esri Geodatabase whose schema matches the Local Government Information Model PostalAddress table.</p>
+<p>However, you are told that the software used to carry out automated bulk mailings requires addresses stored in an Excel spreadsheet using a completely different schema.</p>
+<p>So, your first task is to create a workspace that converts addresses from Geodatabase to Excel, mapping the schema at the same time.</p>
+<h2 id="exercise">Exercise</h2>
+<p><strong>1) Open the starting workspace</strong></p>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/create-and-modify-attributes.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench (2024.0 or later).</p>
+<p><strong>2) Add an AttributeManager Transformer</strong></p>
+<p>We can start by mapping the schema from the reader to the writer. As you'll have noticed, the two do not currently match.</p>
+<p>So, place an AttributeManager between the PostalAddress reader feature type and the PostalAddress writer feature type.</p>
+<p><img class="image image-block" src="images/1714067105517.png" alt="Starting workspace with AttributeManager added" width="594" height="238" /></p>
+<p>Its parameters will look like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.206.Ex2.AttrManagerOriginal.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1714067515166.png" alt="AttributeManager parameters" width="560" /></a></p>
+<p><strong>3) Remove Unwanted Attributes</strong></p>
+<p>Firstly, let's clear up the reader schema by removing some of the unwanted attributes.</p>
+<p>Click on the following attributes and either press the Delete key or click the - button on the dialog to remove them:</p>
+<ul>
+<li>OBJECTID</li>
+<li>GlobalID</li>
+<li>INTSTATE</li>
+<li>INTPSTLCD</li>
+<li>REPRESENT</li>
+<li>STATUS</li>
+<li>LASTUPDATE</li>
+<li>LASTEDITOR</li>
+</ul>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.207.Ex2.AttrManagerDeletedAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1699044284041.png" alt="Choosing an Action" width="530" height="354" /></a></p>
+<p><strong>4) Rename Attributes</strong></p>
+<p>Several source attributes can be written to the output as they are but must be renamed first.</p>
+<p>In the AttributeManager, rename the following:</p>
+<ul>
+<li>PSTLCITY to City</li>
+<li>PSTLPROV to Province</li>
+<li>POSTALCODE to PostalCode</li>
+<li>COUNTRY to Country</li>
+</ul>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.208.Ex2.AttrManagerRenamedAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1699044396253.png" alt="Choosing an OutputAttribute" width="531" height="301" /></a></p>
+<p>Because the AttributeManager is connected to the writer feature type, you should be able to select the Output Attribute field from a drop-down list instead of typing it in; this connection is indicated by the right-pointing arrow and cylinder icon.</p>
+<p><strong>5) Create an Attribute (Provider)</strong></p>
+<p>Two attributes on the output (Provider and UpdateDate) are new and cannot be copied from the source data. They must be created.</p>
+<p>In the AttributeManager, create the new attribute "Provider" by typing in the &lt;Add new Attribute&gt; cell in the last row. Because the attribute exists on the output schema, you can again select it from the drop-down list.</p>
+<p>Set a fixed value such as your organization name, "Safe Software," or "City of Interopolis." You may also want to set the data Type.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.209.Ex2.AddAttribute.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1699044649833.png" alt="Setting an Attribute Value" width="533" height="49" /></a></p>
+<p><strong>6) Create an Attribute (UpdateDate)</strong></p>
+<p>Now create the new attribute "UpdateDate". Rather than hard-coding a value, click the drop-down arrow in the Attribute Value field and choose Open Text Editor.</p>
+<p>In the text editor, locate the Date/Time Function called DateTimeNow and double-click to place it in the editor:</p>
+<p><img src="images/1714067127894.png" alt="Setting a value with the Text Editor" width="624" height="468" /></p>
+<p>By default, it creates a datetime in FME Standard Date/Time format, which is fine for us, so click OK to accept this.</p>
+<p><strong>7) Create an Attribute (Owners)</strong></p>
+<p>Notice that there is an Owners field on the output, but there are two owner fields (OWNERNM1 and OWNERNM2) on the input. We must concatenate the two input fields to set the output attribute; that's simple enough.</p>
+<p>In the AttributeManager parameters dialog, create a new attribute called Owners. In the Attribute Value column for this attribute, click the drop-down arrow and choose Open Text Editor.</p>
+<p>In the text editor, open the FME Feature Attributes section on the left-hand menu. Locate the OWNERNM1 and OWNERNM2 attributes and double-click them, in turn, to add them to the editor window. In the editor window, click between the two attributes and press the spacebar to add a space character.</p>
+<p><code>@Value(OWNERNM1) @Value(OWNERNM2)</code></p>
+<p>You can either ignore the trailing space generated on records without a second owner (it won't affect the output's usefulness) or use a TrimRight function to remove it:</p>
+<p><code>@TrimRight(@Value(OWNERNM1) @Value(OWNERNM2))</code></p>
+<p>Click OK to close the editor dialog.</p>
+<p><strong>8) Remove Attributes</strong></p>
+<p>Now that we have the Owners field, we can remove the attributes OWNERNM1 and OWNERNM2. However, the order of operations is now essential. Owners MUST be created in the parameters dialog <strong>before</strong>&nbsp;OWNERNM1 and OWNERNM2 are removed.</p>
+<p>To do so, click the newly created Owners field. Use the up-arrow button (^) on the dialog to move it above OWNERNM1.</p>
+<p>Then remove OWNERNM1 and OWNERNM2. The dialog will now look like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.210b.Ex2.MoveOwnersField.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1699045195703.png" alt="Removing attributes" width="587" height="245" /></a></p>
+<p>Click OK to close the AttributeManager parameters.</p>
+<p><strong>9) Run To the AttributeManager</strong></p>
+<p>It's time to run the workspace to ensure everything we've done produces the correct result. Ensure feature caching is turned on, then run the workspace by clicking on the AttributeManager transformer and selecting Run to This:</p>
+<p><img class="image image-block" src="images/1714067145675.png" alt="Run To This on the AttributeManager" width="594" height="279" /></p>
+<p>This will run the translation up to this transformer but not write any output.</p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you have continued on from the last course in FME Form Basic, you'll have to turn feature caching back on. Click the Run menu and ensure Enable Feature Caching is checked.</p>
+<p><img src="images/1713212964438.png" alt="Enable Feature Caching in the Run menu" /></p>
+</blockquote>
+<p>Inspect the AttributeManager's Output cache to confirm that the procedure worked as expected:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.212.Ex2.AttrManagerOutput.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1714067162256.png" alt="AttributeManager output" width="944" height="252" /></a></p>

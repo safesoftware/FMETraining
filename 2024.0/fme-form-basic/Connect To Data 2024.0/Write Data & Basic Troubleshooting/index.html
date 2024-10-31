@@ -1,0 +1,101 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create a new dataset.</li>
+<li>Connect objects on the canvas.</li>
+<li>Interpret the translation log to identify problems with your workspace.</li>
+<li>Fix an error by setting a writer feature type parameter.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/write-data-and-basic-troubleshooting.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\write-data-and-basic-troubleshooting.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/write-data-and-basic-troubleshooting-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\write-data-and-basic-troubleshooting-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Don't forget to follow along with the steps described below using your own copy of FME. You'll need to complete the steps to answer quiz questions.</span></p>
+</blockquote>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="write-out-your-data">Write Out Your Data</h2>
+<p>Now that Sven has read his source Excel business license data, he has to add an Esri geodatabase writer to create his new dataset.</p>
+<p>He opens the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/write-data-and-basic-troubleshooting.fmw" target="_blank" rel="noreferrer noopener">workspace</a> he was working on in FME Workbench (2024.0 or later) -- it has readers for business owners and public art datasets. He needs to add an Esri geodatabase writer. He clicks on the canvas and starts typing &ldquo;geodatabase.&rdquo; A large number of writer formats match &ldquo;geodatabase.&rdquo;</p>
+<p><img src="images/1712704387882.png" alt="Geodatabase search in Quick Add" width="904" height="596" /></p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">FME supports many versions of Esri Geodatabases. However, many of them are only accessible to users who have Esri ArcGIS licenses. The version we are using, Esri Geodatabase (File Geodb Open API) can be used by anyone.</span></p>
+</blockquote>
+<p><span style="font-family: inherit; font-size: 1em;">Sven selects the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/filegdb/FILEGDB_writer.htm" target="_blank" rel="noreferrer noopener">Esri Geodatabase (File Geodb Open API) writer&nbsp;</a><span style="font-family: inherit; font-size: 1em;">and fills out the </span><strong style="font-family: inherit; font-size: 1em;">Add Writer</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;dialog.</span></p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><strong>Warning: </strong>Sven is careful to select this option from the <strong>Writers </strong>section of the Quick Add dialog. It's easy to forget and accidently select a Reader, since those appear higher in the list of Quick Add search results. Ensure your dialog says <strong>Add Writer</strong>&nbsp;after selecting the format from Quick Add.</p>
+<p>You can also use the <strong>Writers </strong>&gt; <strong>Add Writer</strong> option in the menu if you prefer.</p>
+</blockquote>
+<p>Under&nbsp;<strong>Dataset, </strong>Sven enters the location he wants his data to be saved. He enters &ldquo;C:\FMEData\Output\Training\Vancouver.gdb&rdquo;. If you click the ellispsis icon <strong>[. . .]</strong> to navigate to the path, note that Vancouver.gdb does not exist yet. That's OK! FME writers can create new datasets or edit or overwrite exsiting ones. In this case, the .gdb file does not exist yet, so you can just type in Vancouver.gdb and click <strong>Select .gdb file </strong>to confirm this is the new path you'd like to use.</p>
+<p>All of the source datasets Sven will be working with are within the City of Vancouver, and all of the writer feature types Sven creates with this workspace will be stored in the Vancouver.gdb file geodatabase.</p>
+<p><img src="images/1712704404155.png" alt="Add Writer with Format and Dataset filled out" width="696" height="391" /></p>
+<p>The&nbsp;<strong>Coord. System</strong> is set as &ldquo;Same as source&rdquo;. This means the written data will take the coordinate system of the input data, which is LL84. This information will be stored in the geodatabase.</p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">For readers, the </span><strong style="font-family: inherit; font-size: 1em;">Dataset</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;parameter points to one or more datasets to read. For writers, it points to the file or folder where new data will be created or an existing dataset will be updated. If you want to change this after adding a reader or writer, you can do so in the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/Working_in_the_Navigator.htm" target="_blank" rel="noreferrer noopener"><strong>Navigator</strong></a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use whatever path you want to write out your data, just remember your paths might be different from Sven&rsquo;s if you don&rsquo;t copy them exactly.</span></p>
+</blockquote>
+<p>&nbsp;Next, Sven clicks&nbsp;<strong>Parameters</strong>.</p>
+<p><img src="images/1712704437949.png" alt="Selecting Parameters in the Add Writer dialog" width="696" height="391" /></p>
+<p>Clicking the&nbsp;<strong>Parameters</strong> button opens the&nbsp;<strong>Esri Geodatabase (File Geodb Open API) Parameters</strong> dialog. Because Sven will be running this workspace often and might be changing the schema of the output data due to changing requirements, Sven checks the&nbsp;<strong>Overwrite Existing Database</strong>&nbsp;option so that the geodatabase will be overwritten each time the workspace is run. Sven clicks&nbsp;<strong>OK&nbsp;</strong>to accept the changes made in the dialog.</p>
+<p><img src="images/1717174347104.png" alt="Checking Overwrite Existing Geodatabase" width="784" height="418" /></p>
+<p>Finally, Sven needs to set <strong>Feature Class or Table Definition</strong>. This parameter is set to Automatic by default. Automatic feature types adopt the schema of any features you connect to them. This is handy for quickly building a workspace, but in this example, Sven instead wants to duplicate the schema of our BusinessOwners reader feature type.</p>
+<p>To copy the schema from the source data, Sven changes&nbsp; <strong>Feature Class or Table Definition&nbsp;</strong>to <strong>Copy from Reader...</strong></p>
+<p><img src="images/1712768141651.png" alt="Selecting Copy from Reader... on the Add Writer dialog" /></p>
+<p>Sven hits&nbsp;<strong>OK&nbsp;</strong>and is then prompted to select a reader feature type to copy the writer feature type definitions from. A writer feature type will be created for each reader feature type selected here. He clicks&nbsp;<strong>Select All</strong>&nbsp;to select all the PublicArt and BusinessOwners feature types and clicks&nbsp;<strong>OK</strong>.</p>
+<p><img src="images/1712704474097.png" alt="Selecting all feature types to copy to writer" width="571" height="363" /></p>
+<p>The writer feature types are then added to the canvas.</p>
+<p><img class="image image-block" src="images/1712704485723.png" alt="Feature types on the canvas" width="764" height="427" /></p>
+<h2 id="control-the-flow-of-data">Control the Flow of Data</h2>
+<p>Now Sven needs to connect the reader and writer feature types. Sven connects the <strong>BusinessOwners&nbsp;</strong>reader feature type to the corresponding writer feature type by clicking the reader feature type output port (gray triangle) and dragging his cursor to the writer feature type input port (red triangle). A new connection line appears.</p>
+<p><img class="image image-block" src="images/1712704499258.gif" alt="Connecting feature types" width="834" height="462" /></p>
+<p>Sven ignores the PublicArt feature types for now. He wants to make sure the BusinessOwners feature type is working first. The workspace will still run with the PublicArt feature types disconnected. Sven then runs the workspace by clicking the <strong>Run&nbsp;</strong>button on the toolbar.</p>
+<h2 id="identify-problems-using-the-translation-log">Identify Problems Using the Translation Log</h2>
+<p>After the workspace finishes running, Sven notices red entries in the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/Viewing_the_Log.htm" target="_blank" rel="noreferrer noopener"><strong>Translation Log</strong></a>, meaning it is reporting errors. Sven clicks on <strong>Errors</strong>&nbsp;in the&nbsp;<strong>Translation Log</strong> to display errors only. Here Sven sees:&nbsp;</p>
+<p><code><span style="font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12pt; white-space-collapse: preserve;">FileGDB Writer: Feature class 'BusinessOwners' has shape type '' which is unknown to FME. Skipping feature class</span></code></p>
+<div>
+<pre><img class="image image-block" style="font-family: inherit; font-size: 1em;" src="images/1712704513403.png" alt="Errors in Translation Log" width="904" height="201" /></pre>
+</div>
+<p>This error occurred because the newly added BusinessOwners feature type requires a geometry type of geodb_point, but this has not been set yet. It isn&rsquo;t set correctly because the log reports its geometry type as &ldquo;NO_GEOMETRY.&rdquo;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Fatal errors cause the workspace to stop running immediately. The &ldquo;A fatal error has occurred&rdquo; errors are caused by the first error in this case. Fixing the geometry will resolve both errors. Errors that cause the workspace to stop running will often create additional error messages as the translation fails. Resolving the cause of the first error message will often resolve the subsequent error messages as well.</span></p>
+</blockquote>
+<h2 id="fix-the-error-by-setting-writer-feature-type-parameters">Fix the Error By Setting Writer Feature Type Parameters</h2>
+<p>To fix this error, Sven double-clicks on the&nbsp;<strong>BusinessOwners&nbsp;</strong>writer feature type to bring up the&nbsp;<strong>Feature Type</strong>&nbsp;dialog. He sets&nbsp;<strong>Geometry&nbsp;</strong>to &ldquo;geodb_point&rdquo; (the addresses are represented as points) and then clicks <strong>OK</strong>.</p>
+<p><img src="images/1712704537949.png" alt="Setting Geometry type on writer feature type" width="904" height="799" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Not all formats are limited to a single geometry type per feature type. Most formats will support different geometry types on the same layer or feature type. But the Esri geodatabase formats only allow a single geometry type per feature class, so this parameter must be set.</span></p>
+</blockquote>
+<p>&nbsp;He reruns the workspace by clicking the "Run to this" icon that appears after selecting the writer feature type.</p>
+<p><img src="images/1712704551654.png" alt="Run to this" /></p>
+<p>This time there are no errors reported in the&nbsp;<strong>Translation Log</strong>.</p>
+<h2 id="fix-the-error-by-setting-writer-feature-type-parameters">Partial Runs</h2>
+<p>These green buttons let you conduct partial runs of your workspace. They are available whenever Feature Caching is enabled. You can access them by selecting any object, and then choosing from one of the available options (Run To This, Run From This, etc.).</p>
+<p>The sections of your workpace that will run are highlighted in green. Note in the screenshot above that the BusinessOwners reader feature type is not highlighted. It will not run because it has a valid (green) feature cache. If you make a change in your workspace, the cache for affected objects will become invalid (yellow). Running using the Run button or partial runs buttons will run objects with invalid caches to update them.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>For more details, see the <a href="https://academy.safe.com/view-data/" target="_blank" rel="noopener">View Data course</a>.</p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Sven&rsquo;s steps.</p>

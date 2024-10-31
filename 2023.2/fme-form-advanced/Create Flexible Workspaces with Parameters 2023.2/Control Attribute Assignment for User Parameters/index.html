@@ -1,0 +1,56 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Choose the appropriate setting for Disable Attribute Assignment when creating user parameters.</li>
+<li>Explain how Disable Attribute Assignment interacts with FME parameters that never allow attribute assignment.</li>
+<li>Use the Attribute Name user parameter type.</li>
+</ul>
+<h2 id="parameters-and-attributes">Parameters and Attributes</h2>
+<p>Sometimes, an FME parameter is designed to accept either a fixed value or the value of an attribute. We call these parameters _OR_ATTR parameters because they allow a value <strong>OR</strong> an attribute.</p>
+<p>Workspace authors can create user parameters that behave this way. Specifically, a user parameter can allow either:</p>
+<ul>
+<li>A fixed value only</li>
+<li>A fixed value or an attribute</li>
+<li>An attribute only</li>
+</ul>
+<p>The first two of these capabilities are controlled by a setting in the user parameter called Attribute Assignment.</p>
+<h3 id="fme-parameters-and-attributes">FME Parameters and Attributes</h3>
+<p>Let's recap: some FME parameters - but not all - allow an attribute to be used instead of a fixed value. We call this Attribute Assignment:</p>
+<p><img src="images/1707523094474.png" alt="Assigning an attribute to provide values to a transformer parameter" width="644" height="294" /></p>
+<p>When a user parameter is created or linked to one of these FME parameters, then it, too, picks up that capability:</p>
+<p><img src="images/1707523282688.png" alt="Assigning an attribute to provide values to a user parameter" width="651" height="181" /></p>
+<p>So this allows the end user to enter either a fixed value or to select an attribute that supplies the value.</p>
+<h3 id="attribute-assignment-and-user-parameters">Attribute Assignment and User Parameters</h3>
+<p>Attribute assignment is important when an author creates a user parameter because it controls whether or not the end user can select an attribute when choosing a value for the parameter.</p>
+<p>For example, this workspace has an UpdatedBy attribute and an AttributeManager transformer that sets UpdatedBy using a user parameter where the user is prompted to enter their name:</p>
+<p><img src="images/1707523946386.png" alt="Using a user parameter to set the value of a UpdatedBy attribute" width="408" height="350" /></p>
+<p>When prompted, the user can enter their name, but they can also select an attribute:</p>
+<p><img src="images/1707524027587.png" alt="Allowing attribute assignment" /></p>
+<p>This makes no sense. The author does not want the user to have the ability to select an attribute, only to enter a single string. The setting that lets the author control this is called Disable Attribute Assignment and is found on the parameter definition dialog:</p>
+<p><img src="images/1707776171863.png" alt="" width="398" height="281" /></p>
+<p>By checking this, the user is no longer allowed to select an attribute in the Translation Parameters prompt:</p>
+<p><img src="images/1707776284436.png" alt="Cannot choose an attribute" width="370" height="209" /></p>
+<p>Instead, they are required to type in a single text value.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Only some FME parameters allow attribute assignment. Enabling attribute assignment in a user parameter will not change this. For example, the Snapper tolerance is never allowed to use attribute assignment, even if the value is set by a user parameter with the Disable Attribute Assignment box unchecked.<br /><br />If you share and linke a user parameter with attribute assignment disabled to an FME parameter that allows attribute assignment and one that doesn't, FME takes the safe option and disallows attribute selection.</p>
+</blockquote>
+<h3 id="attribute-name-parameter">Attribute Name Parameter</h3>
+<p>So, attribute assignment handles the case where you want the user to enter a fixed value, and you may also give the end user the option to select an attribute.</p>
+<p>However, the reverse case must also be handled: you don't want the user to be able to enter a fixed value; you <em>only</em>&nbsp;want them to be able to select an attribute.</p>
+<p>For example, here, an author is adding a label to the data:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.043.LabelReplacerNeedsUserInput.png" alt="" /></p>
+<p>The author wants the user to select an attribute to provide the label but cannot enter text. In this scenario, they need to create a user parameter with a particular type called Attribute Name:</p>
+<p><img src="images/1707773643763.png" alt="Attribute name user parameter configuration" width="361" height="500" /></p>
+<p>After linking this user parameter to the LabelPointReplacer's FME parameter, when the workspace is run, the user is permitted to select an attribute and ONLY an attribute:</p>
+<p><img src="images/1707776340763.png" alt="Selecting an attribute name" width="370" height="255" /></p>
+<p><strong>However!</strong></p>
+<p>There is a catch to this operation. As the type suggests, the user parameter returns an attribute name but not the attribute value.</p>
+<p>If the workspace is run in this state, then the LabelPointReplacer is supplied with the attribute name (not value) and uses it as the label, like so:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.046.AttrNameParameterBadResult.png" alt="Incorrect initial result" width="541" height="261" /></p>
+<p>The author must embed the user parameter name inside an FME function to fetch the value of the attribute to which it refers.</p>
+<p>To do this, the author finds the LabelPointReplacer parameter and changes it (either directly in the FME parameter or via the Text Editor window) to be <code>@Value($(UserAttrSelection))</code>.</p>
+<p>The <code>@Value()</code> function replaces the name of the attribute with its actual value:</p>
+<p><img src="images/1707774653737.png" alt="Proper use of the attribute name user attribute to supply a value" width="363" height="250" /></p>
+<p>Now, when the workspace is run, the output will be correct:</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.048.AttrNameParameterGoodResult.png" alt="Correct result" width="584" height="256" /></p>

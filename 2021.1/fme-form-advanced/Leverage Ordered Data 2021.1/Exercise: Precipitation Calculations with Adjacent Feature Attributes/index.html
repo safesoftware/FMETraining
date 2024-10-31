@@ -1,0 +1,177 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Expose adjacent feature attributes.</li>
+<li>Use adjacent feature attributes.</li>
+<li>Handle missing values in attribute manipulation.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-precipitation-calculations-with-adjacent-feature-attributes.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/ElevationModel/Precipitation.xlsx" target="_blank" rel="noreferrer noopener">Precipitation.xlsx</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>You're working on a project mapping monthly precipitation (rainfall) in the city. You have been given a dataset like so:&nbsp;</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Month</th>
+<th scope="col">Precipitation</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>Jan</td>
+<td>168</td>
+</tr>
+<tr>
+<td>Feb</td>
+<td>273</td>
+</tr>
+<tr>
+<td>Mar</td>
+<td>387</td>
+</tr>
+<tr>
+<td>Apr</td>
+<td>476</td>
+</tr>
+<tr>
+<td>May</td>
+<td>541</td>
+</tr>
+<tr>
+<td>Jun</td>
+<td>595</td>
+</tr>
+<tr>
+<td>Jul</td>
+<td>631</td>
+</tr>
+<tr>
+<td>Aug</td>
+<td>668</td>
+</tr>
+<tr>
+<td>Sep</td>
+<td>719</td>
+</tr>
+<tr>
+<td>Oct</td>
+<td>840</td>
+</tr>
+<tr>
+<td>Nov</td>
+<td>1029</td>
+</tr>
+<tr>
+<td>Dec</td>
+<td>1191</td>
+</tr>
+</tbody>
+</table>
+<p>Unfortunately, the numbers are a cumulative amount, and you wanted to map individual figures for each month. Rather than reaching into your desk drawer for a calculator, you decide to use FME to do the calculations!</p>
+<h2 id="1-create-workspace">1) Create Workspace</h2>
+<p>Open FME Workbench (2021.1 or later). Create a new workspace to translate the data as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>Reader Format</td>
+<td>Microsoft Excel</td>
+</tr>
+<tr>
+<td>Reader Dataset</td>
+<td>https://s3.amazonaws.com/FMEData/FMEData/Data/ElevationModel/Precipitation.xlsx</td>
+</tr>
+<tr>
+<td>Writer Format</td>
+<td>Microsoft Excel</td>
+</tr>
+<tr>
+<td>Writer Dataset</td>
+<td>C:\FMEData\Output\Training\MonthlyPrecipitation.xlsx</td>
+</tr>
+<tr>
+<td>Writer Sheet Definition</td>
+<td>Copy from Reader...</td>
+</tr>
+</tbody>
+</table>
+<p>When creating the workspace, check the&nbsp;<strong>Parameters&nbsp;</strong>for the reader to ensure FME recognizes the headers at the top of each column.</p>
+<h2 id="2-add-attribute-manager">2) Add AttributeManager</h2>
+<p>To calculate precipitation for any given month, you need to subtract the previous month's cumulative total from the current month's cumulative total.</p>
+<p>With FME you can use the adjacent feature attribute functionality to fetch the previous month's number.</p>
+<p>So, place an&nbsp;<strong>AttributeManager&nbsp;</strong>transformer between the reader and writer feature types:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.222.Ex3.InitialWorkspace.png" alt="Adding an AttributeManager" /></p>
+<h2 id="3-set-attribute-manager-parameters-1">3) Set AttributeManager Parameters #1</h2>
+<p>Inspect the&nbsp;<strong>AttributeManager's&nbsp;</strong>parameters.</p>
+<p>Click the arrow next to&nbsp;<strong>Advanced: Attribute Value Handling&nbsp;</strong>to expand the options.<strong>&nbsp;</strong>Check the box marked<strong>&nbsp;Enable Adjacent Feature Attributes</strong>. In the fields provided enter "1" for the&nbsp;<strong>Number of Prior Features</strong>&nbsp;to keep.</p>
+<p>Next set the parameter&nbsp;<strong>Substitute Missing, Null and Empty by</strong>&nbsp;to "Default Value" and enter "0" into the&nbsp;<strong>Default Value</strong>&nbsp;field:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.223.Ex3.AttributeManagerParameters1.png" alt="Configuring Adjacent Feature Attributes" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>The substitution parameter is important because the first feature to be processed can&rsquo;t have a prior feature, and the last feature to be processed can't have a subsequent one. Therefore you always have to be careful about what you have set here.</p>
+</blockquote>
+<p>In this exercise we&rsquo;re calculating a numeric value; therefore it makes sense to use 0 (zero) as the default replacement.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="4-set-attribute-manager-parameters-2">4) Set AttributeManager Parameters #2</h2>
+<p>Now let's calculate the new precipitation value.</p>
+<p>In the&nbsp;<strong>Attribute Value</strong>&nbsp;field for the&nbsp;<code>Precipitation</code>&nbsp;attribute, click the drop-down arrow, and click&nbsp;<strong>Open&nbsp;</strong><strong>Arithmetic Editor:</strong></p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/leverage-ordered-data/exercise-precipitation-calculations-with-adjacent-feature-attributes/images/1642799133523.png" alt="Open Arithmetic Editor" /></p>
+<p>In the&nbsp;<strong>Arithmetic Editor&nbsp;</strong>use the menu on the left to select:</p>
+<ul>
+<li>The FME Feature Attribute&nbsp;<code>Precipitation</code></li>
+<li>The Math Operator &ndash; (minus)</li>
+<li>The FME Feature Attribute&nbsp;<code>Precipitation</code>&nbsp;for&nbsp;<code>feature[-1]</code></li>
+</ul>
+<p>All of which should leave you with an expression looking like this:</p>
+<pre>@Value(Precipitation)-@Value(feature[-1].Precipitation)</pre>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.224.Ex3.ArithCalculator.png" alt="Constructing the attribute value" /></p>
+<p>Now you can see why it was so important to set the substitution field because it&rsquo;s uncertain what result would occur from the above when&nbsp;<code>feature[-1].Precipitation</code>&nbsp;is missing!</p>
+<p>Click&nbsp;<strong>OK&nbsp;</strong>to close the&nbsp;<strong>Arithmetic Editor</strong>, and then accept the parameter changes.</p>
+<h2 id="5-save-and-run-workspace">5) Save and Run Workspace</h2>
+<p>Save the workspace and then run it. Inspect the output.</p>
+<p>The numbers start out looking correct but quickly become wrong. Not even in Vancouver does it rain 623 mm in a single month!</p>
+<p>The problem is this: unlike other occasions in FME, here we can&rsquo;t simply overwrite the attribute we are working with. That&rsquo;s because it skews the next calculation. i.e. the calculation for March needs to operate on February's original number, but instead, it receives the value we've just overwritten it with!</p>
+<p>The only way to solve this is by creating a new attribute.</p>
+<h2 id="6-adjust-workspace">6) Adjust Workspace</h2>
+<p>Edit the writer schema by renaming the destination attribute&nbsp;<code>Precipitation</code>&nbsp;to&nbsp;<code>MonthlyPrecipitation</code>:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.225.Ex3.UpdatedWriterSchema.png" alt="Renaming the destination attribute" /></p>
+<p>Now return to the&nbsp;<strong>AttributeManager&nbsp;</strong>and change it to create an entirely new attribute called&nbsp;<code>MonthlyPrecipitation</code>. You can copy and paste the&nbsp;<strong>Attribute Value&nbsp;</strong>formula to save time; just change the&nbsp;<strong>Output Attribute</strong>&nbsp;name and ensure&nbsp;<strong>Action&nbsp;</strong>is set to "Set Value":</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.226.Ex3.UpdatedAttributeManager.png" alt="Calculating the value" /></p>
+<p>It's a pain to have to do, but blame me for leading you in the wrong direction at first! You can't even just rename&nbsp;<code>Precipitation</code>&nbsp;to&nbsp;<code>MonthlyPrecipitation</code>&nbsp;since, whatever you call it, it still fetches an incorrect value. You'll have to reset its&nbsp;<strong>Action&nbsp;</strong>field to "Do Nothing" and then create a new attribute.</p>
+<h2 id="7-re-run-workspace">7) Re-Run Workspace.</h2>
+<p>Save the workspace.</p>
+<p>Before you re-run the workspace, check the writer parameter called&nbsp;<strong>Overwrite Existing File</strong>&nbsp;in the&nbsp;<strong>Navigator</strong>.</p>
+<p>Set it to&nbsp;<strong>Yes&nbsp;</strong>&ndash; if it isn&rsquo;t already &ndash; so the output overwrites the destination dataset and doesn&rsquo;t just append this data to the same spreadsheet.</p>
+<p>Also, make sure the file you are writing to is not already open in Excel (or any other editor).</p>
+<p>Re-run the workspace.</p>
+<p>Inspect the output. This time the numbers should be correct:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.227.Ex3.OutputData.png" alt="Results" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If the values in the output are literally "273-168", "387-273", etc., then you've used the Text Editor and not the Arithmetic Editor! If the values are all zero, then you need to make sure the&nbsp;<strong>AttributeManager&nbsp;</strong>action is set to Do Nothing for the&nbsp;<code>Precipitation</code>&nbsp;attribute, rather than Set Value.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

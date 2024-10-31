@@ -1,0 +1,43 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Select which attributes you'd like to keep on a feature.</li>
+<li>Select which attributes you'd like to remove from a feature.</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>You might think removing attributes is a less critical task in FME. That's because - for a manual attribute schema - only attributes defined in the writer are written to the output; extra attributes not on the writer schema are dropped.</p>
+<p>However, removing attributes has benefits:</p>
+<ul>
+<li>Removing attributes that aren't required tidies up a workspace and makes it easier to understand</li>
+<li>A workspace is a complex network of objects and schemas. Removing attributes simplifies this network and makes the Workbench interface more responsive</li>
+<li>All data processing incurs costs of time and memory. Removing attributes means less data is being processed, and so FME performs faster</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can unexpose attributes on reader feature types under the User Attributes tab. Unexposing attributes tidies your workspace, but it does not improve performance. However, some formats (mostly databases) also have a setting for "Attributes to Read"; using this will help performance.</span></p>
+</blockquote>
+<p>Transformers that can remove attributes are:</p>
+<ul>
+<li>AttributeKeeper</li>
+<li>AttributeManager</li>
+<li>AttributeRemover</li>
+<li>BulkAttributeRemover</li>
+</ul>
+<h2 id="removing-attributes">Removing Attributes</h2>
+<p>The AttributeManager and AttributeRemover have the same technique: select an attribute to be removed:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.044.AttributeManagerRemoveAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1699035827590.png" alt="Using the remove attribute button in AttributeManager" width="606" height="351" /></a></p>
+<p>In the AttributeManager, you can remove attributes by selecting them and clicking the - button. Alternatively, you can change the action field from <em>Do Nothing</em>&nbsp;to Remove.</p>
+<p>Notice in the above screenshot that three attributes have been removed. The output attribute (when selected) is blank to signify that it is no longer present.</p>
+<h2 id="keeping-attributes">Keeping Attributes</h2>
+<p>The AttributeKeeper transformer carries out the same function but approaches it from the opposite direction. It lets the user specify which attributes are&nbsp;<strong>not</strong>&nbsp;to be removed; in other words, this transformer lets the user specify which ones to keep.</p>
+<p>So, you should use the AttributeManager when you want to remove one or two attributes but keep the rest. You should use the AttributeKeeper when you want to remove the majority of attributes and retain only one or two.</p>
+<h2 id="bulk-attribute-removal">Bulk Attribute Removal</h2>
+<p>The BulkAttributeRemover - like the BulkAttributeRenamer - lets the user carry out a process on multiple attributes. In this case, instead of being able to select all attributes, the user enters a string-matching expression to define which attributes to remove:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.045.BulkAttributeRemoval.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1716942869316.png" alt="Using the BulkAttributeRemover" width="707" height="248" /></a></p>
+<p>Here, the user removes all attributes whose names end in the word "Count."</p>
+<p>Refer to the RegEx Quick Reference below for help constructing regular expressions.</p>
+<p><img class="image image-block" src="images/1699036018244.png" alt="RegEx Quick Reference" width="463" height="235" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You can access <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_self">AI Assist</a> in any transformer that uses RegEx, SQL, or Python. AI Assist helps you build statements from natural language.</p>
+</blockquote>

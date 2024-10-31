@@ -1,0 +1,67 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the importance of improving reader performance.</li>
+<li>Improve performance by filtering data while reading.</li>
+<li>Improve performance by removing excess feature types.</li>
+</ul>
+<h2 id="optimizing-fme-performance">Optimizing FME Performance</h2>
+<p>This course focuses on optimizing workspace performance. It contains advice on reading, writing, transformers, and FME Flow.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Many of the tips in this course are also collected in the comprehensive Knowledge Base article,&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/performance-tuning-fme" target="_blank" rel="noopener">Performance Tuning FME</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="improving-reader-performance">Improving Reader Performance</h2>
+<p>The most important method to improve reading performance is to minimize the amount of data being read. As already mentioned, reading excess features counts as unnecessary work and is, therefore, inefficient. In many workspaces, read features are preserved through most of the workflow. This fact means that every transformer can potentially run on all the input data, making it vital that you remove unnecessary data from your workflow as early as possible.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">It's bad enough to read extra features, but that effect can be multiplied many times when Feature Caching is turned on. Therefore, you need to be extra careful to read no more data than is necessary.</span></p>
+</blockquote>
+<h2 id="filtering-input">Filtering Input</h2>
+<p>For example, this workspace reads nearly 14,000 features but immediately discards all except 419 of them (ones where the owner's name begins with "C"):</p>
+<p><img class="image image-block image-center" src="images/1725578562897.png" alt="Filtering input with a Tester" width="512" height="232" /></p>
+<p>In this scenario, it would be much more efficient just to read those approximately 400 features directly. Not only does it avoid reading unnecessary data, but it also avoids caching it twice over!</p>
+<p>Fortunately, all formats have various sets of parameters that speed up feature reading by filtering the amount of data being read:</p>
+<p><img class="image image-block image-center" src="images/1725578642432.png" alt="The Search Envelope and Features to Read parameters in the Navigator" width="616" height="468" /></p>
+<p>Search envelope defines the data to read as a geographic area. Restricting this means FME will read fewer features. These parameters are available on every spatial data reader but have the most effect when the source data is spatially indexed. Then, the query is carried out at its most efficient rate.</p>
+<p>Similarly, several parameters are designed to let the user define the number of features to read. These parameters include the ability to define the maximum number of features to read and what features to start with. A parameter also defines which feature types (layers or tables) should be read.</p>
+<p>By using these judiciously, the amount of data being read can be reduced, and the translation sped up. For example, if we knew that the first records in the dataset began with "C," we could set Max Features to Read to 419.</p>
+<p>Other formats &ndash; particularly databases &ndash; have additional clauses that can help reduce the data flow:</p>
+<p><img class="image image-block image-center" src="images/1725578721310.png" alt="The WHERE clause in a reader feature type" width="552" height="334" /></p>
+<p>For example, the Geodatabase reader feature type above has a &lsquo;WHERE Clause&rsquo; parameter that applies the "owner name begins with 'C' test" more efficiently than reading the entire contents of a large table and using a Tester transformer.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In short, it is more efficient to use a reader parameter to filter source data than to read all the source data and then filter it with a transformer. Caching the reader feature type does not necessarily help, as you still have to wait for the large cache to be created and are stuck working with a large amount of data for all additional processing.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" style="color: #6f6f6f; font-family: inherit; font-size: 1em;" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">SQL transformers are often more performant than readers. </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/sqlcreator-sqlexecutor-1" target="_blank" rel="noopener">Learn more about SQL transformers</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="excess-feature-types">Excess Feature Types</h2>
+<p>Another potential bottleneck - specifically for formats with a table list &ndash; is when you have more feature types than necessary.</p>
+<p>Here, the user is reading two tables from their Geodatabase:</p>
+<p><img class="image image-block image-center" src="images/1725641987329.png" alt="Reader feature types in the Navigator" width="600" height="142" /></p>
+<p>However, in their workspace, the PostcodeBoundaries table is not connected to anything. The unconnected table is still being read - and cached - but the data is being ignored:</p>
+<p><img class="image image-block image-center" src="images/1725643667774.png" alt="An unattached reader feature type" width="430" height="133" /></p>
+<p>Presumably, the user added the table for some reason but then decided they did not need it; in that case, they should delete the feature type from the FME workspace. Then, the table will not be read, and performance will improve.</p>
+<h2 id="remove-unattached">Remove Unattached</h2>
+<p>When developing a workspace, it is easy to lose unused feature types, especially once the workspace grows in size. To quickly remove these unused feature types, go to Tools &gt; Remove &gt; Unattached... in the menu bar.</p>
+<p><img class="image image-block image-center" src="images/1725643875090.png" alt="Removing unattached feature types" width="746" height="438" /></p>
+<p>This tool is less useful when there is just one unattached item but is more useful in a larger workspace with an unknown number of unattached objects.</p>
+<h2 id="remove-unattached">Reader Order</h2>
+<p>FME reads features from readers in the order specified in the Navigator.&nbsp;</p>
+<p>Generally, writer order impacts performance more than reader order. However, there are some exceptional cases where you may want to pay attention to reader order:</p>
+<ul>
+<li>Using the Creator to trigger a FeatureReader. HTTPCaller, or other transformer that reads data.
+<ul>
+<li>You can use the parameter Create After Readers to control this behavior. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/creator.htm" target="_blank" rel="noopener">See the documentation for details</a>.</li>
+<li>You can learn more about these transformers in the <a href="https://academy.safe.com/path/fme-form-advanced/read-and-write-your-data-mid-workflow" target="_blank" rel="noopener">Read and Write Your Data Mid-Workflow</a> course.</li>
+</ul>
+</li>
+<li>Encountering timing issues with group-based or blocking transformers. These transformers wait to receive all features before they begin processing. If one of them is stuck waiting for a reader ordered lower in the Navigator, that might slow your workspace down.
+<ul>
+<li>We'll cover this more when we discuss transformer performance later in this course.</li>
+</ul>
+</li>
+<li>Very rarely, you might need to use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/featureholder.htm" target="_blank" rel="noopener">FeatureHolder</a> to stop features from advancing in a workspace. But if you can design your workspace to avoid such race conditions, that's usually better.</li>
+</ul>

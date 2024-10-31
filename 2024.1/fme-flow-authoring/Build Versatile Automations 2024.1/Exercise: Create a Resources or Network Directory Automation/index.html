@@ -1,0 +1,117 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create a new Automation.</li>
+<li>Use a Resources or Network Directory (updated) Trigger to poll an FME Flow Resource.</li>
+<li>Test a Resources or Network &nbsp;Directory (updated) Trigger by reading a log.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Building Footprint Esri Shapefiles</a>
+<ul>
+<li>C:\FMEData\Data\Engineering\BuildingFootprints</li>
+</ul>
+</li>
+</ul>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">All resources are available via the links above. If you are using a Safe Software training machine or downloaded FMEData, you can use the local paths.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>As a technical analyst in the GIS department, you want to start experimenting with Automations in FME Flow. The Directory Watch protocol seems like a good place to start, and you were already thinking about a shared folder where users place Shapefile datasets for adding to or updating, the corporate database.</p>
+<h2 id="1-create-resources-folder">1) Create Resources Folder</h2>
+<p>Login to the FME Flow web interface.&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">If you are taking a Safe Software training course, the username is&nbsp;</span><code>admin</code><span style="font-family: inherit; font-size: 1em;">&nbsp;and the password is&nbsp;</span><code>FMElearnings</code><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>The first step is to create a Resources folder to upload the data. Open the FME Flow web interface and navigate to the Resources page.</p>
+<p>Browse to the Data folder and create a new subfolder called BuildingUpdates:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/kCYNOwVnSXRfrauDZR1IWtR_aQQEVp5O7r_dGHaf2xz34-z4JklOg4Uw_VQoz7dOsblz30p6bGiG8JwPavpt8AVwUQCybVIkbiEGJqJlC5vLW_zvQFGEYYGjfWiy-vnNkxjtFlbJNBCIPgnbAaGBPFc" alt="Add a new subfolder to the Resources Data folder" width="699" height="175" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">This exercise utilizes the FME Flow Resource folders, but you could also watch a Directory outside of FME Flow Resources by creating a Resource Connection or reference a shared UNC path.<br /><br /></span><span style="font-family: inherit; font-size: 1em;">There is also native support in FME Flow to watch for new resources in Amazon S3 Buckets, Dropbox, and FTP. Using the same concepts described here, you could use one of these protocols instead of the Resource or Network Directory Watch.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="2-create-automation">2) Create Automation</h2>
+<p>Now to create the Automation that will watch the BuildingUpdates directory for incoming files. Navigate to Automations &gt; Create Automation on the side menu bar. In the Create tab of the Get Started dialog that appears, click Create New to start a new Automation</p>
+<p>By default, Automations starts in guided mode. This means that there is already a Trigger node on the canvas but it will still need to be configured.</p>
+<p>Start by double-clicking the Trigger and a parameter box will appear on the right-hand side of the canvas. Select Resource or Network Directory (updated) from the drop-down list as the Trigger for this Automation.</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/bKWQ7w0N0KPRCnM_cLpAxeBCUDWiMtfqmtMupH2KVn7ZB-6Rr1h8ylgu5Gujid4unuHUgWhCFF9hodhuKt8xfgToYYWdDfLl45SEf-OW3Q5kQPSh81FJVQMsEwD6mYyhbH9rLEDxXMsnPIRIw501HII" alt="Selecting a Resource or Network Directory (updated) Trigger Event" width="699" height="364" /></p>
+<h2 id="3-define-trigger-parameters">3) Define Trigger Parameters</h2>
+<p>After selecting a Trigger type a list of configurable parameters appears in the dialog. For the Directory to Watch parameter, click the ellipsis button to browse the FME Flow Resources. Select the newly created BuildingUpdates folder under the Data subfolder:</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/xT6iZz5L1LQ93SX77oXPQMN-gMy_Uexz1pK6NSvjUwvRvo7mTGPXX-gZJ7HUziiUFtXTMzMty0Q5Pe5ozwZodsyGqBZjTqjxXLXb2cbNe1y0sQgI3ntetL3pdYOFxccAc3jcpKnIsAfD4rRwP7XxkOI" alt="Selecting a Directory to Watch" width="699" height="413" /></p>
+<p>Leave the Watch Subdirectories and Watch Folders parameters set to No, since we are only interested in monitoring for files in the BuildingUpdates folder directly.</p>
+<p>Then for the Events to Watch for parameter remove the MODIFY and DELETE actions. Since we are looking to add to the corporate database, in this example we are only interested in monitoring for new files arriving, not old ones being changed or removed:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/_1O6cycOiBvQFstg39kYXHZLBbCYUXMkA2Bz9-8M3lL8jlJJKzgpoI1fd1Gs5J1IWD2sQew05M0EtM5A7CHJRJ89TLCBDXLiNf_bSyu8XlImJ2KjDf6fqZzoIEGIZEBNtFOGs2B0cpBcbAo47837Bvw" alt="Choosing to watch for CREATE events only" width="349" height="222" /></p>
+<p>Lastly, change the Poll Interval to 30 Seconds, and then in the bottom left corner, click on the Validate button to ensure the trigger was set up correctly. Now click Apply to save these parameters. In the canvas, the Trigger node will update to show it is a Resource or Network Directory (updated) Trigger.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/LTnyH2NtooIPRBlP_aI6wKUCN4J7DTHguUeVVUcCLtS9HxqoBHF8txHm3SgLS554iYwO1FLRvGuZqWRXlZwRbNC6qluNLwQjSXAdHmS8oJkXknQdVCT0V8w7cS5oqfOQVpN1y5ptEIeXZVNBGKYi4R8" alt="Canvas updates with new Trigger name" width="699" height="506" /></p>
+<p>Save the Automation by selecting Menu &gt; Save As and name the Automation "Incoming Building Footprints".</p>
+<h2 id="4-log-message">4) Log Message</h2>
+<p>Before we start the Automation, we need to add an Action so the Trigger protocol can parse the notifications onwards. Before processing the data we first want to check the Resource or Network Directory (updated) Trigger is working as expected. To do this we can send the incoming messages to a log file located on FME Flow.</p>
+<p>Select the Next Action node from the Success Output port and set the Action to Log a message.</p>
+<p>Click on the drop-down arrow for the Message parameter and select Event &gt; Event as JSON because in this instance we want to record the entire incoming message from the Resource or Network Directory (updated) protocol.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">A trigger stores the incoming message event details as JSON. However, for the standard protocols, FME is able to flatten the JSON down into its separate elements so the workspace or other subsequent action does not need to be able to handle this.<br /><br /></span><span style="font-family: inherit; font-size: 1em;">If your trigger contains information from a webhook that is buried in the JSON, you can parse the entire message into a parameter to flatten using JSON transformers in FME Workbench.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>Click&nbsp;<strong>Apply</strong>&nbsp;to save this Log configuration.</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/pN1Cm_7odRmZuiaHIwmEbseeh3JanPIlDiXfvbZiv6lOU0jHGnbiu-gLG42qI7_gv3EStduOxtAaszptRewsQxP3Az8n9l2m5z-xEQ9ovEjcLfV2EWaTJQ4FRXuBU2mwaeS-I-IwG-9JR7Pzan9IVY8" alt="Added a Log Action" width="699" height="344" /></p>
+<h2 id="5-start-automation">5) Start Automation</h2>
+<p>In order for FME Flow to start watching the directory for incoming files, the Automation must be enabled. Select the Start Automation button in the top right corner.</p>
+<p>The button will turn red and an orange warning ribbon will appear across the canvas indicating that your Automation is currently running. This means FME Flow is now checking that directory every 30 seconds for updates.</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/puI92ZdyS12c215yk_adqwUWCDCsVFRhyi9z61avS03XIymPGs8Yo5Fz_lbK5VQvAOP1wxgnWnEiCiR4w0NspbCQvxSklNH7xRIUINggiPU8qf52TzuO_McUqgMGpCm0BOo_K_xYa0LRYMHZzTFkOnY" alt="Automation is running" width="699" height="109" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">As your Automation grows you may wish to turn off Guided mode, this can be done by selecting Hide Guides from the Menu drop-down list when the Automation is stopped.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="6-test-automation">6) Test Automation</h2>
+<p>Now let's test the Automation.&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Download the source Shapefile datasets here</a> (C:\FMEData\Data\Engineering\BuildingFootprints).</p>
+<p>Select a set of files (.dbf, .prj, .shp, .shx) and upload these files into the newly created Resources folder. There are two ways to do this.</p>
+<p>You can use the file system (by copying the files to C:\ProgramData\Safe Software\FMEFlow\resources\data\BuildingUpdates on the Flow machine) or use the FME Flow web interface (Resources &gt; Data &gt; BuildingUpdates &gt; Upload &gt; Files).</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/F6nCZPEne1CwhDs4HiuifK_OhLDoMC5kwR5tzz9_5AbQzcsEurH9fRhE8FAbRe6ncm_ZZL_UQZVu-SHdonhI4gbv9ksFo_Dn1WrnZuHTay-vO9f33gVmAxjKB_-d_k7ENr-q7c7Fq-klZbcQIUwxiXg" alt="Resources with uploaded updated files" width="699" height="310" /></p>
+<p>Check for updates in the log by selecting Menu &gt; View Log File from the Incoming Building Footprints Automation.</p>
+<p>If the log is not yet present, select the refresh button until it appears. You will see four CREATE messages from the Logger showing the individual file paths.</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/Cg5t5P8yd29d-IF1cniAeediRc0UDVACrrrrX9z4nw_TWqgeHQLzbBvYB9b_NJrwFk0tqiKQJeKemzcE-K0tnoq77fUzcMAiw0wJ--Bobx2kd2yfzkdwmqdSfmQMwM73T7ubbDcVk5eMpByjKSsR66E" alt="Viewing Automation Log to confirm the Automation was triggered" width="699" height="601" /></p>
+<p>When you view this log file you might also notice reports of the Automation sending Jobs to FME Engine. This is because FME Flow is actually performing the Log action using a simple FME Workspace.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">Remember, the Poll interval is set up to check the folder only once per 30 seconds - so if the Log file doesn't immediately appear, don't panic! Be patient and it will appear shortly.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>Now we know how the Resource or Network Directory Watch Trigger works! We will see in subsequent exercises how to process this information.</p>

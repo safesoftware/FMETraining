@@ -1,0 +1,47 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use the Group By parameter in an FME transformer.</li>
+<li>Confirm Group By worked properly using Visual Preview.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-process-data-in-groups.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\exercise-process-data-in-groups.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-process-data-in-groups-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\exercise-process-data-in-groups-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a>&nbsp;(MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>You are continuing to work with the city parks data. You've been asked to find the average size of parks in each neighborhood. You can use the Group By parameter with an existing workspace to do this task.</p>
+<p><strong>1) Start FME Workbench</strong></p>
+<p>Start FME Workbench (2024.0 or later) and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-process-data-in-groups.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>. This workspace calculates the total area of all parks in the city using the StatisticsCalculator.</p>
+<p><img class="image image-block" src="images/1714081891794.png" alt="Starting workspace" width="1439" height="224" /></p>
+<p>You can view the total area by running the workspace and inspecting the AttributeRenamer's Output port. AverageParkArea is 70,248 m&sup2; for the entire dataset:</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/filter-data/exercise-process-data-in-groups/images/1652294161879.png" alt="AverageParkArea in Table View" /></p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Remember that you can view the units for area or length calculations by checking the coordinate system of your data using the Feature Information Window. See <a href="https://academy.safe.com/connect-to-data/" target="_blank" rel="noopener">View Information about a Specific Feature</a> for more details.</p>
+</blockquote>
+<p><strong>2) Set Group By in the StatisticsCalculator</strong></p>
+<p>Changing the workspace to calculate the park area by neighborhood is straightforward. View the parameters for the StatisticsCalculator transformer. Check Group Processing and click the '...' button beside the Group By parameter. Select the attribute called Neighborhood:</p>
+<p><img class="image image-block" src="images/1714081908118.png" alt="Group By Neighborhood" width="666" height="484" /></p>
+<p>Click OK/Apply to apply the changes to the transformer.</p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Older versions of FME had a Cumulative output port for the StatisticsCalculator. If you wish to calculate a cumulative or running statistic that is updated for each feature, check Advanced&mdash;Output Cumulative Results. This method can be helpful to determine when a cumulative sum, count, or mean surpasses a particular threshold value. In that case, you would need to combine the output of the StatisticsCalculator Cumulative port with a filtering transformer like a Tester.</p>
+</blockquote>
+<p><strong>3) Run the Workspace</strong></p>
+<p>Click on the StatisticsCalculator and then click on Run To This. Inspect the Summary output port in Visual Preview. The Summary output port creates a summarized table of the statistics you are calculating.</p>
+<p>You should see that each neighborhood now has its own value for ParkArea.mean (renamed to AverageParkArea by the AttributeRenamer):</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/filter-data/exercise-process-data-in-groups/images/1652294361336.png" alt="Average park area by neighborhood in Table View" /></p>

@@ -1,0 +1,155 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand&nbsp;the resources available to help you find transformers for your task.</li>
+<li>Use these resources to find a transformer to solve a data problem.</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You don&rsquo;t have to follow along with Jennifer using FME in this lesson. Instead, read her story and then do the exercise yourself.</span></p>
+</blockquote>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/find-the-right-transformer.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\find-the-right-transformer.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/find-the-right-transformer-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\find-the-right-transformer-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateDataWithTheFMEPlatform/revoked_licenses.csv" target="_blank" rel="noopener">revoked_licenses.csv</a><br />
+<ul>
+<li>C:\FMEData\Resources\IntegrateDataWithTheFMEPlatform\revoked_licenses.csv</li>
+</ul>
+</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="the-challenge">The Challenge</h2>
+<p>When Jennifer first began using FME, she found&nbsp;<a href="https://www.safe.com/transformers/" target="_blank" rel="noreferrer noopener">the list of almost 500 transformers</a> daunting. One of the most common challenges new FME users face is finding the correct transformer for a given task. However, Jennifer learns that most users only focus on the subset of transformers relevant to their day-to-day workflow. Since Jennifer doesn&rsquo;t plan on working with raster data, there is a whole category of raster-dedicated transformers that she doesn&rsquo;t need to know. She knows she doesn&rsquo;t need to be familiar with every transformer to use FME effectively.</p>
+<h2 id="transformer-resources">Transformer Resources</h2>
+<p>As she learned FME, Jennifer found the following resources helpful in learning about transformers:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Resource</strong></td>
+<td><strong>Why use it?</strong></td>
+</tr>
+<tr>
+<td>Searching using&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/what_is_quick_add.htm" target="_blank" rel="noopener">Quick Add</a>&nbsp;in FME Workbench</td>
+<td>Quickly search transformers, see the Help, and add to the canvas to try them out.</td>
+</tr>
+<tr>
+<td>Browsing or searching using the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/transformers_locating.htm" target="_blank" rel="noopener">Transformer Gallery</a>&nbsp;in FME Workbench</td>
+<td>Filter transformers by category and search directly in Workbench.</td>
+</tr>
+<tr>
+<td>Using the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/FME-Transformer-Reference-Guide.pdf" target="_blank" rel="noopener">FME Transformer Reference Guide</a></td>
+<td>Contains snippets from Help to explain transformer use cases.</td>
+</tr>
+</tbody>
+</table>
+<p><span style="font-size: 2.3125em;">The Scenario</span></p>
+<p>Jennifer continues to work on her workspace. The next step is to filter out records with revoked business licenses. These revoked licenses are stored in a PostgreSQL database.</p>
+<p>Jennifer knows there are a few steps that need to happen to accomplish her goal:</p>
+<ul>
+<li>Read records from the database</li>
+<li>Join the data to her features
+<ul>
+<li>Key for existing features: license_number</li>
+<li>Key for database features: revoked_license</li>
+</ul>
+</li>
+<li>Filter out any features with a value for revoked_license</li>
+</ul>
+<p>She also knows two things:</p>
+<ul>
+<li>There are many ways to accomplish your goals in FME. There are likely many transformers or combinations of transformers that can do this task. Some might be more performant than others, but the differences will be negligible with a small dataset.</li>
+<li>She suspects she can find a single transformer to do it all.</li>
+</ul>
+<h2 id="finding-a-transformer">Finding a Transformer</h2>
+<p>Jennifer decides to start by looking in the Workbench<strong>&nbsp;Transformer Gallery&nbsp;</strong>categories. She sees the&nbsp;<strong>Filters and Joins </strong>category:</p>
+<p><img src="images/1713287070775.png" alt="Filters and Joins category in the Workbench Transformer Gallery" width="256" height="514" /></p>
+<p>She could look through the transformers here individually and read their <strong>Help </strong>pages to learn more, but she thinks that might take too long.</p>
+<p>Second, she tries searching for some keywords in <strong>Quick Add</strong>. She opens her workspace and starts typing keywords. First, she tries &ldquo;filter and join,&rdquo; but this search is too specific and doesn&rsquo;t yield any attribute-related results. By default, <strong>Quick Add</strong>&nbsp;searches for transformer names only, not descriptions. She presses the&nbsp;<strong>Tab&nbsp;</strong>key to search in the&nbsp;<strong>Help&nbsp;</strong>text, which results in transformers that don&rsquo;t meet her requirements.</p>
+<p>She tries some more keywords in both search modes: &ldquo;filter,&rdquo; &ldquo;merge,&rdquo; and &ldquo;join.&rdquo; These return some transformers that sound promising.</p>
+<p><img class="image image-block image-center" src="images/1713287389985.png" alt="Searching Quick Add" width="668" height="440" /></p>
+<p>She scans the attribute transformers and their descriptions. This method produces a promising result...</p>
+<p>Jennifer adds the mystery transformer <strong>Quick Add.</strong> She connects it to her workflow, sets the parameters, and finds it does just what she wants.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If Jennifer&rsquo;s use case had been more complex, she might have considered using the Transformer Reference Guide or posting it&nbsp;on the&nbsp;<a href="https://community.safe.com/s/" target="_blank" rel="noopener">Community Forums</a> for help.</p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p>You&rsquo;ve read about Jennifer&rsquo;s search for her transformer. Now you have to find it!</p>
+<p>Using the techniques above and the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/find-the-right-transformer.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (in FME Workbench 2024.0 or later), find a transformer that will accomplish her goals:</p>
+<ul>
+<li>Read records from the database</li>
+<li>Join the data to her features
+<ul>
+<li>Key for existing features: license_number</li>
+<li>Key for database features: revoked_license</li>
+</ul>
+</li>
+<li>Filter out any features with a value for revoked_license</li>
+</ul>
+<p>Here are some clues:</p>
+<ul>
+<li>There is a<strong> single transformer </strong>that accomplishes all of the goals without requiring adding an additional reader to the workspace.
+<ul>
+<li>If you find a combination of transformers that work, that's fine! There's more than one way to do things with FME.</li>
+<li>However, you'll need to identify the single transformer that works to answer a question in the quiz below.</li>
+</ul>
+</li>
+<li>You do not have to add a reader to your workspace; instead, you can use a transformer that connects directly to the source data.</li>
+<li>To connect to the database, you must create a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!NamedConnections/Using_Database_Connections.htm" target="_blank" rel="noopener">database connection</a>.
+<ul>
+<li>More details below.</li>
+</ul>
+</li>
+</ul>
+<p>Once you find the transformer, connect it between the <strong>AttributeManager </strong>and the&nbsp;<strong>BusinessOwners </strong>writer feature type and configure it. You can use <strong>Visual Preview</strong> with feature caching to confirm the correct results. Your output will have two streams of features.</p>
+<p>Features with a revoked_license:</p>
+<p><img src="images/1713288275999.png" alt="Features without a revoked license" width="597" height="136" /></p>
+<p>Features without one:</p>
+<p><img src="images/1713288161326.png" alt="Features with a revoked license" /></p>
+<p>Ensure you connect the correct stream of features to the writer feature type. Remember, we want to filter out features with revoked licenses and not write them out.</p>
+<p><strong>Database Connection Details</strong></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><strong style="font-family: inherit; font-size: 1em;">Database connections&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">save authentication information for databases. FME also has&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!NamedConnections/Using_Web_Service_Connections.htm" target="_blank" rel="noopener"><strong>web connections</strong></a><strong style="font-family: inherit; font-size: 1em;">&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">to connect to web services and APIs. They are stored on the user&rsquo;s operating system profile or network drives to store authentication information separately from the workspace. They can also be published to FME Flow so users can share them without exposing passwords.</span></p>
+<p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_with_Databases_Web_Services.htm" target="_blank" rel="noopener">Learn More</a></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐New for FME 2024.0</strong>: we've improved the encryption for connection storage. You can feel even more comfortable that your credentials are protected.</p>
+</blockquote>
+<p>When you choose PostGIS or PostgreSQL as your <strong>Format </strong>(either will work), FME will change its dialog to ask for a <strong>Connection </strong>instead of a <strong>Dataset</strong>. When you click the drop-down, you should choose <strong>Add Database Connection</strong>.</p>
+<p><img src="images/1713290789537.png" alt="Add Database Connection dialog" /></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>From here, you must fill in the database connection details, shown below.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-hosted training course, choose the existing database connection from the drop-down (FME Training PostGIS Database) instead of creating a new one.</p>
+</blockquote>
+<p><img class="image image-block image-center" src="images/1713290827108.png" alt="Training database connection setup" width="342" height="318" /></p>
+<p>She clicks&nbsp;<strong>Test&nbsp;</strong>and then&nbsp;<strong>Save</strong>. FME tests the connection and confirms that it is working.</p>
+<p>The table you need to connect to is <strong>public.revoked_licenses</strong>.</p>
+<p>If you have problems connecting to the database, you can use this backup CSV file: <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateDataWithTheFMEPlatform/revoked_licenses.csv" target="_blank" rel="noopener">revoked_licenses.csv</a> (<span style="font-family: inherit; font-size: 1em;">C:\FMEData\Resources\IntegrateDataWithTheFMEPlatform\revoked_licenses.csv).</span></p>

@@ -1,0 +1,119 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand how filtering lets you create multiple streams of data in your workspaces.</li>
+<li>Filter your data using a Tester transformer.</li>
+<li>Inspect multiple feature caches.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateDataWithTheFMEPlatform/revoked_licenses.csv" target="_blank" rel="noopener">revoked_licenses.csv</a><br />
+<ul>
+<li>C:\FMEData\Resources\IntegrateDataWithTheFMEPlatform\revoked_licenses.csv</li>
+</ul>
+</li>
+</ul>
+<h2 id="creating-multiple-streams-of-data">Creating Multiple Streams of Data</h2>
+<p>FME workspaces send data from left to right across the canvas from reader feature types to writer feature types. The simplest workspace only has one &ldquo;stream&rdquo; of data: features are read in, all processed in the same way, and then written out. However, workspaces can have multiple data streams, splitting and merging features as required.&nbsp;</p>
+<p>The <strong>GeometryFilter</strong> created multiple streams in Jennifer's workspace when it split the PostGIS features into point and null geometry. She now has two streams from the <strong>GeometryFilter</strong>: #1 contains features missing geometry going to the&nbsp;<strong>BusinessOwners_incomplete</strong>&nbsp;feature type, and #2 contains point geometry features going to the&nbsp;<strong>BusinessOwners&nbsp;</strong>feature type.</p>
+<p><img src="images/1690490461705.png" alt="Two streams" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The name of the transformer in stream #2 above is obscured because it is the answer to a previous quiz question.</span></p>
+</blockquote>
+<p>Jennifer has been given a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/csv2/csv2.htm" target="_blank" rel="noopener">CSV</a> file with a list of business license numbers flagged to be revoked. She wants to use this list to filter out features with revoked licenses from her source data before writing to the geodatabase.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You don&rsquo;t have to follow along with Jennifer here. We provide a starting workspace below to let you skip this step. It&rsquo;s a bit more advanced. If you want to learn more about the FeatureJoiner, you can&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://community.safe.com/s/article/the-featurejoiner-transformer" target="_blank" rel="noopener">read this tutorial</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>Jennifer adds a CSV reader and reads the revoked licenses file. She then uses a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/featurejoiner.htm" target="_blank" rel="noopener"><strong>FeatureJoiner</strong></a> to join the revoked license data to her existing BusinessOwners data. Now her features have a &ldquo;revoked_license&rdquo; attribute that can filter out the businesses with revoked licenses.</p>
+<h2 id="filter-your-data-using-a-tester">Filter Your Data Using a Tester</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can follow along with Jennifer now using this&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a><span style="font-family: inherit; font-size: 1em;"> in FME Workbench (2023.0 or later).</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you are taking a Safe Software-hosted training course, the database connection in this workspace should work automatically.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you configured a database connection yourself in a previous exercise, you'll have to edit the PostGIS reader parameters to use your connection. Find the PostGIS reader in the Navigator (it's the first entry), expand its parameters, double-click Connection, and choose the database connection you configured.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you have not yet configured a database connection, refer to the instructions in the earlier lesson, Quickly Create a Conversion Workflow, to do so.</span></p>
+</blockquote>
+<p>Jennifer adds a&nbsp;<strong>Tester&nbsp;</strong>between the&nbsp;<strong>FeatureJoiner&nbsp;</strong>and the&nbsp;<strong>GeometryFilter&nbsp;</strong>using<strong>&nbsp;Quick Add&nbsp;</strong>so she can filter out the stream of data to get all businesses with valid licenses only.</p>
+<p><img src="images/1690491303503.png" alt="Adding a Tester" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">We are filtering our features into two streams with the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Tester</strong><span style="font-family: inherit; font-size: 1em;">. Other transformers with &ldquo;Filter&rdquo; in their name can route features into more than three streams based on various operations, for example, the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/testfilter.htm" target="_blank" rel="noopener"><strong>TestFilter</strong></a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>To do this, she double-clicks the&nbsp;<strong>Tester&nbsp;</strong>to open its&nbsp;<strong>Parameters&nbsp;</strong>dialog. The table here allows her to enter a logical test or series of tests against incoming features. It works a bit like&nbsp;<a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)%23If%25E2%2580%2593then(%25E2%2580%2593else)" target="_blank" rel="noreferrer noopener">an &ldquo;if-then-else&rdquo; statement in programming languages</a>. If the feature meets the test(s) criteria, it comes out of the <strong>Passed&nbsp;</strong>port. If it does not, it comes out of the&nbsp;<strong>Failed</strong>&nbsp;port. The&nbsp;<strong>Tester</strong> filters data and allows for simple branching of your data integration workflow.</p>
+<p>Jennifer sets up her&nbsp;<strong>Tester&nbsp;</strong>as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td colspan="1" rowspan="1"><strong>Logic</strong></td>
+<td colspan="1" rowspan="1"><strong>Left Value</strong></td>
+<td colspan="1" rowspan="1"><strong>Operator</strong></td>
+<td colspan="1" rowspan="1"><strong>Right Value<br /></strong></td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">NOT</td>
+<td colspan="1" rowspan="1">🠈 revoked_license</td>
+<td colspan="1" rowspan="1">Attribute Has a Value</td>
+<td colspan="1" rowspan="1">&lt;Unused&gt;</td>
+</tr>
+</tbody>
+</table>
+<p>These settings do the following: &ldquo;For each feature being read by the&nbsp;<strong>Tester</strong>, if it does NOT have a value for the attribute 'revoked_license,' it passes. Otherwise, it fails.&rdquo; This test accomplishes our goal of sending any features with a revoked license to the <strong>Failed</strong> port.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>We used the NOT Logic operator in this example. You can combine different Logic operators like OR or AND for more complex tests.&nbsp;</p>
+<p><span style="font-family: inherit; font-size: 1em;">See the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/tester.htm" target="_blank" rel="noreferrer noopener">Tester documentation</a> for more information.</span></p>
+</blockquote>
+<p>Jennifer uses&nbsp;<strong>Run to This&nbsp;</strong>on the&nbsp;<strong>Tester&nbsp;</strong>and sees 167 results out of the Passed port and four out of the&nbsp;<strong>Failed&nbsp;</strong>port.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">This is a simplified example. More likely, these revoked licenses would be removed from the PostGIS database or added to a license history table in the database. We are using a CSV file here to keep things simple.</span></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="inspect-your-filtered-data">Inspect Your Filtered Data</h2>
+<p>Jennifer inspects the&nbsp;<strong>Tester&nbsp;</strong>cache to ensure the correct features are filtered out. She clicks the<strong> Tester's Failed</strong> feature cache. She sees&nbsp;<strong>Visual Preview&rsquo;s Table View</strong>&nbsp;reporting in the bottom-right corner that 4 rows are being displayed, meaning the four revoked licenses have been filtered out successfully via the&nbsp;<strong>Failed</strong>&nbsp;port.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/filter-data-by-attribute-values/images/51-ca-822-a-27-c-5-4517-a-313-e-1-ed-6912-a-6-a-7.png" alt="Viewing the number of rows in Table View" /></p>
+<p>She can confirm the correct features failed because their &ldquo;license_number&rdquo; and &ldquo;revoked_license&rdquo; attributes match.</p>
+<h2 id="inspect-final-results">Inspect Final Results</h2>
+<p>Now that her workspace is complete, Jennifer turns off feature caching from the toolbar (<strong>Run</strong>&nbsp;&gt; uncheck&nbsp;<strong>Enable Feature Caching</strong>) and then clicks&nbsp;<strong>Run</strong>. Her entire workspace runs&nbsp;successfully.</p>
+<p>Then she clicks the&nbsp;<strong>BusinessOwners&nbsp;</strong>writer feature type to select it and clicks&nbsp;<strong>View Written Data</strong>.&nbsp;</p>
+<p><img src="images/1690492044925.png" alt="View Written Data button" /></p>
+<p>This shows the 96 valid records that were written to this feature class. FME automatically added the required <strong>OBJECTID&nbsp;</strong>column to the data as required by the geodatabase format.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/filter-data-by-attribute-values/images/064-e-592-e-33-ca-4-afe-a-80-b-09-ee-3-f-6-df-631.png" alt="Viewing the new OBJECTID column in Table View" /></p>
+<p>Using the same method to inspect&nbsp;<strong>BusinessOwners_incomplete&nbsp;</strong>shows 71 features with missing values.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/filter-data-by-attribute-values/images/f-97272-d-2-e-7-bf-4-ca-0-9-b-74-24233-d-5-c-7135.png" alt="71 features with missing values" /></p>
+<p>Jennifer clicks one of the writer feature types and then&nbsp;<strong>Open Containing Folder</strong>, viewing the geodatabase in her file browser. She can open the geodatabase in ArcCatalog, ArcMap, or ArcGIS Pro from there.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/filter-data-by-attribute-values/images/1652204162848.png" alt="View output in ArcCatalog" /></p>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Jennifer&rsquo;s steps.</p>
+<h2 id="exercise">Review</h2>
+<p>In this course, you learned how to:</p>
+<ul>
+<li>Create a workspace using Generate Workspace</li>
+<li>Edit and map your schema</li>
+<li>Use feature caching to speed up workspace authoring</li>
+<li>Find the right transformer</li>
+<li>Filter features based on attribute values</li>
+</ul>

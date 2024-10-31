@@ -1,0 +1,65 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Set a static geometry type on a writer feature type.</li>
+<li>Define dynamic geometry from a schema definition.</li>
+<li>Define dynamic geometry from the first feature.</li>
+</ul>
+<h2 id="dynamic-geometry">Dynamic Geometry</h2>
+<p>In this section, we'll examine how you can decide which geometries are valid for a particular feature type.</p>
+<h2 id="schema-geometry-definition">Schema Geometry Definition</h2>
+<p>The geometry permitted in an output dataset depends on the format used. Some formats allow any geometry&mdash;or a mix of geometries&mdash;to exist in a feature type.</p>
+<p>However, some formats do not allow a mix of geometries in a single feature type, which can cause problems.</p>
+<p>For example, a standard (static) Geodatabase writer feature type allows you to pick the geometry allowed in that file:</p>
+<p><img class="image image-block image-center" src="images/1723652821825.png" alt="Defining geometry on a writer feature type" width="554" height="247" /></p>
+<p>In a dynamic workspace, this changes. The geometry type can be chosen manually, depending on the first feature, or depending on the chosen schema definition:</p>
+<p><img class="image image-block image-center" src="images/1723652884844.png" alt="Defining Geometry From Schema Definition" width="555" height="247" /></p>
+<p>In Schema Definition mode, when the read data provides the schema, the permitted geometry duplicates that source dataset's schema.</p>
+<p>But when the Schema Source parameter is changed to point to another dataset, the permitted geometry is defined by that dataset's schema.</p>
+<p>If the geometry of the written data is different from that schema and the destination format does not support multiple geometry types, then FME drops features instead of writing them.</p>
+<h2 id="fixed-geometry-definition">Fixed Geometry Definition</h2>
+<p>Even in a dynamic translation, the workspace author may set the dynamic schema parameter for permitted geometry back to a fixed value. For example, the author could choose geodb_polygon (for a Geodatabase) or shape_polygon (for a Shapefile).</p>
+<p>This step overrides the geometry defined by the chosen schema source, so the writer writes only polygon features.</p>
+<h2 id="first-feature-geometry-definition">First Feature Geometry Definition</h2>
+<p>The other option for defining geometry type is First Feature Defines Geometry Type.</p>
+<p><img class="image image-block image-center" src="images/1723652972185.png" alt="Defining Geometry with First Feature Defines Geometry Type" width="531" height="94" /></p>
+<p>Geometry types can be challenging to handle in a dynamic translation because there is a degree of uncertainty about what geometry types might be in the source data and how well they will match up to the geometry types specified in the source schema. This uncertainty also makes it difficult to set a fixed geometry definition.</p>
+<p>The First Feature Defines Geometry Type option solves this. When selected, the first feature to arrive at the writer gets to set the geometry type. That way, the author does not need to know in advance what geometry the writer will encounter or what geometry the schema will permit.</p>
+<p>For example, if the first feature is a polygon, then the geometry type for that feature type is set to polygon only; the writer will refuse subsequent features destined for the same feature type if they do not have the same polygon geometry.</p>
+<h2 id="summary">Summary</h2>
+<p>If you've understood everything about dynamic translations so far without having to read each section at least twice, then you are doing very well. This topic is very advanced; only some understand it the first time.<br /><br />To summarize, these settings allow us to create an output dataset whose schema is defined not by the source data but in multiple other ways.<br /><br />Remember this: when faced with schema handling beyond the usual static workspace, you'll know what functionality is required and can refer to the documentation, this course, or the&nbsp;<a href="https://support.safe.com/hc/en-us" target="_blank" rel="noopener">FME Support Center</a>. These resources will help you find the proper techniques for your particular need.</p>
+<p>Also, remember this key table:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>&nbsp;</td>
+<td><strong>I know the format</strong></td>
+<td><strong>I don't know the format</strong></td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td><strong>I know the feature types.</strong></td>
+<td>Static</td>
+<td>Generic + Static</td>
+<td><strong>I know the attributes</strong></td>
+</tr>
+<tr>
+<td><strong>I don't know the feature types</strong></td>
+<td>Fanout</td>
+<td>Generic + Fanout</td>
+<td><strong>I know the attributes</strong></td>
+</tr>
+<tr>
+<td><strong>I know the feature types</strong></td>
+<td>Dynamic</td>
+<td>Generic + Dynamic</td>
+<td><strong>I don't know the attributes</strong></td>
+</tr>
+<tr>
+<td><strong>I don't know the feature types</strong></td>
+<td>Dynamic</td>
+<td>Generic + Dynamic</td>
+<td><strong>I don't know the attributes</strong></td>
+</tr>
+</tbody>
+</table>

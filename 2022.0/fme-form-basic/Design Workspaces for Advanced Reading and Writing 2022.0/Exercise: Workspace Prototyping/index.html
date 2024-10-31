@@ -1,0 +1,86 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Plan a workspace.</li>
+<li>Create a workspace, section by section.</li>
+<li>Restrict source data to a small sample.</li>
+<li>Save a workspace with a date or version number.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-workspace-prototyping.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>The city maintenance department has a dataset of garbage collection schedules, to assign residents to a collection on a particular day:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.200.Ex1.ExistingZones.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.200.Ex1.ExistingZones.png" alt="Garbage collections schedules polygons and table" /></a></p>
+<p>However, because of shifting demographics and zoning changes, they have decided that new boundaries should be drawn.</p>
+<p>Your task is to use FME to create new boundaries. You must create five polygons, adjacent to each other, and with approximately the same number of residents in each. The analysis will be based on the city's address database. An estimate of the number of residents per address will be created depending on the zone type it falls within:</p>
+<ul>
+<li>Single-family residences: 2 adults</li>
+<li>Two-family residences: 4 adults</li>
+<li>Multi-family residences: 12 adults</li>
+<li>Comprehensive development zone: 8 adults</li>
+<li>Commercial properties: 1 adult</li>
+</ul>
+<p>The output format will be OGC GeoPackage.</p>
+<p>To develop this workspace, it's necessary to consider what different steps might be required. We can then create sections with a bookmark and fill them in as we go along.</p>
+<p><br /><strong>1) Plan Workspace</strong><br />Let's plan this workspace together.</p>
+<p>We need to read the address data (or a sample of it) and write the output to OGC GeoPackage. We need to know what zone type each address falls inside, which needs zoning data and a transformer to carry out a spatial join.</p>
+<p>We also need to create a resident count based on the zone type and then divide the residents into five different areas. Finally, we need to group the addresses with a boundary shape around them.</p>
+<p>In short, we need this set of actions:</p>
+<ul>
+<li>Read/Sample Address database</li>
+<li>Read Zoning data</li>
+<li>Create a spatial join</li>
+<li>Calculate resident count</li>
+<li>Divide residents into five groups</li>
+<li>Aggregate the addresses into their group</li>
+<li>Create a boundary shape</li>
+<li>Write OGC GeoPackage</li>
+</ul>
+<p>So, open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-workspace-prototyping.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>&nbsp;in FME Workbench (2022.0 or later). It already has a set of bookmarks to represent these steps to be carried out but, as yet, we can't be sure which sections will be larger, so all bookmarks are the same size:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.201.Ex1.StartingWorkspace.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.201.Ex1.StartingWorkspace.png" alt="Starting workspace with bookmarked sections" /></a></p>
+<p>You'll also find a bookmark containing all of the transformers required for the exercise:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.202.Ex1.RequiredTransformers.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.202.Ex1.RequiredTransformers.png" alt="Collection of transformers for the exercise" /></a></p>
+<p>Or at least, these are the transformers we think will be required for the exercise!</p>
+<p><br /><strong>2) Sample Source Data</strong><br />There are more features in the address database than we need for workspace construction and testing, so let's reduce that to a smaller sample.</p>
+<p>Rather than create a test dataset, here we'll use a Sampler transformer. There is a Sampler transformer in the "Transformers" bookmark, so simply move that transformer into the "Sample Addresses" bookmark and connect the PostalAddress feature type to it:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.203.Ex1.SamplerOnCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.203.Ex1.SamplerOnCanvas.png" alt="Adding a Sampler" /></a></p>
+<p>Inspect the Sampler's parameters. It will sample every 25th feature</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.204.Ex1.SamplerParams.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.204.Ex1.SamplerParams.png" alt="Setting Sampler parameters" /></a></p>
+<p>Run the workspace to be sure it is sampling the data correctly. Click on the magnifying glass on the Sampler:Sampled output port to view the data in the Visual Preview window. Take note of how many features come out of the Sampler:Sampled port; you will need this number to answer the quiz.</p>
+<p><strong>3) Divide Data into Groups</strong><br />Before trying to add the Zoning dataset into the workspace, let's try and create groups from the basic dataset. We can do this with a custom transformer from the FME Hub, called the SpatialSorter.</p>
+<p>So move the SpatialSorter from the "Transformers" bookmark to the "Divide Residents" bookmark:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.205.Ex1.SpatialSorterOnCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.205.Ex1.SpatialSorterOnCanvas.png" alt="Adding a SpatialSorter" /></a></p>
+<p>The SpatialSorter sorts data spatially (so features closer geographically become closer in the sorted output) and creates groups.</p>
+<p>Check the parameters for this transformer. Notice that the group parameter asks for group size, not the number of groups. Therefore we'll need to calculate how many addresses there are when split into five groups.</p>
+<p><br /><strong>4) Calculate Group Sizes</strong><br />To calculate the number of addresses per group, we need the number of addresses and then divide that by five. We can do this with a combination of StatisticsCalculator and ExpressionEvaluator.</p>
+<p>So, enlarge the Divide Residents bookmark as required and move the StatisticsCalculator and ExpressionEvaluator transformers from the "Transformers" bookmark. Connect them up to the Sampler:Sampled port like so:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652477405608.png" alt="Connecting the StatisticsCalculator and ExpressionEvaluator" /></p>
+<p><br /><strong>5) Calculate Group Sizes</strong><br />Inspect the parameters for the StatisticsCalculator. This transformer will tell us how many features there are (the Total Count). Pick an attribute for the first row of the Attribute column. Because we only want to count features not create true statistics, it can be any attribute you like. Here we are using COUNTRY.</p>
+<p>Check Total Count.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652477496729.png" alt="Setting up the StatisticsCalculator" /></p>
+<p>Click OK.</p>
+<p>In the ExpressionEvaluator, enter GroupSize in the New Attribute parameter. In the Arithmetic Expression field enter the expression:</p>
+<pre><code>@ceil((@Value(COUNTRY.total_count)/5))
+</code></pre>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652480742996.png" alt="Expression to evaluate" /></p>
+<p>The simplest way is to double-click the ceil function to add it, then double-click the TotalResidents attribute, and manually add the /5 part.</p>
+<p>This expression will divide the number of residents into five groups, rounding up. The rounding up part is essential, and it's what the ceil function does.</p>
+<p>Run the translation and view the ExpressionEvaluator output in the Visual Preview window to provide that this part works. The TotalResidents should be 543 and the GroupSize should be 109 for each feature.</p>
+<p><br /><strong>6) Group Residents</strong><br />Now inspect the parameters for the SpatialSorter once more. We will leave Grid Size at 16 for now; this will give us a more coarse result but will run faster while we develop the workspace. Under the Group Size parameter, click the drop-down arrow and select Attribute Value &gt; GroupSize:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.209.Ex1.SpatialSorterParams.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.209.Ex1.SpatialSorterParams.png" alt="Setting SpatialSorter parameters" /></a></p>
+<p>This sets the group size to the attribute just calculated.</p>
+<p>To create groups of addresses, move the Aggregator transformer to the "Group Residents" bookmark, and connect it to the SpatialSorter:Sorted output port:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.210.Ex1.AggregatorCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.210.Ex1.AggregatorCanvas.png" alt="Adding an Aggregator" /></a></p>
+<p>Inspect the parameters for the Aggregator. Set the Group By parameter to the GroupID attribute (in other words, aggregate features together in the groups created by the SpatialSorter):</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652480833756.png" alt="Setting up Group By on the Aggregator" /></p>
+<p>Using an Inspector transformer we can also set the Group By parameter, which will result in the data being represented with different colors for each group in the Visual Preview window. Connect an Inspector to the Aggregator:Aggregate output port and then in the parameters set the Group By to GroupID. Run the translation, and you should find there are five sets of point aggregates in the output, each of which has approximately the same number of point features:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.212.Ex1.AggregatedResults.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.212.Ex1.AggregatedResults.png" alt="Viewing data in Visual Preview" /></a></p>
+<p><strong>Tip</strong></p>
+<p>The Inspector transformer can be used to inspect data, but with Visual Preview and feature caching there isn't much reason to use it often. This case, where you want to add a group-by to help visualize your data in groups, is one of the cases where this transformer is useful.</p>
+<p>You can change the color of the groups by clicking on the Toggle Display Control button on the left-hand side of visual preview. Then double-click on the quadrant/four-square icon to open the Geometry Drawing Styles dialog, where you can set the color. When the color is manually set, the quadrant icon will display the color.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.213.Ex1.DisplayControl.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.213.Ex1.DisplayControl.png" alt="Setting color in Visual Preview Display Control" /></a></p>
+<p><br /><strong>7) Save Workspace</strong></p>
+<p>Save the workspace, including a date or version number (like GarbageCollection-2022-05-18.fmw).</p>
+<p>In this exercise, you learned to plan your workspace in sections and work on each section one at a time. The next step in the workspace will be to add in the Zoning data, create a spatial join, and calculate how many residents live in each property based on each address's zoning type.</p>

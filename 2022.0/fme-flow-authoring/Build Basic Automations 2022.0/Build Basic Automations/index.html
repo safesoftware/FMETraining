@@ -1,0 +1,228 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand what triggers are and how to use them.</li>
+<li>Know the difference between internal and external actions.</li>
+<li>Understand how to find and add nodes into an Automation.</li>
+</ul>
+<h2 id="how-to-build-an-automation">How to Build an Automation?</h2>
+<p>Automations are built using a drag-and-drop interface similar to FME Workbench. Your Automations can consist of the following components:</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000461700.png" alt="Manual Trigger icon" /><strong>Manual Trigger.</strong>&nbsp;Allows the automation to be run on demand rather than in response to a schedule or event. Extremely useful for testing as it allows sample JSON messages to be passed downstream.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000475072.png" alt="Trigger icon" /><strong>Triggers.&nbsp;</strong>A Trigger listens for and receives messages from an external client or from within FME Server. Every automation begins with a Trigger.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000486750.png" alt="Action icon" /><strong>Actions.</strong>&nbsp;Process messages from a trigger with an FME workspace or other tool hosted on the Server.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000496075.png" alt="External action icon" /><strong>External Actions.&nbsp;</strong>Sends a message to an external client or another process in FME Server. What happens afterward is no longer part of this Automation.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1654816502809.png" alt="External Action icon" /><strong>Split-Merge Block</strong>. Combines messages from multiple workspace actions. The message includes content from workspaces that run a single job, or multiple jobs, depending on the input message and workspace behavior.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000505617.png" alt="Annotation icon" /><strong>Annotations.</strong>&nbsp;Add annotations to the automation canvas just like FME Workbench which can be stand-alone or attached to components.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000514332.png" alt="Bookmark icon" /><strong>Bookmarks.&nbsp;</strong>Organizes your workflow by grouping and separating components.</p>
+<div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>For a full description of triggers and actions available, please visit&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Automations.htm" target="_blank" rel="noreferrer noopener">the Automations documentation</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Let's look at the different components of an Automation in more detail.</p>
+</div>
+<h2 id="clients">Clients</h2>
+<p>A client is a user or system that sends or receives a message to/from FME Server. The client may be a physical person or may just be a component in a computer system. Either way, the majority of the time, a client is not a core part of FME Server, rather someone or something that interacts with it. There are two trigger protocol exceptions to this (Schedules and System Events) whereby FME Server is also the client sending the message.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1654876839740.png" alt="Client diagram" /></p>
+<p>For example, a database update might cause a trigger to send a notification to FME Server, in which case the database system is the client. However, a client could also be a person who, for example, triggers a notification by sending an email to FME Server.</p>
+<p>Likewise, FME Server can send a notification for another client system. Alternatively, this client can also be a real person, who might receive a notification in the form of an email.</p>
+<h2 id="trigger">Trigger</h2>
+<p>A trigger is an FME Server component that receives incoming notifications from a client.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1654877270019.png" alt="Trigger diagram" /></p>
+<p>To set up a trigger in FME Server, a workspace author (or administrator) must build a new Automation. You can create an Automation in the FME Server Web Interface on the Automations &gt; Build Automation page:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1654878519371-2.png" alt="Automations canvas" /></p>
+<h2 id="action">Action</h2>
+<p>An action is an FME Server component that sends outgoing notifications to a client.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1654877358077.png" alt="Actions diagram" /></p>
+<p>To send a notification in FME Server, a workspace author (or administrator) must first create an Automation that contains a trigger, the output of this node is then connected to the action - just like how you connect transformers in FME Workbench.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1654881641262.png" alt="Adding an External Action" /></p>
+<p>Comparable to the FME Workbench canvas, Automations are constructed in a user-friendly drag-and-drop interface. Triggers and actions are displayed on the canvas as nodes identifiable by their different color. Input and output ports are used to create connections that will pass messages from the trigger to the associated action. The user must configure a series of parameters for the Automation to succeed depending on the protocol.</p>
+<h2 id="protocols">Protocols</h2>
+<p>A protocol is a system of data exchange between FME Server and a client.</p>
+<p>We know that FME sends and receives messages. Protocols are the method by which these messages are sent and received. Each Trigger and Action is defined using a particular communication protocol.</p>
+<p>To trigger an incoming message by email &ndash; for example &ndash; you would create an Automation using an Email - SMTP Trigger. To send a notification to a Java Message Service, you would create an Automation that contains a JMS Message Action.</p>
+<p>There are many different protocols available in FME Server; some of them are only for use as a Trigger, others are only available as Actions, and some of them can be used with both types.</p>
+<p>This table lists the different Trigger and Action protocols and the following pages go into greater detail on some of the most commonly used types.</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Protocol</th>
+<th scope="col">Description</th>
+<th scope="col">Trigger</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>Amazon S3</td>
+<td>Monitoring activity in an AWS S3 bucket/Communication to Amazon&rsquo;s Simple Storage Service</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Amazon SNS</td>
+<td>Communication with Amazon&rsquo;s Simple Notification Service</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Amazon SQS</td>
+<td>Communication with Amazon&rsquo;s Simple Queue Service</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Azure Event Grid</td>
+<td>Communication with Microsoft Azure Events</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Directory Watch</td>
+<td>Monitoring activity in a Directory</td>
+<td>Y</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>Dropbox</td>
+<td>Monitoring activity in a Dropbox folder/Communication of a notification (file) to the Dropbox web service</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Email (IMAP)</td>
+<td>Receive email messages from an IMAP Server</td>
+<td>Y</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>Email (SMTP)</td>
+<td>FME Server itself receives email messages/Communication via an email server</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Filter</td>
+<td>Test incoming messages for the presence of a specified string</td>
+<td>&nbsp;</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>FME Server Topic</td>
+<td>Receive/Send messages to a Topic to initiate workflow processes</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>FME Workspace</td>
+<td>Run an FME Desktop Workspace published to FME Server</td>
+<td>&nbsp;</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>FME Dynamic Workspace</td>
+<td>Run an FME Desktop Workspace published to FME Server, with the repository and workspace name coming from output keys in the Automation</td>
+<td>&nbsp;</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>FTP</td>
+<td>Monitor activity/upload a file to an FTP Site</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>HTTP Request</td>
+<td>Post HTTP requests to the specified URL</td>
+<td>&nbsp;</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>JMS</td>
+<td>Communication with a Java Message Service</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>Write Event/Automation details to a log</td>
+<td>&nbsp;</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Merge</td>
+<td>Combine messages before proceeding downstream in an Automation</td>
+<td>&nbsp;</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>SFTP</td>
+<td>Communication with an SFTP site</td>
+<td>&nbsp;</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Schedule</td>
+<td>Complete workflow tasks at specific times in the future</td>
+<td>Y</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>System Events</td>
+<td>Communication with FME Server systems</td>
+<td>Y</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>UDP</td>
+<td>Communication via a User Datagram Protocol port</td>
+<td>Y</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td>Communication via a WebSocket channel</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Webhook</td>
+<td>Receive messages sent as HTTP Post requests from another application</td>
+<td>Y</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Protocols are pre-defined components in the FME Server architecture and do not need to be defined in the web interface.</p>
+<p>However, a number of fields are made available to configure when an Automation is created.</p>
+<p>For example, here are the parameters for a Resource or Network Directory (updated) Trigger:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/25-e-6-d-68-f-7-db-3-4-c-82-9265-731-a-7-ff-3-ee-3-e.PNG" alt="Resource or Network Directory Details pane" width="415" height="620" /></p>
+<p>You must set these parameters set when the Automation is created as they are needed for FME to watch and receive notifications about this Directory. If you don't configure these parameters, the Automation will not behave as anticipated when you enable it.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Learn more about specific protocols in the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Automations.htm" target="_blank" rel="noreferrer noopener">FME Server Automation documentation</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

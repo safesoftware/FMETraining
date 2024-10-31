@@ -1,0 +1,88 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Describe how Workspace Actions also act as a Trigger in Automation workflows.</li>
+<li>Identify the different ports on a Workspace Action.</li>
+<li>Convey how workspace transformers can act as Triggers.</li>
+<li>Define Output Attributes and how they pass messages between Actions.</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="workspaces-as-a-trigger">Workspaces as a Trigger</h2>
+<p>Workspaces and other Internal Actions are the only protocols that have both input and output ports. This means that although they are treated as an Action because they need something to kick them off, they can also act as a Trigger to downstream Actions.</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/xJ8jthcjxZUYQXnRa1Thbu60I7-G51suvPYSKBlIAZnf23gCY1xENmwxJlTOb-c7VosHaCrBJBLy0GnltLLGPBzvooyZQ5YlXfrTmI6KUDi_naQ4Loxe6HYO6A7T91Q48pU5NmUlpCXGvwKMTCs9Pxo" alt="Automations workspace as trigger diagram" width="733" height="232" /></p>
+<p>Workspaces can send messages containing content from the data being processed and report the status of a translation, such as whether it ran successfully or ended in failure.</p>
+<h2 id="workspace-action-output-ports">Workspace Action Output Ports</h2>
+<p>By default, workspace nodes have two outports representing the workspace status: one for Success and one for Failure. These ports allow you to build an action in response to one or both job statuses. Each output includes a set of Output Attributes with additional information about the workspace that was run that can be used by Actions connected to either port.</p>
+<p><strong>The Automations Writer&nbsp;</strong>can be used to add additional custom output ports to a Workspace Action simply by adding the writer into the workspace to be run. This will allow for setting up Actions to be triggered based on what happens within the workspace. The Automations Writer also allows for passing custom messages from within the workspace to Actions connected to any of the output ports.</p>
+<p>Therefore, messages can be passed downstream via Success, Failure, or custom ports.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">We will discuss the Automations Writer in more detail later in the course.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="workspace-transformer-as-a-trigger">Workspace Transformer as a Trigger</h2>
+<p>Instead of having a workspace trigger additional Actions on job completion, you can use some transformers to trigger events, including:</p>
+<ul>
+<li><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/emailer-pkg.htm" target="_blank" rel="noreferrer noopener">Emailer</a>: send an email</li>
+<li class="c3 c8 li-bullet-0"><span class="c9"><a class="c5" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/fmeflowjobsubmitter.htm" target="_self">FMEFlowJobSubmitter</a></span><span class="c2">: run a job on FME Flow</span></li>
+<li class="c3 c8 li-bullet-0"><span class="c9"><a class="c5" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/fmeflownotifier.htm" target="_self">FMEFlowNotifier</a></span><span class="c2">: trigger a notification on FME Flow</span></li>
+</ul>
+<p>There are two advantages to using transformers this way instead of using Automation Actions:</p>
+<ul>
+<li>The workspace can trigger an event&nbsp;<em>during</em>&nbsp;a translation, rather than at the end of it.</li>
+<li>The workspace does not need to be run on FME Flow to take this action. It will produce the same result when run using FME Form.</li>
+</ul>
+<p>The disadvantage is that you won't know whether the workspace completed successfully - or not - when the event is triggered.</p>
+<h2 id="working-with-output-keys-in-automations-workflows">Working with Output Attributes in Automations Workflows</h2>
+<p>Messages pass along the components of Automations workflows, from Triggers to Actions to External actions, in the form of JSON-formatted parameter-value pairs. These parameter-value pairs represent various properties that are derived from the components of the workflow and form the content of the message. Each attribute that is output by a component can be sent downstream to the next component, and ultimately output by the workflow to a receiving application.</p>
+<p>You can work with the Output Attributes of workflow messages in the following ways:</p>
+<ul>
+<li>View attributes, disable and enable attributes, and create Custom Attributes.</li>
+<li>Create Automation Parameters.</li>
+<li>Filter for the presence of a string in an attribute.</li>
+</ul>
+<h2 id="viewing-keys-disabling-enabling-keys-and-creating-user-keys">Viewing Attributes, Disabling/Enabling Attributes, and Creating Custom Attributes</h2>
+<p>As you build an Automation, you can control the attributes that are sent to downstream components, and that are ultimately included in the final message output. In the Details pane of a Trigger, Action, or External Action, select the Output Attributes tab. Here, you can:</p>
+<ul>
+<li>View the attributes that the component generates. Where applicable, the component generates separate sets of Output Attributes for the success (✔) and failure (x) ports of a component. Run Workspace Actions that reference workspaces configured with FME Flow Automations writers also generate Output Attributes for each writer feature type. For more information, see <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Actions/Run-Workspace-Routing-Data.htm" target="_blank" rel="noreferrer noopener">Routing Data from Workspaces</a>.
+<ul>
+<li><strong>Tip:&nbsp;</strong>To view the Output Attributes from upstream components, click Show Upstream attributes.</li>
+</ul>
+</li>
+<li>Disable or enable attributes. By default, all applicable attributes are enabled in the outgoing message as it passes downstream.</li>
+<li>Create Custom Attributes with a user-defined name, and prefixed with the user. tag. You can assign the value of a custom attribute from an existing attribute, or a constant.</li>
+</ul>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/qBH-dw3mgAY-fjF64881a0onP1llrcMIaNGL8C49eEJYTpyo1TEwBdXr2QRJptV1LET4bNdzdEkPNY3yBQSQPy7WJ5kp3DVobcCkqtmd8JH_R_hwk1c975fLrNMgGgH_lw5QLZtdz74WvNZcuWUx9lk" alt="Using Output Keys" width="434" height="744" /></p>
+<p>The primary benefit of disabling attributes or creating Custom Attributes is to prevent them from being overwritten, where desired. The values of JSON objects with the same attribute strings are overwritten as they pass through a workflow. For example, consider a workflow that contains two Run Workspace Actions in sequence. Both Actions pass a <code>job.timeStarted</code> attribute, but the value that attribute produces in the first action is overwritten by the second Action. If you want to preserve only the <code>job.timeStarted</code>&nbsp;value of the first workspace, you can disable the&nbsp;<code>job.timeStarted</code> attribute in the configuration of the second Action, and preserve it in the first.</p>
+<p>But what if you wanted to preserve both&nbsp;<code>job.timeStarted</code> values? In this case, you can create a custom attribute in both workspaces, give them each unique names, and base their values on&nbsp;<code>job.timeStarted</code>. Optionally, you can also disable&nbsp;<code>job.timeStarted</code>&nbsp;in both workspaces.</p>
+<p>You can use Custom Attributes anywhere in a workflow that allows you to specify a attribute for a parameter value.</p>
+<h2 id="creating-global-keys">Creating Automation Parameters</h2>
+<p>You can create your own parameter-value pairs, prefixed with the <code>global.</code> tag. Automation Parameters allow you to reference a value in multiple components of a workflow without having to explicitly define it each time. You can use Automation Parameters anywhere in a workflow that allows you to specify an output attribute for a parameter value.</p>
+<p>You can create Automation Parameters in two ways.</p>
+<p>On the Automations toolbar, click the Automation Parameters Editor button:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/C5CwfzZSKJOtFjiEOTfyxtB5rYkw5vlQubV0mT2PoaE9UO2J5O8hnJtZng0u0JR3eprdXiTWYL9I7RZdq1xAi8QuN_Yl73k1VWCYWdJz3HehGH7fpfl_OGC5DINiMA-P62di4ZESKEI2bwvzGMYySH8" alt="Global Keys Editor button" width="733" height="35" /></p>
+<p>Dynamically, when&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Working-With-Parameters-Automations.htm" target="_blank" rel="noreferrer noopener">specifying a parameter value</a> in a workflow. From an applicable parameter drop-down list, select Add to Automation Parameters.</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/7CJO0NcDpyNfZtl5LDv-rYv3TSncFx1XQCZ1CAfQ6yiO5q_xEftVsnzdROVV32tFZOj_UIiPU0K7ww_OZm48R9VuIB_wWlHzfs85RBh0EFr_7jIfmiBrR3DO2M7moXFUnFnzUKUUsbGuQvGc3wNLnW4" alt="Adding to Global Keys" width="387" height="296" /></p>
+<p>In the Automation Parameters Editor, click + to start a new Global Attribute, enter a name (<code>global.&lt;your_name&gt;</code>), specify a&nbsp;Value, and click&nbsp;OK.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/2d53yr0R6waT7-Se3zQF2gxhjE9JVbPAUIuEevM3wmHMjjZNBX1FAz7rqiCs30RsEDFRLolPHV25qK_7LmKaXx7eiSE8RmpSIPz06jOJHk8VtQLnBB79VfLcXAQDYmP354VWVCfEt4Gk4_igwjSe4sY" alt="Global Keys Editor dialog" width="733" height="278" /></p>
+<h2 id="filtering-on-an-output-key">Filtering on an Output Attribute</h2>
+<p>You can use the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Actions/Action-Filter.htm" target="_blank" rel="noreferrer noopener">Filter Messages</a> Action to test for the presence of a string in an output attribute, and route messages in your workflow accordingly. For example, if the&nbsp;<code>email.subject</code> attribute from an <a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Triggers/Trigger-Email_SMTP.htm" target="_blank" rel="noreferrer noopener">Email Received (SMTP)</a>&nbsp;trigger contains a specific string, you might choose to route the message differently from other emails that do not contain that string.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://community.safe.com/s/article/working-with-user-and-global-keys-in-an-automation" target="_blank" rel="noreferrer noopener">Learn more</a><span style="font-family: inherit; font-size: 1em;"> about using Output Attributes.</span></blockquote>
+</div>
+</div>
+</div>
+</div>

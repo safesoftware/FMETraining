@@ -1,0 +1,36 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Configure and use the Resource or Network Directory (updated) Trigger.</li>
+<li>Filter messages from Triggers.</li>
+<li>Know how to pass information from a trigger into a Workspace.</li>
+</ul>
+<h2 id="watch-triggers">Watch Triggers</h2>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Since FME 2022.0, some of the watch triggers have been renamed. "Directory modified" was replaced by "Resource or Network Directory" and "FTP Directory modified" was changed to "FTP Directory (updated)."</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>There are several directory watch triggers:&nbsp;<strong>Resource or Network Directory (updated)</strong>&nbsp; and<strong>&nbsp;FTP Directory (updated)</strong>&nbsp;are the two most common but other watch services include&nbsp;<strong>Amazon S3</strong>&nbsp;buckets and&nbsp;<strong>Dropbox&nbsp;</strong>directories.</p>
+<p>These are trigger-only protocols that monitor folders and FTP sites for any changes, whether that be new files to be added, or existing files modified or deleted. When FME Server sees a change, the trigger message contains the affected file path value.</p>
+<p>A common, and perhaps the primary use case for this, is the ability to monitor a folder where datasets are stored. When a new dataset is placed in this folder, FME Server Automations will pass this file path into a workspace to process the data with no need for any manual intervention.</p>
+<p>This protocol allows files to be filtered by the action type so that it is not just the creation of a new file that can be monitored. It's also possible to monitor for existing file deletions and modifications.</p>
+<p>Some of these directory watch trigger types have corresponding action protocols whereby FME Server can push files out to that file storage location.</p>
+<h2 id="workspaces-as-actions">Workspaces as Actions</h2>
+<p>In Automations Run Workspace is labeled an action since it reacts to an incoming message and therefore must be set up by being connected to a Trigger.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/run-workspaces-with-directory-watch-triggers/images/1657134157860.png" alt="Automation Workspace Action diagram" /></p>
+<p>Within an Automation, the Action protocol is called (as you might have guessed)&nbsp;<em>Run a Workspace</em>&nbsp;and falls under the Internal Action Category (orange node).</p>
+<p>After selecting Run Workspace as the Action type, the user must first specify a Repository and workspace, the selected workspace is then examined, and a list of its published parameters is provided:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/run-workspaces-with-directory-watch-triggers/images/1657134206363.png" alt="Setting up the Run a Workspace action" /></p>
+<p>Having the parameters in a dialog like this means it is simple and easy to set up a workspace to run however you want it to in response to a trigger. Once created, whenever that Trigger receives a message from the sending client, the action will react by submitting that workspace to run on FME Server.</p>

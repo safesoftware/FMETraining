@@ -1,0 +1,71 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Rearrange transformers into a logical layout that groups those carrying out a single task.</li>
+<li>Use annotations to clarify the processes taking place in a workspace.</li>
+<li>Use bookmarks to turn a single workspace into defined sections.</li>
+<li>Avoid poor design choices like overlapping connections.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-improving-workspace-style.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-improving-workspace-style.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-improving-workspace-style-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace (example)</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-improving-workspace-style-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="unit-content">Unit Content</h2>
+<p>You have been assigned to a project to calculate the "walkability" of each address in the city of Vancouver.</p>
+<p>Your colleague wasn't aware of FME style best practices when they gave us the workspace, which made working with it challenging. We need to present our workspace, so we want it to look neat, organized and well-documented.</p>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Start FME Workbench (2024.0 or later) and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-improving-workspace-style.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-improving-workspace-style.fmw).</p>
+<h2 id="2-examine-workspace">2) Examine Workspace</h2>
+<p>The workspace is unorganized. Let&rsquo;s examine it in sections to figure out how it works.</p>
+<p><img class="image image-block image-center" src="images/1717017621609.png" alt="Starting workspace annotated with numbers" width="1161" height="385" /></p>
+<ol>
+<li>PostalAddress and PostcodeBoundaries read from Addresses.gdb.</li>
+<li>Transformers clean up attributes from the PostalAddress feature type to create a separate Number and Street attribute. The last two digits of the Number are replaced by XX to create an attribute that will be the Join Key for joining the crime data.</li>
+<li>Crime reads from Crime.csv. This dataset stores the street number for each crime incident with XX as the last two digits to protect anonymity.</li>
+<li>The FeatureJoiner joins PostalAddress and the Crime data based on the Join Key attribute from section two and the Block attribute from Crime.</li>
+<li>These transformers give the crime Type attribute a number based on severity and then calculate the total CrimeValue for each address block. Then, the CenterPointReplacer extracts only one point if multiple crime incidents occur in the same location.</li>
+<li>The workspace reads the Parks MapInfo TAB file. It will use this data to measure the walking distance from addresses to parks.</li>
+<li>The NeighborFinder determines the park closest to each address.</li>
+<li>The AttributeRenamer renames the _distance attribute from the NeighborFinder to ParkDistance.</li>
+<li>The Creator and the FeatureReader read a Planning Restrictions OGC Geopackage, including noise restriction areas from the NoiseControlAreas layer.</li>
+<li>The PointOnAreaOverlayer joins the point data containing the crime, distance to park, and addresses with the NoiseControlAreas polygons. This joined data assigns the noise restrictions to any overlapping points. The AttributeValueMapper assigns the zone a score, creating the attribute NoiseZoneScore. This new attribute will reflect that addresses in noise-restricted areas are more walkable.</li>
+</ol>
+<h2 id="3-rearrange-transformers">3) Organize Transformers</h2>
+<p>Firstly, let's clean up the transformers. Move the transformers around so that there are no overlapping connections.</p>
+<p>For the FeatureJoiner, you could move the Crime reader below the Prepare Addresses to Join bookmark or reorder the FeatureJoiner ports. Right-click on the Left input port, and select Move Down. Now, the two connection lines are not crossing:</p>
+<p><img class="image image-block image-center" src="images/1717017730455.png" alt="Changing port order" width="954" height="289" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Changing port order can help tidy your workspace, but beware that you might need to use annotation to highlight the different order for FME users who expect ports to be in a particular location.&nbsp;</p>
+</blockquote>
+<p>&nbsp;Move the transformers into a logical order and add a bookmark around groups of related transformers:</p>
+<p><img class="image image-block image-center" src="images/1717017922728.png" alt="Bookmarks added" width="1161" height="225" /></p>
+<h2>4) Remove Unused Feature Types</h2>
+<p>Unused feature types can clutter your workspace. If you aren't planning to use them later, you should remove them.</p>
+<p>Find the PostcodeBoundaries reader feature type and delete it:</p>
+<p><img src="images/1717087671802.png" alt="Delete unused feature type" /></p>
+<h2 id="4-add-style">5) Add Style</h2>
+<p>Having rearranged the transformers and bookmarks, we can now add annotations to highlight what is happening. This step will require inspecting the transformers to determine what they are doing and inspecting the readers to determine which format they are in.</p>
+<p>Add annotation to relevant transformers:</p>
+<p><img class="image image-block image-center" src="images/1717087501796.png" alt="Adding annotation" width="573" height="162" /></p>
+<p>Adding good annotation where necessary will help determine what is happening in the workspace.</p>
+<p>Add bookmarks around the reader feature types and set the color to the preset Reader/Writer color:</p>
+<p><img class="image image-block image-center" src="images/1717087910730.png" alt="Setting Bookmark color to Reader/Writer" width="697" height="295" /></p>
+<p>Now, you can find your reader feature types at a glance.</p>
+<p>You can also do this with FeatureReaders and FeatureWriters:</p>
+<p><img class="image image-block image-center" src="images/1717087973267.png" alt="Setting Bookmark color to Reader/Writer for FeatureReader" width="394" height="191" /></p>
+<p>Your final workspace should look something like this:</p>
+<p><img class="image image-block" src="images/1717088168649.png" alt="Final workspace with bookmarks and annotation" width="1161" height="260" /></p>
+<h2 id="5-run-workspace">6) Run Workspace</h2>
+<p>If you wish, collapse all the bookmarks and use Rerun Entire Workspace to ensure fresh caches.</p>
+<h2 id="6-save-the-workspace">7) Save the Workspace</h2>
+<p>You can choose to save this workspace as a regular workspace or as a template workspace.</p>

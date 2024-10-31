@@ -1,0 +1,71 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Link a user parameter to an FME parameter.</li>
+<li>Create a user parameter via a direct link.</li>
+<li>Explain the advantages and disadvantages of creating user parameters via direct links.</li>
+<li>Define pre-linked parameters.</li>
+</ul>
+<h2 id="linking-parameters">Linking Parameters</h2>
+<p>As we know, there are&nbsp;<strong>FME parameters</strong>&nbsp;that control FME directly and&nbsp;<strong>user parameters</strong>&nbsp;that allow input from a user.</p>
+<p>Sometimes, a workspace author needs the user's input to apply directly to an FME parameter, which is done by linking the user parameter to the FME parameter.</p>
+<p>For example, an FME author has a workspace that writes to a KML dataset. The "Author Email" parameter adds the user's email as metadata.</p>
+<p>The workspace author wishes for the end-user to enter their email address but doesn't want them to have to search for that parameter.</p>
+<p>So, besides the FME parameter, they create a user parameter:</p>
+<p>&nbsp;</p>
+<p>Their user parameter allows the user to enter a value, but the workspace does nothing with that value. The user parameter must be linked to the FME parameter to do so.</p>
+<p>The author does this by right-clicking the FME parameter and choosing Link to User Parameter:</p>
+<p><img src="images/1707161498113.png" alt="Linking a parameter to a user parameter" width="474" height="239" /></p>
+<p>Then, they select their user parameter to link to.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Alternatively, they can do the reverse; right-click the User parameter and choose Apply To... But there are usually more FME parameters than user parameters, so the 'Link' method is usually easier and quicker.</p>
+</blockquote>
+<p>Because the FME parameter is now linked to the user parameter, whatever value the user sets for that user parameter is applied directly to the FME Parameter (Author Email):</p>
+<p><img src="images/1707161675191.png" alt="An FME parameter showing it is linked in the Navigator" width="411" height="401" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If the author changes their mind, there is always an option to unlink the user parameter and return the FME parameter to direct author control. To do that, right-click the FME parameter and choose Unlink from the User Parameter.</p>
+</blockquote>
+<h3 id="creating-direct-links">Creating Direct Links</h3>
+<p>In the previous example, a user parameter was created separately and linked to the FME parameter. However, there is a shortcut to this, where creating and linking a parameter simultaneously is possible.</p>
+<p>In the Navigator window, right-click an existing FME parameter and choose the option to Create User Parameter...:</p>
+<p><img src="images/1707161786358.png" alt="Creating a user parameter directly from an FME parameter" width="379" height="179" /></p>
+<p>This opens the Add/Edit User Parameter dialog as before, but this time, the definition to create a parameter is filled in automatically. The parameter type is fixed (Text, in this case) and is a data type accepted by the FME parameter:</p>
+<p><img src="images/1707161865003.png" alt="Add/Edit User Parameter dialog" width="449" height="358" /></p>
+<p>Click OK, and the user parameter is created and automatically linked to the FME parameter.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You can do the same one-step action inside a transformer dialog, too, like so:</p>
+<p><img src="images/1707162329242.png" alt="Creating a user parameter from a transformer parameter" width="733" height="339" /></p>
+<p>Here, the workspace author creates a user parameter linked to the Elevation FME transformer parameter in a 3DForcer transformer.</p>
+</blockquote>
+<h3 id="advantages-and-disadvantages-of-direct-links">Advantages and Disadvantages of Direct Links</h3>
+<p>You might wonder why you would link a user parameter separately or why we showed that process first. It's because there are advantages and disadvantages to both methods.</p>
+<h4 id="direct-link-advantages">Direct Link Advantages</h4>
+<p>Creating a linked FME parameter directly has an obvious advantage because it is a single-step process. The creation and linking of the user parameter are done in a single action.</p>
+<p>Additionally, a user parameter created from an FME parameter is automatically given the correct data type.</p>
+<p><img src="images/1707162488661.png" alt="Automatically-created user parameter definition" width="452" height="358" /></p>
+<p>For example, in the 3DForcer, elevation requires a floating point number; any user parameter created from this FME parameter will automatically be of type float without the option to change it.</p>
+<h4 id="direct-link-disadvantages">Direct Link Disadvantages</h4>
+<p><strong>1. Inability to Set Data Type</strong></p>
+<p>The inability to set data type can, however, be a limitation.</p>
+<p>For example, what if the author wanted to list permitted elevations for the 3DForcer: 0.0, 10.0, 50.0, etc.? This could not be achieved by creating the user parameter directly because it would create a Float parameter when a Choice is required.</p>
+<p>So, the author should create a choice user parameter separately and then link it to the FME parameter:</p>
+<p><img src="images/1707162619787.png" alt="Creating a user parameter and then linking it" width="806" height="315" /></p>
+<p>Of course, the author needs to take care that the values provided by the user parameter are of a type that matches those expected by the FME parameter. FME cannot parse all input from a user parameter (especially Choice parameters) to ensure it matches its linked FME parameter.</p>
+<p><strong>2. Persistence</strong></p>
+<p>Another disadvantage is the persistence of the user parameter.</p>
+<p>It's like this: if a user parameter is created directly from an FME parameter on a transformer, it is forever tied to it. If you delete the transformer, FME will also delete the user parameter.</p>
+<p>However, if you create a user parameter separately and link it to a transformer&rsquo;s FME parameter, it will remain in the workspace even if you delete the transformer.</p>
+<p>This could be seen as an advantage or disadvantage, depending on whether you would like this behavior!</p>
+<p><strong>3. No Control Over Attribute Assignment</strong></p>
+<p>Finally, a user parameter created directly has no control over attribute assignment (more on that later in this course).</p>
+<h3 id="pre-linked-parameters">Pre-Linked Parameters</h3>
+<p>In some scenarios, FME creates and links user parameters automatically without any manual action by the workspace author.</p>
+<p>For example, whenever you add a reader or writer to a workspace (or FME adds them when using Generate Workspace), FME automatically turns their source/destination dataset parameters into user parameters.</p>
+<p>Below, you can see a a Source MapInfo TAB parameter that FME automatically linked to a user parameter called SourceDataset_MITAB:</p>
+<p><img src="images/1707162861990.png" alt="Pre-linked parameter example" width="757" height="357" /></p>
+<p>There is also a parameter for DestDataset_GML that maps to the output GML parameter.</p>
+<p>Automatic linking occurs for parameters important to the end-user that appear in nearly all workspaces. This includes readers and writers, plus, for example, the Feature Types to Read parameter.</p>
+<hr />

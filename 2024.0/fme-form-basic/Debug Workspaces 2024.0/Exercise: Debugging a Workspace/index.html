@@ -1,0 +1,173 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Check the log window for errors and warnings.</li>
+<li>Locate problems using feature counts and Visual Preview.</li>
+<li>Identify and fix problems in a workspace.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-debugging-a-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>If you are taking a Safe Software-hosted training course, you can find the data on your training machine: C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-debugging-a-workspace.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-debugging-a-workspace-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-debugging-a-workspace-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_blank" rel="noopener">Addresses.gdb.zip</a>
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noopener">Parks.zip</a>
+<ul>
+<li>C:\FMEData\Data\Parks.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Emergency/Crime.csv" target="_blank" rel="noopener">Crime.csv</a>
+<ul>
+<li>C:\FMEData\Data\Emergency\Crime.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm" target="_blank" rel="noopener">leisure.osm</a>
+<ul>
+<li>C:\FMEData\Data\OpenStreetMap\leisure.osm</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/PlanningRestrictions.gpkg" target="_blank" rel="noopener">PlanningRestrictions.gpkg</a>
+<ul>
+<li>C:\FMEData\Data\Planning\PlanningRestrictions.gpkg</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>Your manager just assigned you to take over a project from your colleague, and they passed their workspace on to you. This project is to calculate the "walkability" of each address in the city of Vancouver. Walkability measures how easy it is to access local facilities on foot. The workspace will measure the distance to the nearest park, the amount of crime in an area, and other similar metrics.</p>
+<p>The workspace currently assesses crime, parks, and noise-control areas, but it doesn't give an overall measure of walkability.</p>
+<p>Let's build on their workspace and use our debugging skills to address any problems we encounter.</p>
+<h2 id="1-view-starting-workspace">1) View Starting Workspace</h2>
+<p>Start FME Workbench (2024.0 or later) and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-debugging-a-workspace.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>. Then, run the workspace to cache the data.</p>
+<p>First, let's figure out what this workspace does:</p>
+<p><img class="image image-block image-center" src="images/1717102501694.png" alt="Sections of starting workspace" width="1543" height="398" /></p>
+<ol>
+<li>Reading Addresses.gdb creates the PostalAddress feature type.</li>
+<li>Transformers clean attributes from the PostalAddress feature type and create a separate Number and Street attribute. The transformers replace the number's last two digits with XX to create an attribute that will be the Join Key for joining the crime data.</li>
+<li>Reading crime.csv creates the Crime feature type. Substituting XX for the last two digits anonymizes the street number for each crime incident.</li>
+<li>The FeatureJoiner joins PostalAddress and Crime based on the Join Key attribute created in 2 and the Block attribute from Crime.</li>
+<li>Transformers set the crime Type attribute to a number based on severity and then calculate the total CrimeValue for each address block. The CenterPointReplacer ensures only one point exists if multiple crime incidents occur in the same location.</li>
+<li>Reading Parks.tab creates the Parks feature type. This data allows us to measure the walking distance from addresses to parks.</li>
+<li>Using the NeighborFinder, the park closest to each address is determined.</li>
+<li>The NeighborFinder creates the _distance attribute. The AttributeRenamer renames it to ParkDistance.</li>
+<li>The Creator and FeatureReader read the Planning Restrictions OGC Geopackage. That dataset's NoiseControlAreas feature type contains noise restriction area polygons.</li>
+<li>The PointOnAreaOverlayer joins the address point data containing the crime, distance to park, and addresses with the NoiseControlAreas polygons. The merged data assigns the noise restrictions to any overlapping points.</li>
+<li>The AttributeValueMapper creates the attribute NoiseZoneScore, giving each address a score based on its zone. This new attribute reflects that addresses in noise-restricted areas are more walkable. The ExpressionEvaluator calculates the final Walkability score.</li>
+</ol>
+<h2 id="3-add-an-expression-evaluator-transformer">2) Inspect the ExpressionEvaluator Transformer</h2>
+<p>The ExpressionEvaluator transformer creates a measure of walkability that combines the values from crime, park proximity, and noise zones.</p>
+<p>Inspect the parameters of the ExpressionEvaluator transformer to the end of the workspace.</p>
+<p>It creates a new attribute called Walkability that is:</p>
+<div>
+<pre><code>@Value(ParkDistance) + @Value(CrimeValue) - @Value(NoiseZoneScore)</code><br /><br /></pre>
+</div>
+<p><img class="image image-block image-center" src="images/1717102938770.png" alt="ExpressionEvaluator expression" width="654" height="348" /></p>
+<p>With this expression, the smaller the result, the more walkable an address.</p>
+<h2 id="4-assess-the-result">3) Assess the Result</h2>
+<p>Let's assess whether the result of the translation is correct.</p>
+<p>Firstly, check the log window for errors and warnings. There are no errors, but there are many warnings, which is not a good sign:</p>
+<p><img class="image image-block image-center" src="images/1717103095039.png" alt="Many warnings" width="498" height="37" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The number of warnings in the Translation Log may differ in your workspace. These numbers can vary based on the Logging Parameters set in FME Options.</span></p>
+</blockquote>
+<p>Click on the warnings button to filter out the warnings. The warnings say:</p>
+<div>
+<pre><code>Null, missing, or empty string operand was found in expression '@Value(ParkDistance) + @Value(CrimeValue) - @Value(NoiseZoneScore)'. &nbsp;Result is set to null<br /><br /></code></pre>
+</div>
+<p>Inspect the output cache on the ExpressionEvaluator (you can click the link next to the warning in the log to focus on it). You will find some addresses have a Walkability value of &lt;null&gt;.</p>
+<p>We know there is a problem. Let's find out where the problem is and why it occurs.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>There were no errors, but the workspace's output is still incorrect. Always inspect your workspace's results to ensure you have configured it correctly.</p>
+</blockquote>
+<h2 id="5-locate-the-problem">4) Locate the Problem</h2>
+<p>We can tell the warning comes from the ExpressionEvaluator, but that doesn't necessarily mean that is where the problem lies.</p>
+<p>Because we know a null, missing, or empty string is the problem, we can inspect the ExpressionEvaluator cache to find the source of the problem. A practical way to do this is to right-click ParkDistance, CrimeValue, and NoiseZoneScore in the Table View window and sort them by ascending numeric order. This sorting puts any null or missing values at the top of the table.&nbsp;</p>
+<p>Doing this will reveal that CrimeValue has &lt;missing&gt; values. So, the calculation in the ExpressionEvaluator fails because the middle value is &lt;missing&gt;. Let's find out why some of these features have missing CrimeValue values.</p>
+<p>Inspect the FeatureJoiner caches because that's where we first get our Crime data:</p>
+<p><img class="image image-block image-center" src="images/1717103234995.png" alt="Viewing feature caches on the FeatureJoiner" width="795" height="185" /></p>
+<p>The FeatureJoiner does not have missing values, so let's proceed with the translation. Check the cache for the AttributeValueMapper. This transformer sets values, so perhaps missing values are coming from it.</p>
+<p>If you inspect the AttributeValueMapper cache, you'll see no missing values for the CrimeValue or the crime Type attribute. There are also no missing values in the Aggregator and CenterPointReplacer caches.</p>
+<p>What about the 3,698 features that do not have a crime; what CrimeValue do they get? Inspect the UnjoinedLeft output from the FeatureJoiner, and you will see that they do not have the CrimeValue attribute. That's why the ExpressionEvaluator says that there are missing values. These features do not have a CrimeValue because they don't enter the AttributeValueMapper, which assigns a value to CrimeValue.</p>
+<p>You can confirm this issue by inspecting the NeighborFinder's MatchedBase cache, which contains addresses with and without crime values. You can sort CrimeValue and see that it has missing values here:</p>
+<p><img src="images/1717103352678.png" alt="Missing values for CrimeValue" /></p>
+<h2 id="6-fix-the-problem">5) Fix the Problem</h2>
+<p>Those features not having a CrimeValue attribute is causing the problem, so we should give them one. To do so, add an AttributeCreator transformer to the workspace between the FeatureJoiner's UnjoinedLeft output port and the NeighborFinder's Base input port:</p>
+<p><img class="image image-block image-center" src="images/1717103431379.png" alt="Adding an AttributeCreator" width="783" height="186" /></p>
+<p>Open its parameters and create an attribute called CrimeValue with a value of zero (0).</p>
+<p><img class="image image-block image-center" src="images/1701295441524.png" alt="Adding the CrimeValue attribute with a value of 0" width="357" height="151" /></p>
+<p>Run the workspace, which will run from the AttributeCreator to the ExpressionEvaluator. You should now find fewer warnings and that the Walkability attribute contains no &lt;null&gt; values. Take note of the rounded max value of Walkability: 956.</p>
+<h2 id="7-add-swimming-pools">6) Add Swimming Pools</h2>
+<p>The city has decided that parks are not a great candidate for walkability scores because there is usually a park nearby. They decided instead to include the walking distance to the nearest swimming pool.</p>
+<p>With just a few minor updates, we can reuse the same workflow for swimming pools that we used for parks.</p>
+<p>First, let's add a new reader with the following parameters:</p>
+<div>
+<table class="featureTable sort_table" style="width: 60.0188%;">
+<tbody class="tbody">
+<tr>
+<td style="width: 17.8964%;">
+<p>Reader Format</p>
+</td>
+<td style="width: 82.1036%;">
+<p>OpenStreetMap (OSM) XML</p>
+</td>
+</tr>
+<tr>
+<td style="width: 17.8964%;">
+<p>Reader Dataset</p>
+</td>
+<td style="width: 82.1036%;">
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm</a> or C:\FMEData\Data\OpenStreetMap\leisure.osm</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When prompted, select only the leisure feature type:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/exercise-debugging-a-workspace/images/8-d-774-e-66-e-405-49-da-ad-36-668-d-9-fba-78-c-9.png" alt="Selecting the leisure feature type" width="397" height="241" /></p>
+<p>Then, move the new leisure reader near the Parks reader and connect it to the NeighborFinder's Candidate input port. Then right-click on the Parks reader and select Disable.</p>
+<h2 id="8-filter-leisure-data">7) Filter Leisure Data</h2>
+<p>If you inspect the leisure data, you'll notice various leisure facility&nbsp;types, with the type recorded in the leisure attribute.</p>
+<p>So, add a Tester transformer between the leisure reader and the NeighborFinder. Set up the parameters to test for leisure = swimming_pool:</p>
+<p><img class="image image-block image-center" src="images/1717103673004.png" alt="Adding and configuring a Tester to filter to only swimming pools" width="409" height="537" /></p>
+<h2 id="9-update-transformer-parameters">8) Update Transformer Parameters</h2>
+<p>Now update AttributeRenamer to be PoolDistance instead of ParkDistance. Renaming this attribute will cause the ExpressionEvaluator to turn red.</p>
+<p>To fix the ExpressionEvaluator, open the parameters and change&nbsp;<code>@Value(ParkDistance)</code>&nbsp;to&nbsp;<code>@Value(PoolDistance)</code>&nbsp;to take account of the new PoolDistance attribute:</p>
+<div>
+<pre><code>@Value(PoolDistance) + @Value(CrimeValue) - @Value(NoiseZoneScore)</code><br /><br /></pre>
+</div>
+<p>You'll also have to do the same thing for the AttributeKeeper transformer.</p>
+<p>Re-run the workspace. Check the log for warnings and errors, then inspect the ExpressionEvaluator cache.</p>
+<p>Notice that the walkability scores are suddenly exceedingly large due to the PoolDistance. The new max value is 5,477,800. Something is wrong, but what?</p>
+<h2 id="10-locate-problem">9) Locate Problem</h2>
+<p>PoolDistance is the source of the problem. There is no related log message to give a clue, and the Feature Count numbers look correct.</p>
+<p>Let's inspect the data. Click on the leisure reader, and while holding the Shift key, click on the NeighborFinder. This step will open all the selected caches in Visual Preview.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you have Toggle Automatic Inspect on Selection disabled, you'll have to right-click on either object and select Inspect Cached Features after selecting them both, or Ctrl click the cache itself instead of the transformer.</p>
+</blockquote>
+<p>Right-click in the Graphics view, go to Background Map, and select Background map off. Visual Preview shows two specks of data a long distance apart. This result is typical of a mismatch of coordinate systems.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>We turn the background map off because otherwise, Visual Preview automatically reprojects data with mismatched coordinate systems. Turning the background map off lets us see these are not using the same coordinate system.</p>
+</blockquote>
+<p>Click on some features and select the Feature Information button. In this window, you will see that the primary data has a coordinate system of UTM83-10, while the leisure data from OSM has a coordinate system of LL84.</p>
+<p>This disparity is why the "nearest" pool to each address is such a high distance.</p>
+<h2 id="11-fix-coordinate-system-problem">10) Fix Coordinate System Problem</h2>
+<p>The obvious solution is to reproject the pools to the correct coordinate system. So, add a Reprojector transformer to reproject the leisure data before it gets to the NeighborFinder:</p>
+<p><img class="image image-block image-center" src="images/1701296893994.png" alt="Adding a Reprojector" width="613" height="101" /></p>
+<p>Inspect its parameters and set it up to reproject from LL84 to UTM83-10.</p>
+<p>Re-run the appropriate parts of the workspace. Check the log window and inspect the ExpressionEvaluator cache.</p>
+<p>Each address now has a walkability score account for pools instead of parks, with a lower number being better and a higher number worse. The new (correct, rounded) maximum is 4,308.</p>
+<p>Congratulations on debugging this workspace.</p>

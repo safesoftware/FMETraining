@@ -1,0 +1,172 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define a list attribute.</li>
+<li>Explain the difference between relational and object-oriented data models.</li>
+<li>Inspect a list attribute.</li>
+<li>Explain when you might work with list attributes.</li>
+</ul>
+<h2 id="what-are-list-attributes-in-fme">What Are List Attributes in FME?</h2>
+<p>List attributes, sometimes referred to as lists, are FME's way of allowing an attribute to store multiple values per feature. For example, rather than creating a text field named&nbsp;<code>FRUITS</code>&nbsp;that stores the value &ldquo;Apple, Orange, Pear&rdquo;, a user can create a list, which is more structured and can be broken down into constituent parts for processing:</p>
+<pre>Fruits{0}: Apple 
+Fruits{1}: Orange
+Fruits{2}: Pear </pre>
+<p>In FME, list attributes are denoted using curly brackets after the list name (e.g., this list is called&nbsp;<code>Fruits{}</code>), and a number inside the curly brackets represents the element's index inside the list, e.g., Orange is element 1 in the list. With this structure, list attributes can be reorganized, exploded into individual parts, analyzed statistically, and more.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>As is&nbsp;<a href="https://en.wikipedia.org/wiki/Zero-based_numbering" target="_blank" rel="noreferrer noopener">common practice in computer programming</a>, list indexes in FME start at 0, not 1.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="working-with-multiple-data-models">Working with Multiple Data Models</h2>
+<p>Data can be modeled in a huge variety of ways. Some of the most common methods include:</p>
+<ul>
+<li>Flat</li>
+<li>Relational</li>
+<li>Object-oriented</li>
+<li>Nested</li>
+</ul>
+<p>List attributes in FME can be used to deal with these different data models in a single workspace.</p>
+<h2 id="flat">Flat</h2>
+<p>Flat file databases are composed of tables that do not store relationships with other tables. These databases are intentionally simple and often small. Often the data is stored as delimited text files, but it can also use binary data.</p>
+<p>Flat file databases are easy to read with FME using readers from formats like&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/csv2/csv2.htm" target="_blank" rel="noreferrer noopener">CSV</a>&nbsp;or&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/textline/textline.htm" target="_blank" rel="noreferrer noopener">Text File</a>. List attributes are not required in this case unless you want to store data about a one-to-many relationship on features (more on that below).</p>
+<h2 id="relational">Relational</h2>
+<p>Relational databases store data in tables that can be linked to each other through defined relationships. FME can process relational data simply without the use of list attributes.&nbsp;</p>
+<p>Here is an example from the&nbsp;<a href="https://www.fhwa.dot.gov/infrastructure/asstmgmt/010394.pdf" target="_blank" rel="noreferrer noopener">United States Department of Transportation</a>. A relational data model stores separate tables defining road maintenance activities and events. These tables can be linked by a shared key, in this case, an Activity Code:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/work-with-multiple-data-models-using-lists/what-are-list-attributes/images/1639785048801.png" alt="Relational data model" /></p>
+<p>FME would read each table as a feature type, with each row becoming a feature. List attributes are not required in this case unless you want to store data about a one-to-many relationship on features (more on that below).</p>
+<h2 id="object-oriented">Object-Oriented</h2>
+<p>Object-oriented data models store data on objects, commonly as a key-value pair.</p>
+<p>Consider a similar dataset as the one above. The same data could instead be stored using an object-oriented model, where one object is a Maintenance Report and another is a definition of a Maintenance Activity. Data is stored as instances of these objects and can be linked by the values of certain key-value pairs, in this case, the value of Activity Code:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/work-with-multiple-data-models-using-lists/what-are-list-attributes/images/1639785036779.png" alt="Object-oriented data model" /></p>
+<p>List attributes let you store object-oriented data in FME's feature-based or table-based framework.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>When incorporating Python or R code into your workspace using the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/pythoncaller.htm" target="_blank" rel="noreferrer noopener">PythonCaller</a>&nbsp;or&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/rcaller.htm" target="_blank" rel="noreferrer noopener">RCaller</a>, you can read Python or R lists as FME list attributes after executing the code.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="nested">Nested</h2>
+<p>List attributes can also be used to represent a nested data structure within FME's feature-based paradigm.</p>
+<p>For example, the following JSON:</p>
+<div>
+<pre>[{
+"name": "Apple",
+"scientificName": "Malus domestica"
+}, {
+"name": "Orange",
+"scientificName": "Citrus X sinensis"
+}, {
+"name": "Pear",
+"scientificName": "Pyrus"
+}]</pre>
+</div>
+<p>can be stored as an FME list attribute:</p>
+<pre>Fruits{0}.name:           Apple
+Fruits{0}.scientificName: Malus domestica
+Fruits{1}.name:           Orange
+Fruits{1}.scientificName: Citrus X sinensis
+Fruits{2}.name:           Pear
+Fruits{2}.scientificName: Pyrus</pre>
+<p>Working with JSON and XML in FME requires making a decision about how to extract the nested structure into a mix of FME features and list attributes.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>For more on working with nested data structures, see&nbsp;<a href="https://community.safe.com/s/article/tutorial-getting-started-with-json" target="_blank" rel="noreferrer noopener">Getting Started with JSON</a>&nbsp;or&nbsp;<a href="https://community.safe.com/s/article/tutorial-getting-started-with-xml" target="_blank" rel="noreferrer noopener">Getting Started with XML</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="how-do-i-inspect-list-attributes">How Do I Inspect List Attributes?</h2>
+<p>You can inspect list attributes using the Feature Information Window. Select the feature you want to inspect. You will notice that list attributes are not included as attributes in Table View. Instead, look for the attribute in the Feature Information Window under Attributes. Each index and value will have its own row in the tree. You can double-click an item to inspect the full value.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/work-with-multiple-data-models-using-lists/what-are-list-attributes/images/1639011091694.png" alt="Fruits list in the Feature Information Window" /></p>
+<p>Because they contain more values than can fit in a single cell of the Table View, list attributes cannot be exposed and will not appear in Table View or, in most cases, written data. Several transformers are available to help you extract data from list attributes and use it in your workspace or written data (see the next lesson).</p>
+<h2 id="when-do-i-need-list-attributes">When Do I Need List Attributes?</h2>
+<p>Because list attributes let a single attribute store multiple values per feature, they are often used to:</p>
+<p><strong>Express relationships</strong></p>
+<p>For example, listing the names of all the stores in a neighborhood in a list called&nbsp;<code>Store_Names{}</code>. FME transformers that conduct spatial analysis, like the Overlayer family of transformers, often generate list attributes like this.</p>
+<p><strong>"Looping" with FME</strong></p>
+<p>Many new FME users ask how to create loops in a workspace. While&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/transformers_custom_looping.htm" target="_blank" rel="noreferrer noopener">custom transformers do support looping</a>, you can almost always accomplish the desired goal using one of two superior methods:</p>
+<ul>
+<li>Using a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/cloner.htm" target="_blank" rel="noopener">Cloner</a> to generate one feature per "loop iteration," and optionally using a Tester or other filtering transformer to test for the end of the "loop," discarding any remaining features</li>
+<li>List attributes</li>
+</ul>
+<p>List attributes can be used to avoid loops by storing all the relevant values in a list and then using a list transformer like those shown here to explode, search, sort, or otherwise extract values to find the desired information. An advantage is that list attributes process much quicker than loops. That said, If you do use looping in a custom transformer, it's easier to apply a custom transformer loop to elements in a list than to a series of features.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>For an example of these techniques in action, check out&nbsp;<a href="https://community.safe.com/s/question/0D54Q0000848dtSSAQ/question-of-the-week-to-loop-or-not-to-loop" target="_blank" rel="noreferrer noopener">Question of the Week: To Loop or Not to Loop</a>&nbsp;from the FME Community.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="how-do-i-create-list-attributes">How Do I Create List Attributes?</h2>
+<p>List attributes can be built manually, created automatically by a transformer, read and written by some formats (e.g. XML and JSON), or "exploded" back into single-value attributes. FME has 15 transformers for list manipulation (plus more on&nbsp;<a href="https://hub.safe.com/?page=1&amp;page_size=10&amp;order=relevance&amp;query=list" target="_blank" rel="noreferrer noopener">FME Hub</a>; see the next lesson for details) and over 80 transformers can produce list attributes. Transformers often create a list when attributes from different features are grouped into a single feature. Transformers that create list attributes usually have a "Generate List" checkbox under the "Attribute Accumulation" section of their parameters dialog:<br /><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/work-with-multiple-data-models-using-lists/what-are-list-attributes/images/1639078045894.png" alt="Generate List checkbox" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Checking "Generate List" can have significant impacts on workspace performance, as list attributes can drastically increase the size of individual features. It's best practice to only check this box when you need it and to remove list attributes as soon as you can so they are not unnecessarily slowing down your workspace. For more performance tips, check out the&nbsp;<a href="https://safe.my.trailhead.com/content/safe/modules/optimize-workspace-performance?trail_id=use-data-integration-best-practices" target="_blank" rel="noreferrer noopener">Optimize Workspace Performance course</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>To learn more, visit "<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/!List_Attributes/About-List-Attributes.htm" target="_blank" rel="noreferrer noopener">About List Attributes</a>" in the documentation.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

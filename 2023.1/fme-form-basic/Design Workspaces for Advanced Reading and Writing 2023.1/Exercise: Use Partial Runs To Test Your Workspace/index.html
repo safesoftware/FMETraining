@@ -1,0 +1,86 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use partial runs for testing.</li>
+<li>Disable feature caching when running the final version of a workspace.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-use-partial-runs-to-test-your-workspace.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-use-partial-runs-to-test-your-workspace.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-use-partial-runs-to-test-your-workspace-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-use-partial-runs-to-test-your-workspace-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>Here, we conclude our project to redefine garbage collection schedules.</p>
+<p>In the first two exercises, we used various transformers to divide addresses into five groups according to zoning type. Then, we wrote the data to Geopackage.</p>
+<p>Now, the task is to replace the groups of point features with a polygon boundary.</p>
+<p><strong>1) Open Workspace</strong></p>
+<p>Open your workspace from the previous exercise.</p>
+<p>If you gave that workspace a date or version number in its name, you should make a copy of it with a new one. For example, if you saved it to GarbageCollection-05-19-2023.fmw, then make a copy named GarbageCollection-05-20-2023.fmw and open that for editing.</p>
+<p>Alternatively, you can open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-use-partial-runs-to-test-your-workspace.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>.</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.229.Ex3.StartingWorkspace.png" alt="Staring workspace with most of the bookmarks filled in" /></p>
+<p><strong>2) Run the Workspace</strong></p>
+<p>Run the workspace to finish writing out the data. You can inspect the output dataset if you desire by clicking on the GarbageZones writer feature type and then clicking on the View Written Data button in the popup menu:</p>
+<p><img class="image image-block image-center" src="images/1699655494368.png" alt="View Written Data button" width="276" height="130" /></p>
+<p><strong>3) Add a HullReplacer Transformer</strong></p>
+<p>Move the HullReplacer transformer from the "Transformers" bookmark into the "Create Boundaries" bookmark. Connect it between the Aggregator and writer feature type:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.231.Ex3.HullReplacerCanvas.png" alt="Adding a HullReplacer" /></p>
+<p>Notice how the HullReplacer has no cache because it is newly placed.</p>
+<p><strong>4) Re-Run the Workspace</strong></p>
+<p>Now, let's re-run the workspace. But rather than re-write the output data, we can run just the new transformer we added. Click on the HullReplacer transformer, and on the icons that pop up, click Run To This:</p>
+<p><img class="image image-block image-center" src="images/1699655524977.png" alt="Using Run To This on the HullReplacer" width="454" height="277" /></p>
+<p>Notice how hovering shows what parts of the workspace will be run. Since we already have features cached to the Aggregator (assuming you haven't closed the workspace since it was last run), only the section between the Aggregator and the HullReplacer will be run.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Using the Run To This option is an excellent method to check your translation before writing the data out, especially if you are writing to a database or an online source.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Note that the Run button itself will default to only run sections of the workspace after valid caches, so in this case, it would have a similar effect. The only additional step it would take is writing the data again.</span></p>
+</blockquote>
+<p>Click on the cached features on the HullReplacer's Hull output port. The output now includes polygons, proving that the translation has functioned correctly:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.233.Ex3.HullReplacerOutput.png" alt="Inspecting the output: overlapping polygons" /></p>
+<p><strong>5) Clean Up Overlaps</strong></p>
+<p>The problem with the output is the polygons overlap. That needs to be fixed so that there are no overlaps. Moreover, we should check which zone an overlap belongs to by seeing which group contains the most addresses.</p>
+<p>We can accomplish this last step using the transformers in the Clean Up Overlaps bookmark below the Transformers bookmark.</p>
+<p><strong>6) Add an AreaOnAreaOverlayer Transformer</strong></p>
+<p>Add the AreaOnAreaOverlayer from the Clean Up Overlaps bookmark. Connect it to the HullReplacer transformer. We will use it to break the overlaps down into their component parts.</p>
+<p><img class="image image-block image-center" src="images/1699655576660.png" alt="Adding an AreaOnAreaOverlayer and setting the Accumulation Mode parameter" width="599" height="430" /></p>
+<p><strong>7) Add a PointOnAreaOverlayer Transformer</strong></p>
+<p>The overlaps are now separate features, but we must determine which area to assign them. It should have the most addresses; for example, if an overlap contains 31 addresses from group one and 52 addresses from group two, it should be assigned to the group two polygon.</p>
+<p>We can start on this by using a PointOnAreaOverlayer. This transformer will let us create a list of which addresses an overlap contains.</p>
+<p>So, add a PointOnAreaOverlayer transformer. The area features will be the output from the AreaOnAreaOverlayer.</p>
+<p>The point features should be a copy of the addresses. The simplest way to get these is to make a second connection from the SpatialSorter:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.236.Ex3.POAOCanvas2.png" alt="Adding a PointOnAreaOverlayer" /></p>
+<p><strong>8) Add a ListHistogrammer Transformer</strong></p>
+<p>To count the most frequent GroupID for each list on an overlap, we'll use the ListHistogrammer transformer.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">This is not a commonly used transformer, so don't worry if you weren't aware of it or if you are concerned about the large number of transformers available in FME. You will learn more about these transformers with practice. For now, the ability to use partial runs is much more critical.</span></p>
+</blockquote>
+<p>Place a ListHistogrammer transformer connected to the PointOnAreaOverlayer's Area output port.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.240.Ex3.ListHistogrammerCanvas.png" alt="Adding a ListHistogrammer and setting it to count the unique values of the GroupIDs on the areas" /></p>
+<p>Re-run the workspace (from the ListHistogrammer). Now we have a list on each polygon where the first element tells us which group is most prevalent.</p>
+<p><strong>9) Add a Dissolver Transformer</strong></p>
+<p>Finally, add a Dissolver transformer to merge the features based on the most prevalent gorup. Connect the Dissolver to the ListHistogrammer output port:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.242.Ex3.DissolverCanvas.png" alt="Adding a Dissolver transformer" /></p>
+<p>Run the workspace to the Dissolver and inspect the Dissolver's Area output port:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.245.Ex3.DissolverOutput.png" alt="Inspecting the result of dissolving the points into non-overlapping garbage collection zones" /></p>
+<p>We now have five polygon features to represent garbage collection areas, each with approximately the same number of residents. Connect the Dissolver's Area port to the writer feature type; this workspace is nearly complete.</p>
+<p><strong>10) Remove the Sampler Transformer</strong></p>
+<p>To complete the project, let's run the workspace on the entire dataset, but first, let's get the workspace ready for production.</p>
+<p>Delete the Sampler transformer, ensuring that PostalAddress and the PointOnAreaOverlayer's Point input port are connected.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Instead of deleting the Sampler, you can disable it. Right-click on the Sampler and choose Disable, then connect the PostalAddress and PointOnAreaOverlayer like the above step. If you need to come back and tweak something, the dataset can be sampled again easily.</span></p>
+</blockquote>
+<p>Before we run the translations, let's disable feature caching as the PostalAddress dataset is large. Click on the dropdown next to the Run button and click Enable Feature Cache to disable it:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.246.Ex3.DisableFeatureCaching.png" alt="Disabling feature caching using the Run menu" /></p>
+<p>Now, with feature caching disabled, the Run button will run the entire workspace:</p>
+<p><img class="image image-block image-center" src="images/1699655802258.png" alt="Running the entire workspace without the Sampler" width="1063" height="521" /></p>
+<p>As expected, the result will look different now that we're using the entire dataset:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.248.Ex3.FinalOutput.png" alt="Inspecting the final results" /></p>

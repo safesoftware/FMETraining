@@ -1,0 +1,197 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Improve performance by reducing the amount of data being read.</li>
+<li>Improve performance by adjusting the order of writers in a workspace.</li>
+<li>Improve performance by reordering transformers to get the best performance.</li>
+<li>Improve performance by using performance-related transformer parameters.</li>
+<li>Improve performance by adjusting the order of readers in a workspace.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-improve-performance.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-improve-performance.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-improve-performance.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-improve-performance-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip" target="_blank" rel="noopener">Orthophotos.zip</a>
+<ul>
+<li>C:\FMEData\Data\Orthophotos.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.kml</a><br />
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>The provincial government has given the city a grant to fund new public art in parks.</p>
+<p>Your colleague has created a workspace to analyze the amount of art in each city park, and we are carrying out a code review to ensure that the workspace is efficient and well-designed. In&nbsp;<a href="https://academy.safe.com/design-for-performance" target="_blank" rel="noopener">another course</a>, we inspected the workspace to see what it produced, deconstructed the log file, and ran the workspace multiple times to assess the relative performance of each component.</p>
+<p>In this exercise, we'll make some specific changes to improve performance.</p>
+<h2 id="1-open-and-run-workspace">1) Open and Run Workspace</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-improve-performance.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> in FME Workbench (2024.1 or later). Turn on feature caching and run the workspace with default user parameter values.</p>
+<h2 id="2-check-reader-methodology">2) Check Reader Methodology</h2>
+<p>First, check if the readers are correctly configured and don't read any excess data.</p>
+<ul>
+<li>Parks<br />
+<ul>
+<li>We wish to identify parks without artwork, so we need these park features.</li>
+</ul>
+</li>
+<li>Neighborhoods
+<ul>
+<li>Again, we need all of these features.</li>
+</ul>
+</li>
+<li>Public Art
+<ul>
+<li>Again, we need all of these features.</li>
+<li>It's important to note that artworks fall in one of six neighborhoods, matching the same six in the Neighborhoods dataset. There are no artworks outside one of these neighborhoods or neighborhoods where we have artworks, so no excess data is being read.</li>
+</ul>
+</li>
+<li>Orthophotos
+<ul>
+<li>We're reading all the image files for the entire city. Are there any files we don't need?</li>
+</ul>
+</li>
+</ul>
+<p>To check the orthophoto coverage, start FME Data Inspector (it will be easier than the Visual Preview window). You can open FME Data Inspector from the Windows Start menu &gt; FME Form &gt; FME Data Inspector.</p>
+<p>Select File &gt; Open Dataset and set the files to open as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Reader Format</strong></td>
+<td>GeoTIFF (Geo-referenced Tagged Image File Format)</td>
+</tr>
+<tr>
+<td><strong>Reader Dataset</strong></td>
+<td><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip</a> or select all the files in C:\FMEData\Data\Orthophotos</td>
+</tr>
+<tr>
+<td><strong>Parameters &gt; Feature Type Name(s)</strong></td>
+<td>From File Name(s)</td>
+</tr>
+</tbody>
+</table>
+<div class="box message info">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If the orthophotos reading takes too long, you can download the .zip file, extract it, and select the TIF files in the extracted folder. Reading the data locally will be faster.</span></p>
+</blockquote>
+<p><span style="font-family: inherit; font-size: 1em;">The Feature Type Name(s) parameter ensures the Data Inspector lists files by name.</span></p>
+</div>
+<p>Now select File &gt; Add Dataset and set that dialog up as follows:</p>
+<table class="featureTable sort_table" style="width: 68.3913%;">
+<tbody class="tbody">
+<tr>
+<td style="width: 15.978%;"><strong>Reader Format</strong></td>
+<td style="width: 84.022%;">OGC / Google KML</td>
+</tr>
+<tr>
+<td style="width: 15.978%;"><strong>Reader Dataset</strong></td>
+<td style="width: 84.022%;"><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml</a> or C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</td>
+</tr>
+</tbody>
+</table>
+<p>Now, you can check whether any GeoTIFF tiles fall outside the extent of the neighborhoods:</p>
+<p><img src="images/1715821129293.png" alt="Neightobhood polygons overlaid on imagery" width="631" height="467" /></p>
+<p><em>Map tiles &copy;&nbsp;<a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy;&nbsp;<a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy;&nbsp;<a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy;&nbsp;<a href="https://academy.safe.com/path/integrate-data-with-the-fme-platform/connect-to-data/Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<p>Because some orthophotos do not overlap the neighborhood boundaries, our workspace reads more orthophotos than is necessary.</p>
+<h2 id="3-switch-geo-tiff-reader-to-feature-reader">3) Switch GeoTIFF Reader to FeatureReader</h2>
+<p>It appears that FME is reading GeoTIFF files unnecessarily. This causes a performance hit, especially when feature caching is turned on. We could select the files we want to read, but if the neighborhoods dataset changed,&nbsp;this list might not be correct.</p>
+<p>So, return to FME Workbench.</p>
+<p>Delete the Orthophotos GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the <strong>reprojected </strong>Neighborhoods data the Initiator (create a separate connection from the Reprojector_2's Reprojected port):</p>
+<p><img class="image image-block image-center" src="images/1725657437563.png" alt="Replacing the GeoTIFF reader with a FeatureReader" width="685" height="465" /></p>
+<p>Open the FeatureReader parameters. Set the Format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip</a>&nbsp;as the Dataset.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-hosted training course, it will be faster to select all the files in C:\FMEData\Data\Orthophotos instead.</p>
+</blockquote>
+<p>Set the&nbsp;<strong>Spatial Filter</strong>&nbsp;parameter to&nbsp;<em>Initiator OGC-Intersects Result</em>:</p>
+<p><img class="image image-block image-center" src="images/1711132707555.png" alt="Configuring the FeatureReader" width="447" height="347" /></p>
+<p>Click OK. The FeatureReader will now have a GEOTIFF output port. Connect this to the RasterMosaicker:</p>
+<p><img class="image image-block image-center" src="images/1725656634926.png" alt="Connecting the FeatureReader to the RasterMosaicker" width="685" height="465" /></p>
+<p>If we run the workspace now, the FeatureReader will output 48 features. This is more than we had before (40) and occurs because GeoTIFF tiles that overlap two neighborhoods are being read twice.</p>
+<p>So, add a Dissolver transformer between Reprojector_2 and FeatureReader. This will consolidate the neighborhoods into a single feature and ensure each GeoTIFF is only read once. Re-run the workspace:</p>
+<p><img class="image image-block image-center" src="images/1725656815213.png" alt="Dissolving fixes reading duplicate photos" width="679" height="454" /></p>
+<p>Now, we only read 27 features, which is the correct amount. We are reading fewer photos, so the workspace is performing better.</p>
+<h2 id="4-check-writer-order">4) Check Writer Order</h2>
+<p>The most straightforward writer improvement we might make is to change the order of the writers. Currently, the Excel spreadsheet is written first. This means that GeoTIFF files&mdash;which are large&mdash;are being cached instead of the smaller Excel file.</p>
+<p>So, adjust the order of the writers so that the GeoTIFF writer comes first in the Navigator:</p>
+<p><img class="image image-block image-center" src="images/1725656956268.gif" alt="Changing writer order" width="306" height="314" /></p>
+<p>Re-run the workspace. Although the workspace wasn't slow to start with, you should notice it now runs slightly faster, using less memory.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Another writer feature to consider is whether the Excel dataset is being deleted/recreated or just emptied of data. In theory, it might be (very marginally) quicker to empty the sheets rather than create the whole spreadsheet from scratch.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">To try this, change the writer parameter Overwrite Existing File to No and change the writer feature type parameter for Truncate Existing Sheet to Yes:</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1725657035704.png" alt="Setting Truncate Existing Sheet/Named Range to Yes" width="568" height="483" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">It's unlikely to make a huge performance improvement, but you should consider differences like these when reviewing a workspace for performance. You would especially want to consider this question when writing to a database table with an index (more on that later).</span></p>
+</blockquote>
+<h2 id="5-upgrade-transformers">5) Upgrade Transformers</h2>
+<p>Now, let's look into transformers. This is where we can make a lot of different changes. The first is to check for old transformer versions. Notice in the Navigator window that four transformers are listed as "Upgradeable":</p>
+<p><img class="image image-block image-center" src="images/1725657111551.png" alt="Upgradable transformers" width="350" height="411" /></p>
+<p>In turn, right-click each entry and choose Upgrade Transformer.</p>
+<p>You will be prompted with a warning; click Upgrade:</p>
+<p><img src="images/1725657171921.png" alt="Upgrade warning" width="502" height="318" /></p>
+<p>A dialog will open to show the changes in GUI to the transformer, and you can click the Show Changes button to get a written list of changes:</p>
+<p><img class="image image-block image-center" src="images/1711134862277.png" alt="Comparing transformer versions" width="707" height="404" /></p>
+<p>Upgrading transformers only sometimes makes them operate faster&mdash;some changes are functional or cosmetic&mdash;and might slightly change their results. Therefore, upgrading all transformers is only advisable after checking what the upgrade involves.</p>
+<p>However, in this case, both transformers should be safe to upgrade, which may even improve performance. So go ahead and upgrade all the transformers.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You can right-click Upgradable Transformers and choose Upgrade All Transformers if you prefer, but for practice's sake, we recommend upgrading individually while you learn FME.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Tester transformer uses bulk mode. You'll remember, however, that this might change the order of features emerging from the transformer.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version for a performance boost. By default, the new parameter Advanced &gt; Preserve Feature Order is set to Across Output Ports. This preserves feature order but does not allow the Tester to take advantage of bulk mode. To improve performance, change it to Per Output Port.</span></p>
+<p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/tester.htm" target="_blank" rel="noopener">Learn More</a></p>
+</blockquote>
+<h2 id="6-check-transformer-order">6) Check Transformer Order</h2>
+<p>Look at the bookmark labeled&nbsp;<em>Prepare Data for Excel Writer</em>:</p>
+<p><img class="image image-block image-center" src="images/1725657537421.png" alt="Prepare Data for Excel Writer bookmark" width="384" height="221" /></p>
+<p>Inspect the transformers, and you will see that they sort the data into order for writing. Then, they filter out unnecessary features and remove unnecessary attributes.</p>
+<p>This is not the correct order to maximize performance: the sorting action processes unnecessary features with unnecessary attributes. Remember, the essential order is Filter-Remove-Action.</p>
+<p>So, move the Sorter transformer after the AttributeRenamer:</p>
+<p><img class="image image-block image-center" src="images/1725657585618.png" alt="Moving Sorter to the end" width="384" height="221" /></p>
+<p>Notice that the Sorter transformer is now flagged as incomplete. Inspect the parameters, and you'll notice that the attribute _overlaps no longer exists; the AttributeRenamer renamed it&nbsp;ArtWorks.</p>
+<p>So change the Sorter to sort by ArtWorks, and the transformer will work again.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If the features coming into the Sorter were already grouped by one attribute, we could group by that attribute and sort by another to improve performance. But in this case, that would not work.</span></p>
+</blockquote>
+<p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace? Can the Tester transformer be moved? Note your answer: you'll need it for the quiz.</p>
+<p>Can the AttributeRemover and AttributeRenamer transformers be moved? The AttributeRenamer can't be <em>moved</em>&nbsp;because it renames the _overlaps attribute, an action that can only happen here. However, removing attributes could be carried out much earlier.</p>
+<p>The most straightforward technique is to add an AttributeRemover after every reader whose attributes can be removed:</p>
+<p><img class="image image-block image-center" src="images/1725657705589.png" alt="Adding AttributeRemovers" width="453" height="717" /></p>
+<p>Remove the existing AttributeRemover, add an AttributeRemover to each input that can be cleaned, and remove whatever attributes are unnecessary to the workspace. You can tell if you remove a necessary attribute if a downstream transformer or writer feature type&nbsp;is flagged as incomplete, with a red port on the expanded writer feature type.</p>
+<p>Note that the fme_feature_type attribute used on the GeoTIFF writer isn't required.</p>
+<p>We have removed all unnecessary attributes from the workspace as soon as possible.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">An alternative solution for database-type formats is not to read the attributes at all. In our workspace, the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes and uncheck Name and Title.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you do this, then you do not need the AttributeRemover.</span></p>
+</blockquote>
+<h2 id="7-check-transformer-performance-parameters">7) Check Transformer Performance Parameters</h2>
+<p>Several transformers have parameters specifically for performance benefits. These are often labeled as <strong>Complete Groups </strong>or&nbsp;<strong>&lt;Features First&gt;</strong>.</p>
+<p>Check the transformers in this workspace. The two of particular interest are the Clipper and PointOnAreaOverlayer. Both of them have a Group Processing and a Features First parameter:</p>
+<p><img class="image image-block image-center" src="images/1725657953527.png" alt="Setting Clipper Type and Areas First parameters for performance improvements" width="906" height="276" /></p>
+<p>The Group Processing parameter doesn't apply because neither transformer uses a Group By. However, the <em>Multiple Clippers, Clippers Arrive First&nbsp;</em>and&nbsp;<em>Areas First</em> options are of interest. If we set these options, we can get a performance boost, but we do have to confirm that either Clippers or Areas will be the first features to arrive.</p>
+<p>In the PointOnAreaOverlayer, change the Areas First parameter to Yes. Re-run the workspace (either turn off caching or re-run the entire workspace). Notice that all Area features exit as &lt;Rejected&gt; features. They are rejected because they are not first!</p>
+<p><img class="image image-block image-center" src="images/1725658245131.png" alt="PointOnAreaOverlayer rejected features" width="224" height="288" /></p>
+<p>One reason might be that the MapInfo park features are read after the Excel records. So, in the Navigator window, move the Parks reader to the top of the list:</p>
+<p><img class="image image-block image-center" src="images/1725658300421.gif" alt="Changing reader order" width="344" height="296" /></p>
+<p>Re-run the entire workspace. Notice that the park features are now first. This part of the workspace should be working more efficiently now.</p>
+<p>Try the same action on the Clipper transformer to see if Clipper features are first so that the Clippers Arrive First parameter can be set to Yes (Advanced).</p>
+<h2 id="8-re-run-workspace">8) Re-Run Workspace</h2>
+<p>With <strong>Feature Caching</strong> off, re-run the entire workspace. Check if the log results show that the workspace is quicker and more memory efficient than it was before. The code review of your colleague's workspace is complete.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Overall, the difference might be very slight. The workspace may not be hugely faster or more memory efficient. However, it is better designed than the original workspace. This makes it more scalable and will help teach your colleague techniques that might have a more significant effect elsewhere.</span></p>
+</blockquote>

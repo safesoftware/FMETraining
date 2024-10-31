@@ -1,0 +1,110 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define an FME Flow self-serve workflow.</li>
+<li>Know what the FME Flow Services are and how to use them.</li>
+<li>Use FME Flow Data Upload and Data Download services.</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="self-serve-with-fme-server">Self-Serve with FME Flow</h2>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.000.SelfServeIntroImage.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh5.googleusercontent.com/95kbr3pw3_HUpy3Aw80WhM4H1GmaxOFO4X4iTs3MqWYImn_m7Lb9CL2k7k-5AtV22nNKzs2lqWgdJZyWifftzzw2TWN-bKr8x32OlAcwOdCGeN3_qXyAcdXhIvbYWAiEroCXr68wx0RjLUt1" alt="Example self-serve workflow" width="1034" height="512" /></a></p>
+<p><a href="https://fme.safe.com/demo/map-based-data-distribution-fme-server-apps/" target="_blank" rel="noopener"><em>View a self-serve demo</em></a></p>
+<p>Creating self-serve data integration workflows takes the burden of user requests away from expert staff, enabling them to concentrate on more important work. This course explains how to implement self-serve using FME Flow, and how to allow the end-user to set parameters, select format, choose a coordinate system, and define which layers to download.</p>
+<h2 id="what-is-a-self-serve-workflow">What is a Self-Serve Workflow?</h2>
+<p>Self-serve workflows allow the end-user to carry out their own data translations and transformations. Routine data management tasks are offloaded from staff to the user, who is empowered to carry out processes at their own convenience.</p>
+<p>Usually, the system is set up in such a way that the end-user needs no prior FME experience or training to carry out their goals; for example, they can access the functionality through a web interface customized to their particular needs. In fact, the user does not even need to know of FME, or that FME is the engine driving their applications!</p>
+<h2 id="self-serve-types">Self-Serve Types</h2>
+<p>In general, there are two types of self-serve systems.</p>
+<p><strong><em>Data Upload</em></strong> systems are where the user is able to upload their data to be processed on FME Flow. A typical application would be a user uploading data to be validated. The data is run against a number of tests in an FME workspace and the results are sent back to the user.</p>
+<p><strong><em>Data Download</em></strong>&nbsp;systems are where the user is able to serve themselves with data. A typical application would be an organization that frequently provides data to either staff or customers. With a Data Download system, the user can fetch their own data rather than having to be provided with it in a more manual way. Data can be downloaded as a set of files or streamed directly into an application.</p>
+<h2 id="data-uploads">Data Uploads</h2>
+<p>A Data Upload system is one where a user provides data to FME Flow for it to process.</p>
+<p>Data Upload can be used from any FME Flow client, including:</p>
+<ul>
+<li>The FME Flow web interface</li>
+<li>An FME workspace</li>
+<li>An FME Flow App</li>
+<li>A custom web page or application</li>
+</ul>
+<p>Data Upload is often used for submitting data to an organization; for example, a property developer submits a planning application containing a DWG dataset to a municipal planning department.</p>
+<p>It is also often used for publishing data to be processed on FME Flow; for example, FME Flow can provide a data validation web service and an end-user would upload a set of data to be checked.</p>
+<p>It&rsquo;s worth noting that data upload also includes not just data, but other resources that may be required for a translation to run; for example, custom transformers or text-file lookup tables may also be uploaded.</p>
+<h2 id="data-downloads">Data Downloads</h2>
+<p>A Data Download system is one where a user selects their own choice of data to download.</p>
+<p>Data Download can also be used from any FME Flow client, usually:</p>
+<ul>
+<li>The FME Flow web interface</li>
+<li>An FME Flow App</li>
+<li>A custom web page or application</li>
+</ul>
+<p>Data Download operates in a different way than simply running a workspace.</p>
+<p>When you run a workspace (with the Job Submitter) the data is written to the location specified by the workspace; for example a file, directory, or database.</p>
+<p>Data Download instead writes the output to a zip file and presents the user with a link to that file. This makes it ideal for self-serve because the data is delivered directly to the user.</p>
+<h2 id="self-serve-and-services">Self-Serve and Services</h2>
+<p>Self-serve is implemented through a number of Services on FME Flow. A Service is a particular method of communication between client and server. FME Flow provides a wide range of services to carry out different forms of data self-serve.</p>
+<p>In the simplest of terms, a service is a piece of software that handles communications between a client and a server. In other words, it&rsquo;s a tool that allows users to access complex functionality through a simplified interface.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.001.WhatIsAService.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh6.googleusercontent.com/nJIKdYkIFVUl5_AH9bMWls1zzPAnFC4tAUZ2mSrO3LEBE02ZyWStOThxSE9qMbOqy9-KsgXDZ8qgRDRCGZEtl74esk6DPqtkBvIdbyI-1Y4rxDILE8-51LtmeOKimTEpNiUVNAbB96NsfA4z" alt="Service diagram - abstract" width="800" height="238" /></a></p>
+<p>In terms of FME Flow, the client is often&mdash;but not always&mdash;a web browser that passes requests to FME Flow using a service.</p>
+<p><img title="" src="https://lh3.googleusercontent.com/TUDptdIX0951L-dmmNvT-g9ws0JXavxyPhLMxsqBBtdLOM8eIqouvB4DPqjCzkwbgnSdwtLlYEu9wNwX1G8OGL-tsM_ljSDCc6rQJDlFIDX6sbCFKguz7UGiHsZaYhggnilcZCujZyX5lnzm" alt="" /></p>
+<p>In short, a service allows the sending of specific types of requests to FME Flow and allows results to be provided to client applications in a specific way.</p>
+<p>For example, instead of just running a workspace, you can have a web page ask for the results of the workspace as a package of data compressed in a zip file.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">A service is just a simpler way of communicating requests to FME Flow than using the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html" target="_blank" rel="noreferrer noopener">REST API</a><span style="font-family: inherit; font-size: 1em;">. Also, FME Flow includes a number of predefined services that cover a lot of the functionality you are likely to need.</span></p>
+</blockquote>
+<h2 id="available-services">Available Services</h2>
+<p>FME Flow includes the following services:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>Data Download Service</td>
+<td rowspan="4">Transformation Services</td>
+</tr>
+<tr>
+<td>Data Streaming Service</td>
+</tr>
+<tr>
+<td>Job Submitter Service</td>
+</tr>
+<tr>
+<td>KML Network Link Service</td>
+</tr>
+<tr>
+<td>Data Upload Service</td>
+<td rowspan="4">Utility Services</td>
+</tr>
+<tr>
+<td>Token Service</td>
+</tr>
+<tr>
+<td>REST Service</td>
+</tr>
+<tr></tr>
+<tr>
+<td>Notification Service</td>
+<td>Notification Services</td>
+</tr>
+</tbody>
+</table>
+<p>Remember that services can communicate in both directions. Transformation services &ndash; for example, Data Download &ndash; are primarily self-serve tools for Flow to deliver data to the end-user.</p>
+<p>Utility services can be described as &ldquo;helper&rdquo; services. They interact with FME Flow to assist in menial tasks such as uploading data or providing token security. In most cases, these are facilities that an author or developer will be using in a way that&rsquo;s hidden from the user.</p>
+<p>The Notification Service is used for passing short messages into and out of FME Flow. Incoming messages notify FME Flow to take some action, whereas outgoing messages alert an end-user (or system) that some sort of event has occurred. Automations are powered by the Notification Service.</p>
+<h2 id="workspaces-and-services">Workspaces and Services</h2>
+<p>When a workspace is published to FME Flow the last panel of the publishing wizard is for registering it with a particular service:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.003.RegisteringServices.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.003.RegisteringServices.png" alt="Choosing a service" /></a></p>
+<p>The Job Submitter service is automatically selected in the FME Flow publishing wizard, whenever a workspace is published, but many other services are available too.</p>
+<p>Registering a workspace with a service makes the workspace available for use in that service although, as you&rsquo;ll discover, not every workspace is capable of being used by every service.</p>
+<p>Be aware of the Edit button to the right of each service.</p>
+<p>Every service has a set of parameters available that determine how a workspace will be run with that service:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.004.RegisteringServicesEditDialog.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh3.googleusercontent.com/ZtMh3HvCWBk-0Z8dV6p5a01trIl0qoe0-mlB-mKGeVkknlFdlBFpVc2bPGPHy0a05M0jvg0iPxJG3NBC0d_QP3MyWCNplH_a2Iq0WbYbWk4229pHpjTyvNBQuseCuu8Rspy7dzflvCdqNyBd" alt="Editing service properties" width="635" height="467" /></a></p>
+<p>Notice how these parameters include ones for notification topics to trigger on completion of the workspace.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">A workspace may be registered against one service, many services,&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">or no services at all!</strong></p>
+</blockquote>

@@ -1,0 +1,91 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use a feature type fanout on fme_feature_type to return features to their original layer.</li>
+<li>Use a .zip extension to create zipped output datasets.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-fanouts.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-fanouts-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>As a resident FME expert, you are often asked to translate data (particularly the community map) between formats. You realize that it would be much simpler if you created a workspace to do this - regardless of format - and let the end-users carry out the translation themselves. You've started to build a workspace, but now you need to add fanouts to make sure the users receive data in the form they expect.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>In the future, this would make an excellent use for an FME Server Data Download service, but for now, we'll let the users simply run the workspace in FME Workbench. To learn more about creating self-serve data download workflows, see the <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/path/fme-flow-authoring" target="_blank" rel="noopener">FME Server Authoring learning path</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Open the&nbsp;<strong>starting workspace</strong>&nbsp;in FME Workbench 2021.1 or later.</p>
+<h2 id="2-explore-the-workspace">2) Explore the Workspace</h2>
+<p>You can see from the Navigator that this workspace reads in a community map file Geodatabase and writes out to the Generic format:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/exercise-use-fanouts/images/1638912771987.png" alt="Reader and writer formats in the Navigator" /></p>
+<p>The workspace provides four format choices to the user, controlled by User Parameters &gt; OutputFormat.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>The Generic format lets the user choose which format to write. You can learn more in the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/generic/generic_writer.htm" target="_blank" rel="noreferrer noopener">Documentation</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The reader feature type is merged, meaning that it will read all features into one stream, rather than individual feature types per feature class. You can tell the feature type is configured that way because it is named &lt;All&gt;. Right now the writer feature type is set to write to a single feature type named NewFeatureType.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/exercise-use-fanouts/images/1638913578338.png" alt="Feature type names" /></p>
+<p>Examining the User Parameters shows that the workspace is configured to let the user choose which feature types to read. The user configured it this way by linking the FEATURE_TYPES parameter to the Reader Parameters &gt; Features To Read &gt; Feature Types to Read parameter.</p>
+<p>If the workspace is run now, the user will be able to choose the feature types and format but will get the results back in a single layer/file. This result is obviously not optimal. Let's change the workspace so the user gets back separate layers/files for each feature type. We'll also zip the output for convenience.</p>
+<h2 id="3-set-feature-type-fanout">3) Set Feature Type Fanout</h2>
+<p>We would like to output features to their original table. To do this we need to know where they came from, and that is obtained from a format attribute called&nbsp;<em>fme_feature_type</em>.</p>
+<p>Inspect the properties for the writer feature type. Set a fanout by choosing&nbsp;<em>fme_feature_type</em>&nbsp;as the attribute supplying the feature type name.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/exercise-use-fanouts/images/1638913993665.png" alt="Setting Feature Type Name to fme_feature_type" /></p>
+<p>Your dialog should look like this:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/exercise-use-fanouts/images/1657231838641.png" alt="Feature type fanout" /></p>
+<p>Click OK. The name of the feature type will change to&nbsp;<code>&lt;@Value(fme_feature_type)&gt;</code>&nbsp;to reflect the use of a fanout.</p>
+<h2 id="4-create-a-zipped-output">4) Create a Zipped Output</h2>
+<p>In the Navigator, find the Destination Generic (Any Format) Folder writer parameter:</p>
+<p>&nbsp;<img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/exercise-use-fanouts/images/1638914773571.png" alt="Destination Generic (Any Format) Folder parameter in the Navigator" /></p>
+<p>We will create a zipped folder to contain all of our files. Double click the parameter and set the location of an output folder (such as&nbsp;<code>C:\FMEData\Output\Training</code>) then at the end type&nbsp;<code>\CommunityMapping.zip</code>.</p>
+<p>Your full parameter value will look something like this:</p>
+<pre>C:\FMEData\Output\Training\CommunityMapping.zip</pre>
+<p>This will create a zipped file called CommunityMapping.</p>
+<h2 id="5-save-and-run-workspace">5) Save and Run Workspace</h2>
+<p>Save the workspace and then run it with the prompt option set. When prompted, select some source tables to read (include at least the GarbageSchedule plus one other). Set Esri Shapefile as the format to write. Ensure your path reflects that you will be writing a zipped file:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/exercise-use-fanouts/images/1.png" alt="Checking the output path" />&nbsp;Click the Run button to run the translation. Examine the output folder. A zipped folder has been created which contains all the selected tables that have been written back to Shapefile format:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/exercise-use-fanouts/images/2.png" alt="Community Mapping zip output" /></p>
+<p>Now you have a solution that almost anyone will be able to open and run for themselves. Also, if you published the workspace to FME Server it would automatically create a web page that matched the different user parameters.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Did you notice that FME handled the different geometry types and output the files with the geometry as part of the name? It&rsquo;s a Shapefile format thing. FME can never &ndash; and will never &ndash; write more than one geometry type to the same Shapefile .shp file.</p>
+<p>The one drawback with the output is that each Shapefile has&nbsp;<strong>all</strong>&nbsp;of the attributes of&nbsp;<strong>all</strong>&nbsp;of the source tables. To avoid that you would need to use a dynamic translation. You can read about dynamic translations in the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!FeatureTypeProperties/workspaces_dynamic_about.htm" target="_blank" rel="noreferrer noopener">Documentation</a>&nbsp;or follow&nbsp;<a href="https://community.safe.com/s/article/dynamic-workflow-tutorial-introduction" target="_blank" rel="noreferrer noopener">this tutorial</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

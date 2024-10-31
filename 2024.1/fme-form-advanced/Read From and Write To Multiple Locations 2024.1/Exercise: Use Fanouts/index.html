@@ -1,0 +1,64 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use a feature type fanout on fme_feature_type to return features to their original layer.</li>
+<li>Use a .zip extension to create zipped output datasets.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-fanouts.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-use-fanouts.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-fanouts-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-use-fanouts-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>As a resident FME expert, you are often asked to translate data (particularly the community map) between formats. You realize it would be much simpler if you created a workspace to do this - regardless of format - and let the end-users carry out the translation themselves. You've started building a workspace, but now you need to add fanouts to ensure the users receive data in the form they expect.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">This would make an excellent use for an FME Flow Data Download service in the future, but for now, we'll let the users run the workspace in FME Workbench. See the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/path/fme-flow-authoring" target="_blank" rel="noopener">FME Flow Authoring learning path</a><span style="font-family: inherit; font-size: 1em;"> to learn more about creating self-serve data download workflows.</span></p>
+</blockquote>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Open the&nbsp;<strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-fanouts.fmw" target="_self">starting workspace</a> </strong>(C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-use-fanouts.fmw) &nbsp;in FME Workbench (2024.1 or later).</p>
+<h2 id="2-explore-the-workspace">2) Explore the Workspace</h2>
+<p>You can see from the Navigator that this workspace reads in a community map file Geodatabase and writes out to the Generic format:</p>
+<p><img class="image image-block image-center" src="images/1724189257231.png" alt="Reader and writer formats in the Navigator" width="286" height="239" /></p>
+<p>The workspace provides four format choices to the user, controlled by User Parameters &gt; OutputFormat.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Generic format lets the user choose which format to write. You can learn more in the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/generic/generic_writer.htm" target="_blank" rel="noopener">documentation</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>The reader feature type is merged, meaning it will read all features into one stream rather than individual feature types per feature class. You can tell the feature type is configured that way because it is named &lt;All&gt;. The writer feature type is set to write to a single feature type named NewFeatureType.</p>
+<p><img class="image image-block image-center" src="images/1724189294378.png" alt="Feature type names" width="411" height="129" /></p>
+<p>Examining the User Parameters shows that the workspace lets users choose which feature types to read. The user configured it this way by linking the FEATURE_TYPES parameter to the Reader Parameters &gt; Features To Read &gt; Feature Types to Read parameter.</p>
+<p>If the workspace is run now, the user can choose the feature types and format but will get the results back in a single layer/file. This result could be more optimal. Let's change the workspace so the user gets back separate layers/files for each feature type. We'll also zip the output for convenience.</p>
+<h2 id="3-set-feature-type-fanout">3) Set Feature Type Fanout</h2>
+<p>We want to output features to their original table. To do this, we need to know where they came from, and that is obtained from a format attribute called <em>fme_feature_type</em>.</p>
+<p>Inspect the properties for the writer feature type. Set a fanout by choosing&nbsp;<em>fme_feature_type</em> as the attribute setting the Feature Type Name.</p>
+<p><img class="image image-block image-center" src="images/1707922775458.png" alt="Setting Feature Type Name to fme_feature_type" width="859" height="353" /></p>
+<p>Your dialog should look like this:</p>
+<p><img class="image image-block image-center" src="images/1707922829141.png" alt="Feature type fanout" width="552" height="313" /></p>
+<p>Click OK. The name of the feature type on the canvas will change to <code>&lt;@Value(fme_feature_type)&gt;</code>&nbsp;to reflect the use of a fanout.</p>
+<h2 id="4-create-a-zipped-output">4) Create a Zipped Output</h2>
+<p>In the Navigator, find the Destination Generic (Any Format) Folder writer parameter:</p>
+<p>&nbsp;<img class="image image-block image-center" src="images/1724189385546.png" alt="Destination Generic (Any Format) Folder parameter in the Navigator" width="317" height="332" /></p>
+<p>We will create a zipped folder to contain all of our files. Double-click the parameter and set the location of an output folder (such as <code>C:\FMEData\Output\Training</code>), then at the end, type <code>\CommunityMapping.zip</code>.</p>
+<p>Your full parameter value will look something like this:</p>
+<pre><code>C:\FMEData\Output\Training\CommunityMapping.zip</code><br /><br /></pre>
+<p>This will create a zipped file called CommunityMapping.</p>
+<h2 id="5-save-and-run-workspace">5) Save and Run Workspace</h2>
+<p>Save the workspace and then run it with Run &gt; Prompt for Parameters enabled. When prompted, select some source tables to read (include at least the GarbageSchedule plus one other). Set Esri Shapefile as the format to write. Ensure your path reflects that you will be writing a zipped file:</p>
+<p><img class="image image-block image-center" src="images/1706144040727.png" alt="Checking the output path" width="629" height="279" />&nbsp;</p>
+<p>Click the Run button to run the translation. Examine the output folder. A zipped folder has been created which contains all the selected tables that have been written back to Shapefile format:</p>
+<p><img class="image image-block image-center" src="images/1724189474843.png" alt="Community Mapping zip output" width="774" height="406" /></p>
+<p>Now you have a solution that almost anyone can open and run for themselves. Also, if you publish the workspace to FME Flow, the same user parameters will be available.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Did you notice that FME handled the different geometry types and output the files with the geometry as part of the name? It&rsquo;s a Shapefile format thing. FME can never &ndash; and will never &ndash; write more than one geometry type to the same Shapefile .shp file.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The one drawback with the output is that each Shapefile has&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">all</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;attributes of </span><strong style="font-family: inherit; font-size: 1em;">all</strong><span style="font-family: inherit; font-size: 1em;"> source tables. To avoid that outcome, you would need to use a dynamic translation. We cover those later in this learning path.</span></p>
+</blockquote>

@@ -1,0 +1,158 @@
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>The video above is from an older version of the course. You might find it helpful to watch it as an example of prototyping a workspace, but you don't have to follow along. See the Exercise below for details.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Plan a workspace.</li>
+<li>Restrict source data to a small sample.</li>
+<li>Create a workspace, section by section.</li>
+<li>Save a workspace with a date or version number.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-workspace-prototyping.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-workspace-prototyping.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>We're going to do something different for this exercise. <strong>You have an option</strong>:</p>
+<ol>
+<li>If you know you'll be using FME for an upcoming project, you can use this exercise to prototype a workspace. You can continue to 1) Plan Workspace Actions below. Follow the steps, but prototype your own workspace instead of one of the examples.</li>
+<li>If you don't have an FME project planned, you can create a prototype using the scenario and <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-workspace-prototyping.fmw" target="_blank" rel="noopener">starting workspace</a>&nbsp;presented in the Scenario section below.</li>
+</ol>
+<p><strong>Scenario</strong></p>
+<p>Your city government has the following datasets available in the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-workspace-prototyping.fmw" target="_blank" rel="noopener">starting workspace:</a></p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/road-ahead-upcoming-projects.zip" target="_blank" rel="noopener">An Esri Shapefile of upcoming road construction projects</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\road-ahead-upcoming-projects.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/food-vendors.csv" target="_blank" rel="noopener">A CSV of street food vendors, with coordinates</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\food-vendors.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/business-licences-sqlite.zip" target="_blank" rel="noopener">An SQLite database of business licenses</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\business-licences-sqlite.zip</li>
+</ul>
+</li>
+</ul>
+<p>Your task is to create a workspace that:</p>
+<ol>
+<li>Reads these datasets</li>
+<li>Identifies which vendors both:
+<ol>
+<li>Might be affected by road construction (defined as within a 30-foot buffer from the road center line) and</li>
+<li>Hold current (2024) business licenses</li>
+</ol>
+</li>
+<li>Writes the list of affected vendors to a Microsoft Excel worksheet.</li>
+</ol>
+<p>The steps below can be used as a guide to prototype an approach to this problem.</p>
+<h2 id="exercise">1) Plan Workspace Actions</h2>
+<p>To develop this workspace, we must consider what steps might be required. We can then create sections with bookmarks and fill them in as we go along.</p>
+<p>Let's plan your workspace together.</p>
+<p>What data will you start with? What format and schema?</p>
+<p>What data will you end with? What format and schema?</p>
+<p>What steps might you need to take between reading and writing? You might need to:</p>
+<ul>
+<li>edit the schema</li>
+<li>map the schema</li>
+<li>validate attributes</li>
+<li>validate geometry</li>
+<li>join data</li>
+<li>filter data</li>
+<li>conduct an overlay or intersection</li>
+<li>etc.</li>
+</ul>
+<p>Write the list of actions your workspace will carry out in as much detail as possible. Here's an example from a <strong>different</strong> scenario:</p>
+<ol>
+<li>Read/Sample Address Esri geodatabase</li>
+<li>Read MapInfo TAB Zoning data</li>
+<li>Spatially join to get zoning data for each address</li>
+<li>Estimate the resident count for each address based on the zoning district</li>
+<li>Divide residents into five spatial zones with roughly equal population</li>
+<li>Aggregate the addresses into their zone</li>
+<li>Create a boundary shape around each zone</li>
+<li>Write resulting zone boundary polygons to OGC GeoPackage</li>
+</ol>
+<h2 id="exercise">2) Add Reader(s) and Writer(s)</h2>
+<p>Add the reader(s) and writer(s) you plan to use and their feature types. If you started with the workspace included in this lesson, the readers and writer have already been added.</p>
+<p>It's better to start small and add a single reader and writer feature type; you can continually expand the workspace later.</p>
+<p>Observe their schemas and note if any schema changes are required.</p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Choose a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/Tips_Adding_Managing_Writer_Feature_Types.htm" target="_blank" rel="noopener">feature type definition mode</a> when adding your writer that will help you define the destination schema as quickly as possible:</p>
+<ul>
+<li><strong>Automatic</strong>: This adds a new feature type with the attribute definition parameter set to Automatic, which is the default.
+<ul>
+<li>Choose this mode if you'd prefer to read your data in, modify the schema as you go, and then write out whatever you end up with.</li>
+</ul>
+</li>
+<li><strong>Manual</strong>: Adds a new feature type with the attribute definition parameter set to manual.
+<ul>
+<li>Choose this mode if you want to specify the destination schema beforehand precisely.</li>
+</ul>
+</li>
+<li><strong>Copy from Reader:</strong> Adds a new feature type with the attribute definition parameter set to manual but predefined to the schema of an existing Reader feature type.
+<ul>
+<li>Choose this mode if the destination schema will be the same or similar to the source schema.</li>
+</ul>
+</li>
+<li>I<strong>mport from Dataset:</strong> Adds a new feature type with the attribute definition parameter set to manual but predefined to the schema of an external dataset (just like using the Import Feature Types tool).
+<ul>
+<li>Choose this mode if you have to meet exact requirements for writing based on an existing schema in another dataset.</li>
+</ul>
+</li>
+<li><strong>Dynamic</strong>: Adds a new feature type with the attribute definition parameter set to dynamic.
+<ul>
+<li>This mode is more advanced; choose it if you need to write out whatever you receive when the workspace runs without knowing the schema.</li>
+</ul>
+</li>
+<li><strong>None</strong>: Does not add any new feature type.
+<ul>
+<li>You shouldn't choose this mode if you want to write out data.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="exercise">3) Separate Workspace Actions into Bookmarks</h2>
+<p>Begin to plan your workspace by adding bookmarks to the Canvas representing the steps you will take.</p>
+<p>You can't know which sections will be larger in advance, so make all bookmarks the same size.</p>
+<p>Here's an example from a <strong>different</strong> scenario, continuing from the list of actions above:</p>
+<p><img class="image image-block image-center" src="images/1715014847264.png" alt="Example workspace with bookmarked sections" width="1194" height="284" /></p>
+<p>Consider the transformers you want to use. You can begin by working section-by-section or adding as many transformers as needed. The latter approach can be helpful, as you can have the different options available and try them out <span data-preserver-spaces="true">individually</span>.</p>
+<p>Here's an example of transformers that the author might need for the above workspace:</p>
+<p><img class="image image-block image-center" src="images/1715014855387.png" alt="Collection of transformers" width="787" height="248" /></p>
+<h2 id="exercise">4) Sample Source Data</h2>
+<p>You should only read a sample of the source data to ensure your workspace runs quickly while prototyping.</p>
+<p>As detailed in the previous lesson, there are many ways to do this, depending on your situation:</p>
+<ul>
+<li>Max Features to Read/Max Features to Read Per Feature Type</li>
+<li>WHERE clause</li>
+<li>Search Envelope</li>
+<li>Sampler transformer</li>
+<li>Tile-based approach for spatial data</li>
+</ul>
+<p>Continuing the example above, we may want to sample every 25th address while authoring our workspace. We can add a Sampler transformer:</p>
+<p><img class="image image-block image-center" src="images/1715014875400.png" alt="Adding a Sampler" width="469" height="133" /></p>
+<p>And configure it like this:</p>
+<p><img class="image image-block image-center" src="images/1715014882483.png" alt="Setting Sampler parameters" width="476" height="112" /></p>
+<p>Run the workspace to ensure FME samples the data correctly. Inspect your sampled data to ensure it is a small dataset (say, less than 1,000 features, depending on feature size) and has the correct variation in values you might expect from your data.</p>
+<h2 id="exercise">5) Save Workspace</h2>
+<p>Now that you have an outline of your workspace and a sample of the data, save the workspace.</p>
+<p>Include a date or version number (like GarbageCollection-2024-05-18.fmw).</p>
+<p>If you use a version control system, practice committing a workspace with a meaningful commit message.</p>
+<h2 id="exercise">6) Continue to Prototype</h2>
+<p>If you have time, you can continue building your workspace section by section. Remember, the goal of this exercise is not to complete the workspace, but to practice prototyping a workspace.&nbsp; Each time you add a transformer, run the workspace to update feature caches, inspect the most recent cache, and determine if you made the correct decision. If so, proceed to add the next transformer. If not, change the parameters or try a different transformer. Read the transformer Help documentation if you get stuck.</p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-hosted training course, consider sharing what you learned as you prototyped your workspace in the chat. What problems did you encounter?</p>
+<p>You can also back up your workspace prototype on your virtual machine for further development by emailing it to yourself or uploading it to a file-sharing system.</p>
+</blockquote>

@@ -1,0 +1,187 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>List and distinguish common transformers used for attribute filtering.</li>
+<li>Explain the basic function of the Tester transformer.</li>
+<li>Explain the basic function of the TestFilter transformer.</li>
+<li>Construct basic tests for filtering.</li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/uWrGeevv2ehy7GLXSqH9nP" width="640" height="360" allowfullscreen=""></iframe></p>
+<h2 id="transformers-that-filter">Transformers that Filter</h2>
+<p>Many transformers in the Filters and Joins category can carry out tests and redirect data according to the results:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.048.FilterTransformers.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.048.FilterTransformers.png" alt="Transformer Gallery Filters and Joins category" /></a></p>
+<p>Although the Tester transformer is the most used of this category, there are many other transformers such as the TestFilter, GeometryFilter, AttributeFilter, SpatialFilter, and Sampler.</p>
+<h2 id="the-tester">The Tester</h2>
+<p>The Tester and TestFilter are the two key transformers for conditional filtering. They test the values on attribute values.</p>
+<p>The Tester transformer is generally for single tests that produce a Yes/No result.</p>
+<p>For example, here we wish to decide whether to send out snow plows to a particular road based on whether the value of the Snowfall attribute is greater than 150 mm (approximately 6 inches):</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.049.TesterTransformer.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.049.TesterTransformer.png" alt="Tester Parameters with example test clause" /></a></p>
+<p>If snowfall is greater than 150 (mm), the road feature will pass the test and snow plows will be sent.</p>
+<p><strong>Multiple Clauses</strong></p>
+<p>Each clause in the Tester is an individual test that allows a Passed/Failed result. For example, each of the following criteria might be separate tests:</p>
+<ul>
+<li>Has there been more than 100 mm (4 inches) of snowfall?</li>
+<li>Is this a major road?</li>
+<li>Is the temperature less than zero degrees Celsius?</li>
+<li>Was sand last applied more than 24 hours ago?</li>
+</ul>
+<p>However, the Tester allows the combination of multiple tests, where a user can combine any number of clauses using an AND and OR statement. So instead of individual tests, I might ask:</p>
+<ul>
+<li>Is this an Arterial (major) road AND has there been more than 100 mm of snow?</li>
+</ul>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.050.TesterANDStatement.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.050.TesterANDStatement.png" alt="Tester Parameters with example clauses connected by an AND" /></a></p>
+<p>The Tester also allows the mixing of AND and OR statements using what is called a Composite Test. For example:</p>
+<ul>
+<li>Is this an Arterial road AND (has there been more than 100 mm of snow OR (is the temperature less than zero AND was the road treated (with sand) more than 24 hours ago))?</li>
+</ul>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.051.TesterTransformerComplex.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.051.TesterTransformerComplex.png" alt="Complex Logic example" /></a></p>
+<p>But - however complex the test becomes - it still results in a single Yes/No (binary) result; features will either pass or fail this set of tests.</p>
+<p>It's also worth remembering that we aren't restricted to simple tests of equality (A=B); in the above, there are also "greater than" and "less than" tests. That's because there are many different operators available for use in a test clause.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>You can type values into the Logic column, as well as select them from the dropdown list. That means you aren't limited to the basic, single parentheses that the dropdown field would lead you to believe!</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>In FME 2019.1 and newer, the overall logic of the conditional clauses is displayed in a text box below the tests:<br /><br />The numbers in the expression refer to the row number in the test clauses table. So "1 AND 2" means the test clauses in row 1 and row 2 (the AND means both clauses have to pass for the overall feature to pass).<br /><br />You can adjust the test composition by directly editing the composite expression. Simply click the Edit button and type in a new expression. Experienced users will find this faster that using the Logic column dropdown options.<br /><br />The Logic column and the Composite Expression field are mirror images of each other. Any changes to either are reflected in the other. For example, in the above if I changed AND to OR in the logic column (second row) then the composite expression would change to match. Conversely, if I changed the composite expression to 1 AND ( 2 OR 3 ) then the test clauses would change to match, including deleting the now unused 4th row.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If a feature cache is present for the Tester or TestFilter, you can access a list of cached values to fill in your tests. This "data-aware" transformer dialog is available in the Tester, TestFilter, AttributeManager, and AttributeExposer. Let us know on the&nbsp;<a href="https://community.safe.com/s/idea/Idea/00B4Q00000ABiEt" target="_blank" rel="noreferrer noopener">Ideas Page</a>&nbsp;if you'd like to see it expand elsewhere.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Operators</strong></p>
+<p>The list of operators available in the Tester transformer (or in many of the other locations that make use of the Tester dialog) looks like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.052.TesterOperators.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.052.TesterOperators.png" alt="Tester operators" /></a></p>
+<p>Besides the usual operators, there are also some based on a SQL&nbsp;<code>WHERE</code>&nbsp;clause. These include:</p>
+<ul>
+<li>In</li>
+<li>Like</li>
+<li>Contains</li>
+<li>Begins With</li>
+<li>Ends With</li>
+<li>Contains Regex</li>
+</ul>
+<p>...plus there are other tests that check for the existence of attributes and values:</p>
+<ul>
+<li>Attribute has a value</li>
+<li>Attribute is Null</li>
+<li>Attribute is Empty String</li>
+<li>Attribute is Missing</li>
+</ul>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>"Attribute has a value" is the opposite of the three other tests; for example, this attribute is not Null, AND it is not an empty string, AND it is not missing. Incidentally, "missing" means the attribute does not exist at all on the feature being tested.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>"Contains Regex" means only part of the string needs to match. For example...</p>
+<pre>Attribute Value: &nbsp;abcd Search String: &nbsp; &nbsp;^ab Contains Regex: &nbsp;Passed</pre>
+<p>For example, the entire string doesn't need to match.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="test-filter">TestFilter</h2>
+<div>The TestFilter allows a number of conditions to be tested, each of which can have a number of test clauses. Each condition is given an output port, with an additional output port for features that fail all of the test conditions.</div>
+<div>&nbsp;</div>
+<div>The TestFilter is very similar to the CASE or SWITCH command in programming or scripting languages. In Workbench it looks like this:</div>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.053.GoodTestFilterExample.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.053.GoodTestFilterExample.png" alt="TestFilter example with multiple output ports" /></a></p>
+<p>Notice that there are multiple conditions, and an output port for each. Each condition/port combination is equivalent to a single Tester transformer; hence the TestFilter is a good way to combine multiple Tester transformers into one.</p>
+<p>The TestFilter output ports can be given custom names, rather than a simple passed/failed, which is another advantage to this transformer over the Tester.</p>
+<p>The TestFilter has the full set of operators available with the Tester such as equals, greater than, less than, and so forth. Each condition is tested in turn.</p>
+<p>Features that pass are output through the matching output port. Features that fail are sent on to the next condition in the list. Therefore it&rsquo;s very important to get the conditions in the correct order.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<blockquote>
+<div class="message-media-content">
+<p>The TestFilter is very good for filtering a feature by a set of cascading conditions, for example here are a set of tests to again determine whether to send out a snow plow:</p>
+<ul>
+<li>Has there been more than 150 mm of snowfall?</li>
+<li>Has there been more than 100 mm of snowfall AND is this an Arterial road?</li>
+<li>Is the temperature less than zero degrees Celsius AND was sand last applied more than 24 hours ago?</li>
+</ul>
+It&rsquo;s a set of cascading tests because if there has been more than 150 mm of snow, the plows are sent out anyway; you don&rsquo;t need to test any other criteria. So the test order can be very important. If every test is a fail, then the plows are not sent out. If using the above snowfall example, you were using three Tester transformers, you could save space on the workspace canvas and replace that setup with just a single TestFilter.</div>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Because the TestFilter can carry out a single test (as well as multiple ones) it's possible to use it exclusively instead of the Tester transformer.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

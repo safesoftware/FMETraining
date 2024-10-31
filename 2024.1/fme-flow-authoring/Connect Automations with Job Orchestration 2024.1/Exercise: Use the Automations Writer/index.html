@@ -1,0 +1,168 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Add an Automations writer to a workspace.</li>
+<li>Add and configure a Log a Message Action.</li>
+<li>Trigger and view the results of a Log A Message Action.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-use-the-automations-writer.fmwt" target="_blank" rel="noreferrer noopener">Starting workspace template</a>
+<ul>
+<li>C:\FMEData\Workspaces\AutomateWorkflows\exercise-use-the-automations-writer.fmwt</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-use-the-automations-writer-complete.fmwt" target="_blank" rel="noreferrer noopener">Complete workspace template</a>
+<ul>
+<li>C:\FMEData\Workspaces\AutomateWorkflows\exercise-use-the-automations-writer-complete.fmwt</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">BuildingFootprints.zip</a>
+<ul>
+<li>C:\FMEData\Data\Engineering\BuildingFootprints</li>
+</ul>
+</li>
+</ul>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">All resources are available via the links above. If you are using a Safe Software training machine or downloaded FMEData, you can use the local paths.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>&nbsp;</p>
+<p>You have recently created an Automation in FME Flow that processes building footprint updates with both the Resource or Network Directory (updated) and Email Triggers. The Automation monitors a Shared Resource Data folder on FME Flow for new building footprint shapefiles, then adds the updates to a SpatiaLite database automatically. Now your supervisor is wondering if they can receive a notification whenever the corporate database is updated.</p>
+<p>You know it is possible to configure the existing Automation in FME Flow to satisfy this requirement. You also realize that you can use an Automations writer in the workspace to include additional information about the updates made to the corporate database in the notification.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>This is a great use-case for the Email External Action. However, those can be a bit tricky to configure due to email server security.</p>
+</blockquote>
+<p>Therefore, for simplicity's sake, in this exercise, we will just use the Log a Message Action in place of the Email External Action.</p>
+<p>If you are interested in learning how to use an email with Automations, please refer to the&nbsp;<strong>Run Workspaces with Email Triggers</strong>&nbsp;lesson.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="1-open-workspace-in-workbench">1) Open Workspace in Workbench</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-use-the-automations-writer.fmwt" target="_blank" rel="noreferrer noopener">starting workspace template</a> (<code>C:\FMEData\Workspaces\AutomateWorkflows\exercise-use-the-automations-writer.fmwt)</code>in FME Workbench (2023.0 or later).</p>
+<h2 id="2-create-summary-information-for-job">2) Create Summary Information for a Job</h2>
+<p>You are going to update this workspace to generate a summary of the number of records that were updated from the incoming Shapefile. First, you need to create a single feature from the updates. This step is common in FME when you want to log a summary message; you just want to log one per update, not one for every feature in that update.&nbsp;</p>
+<p>Add an Aggregator transformer and connect it in parallel to the Shapefile reader feature type like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.439.Ex4.Aggregator.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.439.Ex4.Aggregator.png" alt="Starting workspace with Aggregator added" /></a></p>
+<p><br />Open the Aggregator parameters dialog and set the Accumulation Mode to &ldquo;Use Attributes From One Feature&rdquo; and the Number of Aggregated Features to be named NumberOfUpdates.</p>
+<p><img src="images/1727903859849.png" alt="" /></p>
+<h2 id="3-add-automations-writer">3) Add Automations Writer</h2>
+<p>Go to Writers &gt; Add Writer and select the FME Flow Automations format. Set the Feature Type Definition to Automatic... and click OK to add the writer to the canvas.&nbsp;</p>
+<p>When prompted, set the Feature Type Name to JobSummary and click OK.</p>
+<p>Connect the Automations writer feature type to the output port of the Aggregator transformer.</p>
+<p>Each Automation writer feature type will appear as a new output port on your Run a Workspace Action in your Automation.</p>
+<h2 id="4-clean-up-automations-writer-attributes">4) Clean up Automations Writer Attributes</h2>
+<p>After connecting the Automations writer feature type, you'll notice that all the attributes from the Shapefile data are included on the writer. We don't need all that information within the Automation. Double-click JobSummary to open its parameter dialog, then go to User Attributes and select Manual under Attribute Definition.</p>
+<p>Remove all the attributes except for the one we created earlier, NumberOfUpdates. Set the Type for NumberOfUpdates to int, as this is a numeric value.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.440.Ex4.FeatureTypeDefinition.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.440.Ex4.FeatureTypeDefinition.png" alt="Setting User Attributes" /></a></p>
+<p>Click OK to apply that change. At this stage, there should be two attributes on the JobSummary Feature Type: NumberOfUpdates&nbsp;<strong>and fme_feature_type</strong>.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.441.Ex4.FeatureTypeFinal.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.441.Ex4.FeatureTypeFinal.png" alt="Connecting Aggregator to new JobSummary writer feature type" /></a></p>
+<h2 id="5-save-and-publish-workspace">5) Save and Publish Workspace</h2>
+<p>Save the workspace.</p>
+<p>Select File &gt; Publish it to FME Flow.&nbsp;</p>
+<p>Choose your FME Flow Connection to use. Click Next.</p>
+<p>Use the Training Repository (click New... and create it if it doesn't exist). Check Upload data files. Click Next.</p>
+<p>Ensure only the Job Submitter service is checked. Click Publish.</p>
+<h2 id="6-import-fme-server-project">6) Build an Automation</h2>
+<p>We need to create an Automation that will check for building updates using the Workspace we previously published</p>
+<p>Open the FME Flow web interface and click on Automations &gt; Create Automation</p>
+<p><img class="image image-block image-center" src="images/1718137186270.png" alt="Create Automations Button" width="236" height="112" /></p>
+<p>Click the orange plus symbol <img src="images/1718137387012.png" alt="" width="47" height="44" /> in the bottom left of the canvas and click the green lightning icon to drag and drop a trigger onto the canvas</p>
+<p><img src="images/1718137417109.png" alt="" /></p>
+<p>Double click or right click and select properties on the new trigger you've added. In the drop down that says "Select a Trigger Event" select "Resource or Network Directory (updated)</p>
+<p>Set the parameters as the following:&nbsp;</p>
+<p>Directory to Watch: "$(FME_SHAREDRESOURCE_DATA)/BuildingUpdates/"&nbsp;<br />Events to Watch for:&nbsp;create<br />Poll Interval:&nbsp;30 and seconds</p>
+<p>The details panel should now look like the image below.&nbsp;</p>
+<p><img src="images/1718137760647.png" alt="Resource Directory Details" /></p>
+<p>We want our workspace to run based on a user input in the directory. To pass this user attribute to the workspace we will need to create a Custom Attribute. In the details panel of the trigger, click the bold heading "Output Attributes". Click the blue plus sign under "Custom Attributes" and fill in the inputs as follows</p>
+<p>user. shapefile {file.path}</p>
+<p><img src="images/1718139582854.png" alt="" /></p>
+<p>Click Apply to save these changes</p>
+<h2 id="7-update-workspace-action">7) Add Filter Action</h2>
+<p>Next we want to add a filter action to the canvas so our directory watch only triggers when certain files are added. Our workspace only accepts shapefiles so we don't want the workspace to run with an invalid file type.</p>
+<p>Click on the orange plus symbol again and then the orange wrench, drag this onto your canvas. Double click or right click and select properties on the new orange action to edit the details.&nbsp;</p>
+<p>In the drop down for Action, select "Filter". Set the parameters as the following:&nbsp;<br />Attribute: File Path<br />Contains: .shp&nbsp;<br /><img src="images/1718138068810.png" alt="" /></p>
+<p>Now we need to connect the Trigger to the Action. Click on the check mark port on the Trigger and then click the input port on the Filter action. A line will now connect the two. Your canvas should now look like the image below.&nbsp;</p>
+<p><img src="images/1718138209032.png" alt="" /></p>
+<p>&nbsp;</p>
+<h2 id="7-update-workspace-action">8) Add Workspace Action</h2>
+<p>Click on the orange plus symbol again and then the orange wrench, drag this onto your canvas. Double click or right click and select properties on the new orange action to edit the details.&nbsp;</p>
+<p>In the drop down for Action, select "Run Workspace". From there you will be able to select the repository and workspace you wish to run in this automation. Connect the success output port from the Filter action to the input port of the Run Workspace action.</p>
+<p>Double click or right click and select properties on the Workspace Action in the Automation to open its parameters. Change the Workspace parameter to your recently published workspace, "exercise-use-the-automations-writer.fmw".</p>
+<p>Set the Source Esri Shapefile(s) parameter to the Custom Attributes {user.shapefile} and set the SpatialLite Database path to <code>$(FME_SHAREDRESOURCE_DATA)/Output/building_footprints.sl3</code>&nbsp;</p>
+<p>Click Apply.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/7RN6-9-YIYV4gAIEmRWa4Y8kp6uhqQmZ-90ygANCg1LMJnWwr7RMb4v3A_CrZ8rXJYmYkwZWKN1uQj7KdOstGb9BUKhARLtj1YniwAq2T1JgVQQ37611KANDmkcpTsNuOx_R6636E4eJskzD9AtAino" alt="Setting Shapefile and Spatialite parameters" width="532" height="517" /></p>
+<p>A new output port named JobSummary should appear in the Automation, created by the Automation Writer we just added to the workspace:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/ILRUIKAtFvOaIuRNLLp6RPWdz4jIkQ8ihoyhM0mY5DCfKVQNH87alppMzFVcqe50IQ2cd8X_8Rgjttsbu3bW89mhkud3OxDQgiAHHtP2AOLmG4jOgsq0nPyIllRacUU3wTB07YLvvwXYHPaM8-g8-2s" alt="JobSummary port" width="165" height="168" /></p>
+<h2 id="8-add-external-action">9) Add External Action</h2>
+<p>The final step in the Automation is to add a Log a Message Action through which a response will be sent.</p>
+<p>Select the plus icon in the bottom left and drag an Action (orange) to the canvas. Connect this to the JobSummary output port of the Run Workspace node, which will now also act as a Trigger.</p>
+<p><strong><img class="image image-block image-center" src="https://lh4.googleusercontent.com/yNM9avIfOYKkEIwUK4jc8bPCKtpTUwaqhPhreZ3ASkItjqpICl1zfxLXxMBIzh2YhBPq987c5ht2nozwYxvWPHnFifon7RDsBcWScrnjIUFG3VmB8bB1CdUy9Gxo1Uh9tOXiuhYTiakELJoObnziA0g" alt="Adding an Action" width="386" height="203" /></strong></p>
+<p>Click the FME Flow logo on Action to open its parameters. Choose Log a message for the Action. Enter the following for the Formatted Message:</p>
+<div>
+<pre>The Building Footprints database has been updated! {route.JobSummary.NumberOfUpdates} records were updated.</pre>
+</div>
+<p>If you prefer, you can enter this manually using the Text Editor. You can access it by clicking the drop-down arrow next to Formatted Message and clicking Text Editor:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/wpUyCbDKJ1n0Gz7qYdNiYrrXpBAZi9MW-U4tZ8PijIAkZtmuZKdaMPFkFzYPdgItxRUvDRoNKaedzxdcZM110UnAGLGFcnwxw1b89B1drHGxXNFuovIpG-R7tGLo0Sjf7Nx8p_HvFB9YUzQFtPKMm7E" alt="Setting the Formatted Message using the Text Editor" width="379" height="276" /></p>
+<p>Similar to the Text Editor in FME Workbench, you can construct values using the tree of keys on the left.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/yViiJBfYDXDxp1q5i_L_JjIqrf51HoYZwlHuPGKu1ZW3VroPTxMTJDnz6dUwS__2JBwl9I3B5-EbbM4v_AhPSLPUidFtGQ9e3vRMv8kWUcFeScAPsEbmAtprN6a7b6K3rXfEVRyW5BHG_7o-WPrEKsQ" alt="The Text Editor in Automations" width="733" height="459" /></p>
+<p>After entering in your Formatted Message, click Apply.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">If you were using an Email Action, this message could be the body of the email.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>Save and start your Automation.</p>
+<h2 id="9-test-automation">10) Test Automation</h2>
+<p>We can test this Automation by uploading&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">this ZIP file</a> (C:\FMEData\Data\Engineering\BuildingFootprints) of the Shapefile datasets to FME Flow's Shared Resources Data folder. The Automation is monitoring this folder; when new files arrive, it will run the workspace, updating the SpatiaLite database building_footprints.sl3. We should be able to see this process by examining the Automation log.</p>
+<p>To upload the ZIP file, first, download it.&nbsp;</p>
+<p>Then, extract it to a folder called BuildingUpdates.</p>
+<p><span class="c10">Then navigate to Resources using the FME Flow web interface. Then click on Data.</span></p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/GMCdoslgG8DdHYj7cS2NMAfMqFigYUDiGulXvqNg0VfzmUnYcmG78h_nxpFW7rXHWFT0M2mkX8YpXXiFwdOhXDBjT1Ae_p6OWQRL8YCPAuXSt-LV6jFJWFZ2V50aeFLe1HdK5tM2k6DJNCStaO_nIIk" alt="Find the shared Data folder" width="733" height="376" /></p>
+<p>Create (or open if it already exists) the BuildingUpdates folder. Click it to view its contents.</p>
+<p>Next, click the Upload button and then click Files.</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/9RjxxC9JOjsXduQK2aWgwhCVQP88FBs9IzyQkOaHEhg1w1hZ0GCKY0GPCSQl51zhi-5DB3HuAYvl0lj3_iPUMmlEfGjTLltDPpdMtiTjF3ob183GBAP2-0oIC_9QYs_f78UGFcvYBiwEr1jViJKbJ4E" alt="Uploading files" width="230" height="119" /></p>
+<p>Select the four files corresponding to one of the updates (e.g., update002.dbf, update002.prj, update002.shp, and update002.shx) and click Upload, and then OK. The SHP update will be uploaded.</p>
+<p>Click Automations &gt; Manage Automations &gt; Incoming Building Footprints. Click Menu &gt; View Triggered Jobs. You should see a job for the new building update. If you upload another four files or upload multiple updates at once, you should see one job for each update.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/exercise-use-the-automations-writer/images/1630088562974.png" alt="Viewing jobs" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">The polling interval for the Resource or Network Directory (updated) trigger is set to 30 seconds, so it can take a moment for these Jobs to appear.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>If you examine the Automation log (Automations &gt; Manage Automations &gt; Incoming Building Footprints &gt; Menu &gt; View Log), you should see one line like this per job:</p>
+<div>
+<pre>2022-08-27T10:57:04-07:00 | The Building Footprints database has been updated! 44 records were updated.</pre>
+</div>
+<p>Congratulations! You have successfully used the Automations writer to pass messages out of a workspace.</p>

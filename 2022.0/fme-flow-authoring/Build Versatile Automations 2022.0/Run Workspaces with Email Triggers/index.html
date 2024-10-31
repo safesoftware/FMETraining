@@ -1,0 +1,162 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create an Email Trigger.</li>
+<li>Understand email in the context of both a Trigger and an Action.</li>
+<li>Know the difference between Workbench/Server Email options.</li>
+</ul>
+<h2 id="email-actions">Email Actions</h2>
+<p>FME has the capability to send email notifications to an external client, and this can either be done using the Emailer transformer in FME Workbench, or using the Email Action in Automations on FME Server. This lesson aims to provide an overview of why you may choose to use one method over the other depending on your use case.</p>
+<p>Email Actions are designed to have FME Server send an email in response to a Trigger or Internal Action. The built-in email server in FME Server is only for incoming mail, as is the IMAP protocol, so messages need to be sent via an existing (external) SMTP email server.</p>
+<h2 id="setting-up-an-email-action">Setting up an Email Action</h2>
+<p>Creating an Email Action is done on the Automations page of the web interface and must connect to an existing Trigger. You can either create a new Automation and first set up a Trigger, or view existing Automations through the Manage page, where you can then extend these workflows to include an email notification.</p>
+<p>There are many more parameters for outgoing mail because the full SMTP server connection parameters need to be defined. However, there is an option to load a template for some of the most common email services.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/run-workspaces-with-email-triggers/images/1657140067106.png" alt="Configuring Email Details" /></p>
+<p>Various fields for the email itself (From, To, Subject, Template) can be hard-coded or passed through to the Action from the previous connection in the Automation, whether that be a Trigger or Internal Action. One important parameter is the Email Format, which can either be plain text, HTML, or rich text.</p>
+<p>See the following sections for information on how to generate content for outgoing emails.</p>
+<h2 id="setting-up-an-emailer">Setting up an Emailer</h2>
+<p>Configuring an Emailer transformer is similar to configuring an Email Action.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>See the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/emailer-pkg.htm" target="_blank" rel="noreferrer noopener">Emailer documentation</a>&nbsp;for full details.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/run-workspaces-with-email-triggers/images/1657140119184.png" alt="Configuring the Emailer " /></p>
+<p><em>Emailer vs. Email Action Parameters</em></p>
+<h2 id="who-what-when-where-why">Who, What, When, Where, Why?</h2>
+<p>At first glance, the functionality across the two techniques appears similar, as visually they have almost identical parameters. However, when considering which option is most suitable for your project there are a number of questions you can start to ask which may help determine the method to use.</p>
+<ul>
+<li>Who do you want to receive the email?</li>
+<li>What does the email body contain, is the message static text or dynamic?
+<ul>
+<li>Attribute information?</li>
+<li>Job information?</li>
+<li>Attachments?</li>
+</ul>
+</li>
+<li>When in the translation do you want to send the email?</li>
+<li>Why are you sending the email, do you even need to run a workspace?</li>
+</ul>
+<h2 id="advantages-of-the-emailer">Advantages of the Emailer</h2>
+<p><strong>Include attribute values in the email body</strong></p>
+<p>Using the Emailer transformer means you can pass attribute values into the email body, for example you could use the HTMLReportGenerator and include the html_content attribute to display a prettified report in the email body as opposed to an attachment.&nbsp;</p>
+<p><strong>Send email during translation</strong></p>
+<p>The Emailer will send an email as soon as a feature reaches the transformer, where as the Email in Automations will only be triggered once the workspace translation has been completed. This provides additional control over which scenarios an email is actually sent out.</p>
+<p><strong>Send multiple attachments</strong></p>
+<p>The Email Action currently only allows for one attachment to be uploaded, so in order to send multiple attachments, you would have to send these to a zipped file in your workspace, by using the Emailer transformer instead these can remain individual uploads.</p>
+<p><strong>Create presets for SMTP settings</strong></p>
+<p>If you require a large number of workspaces to send emails, transformers allow you to save parameter settings as Presets, this means that you only need to configure your Email SMTP settings once, and going forward can simply reference this preset.</p>
+<p><strong>Keep all components contained in a single workspace</strong></p>
+<p>Depending on your personal preference, you may prefer to use the Emailer so that everything relating to that workspace is kept together in a single workflow.</p>
+<p><strong>Workspace can be run on Desktop</strong></p>
+<p>If this workspace will continue to be run manually as well as through FME Server, then you may choose to use the Emailer so that you get the same result in each platform.</p>
+<h2 id="advantages-of-email-action">Advantages of Email Action</h2>
+<p><strong>Include Job information</strong></p>
+<p>By sending the email after the job has finished, you have access to additional parameters such as about the job, such as the id, status message, time submitted/finished, and the job log.</p>
+<p><strong>Free up engine</strong></p>
+<p>Using the Email Action allows the workspace to finish and frees up the engine it was using ready to start processing the next queued job.</p>
+<p><strong>Send Email from a trigger with no workspace</strong></p>
+<p>Using Automations, you can send emails directly in response to a trigger without the need to even run a workspace, this may be particularly useful for FME Server Administrators who would like to monitor events that take place on the system.</p>
+<p><strong>Easier to maintain</strong></p>
+<p>Once a workspace has been published to FME Server, the parameters can no longer be edited, therefore if there were any changes to the email parameters, for example, the sender credentials, you would have to download, modify and republish the workspace. By using the Email action, you can manage the configuration through the Web UI.</p>
+<p><strong>Creates separation in a workflow</strong></p>
+<p>By setting up the Email Action, you are not confining the email to a single workflow. You may find this preferable as you can easily identify how things are linked together through the Web UI, it also means you can configure multiple workspaces to use the same email action.&nbsp;</p>
+<h2 id="quick-comparison-chart">Quick Comparison Chart</h2>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td colspan="1" rowspan="1">
+<p><strong>What?</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><strong>Emailer</strong></p>
+</td>
+<td colspan="1" rowspan="1">
+<p><strong>Email Action</strong></p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Include attribute values in email</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>Y&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Send email during translation</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>Y&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Send multiple attachments</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>N - workaround is to zip files</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Send job information</td>
+<td colspan="1" rowspan="1">
+<p>N</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Email configuration presets</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>N -&nbsp;<a href="https://community.safe.com/s/idea/0874Q000000TkxgQAC/detail" target="_blank" rel="noreferrer noopener">community idea</a></p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Keep all actions contained in a single workflow</td>
+<td colspan="1" rowspan="1">
+<p>N</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Send email without running a workspace</td>
+<td colspan="1" rowspan="1">
+<p>N</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Email configuration manageable through Web UI</td>
+<td colspan="1" rowspan="1">
+<p>N</p>
+</td>
+<td colspan="1" rowspan="1">
+<p>Y</p>
+</td>
+</tr>
+</tbody>
+</table>

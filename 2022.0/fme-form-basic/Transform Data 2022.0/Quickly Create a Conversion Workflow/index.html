@@ -1,0 +1,228 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Identify when to use&nbsp;Generate Workspace&nbsp;versus starting with a blank workspace.</li>
+<li>Connect to a database.</li>
+<li>Quickly create a workflow using Generate Workspace.</li>
+</ul>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Learning content in the FME Academy presents the story of a user addressing their data integration challenges with FME.&nbsp;<strong>You should follow along with their actions using your own installation of FME (2022.0 or later)&nbsp;</strong>or request an on-demand virtual machine in the footer link below. Some lessons will require you to follow their steps or to take additional steps on your own to answer a quiz question.</p>
+</blockquote>
+<p>The&nbsp;<strong>Resources</strong>&nbsp;section will provide you with links to interactive tutorials and starting workspaces when necessary.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="http://ior.ad/6UFA" target="_blank" rel="noreferrer noopener">Interactive tutorial to help you follow along</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/quickly-create-a-conversion-workflow-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a></li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/PAPy3NV3qtVa4d4aEoz3GU?" width="640" height="360" allowfullscreen=""></iframe></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Videos are provided in this course if you prefer to watch instead of reading the text below. Note that some Quiz answers might require you to read the text.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="jumpstart-your-data-integration-workflows">Jumpstart Your Data Integration Workflows</h2>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" /></p>
+<p>Jennifer is a GIS Specialist working for a local government. She needs to read in a table of business license data from a&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/postgis/postgis.htm" target="_blank" rel="noreferrer noopener">PostGIS</a>&nbsp;database and write it to an&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/filegdb/filegdb.htm" target="_blank" rel="noreferrer noopener">Esri geodatabase</a>, a widely-used spatial database.&nbsp;The PostGIS database is used internally, while the geodatabase is used in public-facing applications. Therefore, she wants to edit the attribute names and filter out some features with revoked business licenses in the final geodatabase in order to have appropriate data for displaying to the public.</p>
+<p>Before she conducts those steps, however, she needs to get started with a basic conversion workspace. She could add her readers and writers manually on a blank canvas, or she could use the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/workspace-dialog-using.htm" target="_blank" rel="noreferrer noopener"><strong>Generate Workspace</strong></a>&nbsp;dialog to set up her workspace faster.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Jennifer is working with the same BusinessOwners dataset as Sven from the previous course, but she&rsquo;s reading it from a database instead of an Excel spreadsheet.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Jennifer knows that the&nbsp;<strong>Generate Workspace&nbsp;</strong>dialog will let her quickly create a workspace. She just has to supply the reader and writer format and dataset locations, and FME does the rest. It will automatically do its best to duplicate the reader schema (formal definition of a dataset&rsquo;s structure) on the writer, handling differences in data types or restrictions on geometry types or attribute name lengths.</p>
+<p>To generate a workspace, Jennifer starts FME Workbench (2022.0 or later) and clicks&nbsp;<strong>Generate&nbsp;</strong>in the Start tab.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Follow along with Jennifer's steps using your own version of FME.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652129604387.png" alt="Generate Workspace button" /></p>
+<h2 id="connect-to-a-database">Connect to a Database</h2>
+<p>With the&nbsp;<strong>Generate Workspace&nbsp;</strong>dialog open, Jennifer fills out the&nbsp;<strong>Reader&nbsp;</strong>section first to define her source data. She chooses PostGIS by typing in the&nbsp;<strong>Format&nbsp;</strong>field and then selecting &ldquo;PostGIS&rdquo;&nbsp;from the drop-down options.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/5-afa-0525-65-c-9-4-ff-8-a-48-a-994-c-23690-cdc.png" alt="Selecting a Reader format in the Generate Workspace dialog" /></p>
+<p>Next, she needs to connect to the database. She can do that with a&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!NamedConnections/Using_Database_Connections.htm" target="_blank" rel="noreferrer noopener">database connection</a>.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><strong>Database connections&nbsp;</strong>save authentication information for databases. FME also has&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!NamedConnections/Using_Web_Service_Connections.htm" target="_blank" rel="noreferrer noopener"><strong>web connections</strong></a><strong>&nbsp;</strong>to connect to web services and APIs. They are stored on the user&rsquo;s operating system profile, so authentication information can be stored separately from the workspace. They can also be published to FME Server to allow multiple users to share them without exposing any passwords.</p>
+<p><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/Working_with_Databases_Web_Services.htm" target="_blank" rel="noreferrer noopener">Learn More</a></p>
+</blockquote>
+<p>Jennifer clicks the&nbsp;<strong>Connection&nbsp;</strong>drop-down menu and chooses&nbsp;<strong>Add Database Connection</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/f-621-a-975-813-f-47-ec-a-945-656-b-753-d-04-e-4.png" alt="Adding a Database Connection" /></p>
+<p>From here, she fills in her database connection details.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652204780038.png" alt="Training database connection setup" /></p>
+<p>She clicks&nbsp;<strong>Test&nbsp;</strong>and then&nbsp;<strong>Save</strong>. FME tests the connection and confirms that it is working.</p>
+<p>Because Jennifer doesn&rsquo;t want to read the entire database, she clicks the&nbsp;<strong>Parameters&nbsp;</strong>button, which will allow her to choose the table she wants to read.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/9-d-556889-80-df-43-e-5-b-75-f-d-7-d-30635-fc-0-e.png" alt="Parameters button" /></p>
+<p>In the&nbsp;<strong>PostGIS Parameters&nbsp;</strong>dialog, she clicks the ellipsis&nbsp;<strong>[...]&nbsp;</strong>button next to the&nbsp;<strong>Tables&nbsp;</strong>parameter. She clicks the&nbsp;<strong>&gt; arrow&nbsp;</strong>next to&nbsp;<strong>public&nbsp;</strong>to expand the list of tables and then picks the&nbsp;<strong>BusinessOwners</strong>&nbsp;table from the list. This step ensures only the BusinessOwners table will be read.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/94-ffc-65-b-d-2-c-9-4295-b-48-e-1659-de-01-b-6-ce.png" alt="Selecting the BusinessOwners table" /></p>
+<p>Once the&nbsp;<strong>BusinessOwners&nbsp;</strong>table is selected, she saves her changes by clicking&nbsp;<strong>OK</strong>.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If Jennifer wanted a subset of features, she could use SQL in the&nbsp;<strong>Where Clause</strong>&nbsp;parameter or a transformer like the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/sqlcreator.htm" target="_blank" rel="noreferrer noopener">SQLCreator</a>&nbsp;to&nbsp;<a href="https://knowledge.safe.com/articles/44483/let-the-database-do-the-work-reading.html" target="_blank" rel="noreferrer noopener">let the database do the work</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">&nbsp;</div>
+</div>
+</div>
+</div>
+<h2 id="generate-a-workspace">Generate a Workspace</h2>
+<p>Jennifer needs these business tables in an Esri geodatabase so she can use them in ArcGIS. To create a new Esri geodatabase for this data, she fills out the&nbsp;<strong>Writer&nbsp;</strong>section of the&nbsp;<strong>Generate Workspace</strong>&nbsp;dialog. She selects the&nbsp;<strong>Format&nbsp;</strong>&ldquo;Esri Geodatabase (File Geodb Open API)&rdquo; and enters the file path &ldquo;C:\FMEData\Output\Training\BusinessOwners.gdb&rdquo; for&nbsp;<strong>Dataset</strong>. BusinessOwners.gdb will be created in the Training folder once this workspace is run.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652129735116.png" alt="Setting Writer Format and Dataset" /></p>
+<p>Before clicking&nbsp;<strong>OK</strong>, there is one extra step. Jennifer needs to review the parameters of the readers and writers she&rsquo;s using to ensure that her data is being transformed properly. Jennifer knows that while authoring her workspace, she might want to run this workspace more than once for testing purposes. And if she does that without handling the parameters correctly, especially the database operations, she could end up appending the same data to the original output from the first run of the translation. To avoid this mistake, she opens the&nbsp;<strong>Parameters&nbsp;</strong>and&nbsp;enables<strong>&nbsp;Overwrite Existing Database</strong>.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652129843696.png" alt="Setting Overwrite Existing Geodatabase parameter" /></p>
+<p>This step ensures that if the workspace runs more than once the entire geodatabase is rewritten.</p>
+<p>She saves her changes by clicking&nbsp;<strong>OK</strong>, and FME Workbench generates the workspace.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652132046414.png" alt="Generated workspace" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>It is generally a good idea to look at the parameters before adding a reader or writer. If you ever are working with your data and find it looks odd, there is a good chance a reader or writer parameter needs to be changed.</p>
+<p><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/reader_writer_parameters.htm" target="_blank" rel="noreferrer noopener">Learn More</a></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="understanding-a-generated-workspace">Understanding a Generated Workspace</h2>
+<p>Jennifer notices that FME has automatically added a transformer called the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/geometryfilter.htm" target="_blank" rel="noreferrer noopener"><strong>GeometryFilter</strong></a>&nbsp;to the canvas. The&nbsp;<strong>GeometryFilter&nbsp;</strong>is one of the hundreds of transformers available in FME that allow users to modify their data without having to code. FME automatically added a&nbsp;<strong>GeometryFilter</strong>&nbsp;to filter incoming PostGIS features by geometry type, writing points, lines, polygons, and collections to corresponding writer feature types. This transformer is needed because a geodatabase feature class can only have one type of geometry, and this limitation is inherent to the data format structure.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Home.htm" target="_blank" rel="noreferrer noopener"><strong>Transformers</strong></a><strong>&nbsp;</strong>are objects on the canvas that modify features. We will discuss transformers more in the next lesson.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Remember the problem Sven ran into in the earlier lesson,&nbsp;<a href="https://docs.google.com/document/d/e/2PACX-1vRM4vBrX3CtY_7IjA7vJzM2-B1oS-KGXNkfE50bPE5FV8Zex9Ju6igLfh8PTmygVYL1oHkbVnvv0uiT/pub#h.wxfn75vgnxwe" target="_blank" rel="noreferrer noopener">Understand and Fix Problems With Your Workspace</a>? He added a geodatabase writer manually, but he ran into problems when he tried to write his data. The source of the error was that he had not manually set the geometry type for each geodatabase writer feature type. Using&nbsp;<strong>Generate Workspace&nbsp;</strong>helps you avoid errors from format limitations like this one by automatically duplicating the source schema on the destination and adding transformers where necessary.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Jennifer sees that Generate Workspace has created four feature types (feature classes in the geodatabase), one for each kind of geometry supported by the geodatabase format.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652132115694.png" alt="Generate Workspace has created four feature types" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Remember, feature types correspond to tables for spreadsheets or databases or layers (geometry plus attributes) for spatial data. Each feature type belongs to a reader or writer.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>By clicking the triangle on the left of her reader and one writer feature type, Jennifer can see that FME duplicates the reader schema (e.g., attribute names) as best it can on the writer, taking into account format issues like different data types and restrictions on attribute names. These automated steps are one reason she used&nbsp;<strong>Generate Workspace</strong>.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652132267171.png" alt="Drop-down arrows to view attributes" /></p>
+<p>After she quickly examines the attribute names, she clicks the triangles again to hide them. She&rsquo;ll examine the schema in more detail later.</p>
+<h2 id="run-the-workspace">Run the Workspace</h2>
+<p>Jennifer clicks&nbsp;<strong>Run&nbsp;</strong>to run her workspace and convert her data.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/da-46-c-9-ab-369-d-4-a-8-d-84-c-3-b-95-ac-9632-b-1-b.png" alt="Run button" /></p>
+<p>After the workspace has run, the&nbsp;<strong>Translation Log</strong>&nbsp;reports that the &ldquo;Translation was Successful&rdquo;. Jennifer selects one of the writer feature types and clicks<strong>&nbsp;Open Containing Folder&nbsp;</strong>to confirm the geodatabase has been created.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/1652131878237.png" alt="Output location" /></p>
+<p>Jennifer is off to a good start. She has created a new geodatabase from her PostGIS dataset with the business owner data loaded into it. Next, she has to edit the schema.</p>
+<h2 id="exercise">Exercise</h2>
+<p>After following along with Jennifer&rsquo;s steps, find the size of your BusinessOwners.gdb output to answer the quiz question below. You can check the size on Windows by right-clicking the folder in the&nbsp;<strong>File Explorer</strong>, clicking&nbsp;<strong>Properties</strong>, and checking the&nbsp;<strong>General&nbsp;</strong>tab and the number under&nbsp;<strong>Size</strong>. On Mac, click the folder in&nbsp;<strong>Finder&nbsp;</strong>to select it, then use&nbsp;<strong>File&nbsp;</strong>&gt;&nbsp;<strong>Get Info</strong>&nbsp;and check the&nbsp;<strong>Size</strong>.</p>

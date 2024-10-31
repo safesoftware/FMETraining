@@ -1,0 +1,91 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain how Automations help you achieve enterprise data integration.</li>
+<li>Define an Automation.</li>
+<li>Decide when you need to use an Automation for your own workflows.</li>
+<li>Distinguish Automations from Streams.</li>
+</ul>
+<h2 id="why-automation">Why Automation?</h2>
+<p>Enterprise Integration tackles two main problems that make it difficult for an organization to freely share data:</p>
+<ol>
+<li>Data is stored in a format or system that restricts users from gaining access at the source.</li>
+<li>Data is complex and expert knowledge is required to navigate the system or understand the data itself.</li>
+</ol>
+<p><a href="https://www.safe.com/what-is/data-integration/" target="_blank" rel="noreferrer noopener">Data Integration</a>&nbsp;and&nbsp;<a href="https://www.safe.com/what-is/application-integration/" target="_blank" rel="noreferrer noopener">Application Integration</a>&nbsp;help make information physically accessible and easier to understand, but total Enterprise Integration is a tall order for many organizations. This is where Automation comes into play. Automation is the process of building a task or service that can run with minimal human interaction. Whether you are a team of 10 or 10,000, the ability to employ automation is essential to enterprise growth.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Learn more about the business problems automation can solve with our&nbsp;<a href="https://www.safe.com/blog/2021/7/enterprise-integration-wins-5-reasons-add-automation/" target="_blank" rel="noreferrer noopener">Enterprise Integration Wins: 5 Reasons to Add Automation</a>&nbsp;blog post.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="what-are-automations">What Are Automations?</h2>
+<p>Automations provide a way for data to be pushed to FME Server in the form of short messages and react to these messages by triggering actions either internally or to external clients.</p>
+<p>Automations are built on the concept of the FME Server Notification Service using a simple message (sometimes called an &ldquo;alert&rdquo;) that informs someone or something that a particular event has happened.</p>
+<p>Automations in FME Server are made up of two different components:&nbsp;<strong>incoming triggers</strong>&nbsp;and&nbsp;<strong>outgoing actions</strong>.</p>
+<p>Triggers alert FME Server to an event that has taken place either on FME Server or on an external application.</p>
+<p>Actions are divided into two categories: Internal and External. Internal actions submit jobs to run on FME Server whilst External actions either send notifications to a client that an event has taken place on FME Server, or push result data out to a location.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/what-are-automations/images/1658357959441.png" alt="Application integration diagram" /></p>
+<p>In this way, FME Server can take action in response to an event notification or a user can take action in response to a notification from FME Server.</p>
+<p><strong>Automations</strong>&nbsp;are the part of the FME Server architecture that handles all incoming and outgoing notifications.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Throughout the documentation and within the FME Server web interface, you might see mention of Publications, Subscriptions, and Topics. These objects are still present in FME Server (Automations &gt; Notifications (Classic)) and can be directly modified. However, they have been mostly replaced by Automations as of FME Server 2021.0. If you are a new user, we recommend focusing on learning Automations.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="when-to-use-automations">When to Use Automations</h2>
+<p>Automations allow you to incorporate a variety of triggers and actions into a single workflow. Automations should be used when you want to chain a number of different notification elements together in FME or build multiple reactions to a single event.&nbsp;</p>
+<p>As well as using Automations to trigger an FME Server response to something that happened outside of FME Server, they are also useful when you want to send a message about something that happened on FME Server to an external client.</p>
+<p>In either case, an automation is meant for sending a short message, usually in order to trigger an action from the recipient.</p>
+<h2 id="automations-and-real-time-data">Automations and Real-Time Data</h2>
+<p>Real-time systems are those that act on events as they happen, and send information as it becomes available.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/what-are-automations/images/1658357993202.png" alt="Real-time data display example" /></p>
+<p>Real-time is often implemented to monitor sensor networks, run event-driven processing, and/or to send alerts to external clients such as to an application or as an email. Therefore real-time data processing is commonly used to handle small amounts of information (rather than large datasets) that arrive either as individual events or as a continuous communication stream.</p>
+<p>Real-world examples of data that would arrive as individual events include processing simple location data from a vehicle tracking system or sending an email to a system administrator in response to database table updates. An example of continuous data would be handling a stream of data being sent from a temperature sensor or lightning detector.</p>
+<p>Real-time data in FME Server is handled in two ways: Automations and Streams.</p>
+<h2 id="automations">Automations</h2>
+<p>Automations are how FME Server handles individual message streaming and alerts.</p>
+<p>FME Server allows you to build Automation workflows that can be set up to listen for an incoming message from outside of FME and trigger a certain action in response or to send a single alert in response to an event that takes place on FME Server.</p>
+<p>Triggers and actions include email, FME Server system events, directory watchers, WebSockets, and more.</p>
+<p>You should use Automations if you need to listen to incoming messages at a rate of less than one per second.</p>
+<h2 id="streams">Streams</h2>
+<p>Streams are a real-time technique like Automations. However, where Automations receive/send one-off messages, Streams involve a continuous flow of information.</p>
+<p>Instead of a workflow being run once for each message, a Stream runs continuously, receiving messages as soon as they are sent. Because of this reduced overhead, this technique can process data at a much faster rate than Automations. For our purposes, &ldquo;continuous&rdquo; means that messages arrive at the FME Server at a faster rate than Automations could handle; say more than one message per second.</p>
+<p>You should use Streams if you need to listen to incoming messages at a rate of more than one per second.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><a href="https://community.safe.com/s/article/Getting-Started-with-Stream-Processing-in-FME" target="_blank" rel="noreferrer noopener">Learn more about FME and stream processing</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

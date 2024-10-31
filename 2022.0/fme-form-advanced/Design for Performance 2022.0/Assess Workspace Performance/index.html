@@ -1,0 +1,75 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Measure how long a workspace takes to read data.</li>
+<li>Measure how long a workspace takes to write data.</li>
+<li>Measure how long a workspace's transformers take to run.</li>
+</ul>
+<h2 id="assess-workspace-performance">Assess Workspace Performance</h2>
+<p>Assessing the performance of a workspace such as this:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.006.WorkspaceForPerformanceAssessment.png" alt="An example workspace to assess performance" /></p>
+<p>...requires a bit of time and attention, but knowing how a workspace performs helps to make informed decisions on how to best design (or redesign) it.</p>
+<p>When testing for performance ensure that there is only one instance of FME running, and all other non-essential programs are closed. You'll also need to turn off feature caching, as that can have an effect on the results. Finally, you will need to turn on log timestamping under Tools &gt; FME Options &gt; Translation &gt; Log Timestamp Information.</p>
+<h2 id="assessing-reader-performance">Assessing Reader Performance</h2>
+<p>To be able to improve the efficiency of a reader requires an estimate of how well it is working in the first instance, yet this can be hard to separate out in a workspace that is also transforming data.</p>
+<p>The key message that signifies reading is complete is &ldquo;Emptying Factory Pipeline&rdquo;. Here, for example, reading of the data finished after 26.4 seconds of processing (of course the actual elapsed time might be longer if FME was waiting for a database or the file system to respond):</p>
+<pre>2019-03-29 11:48:54|  26.4|  0.0|INFORM|Emptying factory pipeline</pre>
+<p>However, sometimes that message can be misleading. FME processes the data at the same time it is reading it so that it won't read an entire data set before processing. To avoid this confusion, disable all the transformers and simply run readers:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.007.AssessingReaderPerformanceDisabledWorkspace.png" alt="Disabling transformers to measure reader performance" /></p>
+<p>With the transformers disabled, the message now appears much sooner:</p>
+<pre>2019-03-29 11:49:35|   1.2|  0.0|INFORM|Emptying factory pipeline</pre>
+<p>So we can tell that reading the data is only taking 1.2 seconds.</p>
+<h2 id="assessing-writer-performance">Assessing Writer Performance</h2>
+<p>As with readers, you can't improve the performance of a writer unless you can first assess how well it is already performing. However, assessing the speed of writing has the same complexity as reading: FME starts writing data as soon as it becomes available and doesn&rsquo;t necessarily wait until processing is done.</p>
+<p>So, how can we assess writer performance? Assessing a writer is clearly different to a reader. If you isolate the writers by disabling everything else, there won't be any data to write!</p>
+<p>The easiest way is to disable the writer itself!</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.008.AssessingWritersDisabled.png" alt="Disabling writer feature type to measure writer performance" /></p>
+<p>If the original result was this:</p>
+<pre>2019-03-29 11:54:14|  26.5|  0.0|INFORM|Translation was SUCCESSFUL with 19 warning(s) (148 feature(s) output) 
+2019-03-29 11:54:14|  26.5|  0.0|INFORM|FME Session Duration: 26.7 seconds. (CPU: 22.5s user, 4.0s system)</pre>
+<p>...and with the writer disabled it is now this:</p>
+<pre>2019-03-29 11:56:48|  26.6|  0.0|INFORM|Translation was SUCCESSFUL with 19 warning(s) (0 feature(s) output) 
+2019-03-29 11:56:48|  26.6|  0.0|INFORM|FME Session Duration: 26.6 seconds. (CPU: 22.1s user, 4.4s system)</pre>
+<p>...then we can easily calculate that the writing process is taking merely 0.1 seconds.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Another method is a two-step process.<br /><br />Firstly, add a Recorder as the final transformer, to preserve the data in FFS format at the moment it is about to be written. Run the workspace.<br /><br />Secondly, replace the Recorder with a Player transformer, to re-read the preserved FFS data. Disable everything else up to that point and re-run the workspace.<br /><br />The data is played back into the workspace and written to the output, giving us a measure of writer performance.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="assessing-transformer-performance">Assessing Transformer Performance</h2>
+<p>Assessing the time taken in transformation requires a two-step process.</p>
+<p>First, disable writers and run the translation, taking note of the elapsed time:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.008.AssessingWritersDisabled.png" alt="Disabling writer feature type to measure transformer performance" /></p>
+<p>Then disable the transformers too and rerun the workspace, to calculate the time taken to read the data only:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.007.AssessingReaderPerformanceDisabledWorkspace.png" alt="Disabling transformers to measure transformer performance" /></p>
+<p>The difference in elapsed time between reading the data and reading/transforming the data is the elapsed transformation time.</p>
+<p>It's important not to add an Inspector or Logger transformer to see what is happening to the output. This will slow the translation down and give you a false measure. You must also be sure to disable the actual writer and not just the feature types or connections to them.</p>
+<p>The only writer that is useful in this scenario is the Null format writer. This causes a writer to be present, but it does nothing except to count features and then discard them. The benefit is improved logging of feature counts, but without any data having to be written.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Naturally, where a FeatureReader or FeatureWriter transformer is used, assessing reading and writing requires a different procedure:</p>
+<p>It would be necessary to run the workspace twice; once with everything disabled after that point, and once with everything disabled up to (and including) that point. Then subtract the two run-times to get the correct result.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

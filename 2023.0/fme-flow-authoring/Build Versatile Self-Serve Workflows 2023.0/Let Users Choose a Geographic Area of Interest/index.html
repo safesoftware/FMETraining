@@ -1,0 +1,85 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Let the user use a bounding box parameter to download data within a geographic area of interest.</li>
+<li>Let the user pick from existing features to download data within a geographic area of interest.</li>
+<li>Let the user use an interactive bounding box parameter to download data within a geographic area of interest.</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="geographic-area-of-interest">Geographic Area of Interest</h2>
+<p>Some self-serve workspaces benefit from letting the user choose to download data within a geographic area of interest. There are three ways of doing so with FME:</p>
+<ul>
+<li>A simple, rectangular bounding box</li>
+<li>An existing boundary (any area feature, such as a regional or municipal boundary)</li>
+<li>An ad hoc boundary (an area drawn by the user as needed)</li>
+</ul>
+<h2 id="bounding-box">Bounding Box</h2>
+<p>Letting the user define a bounding box is simple. Every reader can be restricted to only read features within a Search Envelope. The Minimum and Maximum X and Y parameters and the Search Envelope Coordinate System parameters can be published to give the user the ability to manually define a bounding box:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/ltUKPMarNL0P9z76rxYgQ5GDh-GVM2W6SdAAwmxKrhSSs92cTYgCfTSyGU2zcBOM1FeYZslJGho0fwubjEZRsTbzOovV8fVt2rJp4uPsmvdrVEAsLZ2KzSLLAAkpfHgXo405mB-P2LinOhpPm7P1ydY" alt="Search Envelope parameters" width="417" height="387" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">While this approach is simple, it's not very user-friendly. It's a bit annoying to have to manually enter in bounding box coordinates. The method for using an ad hoc, user-submitted boundary drawn on a web map detailed below is more user-friendly.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="existing-boundary">Existing Boundary</h2>
+<p>You can give your readers the option to choose an existing boundary, like a county or a service area, and download the data within that area. There are several ways to accomplish this with FME, but the most effective is to use a WHERE Clause on the reader feature type combined with either a FeatureReader or a Clipper transformer.</p>
+<p><strong>WHERE Clause</strong></p>
+<p>Many reader feature types have the option to apply an&nbsp;<a href="https://www.w3schools.com/sql/sql_where.asp" target="_blank" rel="noreferrer noopener">SQL WHERE clause</a>&nbsp;to the data before reading it into the workspace. For example, this reader feature type has a WHERE clause that means only garbage zones in the blue zone and the north subzone will be read:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/WQXE50vmuMIHef95ffMN-lugv8GQbvPs4ocN6bQK-S1RuG0hWBieuPe0LguQJSEni66ejpoaOJNoItiVkuKECBHFeYTYsMdDJZtwmpTm0j9UBm_bQzWLjfuumMEiB7bypS1zyPSXjcbBp_H2ZCLsbeM" alt="Viewing a WHERE clause on a reader feature type" width="537" height="196" /></p>
+<p>You can easily publish this WHERE Clause parameter to give users control over what existing boundary is used as the area of interest.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/lyShboeZKOy-a37R9CTLBnHwnRg3nQuFc1JU7OZZUn-zLh7tXbNEah689IBuzhJ1VaYdk9_-GKiGgBVDV3xtjnnDyl6kA7tF3yGXP-LTYvT6vWhRSHIAiQ6A-bkq-OcfDfUY0EQig9PxekksX437Txc" alt="Creating a published parameter for the WHERE clause" width="613" height="273" /></p>
+<p>Even better, you could create specific user parameters that are then used within a WHERE clause that is already written. That way the user doesn't need to know how to write a WHERE clause.</p>
+<p>For example, you might create one Choice user parameter called Zone and one called Subzone and then include them in the WHERE Clause parameter through the WHERE Clause Builder:</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/3zFpWym0y-3uTxgA7nx9ugJ5XzpArM2ygZ4lYFfQ1tjtBm6HbXu84RilGAs2ha_bTlXzh48VpKps1fM_67ecSWz7sPfz5zHzUbU8N49ThKc67dZmaPlPnyyjijjaz47YA6mbz_qhgMKcFy4A4gPn9ec" alt="Combining multiple published parameters in the WHERE clause" width="550" height="330" /></p>
+<p><strong>FeatureReader</strong></p>
+<p>Once you have set up a WHERE clause to let the user choose which boundaries to use, you then need to ensure they only receive their desired data within those boundaries. You can do this using a FeatureReader.</p>
+<p>The polygon area of interest feature (or features) is routed into the FeatureReader Initiator port.</p>
+<p>Here a single garbage schedule area (blue zone, north subzone) is passed to the FeatureReader for use as a filter. The idea is to return only addresses that fall inside that garbage collection zone. The parameters are set up like this:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/_rxfH8-HuueTxdI2B1-fzXDq1wJNmqRTgbJUlz-F4V3Uo5YTkcnVLLgGdmzFBH09r_o-NpdpZylZ2vX6cOVFgM2LpG5l85XpmgDMZbpzBm7-2ISIQjzL4vTHQmG282KErh2LtP3pSZNm37HkMjaqGNM" alt="Configuring FeatureReader" width="424" height="568" /></p>
+<p>Notice that the FeatureReader is set to read from an address geodatabase. The Spatial Filter parameter tells the transformer to only read features (addresses) inside the incoming polygon feature (garbage collection zone).</p>
+<p>These features are output through a port dynamically added to the FeatureReader:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/dA7B9GP7rbVEFkgNfQ0ekOKbXGARrDhqER4NwJd-9kuHTe4pYqVP6RercSqpCh9KGjNjOLP45UsCkWOb8DjJ6Q1sblInK42sUI3N4VitUenvezDSZSESOCOmh1iMyLZIbC9WxNllZRJhh9iMhArzEPU" alt="Using the FeatureReader to filter the GarbageSchedule reader feature type" width="501" height="312" /></p>
+<p>The feature counts here show that there are 955 addresses inside that garbage collection zone. The user can pick a zone and subzone and just receive the data from that area.</p>
+<h2 id="ad-hoc-boundary">Ad Hoc Boundary</h2>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">FME 2020.0 and later have the Geometry parameter, a powerful new feature that lets FME Flow users interactively define their geographic area of interest. The parameter accepts a polygon in GeoJSON or FME XML format. To define it on Form, a user has to paste in GeoJSON or FME XML. To define it on FME Flow, they can interactively draw their area of interest on a web map.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>To let users interactively draw their own area of interest, you can use the Geometry user parameter. In this example, we want to create a workspace where the construction company can draw on a map where they will be working. Then a 100m buffer surrounding their construction area will be set and notify the residents of the neighboring houses.</p>
+<ol>
+<li>We use a FeatureReader to read in the address points, and a Reprojector to put them into the UTM83-10 coordinate system.</li>
+<li>We create a Geometry published parameter that lets the user provide their area of interest.</li>
+<li>We then use that parameter to create geometry from GeoJSON using the GeometryReplacer.</li>
+<li>We use another Reprojector to make sure the area of interest matches the rest of the workspace.</li>
+<li>Then, we add a Bufferer to buffer 100m around the area of interest to capture addresses within the area affected by construction noise.</li>
+<li>After that, we use a Clipper to clip the source address data to the area of interest.</li>
+<li>At this point, the features have quite a few attributes the construction company won't need, so we employ an AttributeKeeper to keep only the necessary attributes.</li>
+<li>Finally, we add an Excel writer feature type to create a spreadsheet that can be used by the construction company to notify affected addresses.</li>
+</ol>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/rq54gL_f6-Enscy1HmaZupS8JecQXgKIZreXsTPUjmX1PfXa3lsC6Ux0ATrIb35roHVMnS_9mkD9A72hKB7-lX7pX0Mt8bqn2-nX3KYDgmlsXlwdXbD2nE_AAFazUcltaAetL5DFZvRbYZe-zCRrT9s" alt="Example workspace using the Geometry published parameter" width="613" height="179" /></p>
+<p>When this workspace is run on FME Flow, the user can select their area of interest using an interactive web map:</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/49LCZLmT8LHdisLljcR2LEfcZxMWmodCSQQq8Sip9D0ZM0W6_mIIO3BV8wTYH13YsvR6iExqV7szuqGgATvvwtugHUEqgs6HZjlKv4NwMGP7YFQKtTAlS0qa2dDjoAHb8QWsoDMnGz-k-UvcGHb3uyI" alt="Select Geometry parameter" width="613" height="542" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">Previous versions of FME can accomplish this workflow, but they require using the FME Flow REST API and HTML/CSS/Javascript. You can </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407466472589-Data-Distribution-with-Web-Maps" target="_blank" rel="noopener">view an example</a><span style="font-family: inherit; font-size: 1em;">&nbsp;on our Knowledge Base.</span></blockquote>
+</div>
+</div>
+</div>
+</div>

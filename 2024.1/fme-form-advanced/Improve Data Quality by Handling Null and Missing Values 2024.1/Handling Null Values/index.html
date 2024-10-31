@@ -1,0 +1,41 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Identify different forms of nothing values using the Tester.</li>
+<li>Use transformers with options for handling missing, empty, and null values.</li>
+<li>Use join transformers with options for handling missing, empty, and null values.</li>
+</ul>
+<h2 id="recognizing-null-values">Recognizing Null Values</h2>
+<p>Besides representing all forms of nothing in its interface, FME also allows nothing to be a condition in various tests, lets users set nothing values, and allows bulk updates from one form of nothing to another.</p>
+<p>Formats have various ways to represent nothing. However, if they support the concept of null, then FME will read any null attributes with a&nbsp;<code>&lt;null&gt;</code>&nbsp;value.</p>
+<p>For a workspace to check for incoming nulls, the Tester transformer has specific operators to test for null, empty, and missing values:</p>
+<p><img class="image image-block image-center" src="images/1724356906221.png" alt="Null, empty, and missing value options in the Tester" width="189" height="306" /></p>
+<p>Because the Tester interface is incorporated into many facets of FME (such as the TestFilter transformer or Conditional attributes/parameters), you can test for nulls wherever you find that interface.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The "Attribute Has a Value" test returns true when an attribute is not null, empty, or missing, saving you the inconvenience of using those three tests separately.</span></p>
+</blockquote>
+<h2 id="other-null-handling-transformers">Other Null-Handling Transformers</h2>
+<p>Many other transformers also allow testing for nulls. For example, the Matcher transformer has options as to whether null values constitute a match:</p>
+<p><img class="image image-block image-center" src="images/1724356915475.png" alt="Matcher empty, missing, and null options" width="555" height="205" /></p>
+<p>This parameter lets the workspace author decide whether null, empty, and missing values should be treated as different values.</p>
+<p>If set to No, then two features can match even if one has an attribute that is&nbsp;<code>&lt;null&gt;</code>&nbsp;and the other has an attribute that is&nbsp;<code>&lt;missing&gt;</code>.</p>
+<p>If set to Yes, then two features can only match when their attributes are the same type of nothing, i.e., when &lt;null&gt; one feature is matched by&nbsp;<code>&lt;null&gt;</code>&nbsp;on the other.</p>
+<p>Another example is the AttributeFilter transformer, which has separate output ports for&nbsp;<code>&lt;Empty&gt;</code>,&nbsp;<code>&lt;Missing&gt;</code>, and&nbsp;<code>&lt;Null&gt;</code>:</p>
+<p><img class="image image-block image-center" src="images/1724356923897.png" alt="AttributeFilter empty, missing, and null options" width="199" height="182" /></p>
+<h2 id="writing-null-values">Writing Null Values</h2>
+<p>It's often important to be able to test for and filter null values as part of a data validation process or when a null value would cause problems in a calculation.</p>
+<p>However, filtering out null values when writing data is sometimes important. What happens when an attribute set to null is sent to a writer depends significantly on the data format.</p>
+<p>If the format supports&nbsp;<code>&lt;null&gt;</code>, the destination dataset will contain <code>&lt;null&gt;</code>&nbsp;attributes.</p>
+<p>If the format doesn&rsquo;t support&nbsp;<code>&lt;null&gt;</code>, then FME will automatically convert the data to the closest representation that is supported.</p>
+<p>For example, MapInfo TAB does not have a concept of&nbsp;<code>&lt;null&gt;</code>; instead, text attributes are not written (so FME will read them back as &lt;missing&gt;), and numeric attributes are written as -9999 (which is a MapInfo equivalent to null).</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Remember that FME only converts "null" values when the format does not support the current representation. For example, if a feature has an empty attribute value, and the format allows empty values, then FME will not convert the data to a true </span><code>&lt;null&gt;</code><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="joining-with-null-attribute-keys-and-values">Joining with Null Attribute Keys and Values</h2>
+<p>Various transformers in FME join data; the FeatureMerger, FeatureJoiner, and DatabaseJoiner are all examples.</p>
+<p>One consideration when joining data is handling null values, particularly null key values in an attribute join.</p>
+<p>When FME compares keys, and one key is null, it must consider what action is correct. Should that feature be rejected, or should that feature be joined to other features with a null key?</p>
+<p>Similarly, when FME merges attributes and there is a clash, most transformers have a parameter to specify which takes precedence. But should that action be the same when the attribute with priority has a null value? Should a null overwrite an actual value?</p>
+<p>These are all aspects of data joins to consider. Some transformers - for example, the FeatureMerger - have a specific parameter to handle nulls. In general, you should always inspect the documentation for each transformer if you suspect that your data contains null values that need handling.</p>
