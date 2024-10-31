@@ -1,0 +1,133 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the benefits of using job chaining.</li>
+<li>Use the Filter Action to conditionally trigger a workspace to run.</li>
+<li>Chain multiple workspaces together in an Automation.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-chain-multiple-jobs-in-an-automation.fsproject" target="_blank" rel="noreferrer noopener">Starting FME Flow project</a>&nbsp;(C:\FMEData\Workspaces\AutomateWorkflows\exercise-chain-multiple-jobs-in-an-automation.fsproject)</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-chain-multiple-jobs-in-an-automation-complete.fsproject" target="_blank" rel="noreferrer noopener">Complete FME Flow project</a>&nbsp;(C:\FMEData\Workspaces\AutomateWorkflows\exercise-chain-multiple-jobs-in-an-automation-complete.fsproject)</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">Modified ElectionVoting.gml</a>&nbsp;(C:\FMEData\Data\Elections\ElectionVoting.gml)</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="what-are-job-chains">What are Job Chains?</h2>
+<p>Workflow management is a technique for controlling workspaces in sequence or branching with inbuilt logic. Part of this technique is being able to author workspaces that are "chained together" to run one after another.</p>
+<p>A chain of jobs is one that runs jobs in a particular sequence; either one after the other or in parallel. You can use Automations to implement this on FME Flow.</p>
+<h2 id="job-chains-and-automations">Job Chains and Automations</h2>
+<p>Automations provide a way to handle workflow management within FME Flow. To do this, you can simply create an Automation to handle triggering jobs in a particular sequence.</p>
+<p>Setting up a job chain within an Automation is as simple as connecting two or more Run Workspace Actions to a Trigger. Depending on the desired behavior, you can connect the run workspace actions together in sequence or in parallel.</p>
+<h2 id="run-jobs-in-sequence">Run Jobs in Sequence</h2>
+<p>When actions are connected in sequence, they are connected in a string like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.019.Sequence.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/w7MaZ97kypk_xbGyxC0AXEaVfINSpB6aHVM0Qft9udNyNl85aLldkRfvtBUWG1iv2dGagWZpCdAbO5ILOrW0rOTZAMjRHOLvwpQHLaw2neYjrGCRzBnKQfR-dfwonbm2DLllzJmKJbmifX7s2ZIRSVY" alt="Jobs in a line" width="383" height="150" /></a></p>
+<p>When connected like this, these jobs will run sequentially. So, the first job will be submitted and FME Flow will wait for it to run to completion. When it finishes, the next job will run to completion before the next action in the chain starts.</p>
+<p>In this example, since the second workspace is connected to the Success port of the action for the first workspace, it will only run if the first job is completed successfully. You can add additional actions connected to the failed ports if you want to handle those failures in some way. For example, if you wanted to send an email out if one of the jobs in this Automation failed to complete.</p>
+<h2 id="run-jobs-in-parallel">Run Jobs in Parallel</h2>
+<p>When actions are connected in parallel, they are connected to a single starting point (this can be a Trigger or another Action within the Automation) instead of in a row:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.020.Parallel.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/yualYR-fr5loxtSU9tHE0qwKrfs7m6W8RE-AXY_O3nlSU72jIogaJ1HOiV88B-yjGyvCR22oEWCyN-0FTnzhzbD4iTzuwByN72lfjDWHYt5Wg_rrizI-ZrQABmkGGYkrOEJ395TAMSfTM5cM8XowwzE" alt="Jobs in parallel" width="287" height="277" /></a></p>
+<p>When connected like this, both these jobs will be submitted at the same time.</p>
+<p>If there are at least two engines available on FME Flow, then they will both run at the same time. If there is only one available engine, one job will run on that engine and the next job will wait in the queue until an engine becomes available. There is no guarantee as to which of these jobs will run first in this case (unless Job Queues have been configured for these workspaces to give them priority).</p>
+<h2 id="conditional-processing">Conditional Processing</h2>
+<p>There are two Automation components that are particularly useful if you need to build some additional logic into your Automations. These are the Filter Action and Split-Merge Block.</p>
+<p>The Filter Action can be used to check if a simple condition is true or false. In the example below, we are using a Filter to check if an email contained a .dgn file as an attachment. If that is true, we will run one workspace and if it's false, we will run a different workspace.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.021.FilterTest.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/ahuBz1DsAq4HaV382mMRwEJnBQo4mNMTMiqsTczg-qWc1vpWRl7QthovyJlS9mL3cJSnnyY281FWky5AtnYLSd2D3FrmNg3-mGAgzztb_bb8EtkRnKwgaw2KPPWpRy3Qn2azsPRxcEujj8nhhrcE4d0" alt="Setting a Filter Action parameters" width="733" height="388" /></a></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">The Filter Action in Automations currently only supports very simple filters. If you need more advanced filtering and the Filter Action isn't enough, you can add a Workspace Action instead and use that workspace check for more advanced conditions and use the Automations Writer to filter the data to different output ports.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>An additional way to orchestrate jobs is the Split-Merge Block, which lets you run workspaces in parallel and then combine the results. We'll talk more about that in the next lesson.</p>
+<h2 id="exercise">Exercise</h2>
+<p>You're a technical analyst in the GIS department of your local city. You have plenty of experience using FME Desktop, and your department has recently begun using FME Flow.</p>
+<p>A municipal election is about to happen, and the Elections office has provided a dataset of new voting divisions in GML format. You've already created a workspace to translate these voting divisions to a SpatiaLite database format for use within the city and that data is being written to a resources folder on FME Flow so everyone can use it.</p>
+<p>Coincidentally, the planning department heard of this update. They have a workspace that assigns voting division IDs to each of the records in the city's address database for use in election planning and would like to have their workspace run automatically whenever there are any updates to the voting divisions.</p>
+<p>You realize that you can chain these two translations together to be carried out consecutively and automatically whenever the Election Voting GML file is updated using an Automation.</p>
+<h2 id="1-import-project">1) Import Project</h2>
+<p>Download the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-chain-multiple-jobs-in-an-automation.fsproject" target="_blank" rel="noreferrer noopener">starting project</a> (<code>C:\FMEData\Workspaces\AutomateWorkflows\exercise-chain-multiple-jobs-in-an-automation.fsproject</code>) for this exercise. Then, in the FME Flow web interface (2023.0 or later), go to Projects &gt; Manage Projects and import it.</p>
+<p>This project contains the two workspaces we want to run in sequence as well as input and output Resource folders for this workflow. Take a moment to familiarize yourself with the contents of this project and look at the two included workspaces using the View Workspace page.</p>
+<h2 id="2-create-automation">2) Create Automation</h2>
+<p>In the FME Flow interface, navigate to the Automations &gt; Create Automation page to start building a new Automation.</p>
+<p>Save the Automation first and name it JobChaining.</p>
+<h2 id="3-add-trigger">3) Add Trigger</h2>
+<p>You want these jobs to start running whenever new data is added to the Election/Input folder, so set up a Trigger to handle that.</p>
+<p>Click on the Trigger that is already placed in your Automation to configure it. Set the Trigger as follows:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Parameter</th>
+<th scope="col">Value</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>Trigger</td>
+<td>Resource or Network Directory (updated)</td>
+</tr>
+<tr>
+<td>Directory to Watch</td>
+<td>Data &gt; Election &gt; Input</td>
+</tr>
+<tr>
+<td>Events to Watch for</td>
+<td>MODIFY</td>
+</tr>
+<tr>
+<td>Poll Interval</td>
+<td>30 Seconds</td>
+</tr>
+</tbody>
+</table>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">We're setting the Poll Interval here to 30 seconds just to make testing faster for the purposes of training. For regular use, we'd recommend using minutes as the minimum interval.<br /><br /></span><span style="font-family: inherit; font-size: 1em;">If you end up with many Automations all set to poll every few seconds, it could take a toll on system performance.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/iT8CA0XcFlN6NgL0oNmGcbx_rCaC5mv1HSEGKMwC2005XwTqp63qzdBRAj-nLStEhQM9eVoPWbCmukt4bNjtlZ70OVfXi0IyXgWHbMRZIjDDwvkcVZq3ejsRW6xJgiRqi40z9is0r_7fFwoxS0YEQXo" alt="Configuring the Resource or Network Directory (updated) trigger" width="538" height="595" /></p>
+<p>Click Apply.</p>
+<h2 id="4-add-workspace-action">4) Add Workspace Action</h2>
+<p>Now we want to add an Action to run the first of the two workspaces we want to run in our job chain.</p>
+<p>Click the Circle icon on the Next Icon object, or click on the + button and drag an Action onto the canvas. Connect it to the Resource or Network Directory (updated) Trigger Success port and configure it as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>Action</td>
+<td>Run a Workspace</td>
+</tr>
+<tr>
+<td>Repository</td>
+<td>Training</td>
+</tr>
+<tr>
+<td>Workspace</td>
+<td>exercise-chain-multiple-jobs-in-an-automation-a.fmw</td>
+</tr>
+</tbody>
+</table>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/6f0_NY8TGl-noHylUAsZTdeEs9qpXBUEfTroWSvMvi-6q0HL87JBOshU9vgFHnPiRvIe-KyaAi8FeyRJdWVDARV76rEMGVMsq3CY0KutTMGOpUr6UPCAcrloniXyZAjmw_baPgPRj_yq8iE_toRk1k8" alt="Action added and configured" width="733" height="368" /></p>
+<h2 id="5-add-second-workspace-action">5) Add Second Workspace Action</h2>
+<p>Remember that a Workspace Action will always wait until the job finishes before moving on to the next Action within the Automation.</p>
+<p>To set up the second workspace to run, simply add a second Action and connect it to the Succeeded port on the Workspace Action we just added. Configure this one to run exercise-chain-multiple-jobs-in-an-automation-b.fmw in the Training repository.</p>
+<p>Your final Automation should look like this:</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/61yyvSTklFkxbQ7_xqyavuDrBTzshu85vpq-zkWgoOe2eLa05GHfO4bKmPd6t59hnowRZNiSnALzEueoymQiYAdvpZRmZx9yDGzBoGL0i3j1u-woK_QCDKlM2XLei5YgD_sbHzX7_tkIl4tGPTa0HN4" alt="Workspaces chained in sequence" width="475" height="182" /></p>
+<h2 id="6-save-and-start-automation">6) Save and Start Automation</h2>
+<p>Save your Automation. Then click the Start Automation button to start the Automation.</p>
+<h2 id="7-test-the-automation">7) Test the Automation</h2>
+<p>Now you can test the Automation by uploading a modified version of the ElectionVoting.gml file to Resources.</p>
+<p>Open the Resources page and navigate to Data &gt; Election &gt; Input. Click on Upload &gt; Files and upload&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">this file</a> (<code>C:\FMEData\Data\Elections\ElectionVoting.gml)</code>.</p>
+<p>Wait a minute or so and then View Triggered Jobs for your Automation. You should see that both chained workspaces successfully ran in order.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/exercise-chain-multiple-jobs-in-an-automation/images/1630360370013.png" alt="Viewing Triggered Jobs" /></p>

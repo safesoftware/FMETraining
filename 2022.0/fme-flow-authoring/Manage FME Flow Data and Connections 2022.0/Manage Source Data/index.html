@@ -1,0 +1,67 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>List and describe various data sources that can be used in FME.</li>
+<li>Explain different methods for source data management.</li>
+<li>Understand how to publish source data to an FME Server repository with the Publishing Wizard.</li>
+<li>Understand the limitations of Publishing data to an FME Server repository.</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>Nearly every FME workspace starts by reading features from a source dataset.</p>
+<p>In some cases that source dataset may be held in a database, or stored on a web service such as Google Drive; it may even be a database running on a web service! On other occasions, the data may not be web-based at all, but stored on a file system and shared for others to access.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.000.SourceDataIntro.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.000.SourceDataIntro.png" alt="FME integrates web services" /></a></p>
+<p>In general, it's easy to author a workspace for use on FME Server because what works on FME Desktop can be published and run on FME Server with minimal alteration of the source data practices.</p>
+<p>However, there are additional methods that can be used to take source data management on FME Server to the next level. These methods include:</p>
+<ul>
+<li>Managing file datasets.
+<ul>
+<li>Publishing file datasets to a repository.</li>
+<li>Uploading file datasets at run time.</li>
+<li>Storing file datasets on the 'Resources' file system.</li>
+</ul>
+</li>
+<li>Using Database Connections for data stored in databases.</li>
+<li>Using Web Connections for datasets stored on a web service.</li>
+</ul>
+<p>This course will cover each method in turn.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If you want to learn more about data integration in general, we recommend you browse these resources:</p>
+</blockquote>
+<ul>
+<li>
+<blockquote><a href="https://safe.my.trailhead.com/en/content/safe/modules/why-data-integration?trail_id=integrate-data-with-the-fme-platform" target="_blank" rel="noreferrer noopener">Why Data Integration?</a></blockquote>
+</li>
+<li>
+<blockquote><a href="https://www.safe.com/what-is/data-integration/" target="_blank" rel="noreferrer noopener">What is Data Integration?</a></blockquote>
+</li>
+<li>
+<blockquote><a href="https://www.safe.com/integrate/" target="_blank" rel="noreferrer noopener">FME Integrations Gallery</a></blockquote>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="publishing-file-datasets-to-a-repository">Publishing File Datasets to a Repository</h2>
+<p>First, let's look at one of the simplest methods: publishing data to a repository. When the source data for a translation is stored as files (rather than a feed or database), it is possible to publish data to an FME Server repository along with the workspace. This data upload method is fast and simple but limits future access to the data. A better practice is to publish your data to the Resources folder separate from the workspace, but we'll walk through those steps later in the course.</p>
+<h2 id="publishing-source-data">Publishing Source Data</h2>
+<p>In this workspace the source dataset is MapInfo TAB:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/manage-source-data/images/1654812093732.png" alt="Viewing source data" /></p>
+<p>A MapInfo TAB dataset is made up of a series of files (.tab, .dat, .id, .map). When this workspace is published, the wizard allows us to publish the data files alongside it by simply checking the box labeled&nbsp;<em>Upload data files</em>.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.010.PublishDataSourceInWiz.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.010.PublishDataSourceInWiz.png" alt="Uploading data with a workspace" /></a></p>
+<p>FME automatically selects the files to upload based on what it thinks is necessary to run the translation. If there are other files you wish to upload, or files FME selected that you don't wish to upload, the Select Files button allows you to make changes:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/manage-fme-server-data-and-connections/manage-source-data/images/005-d-9896-bebd-4672-8289-b-64702646073.png" alt="Select Files to Upload with files selected" width="493" height="364" /></p>
+<p>This dialog also allows you to change&nbsp;<em>where</em>&nbsp;the files are published, but for now, we'll ignore that setting and go with the default of publishing to the repository.</p>
+<p>Once the publishing wizard is complete, those files are uploaded to FME Server and tagged for use with this workspace.</p>
+<h2 id="using-published-source-data">Using Published Source Data</h2>
+<p>When a workspace published with its data is run on FME Server, the uploaded data automatically is used as the source:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.012.PublishDataSourceRunInServer.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.012.PublishDataSourceRunInServer.png" alt="Automatically using published data" /></a></p>
+<p>There are no other settings that need to be changed, and the workspace will run to completion using the published data as its source.</p>

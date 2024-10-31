@@ -1,0 +1,140 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Manipulate lists and extract information from them using common list transformers.</li>
+<li>Join features and build a list from shared attributes using the ListBuilder.</li>
+<li>Conduct advanced list manipulation using the PythonCaller.</li>
+<li>Use the List Element Selection dialog to create new attributes using values from lists.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListTransformerExamples.fmwt" target="_blank" rel="noopener">ListTransformerExamples.fmwt</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListBuilder.fmwt" target="_blank" rel="noreferrer noopener">ListBuilder.fmwt</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/PythonLists.fmwt" target="_blank" rel="noreferrer noopener">PythonLists.fmwt</a></li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>There is no 2023 video available for this lesson. You can <a href="https://safesoftware.hubs.vidyard.com/watch/PWviSJ8aET87z8Zbvi5Eaa?" target="_blank" rel="noopener">view the 2022 video instead</a> if you'd like, but remember, it might not match the instructions.</p>
+</blockquote>
+<h2 id="introduction">Introduction</h2>
+<p>Several FME transformers are designed to work with list attributes. In the previous lesson, we discussed list creation. In this lesson, we will discuss the top transformers used to manipulate, transform, and analyze lists. About 15 transformers in total manipulate list attributes, plus more on <a href="https://hub.safe.com/?page=1&amp;page_size=10&amp;order=relevance&amp;query=list" target="_blank" rel="noreferrer noopener">FME Hub</a>.</p>
+<p>Other useful transformers include the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/attributemanager.htm" target="_blank" rel="noreferrer noopener">AttributeManager</a>,&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/attributeremover.htm" target="_blank" rel="noreferrer noopener">AttributeRemover</a>, or&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/attributekeeper.htm" target="_blank" rel="noreferrer noopener">AttributeKeeper</a>&nbsp;to clean up and remove redundant lists. It's good practice to clean up lists after finishing with them, which will result in better workspace performance. Remove any excess lists as early in the workspace as possible so that FME only translates essential attributes.</p>
+<p>The&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListTransformerExamples.fmwt" target="_blank" rel="noreferrer noopener">ListTransformerExamples.fmwt</a>&nbsp;workspace template builds on the scenario from the previous article, where we used list attributes to store all trees within each park. The below examples refer to this workspace when demonstrating how to use list transformers to work with the&nbsp;<code>_trees{}</code><em>&nbsp;</em>list.</p>
+<p>Download the template and open it with FME Workbench (2021.0 or later).&nbsp;</p>
+<p>Ensure&nbsp;<em>Run &gt;&nbsp;</em><a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/feature_inspection_about.htm" target="_blank" rel="noreferrer noopener"><em>Run with Feature Caching</em></a> is enabled, and then run the workspace.</p>
+<p>In each section below, we will discuss what the transformer does and walk through an example of how to use it.&nbsp;</p>
+<h2>ListElementCounter</h2>
+<p>The simplest of the list-handling transformers,&nbsp; <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listelementcounter.htm" target="_blank" rel="noopener">ListElementCounter</a>&nbsp;returns the number of elements in a list. For example, we can use it to count the elements in the<em>&nbsp;</em><code>_trees{}</code><em>&nbsp;</em>list and store&nbsp;that number in the&nbsp;<em>_treeCount</em> attribute.</p>
+<p><img src="images/1708009865980.jpeg" alt="2022-07-13_13-18-08.png" width="365" height="251" /><br /><br />Since the number of elements in the list represents the number of tree points&nbsp;within a particular park, the&nbsp;result&nbsp;tells us how many trees are in each park.</p>
+<h2>ListExploder</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listexploder.htm" target="_blank" rel="noopener">ListExploder</a><strong>&nbsp;</strong>is in the top 30 most frequently used FME transformers because of its power to turn lists into distinct features. It explodes a list by creating a separate feature for each list element. Most formats cannot write list structures (XML and JSON being notable exceptions), so exploding lists can be helpful when elements need to be preserved.</p>
+<h3>Example: Exploding List Elements into Distinct Features</h3>
+<p>The ListExploder parameters allow you to specify the list to be turned into distinct features. An "Element Index" attribute can be added to each feature to store the element's position in the original list.</p>
+<p><img src="images/1708010463328.jpeg" alt="2022-07-13_13-20-14.png" width="365" height="370" /><br /><br />In the &ldquo;Attribute Accumulation&rdquo; section, you choose how to merge or preserve the incoming attributes. "Accumulation Mode" has three options:</p>
+<ul>
+<li><em>Merge List Attributes</em>&nbsp;- retain&nbsp;all attributes and add&nbsp;the exploded list attributes.</li>
+<li><em>Prefix List Attributes</em> - retain all attributes and add a prefix to the exploded list attributes. This mode is suitable for retaining all attributes and avoiding attribute name conflicts.</li>
+<li><em>Only Use List Attributes</em>&nbsp;- preserve&nbsp;the flattened list attributes and remove&nbsp;all original attributes.</li>
+</ul>
+<p>"Conflict Resolution" helps resolve problems when an exploded list attribute has the same name as one of the original attributes. You can either preserve the original attribute or give the exploded attribute precedence. If you use Prefix List Attributes, there is no need for conflict resolution.</p>
+<p>Check the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listexploder.htm" target="_blank" rel="noopener">ListExploder documentation</a> for more details on how to configure these parameters.</p>
+<p>When we explode the&nbsp;<code>_trees{}</code>&nbsp;list into distinct features, note how the features outputted by the ListExploder keep their respective park attributes, as well as the attributes of that particular tree:</p>
+<p><img src="images/1702081046681.png" alt="Results of a ListExploder" width="614" height="424" /></p>
+<p>The ListExploder also adds a new&nbsp;<em>_element_index&nbsp;</em>attribute to indicate the position of this element in the original list.</p>
+<p>Run the workspace and inspect the output to see how the new table represents the trees. Note that a few features go into the transformer, and many more come out, which indicates that the list has successfully exploded into distinct features.</p>
+<h2>ListSorter</h2>
+<p>Sorting lists, alphabetically or numerically, makes picking off specific characteristics from a list easy. For example, we can use the <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listsorter.htm" target="_blank" rel="noopener">ListSorter</a> to sort&nbsp;the list by the Diameter attribute to find the largest trees.</p>
+<p><img src="images/1708010520846.jpeg" alt="2022-07-13_14-16-54.png" width="365" height="244" /></p>
+<h2>ListIndexer</h2>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listindexer.htm" target="_blank" rel="noopener">ListIndexer</a><strong>&nbsp;</strong>is more selective about turning lists into distinct features. Instead of exploding all list elements like the ListExploder, it only explodes the element(s)&nbsp;at a given index, e.g. {1}. This transformer is often placed after another transformer&nbsp;that arranges the list in a particular order before choosing the index &ndash; for example, the ListSorter or ListSearcher.</p>
+<h3>Example: Sorting a List and Selecting the First Element</h3>
+<p>The ListIndexer can pick the largest tree in the<em>&nbsp;</em><code>_trees{}</code>&nbsp;list. First, the ListSorter is used to sort the list by the <code>_trees{}.Diameter</code>&nbsp;attribute. Next, the ListIndexer is used to get the tree at index 0. The result is stored in a set of new attributes with the prefix&nbsp;<em>_largestTree_.</em></p>
+<p><img src="images/1708010584385.jpeg" alt="2022-07-13_14-08-12.png" width="365" height="269" /></p>
+<p><img src="images/1702081618113.png" alt="Selecting the first element in a sorted list to find the largest tree" width="415" height="337" /></p>
+<h2>ListHistogrammer</h2>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listhistogrammer.htm" target="_blank" rel="noopener">ListHistogrammer</a> builds a histogram from the values in a list and returns these in a new list. The new list is sorted, so the value with the most occurrences will be first.</p>
+<h3>Example: Getting&nbsp;the Feature with the Most Occurrences of a Value</h3>
+<p>We can use the ListHistogrammer to find the park with the most trees and find out how many of each species are in each park.</p>
+<p><img src="images/1708010638442.jpeg" alt="2022-07-13_14-45-34.png" width="365" height="215" /></p>
+<p>With these parameters set, the transformer will count how many of each tree name exists in the&nbsp;<code>_tree{}</code><em>&nbsp;</em>list. It returns the&nbsp;<code>_speciesHistogram{}</code>&nbsp;list. Note how the resulting list includes&nbsp;<em>.count</em>&nbsp;and&nbsp;<em>.value</em> list attributes:</p>
+<p><img src="images/1702081812053.png" alt="Results of the ListHistogrammer" width="386" height="311" /></p>
+<p>Inspect the output, select a park (i.e., Tatlow Park), and view its attributes in the Feature Information pane. Tatlow Park contains a <code>_speciesHistogram{}</code><em>&nbsp;</em>list with five elements. It shows that the park contains 3 Eastern Mountain Maples, two California Incense Cedars, etc.</p>
+<h2>ListConcatenator</h2>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listconcatenator.htm" target="_blank" rel="noopener">ListConcatenator</a><strong>&nbsp;</strong>strings the elements of a list together into a single attribute value. In the parameters, you can specify which character to use as a separator (e.g., a comma or a newline character) and the name of the resulting attribute.</p>
+<h3>Example: Concatenating a List into One Comma-Separated String</h3>
+<p>The ListConcatenator can create a comma-separated list of tree species in each park. The new attribute is called&nbsp;<em>_species</em>. The example in the workspace refers to a list generated by the ListHistogrammer.</p>
+<p><img src="images/1708010691738.jpeg" alt="2022-07-13_14-12-48.png" width="365" height="306" /></p>
+<p>When we inspect the result&nbsp;in the Feature Information pane, we can see the&nbsp;<em>_species</em> attribute with the concatenated list:</p>
+<p><img src="images/1702081998028.png" alt="Results of the ListConcatenator" width="652" height="203" /></p>
+<h2>ListSearcher</h2>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listsearcher.htm" target="_blank" rel="noopener">ListSearcher</a>&nbsp;allows you to use regular expressions or conditionals to search for patterns in a list and identify which element the pattern was found in.</p>
+<h3>Example: Searching a List</h3>
+<p>We can use this transformer to search the&nbsp;<code>_trees{}</code>&nbsp;list for elements with "Oak" in the&nbsp;<em>COMMON_NAME</em>. The index of the first element that contains the string is saved in an attribute called&nbsp;<em>_list_index</em>.</p>
+<p><img src="images/1708010857670.png" alt="2022-07-13_14-19-03.png" width="372" height="395" /></p>
+<p>The <em>Copy Found List Element</em>&nbsp;parameter replicates the functionality of the ListIndexer by copying the list elements into attributes prefixed with&nbsp;<em>_oak_.</em> Note the new attributes produced by the ListSearcher:</p>
+<p><img src="images/1702082201326.png" alt="ListSearcher results" width="327" height="204" /></p>
+<p>Each park contains a&nbsp;<code>_tree{}</code> list, and only the first match is found for each park. In this scenario, there are 125 parks, and 37 parks contain an&nbsp; "Oak" tree.</p>
+<p>If you want to extract the&nbsp;element of interest from the list, you can use a ListIndexer and pass it&nbsp;<em>_list_index&nbsp;</em>as the element to extract, as shown in the example workspace.</p>
+<h2>ListSummer</h2>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listsummer.htm" target="_blank" rel="noopener">ListSummer</a><strong>&nbsp;</strong>computes the sum of all elements in a list and stores the result in an attribute.</p>
+<p><img src="images/1708010905308.jpeg" alt="2022-07-13_14-36-06.png" width="365" height="251" /></p>
+<p>For example, for each park, we can determine the total height of all the trees and then divide it by the number of list elements to get the average tree height in that park.</p>
+<h2>ListRangeExtractor</h2>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listrangeextractor.htm" target="_blank" rel="noopener">ListRangeExtractor</a> returns the minimum and maximum of a list element.</p>
+<p><img src="images/1708010943180.jpeg" alt="2022-07-13_14-37-32.png" width="365" height="278" /></p>
+<p>For example, this transformer can get each park's smallest and largest tree diameters.</p>
+<h2>ListRenamer</h2>
+<p>The <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listrenamer.htm" target="_blank" rel="noopener">ListRenamer</a> renames or promotes list names or components. Promoting a list component&nbsp;means it will become a simple list instead of a subcomponent of a complex list, e.g.&nbsp;<code>_trees{}.Species_Name</code>&nbsp;can be promoted to <code>Species_Name{}</code>. This makes the list of tree species a list instead of a subcomponent of the <code>_trees{}</code> list.</p>
+<p><img src="images/1702083015447.png" alt="A &quot;promoted&quot; list created with the ListRenamer" width="379" height="258" /></p>
+<h2>ListBuilder</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listbuilder.htm" target="_blank" rel="noopener">ListBuilder</a>&nbsp;is a join transformer that&nbsp;merges features based on common attributes. The attributes&nbsp;selected in the&nbsp;<em>Group By</em>&nbsp;parameter become the join key, meaning a feature is output for each combination of values of the specified&nbsp;<em>Group By</em> attributes.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Note&nbsp;the ListBuilder&nbsp;removes the geometry and only preserves attributes listed in the&nbsp;<em>Group By</em>&nbsp;parameter, so if geometry is required, you can&nbsp;recreate it using a&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/vertexcreator.htm" target="_blank" rel="noopener">VertexCreator</a>&nbsp;or similar transformer.</p>
+</blockquote>
+<h3>Example: Grouping Features Based on Attribute Values</h3>
+<p>We have tree species and park names and want to find which parks have a specific genus of tree in them. We can use the ListBuilder to group features by GENUS_NAME:</p>
+<p><img src="images/1708010991360.png" alt="Configuring the ListBuilder" width="555" height="332" /></p>
+<p>We can also set the "Add To List" parameter to <em>Selected Attributes&nbsp;</em>and&nbsp;choose which attributes to include in the resulting list,&nbsp;<code>_genusList{}</code>. When we run the workspace, the original 125 features are merged into 37 features, grouped by their GENUS_NAME.</p>
+<p>When we inspect the resulting list in the Feature Information pane, we can see that features have been grouped by Genus. For example, this list includes three different parks that all contain trees of the "ACER" genus:</p>
+<p><img src="images/1702083180260.png" alt="View the results of the ListBuilder" width="406" height="258" /></p>
+<p>An excellent alternative to ListBuilder is the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/aggregator.htm" target="_blank" rel="noopener">Aggregator</a> transformer. Aggregator offers a broader range of functionality, particularly around geometry handling.</p>
+<h2>ListDuplicateRemover</h2>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listduplicateremover.htm" target="_blank" rel="noopener">ListDuplicateRemover</a><strong>&nbsp;</strong>cleans up a list by removing elements with duplicates of a particular attribute value.</p>
+<p><img src="images/1708011029983.jpeg" alt="2022-07-13_16-22-27.png" width="365" height="188" /></p>
+<p>For example, in the&nbsp;<em>ListBuilder</em> example above, we can find which parks have a specific Genus of tree while avoiding listing the same parks multiple times. If several oak trees exist in the same park, then by default, the park will be named in the resulting list for every oak tree discovered there, which is redundant.</p>
+<p>If we remove duplicate park names, the result looks like this after the ListConcatenator.</p>
+<p><img src="https://support.safe.com/servlet/rtaImage?eid=ka14Q000001DWzp&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q0000040T4s" alt="2022-07-13_16-25-56.png" width="619" height="340" /></p>
+<h2>PythonCaller</h2>
+<p>Python can be useful for performing more advanced list manipulation. There is a close correlation&nbsp;between Python lists and FME lists &ndash; consider the following list of tree names and compare the Python list to the FME list attribute:&nbsp;</p>
+<p>Python:</p>
+<p><span style="color: #7f0a0c; font-family: Consolas, 'Liberation Mono', Courier, monospace; font-size: 1em; font-weight: bold;">_trees&nbsp; &nbsp; = ["Fernleaf Beech", "Aristocrat Pear", "European Beech", "Pin Oak"]</span></p>
+<p>FME:</p>
+<p><code>_trees{0} = Fernleaf Beech</code><br /><code>_trees{1} = Aristocrat Pear</code><br /><code>_trees{2} = European Beech</code><br /><code>_trees{3} = Pin Oak</code></p>
+<p>For example, say we want to search a list for elements that meet two conditions: it is a Maple tree, and it has a canopy diameter greater than 25. We could chain together two ListSearchers to check each condition:</p>
+<p><img src="https://support.safe.com/servlet/rtaImage?eid=ka14Q000001DWzp&amp;feoid=00N30000006n8wU&amp;refid=0EM4Q000001YSiq" alt="1585268648600.png" width="474" height="145" /></p>
+<p>This indicates which parks have Maple trees with stem diameter at breast height greater than 25 cm, but it doesn't output a list of all of the qualifying Maple trees. We can achieve this more advanced scenario with Python using the <a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/pythoncaller.htm" target="_blank" rel="noopener">PythonCaller</a>.</p>
+<p>Two calls help pass lists in and out of Python. Start with <em>feature.getAttribute()</em>:</p>
+<p><code>_treesName = feature.getAttribute('_trees{}.CommonName')</code></p>
+<p>Then, perform the desired list manipulation and then finish with <em>feature.setAttribute()</em>:</p>
+<pre><code>feature.setAttribute('_trees{}.CommonName', _treesList)</code></pre>
+<p><br />Refer to the PythonCaller in the exercise workspace to see the Python code. The results of the workspace are in the <code>_treesMaple{}</code> list attribute:</p>
+<p><img src="images/1702083996498.png" alt="PythonCaller results" width="405" height="221" /></p>
+<p>This example shows the list for the English Bay Beach Park feature.</p>
+<p>You need to expose the Python result attributes in the PythonCaller if you want to work with them in subsequent transformers using the <em>Attributes to Expose</em> parameter.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">See the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/fmepython/index.html" target="_blank" rel="noreferrer noopener">Python FME API documentation</a><span style="font-family: inherit; font-size: 1em;"> for more details on these methods.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">See&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://community.safe.com/s/article/python-and-fme-basics" target="_blank" rel="noreferrer noopener">Python and FME Basics</a><span style="font-family: inherit; font-size: 1em;">&nbsp;for a tutorial on working with Python in FME.</span></p>
+</blockquote>
+<h2>List Element Selection Dialog</h2>
+<p>Many transformers, like the Tester, TestFilter, and AttributeManager, allow you to select an attribute. If you select a list attribute, FME will prompt you with the List Element Selection dialog, where you can choose the element number:</p>
+<p><img src="images/1702084116894.png" alt="List Element Selection dialog" width="363" height="250" /></p>
+<p>These parameters specify the CommonName attribute from the element at&nbsp;<code>_trees{0}</code><em>.</em> If you don't want to hard-code the element number, specify an attribute instead of a number using the Text Editor. For example:</p>
+<p><code>@Value(_treesMaple{@Value(_maple_elements)}.COMMON_NAME)</code></p>
+<p>See the AttributeCreator in the Python example above.</p>
+<h2>Additional Exercise</h2>
+<p>Find the rarest and most widespread Genus by playing around with these lists and expanding on the example workspace. Write it down; you will need it for the quiz.</p>

@@ -1,0 +1,35 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Manually create an attribute.</li>
+<li>Set a fixed attribute value.</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>Creating attributes and setting a value are the primary attribute functions used within FME. When an attribute is created, its value can be set in several ways.</p>
+<p>The transformers capable of creating an attribute - and setting its value - are:</p>
+<ul>
+<li>AttributeCreator</li>
+<li>AttributeManager</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The AttributeCopier and AttributeRenamer transformers can only set an attribute value where the attribute doesn't&nbsp;exist.</span></p>
+</blockquote>
+<h2 id="the-attribute-manager">The AttributeManager</h2>
+<p>We'll concentrate on the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/attributemanager.htm" target="_blank" rel="noopener">AttributeManager</a> for most operations, so here is a quick overview of that transformer.</p>
+<p>The AttributeManager parameters dialog has several fields: Input Attribute, Output Attribute, Attribute Value, and Action. Uniquely among attribute-handling transformers, it is automatically filled in with the details of the attributes connected to it:</p>
+<p><img src="images/1698964219514.png" alt="AttributeManager dialog" /></p>
+<p>The user can set the action field, but the transformer will also set it automatically when a change is made to the other fields.</p>
+<h2 id="manually-create-an-attribute">Manually Create an Attribute</h2>
+<p>If you enter a new attribute name into the Output Attribute field, FME will create it in the output.</p>
+<p><img src="images/1698964681412.png" alt="Adding a new attribute called City" /></p>
+<p>The text &lt;Add new Attribute&gt; highlights where you can create a new attribute. By default, when the Attribute Value field is empty, a new attribute has no value.</p>
+<h2 id="set-a-fixed-attribute-value">Set a Fixed Attribute Value</h2>
+<p>A fixed (or&nbsp;<em>constant</em>) value for an attribute can be created by simply entering a value into the Attribute Value field:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.025.AttributeManagerSetValues.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1698964762196.png" alt="Set a fixed attribute value in the AttributeManager" width="607" height="397" /></a></p>
+<p>Here, for example, a new attribute called City is given a fixed value of Vancouver. The transformer will set that value for every feature entering the transformer.</p>
+<p><span style="font-family: inherit; font-size: 1em;">The user has also assigned a fixed value to the existing attribute NeighborhoodName. They gave it the value "Kitsilano." Notice how entering a value into that field automatically changes the Action field from "</span><em style="font-family: inherit; font-size: 1em;">Do Nothing</em><span style="font-family: inherit; font-size: 1em;">" to "Set Value."</span></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>The AttributeManager, AttributeCreator, and some other attribute transformers that can set values will overwrite existing values. If you are creating attributes and setting values, they will also silently overwrite those attributes. For example, say your data already has an existing attribute called UpdatedDate, and every feature has a value of 1698254789. Then, you create a new attribute called UpdatedDate using an AttributeCreator and set the value to the current date time, e.g., 11-02-2023. FME will overwrite the old attribute with this new value. If you don't see the values you expect for an attribute, please ensure your transformers are correctly configured.</p>
+</blockquote>

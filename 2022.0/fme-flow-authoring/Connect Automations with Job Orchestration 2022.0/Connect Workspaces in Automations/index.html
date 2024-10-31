@@ -1,0 +1,95 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Describe how Workspace Actions also act as a Trigger in Automation workflows.</li>
+<li>Identify the different ports on a Workspace Action.</li>
+<li>Convey how workspace transformers can act as Triggers.</li>
+<li>Define output keys and how they pass messages between Actions.</li>
+</ul>
+<h2 id="workspaces-as-a-trigger">Workspaces as a Trigger</h2>
+<p>Workspaces and other Internal Actions are the only protocols that have both input and output ports. This means that although they are treated as an Action because they need something to kick them off, they can also act as a Trigger to downstream Actions.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1657150594029.png" alt="Automations workspace as trigger diagram" /></p>
+<p>Workspaces can send messages containing content from the data being processed and report the status of a translation, such as whether it ran successfully or ended in failure.</p>
+<h2 id="workspace-action-output-ports">Workspace Action Output Ports</h2>
+<p>By default, workspace nodes have two outports representing the workspace status: one for Success and one for Failure. These ports allow you to build an action in response to one or both job statuses. Each output includes a set of output keys with additional information about the workspace that was run that can be used by Actions connected to either port.</p>
+<p><strong>The Automations Writer&nbsp;</strong>can be used to add additional custom output ports to a Workspace Action simply by adding the writer into the workspace to be run. This will allow for setting up Actions to be triggered based on what happens within the workspace. The Automations Writer also allows for passing custom messages from within the workspace to Actions connected to any of the output ports.</p>
+<p>Therefore, messages can be passed downstream via Success, Failure, or custom ports.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>We will discuss the Automations Writer in more detail later in the course.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="workspace-transformer-as-a-trigger">Workspace Transformer as a Trigger</h2>
+<p>Instead of having a workspace trigger additional Actions on job completion, you can use some transformers to trigger events, including:</p>
+<ul>
+<li><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/emailer-pkg.htm" target="_blank" rel="noreferrer noopener">Emailer</a>: send an email</li>
+<li><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/fmeserverjobsubmitter.htm" target="_blank" rel="noreferrer noopener">FMEJobSubmitter</a>: run a job on FME Server</li>
+<li><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/fmeservernotifier.htm" target="_blank" rel="noreferrer noopener">FMEServerNotifier</a>: trigger a notification on FME Server</li>
+</ul>
+<p>There are two advantages to using transformers this way instead of using Automation Actions:</p>
+<ul>
+<li>The workspace can trigger an event&nbsp;<em>during</em>&nbsp;a translation, rather than at the end of it.</li>
+<li>The workspace does not need to be run on FME Server to take this action. It will produce the same result when run using FME Desktop.</li>
+</ul>
+<p>The disadvantage is that you won't know whether the workspace completed successfully - or not - when the event is triggered.</p>
+<h2 id="working-with-output-keys-in-automations-workflows">Working with Output Keys in Automations Workflows</h2>
+<p>Messages pass along the components of Automations workflows, from Triggers to Actions to External actions, in the form of JSON-formatted key-value pairs. These key-value pairs represent various properties that are derived from the components of the workflow and form the content of the message. Each key that is output by a component can be sent downstream to the next component, and ultimately output by the workflow to a receiving application.</p>
+<p>You can work with the output keys of workflow messages in the following ways:</p>
+<ul>
+<li>View keys, disable and enable keys, and create user keys.</li>
+<li>Create global keys.</li>
+<li>Filter for the presence of a string in a key.</li>
+</ul>
+<h2 id="viewing-keys-disabling-enabling-keys-and-creating-user-keys">Viewing Keys, Disabling/Enabling Keys, and Creating User Keys</h2>
+<p>As you build an Automation, you can control the keys that are sent to downstream components, and that are ultimately included in the final message output. In the Details pane of a Trigger, Action, or External Action, select the Output Keys tab. Here, you can:</p>
+<ul>
+<li>View the keys that the component generates. Where applicable, the component generates separate sets of output keys for the success (✔) and failure (x) ports of a component. Run Workspace Actions that reference workspaces configured with FME Server Automations writers also generate output keys for each writer feature type. For more information, see&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Actions/Run-Workspace-Routing-Data.htm" target="_blank" rel="noreferrer noopener">Routing Data from Workspaces</a>.
+<ul>
+<li><strong>Tip:&nbsp;</strong>To view the output keys from upstream components, click Show Upstream Keys.</li>
+</ul>
+</li>
+<li>Disable or enable keys. By default, all applicable keys are enabled in the outgoing message as it passes downstream.</li>
+<li>Create user keys with a user-defined name, and prefixed with the user. tag. You can assign the value of a user key from an existing key, or a constant.</li>
+</ul>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008082802.png" alt="Using Output Keys" /></p>
+<p>The primary benefit of disabling keys or creating user keys is to prevent them from being overwritten, where desired. The values of JSON objects with the same key strings are overwritten as they pass through a workflow. For example, consider a workflow that contains two Run Workspace Actions in sequence. Both Actions pass a&nbsp;<code>job.timeStarted</code>&nbsp;key, but the value that key produces in the first action is overwritten by the second Action. If you want to preserve only the&nbsp;<code>job.timeStarted</code>&nbsp;value of the first workspace, you can disable the&nbsp;<code>job.timeStarted</code>&nbsp;key in the configuration of the second Action, and preserve it in the first.</p>
+<p>But what if you wanted to preserve both&nbsp;<code>job.timeStarted</code>&nbsp;values? In this case, you can create a user key in both workspaces, give them each unique names, and base their values on&nbsp;<code>job.timeStarted</code>. Optionally, you can also disable&nbsp;<code>job.timeStarted</code>&nbsp;in both workspaces.</p>
+<p>You can use user keys anywhere in a workflow that allows you to specify a key for a parameter value.</p>
+<h2 id="creating-global-keys">Creating Global Keys</h2>
+<p>You can create your own key-value pairs, prefixed with the&nbsp;<code>global.</code>&nbsp;tag. Global keys allow you to reference a value in multiple components of a workflow without having to explicitly define it each time. You can use global keys anywhere in a workflow that allows you to specify an output key for a parameter value.</p>
+<p>You can create global keys in two ways.</p>
+<p>On the Automations toolbar, click the Global Keys Editor button:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008377017.png" alt="Global Keys Editor button" /></p>
+<p>Dynamically, when&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Working-With-Parameters-Automations.htm" target="_blank" rel="noreferrer noopener">specifying a parameter value</a>&nbsp;in a workflow. From an applicable parameter drop-down list, select Add to Global Keys.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008494541.png" alt="Adding to Global Keys" /></p>
+<p>In the Global Keys Editor, click&nbsp;+&nbsp;to start a new&nbsp;Global Key, enter a name (<code>global.&lt;your_name&gt;</code>), specify a&nbsp;Value, and click&nbsp;OK.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008851422.png" alt="Global Keys Editor dialog" /></p>
+<h2 id="filtering-on-an-output-key">Filtering on an Output Key</h2>
+<p>You can use the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Actions/Action-Filter.htm" target="_blank" rel="noreferrer noopener">Filter Messages</a>&nbsp;Action to test for the presence of a string in an output key, and route messages in your workflow accordingly. For example, if the&nbsp;<code>email.subject</code>&nbsp;key from an&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Triggers/Trigger-Email_SMTP.htm" target="_blank" rel="noreferrer noopener">Email Received (SMTP)</a>&nbsp;trigger contains a specific string, you might choose to route the message differently from other emails that do not contain that string.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><a href="https://community.safe.com/s/article/working-with-user-and-global-keys-in-an-automation" target="_blank" rel="noreferrer noopener">Learn more</a>&nbsp;about using output keys.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

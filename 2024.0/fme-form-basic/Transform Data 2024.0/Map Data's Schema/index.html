@@ -1,0 +1,88 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use a transformer to edit the features&rsquo; schema.</li>
+<li>Automatically adopt features&rsquo; schema by using Automatic Attribute Definition mode.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\map-datas-schema.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\map-datas-schema-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="determine-schema-mapping-goals">Determine Schema Mapping Goals</h2>
+<p>Now that Jennifer has created a&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" target="_blank" rel="noreferrer noopener">workspace</a> that edits the web data&rsquo;s schema, she has to map it, telling FME how the original and new schemas are related.</p>
+<p>She opens the workspace in FME Workbench (2024.0 or later) and notices the red triangle icons on her writer feature type attributes:</p>
+<p><img src="images/1713205638247.png" alt="Red input port" width="498" height="150" /></p>
+<p>FME uses colored ports to indicate the status of schema mapping. In this case, the red port means an attribute exists on the writer feature type but not on the features entering the feature type. An attribute with a red port will not cause an error when the workspace is run, but it will not have any values in the written data.</p>
+<p>To ensure her new&nbsp;<strong>first_name&nbsp;</strong>attribute gets the same values as her existing <strong>First </strong>attribute, we must map the new schema onto the old one. We can use the AttributeManager transformer for that.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Colored ports are used to aid schema mapping visually:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Green <span style="color: #23ad19;">▶</span>: this attribute is connected.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Yellow <span style="color: #e8e058;">▶</span>: this reader feature type attribute is not mapped to any writer feature type; therefore, this attribute will not be in the output.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Red <span style="color: #b80909;">▶</span>: this writer feature type attribute is not connected. While it exists in the schema, it will not receive any data and, therefore, will not have any values in the written data.</span></li>
+</ul>
+</blockquote>
+<h2 id="add-an-attribute-manager">Add an AttributeManager</h2>
+<p>Jennifer clicks the black<strong>&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Including_Transformers_in_a_Workspace.htm" target="_blank" rel="noopener">feature connection line</a>&nbsp;</strong>between the reader feature type and the&nbsp;<strong>GeometryFilter&nbsp;</strong>to select it. She observes the light blue highlight indicating the line is selected.</p>
+<p><img src="images/1713205694795.png" alt="Selected feature connection line" width="498" height="150" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><strong style="font-family: inherit; font-size: 1em;">Feature connection line</strong><span style="font-family: inherit; font-size: 1em;">: these lines connect feature types and transformers on the canvas and control the flow of features from left to right.</span></p>
+</blockquote>
+<p>When any object on the canvas is selected, using Quick Add will automatically connect the new object. With the feature connection line selected, Jennifer types in &ldquo;AttributeManager.&rdquo; The Quick Add dialog appears, letting her search for transformers, readers, and writers. She finds the AttributeManager and presses Enter to add it.</p>
+<p><img class="image image-block image-center" src="images/1713205900709.png" alt="Adding an AttributeManager" width="668" height="238" /></p>
+<p>The AttributeManager appears on the canvas. Jennifer double-clicks it to open its&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/transformer_parameters.htm" target="_blank" rel="noopener">Parameters dialog</a>.</p>
+<p><img src="images/1713205963020.png" alt="AttributeManager added" width="648" height="151" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">All transformers have parameters that control how they operate. These parameters are unique to each transformer. The parameters button is also color-coded. Red means that you must set parameters, yellow means that FME will use default settings but have yet to review them, and blue means that you've set or reviewed them.</span></p>
+</blockquote>
+<h2 id="map-schema-with-an-attribute-manager">Map Schema with an AttributeManager</h2>
+<p>The&nbsp;<strong>AttributeManager&nbsp;</strong>parameters are a table that defines how to modify attributes. It allows you to create new attributes, edit existing attribute names, change their order, and set their values.</p>
+<p>Jennifer plans to use this transformer to change incoming features so their schema matches the writer feature type.</p>
+<p>First, she Ctrl (or Cmd) + clicks the attributes she'd like to remove (<strong>_creation_instance, _response_body, _http_status_code, json_type, json_index, </strong><strong>latitude, </strong>and&nbsp;<strong>longitude) </strong>and clicks the&nbsp;<strong>Remove Row&nbsp;</strong>button&nbsp;to delete them.&nbsp;</p>
+<p><img src="images/1713211592675.png" alt="Removing attributes using AttributeManager" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Then, she renames her attributes. She clicks in the</span><strong style="font-family: inherit; font-size: 1em;">&nbsp;Output Attribute</strong><span style="font-family: inherit; font-size: 1em;"> column for the </span><strong style="font-family: inherit; font-size: 1em;">First </strong><span style="font-family: inherit; font-size: 1em;">attribute and renames it &ldquo;first_name.&rdquo; She can click the drop-down to choose from writer feature type attribute names, or type it in manually:</span></p>
+<p><img src="images/1713212002197.png" alt="Renaming First to first_name" width="690" height="534" /></p>
+<p>Then, she renames the other attributes to use lowercase and underscores.</p>
+<p>Then, she uses the <strong>Move Down </strong>and <strong>Move Up </strong>buttons to change the attribute order so that it is <strong>last_name</strong>, <strong>first_name</strong>, <strong>company</strong>, and <strong>license_number:</strong></p>
+<p><strong><img src="images/1713212171287.png" alt="Move Up button" width="690" height="534" /></strong></p>
+<p>Her dialog looks like this:</p>
+<p><img src="images/1713206469926.png" alt="Setting AttributeManager parameters" width="625" height="536" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>⭐&nbsp;<strong>New for FME 2023.0:&nbsp;</strong>the AttributeManager can now change attribute types.</p>
+<p><a href="https://community.safe.com/s/article/the-attributemanager-transformer" target="_self">Learn More</a></p>
+</blockquote>
+<p>She clicks&nbsp;<strong>OK</strong>. The attribute ports on the writer feature type now turn green, showing her schema is mapped.</p>
+<p><img class="image image-block image-center" src="images/1713209108967.png" alt="Schema is mapped" width="645" height="147" /></p>
+<h2 id="map-schema-with-an-attribute-manager">Automatic Attribute Definition Mode</h2>
+<p><span style="font-family: inherit; font-size: 1em;">In the previous lesson, we mentioned that Jennifer could use Automatic or Manual Attribute Definition mode on her writer feature type. She ended up using Manual, defining the schema she wanted, and then mapping it using the AttributeManager.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">That's a valid approach, but let's look at a different way that can be faster: Automatic mode.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Jennifer double-clicks her writer feature type to open its parameters, then clicks the <strong>User Attribute </strong>tab.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1713209624653.png" alt="User Attributes tab" /></span></p>
+<p>The&nbsp;<strong>Attribute Definition&nbsp;</strong>mode is currently set to <strong>Manual</strong>.</p>
+<p>Jennifer clicks&nbsp;<strong>Automatic, </strong>and the schema changes to match the incoming features:</p>
+<p><img src="images/1713209767303.png" alt="Choosing Automatic attribute definition mode" width="582" height="380" /></p>
+<p>The schema is the same in this case because she already mapped it using the <strong>AttributeManager</strong>. But consider: it would have also worked to change this to Automatic<strong>&nbsp;</strong>and use the <strong>AttributeManager</strong>&nbsp;without defining the destination schema in <strong>Manual </strong>mode. The only major downside is that FME has to infer the attribute types, so you need to check them. In this case, they are all text and set correctly, so it works well.</p>
+<p>Additionally, after changing to Automatic mode, if Jennifer wants to make changes, she can click <strong>Manual&nbsp;</strong>again.</p>
+<p>However, she leaves it in <strong>Automatic&nbsp;</strong>mode and clicks&nbsp;<strong>OK</strong>.</p>
+<p>She notes that the colored arrows disappear from the feature type's attributes:</p>
+<p><img src="images/1713210157584.png" alt="No colored arrows with Automatic mode" /></p>
+<p>She doesn't run the workspace yet; she'll use a technique called partial runs to do that in the next lesson.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you'd like to test <strong>Automatic </strong>mode, try making a change to your <strong>AttributeManager </strong>parameters. Rename an attribute, for example. You will see the change reflected in the writer feature type schema automatically.</p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Jennifer&rsquo;s steps.</p>

@@ -1,0 +1,93 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Connect to FME Flow from Workbench.</li>
+<li>Publish a workspace to FME Flow.</li>
+<li>Create a repository on FME Flow using the Publishing Wizard.</li>
+<li>Register a workspace with the Job Submitter service.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/PublishWorkflowsToTheWeb/exercise-publish-to-fme-flow.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\PublishWorkflowsToTheWeb\exercise-publish-to-fme-flow.fmw</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="exercise">Exercise</h2>
+<p>For the exercises in this course, you are a technical analyst in the GIS department of your local city. You have plenty of experience using FME Form, and your department is now investigating FME Flow to evaluate its capabilities.</p>
+<p>There are many departments within the city, and one of your tasks is to take the data from each department and merge it together into a single corporate database.</p>
+<p>Because each department produces its datasets in a different format and style, you use FME for this task and carry it out on a weekly basis.</p>
+<p>One of the reasons for purchasing FME Flow is to automate this procedure, so let's start implementing that.</p>
+<h2 id="1-start-fme-workbench">1) Start FME Workbench</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/PublishWorkflowsToTheWeb/exercise-publish-to-fme-flow.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\PublishWorkflowsToTheWeb\exercise-publish-to-fme-flow.fmw) in FME Workbench. This workspace reads in a GML file of fire halls and a KML file of neighborhoods in the city of Vancouver.&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><span style="font-family: inherit; font-size: 1em;">Geography Markup Language (GML): a spatial data format stored in XML, as defined by the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://www.ogc.org/" target="_blank" rel="noreferrer noopener">Open Geospatial Consortium</a><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<p>&nbsp;</p>
+<p>Keyhole Markup Language (KML): a spatial data format stored in XML, as originally defined by Keyhole, Inc, and now used by Google Earth and specified as an international standard of the&nbsp;<a href="https://www.ogc.org/" target="_blank" rel="noreferrer noopener">Open Geospatial Consortium</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>The workspace then projects the neighborhoods to match the fire halls and clips the fire halls to the boundaries of the neighborhoods. Finally, it writes out the fire halls with a separate file for each neighborhood (<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/fanout_about.htm" target="_blank" rel="noreferrer noopener">a feature type fanout</a>). Because the focus of this course is working with FME Flow, the workspace uses a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/null/null.htm" target="_blank" rel="noreferrer noopener">NULL writer</a>.</p>
+<h2 id="2-run-workspace">2) Run Workspace</h2>
+<p>First, save the workspace. It is always a good idea to save the workspace before publishing to FME Flow. Next, ensure that Prompt for User Parameters is disabled, then run the workspace. If the workspace won't run on FME Form, then it is not likely to run on FME Flow. If you get the Unexpected Input dialog, it is safe to ignore it.</p>
+<p>Once the workspace has been run, inspect the translation log. Your translation log should look like the one below:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/2jNMhgCP0YjQXk_lgT6JWCc4aqzehV21IAhpuEJHxOOrHytL08LAgWGaws3x4p6oATCGq1fRbUWD-r1cWFRNRPLVYb6VxGMfMIrv9lqUL7ZOL4GDRLK0ldvPfSVE1R0Gn-kLcmANNQITm22Z" alt="Log with feature counts" width="886" height="293" /></p>
+<h2 id="3-publish-to-server-create-connection">3) Publish to FME Flow: Create Connection</h2>
+<p>Now we have a workspace and know that it works correctly, let's publish it to FME Flow.</p>
+<p>In FME Workbench, choose File &gt; Publish to FME Flow from the menubar. As this is the first time we've connected to our FME Flow, we'll need to create a new connection, so in the Publish to FME Flow wizard select Connect to FME Flow from the drop-down menu:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/cUTb64le0nVvnS4YNFttEC3VcU4qRBQVTF3jL_5GZ9OyRgd1GDgqVk6_dOnQCiE-EFjGwl8rS3IrzVkyR-3W2MrxYxuMrUSFZ7CqQqj6qk0uNuD4Y8wjQK7obmm-d7RCxwjxPTp-i2-_rT7U" alt="Publish to FME Server" width="505" height="456" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><span style="font-family: inherit; font-size: 1em;">As of FME 2019, the admin password is required to be set up after installing. For live Safe Software courses, our administrator has chosen the password FMElearnings. If you are taking this course outside of Safe Software, please consult your FME Flow Administrator for the admin password on their training machines.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>In the dialog that opens, enter the parameters provided by your training instructor or FME Flow administrator. For live Safe Software courses, the parameters will be as follows:</p>
+<ul>
+<li><strong>Connection Name:</strong> Training FME Flow</li>
+<li><strong>FME Flow URL:</strong>&nbsp;<a href="http://localhost/" target="_blank" rel="noreferrer noopener">http://localhost</a></li>
+<li><strong>Username:</strong>&nbsp;admin</li>
+<li><strong>Password:</strong>&nbsp;FMElearnings</li>
+</ul>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/E3dwv_VJUAPIuEC8wNvNAWlmKQdB9xwRE0lxLah3KX-7z8GI_lqTctW9WCzbe53G2uLH4CMXxGRsdmQuEpe9kT1JXu2KNnn0d5C8q5tAEpR3WXojZpoapwQhiTiu4IM3ZDZtDtW91dIKzOVU" alt="Configuring FME Server Connection" width="354" height="508" /></p>
+<p>You may or may not (probably not) need to enter a port number with the hostname, depending on how the system is set up.</p>
+<p>Click OK to authenticate the connection and return to the previous dialog. Make sure the new connection is selected.</p>
+<h2 id="4-publish-to-server-repository-selection">4) Publish to Flow: Repository Selection</h2>
+<p>The next step is to choose a repository to store the workspace in.</p>
+<p>For this exercise, we&rsquo;ll create a new repository by clicking the New button. When prompted, enter the name Training.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.216.Ex1.NewRepository.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/Slfj1HA-QZCgwdOPGrYax5hdrCtP3u_A-W8N0b_ldiUvpLXe9x4E3i_0jWTiQyKDyyLvNyaXbVPyGJ28A5J9T7rR0Bvlgv2neukyb44Jk1Mv5Vb4VOTm0XKuFimbfumm_Ysa95n5qTgdCpz7" alt="Creating a new repository" width="475" height="214" /></a></p>
+<p>Click OK to close the Create New Repository dialog. Enter a name for the workspace if it doesn't already have one. Click Next to continue the wizard.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><span style="font-family: inherit; font-size: 1em;">If your workspace had data stored locally, you could check Upload data files to upload them along with your workspace. <br /></span><span style="font-family: inherit; font-size: 1em;">However, because this workspace uses data stored at a URL, this step isn't necessary.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="5-publish-to-server-select-service">5) Publish to Flow: Select Service</h2>
+<p>In the final screen of the wizard, we can register the workspace for use with various services.</p>
+<p>Select the Job Submitter service as this is the only service we are using for now:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.218.Ex1.SelectService.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/aTQUvChB2kzjQ5AfHu7Si7slsRSoMZC9jx-HbBUgISELRaP7Rz90tKz49fKzvI3uTcRpabHC5MK_EBmx1Xx7ZXKE_alpaDXcTcaRK5O27NRDCAP-8Zy7p8cklzzVqReQ3ogiGe1ID5KzBiJd" alt="Choosing the Job Submitter service" width="506" height="383" /></a></p>
+<p>... and click Publish to complete publishing the workspace.</p>
+<p>After a workspace is transferred to Flow, the log window displays a message reporting which workspace has been published to which repository and for which services. It will look something like this:</p>
+<div>
+<pre><img src="https://lh3.googleusercontent.com/U914-8N7vwkumtfa_rTl4ez2VzonZSqG1NNMGEDc--7Z-zw6TR530QZSjl96UsH5mPRVzTSUnb9qr7lPJuO-dfblVLtR2ogFMqbqN8LBwiKJBLoCtTGI2LAyJi7FGqLH-5btwr6kvLn-hAC4" /><br /><br /></pre>
+</div>

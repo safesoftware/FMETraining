@@ -1,0 +1,30 @@
+<h2>Learning Objectives</h2>
+<p><span style="font-weight: 400;">After completing this lesson, you&rsquo;ll be able to:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explain the purpose of FME Flow Streams.&nbsp;</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Provide examples of common streaming data sources.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Know the types of transformers used for stream processing.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Understand the difference between Automations and Streams in FME Flow.&nbsp;</span></li>
+</ul>
+<h2>What are Streams?</h2>
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Streams.htm"><span style="font-weight: 400;">FME Flow Streams</span></a><span style="font-weight: 400;"> allow a workspace to run continuously to process an unbounded stream of data. This is known as stream processing. Stream processing is a term that groups together the collection, integration, and analysis of unbounded data. Unbounded data does not have a definitive start and end like a file does - it is infinite. It is typically characterized by small records arriving at extremely high velocity.</span></p>
+<p><span style="font-weight: 400;">The Internet of Things (IoT) often produces data streams. Examples include: GPS sensors, weather feeds, and Automatic Meter Readings (AMR). These devices typically publish their data to an intermediary application, like a message broker or queue, that an FME workspace can connect to.&nbsp;</span></p>
+<p><span style="font-weight: 400;">FME Flow Streams allow organizations to continuously deliver insights on unbounded data.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1724343050799.png" alt="" /></span></p>
+<h2>Authoring for FME Flow Streams</h2>
+<p><span style="font-weight: 400;">An FME Flow Stream runs a single FME workspace indefinitely. The workspace should contain a transformer that can run in &lsquo;Stream Mode&rsquo;, such as the KafkaConnector, or other connector that will cause the workspace to run indefinitely until it is stopped, such as a WebSocket connector.&nbsp;</span></p>
+<p><span style="font-weight: 400;">Since a data stream is unbounded, a </span><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/timewindower.htm"><span style="font-weight: 400;">TimeWindower</span></a><span style="font-weight: 400;"> transformer is used to create time-based &lsquo;Windows&rsquo;, or groups, of data that can be processed downstream in the workspace, as illustrated below.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1724343076698.png" alt="" width="964" height="230" /></span><span style="font-weight: 400;"><br /></span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/1724343223539.png" alt="" /></span></p>
+<p><span style="font-weight: 400;">FME has transformers with Stream Mode to connect to different message queues and brokers, including the KafkaConnector, AzureIoTConnector, MQTTConnector, and many more.&nbsp;</span></p>
+</blockquote>
+<h2>Creating a Stream on FME Flow</h2>
+<p><span style="font-weight: 400;">Once a suitable workspace has been authored and published to FME Flow, an FME Flow Author can create a Stream using the web user interface.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1724343256409.png" alt="" /></span></p>
+<p><span style="font-weight: 400;">A single workspace is chosen when creating a Stream. Users in the FME Flow Authors role can create Streams, and start/stop them, but do not have permissions to assign engines. An engine is what processes a running workspace, known as a job, on FME Flow. To fully configure an FME Flow Stream, an Author needs to work with an FME Flow Administrator to ensure that at least one FME Flow engine available at all times to be dedicated to the Stream.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1724343368789.png" alt="" width="866" height="635" /></span></p>
+<h2>Automations vs Streams</h2>
+<p><span style="font-weight: 400;">FME Flow Automations provide an excellent way to process real-time events, but are not well suited to process a continuous, unbounded stream of data. Data from a stream typically arrives at a very high velocity. Submitting a new translation to an </span><a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/engines.htm"><span style="font-weight: 400;">FME Flow Engine</span></a><span style="font-weight: 400;"> each time each time a message is received from a data stream would be too much overhead.&nbsp;</span></p>
+<p><span style="font-weight: 400;">In an FME Flow Stream, the workspace is continually running to handle the high velocity an unbounded stream requires, which can be thousands of messages per second. The engine is always in use while the Stream is running, even when there is no incoming data to process.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1724343436165.png" alt="" width="992" height="490" /></span></p>

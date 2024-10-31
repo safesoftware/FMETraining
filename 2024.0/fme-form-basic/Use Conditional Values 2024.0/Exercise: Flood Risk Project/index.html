@@ -1,0 +1,104 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use conditional attribute values in the Attribute Manager.</li>
+<li>Use conditional attribute values to map data according to complex conditions.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-flood-risk-project.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\exercise-flood-risk-project.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-flood-risk-project-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\exercise-flood-risk-project-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>A colleague is working on a workspace to calculate the tsunami flood risk for all addresses in the city. The flood risk score combines closeness to the shoreline and elevation above sea level. It is on a scale from one to five (1-5) and is calculated using this table:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td colspan="3"><strong>Elevation (meters above sea level)</strong></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td align="center"><em>0-10m</em></td>
+<td align="center"><em>10-25m</em></td>
+<td align="center"><em>25-60m</em></td>
+</tr>
+<tr>
+<td rowspan="3"><strong>Distance from Shoreline (meters)</strong></td>
+<td align="center"><em>100m</em></td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center"><em>200m</em></td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">4</td>
+</tr>
+<tr>
+<td align="center"><em>300m</em></td>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">5</td>
+</tr>
+</tbody>
+</table>
+<p>Your colleague has created the workspace up until the point at which each address has an elevation and distance from the shoreline. Now, the calculations need to start, and he has asked for your help finishing the project.</p>
+<p><strong>1) Start Workbench</strong></p>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-flood-risk-project.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\exercise-flood-risk-project.fmw). This is the workspace your colleague has created so far.</p>
+<p>Turn on feature caching and run the workspace.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You will get an <a href="https://support.safe.com/hc/en-us/articles/25407674781453-Unexpected-Input-Remover" target="_blank" rel="noopener">Unexpected Input dialog</a>, but you can ignore it. FME just shows this dialog when it reads features in the source dataset that do not have a feature type defined on the canvas.</p>
+</blockquote>
+<p>To observe the data, inspect all three CoastalZones [GML] reader feature type caches and the AttributeRenamer's Output cache (Ctrl or ⌘-click).</p>
+<p><img class="image" src="images/1714593768184.png" alt="Flood risk zones and addresses" width="744" height="605" /></p>
+<p>This colored screenshot shows how the addresses fall within (and are assigned) a zone denoting their distance from the shoreline. They also possess an elevation value. We must now use this information to assign a flood risk to each address.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">As with most FME projects, there are multiple ways to carry out this task. The two primary techniques are </span><strong style="font-family: inherit; font-size: 1em;">conditional filtering</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">data mapping</strong><span style="font-family: inherit; font-size: 1em;">.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Conditional filtering means separating the data according to the elevation and shoreline zone. Data mapping means we set an attribute value (flood risk) according to the value of other attributes.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Here is an example of how we might mix filtering data by coastal zone with mapping data by elevation:</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1714593753221.png" width="586" height="466" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">However, we can avoid filtering data by using Conditional Values. The filter conditions are incorporated as the conditions for our Conditional Values.</span></p>
+</blockquote>
+<p><strong>2) Finish Configuring AttributeManager</strong></p>
+<p>Your colleague included an AttributeManager in the starting workspace after the AttributeRenamer.</p>
+<p>Inspect the AttributeManager parameters. Ignoring the existing attributes, scroll to the bottom of the dialog and find the <code>FloodRisk</code> attribute.</p>
+<p>It already has a conditional value configured, but we need to finish it. In the Attribute Value field, click the drop-down arrow and choose <strong>Conditional Value</strong>:</p>
+<p><img class="image" src="images/1714593777820.png" alt="Selecting Conditional Value..." width="973" height="447" /></p>
+<p>This opens a new dialog similar to a Tester/TestFilter transformer. There are fields for Test Condition and Output Value.</p>
+<p>The dialog is already configured to map the conditions for where FloodRisk=1 (the highest). According to the table of calculations, this can occur only where Zone = 100 AND Elevation &lt;= 10. Notice that the Test uses the Boolean operator AND to ensure both conditions are true:</p>
+<p><img src="images/1714593788310.png" alt="Condition Statement with four outcomes" width="614" height="566" /></p>
+<p>Let's finish configuring the dialog with the case for FloodRisk = 5.</p>
+<p>Double-click the cell in the Test column to the right of the gray Else If text to add a new Test. Clicking will open a Tester-like dialog:</p>
+<p><img class="image" src="images/1718049057574.png" alt="Defining the first test" width="587" height="348" /></p>
+<p>Configure the dialog as follows. Don't forget to specify the output Value (5) below the Test Clauses area:</p>
+<p><img class="image" src="images/1714594255440.png" alt="Defining Logic and setting the Attribute Value" width="453" height="354" /></p>
+<p>Now click&nbsp;<strong>OK</strong>&nbsp;to close this part of the dialog.</p>
+<p>The main Conditional Definition dialog is complete. It should look like this:</p>
+<p><img class="image" src="images/1714594267209.png" alt="Dialog with remaining tests entered" width="614" height="566" /></p>
+<p>It is essential to keep these in the correct order; otherwise, a feature may pass the tests in the wrong order and receive a lesser risk than expected.</p>
+<p>Accept the changes, and the main AttributeManager dialog now looks like this:</p>
+<p><img class="image" src="images/1714594276849.png" alt="FloodRisk with 6 possible values" width="724" height="207" /></p>
+<p><strong>5) Add Inspector</strong></p>
+<p>You can separate data into layers for easier inspection by usiung an Inspector transformer with a Group By setting. So, place a single Inspector transformer connected to the AttributeManager's Output port.</p>
+<p>Open the Inspector parameters dialog, check Group Processing, and set Group By to the newly created FloodRisk attribute.</p>
+<p>Save and run the workspace. You should see each address colored to match its flood risk. You can adjust the feature symbology to produce a better result, like so:</p>
+<p><img class="image image-block" src="images/1714594293372.png" alt="Result with five flood risk groups of address points" width="1061" height="498" /></p>
+<p>You can also turn off each zone to see which addresses are most/least at risk.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Best practice should always play a part in any workspace. There are fewer transformers in this case, but does this improve the workspace? Is it a more aesthetic (good-looking) workspace? The decision on which method to use may depend on who will maintain the workspace. In most cases, conditional filters or data mapping are both valid options.</span></p>
+</blockquote>

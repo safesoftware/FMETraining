@@ -1,0 +1,120 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the conceptual role of a transformer in FME.</li>
+<li>Use a transformer to edit features&rsquo; schema.</li>
+<li>Automatically adopt features&rsquo; schema by using Automatic Attribute Definition mode.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="http://ior.ad/6UOI" target="_blank" rel="noreferrer noopener">Interactive tutorial to help you follow along</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/d2GotjdZkCeZZs61gEc4DP?" width="640" height="360" allowfullscreen=""></iframe></p>
+<h2 id="determine-schema-mapping-goals">Determine Schema Mapping Goals</h2>
+<p>Now that Jennifer has created a&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" target="_blank" rel="noreferrer noopener">workspace</a>&nbsp;that edits the PostGIS data&rsquo;s schema, she has to map it, telling FME how the original and new schemas are related.</p>
+<p>She opens the workspace in FME Workbench (2022.0 or later) and notices the triangle icon on her writer feature type has turned red.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/1652132768522.png" alt="Expanding BusinessOwners attributes list" /></p>
+<p>She clicks the triangle to expand the list of attributes entering the feature type.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/1652132798770.png" alt="Expanded attributes" /></p>
+<p>FME uses colored ports to indicate the status of schema mapping.&nbsp;In this case, the red port means an attribute exists on the writer feature type, but not on the features entering the feature type. An attribute with a red port will not cause an error when the workspace is run, but it will not have any values in the written data.</p>
+<p>To ensure her new&nbsp;<strong>first_name&nbsp;</strong>attribute gets the same values as her existing&nbsp;<strong>first&nbsp;</strong>attribute, we have to map the new schema onto the old schema. We can use the AttributeManager&nbsp;transformer&nbsp;for that.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Colored ports are used to aid schema mapping visually:</p>
+</blockquote>
+<ul>
+<li>
+<blockquote>Green ▶: this attribute is connected.</blockquote>
+</li>
+<li>
+<blockquote>Yellow ▶: this reader feature type attribute is not mapped to any writer feature type; therefore, this attribute will not be in the output.</blockquote>
+</li>
+<li>
+<blockquote>Red ▶: this writer feature type attribute is not connected. While it exists in the schema, it will not receive any data and therefore will not have any values in the written data.</blockquote>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="add-an-attribute-manager">Add an AttributeManager</h2>
+<p>Jennifer clicks the black<strong>&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/Including_Transformers_in_a_Workspace.htm" target="_blank" rel="noreferrer noopener">feature connection line</a>&nbsp;</strong>between the reader feature type and the&nbsp;<strong>GeometryFilter&nbsp;</strong>to select it. She observes the light blue highlight indicating the line is selected.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/1652132857985.png" alt="Selected connection line" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><strong>Feature connection line</strong>: these lines connect feature types and transformers on the canvas and control the flow of features from left to right.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>When any object on the canvas is selected, using Quick Add will automatically connect the new object. With the feature connection line selected, Jennifer types in &ldquo;AttributeManager&rdquo;. The Quick Add dialog appears, letting her search transformers, readers, and writers. She finds the AttributeManager and presses Enter to add it.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/6-ecee-5-bb-2-f-11-4392-a-597-ce-5-acb-81-ef-44.png" alt="Adding an AttributeManager" /></p>
+<p>The AttributeManager appears on the canvas. Jennifer double-clicks it to open its&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!Transformer_Parameters/transformer_parameters.htm" target="_blank" rel="noreferrer noopener">Parameters dialog</a>.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/1652132925289.png" alt="AttributeManager added" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>All transformers have parameters, which control how they operate. These parameters are unique to each transformer. The parameters button is also color-coded. Red means that there are parameters that must be set, yellow means that default settings will be used, but you haven't reviewed them, and blue means that you've set or reviewed the parameter settings.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="map-schema-with-an-attribute-manager">Map Schema with an AttributeManager</h2>
+<p>The&nbsp;<strong>AttributeManager&nbsp;</strong>parameters are a table that defines how to modify attributes. It allows you to create new attributes, edit existing attribute names, change their order, and set their values.</p>
+<p>Jennifer plans to use this transformer to change incoming features so their schema matches the writer feature type.</p>
+<p>First, she clicks in the<strong>&nbsp;Output Attribute</strong>&nbsp;column for the first attribute and renames it &ldquo;first_name&rdquo;. Then she clicks the&nbsp;<strong>Move Down&nbsp;</strong>button to change the attribute order. Then she Shift + clicks the&nbsp;<strong>latitude&nbsp;</strong>and&nbsp;<strong>longitude&nbsp;</strong>attribute rows and clicks the&nbsp;<strong>Remove Row&nbsp;</strong>button&nbsp;to delete them. Her dialog looks like this:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/96723664-e-1-f-1-43-a-6-8-cf-4-9-d-30773-a-8890.png" alt="Removing attributes in an AttributeManager" /></p>
+<p>She clicks&nbsp;<strong>OK</strong>. Now the attribute ports on the writer feature type all turn green, showing her schema is mapped.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/1652133120123.png" alt="Schema is mapped" /></p>
+<p>However, Jennifer notices a slight problem:&nbsp;<strong>BusinessOwners&nbsp;</strong>looks good, but&nbsp;<strong>BusinessOwners_incomplete&nbsp;</strong>still has its original schema. How can she quickly update the schema to match the incoming features?</p>
+<p>Jennifer knows she can use&nbsp;<strong>Automatic Attribute Definition</strong>&nbsp;mode for this task. She double-clicks on&nbsp;<strong>BusinessOwners_incomplete&nbsp;</strong>and then clicks the<strong>&nbsp;User Attributes</strong>&nbsp;tab. The first section of this dialog is&nbsp;<strong>Attribute Definition</strong>. By default, this is in&nbsp;<strong>Manual&nbsp;</strong>mode. However, changing this to&nbsp;<strong>Automatic&nbsp;</strong>mode will tell the feature type to simply adopt the schema of whatever features are connected to it.</p>
+<p>Why didn&rsquo;t Jennifer do this first if it was so easy? Well, she had to first edit the schema upstream using the&nbsp;<strong>AttributeManager</strong>. As the data flows from the reader feature type, it gets edited in the&nbsp;<strong>AttributeManager</strong>. These changes will be reflected automatically in the writer feature type when it is set to&nbsp;<strong>Automatic&nbsp;</strong>mode. If she left it on&nbsp;<strong>Manual</strong>, she would have to repeat the edits on the writer feature type.</p>
+<p>Jennifer clicks&nbsp;<strong>Automatic&nbsp;</strong>and the schema is updated.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/map-datas-schema/images/0-ee-6105-a-28-ac-4-ad-1-af-6-b-798621-d-8-fdce.png" alt="Changing Attribute Definition mode" /></p>
+<p>If she then wants to make changes, she could click&nbsp;<strong>Manual&nbsp;</strong>again. She leaves it in&nbsp;<strong>Automatic&nbsp;</strong>mode and clicks&nbsp;<strong>OK</strong>. Then she clicks&nbsp;<strong>Run</strong>.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><strong>Dynamic&nbsp;</strong>mode is a more advanced&nbsp;<strong>Attribute Definition&nbsp;</strong>mode that lets you write out data without knowing the schema in advance. Both of these modes can also be set when you use<strong>&nbsp;Generate Workspace</strong>&nbsp;or add a writer.</p>
+</blockquote>
+<p><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/!FeatureTypeProperties/workspaces_dynamic_about.htm" target="_blank" rel="noreferrer noopener">Learn More</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Jennifer&rsquo;s steps.</p>

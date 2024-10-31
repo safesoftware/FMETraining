@@ -1,0 +1,120 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create a Text type user parameter.</li>
+<li>Use an FME parameter to supply a value at run-time.</li>
+<li>Duplicate an existing parameter.</li>
+<li>Use a user parameter in a transformer.</li>
+<li>Use a user parameter in a ParameterFetcher transformer.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-parameterize-a-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-parameterize-a-workspace.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-parameterize-a-workspace-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-parameterize-a-workspace-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2>Introduction</h2>
+<p>In this example, imagine you are a GIS technician working for a city planning department.</p>
+<p>The team responsible for maintaining parks has a workspace that translates their data from the source MapInfo TAB format to Google KML. It also writes an XML metadata file to show who translated the data and when.</p>
+<p>At the moment, they face two problems:</p>
+<ul>
+<li>The XML output is not particularly well formatted</li>
+<li>All of the XML metadata fields are hard-coded in an AttributeCreator transformer. This is inconvenient, especially when they want to run the workspace on FME Flow!</li>
+</ul>
+<p>You have been assigned to help solve these problems. At least one of these requires creating user parameters to replace hard-coded values.</p>
+<h2>1) Start Workbench</h2>
+<p>Start FME Workbench (2024.1 or later) and open the starting workspace.</p>
+<p><img src="images/1724191109304.png" alt="Starting workspace" width="730" height="194" /></p>
+<p>The metadata part of the translation consists of the two transformers and an XML writer feature type.</p>
+<p>The Sampler transformer ensures that only one record is written to the output metadata by discarding all but one feature, and the AttributeCreator creates a set of attributes to write to the metadata.</p>
+<p>Check the parameters for each transformer in turn. These are FME parameters set by the workspace author and unavailable to the end-user. Here, for example, are the parameters for the Sampler transformer:</p>
+<p><img src="images/1724191118474.png" alt="Sampler FME parameters" width="501" height="203" /></p>
+<p>You can find these parameters in the Parmeter Editor window, the transformers' parameters dialog, and under the Transformers section of the Navigator window.</p>
+<h2>2) Change XML Writer Parameter</h2>
+<p>An FME parameter called Pretty Print controls the style of the XML file being written:</p>
+<p><img src="images/1724191129395.png" alt="Viewing the Pretty Print parameter" width="633" height="241" /></p>
+<p>To ensure the output is always well-formatted, we should set this parameter to Yes - but we won't create a user parameter from it because we don't want the end-user to change it.</p>
+<p>In the Navigator window, locate the XML writer, expand the parameters list, and locate the Pretty Print parameter. Double-click it.</p>
+<p>In the dialog that opens, change the value to Yes and click OK to close the dialog.</p>
+<p><img src="images/1724191138982.png" alt="Changing a writer parameter value" width="588" height="139" /></p>
+<p>We have now - as a workspace author - changed an FME parameter.</p>
+<h2>3) Create a User Parameter</h2>
+<p>The output schema has three variable attributes: username, user company (organization), and user email. We should create a user parameter for each to allow the end-user to enter that information.</p>
+<p>Firstly, locate the User Parameters section of the Navigator window, right-click on it, and choose Manage User Parameters...:</p>
+<p><img src="images/1724191150152.png" alt="User Parameters &gt; Manage User Parameters" width="478" height="272" /></p>
+<p>In the User Parameters for 'Main' dialog, click the green plus icon and select Text as the type of parameter to create:</p>
+<p><img src="images/1724191159345.png" alt="Adding a Text parameter" width="197" height="495" /></p>
+<p>Fill out the section on the right as follows:</p>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 49.953%;"><strong>Parameter Identifier</strong></td>
+<td style="width: 49.953%;">UserNameParam</td>
+</tr>
+<tr>
+<td style="width: 49.953%;"><strong>Prompt</strong></td>
+<td style="width: 49.953%;">Enter your name:</td>
+</tr>
+<tr>
+<td style="width: 49.953%;"><strong>Published</strong></td>
+<td style="width: 49.953%;">Enabled</td>
+</tr>
+<tr>
+<td style="width: 49.953%;"><strong>Required</strong></td>
+<td style="width: 49.953%;">Disabled</td>
+</tr>
+<tr>
+<td style="width: 49.953%;"><strong>Disable Attribute Assignment</strong></td>
+<td style="width: 49.953%;">Disabled</td>
+</tr>
+</tbody>
+</table>
+<p>Click OK to close the dialog and create the parameter, which then appears in the Navigator window.</p>
+<h2>4) Create Remaining User Parameters</h2>
+<p>The quickest way to create the other two required parameters (<em>UserMailParam</em>&nbsp;and&nbsp;<em>UserCompanyParam</em>) is to duplicate the&nbsp;<em>UserNameParam</em>&nbsp;parameter.</p>
+<p>So, right-click on the&nbsp;<em>UserNameParam</em>&nbsp;parameter and choose the option to Duplicate:</p>
+<p><img src="images/1724191173550.png" alt="Duplicating an existing user parameter" width="521" height="524" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You can use the copy and paste buttons in the Parameter Manager to create duplicate parameters instead if you prefer.</p>
+</blockquote>
+<p>Call the new parameter <em>UserMailParam</em> and set the prompt to &ldquo;Enter your email address:&rdquo;.</p>
+<p>Repeat the duplication process to create a parameter called <em>UserCompanyParam</em> with the prompt "Enter your company name:".</p>
+<p>When done, your Navigator window should look like this:</p>
+<p><img src="images/1724191183664.png" alt="Three user parameters" width="393" height="293" /></p>
+<h2>5) Use User Parameter &ndash; Method 1</h2>
+<p>Each user parameter we've just defined provides values that need to go into attributes in the writer schema. There are several ways to extract the value for such a purpose, and we&rsquo;ll use a different method for each parameter to illustrate the different methods.</p>
+<p>So, firstly, double-click the AttributeCreator to open its parameters. This transformer is what currently creates the attributes for the output.</p>
+<p>Click the Attribute Value field for the AuthorName attribute. Click on the drop-down arrow, then select User Parameter &gt; UserNameParam.</p>
+<p>Once done, the value field will change to a special icon and show the parameter that was chosen:</p>
+<p><img src="images/1724191196371.png" alt="Setting an attribute value to a user parameter" width="798" height="428" /></p>
+<p>While here, click on the AuthorEmail and AuthorCompany fields and press the minus button to delete them. We will deal with these differently.</p>
+<h2>6) Use User Parameter &ndash; Method 2</h2>
+<p>A second way to extract the value from a user parameter is with a ParameterFetcher transformer.</p>
+<p>Place a ParameterFetcher transformer after the AttributeCreator. Inspect the parameters.</p>
+<p>Select&nbsp;<em>UserEmailParam</em>&nbsp;as the parameter to fetch. Enter AuthorEmail as the name of the target attribute, then select&nbsp;<em>UserCompanyParam</em>&nbsp;and enter AuthorCompany as the target attribute:</p>
+<p><img src="images/1724191206665.png" alt="ParameterFetcher transformer parameters" width="363" height="304" /></p>
+<h2>7) Use User Parameter &ndash; Method 3</h2>
+<p>Did you notice that the list of parameters available includes many FME-related system parameters? These are particularly useful for use with FME Flow and for writing metadata, as we are here.</p>
+<p>Locate the BuildNumber attribute on the ParksMetadata feature type. It's currently not receiving any values, indicated by a red arrow:</p>
+<p><img src="images/1724191231179.png" alt="BuildNumber not receiving any values" width="176" height="127" /></p>
+<p>Let's fix that.</p>
+<p>Open the <strong>AttributeCreator</strong> again and add an attribute called <strong>BuildNumber</strong>.</p>
+<p>You <em>could </em>enter a fixed (constant) value in the Value column, but in our case, we&rsquo;ll click on the drop-down arrow, select User Parameters, then FME Parameters, and then select FME_BUILD_NUM:</p>
+<p><img src="images/1724191242275.png" alt="Using an FME Parameter" width="575" height="423" /></p>
+<p>Click OK to close the dialog, and the feature type will highlight the attribute with a light red rightward-pointing arrow to show it has an attribute value set before being written.</p>
+<p><img src="images/1724191254109.png" alt="BuildNumber will be written" width="203" height="146" /></p>
+<h2>8) Save and Run Workspace</h2>
+<p>Save the workspace and then &ndash; as if you were the end-user &ndash; run it. Be sure to enable the Prompt for Parameters option on the toolbar first:</p>
+<p><img src="images/1724191264161.png" alt="Prompt for Parameters option" width="290" height="235" /></p>
+<p>When prompted, enter your details into the fields that have been newly created; notice that the BuildNumber parameter we created isn't in the prompt. This is because it is an FME-specific private parameter that the user doesn't need to change:</p>
+<p><img src="images/1724191275026.png" alt="" width="396" height="299" /></p>
+<p>Locate and open the XML file to ensure the contents have been inserted as expected:</p>
+<p><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</code><br /><code>&lt;fme:xml-tables</code><br /><code>&nbsp; &nbsp; xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"</code><br /><code>&nbsp; &nbsp; xmlns:fme="http://www.safe.com/xml/xmltables" xsi:schemaLocation="http://www.safe.com/xml/xmltables ParksMetadata.xsd"&gt;</code><br /><code>&nbsp; &nbsp; &lt;fme:ParksMetadata-table&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:ParksMetadata&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:AuthorName&gt;Bob User&lt;/fme:AuthorName&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:AuthorEmail&gt;bob@safe.com&lt;/fme:AuthorEmail&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:AuthorCompany&gt;Safe Software&lt;/fme:AuthorCompany&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:UpdateDate&gt;2024-02-01&lt;/fme:UpdateDate&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:BuildNumber&gt;23764&lt;/fme:BuildNumber&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/fme:ParksMetadata&gt;</code><br /><code>&nbsp; &nbsp; &lt;/fme:ParksMetadata-table&gt;</code><br /><code>&lt;/fme:xml-tables&gt;<br /></code></p>

@@ -1,0 +1,59 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Query features for additional information.</li>
+<li>View coordinate system information about features.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-information-about-a-specific-feature.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/ywaPdc3SzoVCrf7MeAyJZP?" width="640" height="360" allowfullscreen=""></iframe></p>
+<h2 id="inspect-source-data">Inspect Source Data</h2>
+<p><img class="image" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-to-data/view-information-about-a-specific-feature/images/bad-35950-6-e-9-c-4-ec-3-a-5-fd-fcbd-103817-d-8.png" alt="Amar" width="174" height="185" /></p>
+<p>Sven's colleague Amar is starting an FME project converting 2D building footprints to 3D models to compare them with a point cloud. He opens his&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-information-about-a-specific-feature.fmw" target="_blank" rel="noreferrer noopener">workspace</a>&nbsp;using FME Workbench (2022.0 or later). This workspace takes 2D building footprints and extrudes them to make 3D buildings. He also wants to compare the resulting extruded 3D buildings to a point cloud to see if the extrusion is roughly correct compared to what is observed in the point cloud.</p>
+<p>Amar has not yet inspected the point cloud dataset, and is curious about what units of distance are used in the point cloud data (feet or meters) and what software was used to generate the point cloud&mdash;TopoDOT had been used previously but Terrascan was used for the most recent point clouds.</p>
+<p>The point cloud format is ASPRS Lidar Data Exchange Format (LAS). The reader is listed in the Navigator window as [LAS]. Amar right-clicks on the LAS reader and selects&nbsp;<strong>View Source Data&hellip;&nbsp;</strong>to inspect the original dataset.</p>
+<p><img class="image" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-to-data/view-information-about-a-specific-feature/images/beee-536-f-040-c-49-d-9-9-d-8-e-06-c-0-b-07010-e-0.png" alt="View Source Data" width="469" height="294" /></p>
+<p>The Table view in Visual Preview shows no user-defined attributes. This indicates that there are no user-defined attributes in the dataset, but that does not mean there are no attributes at all. The features will have&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/aboutFeatures/feature-type-attributes-about.htm" target="_blank" rel="noreferrer noopener">format attributes</a>&nbsp;but format attributes are not displayed in the Table view by default.</p>
+<p><img class="image" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-to-data/view-information-about-a-specific-feature/images/2-a-16-c-6-cc-1-f-5-b-4-b-12-a-33-b-5-a-87-fad-65-f-8-a.png" alt="No schema" width="254" height="212" /></p>
+<p>A quick check of the ASPRS LiDAR Data Exchange Format (LAS)&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/las/quick_facts_las.htm" target="_blank" rel="noreferrer noopener">"Quick Facts" in the documentation</a>&nbsp;confirms that this format does not support user-defined attributes. But, Amar knows that there are more attributes than just user-defined attributes. Amar selects the single feature in the table view and opens the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/DataInspector/Feature-Information.htm" target="_blank" rel="noreferrer noopener">Feature Information</a>&nbsp;window.</p>
+<h2 id="feature-information-window">Feature Information Window</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/DataInspector/Feature-Information.htm" target="_blank" rel="noreferrer noopener">Feature Information</a>&nbsp;window displays everything that FME knows about the feature selected in the&nbsp;<strong>Table&nbsp;</strong>or&nbsp;<strong>Graphics View</strong>. Here you can find all the user-defined attributes, format attributes, coordinate system information, and geometry information.</p>
+<p><img class="image" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-to-data/view-information-about-a-specific-feature/images/106812-c-0-7-d-9-a-4317-8-c-6-b-47-c-8-af-06-aebf.png" alt="Feature Information Window" /></p>
+<p>Amar checks the upper part of&nbsp;<strong>Feature Information</strong>, above&nbsp;<strong>Attributes</strong>, where he finds:</p>
+<ul>
+<li>The feature type (layer/table) the selected feature belongs to</li>
+<li>If the feature is spatial:
+<ul>
+<li>Its coordinate system&nbsp;</li>
+<li>Summary information about its geometry (dimension, number of vertices, and extents)</li>
+</ul>
+</li>
+</ul>
+<p>The coordinate system catches Amar's eye because it&rsquo;s a link. Clicking on UTM83-10 opens the Properties dialog for the coordinate system. Here, Amar can see that the units for UTM83-10 are meters. This is important for Amar to know especially if he plans to do any calculations such as measuring a distance or an area. By default, FME will use the coordinate system&rsquo;s unit as measurement, and the result would sure look odd if those units were in degrees!</p>
+<p><img class="image" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-to-data/view-information-about-a-specific-feature/images/fc-06-f-5-c-9-9-c-78-41-a-9-bc-04-ca-4-bcac-5-be-90.png" alt="Coordinate System Properties" width="410" height="493" /></p>
+<p>Amar closes the&nbsp;<strong>Coordinate System Properties</strong>&nbsp;dialog and then checks the items under the&nbsp;<strong>Attributes</strong>&nbsp;header in the&nbsp;<strong>Feature Information</strong>&nbsp;window. This section reports the attributes associated with the feature, including user attributes and format attributes (for example fme_type).&nbsp;</p>
+<p>Here, Amar can see that this dataset was generated by TerraScan, not TeraDOT, so this is the more recent point cloud dataset. Amar can also see the creation date of this LAS file (las_file_creation_date (string): 20130425), the LAS version (las_version (string): 1.2), and the location of the dataset (fme_dataset (string): https://s3.amazonaws.com/FMEData/FMEData/Data/PointClouds/CoV_4910E_54580N.laz).</p>
+<p>Amar then checks the&nbsp;<strong>Geometry&nbsp;</strong>section in the lower part of the&nbsp;<strong>Feature Information&nbsp;</strong>window. This section reports the geometry of the feature. It includes the geometry type and a list of the coordinates that make up the feature. Here Amar can see the extents of the data, and the number of points in the point cloud.</p>
+<p><img class="image" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-to-data/view-information-about-a-specific-feature/images/f-8-d-60078-b-4-a-2-46-ce-b-2-a-5-e-8-c-5-e-88-b-22-cb.png" alt="Geometry information" width="546" height="319" /></p>
+<p>While the&nbsp;<strong>Table</strong>&nbsp;view typically only shows exposed user-defined attributes, the&nbsp;<strong>Feature Information</strong>&nbsp;window also displays FME-generated&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!FeatureTypeProperties/Controlling_Features_Format_Attributes.htm" target="_blank" rel="noreferrer noopener">format attributes</a>&nbsp;and&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!List_Attributes/Understanding-List-Attributes.htm" target="_blank" rel="noreferrer noopener">list attributes</a>. Any user-defined attributes or fme_type attributes visible in&nbsp;<strong>Feature Information&nbsp;</strong>can also be exposed for display in the table, allowing Amar to use them in his workspace.&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Using&nbsp;<strong>Feature Information&nbsp;</strong>is one of the fastest ways to find out what units you are working with when calculating areas or distances.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Amar&rsquo;s steps.</p>

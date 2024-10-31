@@ -1,0 +1,126 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define a shared parameter.</li>
+<li>Understand when using shared parameters is efficient.</li>
+<li>Share a user parameter by linking it to multiple parameters.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-reuse-user-parameters.fmwt" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-reuse-user-parameters-complete.fmwt" target="_blank" rel="noreferrer noopener">Complete workspace</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>Once a published parameter has been created, it can be shared between readers, writers, or transformers. A shared parameter is used in two or more places. The user is only prompted once, but the value is used for each linked parameter. This is beneficial when running a workspace using multiple transformers with a repeating parameter that is dependent on the user. Shared parameters are also useful in the case of writing to the same location, as demonstrated in the example below.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>You can also use shared private parameters if you have a value you want to use in several places in the workspace, but that does not need to be exposed to the end-user. For example, many spatial transformers have a Tolerance parameter: the distance, in ground units, within which the transformer will process features. With a shared private parameter, you can set one value that sets the Tolerance for every eligible transformer in the workspace.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>In the starting workspace, two data flows branch from the BikePath_M shapefile. The LineJoiner is used to join multiple line segments into one. The StatisticsCalculator has been set to calculate the total number of segments per PathName, and the total length of these segments.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644017269266.png" alt="Starting workspace" /></p>
+<p>The task for this exercise is to set up a shared published parameter so that two writers (MapInfo and CSV) are set up to write to the same folder as defined by the user. Each run will prompt the user to enter a folder name that is used for both writers. Without setting a shared published parameter, the folder location would have to be specified twice.</p>
+<h2 id="1-open-the-workspace-in-fme-workbench">1) Open the Workspace in FME Workbench</h2>
+<p>Open the starting workspace in FME Workbench (2022.0 or later).</p>
+<h2 id="2-create-a-published-parameter">2) Create a Published Parameter</h2>
+<p>In the Navigator window, right-click on User Parameters and select Manage User Parameters.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1629146315007.png" alt="Manage User Parameters" /></p>
+<p>Then, click the Insert icon (green plus sign) and choose File/Url as the parameter type:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1629146385729.png" alt="Choosing the File/URL parameter" /></p>
+<p>In the Add/Edit User Parameter dialog, enter the following parameters:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Parameter Identifier</strong></td>
+<td>OutputFolder</td>
+</tr>
+<tr>
+<td><strong>Prompt</strong></td>
+<td>Folder Name to Write Data:</td>
+</tr>
+<tr>
+<td><strong>Published</strong></td>
+<td>Checked</td>
+</tr>
+<tr>
+<td><strong>Required</strong></td>
+<td>Checked</td>
+</tr>
+<tr>
+<td><strong>Disable Attribute Assignment</strong></td>
+<td>Unchecked</td>
+</tr>
+<tr>
+<td><strong>Items to Select</strong></td>
+<td>Folders</td>
+</tr>
+<tr>
+<td><strong>Access Mode</strong></td>
+<td>Read</td>
+</tr>
+<tr>
+<td><strong>Path Selection</strong></td>
+<td>Single Path</td>
+</tr>
+<tr>
+<td><strong>Default Value</strong></td>
+<td>SharedParameterExample</td>
+</tr>
+</tbody>
+</table>
+<p>Your dialog should look like this:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1629147325375.png" alt="The filled-out parameter section" /></p>
+<p>Click OK.</p>
+<h2 id="3-add-the-writers">3) Add the Writers</h2>
+<p>Add a CSV writer and leave the Dataset blank. Set the CSV File Definition to Automatic.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644017298837.png" alt="Add a CSV writer" /></p>
+<p>Click OK. Set the CSV File Name to "Bike Path Statistics". Click OK.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644018147046.png" alt="Setting CSV File Name" />Connect the writer feature type to the Summary output port on the StatisticsCalculator.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1629150296517.png" alt="Connecting the StatisticsCalculator to the writer feature type" /></p>
+<p>Add a MapInfo MITAB writer and leave the Dataset blank. Set the Table Definition to Automatic.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644018170274.png" alt="Add a MapInfo TAB writer" /></p>
+<p>Click OK. Set the Table Name to "Bike Paths". Click OK.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644018194408.png" alt="Setting Table Name" />Connect the LineJoiner to the Bike Paths MITAB writer feature type.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1629150656988.png" alt="Connecting the LineJoiner to the MITAB writer feature type" /></p>
+<h2 id="4-share-the-parameter">4) Share the Parameter</h2>
+<p>In the Navigator, expand the CSV writer. Right-click on the Destination and select Link to User Parameter.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1629150951448.png" alt="Linking the CSV Destination parameter" /></p>
+<p>Select the OutputFolder parameter.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644018213727.png" alt="Setting the OutputFolder parameter" /></p>
+<p>Repeat this step for the MITAB Writer.</p>
+<p>Both writers are now sharing the OutputFolder User Parameter.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1654896972083.png" alt="Writers using the OutputFolder user parameter" /></p>
+<h2 id="5-run-the-workspace">5) Run the Workspace</h2>
+<p>Set the workspace to Prompt for User Parameters from the Run menu and enter a folder name.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644018253263.png" alt="Filling in the user parameters on run" /></p>
+<p>Right-click on one of the writers and select Open Containing Folder.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/1644018273382.png" alt="Open Containing Folder" /></p>
+<p>Both the MITAB and CSV files are written to the same folder.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-reuse-user-parameters/images/5-cb-33-b-73-9-e-3-a-4-aa-1-a-77-a-e-0-d-734-b-850-bc.png" alt="Output files" width="576" height="273" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>User parameters like this one that just provides a folder name instead of an entire path will be written to the folder containing the workspace. In this case, since we are using a workspace template, it will be somewhere in your temporary files depending on your operating system. You can provide a full path if you prefer.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

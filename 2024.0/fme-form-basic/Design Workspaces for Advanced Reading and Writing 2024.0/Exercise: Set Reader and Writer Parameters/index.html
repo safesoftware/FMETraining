@@ -1,0 +1,149 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:&nbsp;</p>
+<ul>
+<li>Set a reader parameter.</li>
+<li>Set a writer parameter.</li>
+<li>Set a writer feature type parameter.</li>
+</ul>
+<h2 id="learning-objectives">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-set-reader-and-writer-parameters.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-set-reader-and-writer-parameters.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-set-reader-and-writer-parameters-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-set-reader-and-writer-parameters-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">CommunityMapping GDB</a>
+<ul>
+<li>C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+</ul>
+<h2 id="learning-objectives">Introduction</h2>
+<p>You've been given a starting workspace that reads community map data from an Esri geodatabase and writes it to GML and SQLite (parks only). However, the workspace needs several improvements:</p>
+<ul>
+<li>One of the community centers, "Mount Pleasant," is temporarily closed. Until a different department can correct the source data, you must prevent it from being written to the GML file.</li>
+<li>The team that uses the GML has been complaining that they don't like manually changing the file to use <a href="https://en.wikipedia.org/wiki/Prettyprint" target="_blank" rel="noopener">pretty printing</a> when viewing the data. They've asked you to pretty print the data for easy reading.</li>
+<li>The City has announced an initiative to add indigenous language place names to City parks. You've been tasked with changing the park names in the SQLite database.</li>
+</ul>
+<p>These can be accomplished using reader/writer/feature type parameters. Let's get to work!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Try accomplishing the three tasks above without reading the instructions for an added challenge. Although you could solve them using transformers, try only to use reader/writer/feature type parameters. It's possible!</p>
+</blockquote>
+<h2 id="learning-objectives">Open and Run the Workspace</h2>
+<p>Open the<strong> </strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-set-reader-and-writer-parameters.fmw" target="_blank" rel="noopener">starting workspace</a><strong> </strong>in FME Workbench (FME 2024.0 or later).</p>
+<p><img src="images/1715384870148.png" alt="Starting workspace" width="967" height="346" /></p>
+<p>Run the workspace.</p>
+<p>Inspect the CommunityCentres reader feature type cache. Note it has ten community centers, including the one we need to remove from the written data, Mount Pleasant.</p>
+<p><img src="images/1715384946074.png" alt="Starting community center data" /></p>
+<h2 id="learning-objectives">Add a WHERE Clause Reader Feature Type Parameter</h2>
+<p>Let's use a reader feature type parameter to remove the Mount Pleasant community center from the written data.</p>
+<p>Double-click the CommunityCentre reader feature type to open its parameters, then enter the following partial SQL statement for WHERE Clause:</p>
+<p><code>"CentreName" &lt;&gt; 'Mount Pleasant'</code></p>
+<p><img src="images/1715384662821.png" alt="WHERE Clause configuration" /></p>
+<p>Click OK.</p>
+<p>Run the workspace.</p>
+<p>Inspect the CommunityCentre reader feature type cache again. Note that FME did not read (or, therefore, write) the Mount Pleasant feature:</p>
+<p><img src="images/1715385107361.png" alt="Data after WHERE Clause is applied" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Use this parameter "where" you can to avoid reading too much data! 😉</p>
+<p>We cover more tips like this in our <a href="https://academy.safe.com/optimize-workspace-performance" target="_blank" rel="noopener">Optimize Workspace Performance course</a>.</p>
+</blockquote>
+<h2 id="learning-objectives">Change the GML Pretty Print Writer Parameter</h2>
+<p>Next, let's fix the pretty print issue.</p>
+<p>First, let's view the data without pretty print. Click one of the GML writer feature types and use the Open Containing Folder button to find the destination GML file:</p>
+<p><img src="images/1715385438032.png" alt="Open Containing Folder button" /></p>
+<p>Open it in Notepad or another text editor. Note how the text does not use indentation to indicate nesting:</p>
+<p><code>...<br /></code><code>&lt;gml:boundedBy&gt;</code><br /><code>&lt;gml:Envelope srsName="EPSG:26910" srsDimension="3"&gt;</code><br /><code>&lt;gml:lowerCorner&gt;486494.0932 5456045.6164 0&lt;/gml:lowerCorner&gt;</code><br /><code>&lt;gml:upperCorner&gt;494255.29509999976 5460601.212200001 0&lt;/gml:upperCorner&gt;</code><br /><code>&lt;/gml:Envelope&gt;</code><br /><code>&lt;/gml:boundedBy&gt;</code><br /><code>&lt;gml:featureMember&gt;</code><br /><code>&lt;fme:TransitStations gml:id="id0b91e990-57bb-4e58-8861-515334e2b534"&gt;</code><br /><code>&lt;fme:StationName&gt;Waterfront&lt;/fme:StationName&gt;</code><br /><code>&lt;fme:OBJECTID&gt;1&lt;/fme:OBJECTID&gt;</code><br /><code>&lt;gml:pointProperty&gt;</code><br /><code>&lt;gml:Point srsName="EPSG:26910" srsDimension="2"&gt;</code><br /><code>&lt;gml:pos&gt;491874.0992999999 5459264.233100001&lt;/gml:pos&gt;</code><br /><code>&lt;/gml:Point&gt;</code><br /><code>&lt;/gml:pointProperty&gt;</code><br /><code>&lt;/fme:TransitStations&gt;</code><br /><code>&lt;/gml:featureMember&gt;</code><br /><code>...</code></p>
+<p>Find the Output [GML] writer in the Navigator. Then expand it to find its Parameters section, and expand that to find the Pretty Print parameter:</p>
+<p><img src="images/1715385626020.png" alt="Finding the Pretty Print GML writer parameter" /></p>
+<p>Double-click it to open the parameters dialog. Find Pretty Print again and set it to Yes:</p>
+<p><img src="images/1715385558541.png" alt="Setting Pretty Print to Yes" /></p>
+<p>Now, the written data will be pretty printed with indents.</p>
+<p>Run the workspace.</p>
+<p>Inspect the written GML file using Notepad or another text editor to see the difference:</p>
+<p><code>...<br /></code><code>&lt;gml:boundedBy&gt;</code><br /><code>&nbsp; &nbsp; &nbsp;&lt;gml:Envelope srsName="EPSG:26910" srsDimension="2"&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;gml:lowerCorner&gt;491133.7028000001 5456674.0671999995&lt;/gml:lowerCorner&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;gml:upperCorner&gt;494255.29509999976 5459264.233100001&lt;/gml:upperCorner&gt;</code><br /><code>&nbsp; &nbsp; &lt;/gml:Envelope&gt;</code><br /><code>&lt;/gml:boundedBy&gt;</code><br /><code>&lt;gml:featureMember&gt;</code><br /><code>&nbsp; &nbsp; &lt;fme:TransitStations gml:id="id5519c06b-d3d0-4b4c-92de-67caec9f13f1"&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:StationName&gt;Waterfront&lt;/fme:StationName&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;fme:OBJECTID&gt;1&lt;/fme:OBJECTID&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;gml:pointProperty&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;gml:Point srsName="EPSG:26910" srsDimension="2"&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;gml:pos&gt;491874.0992999999 5459264.233100001&lt;/gml:pos&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/gml:Point&gt;</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/gml:pointProperty&gt;</code><br /><code>&nbsp; &nbsp; &lt;/fme:TransitStations&gt;</code><br /><code>&lt;/gml:featureMember&gt;</code><br /><code>...</code></p>
+<h2 id="learning-objectives">View Starting SQLite Data</h2>
+<p>In the next section, we'll look at an important writer feature type parameter: fme_db_operation.&nbsp;</p>
+<p>We must create an SQLite database to set up a scenario where we might use this parameter. The starting workspace already has an SQLite writer and feature type. When you ran it earlier, you created the database.</p>
+<p>Inspect the current state of the data by clicking the SQLite Parks writer feature type (it's annotated as such) and clicking the View Written Data button:</p>
+<p><img src="images/1715640107518.png" alt="View Written Data button" /></p>
+<p>The database stores data about the parks:</p>
+<p><img src="images/1715640178489.png" alt="Parks data" /></p>
+<h2 id="learning-objectives">Edit Writer Feature Type Parameter</h2>
+<p>Currently, a writer parameter, Overwrite Existing Database, is enabled. Therefore, FME creates the database from scratch each time it runs the workspace, ensuring it has the same number of records as the source data no matter how many times it runs.</p>
+<p>To see how fme_db_operation works, we'll need to disable that writer parameter. Find it in the Navigator and change it to disabled (unchecked):</p>
+<p><img src="images/1715640433584.png" alt="Disabling Overwrite Existing Database" width="1068" height="395" /></p>
+<p>Now, if you were to run the workspace (don't!), you would&nbsp;<em>append </em>69 records to the database. That's because the default database operation for FME writers is Insert. You can confirm this by examining the Parks SQLite writer feature type. Double-click it and observe that General &gt; Feature Operation is set to Insert and Table Handling is set to Create If Needed:</p>
+<p><img src="images/1715640495702.png" alt="Feature Operation and Table Handling parameters" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Suppose you accidentally mess up the starting database while doing this exercise. In that case, you can always enable Overwrite Existing Database, Insert, and Create If Needed and rerun the workspace to return to the starting state.</p>
+</blockquote>
+<p>However, the imaginary scenario you need to adapt to now is that the City has passed a law stating that indigenous language place names must be used alongside English names. So, you have to update the park names. How can we update the names that already exist in the database?</p>
+<p>A writer feature type parameter!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>This is an imaginary scenario, but such initiatives <a href="https://vancouversun.com/news/local-news/the-rebirth-of-x%CC%B1way%CC%93x%CC%B1way-x%CC%B1epx%CC%B1pay%CC%93em-and-iy%CC%93al%CC%93mexw-as-vancouver-place-names" target="_blank" rel="noopener">do exist</a>.</p>
+</blockquote>
+<p>Change Feature Operation to fme_db_operation:</p>
+<p><img src="images/1715640630997.png" alt="fme_db_operation" /></p>
+<p>When you make this change, FME requires you to specify how features will be identified via the Row Selection &gt; Match Columns parameter. Choose OBJECTID, as FME already generated this unique ID when it wrote the data originally:</p>
+<p><img src="images/1715640792726.png" alt="Setting Match Columns" /></p>
+<p>Now, the writer feature type will Insert/Update/Upsert/etc., based on the value of the fme_db_operation and OBJECTID attribute on incoming features.</p>
+<h2 id="learning-objectives">Conduct an Update Database Feature Operation</h2>
+<p>So, let's configure the workspace to change a park name using an Update feature operation.</p>
+<p>Add a Tester connected to the Parks reader feature type:</p>
+<p><img src="images/1715640917183.png" alt="Adding a Tester" /></p>
+<p>Ensure it's <strong>not </strong>connected to the writer feature type yet! We don't want to write a feature to the database before we are ready.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you are nervous about this, you can right-click the writer feature type and Disable it until you are ready to write. Just make sure to Enable it before writing!</p>
+</blockquote>
+<p>We'll update a single park name as an example for now, so configure the Tester to pass features where ParkName = Stanley Park:</p>
+<p><img src="images/1715641012169.png" alt="Configured Tester" /></p>
+<p>Run your workspace. You should now have a single feature with ParkName = Stanley Park exiting the Tester's Passed port:</p>
+<p><img src="images/1715641054783.png" alt="Single feature passing the Tester" /></p>
+<h2 id="learning-objectives">Configure fme_db_operation</h2>
+<p>Add an AttributeCreator after the Tester:</p>
+<p><img src="images/1715641097603.png" alt="Added an AttributeCreator" /></p>
+<p>Configure it like this:</p>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 49.9676%;"><strong>Output Attribute</strong></td>
+<td style="width: 49.9676%;"><strong>Value</strong></td>
+</tr>
+<tr>
+<td style="width: 49.9676%;">fme_db_operation</td>
+<td style="width: 49.9676%;">UPDATE</td>
+</tr>
+<tr>
+<td style="width: 49.9676%;">ParkName</td>
+<td style="width: 49.9676%;">Spapəy̓əq (Stanley Park)</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/1715641144919.png" alt="AttributeCreator configuration" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Spapəy̓əq roughly translates to "bent at the end" in Hunquminum, the language spoken by the <a href="https://en.wikipedia.org/wiki/Musqueam_First_Nation" target="_blank" rel="noopener">Musqueum First Nation</a>. It refers to a specific part of the area now known as Stanley Park, Brockton Point. The phonetic pronunciation is "spah-pee-ahk."</p>
+<p>Learn more from the <a href="https://vancouver.ca/news-calendar/musqueam-squamish-and-tsleil-waututh-flags-permanently-raised-at-stanley-park-s-brockton-point.aspx" target="_blank" rel="noopener">City of Vancouver</a> or <a href="https://placesthatmatter.ca/location/musqueam-spap%C9%99y%CC%93%C9%99q/" target="_blank" rel="noopener">Vancouver Heritage Foundation</a>.</p>
+</blockquote>
+<p>Click OK.</p>
+<p>Connect the AttributeCreator to the Parks SQLite writer feature type:</p>
+<p><img src="images/1715641212345.png" alt="AttributeConnector is connected" /></p>
+<h2 id="learning-objectives">Run the Workspace</h2>
+<p>Run the workspace and inspect the written data. You should see there are still only 69 features, but the feature with OBJECTID = 55 now has the ParkName = Spapəy̓əq (Stanley Park), successfully updated in-place using a writer feature parameter:</p>
+<p><img src="images/1715641325968.png" alt="Feature successfully updated" /></p>
+<p>Using this method, you can control the database operation performed at the feature level. That's the power of parameters!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>We could get the same output data using the parameters we started with: Insert, Create as Needed, and Overwrite Existing Database. However, these use cases are the same only if you want to write the entire table each time. If you want to update certain records each time the workspace runs, for example, loading new or changed records every 10 minutes, you would have to use the fme_db_operation parameter.</p>
+</blockquote>

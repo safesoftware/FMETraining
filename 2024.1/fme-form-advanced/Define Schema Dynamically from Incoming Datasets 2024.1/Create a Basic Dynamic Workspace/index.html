@@ -1,0 +1,35 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create a dynamic translation by setting Workflow Options in the Generate Workspace dialog.</li>
+<li>Explain the relationship between dynamic reading and merging feature types.</li>
+<li>Explain the difference between Automatic and Dynamic Feature Type Definition Mode on writer feature types.</li>
+</ul>
+<h2 id="creating-a-dynamic-translation">Creating a Dynamic Translation</h2>
+<p>When you create a workspace using the Generate Workspace dialog, there are two Workflow Options:&nbsp;<strong>Static Schema</strong>&nbsp;and&nbsp;<strong>Dynamic Schema</strong>.</p>
+<p><img class="image image-block image-center" src="images/1723489716773.png" alt="Dynamic Schema Workflow Option" width="487" height="422" /></p>
+<p>The default option is the static schema, which assumes a fixed schema that FME knows before running the workspace. The Dynamic Schema option creates a schema-less workspace with dynamic readers and writers.</p>
+<p>It is, however, possible to create a workspace where only the readers or writers are dynamic.</p>
+<h2 id="dynamic-reader-only">Dynamic Reader Only</h2>
+<p>The Add Reader dialog has similar options for static and dynamic; however, in this case, they are labeled to reflect what they do: they create&nbsp;<em>Individual Feature Types</em>&nbsp;or a&nbsp;<em>Single Merged Feature Type</em>:</p>
+<p><img class="image image-block image-center" src="images/1723489759279.png" alt="Single Merged Feature Type option" width="464" height="70" /></p>
+<p>A dynamic reader is similar to setting the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/Merging_Feature_Types.htm" target="_blank" rel="noopener">Merge Feature Type option</a> on reader feature types.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Note, however, that if you add an individual feature type and then check Merge Feature Type, that feature type will still use the individual feature type's original schema. If the other feature types have different attributes, they will be read but unexposed in the resulting features.</span></p>
+</blockquote>
+<h2 id="dynamic-writer-only">Dynamic Writer Only</h2>
+<p>The Add Writer dialog has options that let you define feature types and their attributes. The most commonly used ones are Manual and Automatic. There is also an option that adds a writer in Dynamic mode:</p>
+<p><img class="image image-block image-center" src="images/1723489871052.png" alt="Dynamic Feature Type Definition mode" width="464" height="320" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Let's clarify Automatic vs. Dynamic. Automatic attributes take their definition from whatever is connected to them. If the Source Dataset parameter is changed, that change has no effect.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Dynamic attributes are different. If the Source Dataset parameter is changed, the attribute definition comes from whatever source data gets read, regardless of what is connected to it.</span></p>
+</blockquote>
+<h2 id="what-does-a-dynamic-workspace-look-like">What Does a Dynamic Workspace Look Like?</h2>
+<p>Both dynamic readers and dynamic writers each have a single Feature Type, regardless of the schema of the reader datasets:</p>
+<p><img class="image image-block image-center" src="images/1723489900548.png" alt="A dynamic workspace" width="498" height="107" /></p>
+<p>Notice that there is only one feature type, regardless of whether the data comprises several layers or tables.</p>
+<p>Also, notice that the sole reader Feature Type is named&nbsp;<strong>&lt;All&gt;</strong>&nbsp;(which provides a clue to what is happening here) and that the sole writer Feature Type is named&nbsp;<strong>&lt;Dynamic&gt;</strong>.</p>
+<p>FME reads all source data through a single feature type when the workspace runs. On the writer side, although there is only one output type, FME dynamically divides the layers back into their component layers, keeping their original attributes and geometry type.</p>
+<p>With this workspace, you can switch the source dataset to anything (in the correct format), and the output will be a mirror image. You don't need to worry about unexpected input or unsupported geometry types. Plus, if you used the Generic Reader/Writer, it could read any dataset in any format and create a duplicate output in the format of your choice!</p>

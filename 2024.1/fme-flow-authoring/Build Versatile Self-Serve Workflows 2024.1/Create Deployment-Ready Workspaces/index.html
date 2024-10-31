@@ -1,0 +1,46 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explain the purpose of Deployment Parameters in FME Flow.&nbsp;</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Locate and create Deployment Parameters.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Know the types of values Deployment Parameters can hold.&nbsp;</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Describe how Deployment Parameters can help address connection management challenges across multiple FME Flow instances.</span></li>
+</ul>
+<h2 class="c9">What are Deployment Parameters?</h2>
+<p><span style="font-weight: 400;">Organizations may have multiple FME Flow instances to support the development and testing of workflows. This introduces a challenge, as database and web connections are also likely to be different between instances. Manually changing all connections in a workspace for the environment it is being run in is time-consuming and error-prone.</span></p>
+<p class="c9"><span style="font-weight: 400;">This challenge can be addressed with </span><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Deployment-Parameters.htm"><span style="font-weight: 400;">Deployment Parameters</span></a><span style="font-weight: 400;">. Deployment Parameters allow you to use a common name for a parameter across all FME Flow instances while giving it a different value in each instance. When a workspace that references a Deployment Parameter is published to FME Flow, it will use the value stored on that instance.</span></p>
+<h2 class="c9"><span class="c0">Creating Deployment Parameters</span></h2>
+<p><span style="font-weight: 400;">There are currently three different types of Deployment Parameters that you can create: database connection, web connection, and text.</span></p>
+<p><span style="font-weight: 400;">Deployment Parameters can be created from the FME Flow Web UI or FME Workbench. Once created, Deployment Parameters will reside in the Deployment Parameter Store on FME Flow.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><strong>To create a Deployment Parameter from the FME Flow Web UI</strong>, go to Connections &amp; Parameters. Click Deployment Parameters to view the Deployment Parameter Store page and then click Create.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1722978736383.png" alt="" width="948" height="464" /></span></p>
+<p><span style="font-weight: 400;"><strong>To create a Deployment Parameter from FME Workbench</strong>, you must be connected and synchronized to the FME Flow instance where you want the Deployment Parameter to exist. There must also be at least one Deployment Parameter already on the connected FME Flow instance.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1722978796461.png" alt="" /></span></p>
+<p><span style="font-weight: 400;">You will then see Deployment Parameters in the FME Workbench Navigator panel and can right-click to create additional deployment parameters.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1722978829316.png" alt="" /></span></p>
+<p><span style="font-weight: 400;">After you create a Deployment Parameter in FME Workbench, the connected FME Flow instance will add it to its Deployment Parameter store.</span></p>
+<h2><span style="font-weight: 400;">Using Deployment Parameters in FME Workbench</span></h2>
+<p><span style="font-weight: 400;">You can select a Deployment Parameter as a value in the same way as a User Parameter or FME Flow Parameter by expanding the User Parameter menu.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1722979055260.png" alt="" width="1243" height="396" /></span></p>
+<p><span style="font-weight: 400;">If the connected FME Flow instance has a new a Deployment Parameter since you last synced in FME Workbench, it will not be available for selection until you sync again.</span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br />When you sync to FME Flow from FME Workbench, FME does not synchronize the connection settings for web and database connection deployment parameters. To run a workspace in FME Workbench that references a web connection or database connection deployment parameter, you must have already defined the connection in Tools &gt; FME Options. <br /></span></p>
+</blockquote>
+<h2>Using Deployment Parameters in FME Flow Automations</h2>
+<p><span style="font-weight: 400;">You can also use Deployment Parameters in FME Flow Automation actions. For example, in the Run Workspace action, you can choose a Deployment Parameter as a connection parameter value.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1722979201227.png" alt="" /></span></p>
+<h2 class="c9">Example: Author a Workspace With a Database Connection using Deployment Parameters</h2>
+<p><span style="font-weight: 400;">Let&rsquo;s say an organization has two different FME Flow instances: a test instance and a production instance. They also have two Postgres employee databases, one for test and one for production. The workspace author wants the same workspace to run in both FME Flow instances without changing the connection parameters in FME Workbench.</span></p>
+<p><span style="font-weight: 400;">To accomplish this, they can create a Deployment Parameter named &lsquo;Employee Database&rsquo; on each FME Flow instance and give it a different connection value on each instance.</span></p>
+<p><span style="font-weight: 400;">Here is the FME Flow test instance:</span></p>
+<p class="c9"><img title="" src="https://lh6.googleusercontent.com/ZpA0PDH8gmNqWquQ7V6yTsWdxTj_Bv_P-aZdS9ddVLA5PB-g2flPNTfJTQKxicwVAeSLUABnFPj9TUnA3ncmKWIYezxL3h1ANGlIocDSTByIk-FejDaBCqcx13jimWChd8QS2ecuFHYG1rQaf6MsBOE" alt="" /></p>
+<p class="c9"><span class="c0">And here is the production instance. Notice that the Deployment Parameter name is the same, but the value is different:</span></p>
+<p class="c9"><img title="" src="https://lh6.googleusercontent.com/3L7Qpt21TnOtwkfvsPtk6qLen4qkGqhpQSHuUHqOWuPzfaxPls_lmd-5ktl2gKK0PjbIv5k9yckya2mhbxRAdI2lSQiugCd7bmLSwwk3hpWxObs-hSaujYdI69X8x7tIGCtQ8SZPeWSM1toxs_CD_qA" alt="" /><span class="c0">&nbsp;</span></p>
+<p class="c9"><span style="font-weight: 400;">In FME Workbench,&nbsp; the author has already created a database connection for each environment.</span></p>
+<p class="c9"><span style="font-weight: 400;"><img src="images/1722979371463.png" alt="" /></span></p>
+<p class="c9"><span style="font-weight: 400;">They can use the EmployeeDatabase Deployment Parameter in FME Workbench by connecting to either FME Flow instance. In this example, they'll connect to </span><span style="font-weight: 400;">the test server. In FME Workbench, from the drop-down list next to the FME Flow Connection, they choose Sync to ensure their Deployment Parameters are up-to-date .</span></p>
+<p class="c9"><span style="font-weight: 400;"><img src="images/1722979414630.png" alt="" /></span></p>
+<p class="c9"><span style="font-weight: 400;">In the Postgres reader, instead of choosing the name of a database connection, they choose the EmployeeDatabase Deployment Parameter.</span></p>
+<p class="c9"><span style="font-weight: 400;"><img src="images/1722979470443.png" alt="" width="973" height="293" /></span></p>
+<p><span style="font-weight: 400;">Since FME Workbench is currently connected to the FME Flow test server, the EmployeeDatabase Deployment Parameter will use the Postgres TEST Employee Database connection.&nbsp;</span></p>
+<p><span style="font-weight: 400;">Now the author can run the workspace from FME Workbench using the test database connection and then publish it to the FME Flow test server. When testing is complete, they can publish the workspace to the FME Flow production server without any changes being made to the workspace.</span></p>

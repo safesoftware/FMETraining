@@ -1,0 +1,122 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Create points using addresses.</li>
+<li>Understand the limitations of geocoding services.</li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/Bd9vKUgyWRGr3KCXxxKb42" width="640" height="360" allowfullscreen=""></iframe></p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateSpatialData/CulturalSpaces2016.csv" target="_blank" rel="noreferrer noopener">CulturalSpaces2016.csv</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>Sometimes your dataset will only contain addresses without latitude/longitude data. To handle these kinds of situations, you can use the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/geocoder.htm" target="_blank" rel="noreferrer noopener">Geocoder</a>&nbsp;transformer.</p>
+<p>The following services are supported:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Service</strong></td>
+<td><strong>Mode</strong></td>
+</tr>
+<tr>
+<td>ArcGIS Online</td>
+<td>Forward, Reverse</td>
+</tr>
+<tr>
+<td>ArcGIS Server</td>
+<td>Forward, Reverse</td>
+</tr>
+<tr>
+<td>Bing</td>
+<td>Reverse</td>
+</tr>
+<tr>
+<td>Geocode.Farm</td>
+<td>Forward, Reverse</td>
+</tr>
+<tr>
+<td>Geocoder.ca</td>
+<td>Forward, Reverse</td>
+</tr>
+<tr>
+<td>Google</td>
+<td>Forward, Reverse, Elevation, Timezone</td>
+</tr>
+<tr>
+<td>HERE</td>
+<td>Forward, Reverse</td>
+</tr>
+<tr>
+<td>IPInfo.io</td>
+<td>IP Address</td>
+</tr>
+<tr>
+<td>ipstack</td>
+<td>IP Address</td>
+</tr>
+<tr>
+<td>OpenCage</td>
+<td>Forward, Reverse</td>
+</tr>
+<tr>
+<td>OpenStreetMap</td>
+<td>Forward, Reverse</td>
+</tr>
+<tr>
+<td>TAMU</td>
+<td>Forward, with census region information</td>
+</tr>
+</tbody>
+</table>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Usage of the transformer may use credits with the service, and you may be subject to transaction limits.</p>
+</blockquote>
+<p>Many services have additional requirements for use. A common requirement is that the resulting data be displayed on a map from the same service. Storage of result data in a database may also require additional fees. Please consult the terms of service of the geocoding providers (listed above) to ensure that your use complies.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Some Geocoder services support "reverse geocoding," finding the nearest address given a coordinate. Note also that the exact address formatting that will give you the best chance of successfully geocoding will vary by service. Refer to the service's documentation and use an AttributeManager or other transformers to ensure you are giving the transformer an address format it expects.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>The&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/geocoder.htm" target="_blank" rel="noreferrer noopener">Geocoder</a>&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/options-FME-packages.htm" target="_blank" rel="noreferrer noopener">FME Package</a>&nbsp;transformer replaces the Geocoder originally shipped with FME 2021.1 and older versions.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="exercise">Exercise</h2>
+<ol>
+<li>Open FME Workbench 2022.0. Click Blank Workspace to start a new workspace. Click Readers &gt; Add Reader and set Format to CSV (Comma-Separated Value).</li>
+<li>Click the ellipsis button [...] and select the downloaded&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateSpatialData/CulturalSpaces2016.csv" target="_blank" rel="noreferrer noopener">CulturalSpaces2016.csv</a>&nbsp;dataset or paste in the URL.</li>
+<li>Add a Geocoder to the canvas connected to the CSV feature type.</li>
+<li><a href="https://developers.google.com/maps/documentation/geocoding/get-api-key" target="_blank" rel="noreferrer noopener">Sign up for a free Google Geocoder API</a>&nbsp;and then paste the API key into the API Key parameter in the Geocoder parameters.
+<ol>
+<li>If you don't want to sign up, you can use the free OpenStreetMap geocoder.</li>
+</ol>
+</li>
+<li>Next, for Street Address, identify where the address is stored and select that Attribute. For this example, the address is stored in ADDRESS.</li>
+<li>Before running the translation, set the Rejected Feature Handling workspace parameter to Continue Translation. We need to do this because some of the cultural spaces don't have an address associated with them, so our translation will stop when the Geocoder rejects these features. To do this, in the Navigator Pane &gt; Workspace Parameters &gt; Translation &gt; Rejected Feature Handling &gt; Continue Translation. After running the translation, you will see the points in Visual Preview.<br /><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/turn-coordinates-into-geometry/exercise-turn-coordinates-into-geometry-by-geocoding-addresses/images/1644021341510.png" alt="Geocoder parameters" /></li>
+<li>Run the workspace and inspect the results</li>
+</ol>
+<h2 id="results">Results</h2>
+<p><img class="image image-block image-center" src="images/1704322755047.png" alt="Results on a map" width="399" height="273" /></p>
+<p><em>&nbsp;The output of point features using any of the three methods. Stylized in FME Data Inspector using m</em><em>ap tiles by&nbsp;</em><a href="http://stamen.com/" target="_blank" rel="noreferrer noopener"><em>Stamen Design</em></a><em>, under&nbsp;</em><a href="http://creativecommons.org/licenses/by/3.0" target="_blank" rel="noreferrer noopener"><em>CC-BY-3.0</em></a><em>. Data by&nbsp;</em><a href="http://openstreetmap.org/" target="_blank" rel="noreferrer noopener"><em>OpenStreetMap</em></a><em>, under&nbsp;</em><a href="http://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noreferrer noopener"><em>CC-BY-SA</em></a><em>.</em></p>

@@ -1,0 +1,106 @@
+<h2>Learning Objectives</h2>
+<p>After completing this unit, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use the VertexCreator to create point geometry from coordinate attributes.</li>
+<li>Use Visual Preview to identify when features do not have a coordinate system set.</li>
+<li>Use the CoordinateSystemSetter to set a coordinate system on features.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/create-points-from-coordinates.fmw" target="_blank" rel="noopener">Starting workspace</a><br />
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\create-points-from-coordinates.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/create-points-from-coordinates-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\create-points-from-coordinates-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="connect-to-a-database">Adding a VertexCreator</h2>
+<p>Jennifer expects this data to have point geometry, but currently, it only exists as tabular data. However, she has Latitude and Longitude attributes, so she knows she can use the <strong>VertexCreator</strong> transformer to generate points.</p>
+<p>She adds one after the <strong>JSONFragmenter</strong> using Quick Add:</p>
+<p><img src="images/1712864997639.png" alt="Added a VertexCreator" width="600" /></p>
+<p>She double-clicks it to open its parameters and configures them like this:</p>
+<table style="border-collapse: collapse; width: 99.9509%;" border="1">
+<tbody>
+<tr>
+<td style="width: 49.9754%;"><strong>X Value</strong></td>
+<td style="width: 49.9754%;">Longitude</td>
+</tr>
+<tr>
+<td style="width: 49.9754%;"><strong>Y Value</strong></td>
+<td style="width: 49.9754%;">Latitude</td>
+</tr>
+</tbody>
+</table>
+<p>She clicks <strong>OK </strong>to close the dialog.</p>
+<h2 id="connect-to-a-database">Identifying Coordinate System Problems</h2>
+<p><span style="font-family: inherit; font-size: 1em;">Jennifer clicks the <strong>Run</strong> button to run her workspace.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The <strong>VertexCreator</strong> transformer runs and creates point geometry for her features.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">She inspects the cache using&nbsp;<strong>Visual Preview</strong>.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">However, she can tell her points are not aligned with the background map</span><span style="font-family: inherit; font-size: 1em;">. She expects to see the points located in the area around Vancouver, British Columbia, Canada, but they are not there:</span></p>
+<p><img src="images/1712944068142.png" alt="Missing coordinate system information" width="400" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">That's because they don't have a coordinate system defined. There are clues Jennifer uses to determine this is a coordinate system problem:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">The features do not appear where she expects. She expected to see them near Vancouver, but instead they are near <a href="https://en.wikipedia.org/wiki/Null_Island" target="_blank" rel="noopener">Null Island</a>.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">The <strong>Graphics</strong> view has a warning ribbon that informs her, "Some features in 'VertexCreator: Output' may not align with the background map."</span></li>
+<li>The <strong>Graphics</strong> view reports the data uses "Unknown Units" in the bottom right.</li>
+<li>The <strong>Feature Information Window </strong>reports that the features' <strong>Geometry &gt; Coordinate System</strong> is set to Unknown.</li>
+</ul>
+<h2 id="connect-to-a-database">Adding a CoordinateSystemSetter</h2>
+<p>To fix this problem, Jennifer adds a <strong>CoordinateSystemSetter </strong>after the <strong>VertexCreator</strong>.</p>
+<p><img src="images/1712944464451.png" alt="Adding a CoordinateSystemSetter" width="600" /></p>
+<p>She opens its parameters and sets <strong>Coordinate System</strong> to <strong>LL84</strong>, then clicks <strong>OK</strong>.</p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>FME automatically reads coordinate systems when reading from spatial data. However, since we created the points from attributes, no coordinate system information is available to read. So, we have to manually define the system.&nbsp;</p>
+</blockquote>
+<p>She runs her workspace.</p>
+<p>Then she inspects the results of the <strong>CoordinateSystemSetter's Output</strong> port. She sees 100 point features, correctly located in the Vancouver area:</p>
+<p><img src="images/1712865851281.png" alt="Resulting points" width="400" /></p>
+<p><em>Map tiles &copy;&nbsp;<a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy;&nbsp;<a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy;&nbsp;<a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy;&nbsp;<a href="https://academy.safe.com/connect-to-data/Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<h2 id="run-the-workspace">Add Geodatabase Writer</h2>
+<p>Now that her data has the correct attributes and geometry, it's time to write it out to geodatabase.</p>
+<p>She types Esri Geo and Quick Add opens. She notices there are many geodatabase formats available in FME. She chooses the one called <strong>Esri Geodatabase (File Geodb Open API) </strong>under the <strong>Writers </strong>header. This format does not require an Esri licesnse to use.</p>
+<p><img src="images/1712944829194.png" alt="Adding an Esri Geodatabase Open API writer using Quick Add" width="600" /></p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>Make sure you are selecting &nbsp;Esri Geodatabase (File Geodb Open API) under the <strong>Writers </strong>section. People often accidently select from the Readers section here, which is not what we want.</p>
+</blockquote>
+<p>Once she has selected that format in the Quick Add list, making sure to select the one under&nbsp;<strong>Writers</strong> and not <strong>Readers,</strong> she hits Enter or double-clicks it.</p>
+<p>The <strong>Add Writer </strong>dialog opens. She sets the <strong>Dataset</strong> parameter to C:\FMEData\Output\Training\BusinessOwners.gdb:</p>
+<p><img src="images/1712945243075.png" alt="Add Writer dialog filled out" width="500" /></p>
+<p>She then clicks the&nbsp;<strong>Parameters </strong>button:</p>
+<p><img src="images/1712945345653.png" alt="Parameters button" width="500" /></p>
+<p>She enables <strong>Overwrite Existing Geodatabase</strong>:</p>
+<p><img src="images/1717175382522.png" alt="Enabling Overwrite Existing Geodatabase" width="526" height="283" /></p>
+<p>She clicks&nbsp;<strong>OK</strong> to add the writer.</p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>We'll leave the <strong>Feature Class or Table Definition </strong>mode as <strong>Automatic</strong>, the default. This setting means the writer feature type will adopt the schema of any features connected to it. We'll discuss schema handling more in the coming lessons.&nbsp;&nbsp;</p>
+</blockquote>
+<p>She sets <strong>Feature Class or Table Name </strong>to BusinessOwners. She sets the <strong>Geometry</strong> to geodb_point:</p>
+<p><img src="images/1712945522231.png" alt="Configuring writer feature type parameters" width="600" /></p>
+<p>She clicks <strong>OK </strong>to add the writer feature type.</p>
+<p>She connects the <strong>CoordinateSystemSetter's Output</strong> port to the new BusinessOwners writer feature type:</p>
+<p><img src="images/1712945657655.png" alt="Writer feature type connected" width="425" /></p>
+<h2>Add Bookmarks</h2>
+<p>To tidy up her workspace, Jennifer adds two bookmarks.</p>
+<p>She selects all her transformers by clicking and dragging, then right-clicks one and chooses Insert Bookmark. She renames it Source Data:</p>
+<p><img src="images/1712946363696.png" alt="Adding a bookmark" width="800" /></p>
+<p>Then she clicks the up-pointing arrow next to <strong>Source Data</strong> to collapse the bookmark, hiding the work required to read her data:</p>
+<p><img src="images/1712946576074.png" alt="Collapsing a bookmark" width="200" /></p>
+<p>She adjusts the width of the bookmark to take up less space on the canvas by clicking and dragging the edge of the bookmark. Then she right-clicks the <strong>CoordinateSystemSetter : Output </strong>port, chooses <strong>Rename</strong>, and calls it BusinessOwners JSON:</p>
+<p><img src="images/1712946680392.png" alt="Renaming collapsed bookmark port" width="600" /></p>
+<p>She adds a bookmark (right-click &gt; Insert Bookmark or Ctrl/Cmd+B) around her writer feature type and calls it Writer Feature Types:</p>
+<p><img src="images/1712946816112.png" alt="Final workspace" width="500" /></p>
+<h2 id="run-the-workspace">Write the Data</h2>
+<p>Jennifer clicks&nbsp;<strong>Run&nbsp;</strong>to run her workspace and convert her data.</p>
+<p><img src="images/1712865943869.png" alt="Run button" width="219" height="63" /></p>
+<p>After the workspace has run, the&nbsp;<strong>Translation Log</strong> reports that the &ldquo;Translation was Successful.&rdquo; Jennifer selects the writer feature type and clicks<strong>&nbsp;Open Containing Folder&nbsp;</strong>to confirm the geodatabase has been created.</p>
+<p><img src="images/1712947290921.png" alt="Resulting GDB" width="904" height="273" /></p>
+<p>Jennifer is off to a good start. She has created a new geodatabase from JSON with the business owner data loaded into it. Next, she has to edit the schema.</p>
+<h2 id="exercise">Exercise</h2>
+<p>Follow along with Jennifer&rsquo;s steps.</p>

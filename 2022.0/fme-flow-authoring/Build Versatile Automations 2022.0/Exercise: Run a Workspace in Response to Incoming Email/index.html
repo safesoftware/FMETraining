@@ -1,0 +1,114 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Create an automation that is triggered by incoming email and runs a workspace.</li>
+<li>Use a file attached to an email as workspace input.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-run-a-workspace-in-response-to-incoming-email.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>&nbsp;(C:\FMEData\Workspaces\AutomateWorkflows\exercise-run-a-workspace-in-response-to-incoming-email.fmw)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/BuildVersatileAutomations/Data/buildingupdate.zip" target="_blank" rel="noreferrer noopener">buildingupdate.zip</a>&nbsp;(.shps with companion files, C:\FMEData\Resources\BuildVersatileAutomations\Data\buildingupdate.zip)</p>
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-run-a-workspace-in-response-to-incoming-email.fsproject" target="_blank" rel="noreferrer noopener">Complete FME Server project</a>&nbsp;(Requires FME Server instance with public DNS record configured in Trigger to run as-is, C:\FMEData\Workspaces\AutomateWorkflows\exercise-run-a-workspace-in-response-to-incoming-email.fsproject)</p>
+<h2 id="1-create-a-new-automation">1) Create a New Automation</h2>
+<p>Go to the FME Server web interface. On the left navigation pane, click&nbsp;<strong>Automations</strong>, then&nbsp;<strong>Manage</strong>. Click the&nbsp;<strong>New</strong>&nbsp;button above your list of Automations.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-run-a-workspace-in-response-to-incoming-email/images/1657140384989.png" alt="Viewing list of Automations" /></p>
+<h2 id="2-configure-the-trigger-to-check-for-received-email">2) Configure the Trigger to Check for Received Email</h2>
+<p>Choose one of the following two protocols to monitor email:</p>
+<p><strong>A. FME Server email via SMTP protocol</strong></p>
+<p>This method will cause emails sent directly to FME Server to initiate a workflow. See the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Triggers/Trigger-Email_SMTP.htm" target="_blank" rel="noreferrer noopener">FME Server Documentation</a>&nbsp;for details.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>The SMTP protocol will only work if you use an instance of FME Server with a proper DNS record (the server is accessible over the internet). This includes any FME Cloud instance or&nbsp;<a href="https://youtu.be/Nd-Lm-HEKKk" target="_blank" rel="noreferrer noopener">FME Training machine</a>. See&nbsp;<a href="https://knowledge.safe.com/articles/549/email-in-fme-server-a-tutorial-series.html" target="_blank" rel="noreferrer noopener">Tutorial: Email in FME Server</a>&nbsp;for more details.</p>
+</blockquote>
+<p>If your instance of FME Server is running locally or on an intranet, you must use IMAP below.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>On the Automations canvas, double-click the Trigger node. Select&nbsp;<strong>Email - SMTP (received)&nbsp;</strong>from the Select a Trigger Event drop-down menu. Input an&nbsp;<strong>Email User Name</strong>&nbsp;to assign an email address on the FME Server host system that will receive notification emails. There is no need to specify the domain; if you want an email sent to RunMyWorkspace42@fmeserverhost to trigger the Automation, enter only &ldquo;RunMyWorkspace42&rdquo;.</p>
+<p>Since you can create a unique email username for each Automation triggered by SMTP, no parameters to further filter messages are available in this Trigger. You may still set up Filter Actions downstream if you wish to do additional routing. For the Download Attachments To (optional) parameter, select the three dots and create a Resource directory to which to download email attachments (e.g.,&nbsp;<em>Data/Incoming Email</em>).</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-run-a-workspace-in-response-to-incoming-email/images/1657140667826.png" alt="Selecting folder to download attachments to" />&nbsp;Click&nbsp;<strong>Validate</strong>&nbsp;and (if valid)&nbsp;<strong>Apply</strong>.</p>
+<p><strong>B. External email account via IMAP protocol</strong></p>
+<p>This method will poll an external email account for new mail. See the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Triggers/Trigger-Email-IMAP.htm" target="_blank" rel="noreferrer noopener">FME Server Documentation</a>&nbsp;for details.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Your email provider may impose restrictions on polling frequency, and you must configure your email account for FME Server to interact with it using IMAP. Please refer to your email provider&rsquo;s documentation for details.</p>
+</blockquote>
+<p>We recommend creating and using an application password for the email account that you&rsquo;re monitoring. This will reduce the likelihood of failures to poll by FME Server, as the email provider may consider it a security concern. Each email provider should have instructions on how to create this password.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>On the Automations canvas, double-click the Trigger node. Select&nbsp;<strong>Email - IMAP (received)</strong>&nbsp;from the&nbsp;<em>Select a Trigger Event</em>&nbsp;drop-down menu. You will need to enter details of the IMAP Server to which you wish to connect; the&nbsp;<strong>Load Template</strong>&nbsp;button allows you to populate the required fields with information from several popular providers.</p>
+<p>Input an&nbsp;<strong>IMAP Email Account</strong>&nbsp;to poll for new mail and enter its associated<strong>&nbsp;IMAP Email Password</strong>. You may want to change the polling interval, as external email providers may refuse the connection if FME Server polls too frequently.</p>
+<p>Accept the default to fetch new emails only and filter the subject line of incoming emails for the word&nbsp;<strong>S</strong><strong>hapefile</strong>. If you use your external email account for purposes other than this Automation, it is critical to include an identifier in the subject line of any email meant to trigger this Automation; otherwise, you will be overrun with failed jobs!</p>
+<p>Since this Automation will pass a Shapefile that is attached to an email to a workspace on FME Server, we need a home for those attachments. Click the ellipsis button to the right of the&nbsp;<em>Download Attachments To</em>&nbsp;field and specify a Resource folder to house any incoming email attachments (e.g.,<em>&nbsp;Data/Automations exercise data/incoming email/</em>). FME Server will store all attachments from an email in a single directory, though in version 2019.0, only the first attachment will be included in the default output keys for use later in the Automation.</p>
+<p>Click&nbsp;<strong>Validate</strong>&nbsp;and (if valid)&nbsp;<strong>Apply</strong>.</p>
+<h2 id="3-publish-a-workspace-to-fme-server">3) Publish a Workspace to FME Server</h2>
+<p>Download and publish the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-run-a-workspace-in-response-to-incoming-email.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>&nbsp;to FME Server with the Data Download and Job Submitter services.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If you are using a Safe Software training machine or downloaded FMEData, you can use&nbsp;<code>C:\FMEData\Workspaces\AutomateWorkflows\exercise-run-a-workspace-in-response-to-incoming-email.fmw</code>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The sample workspace reads in a zipped Shapefile and outputs GeoJSON of the input features, with output filename based on input. It is important to archive (zip) your Shapefile (any single-file archive supported by FME will do) because the attachment file path passed from the Trigger to Actions downstream will only point at the first attached file.</p>
+<p>If multiple files must be accessed from the same incoming email, you can create an Automation to download all files to a directory and then another Automation to watch for and route the files created there.</p>
+<h2 id="4-configure-an-action-to-run-the-workspace">4) Configure an Action to Run the Workspace</h2>
+<p>Back in the Automation, double-click the silhouetted<strong>&nbsp;Next Action</strong>&nbsp;node and select&nbsp;<strong>Run workspace</strong>&nbsp;from the Action list. If&nbsp;<em>Hide Guides</em>&nbsp;was previously selected from the Automations menu, you will need to click on the node tray in the lower left of the canvas and drag out an orange Action node.</p>
+<p>Select the repository and filename of the workspace you uploaded in the previous step. If you use the example workspace, click the&nbsp;<strong>Upstream Messages</strong><strong>&nbsp;arrow button&nbsp;</strong>under&nbsp;<em>Source Esri Shapefile(s)</em>&nbsp;and click&nbsp;<strong>Email&nbsp;</strong>&gt;&nbsp;<strong>Email Attachment</strong>. The sample workspace provided is configured so you only need to specify a resource folder in the<em>&nbsp;Destination GeoJSON File&nbsp;</em>field.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-run-a-workspace-in-response-to-incoming-email/images/1657140719053.png" alt="Selecting Email Attachment as the Source Esri Shapefile" /></p>
+<p>Click&nbsp;<strong>Apply</strong>.</p>
+<h2 id="5-save-your-work-and-start-the-automation">5) Save Your Work and Start the Automation</h2>
+<p>To preserve your progress, click Menu above the Automations canvas, then&nbsp;<strong>Save As</strong>. Choose a name and add some descriptive tags, then click&nbsp;<strong>OK</strong>. Finally, click&nbsp;<strong>Start Automation</strong>&nbsp;in the upper right.</p>
+<h2 id="6-test-email-and-view-log">6) Test Email and View Log</h2>
+<p>Send an email with this&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/BuildVersatileAutomations/Data/buildingupdate.zip" target="_blank" rel="noreferrer noopener">zipped Shapefile</a>&nbsp;to the email account monitored by your Trigger.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If you are using a Safe Software training machine or downloaded FMEData, you can use&nbsp;<code>C:\FMEData\Resources\BuildVersatileAutomations\Data\buildingupdate.zip</code>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>If using SMTP</strong>, you must create the email based on your machine's public IP address or DNS. The address will look something like&nbsp;<code>RunMyWorkspace42@34.244.122.210</code>.</p>
+<p><strong>If using IMAP</strong>, enter your email address as normal and ensure that the email subject contains the word &ldquo;Shapefile&rdquo; so it will pass the filter.</p>
+<p>Wait for at least one polling interval, then check the Automation log. One way to do this is through&nbsp;<strong>Menu</strong>&nbsp;&gt;&nbsp;<strong>View Log File</strong>&nbsp;when your Automation is displayed on the screen. You can also navigate to&nbsp;<strong>Automations</strong>&nbsp;&gt;&nbsp;<strong>Manage</strong>, check the Automation&rsquo;s box and select&nbsp;<strong>Actions</strong>&nbsp;&gt;&nbsp;<strong>View Log File</strong>. It can be helpful to click the clock icon above the log to show timestamps for each log entry.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-run-a-workspace-in-response-to-incoming-email/images/1657140808065.png" alt="Viewing the Log File of an Automation" /></p>
+<p>If you check the Automation log file, you should see a tag&nbsp;<em>&lt;PUBLISHED_PARAMETER name="SourceDataset_ESRISHAPE"&gt;</em>&nbsp;that contains the file path of the Shapefile fed into your workspace. Paste the text above into the log search bar if you&rsquo;re having trouble locating the entry. You can confirm the attached file was downloaded successfully by navigating to the Resource folder you specified in the Trigger and looking for a new subfolder named as in the log entry.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-automations/exercise-run-a-workspace-in-response-to-incoming-email/images/1657140841109.png" alt="Finding evidence in the log that the email attachment is used as the source Shapefile" /></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Well done. You created an automation that is triggered by incoming email and runs a workspace. Now you&rsquo;re ready to add any number of your own workspaces or other tasks to an email-based workflow!</p>

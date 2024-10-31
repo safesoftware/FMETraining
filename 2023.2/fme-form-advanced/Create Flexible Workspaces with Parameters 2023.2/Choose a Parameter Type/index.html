@@ -1,0 +1,69 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand when to use the Text user parameter.</li>
+<li>Understand when to use the Number user parameter.</li>
+<li>Configure the Number parameter to restrict the allowed numbers.</li>
+<li>Understand when to use the Choice user parameter.</li>
+<li>Configure the Choice parameter to use one set of values to show to the user and another to provide to FME.</li>
+<li>Configure the Choice parameter to allow multiple selections.</li>
+</ul>
+<h2 id="types-of-user-parameters">Types of User Parameters</h2>
+<p>There are many different types of user parameters and many different ways to make use of them. The most common parameter types can be grouped as:</p>
+<ul>
+<li>Text Parameters</li>
+<li>Numeric Parameters</li>
+<li>Choice Parameters</li>
+</ul>
+<h3 id="text-parameters">Text Parameters</h3>
+<p>Text parameters are a simple way to accept plain text values into a workspace. A Text parameter allows a single line of text, while Text (Multiline) parameters allow the user to enter text broken over several lines.</p>
+<p><img src="images/1706904629423.png" alt="Choosing a Text parameter" width="187" height="463" /></p>
+<p>The Text parameter provides an option to Trim Whitespace. When enabled, the parameter will remove any leading or trailing white space. To remove other unwanted elements, such as commas or other standard delimiters, use a StringReplacer or similar transformer to edit the value supplied by the user parameter before using it in the workspace.</p>
+<p>There is no limitation on the characters that can be entered. However, Text (Multiline) is better for large amounts of text spanning several lines. Text (Multiline) is also the preferred parameter for entering encoded (not plain ASCII) characters.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Not every transformer and format in FME handles FME-encoded text as provided through the 'Text (Multiline) parameter. If you are unsure, then it&rsquo;s safer to use a Text parameter &ndash; that everything will support &ndash; rather than a Text (Multiline) parameter that is not universally supported.</p>
+</blockquote>
+<h3 id="numeric-parameters">Numeric Parameters</h3>
+<p>Unlike text, there is just one type of numeric parameter: Number. However, this parameter type has settings that allow you to define whether it is a float or integer-type number.</p>
+<p>Here, for example, the workspace author is creating an integer parameter. They set the Numeric Precision to Integer.</p>
+<p><img src="images/1706905646499.png" alt="Requiring an integer for a Number user parameter" width="448" height="356" /></p>
+<p>The user cannot enter a floating point (non-integer) number when prompted for a value. Because this is a number field, FME also stops the user from entering text (alphabetic) characters.</p>
+<p>This is an excellent example of how FME parses input to ensure it matches the parameter type, as shown in the following screenshots:</p>
+<p><img src="images/1706905894537.png" alt="Showing number validation" width="1047" height="251" /></p>
+<ul>
+<li>Invalid input: 12,3 is not a valid integer</li>
+<li>Invalid input: abcd is not a valid float</li>
+<li>Valid input: negative numbers are fine</li>
+<li>Invalid input: 123.4567 is a valid float but has four decimal places of precision when the definition was only 3</li>
+<li>Valid input: 123 is a valid integer</li>
+<li>Valid input: 123.456 is a valid float with the correct decimal places of precision</li>
+</ul>
+<p>The Upper/Lower Limit settings for a numeric parameter also allow FME to parse the input to ensure it matches what is required:</p>
+<p><img src="images/1706906839054.png" alt="Configuring limits for number validation" width="793" height="359" /></p>
+<ul>
+<li>Invalid input: needs to be&nbsp;<em>greater than</em>&nbsp;3</li>
+<li>Invalid input: needs to be&nbsp;<em>less than or equal to</em>&nbsp;10</li>
+<li>Valid input: between 3.001 and 10.000</li>
+</ul>
+<h3 id="choice-parameters">Choice Parameters</h3>
+<p>A Choice parameter presents the user with a fixed list of options. Different choice type parameters allow the user to pick from a list, pick multiple entries from a list, or type in text as an alternative to a list:</p>
+<p><img src="images/1706912508420.png" alt="Choice user parameter type" /></p>
+<p>Here, the user will be asked to enter their name. However, since the names of all users are already known &ndash; presumably, this is for a particular company&rsquo;s staff &ndash; a list of them is created:</p>
+<p><img src="images/1706912704827.png" alt="Creating a Choice parameter" width="437" height="639" /></p>
+<p>That way, the user is prompted to select their name from a list. They don&rsquo;t have to type it in manually:</p>
+<p><img src="images/1706912781835.png" alt="Selecting from a Choice user parameter" width="349" height="223" /></p>
+<p>Notice that the Choices table has both a Value and Display column. This section is a lookup table that maps the chosen entry to a value provided to FME.</p>
+<p>For example, this workspace matches incoming features to a database using an EmployeeID.</p>
+<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.019.JoinerMatchByID.png" alt="DatabaseJoiner" width="233" height="133" /></p>
+<p>The end user provides EmployeeID, but they can&rsquo;t always remember their ID number. So, the author creates a Choice user parameter but uses different values for the Value and Display columns.</p>
+<p>The parameter is configured like so:</p>
+<p><img src="images/1706913346223.png" alt="Using Value and Display with different values" width="396" height="97" /></p>
+<p>When a user selects their name from the list, the value provided to the workspace is their employee ID. That way, the employee ID can be used as a match in the DatabaseJoiner without the end-user remembering it!</p>
+<p>If you would like the end-user to be able to select multiple values, choose the List or Tree options under Choice Configuration.</p>
+<p><img src="images/1706914284558.png" alt="Choices for multiple selections" /></p>
+<p>These let the end user select multiple values by default. For example, if a manager wanted to run reports on several employees, they could use this. Multiple values are returned space-delimited by default, but you can change the delimiter using the Choice List and Tree Node Delimiter parameters.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Suppose you'd like to offer a selection of reader formats, writer formats, or coordinate systems for the user to choose from. In that case, we recommend using the Import button on the Choice parameter. This lets you choose the ones you want and automatically fills in the FME-required string under Value and a human-readable label under Display. It's much better than doing it yourself!</p>
+</blockquote>

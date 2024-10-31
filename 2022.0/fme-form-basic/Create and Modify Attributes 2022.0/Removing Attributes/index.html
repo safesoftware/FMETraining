@@ -1,0 +1,53 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Select which attributes you'd like to keep on a feature.</li>
+<li>Select which attributes you'd like to remove from a feature.</li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/VEbEDkdq952eNsw1ZMkg9e" width="640" height="360" allowfullscreen=""></iframe></p>
+<h2 id="introduction">Introduction</h2>
+<p>Removing attributes is perhaps seen as a less important task in FME. That's because - for a manual attribute schema - only attributes defined in the writer are written to the output; extra attributes that are not required are just ignored.</p>
+<p>However, removing attributes does carry useful benefits:</p>
+<ul>
+<li>Removing attributes that aren&rsquo;t required tidies up a workspace and makes it easier to understand</li>
+<li>A workspace is a complex network of objects and schemas. Removing attributes simplifies this network and makes the Workbench interface more responsive</li>
+<li>All data processing incurs costs of time and memory. Removing attributes means less data is being processed and so the FME engine performs faster</li>
+</ul>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>A reader feature type has parameters to hide attributes from the schema. This helps tidy a workspace, but does not help improve the translation performance. However, some formats (mostly databases) also have a setting for "Attributes to Read" and using this will help performance.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Transformers that can remove attributes are:</p>
+<ul>
+<li>AttributeKeeper</li>
+<li>AttributeManager</li>
+<li>AttributeRemover</li>
+<li>BulkAttributeRemover</li>
+</ul>
+<h2 id="removing-attributes">Removing Attributes</h2>
+<p>The AttributeManager and AttributeRemover have the same technique; select an attribute to be removed:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.044.AttributeManagerRemoveAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.044.AttributeManagerRemoveAttrs.png" alt="Using the remove attribute button in AttributeManager" /></a></p>
+<p>Attributes can be removed in the AttributeManager by selecting it and clicking the - button. Alternatively, you can change the action field from&nbsp;<em>Do Nothing</em>&nbsp;to Remove.</p>
+<p>Notice in the above that three attributes have been removed. The output attribute (when selected) shows the name struck out to signify that it is no longer present.</p>
+<h2 id="keeping-attributes">Keeping Attributes</h2>
+<p>The AttributeKeeper transformer carries out the same function but approaches it from the opposite direction. It lets the user specify which attributes are&nbsp;<strong>not</strong>&nbsp;to be removed; in other words, this transformer lets the user specify which ones to keep.</p>
+<p>So, the AttributeManager should be used where one or two attributes are to be removed, but the majority remain. The AttributeKeeper should be used when the majority of attributes are to be removed, and only one or two of them retained.</p>
+<h2 id="bulk-attribute-removal">Bulk Attribute Removal</h2>
+<p>The BulkAttributeRemover - like the BulkAttributeRenamer - lets the user carry out a process on multiple attributes. In this case, instead of being able to select all attributes, the user enters a string-matching expression to define which attributes to remove:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.045.BulkAttributeRemoval.png" target="_blank" rel="noreferrer noopener"><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.045.BulkAttributeRemoval.png" alt="Using the BulkAttributeRemover" /></a></p>
+<p>Here the user is removing all attributes whose names end in the word "Count."</p>
+<p>You can refer to the RegEx Quick Reference below for help constructing regular expressions.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/create-and-modify-attributes/removing-attributes/images/1652216486313.png" alt="RegEx Quick Reference" /></p>

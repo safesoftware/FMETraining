@@ -1,0 +1,70 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Turn on additional log timestamp information.</li>
+<li>Control which messages appear in the log.</li>
+<li>Filter the log to only view particular messages.</li>
+</ul>
+<h2 id="log-message-format">Log Message Format</h2>
+<p>The FME log file is your best friend for debugging. It tells you how long a translation took, where the time went, and how well FME used the available system resources.</p>
+<p>The first thing to notice is that each line of the log is (in most cases) a separate message, for example:</p>
+<div>
+<pre><code>Creating writer for format: Esri Shapefile</code><br /><br /></pre>
+</div>
+<p>However, sometimes the message spans several lines, such as:</p>
+<div>
+<pre><code>Feature Caching is ON
+The workspace may run slower because features are being recorded on all output ports.
+Stop At Breakpoints is ON
+The workspace may run slower, even when no breakpoints are present. In particular, Bulk Mode is not supported with this enabled.</code></pre>
+</div>
+<h2 id="optional-log-message-fields">Optional Log Message Fields</h2>
+<p>There are several options to adjust what appears in the log file. To access these, select Tools &gt; FME Options &gt; Translation:</p>
+<p><img class="image image-block image-center" src="images/1717090960426.png" alt="Translation log settings" width="441" height="315" /></p>
+<p>The critical setting is&nbsp;Log Timestamp Information. This option turns on many optional fields in the log messages. These are:</p>
+<ul>
+<li>Absolute Date: The date on which this step took place</li>
+<li>Absolute Time: The time at which this step took place</li>
+<li>Cumulative Time: The amount of time taken to this step in the current translation</li>
+<li>Elapsed Time: The amount of time taken for this step in the current translation</li>
+<li>Message Type: The nature of the message</li>
+</ul>
+<p>For example:</p>
+<div>
+<pre><code>2019-04-01 12:13:55| &nbsp; 0.8| &nbsp;0.0|INFORM|Closing native MapInfo reader</code><br /><br /></pre>
+</div>
+<p>You can use these timestamps to identify slow sections of your workspace.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The log file always contains timestamps, regardless of this setting.</span></p>
+</blockquote>
+<h2 id="filtering-log-messages">Filtering Log Messages</h2>
+<p>A common requirement is to filter log messages so only messages of a specific type are displayed. For example, turning off INFORM and STAT messages can make spotting ERRORs and WARNs easier.</p>
+<p>There are two ways to achieve this. Firstly, you can filter log messages under options under Tools &gt; FME Options &gt; Translation:</p>
+<p><img class="image image-block image-center" src="images/1717091005952.png" alt="Log Message Filter settings" width="431" height="166" /></p>
+<p>These options turn each message type on (or off) for all subsequent translation logs. If a message type is unchecked here, it will not appear in the log.</p>
+<p>The second method of filtering is a set of tools in the log window itself:</p>
+<p><img class="image image-block image-center" src="images/1717091105195.png" alt="Translation Log filter buttons" width="548" height="124" /></p>
+<p>These buttons can toggle messages on and off in the log window only. They are easier to use and more flexible than FME Options for filtering.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Log Debug option (under FME Options) allows you to turn on debug messages in the log. These are extra log messages that do not appear by default.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>Debug messages can help during debugging but are less useful in general FME use. Many messages (labeled "BADNEWS") are alarming &ldquo;errors&rdquo; that FME has trapped and kept to itself (like an end-of-file message). For this reason, you should not turn this option on permanently.</p>
+<p>Also, note that the Log Debug setting persists in the workspace. If you turn that setting on and pass the workspace to another user, it retains the setting and shows debug messages when other users run it!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">&nbsp;If the log window text is too small or not stylish enough, use Tools &gt; FME Options &gt; Appearance &gt; Log Font to change the font size and style.</span></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

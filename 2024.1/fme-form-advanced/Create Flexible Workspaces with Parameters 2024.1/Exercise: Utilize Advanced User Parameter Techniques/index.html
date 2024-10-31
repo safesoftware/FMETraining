@@ -1,0 +1,173 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create a required user parameter.</li>
+<li>Create a private user parameter.</li>
+<li>Create a Folder type user parameter.</li>
+<li>Control Attribute Assignment for a user parameter.</li>
+<li>Embed/concatenate user parameters inside an FME parameter.</li>
+<li>Create a Choice type user parameter.</li>
+<li>Use a user parameter in a Tester transformer to redirect features.</li>
+<li>Create and use an Attribute Name user parameter.</li>
+<li>Share a user parameter by using it in multiple locations.</li>
+</ul>
+<h2 id="learning-objectives">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-utilize-advanced-user-parameter-techniques.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-utilize-advanced-user-parameter-techniques.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-utilize-advanced-user-parameter-techniques-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-utilize-advanced-user-parameter-techniques-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-utilize-advanced-user-parameter-techniques-complete-advanced.fmw" target="_blank" rel="noopener">Complete advanced workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-utilize-advanced-user-parameter-techniques-complete-advanced.fmw</li>
+</ul>
+</li>
+</ul>
+<h2>Introduction</h2>
+<p>In a previous project, you created a workspace to calculate neighborhood parks' size and average size.</p>
+<p>The team using this workspace now wants to publish it to FME Flow. At the same time, they want to improve some of the functionality and implement a custom translation log.</p>
+<p>As the creator of the original workspace, they ask you to carry out the following upgrades:</p>
+<ul>
+<li>Set the output to write to a folder for that user</li>
+<li>Ask whether to filter out dog parks</li>
+<li>Ask which attribute to use to create labels</li>
+<li>Create a translation log in CSV format</li>
+</ul>
+<h2>1) Start Workbench</h2>
+<p>Start FME Workbench (2024.1 or later) and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-utilize-advanced-user-parameter-techniques.fmw" target="_blank" rel="noopener">starting workspace</a>:</p>
+<p><img src="images/1724348488361.png" alt="Starting workspace" width="1106" height="205" /></p>
+<p>You can see that the workspace reads some MapInfo parks data, filters out dog parks, calculates park area and average area, creates labels, and writes out the data back to MapInfo.</p>
+<p>There are two existing published parameters - one for the source dataset and one for the destination:</p>
+<p><img src="images/1724348506472.png" alt="Starting user parameters" width="575" height="64" /></p>
+<p>Since the source dataset will never change, we will create a new parameter for the destination and delete these two parameters. Delete them both now.</p>
+<h2>2) Add User Parameter</h2>
+<p>If we write the output to a folder specific to the current user, we need to know who that user is.</p>
+<p>So, next, create a Text user parameter to ask for the user's name:</p>
+<p><img src="images/1724348512242.png" alt="Adding a Text user parameter for Username" width="372" height="277" /></p>
+<p>Ensure that the Required checkbox is checked; we want users to enter a value here. Also, make sure to check Disable Attribute Assignment, as we don't want them to be able to select an attribute.</p>
+<h2>3) Add User Parameter</h2>
+<p>We can implement the requirements here in various ways; we'll use the version that involves sharing user parameters.</p>
+<p>So, create a new user parameter of type File/Folder/URL. Uncheck Published and check Required, i.e., it will be a private parameter for us to use (not the end-user) and will be required. Additionally, check Disable Attribute Assignment.</p>
+<p>Set the Name field to OutputFolder, Items to Select to Folders, and Default Value to C:\FMEData\Output\Training.</p>
+<p><img src="images/1724348518567.png" alt="OutputFolder user parameter" width="465" height="540" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Technically, we could use a Text parameter. But the File/Folder/URL option allows the user (in this case, you, since it's private) to browse to specify a path, which is a nicer experience than copying and pasting a path.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you encounter an Invalid Parameter warning, please double-check that your parameter configuration matches the screenshots above.</p>
+<p><img src="images/1723141610326.png" alt="Invalid Parameter warning dialog" width="435" height="141" /></p>
+<p>Note that unpublished parameters must have a default value, while published parameters do not require one. You will get this warning if you try to create an unpublished parameter without a default value.</p>
+</blockquote>
+<h2>4) Set Output Location</h2>
+<p>Now, let's use the two parameters we've created.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Ensure you deleted the two existing source/destination user parameters in step 1; otherwise, this step won't work!</p>
+</blockquote>
+<p>Locate the FME parameter for the Training [MITAB] writer's Destination MapInfo Folder parameter in the Navigator window and double-click it to open the editing dialog.</p>
+<p>In that dialog, manually enter the following:</p>
+<p><code>$(OutputFolder)\$(Username)</code></p>
+<p><img style="font-family: inherit; font-size: 1em;" src="images/1724348562283.png" alt="Using embedded parameters" width="507" height="85" /></p>
+<p>Alternatively, use the Text Editor, where you can add these by double-clicking them under User Parameters to reduce the chance of error.</p>
+<p>You've now concatenated and embedded the two user parameters into the FME parameter.</p>
+<p>When you run the workspace, you will be prompted to enter your name, and then the output data will be written to C:\FMEData\Output\Training\&lt;Username&gt;.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>There are various ways we&nbsp;<strong>could</strong> have done this. We could have linked the OutputFolder parameter to <code>C:\FMEData\Output\Training\$(Username)</code> and then linked it to the FME Destination MapInfo parameter. You'll see in a moment why we didn't do that!</p>
+</blockquote>
+<h2>5) Add User Parameter</h2>
+<p>The next task is to check whether dog parks are required in the output. The Tester transformer in the workspace shows that an attribute (DogParks) has a value of Y or N to denote its status. We need to ask the user and add their decision to the Tester.</p>
+<p>Now, create a new user parameter. It will be a Choice type parameter that is <strong>not</strong>&nbsp;optional:</p>
+<p><img src="images/1724348571874.png" alt="Configuring Choice parameter" width="465" height="503" /></p>
+<p>Set it up as a simple Yes/No question of whether to include dog parks in the output. Turn off Attribute Assignment because - again - we don't want the user to be able to select an attribute.</p>
+<p>Set the Default Value to No.</p>
+<h2>6) Update Tester</h2>
+<p>To use the DogParks parameter, you can open up the Tester parameters dialog. Add a second test clause:</p>
+<pre>$(DogParks) = Yes<br />
+</pre>
+<p><img src="images/1724348581800.png" alt="Dog park filtering logic" width="389" height="201" /></p>
+<p>Ensure the logic column is set to OR. When the workspace runs, the Tester will filter out dog parks if you choose not to use them. This concept&mdash;of directing features depending on the value of a user parameter&mdash;is beneficial to be aware of.</p>
+<h2>7) Add User Parameter</h2>
+<p>The next task is to allow the user to pick which attribute to use for a label.</p>
+<p>As noted in the previous training section, if we publish the label parameter in the LabelPointReplacer, the user can enter text and select an attribute. We want them to have to select an attribute and not to be able to enter text.</p>
+<p>So, create a new user parameter of type Attribute Name. This one can be optional, as the user failing to select an attribute is equivalent to saying "no labels required":</p>
+<p><img src="images/1724348588673.png" alt="Creating the Attribute Name parameter" width="372" height="273" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Click the Run button and see what appears in the list of prompts; you should see a parameter with the prompt "Select the label attribute." But look! The parameter shows "No Attributes Available." Why is this?<br /><br />This is because the list of available attributes depends on where the parameter is used. Since we have yet to use the parameter, no attributes are available!<br /><br />What if we used the parameter in a location with attributes A and B and a different location with attributes B and C? In that case, the only attribute available to the parameter is B. A parameter of this type will only show attributes that exist <strong>in all places</strong> used.</p>
+</blockquote>
+<h2>8) Update LabelPointReplacer</h2>
+<p>To use the LabelAttribute parameter, inspect the LabelPointReplacer parameters.</p>
+<p>Remember (again from the previous section) that we can't just apply this user parameter to the Label FME parameter. That would return the attribute's name; we want the attribute value.</p>
+<p>So, for the Label parameter, open the Text Editor and enter:</p>
+<p><code>@Value($(LabelAttribute))</code></p>
+<p><img style="font-family: inherit; font-size: 1em;" src="images/1724348595332.png" alt="Using @Value() to get the value of an attribute specified by the user with an Attribute Name user parameter" width="451" height="117" /></p>
+<p>When the workspace runs, you are prompted to select an attribute to label the parks. If you choose no attribute (just point features), the LabelPointReplacer will not create any labels.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Note that we are using the <code>@Value()</code> function to retreive the value the attribute name stored in the user parameter LabelAttribute. If you were to set the Label parameter to the user parameter directly, e.g., <code>$(LabelAttribute)</code> without the <code>@Value()</code> function, the transformer would set the label to the attribute name instead of the value of that attribute.</p>
+</blockquote>
+<h2>9) Add Log Writer</h2>
+<p>The final task is to create a CSV format translation log. That is easy to do.</p>
+<p>Use Writer &gt; Add Writer to add a new CSV format writer with the following setup:</p>
+<table>
+<tbody>
+<tr>
+<td><strong>Writer Format</strong></td>
+<td>CSV (Comma Separated Value)</td>
+</tr>
+<tr>
+<td><strong>Writer Dataset</strong></td>
+<td>C:\FMEData\Output\Training</td>
+</tr>
+<tr>
+<td><strong>Writer Parameters</strong></td>
+<td>Overwrite Existing File: No<br />Write Field Names Row: If Writing First Row</td>
+</tr>
+<tr>
+<td><strong>Add Feature Type(s)</strong></td>
+<td>CSV File Definition: Manual...</td>
+</tr>
+</tbody>
+</table>
+<p>When you click OK, the dialog will open for you to define the table schema.</p>
+<p>On the General tab, set the CSV File Name as <em>TranslationLog</em>:</p>
+<p><img src="images/1724348610279.png" alt="Writer feature type parameters" width="592" height="302" /></p>
+<p>In the User Attributes tab, define the attributes User and Date:</p>
+<p><img src="images/1724348621044.png" alt="User attributes" width="593" height="298" /></p>
+<p>Click OK to close the dialog.</p>
+<h2>10) Connect Feature Type</h2>
+<p>We need a single record to trigger this feature type, but only one feature; otherwise, we will get multiple records.</p>
+<p>Place a Creator transformer down and connect it to the TranslationLog feature type:</p>
+<p><img src="images/1724348628682.png" alt="TranslationLog writer feature type" width="491" height="98" /></p>
+<h2>11) Set Output Folder</h2>
+<p>We should set the output location for the log relative to where the user files are being written.</p>
+<p>So, locate the destination dataset parameter for the CSV writer, right-click on it, and choose Link to User Parameter:</p>
+<p><img src="images/1724348638080.png" alt="Linking to destination user parameter" width="714" height="152" /></p>
+<p>When prompted, select the OutputFolder (private) parameter we created earlier.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You might be wondering what the point of that last part was. Why did we link the parameter when both were already pointing to the same folder?<br /><br />The point is that the MapInfo and CSV writers now share a parameter defining their output folder. If we wish to change where they are being written, we only need to edit the private parameter to fix both writers. That's why we did what we did in step #4.<br /><br />If you don't believe me, try it and find out for yourself!</p>
+</blockquote>
+<h2>12) Set User Attribute</h2>
+<p>The last step is to provide values for the User and Date fields of the translation log (CSV writer).</p>
+<p>Right-click on the attribute called User on the feature type and choose the option to Edit Value:</p>
+<p><img src="images/1724348646125.png" alt="Editing an attribute value directly on a writer feature type" width="495" height="274" /></p>
+<p>In the dialog that pops up, enter $(Username) for the value (you'll be prompted to select it as soon as you start to type):</p>
+<p><img src="images/1724348653465.png" alt="Setting a value on the writer feature type" width="265" height="169" /></p>
+<p>This is another example of sharing user parameters. This parameter is now used here and in the MapInfo writer name.</p>
+<h2>13) Set Date Attribute</h2>
+<p>Now - to provide a value to the Date attribute - repeat the above step for the Date field, but this time enter the DateTimeNow() function instead of a user parameter:</p>
+<p><img src="images/1724348663154.png" alt="Setting date attribute value on writer feature type" width="265" height="169" /></p>
+<p>We are done! Save the workspace and then run it.</p>
+<p>You should find that FME wrote your choice of data (with or without labels) to a folder under your name and added a translation record to the CSV file in the main folder.</p>
+<h2>Advanced Exercise</h2>
+<p>If you have time for one more task, why not add a transformer to round the ParkArea and AverageParkArea attributes and create a user parameter to control how that rounding occurs? You can choose any parameter that would be best for allowing the user to select the number of decimal places to round to. It could be a Choice parameter, a Choice with an Alias parameter, a Number parameter, or something else.<br /><br />You could also expand on the information in the CSV log file; for example, add the build of FME used in the translation, which is available as a parameter called $(FME_BUILD_NUM).</p>

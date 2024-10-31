@@ -1,0 +1,75 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Understand why dynamic reading is simpler than dynamic writing.</li>
+<li>List the three major components of a schema as defined in FME Workbench.</li>
+<li>Control schema definition using the Schema Sources parameter on writer feature types.</li>
+<li>Control schema definition using a resource reader.</li>
+</ul>
+<h2 id="schema-handling-in-dynamic-translations">Schema Handling in Dynamic Translations</h2>
+<p>Checking the feature type properties for a dynamic translation reveals the checkboxes that turn on this behavior.</p>
+<p>For a reader, all that is required is to check Merge Feature Type:</p>
+<p><img class="image image-block image-center" src="images/1723496339549.png" alt="Setting a Merge Feature Type on a reader feature type" width="580" height="368" /></p>
+<p>Unchecking that box turns off the entire behavior, and there are not many parameters to adjust. You can change the Merge Filter to control which feature types FME reads (see the list of wildcards <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Merging_Similar_Datasets.htm" target="_blank" rel="noopener">here</a>), but that's about it.</p>
+<p>However, for a writer, the dialog is a bit more complex:</p>
+<p><img class="image image-block image-center" src="images/1723496458165.png" alt="The various elements of schema on a writer feature type" width="589" height="352" /></p>
+<p>You can set the three components of schema - 1) feature type, 2) attributes, and 3) geometry - in different ways.</p>
+<h2 id="dynamic-feature-types">Dynamic Feature Types</h2>
+<p>There are three main components of a schema:</p>
+<ul>
+<li>Feature Type</li>
+<li>Attributes</li>
+<li>Geometry</li>
+</ul>
+<p>This lesson examines feature types and how a workspace author can change the feature types written in a dynamic translation.</p>
+<p><strong>Defining Feature Type Names</strong></p>
+<p>In static writer feature types, the feature type name is usually a fixed value. However, you can also define it using an attribute (or string constructed from attributes). We call that a fanout.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">See&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/read-from-and-write-to-multiple-locations" target="_blank" rel="noopener">Read From and Write To Multiple Locations</a><span style="font-family: inherit; font-size: 1em;">&nbsp;to learn more about fanouts.</span></p>
+</blockquote>
+<p>Dynamic translations use fanouts automatically. By default, the writer feature type uses an FME attribute called&nbsp;<em>fme_feature_type</em>&nbsp;as the feature type name:</p>
+<p><img class="image image-block image-center" src="images/1723496507253.png" alt="Default writer feature type fanout used in dynamic workspaces" width="589" height="229" /></p>
+<p><strong>fme_feature_type</strong> is an FME attribute that stores the name of the original feature type on incoming features. Using this attribute for the feature type name means FME will re-create the source feature types in the destination data.</p>
+<p>However, should you wish, there's no reason why you can't use a different attribute to define a different set of output feature types:</p>
+<p><img class="image image-block image-center" src="images/1723496565431.png" alt="Defining a custom fanout" width="589" height="229" /></p>
+<p>For example, the author above uses NeighborhoodName to supply the name of the layers to create. Features might have the value Downtown, West End, or Fairview.</p>
+<p>FME looks in each Schema Source at runtime to find a Downtown table. It will use the schema of that table to define the attributes and geometry allowed in the dynamic writer's output.</p>
+<p><strong>Schema Requirements</strong></p>
+<p>Dynamic writer feature type definition isn't the same as a fanout. A fanout creates layers from a static definition. A dynamic workspace fetches that definition from somewhere else (the schema source). Therefore, the feature type names <strong>must</strong>&nbsp;match a layer in that source schema.</p>
+<p>Failure to do so will lead to FME dropping the data, i.e., not writing it, and creating a log message reporting the problem. For example, if the NeighborhoodName attribute had values (like "Downtown" or "Kitsilano") that didn't exist as a table in the schema source, the log would look like this:</p>
+<pre><code>FileGDB Writer: A feature with feature type `Downtown' could not be written 
+FileGDB Writer: A feature with feature type `Kitsilano' could not be written</code><br /><br /></pre>
+<p>The author must ensure that the schema used contains these layers. Then, the translation will proceed as expected.</p>
+<h2 id="schema-sources">Schema Sources</h2>
+<p>By default, the writer schema in a dynamic translation is defined not in the workspace but by the source dataset. So, whatever dataset you choose as input defines the chosen output structure.</p>
+<p>However, the parameters in a writer feature type let us alter how that schema is defined. We can take the structure from an entirely different dataset to the source. Alternatively, we can individually define each component of our schema (Feature Types, Attributes, Geometry) in various ways.</p>
+<p>The writer feature type has a dynamic parameter labeled Schema Sources:</p>
+<p><img class="image image-block image-center" src="images/1723496623367.png" alt="Schema Sources parameter on a writer feature type" width="589" height="193" /></p>
+<p>This parameter defines where the writer will obtain the destination schema. By default, this parameter uses a source dataset. That way, the output schema always duplicates the input.</p>
+<p>However, you can set it to use any reader dataset &ndash; in any format &ndash; as the source for the outgoing schema.</p>
+<p><img class="image image-block image-center" src="images/1723496683004.png" alt="Selecting schema sources" width="378" height="183" /></p>
+<p>For example, this workspace author is converting parks data to an Esri Geodatabase but has chosen an Excel spreadsheet as the required structure for the output dataset.</p>
+<p>If the data is fanned out (say by NeighborhoodName), then the Excel spreadsheet should have a different sheet for each neighborhood, and the output in this workspace uses that structure as the schema.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Let me make it clear if it isn't already. In this scenario, the user is not writing to those Excel sheets but to a File Geodatabase. However, the output Geodatabase receives the same schema (structure) as the matching Excel sheets.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">It's called "Dynamic" because the destination schema gets fetched at runtime. For example, if the Excel sheets were to change in structure and the workspace ran a second time, it would produce Geodatabase feature types to match the changes. The best part is that the workspace does not need updating to do so.</span></p>
+</blockquote>
+<p><strong>Resource Readers</strong></p>
+<p>You can set the Schema Source parameter to point to any reader as the source of a dynamic schema. However, in most cases, all we need from the dataset is the schema, not the data.</p>
+<p>You can use Resource Readers when you only need the schema of a dataset.</p>
+<p>A Resource Reader is a reader that returns the schema of a dataset but no data. You can add one using Readers &gt; Add Reader as Resource on the menu bar:</p>
+<p><img class="image image-block image-center" src="images/1723496736968.png" alt="Readers &gt; Add Reader as a Resource" width="287" height="203" /></p>
+<p>Here, the user adds an Excel spreadsheet database as a resource, and it appears in the Navigator window:</p>
+<p><img class="image image-block image-center" src="images/1723496823089.png" alt="A reader as a resource in the Navigator" width="591" height="231" /></p>
+<p>Once available, you can use the resource reader as a schema source for a dynamic writer.</p>
+<p><strong>Why Use an External Schema?</strong></p>
+<p>The main reason for using an external dataset schema is to adhere to a fixed standard. Perhaps the most beneficial aspect is that if the dataset's schema changes, the workspace automatically uses it. You don't need to update the workspace manually because the output requirements have changed.</p>
+<p>However, as noted above, the written data must match that standard, or the writer may drop it. So, data transformation is likely required in the workspace to coax the input data into the required output schema.</p>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/schemamapper.htm" target="_blank" rel="noopener">SchemaMapper transformer</a> helps reconcile data with the required schema. It can also use an external lookup table, meaning you can change the dynamic workspace to meet any required output schema without having to edit in Workbench!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">We will discuss geometry shortly. However, for now, be aware that permitted geometry types are (by default) obtained from the schema source. If the schema source changes, you may not want its geometry type.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Therefore, set Geometry to "First Feature Defines Geometry Type" to avoid issues.</span></p>
+</blockquote>

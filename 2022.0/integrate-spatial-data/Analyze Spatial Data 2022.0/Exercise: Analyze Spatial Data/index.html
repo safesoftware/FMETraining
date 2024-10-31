@@ -1,0 +1,230 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use the Bufferer to buffer your spatial data.</li>
+<li>Use the Clipper to filter your spatial data.</li>
+<li>Use the PointOnAreaOverlayer to conduct a point-to-polygon spatial join.</li>
+<li>Use the PointOnRasterValueExtractor to conduct a point-to-raster overlay.</li>
+<li>View the results of spatial analysis.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/exercise-analyze-spatial-data.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>In this exercise, you will calculate the tsunami flood risk for all addresses in your city. You will model risk as a combination of closeness to the shoreline and elevation above sea level. Flood risk is on a scale from one to five (1-5), and you calculate it using this table:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td colspan="3">Elevation (meters above sea level)</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>0-10m</td>
+<td>10-25m</td>
+<td>25-60m</td>
+</tr>
+<tr>
+<td rowspan="3">Distance from Shoreline (meters)</td>
+<td>100m</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>200m</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>300m</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>First, you have spatial elevation data (raster DEM), address points, land boundary polygon, and the coastline. You must use spatial analysis techniques on your starting datasets to calculate the flood risk. You have several steps in mind:</p>
+<ul>
+<li>Use a&nbsp;<strong>buffer&nbsp;</strong>to create three zones measuring the distance to the coastline: 0-100 m, 101-200 m, and 201-300 m.</li>
+<li>Use&nbsp;<strong>spatial joining and overlaying</strong>&nbsp;to add an elevation and distance to the shoreline attribute to each address.</li>
+<li>Use&nbsp;<strong>attributes&nbsp;</strong>to calculate the final flood risk.</li>
+</ul>
+<p>Let's get started!</p>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/exercise-analyze-spatial-data.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>&nbsp;in FME Workbench 2022.0. &nbsp;This workspace contains the datasets you will be working with: a Digital Elevation Model (DEM) file for the elevation, an Esri ArcGIS Geodatabase for the addresses, an Esri shapefile of the land boundary, and a GML for the coastline. Note that the DEM is an example of raster data, while the other datasets are vector data.</p>
+<p>Turn on feature caching and run the workspace. Inspect the results of each dataset to get familiar with your data. You should notice that each separate dataset contains a piece of information we need for our final result. We'll use spatial filtering and joining to combine them into the desired shape.</p>
+<h2 id="2-create-bufferer-distance-attribute">2) Create Bufferer distance attribute</h2>
+<p>We want to create three buffer zones, one for each distance band (100, 200, and 300 m). We could use three separate Bufferers, but there is a trick for improving your workflows in FME when you need to conduct multiple steps. Often users want to use a loop as you would in a programming language. However, you can accomplish most of tasks in FME without using loops. One way is to use what we call&nbsp;<a href="https://www.safe.com/blog/2014/10/fmeevangelist129/" target="_blank" rel="noreferrer noopener">the Cloner-Loop technique</a>.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Looping is available via&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/transformers_custom_looping.htm" target="_blank" rel="noreferrer noopener">custom transformers</a>&nbsp;and the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/pythoncaller.htm" target="_blank" rel="noreferrer noopener">PythonCaller</a>, but you do not need to use looping in FME workspaces in most cases.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Add a Cloner connected to the Coastline feature type. Set Number of Copies to 3.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612304601151.png" alt="Setting Cloner parameters" /></p>
+<p>The Cloner will create three copies of our coastline dataset, giving us three features instead of one. We will now give each feature a different value for the buffer, creating three buffer zones of different sizes without looping.</p>
+<p>We will store the buffer distances in an attribute. Add an ExpressionEvaluator connected to the Cloner. Set Result to Distance. For the expression, enter&nbsp;<code>(@Value(_copynum) + 1) * 100</code>.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1660070459887.png" alt="Calculating a new Distance attribute" /></p>
+<p>Click&nbsp;<strong>OK</strong>. This expression will add one to the copy number from the Cloner (as counts from 0-2 instead of 1-3) and then multiply it by 100. The result is values of 100, 200, and 300, the buffer lengths we want. You can confirm this by clicking the ExpressionEvaluator, clicking Run To This, and inspecting the Distance attribute on the ExpressionEvaluator:Output cache.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612304746677.png" alt="Inspecting ExpressionEvaluator output" /></p>
+<h2 id="3-add-bufferer">3) Add Bufferer</h2>
+<p>Add a Bufferer after the ExpressionEvaluator. Set Buffer Distance to the Distance attribute.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612304872537.png" alt="Setting Bufferer parameters" /></p>
+<p>Click&nbsp;<strong>OK</strong>&nbsp;and use Run To This on the Bufferer. Inspect the cache to confirm you have three buffer zones.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612305074071.png" alt="Inspecting Bufferer output" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Some buffering scenarios require non-overlapping buffers. The Bufferer does not produce these, but if you want to create them quickly, the&nbsp;<a href="https://hub.safe.com/publishers/safe-lab/transformers/multibufferer" target="_blank" rel="noreferrer noopener">MultiBufferer</a>&nbsp;custom transformer on the&nbsp;<a href="https://hub.safe.com/" target="_blank" rel="noreferrer noopener">FME Hub</a>&nbsp;can accomplish it. You can add it to a workspace by searching directly in the Quick Add menu. Note, however, that sometimes you do not need to worry about overlaps. In the use case for this exercise, simply having the smaller buffers created on top of the larger ones ensures that the PointOnAreaOverlayer will only identify one distance for each point.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="4-add-clipper">4) Add Clipper</h2>
+<p>Next, we must adjust our buffer zones to only measure inland. Add a Clipper after the Bufferer. Connect the VancouverLandBoundary feature type to the Clipper port and the Buffered port to the Clippee port.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612305850737.png" alt="Adding and connecting a Clipper" /></p>
+<p>Run the Clipper and inspect the Clipper:Inside cache. The buffer zones from this port only cover the land area:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612305530785.png" alt="Inspecting the Clipper:Inside cache" /></p>
+<h2 id="5-add-point-on-area-overlayer">5) Add PointOnAreaOverlayer</h2>
+<p>We are ready to overlay the address points on the coastline buffer zones. Through this spatial join, we can add an attribute to our points that records which coastal distance band they overlap. Add a PointOnAreaOverlayer and connect the Clipper:Inside port to the Area port and the Postal Addresses feature type to the Points port.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612305893735.png" alt="Adding and connecting a PointOnAreaOverlayer" /></p>
+<p>Now double-click the&nbsp;<strong>PointOnAreaOverlayer</strong>&nbsp;to edit its parameters. Expand the Attribute Accumulation section and enable the Merge Attributes parameter. With this parameter enabled, the PointOnAreaOverlayer adds attributes from the areas to the points.</p>
+<p>Also, check the Generate List On Output 'Point' parameter. Set 'Point' List Name to DistanceList and choose Distance as the Selected Attribute.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1660080215881.png" alt="Configuring PointOnAreaOverlayer" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Spatial analysis can get a bit tricky. With these settings, FME will generate a&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!List_Attributes/About-List-Attributes.htm" target="_blank" rel="noreferrer noopener">list attribute</a> for every area the point overlaps. Because the buffer polygons are not discrete (i.e., they overlap), some points overlap multiple buffer polygons. We could rely on feature order to correctly assign values to Distance, which would work properly in this case. However, relying on feature order in your workspaces is not good practice because it can change:</p>
+<ul>
+<li>if you change other parts of your workspace,</li>
+<li>with transformer or reader upgrades, or</li>
+<li>if the underlying data changes.</li>
+</ul>
+</blockquote>
+<p>It's often hard to identify feature order problems, meaning it's best to avoid them first and make your workspace future-proof.</p>
+<p>Therefore, in this scenario, we will use a more robust list-based method that will be more flexible if the underlying data changes.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<h2 id="6-add-list-transformers">6) Add list transformers</h2>
+<p>Now we can use a few transformers to extract the closest distance from the new PointList attribute. First, let's confirm the structure of our list attribute. Inspect a feature in the PointOnAreaOverlayer:Point port near the coastline. You should see Distance has been assigned from the attribute merge, but you should also see there is now a DistanceList list attribute. This will contain one to three entries depending on the distance from the coastline. You can inspect the attribute in the Feature Information window:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1660081718230.png" alt="DistanceList" /></p>
+<p>We need to find the lowest value in DistanceList.Distance and set it to Distance. We can do that using a ListSorter and ListIndexer.</p>
+<p>Add a ListSorter and connect it to the PointOnAreaOverlayer:Point port. Set List Attribute to DistanceList{}.Distance, Sort Type to Numeric, and Sort Order to Ascending. This will sort the list so the lowest entry is element 0.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1660082022843.png" alt="ListSorter parameters" /></p>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<p>Add a ListIndexer and connect it to the ListSorter:Output port. Set List Attribute to DistanceList{} and List Index to Copy to 0. This will set the value of Distance to the lowest distance band of the feature.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1660082128092.png" alt="ListIndexer parameters" /></p>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<p>Use Run to This on the ListIndexer. Inspect the results; you can see the Distance attribute on each point. Points not within 300 m of the shore will have &lt;missing&gt; values for Distance; let's fix that.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612306034205.png" alt="Inspecting Distance attribute on the PointOnAreaOverlayer output" /></p>
+<h2 id="7-add-tester">7) Add Tester</h2>
+<p>Let's remove the points that do not have a Distance value, leaving us with only the points in the buffered area. Add a Tester after the ListIndexer and configure it like this:</p>
+<p><img class="image image-block image-center" src="images/1704237940538.png" alt="Tester configured to remove missing value points" width="382" height="349" /></p>
+<p>Run your workspace and inspect the Tester:Passed cache. You should only have points within the buffered zone now.</p>
+<p>This screenshot shows how the addresses fall within (and are assigned) zones denoting their distance from the shoreline.</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.211.Ex2.InitialDataProcessed.png" alt="Inspecting points falling inside buffer zones" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>You can inspect multiple caches like in this screenshot to see two layers simultaneously by Ctrl-clicking (⌘ Command-clicking on Mac) multiple caches.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="8-add-point-on-raster-value-extractor">8) Add PointOnRasterValueExtractor</h2>
+<p>The next step is to add an elevation attribute to each point using a&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/pointonrastervalueextractor.htm" target="_blank" rel="noreferrer noopener">PointOnRasterValueExtractor</a>. This transformer is similar to the PointOnAreaOverlayer, but it takes raster data as input instead of vector areas. Add a PointOnRasterValueExtractor to the right side of your canvas. Connect the Reprojector:Reprojected port to the Raster input port and the Tester:Passed port to the Point input port. This section of your workspace should look like this:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1660942317755.png" alt="Added PointOnRasterValueExtractor" /></p>
+<h2 id="9-add-attribute-renamer">9) Add AttributeRenamer</h2>
+<p>This transformer will output an elevation value on our address points. However, because raster data can have multiple bands, you will not immediately see an Elevation attribute. A list called _band stores the elevation value. We can turn this list value into an exposed attribute with an AttributeRenamer. Add one connected to the PointOnRasterValueExtractor and open its parameters. For Input Attribute enter&nbsp;<code>_band{0}.value</code>, and for Output Attribute, enter Elevation.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612481607617.png" alt="Setting AttributeRenamer parameters" /></p>
+<p>Click&nbsp;<strong>OK</strong>&nbsp;and then Run To This on the AttributeRenamer and inspect to confirm you now have an Elevation attribute.<img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612481651315.png" alt="Inspecting AttributeRenamer output" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>You can read more about exposing list attributes&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!List_Attributes/Exposing-List-Attributes.htm" target="_blank" rel="noreferrer noopener">here</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="10-connect-attribute-manager">10) Connect AttributeManager</h2>
+<p>Now that our points have both a distance and an elevation value, we can assign them to a flood risk zone, 1-5. We'll do this according to the table at the start of the exercise.</p>
+<p>The transformer we will use is an AttributeManager. Because this lesson's focus is spatial analysis, not attribute manipulation, we've provided this transformer in the starting workspace and already configured it using Conditional Values. Connect the AttributeManager transformer to the AttributeRenamer.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612481709487.png" alt="Connecting an AttributeManager" /></p>
+<p>Then, open the AttributeManager parameters. Find the FloodRisk attribute:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.220.Ex2.FinalAttrManagerDialog.png" alt="Finding the FloodRisk attribute in the AttributeManager parameters" /></p>
+<p>We've already filled out the dialog with a series of Test Conditions, viewable by clicking the 6 Possible Values &gt; ellipsis [. . .] button. These tests will provide a value to FloodRisk 1-5 based on the combination of Zone and Elevation. These Conditional Values translate the table above into a form FME can understand.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612292209637.png" alt="Looking at the already-established Condition Statements in the AttributeManager" /></p>
+<p>You can click&nbsp;<strong>Cancel</strong>&nbsp;to exit these dialogs as they are already configured and ready to use.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>The&nbsp;<a href="https://safe.my.trailhead.com/content/safe/modules/use-conditional-values" target="_blank" rel="noreferrer noopener">Use Conditional Values</a>&nbsp;lesson can show you how to set up dialogs like this.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="11-add-inspector">11) Add Inspector</h2>
+<p>Inspecting cached data doesn't allow you to quickly inspect your data grouped by an attribute unless you use an Inspector transformer. So place a single Inspector transformer and connect the AttributeManager output to it.</p>
+<p>Open the Inspector parameters dialog, and under Group By, select the newly created attribute called FloodRisk.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1660935157162.png" alt="Inspector with Group By on FloodRisk" /></p>
+<p>Save and run the workspace. You should see each address colored to match its flood risk. You can&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/DataInspector/Display-Control.htm" target="_blank" rel="noreferrer noopener">adjust the feature symbology</a>&nbsp;to produce a clearer result, like so:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/analyze-spatial-data/exercise-analyze-spatial-data/images/1612292623985.png" alt="Inspecting points colored to indicate their flood risk zone" /></p>
+<p>You can also turn off zones one at a time to see which addresses are the most or least at risk.</p>

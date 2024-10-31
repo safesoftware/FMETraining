@@ -1,0 +1,49 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>View your data as a table.</li>
+<li>Use Visual Preview to verify the results of a workspace.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-data-as-a-table.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\view-data-as-a-table.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="open-the-written-dataset">Open the Written Dataset</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In addition to 2D or 3D view modes, you can view attribute data for features in&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/DataInspector/TableView.htm" target="_blank" rel="noopener">table format</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>Sven continues to work on his&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-data-as-a-table.fmw" target="_blank" rel="noreferrer noopener">Excel to geodatabase workspace</a> using FME Workbench (2024.0 or later). He inspects the Vancouver.gdb output by right-clicking on the<strong>&nbsp;Vancouver [FILEGDB]</strong>&nbsp;writer in the&nbsp;<strong>Navigator</strong>&nbsp;and selecting&nbsp;<strong>View Written Data&hellip;</strong>. This will show BusinessOwners and PublicArt in Visual Preview. If Sven had selected&nbsp;<strong>View Written Data&nbsp;</strong>on a writer feature type, only that feature type would have been displayed in Visual Preview.</p>
+<p><img src="images/1712778487207.png" alt="View Written Data from Navigator" width="435" height="310" /></p>
+<p>The <strong>Table&nbsp;</strong>view now displays&nbsp;<strong>BusinessOwners</strong>.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_in_the_Navigator.htm" target="_blank" rel="noopener">Navigator window</a><span style="font-family: inherit; font-size: 1em;"> is a structured list of parameters representing and controlling all of a translation's components. It displays an overview of the source (reader) and destination (writer) information, bookmarks, workspace parameters, and transformers.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Generally, it is a hierarchical view of the information in the graphical pane. You can adjust most datasets, feature types, and transformer parameters from here and directly on the canvas.</span></p>
+</blockquote>
+<h2 id="inspect-data-quantity">Inspect Data Quantity</h2>
+<p>After running the translation, the bottom-right corner of the&nbsp;<strong>Table&nbsp;</strong>view shows the number of rows (100). This number matches the feature count on the feature connection line on the canvas. Sven uses this count to confirm that all his features have been written. He sees that 100 features were read and confirms that 100 exist in the written data.</p>
+<p><img src="images/1712778563240.png" alt="Viewing feature count in Table View" width="736" height="390" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Remember that a&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">feature&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">is a single row in a table or a single piece of geometry (point, line, polygon, etc.) and its associated attributes.</span></p>
+</blockquote>
+<h2 id="inspect-attributes">Inspect Attributes</h2>
+<p>The&nbsp;<strong>Table&nbsp;</strong>view shows an extra attribute:&nbsp;<a href="https://desktop.arcgis.com/en/arcmap/latest/manage-data/using-sql-with-gdbs/object-id.htm" target="_blank" rel="noreferrer noopener">OBJECTID</a>. The writer may create additional attributes if the format requires, as in this case. All Esri geodatabase datasets contain an OBJECTID attribute. An ObjectID is a unique, non-null integer field used to identify rows in tables in a geodatabase uniquely.&nbsp;</p>
+<p>Sven checks that all the desired columns (feature attributes) are present and have values. Sven notices that the entries for&nbsp;<strong>Last_Name&nbsp;</strong>and&nbsp;<strong>License_Number&nbsp;</strong>are all &lt;null&gt;. This is typically a bad sign; null means no value for that attribute. On the canvas, Sven clicks on the red triangle on the <strong>BusinessOwners&nbsp;</strong>writer feature type to see the feature type&rsquo;s attributes. The triangles are red beside the attributes with null values. The red triangles indicate that the attribute is not mapped to a source attribute. This occurred because the spaces in&nbsp;<strong>Last Name&nbsp;</strong>and&nbsp;<strong>License Number&nbsp;</strong>were converted to underscores. The spaces were converted to underscores because the Esri geodatabase format does not support spaces in attribute names.</p>
+<p><img class="image image-block" src="images/1712779103118.png" alt="Viewing modified attributes on writer feature type" width="522" height="152" /></p>
+<h2 id="view-a-different-table">View a Different Table</h2>
+<p>Vancouver.gdb also contains the PublicArt feature class. Sven clicks on the drop-down triangle beside BusinessOwners and changes the table to display data for PublicArt.</p>
+<p><img class="image" src="images/1712779175350.png" alt="Changing table" width="430" height="309" /></p>
+<h2 id="sort-by-attributes">Sort By Attributes</h2>
+<p>Sven notices that PublicArt is not sorted alphabetically by name. He clicks on the&nbsp;<strong>Name&nbsp;</strong>heading to sort the column alphabetically. This is also a way to find &lt;null&gt; attribute values. Null attributes will appear first.</p>
+<p><img class="image" src="images/1712779198924.png" alt="Sorting Table View" width="538" height="339" /></p>
+<h2 id="filter-by-attribute-value">Filter by Attribute Value</h2>
+<p>Sven&rsquo;s colleagues are interested in birds, and he is curious if there is any bird-related public art. He enters "bird" in the filter at the foot of the Table view. The Table view then filters to display the three features with "bird" in an attribute value.</p>
+<p><img class="image" src="images/1712779224878.png" alt="Filtering with the search bar" width="591" height="228" /></p>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Sven&rsquo;s steps.</p>

@@ -1,0 +1,57 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>List and describe various data sources that can be used in FME.</li>
+<li>Explain different methods for source data management.</li>
+<li>Understand how to publish source data to an FME Flow repository with the Publishing Wizard.</li>
+<li>Understand the limitations of publishing data to an FME Flow repository.</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>Nearly every FME workspace starts by reading features from a source dataset.</p>
+<p>In some cases, that source dataset may be held in a database or stored on a web service such as Google Drive; it may even be a database running on a web service! On other occasions, the data may not be web-based at all, but stored on a file system and shared for others to access.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.000.SourceDataIntro.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh6.googleusercontent.com/TMbtFj70k6mxxJ3xpI1uY9_6zNF2ZF5NIbXgVHBfdZlcgt-KUHe6hQAtVrHHerIXygp4_DLKgIRGCf3leY77hDLFkO_FwIQ-E29eHWG_mPbTJjYSlaFYIfPjREG8u8cI_X9UWOfZ-jWvqdI0DJwrQes" alt="FME integrates web services" width="800" height="453" /></a></p>
+<p>In general, it's easy to author a workspace for use on FME Flow because what works on FME Form can be published and run on FME Flow with minimal alteration of the source data.</p>
+<p>However, there are additional methods that can be used to take source data management on FME Flow to the next level. These methods include:</p>
+<ul>
+<li>Managing file datasets.
+<ul>
+<li>Publishing file datasets to a repository.</li>
+<li>Uploading file datasets at run time.</li>
+<li>Storing file datasets on the 'Resources' file system.</li>
+</ul>
+</li>
+<li>Using Database Connections for data stored in databases.</li>
+<li>Using Web Connections for datasets stored o<span style="color: #000000;">n a web servi</span>ce.</li>
+</ul>
+<p>This course will cover each method in turn.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="color: #000000; font-family: inherit; font-size: 1em;">If you want to learn more about data integration in general, we recommend you browse these learning resources:</span></p>
+<ul>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/why-data-integration" target="_self">Why Data Integration?</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://fme.safe.com/platform/" target="_self">What is Data Integration?</a></li>
+<li><a style="background-color: #ffffff;" href="https://fme.safe.com/solutions/integrations/" target="_self">FME Integrations Gallery</a></li>
+</ul>
+</blockquote>
+<h2 id="publishing-file-datasets-to-a-repository">Publishing File Datasets to a Repository</h2>
+<p>First, let's look at one of the simplest methods: publishing data to a repository. When the source data for a translation is stored as files (rather than a feed or database), it is possible to publish data to an FME Flow repository along with the workspace. This data upload method is fast and simple but limits future access to the data. A better practice is to publish your data to the Resources folder separate from the workspace, but we'll walk through those steps later in the course.</p>
+<h2 id="publishing-source-data">Publishing Source Data</h2>
+<p>In this workspace the source dataset is MapInfo TAB:</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/GsHE-BksfHjBVAy4L-pSlRTN71xe4A-65oJb8L1IyxW6-OGhtA_aW6N72XqtPBSHnnXc7UTL6LAtiBgvInbYkqJqPoQdodvyud1nuD5AJrUg3QjgzYDh6zJ6Ui7y8YSe7X3QtG2VouKOZX5_r4t_2VU" alt="Viewing source data" width="584" height="315" /></p>
+<p>A MapInfo TAB dataset is made up of a series of files (.tab, .dat, .id, .map). When this workspace is published, the wizard allows us to publish the data files alongside it by simply checking the box labeled&nbsp;<em>Upload data files</em>.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.010.PublishDataSourceInWiz.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh5.googleusercontent.com/fl25mZ-U_-0g-_JIb99QXy5RmTUc50IMwa__IRqQ7Um4zZC-46Gj3O3_Kwist_hhrvEUAoa9ysvyakOdZ5HfXf1R210TnxpTGczpNEaFNoAzJQxm97glMdaJeRkUzMY06TfLV6GRQfRZxaEDRkdzryE" alt="Uploading data with a workspace" width="500" height="452" /></a></p>
+<p>FME automatically selects the files to upload based on what it thinks is necessary to run the translation. If there are other files you wish to upload, or files FME selected that you don't wish to upload, the Select Files button allows you to make changes:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/03fz621BCYkNou1DKvpA3Jv6fsHPH2ySxc21rwmf0qj13tAFc9JckcA5fVozgGG67of5r8CLlPMMpFF5EG5jmMjs40MPVNQ4-dTfuacBch-D5-qsN1uNfQG_LClEoNWqRoPeymrPang_VUwQSjps80Q" alt="Select Files to Upload with files selected" width="501" height="421" /></p>
+<p>This dialog also allows you to change&nbsp;<em>where</em>&nbsp;the files are published, but for now, we'll ignore that setting and go with the default of publishing to the repository.</p>
+<p>Once the publishing wizard is complete, those files are uploaded to FME Flow and tagged for use with this workspace.</p>
+<h2 id="using-published-source-data">Using Published Source Data</h2>
+<p>When a workspace published with its data is run on FME Flow, the uploaded data automatically is used as the source:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.012.PublishDataSourceRunInServer.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh3.googleusercontent.com/6iAncxKQirdYknLABk5J-cA6ueKkmvmEFOeOKM_JgjQzKl7YUM6MVF09yZm1O_X9U8hSitwlNxeh0BdWfNqdOyeJp-qVljISnTseC6RzPiHaN2q8ip928Nek8gp7esNYpQsew164xbb2cI2K5RJdeK8" alt="Automatically using published data" width="717" height="324" /></a></p>
+<p>There are no other settings that need to be changed, and the workspace will run to completion using the published data as its source.</p>

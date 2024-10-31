@@ -1,0 +1,83 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use multiple instances of a custom transformer.</li>
+<li>Make a custom transformer generic for use anywhere.</li>
+<li>Rename input and output ports in a custom transformer.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-control-data-flow-using-custom-transformer-ports.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-control-data-flow-using-custom-transformer-ports-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a></li>
+</ul>
+<h2 id="custom-transformer-input-output-ports">Custom Transformer Input/Output Ports</h2>
+<p>Like a normal FME transformer, a custom transformer has a number of input and output ports:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.012.CustomTransformerInputOutputPorts.png" alt="Custom transformer input and output ports" /></p>
+<p>These input and output ports are defined by input/output objects in the custom transformer definition itself:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.013.CustomTransformerDefInputOutputPorts.png" alt="Ports defined by input and output objects in the custom transformer" /></p>
+<h2 id="renaming-ports">Renaming Ports</h2>
+<p>The first thing to know is that these input/output objects can be renamed, in order that the transformer ports get named appropriately. You can either double-click the object, choose Rename from the context menu, or press F2, in order to rename the object.</p>
+<p>For example, here the user pressed F2 and renames the input port from StringConcatenator_Input to simply Input:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.014.CustomTransformerRenamingPort.png" alt="Renaming a custom transformer port" /></p>
+<p>Renaming the input and output ports is useful for making the custom transformer intentions more explicit; for instance, helping the user to understand what data type is required as input.</p>
+<p>For example, after editing the transformer might look like this:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.015.CustomTransformerRenamedPort.png" alt="A custom transformer with edited ports" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Here the user simply renamed the input port to Input. Renaming it to "Strings", "Lines", or "Raster" (for example) would help guide other users of the transformer as to what data is required.<br /><br />However, they did rename the output port to illustrate the type of data that will emerge.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="adding-or-removing-ports">Adding or Removing Ports</h2>
+<p>Besides renaming ports, it is also possible to add new ports to a custom transformer.</p>
+<p>To do so simply select Transformer Input (or Output) from either the menubar or the canvas context (right-click) menu:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.016.AddCustomTransformerInputPort.png" alt="Adding input ports" /></p>
+<p>For example, here a user has ports to handle two streams of input data and two streams of output (one port for the required output, another that handles rejected features:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.017.CustomTransformerMultiInputOutputPorts.png" alt="Custom transformer with two streams of input and output data" /></p>
+<p>This means that each instance of the custom transformer has two input and two output ports:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.018.CustomTransformerMultiInputOutputPorts.png" alt="Edited custom transformer with two input and output ports" /></p>
+<h2 id="exercise">Exercise</h2>
+<p>You are continuing to work with your colleague who created a workspace that calculates the population density for neighborhoods in the city of Vancouver.</p>
+<p>You turned their workspace into a custom transformer for reuse in the last exercise. Now you need to show how to use it multiple times and apply edits to its definition.</p>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-control-data-flow-using-custom-transformer-ports.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>&nbsp;in FME Workbench (2022.0 or later).</p>
+<h2 id="2-duplicate-custom-transformer">2) Duplicate Custom Transformer</h2>
+<p>Notice that we started with two ExpressionEvaluators and now have one ExpressionEvaluator and one custom transformer. Let's place another instance of the custom transformer in place of the ExpressionEvaluator.</p>
+<p>Click on the&nbsp;<strong>ExpressionEvaluator_2011&nbsp;</strong>and press the delete key to delete it.</p>
+<p>Click on the&nbsp;<strong>DensityEvaluator&nbsp;</strong>custom transformer and press Ctrl+D (or right-click &gt;&nbsp;<strong>Duplicate</strong>) to create a duplicate copy of it. This is the same effect as placing a new instance, but quicker. You could do the same task through Quick Add or the Transformer Gallery if you desired.</p>
+<p>Connect the second&nbsp;<strong>DensityEvaluator&nbsp;</strong>into the workflow, in parallel and not in series:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.204.Ex2.CTOnCanvasReused.png" alt="Two DensityEvaluators in parallel" /></p>
+<h2 id="3-set-custom-transformer-parameters">3) Set Custom Transformer Parameters</h2>
+<p>By creating a second instance of the custom transformer we've started to re-use our content, which is great. However, the second instance is currently processing the wrong data.</p>
+<p>Inspect the parameters for&nbsp;<strong>DensityEvaluator_2&nbsp;</strong>and set the population parameter to&nbsp;<code>TotalPopulation2011</code>&nbsp;(not 2001):</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.205.Ex2.CTReusedEditParameter.png" alt="Choosing an attribute as a parameter for the DensityEvaluator" /></p>
+<h2 id="4-run-workspace">4) Run Workspace</h2>
+<p>Run the workspace and inspect the output to ensure the data is being processed correctly.</p>
+<p>One obvious problem with the output from the transformer is that the result is put into an attribute called&nbsp;<code>PopulationDensity2001</code>, regardless of what data is being processed.</p>
+<p>This is not useful; for example, the 2011 results also get the same name, as would any other scenario where we used this transformer. We should improve this by making the output name more generic.</p>
+<h2 id="5-edit-custom-transformer">5) Edit Custom Transformer</h2>
+<p>Click on the tab labeled&nbsp;<strong>DensityEvaluator&nbsp;</strong>to switch the canvas to the custom transformer definition. Inspect the&nbsp;<strong>ExpressionEvaluator_2001&nbsp;</strong>parameters. Change the Transformer name to&nbsp;<strong>ExpressionEvaluator</strong>&nbsp;since we are processing more than just 2001 data. Then change the name of the<strong> Result</strong>&nbsp;parameter to DensityResult:</p>
+<p><img class="image image-block image-center" src="images/1706049521136.png" alt="Configuring the ExpressionEvaluator" width="737" height="258" /></p>
+<p>If you run the workspace again (run it from at least the custom transformer onwards) you&rsquo;ll notice that&nbsp;<code>DensityResult</code>&nbsp;is the attribute output by both instances of the custom transformer; i.e., one edit has fixed both of them!</p>
+<h2 id="6-rename-ports">6) Rename Ports</h2>
+<p>We should also change the custom transformer's port names. At the moment they are not very elegant.</p>
+<p>Back within the&nbsp;<strong>DensityEvaluator&nbsp;</strong>tab, click the&nbsp;<strong>cogwheel icon&nbsp;</strong>of the input port object (currently labeled AreaCalculator_Input). Inspect its parameters and change the&nbsp;<strong>Transformer Input Name&nbsp;</strong>to Input.</p>
+<p>Now repeat the process for the output port object, renaming&nbsp;<strong>Transformer Output Name</strong>&nbsp;to Output:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.207.Ex2.CTRenamingPorts.png" alt="Changing transformer port names" /></p>
+<p>Click the&nbsp;<strong>Main</strong>&nbsp;tab to check back on the main canvas and confirm the changes have been made:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.208.Ex2.CTRenamedPorts.png" alt="Edited custom transformers" /></p>
+<p>You'll need to manually resize the transformers to fit their new naming style, as in the above image.</p>
+<h2 id="challenge">Challenge</h2>
+<p>You'll need this image to answer the first quiz question.</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.019.CustomTransformerCreationWhatPorts.png" alt="Image for quiz: GeometryFilter:Line to LengthCalculator, GeometryFilter:Area to AreaCalculator, LengthCalculator:Output and AreaCalculator:Output to o StatisticsCalculator. Three transformers (not GeometryFilter) are highlighted with arrows." /></p>

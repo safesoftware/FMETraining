@@ -1,0 +1,122 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>View your data&rsquo;s schema.</li>
+<li>Edit your data&rsquo;s schema, including feature type and attribute names.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-datas-schema.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\edit-datas-schema.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-datas-schema-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\edit-datas-schema-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="view-source-schema">View Source Schema</h2>
+<p>Jennifer continues working on her <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-your-datas-schema.fmw" target="_blank" rel="noreferrer noopener">workspace</a> in FME Workbench (2024.0 or later). This workspace creates an Esri geodatabase from JSON. Jennifer would like her geodatabase to have a different <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Understanding_Schema.htm" target="_blank" rel="noopener">schema</a> than her source data. She&rsquo;d like to make the following changes:</p>
+<ul>
+<li>Change some attributes so they make more sense to the public and match destination system requirements:
+<ul>
+<li>All attributes should be lowercase</li>
+<li>&ldquo;first&rdquo; renamed to &ldquo;first_name&rdquo; to match &ldquo;last_name&rdquo;</li>
+<li>Move &ldquo;last_name&rdquo; to the first column</li>
+<li>Remove &ldquo;latitude,&rdquo; &ldquo;longitude,&rdquo; and all HTTPCaller/JSONFragmenter attributes</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note"></p>
+<p><span style="font-family: inherit; font-size: 1em;">Manipulating schema (the formal definition of a dataset&rsquo;s structure) is a key process in FME. When creating an FME workspace that modifies schema, there are generally two steps:</span></p>
+<ol>
+<li><strong style="font-family: inherit; font-size: 1em;">Edit the schema</strong><span style="font-family: inherit; font-size: 1em;">: define what schema you want on the written data. In FME, this is done by changing the feature type parameters to reflect what you want, e.g., changing attribute or feature type names.</span></li>
+<li><strong style="font-family: inherit; font-size: 1em;">Map the schema</strong><span style="font-family: inherit; font-size: 1em;">: define the relationship between the source schema (what you have) and the destination schema (what you want). In FME, this is accomplished by using transformers to define how the old and new schema are related.</span></li>
+</ol>
+<p>We&rsquo;ll cover these two steps in this lesson and the next.</p>
+</blockquote>
+<p>Jennifer's writer feature type currently has the same schema as the source data. Now, she has to edit the schema to get the desired results. The first step is to view the writer schema. She does that by double-clicking on the <strong>BusinessOwners </strong>writer feature type to open its dialog.</p>
+<p><img src="images/1712958208375.png" alt="Writer feature type" width="500"></p>
+<p>The writer&nbsp;<strong>Feature Type&nbsp;</strong>dialog contains all of the data&rsquo;s schema information:</p>
+<ul>
+<li>Feature type name (in this case,&nbsp;<strong>Feature Class or Table Name</strong>, but it varies by format)
+<ul>
+<li>You can edit this to reflect the name of the table or layer you wish to write</li>
+</ul>
+</li>
+<li>Allowed geometries (if any, in this case under&nbsp;<strong>Geometry</strong>)</li>
+<li>Attribute names (in the&nbsp;<strong>User Attributes </strong>tab under the&nbsp;<strong>Name&nbsp;</strong>column)</li>
+<li>Attribute data types (in the&nbsp;<strong>User Attributes</strong>&nbsp;tab under the&nbsp;<strong>Type&nbsp;</strong>column)</li>
+</ul>
+<p><img src="images/1712959212951.png" alt="Viewing writer feature type schema" width="904" height="268"></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note"></p>
+<p><span style="font-family: inherit; font-size: 1em;">In some cases, the name of a feature type will be the same name as the file created. In other cases, such as with files with multiple tables or layers, the feature type will indicate the name of the table or layer, not the file. The first parameter in all writer feature type dialogs indicates what will be created, e.g., </span><strong style="font-family: inherit; font-size: 1em;">Feature Class or Table Name</strong><span style="font-family: inherit; font-size: 1em;"> for geodatabases or </span><strong style="font-family: inherit; font-size: 1em;">Sheet Name&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">for Excel. You can set the output file or folder name in the first parameter under the writer in the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Navigator</strong><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note"></p>
+<p>You can view your reader feature types' schema the same way, by double-clicking a reader feature type. Note, however, that the schema cannot be modified on a reader feature type. If you wish to modify your data in-place, you'll have to add a writer feature type for the table or layer you'd like to modify.</p>
+</blockquote>
+<h2 id="view-source-schema">Choose an Attribute Definition Mode</h2>
+<p>Jennifer used <strong>Automatic</strong> Feature Type Definition mode when she added the geodatabase writer feature type. This mode sets the feature type's schema to match its given features.</p>
+<p>At this point, Jennifer has two options for changing the schema of the destination data:</p>
+<ol>
+<li>&nbsp;Continue to use <strong>Automatic</strong> mode and change the schema of the features using transformers.</li>
+<li>Change to <strong>Manual</strong> mode, manually define the destination schema, and then use transformers to set the schema on the features to match.</li>
+</ol>
+<p>Option two might seem like more work, and that is true! However, Jennifer also knows that both approaches can be valid. Automatic mode also has to infer the data type, which is sometimes incorrect.</p>
+<p>So, she will switch to Manual mode for now.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note"></p>
+<p>We'll show you how it would work with Automatic in the next lesson. Don't worry about Dynamic; it's an advanced option.</p>
+</blockquote>
+<h2 id="edit-writer-feature-type-attributes">Edit Writer Feature Type Attributes</h2>
+<p>To change to Manual mode and edit the attribute names, Jennifer double-clicks the&nbsp;<strong>BusinessOwners&nbsp;</strong>feature type to open the dialog. She clicks the<strong> User Attributes </strong>tab to view the attributes she wants to edit.</p>
+<p><img src="images/1712959573476.png" alt="User Attributes tab" width="581" height="356"></p>
+<p>Right now none of the attributes can be edited, because the feature type is still in <strong>Automatic Attribute Definition </strong>mode. Jennifer clicks <strong>Manual </strong>to change the mode:</p>
+<p><img src="images/1712959851823.png" alt="Changing to Manual mode" width="600"></p>
+<p>Now the table of attributes can be edited. She can rename them, change their type, reorder them, or add a new attribute.&nbsp;</p>
+<p>Jennifer's first step is to remove the attributes she does not want. She Ctrl+ (or Cmd+) clicks on the following attributes one at a time to select them all:</p>
+<ul>
+<li>_creation_instance</li>
+<li>_response_body</li>
+<li>_http_status_code</li>
+<li>json_type</li>
+<li>json_index</li>
+<li>Latitude</li>
+<li>Longitude</li>
+</ul>
+<p>After they are all selected, she clicks the Remove Row (minus sign) button in the bottom left to remove them:</p>
+<p><img src="images/1712959984720.png" alt="Removing attributes" width="600"></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note"></p>
+<p>What does this mean now that these attributes are removed?</p>
+<p>It means the written data will not contain them, <em>even if they are present on the features going into the writer</em>.</p>
+</blockquote>
+<p>She also changes the order of the attributes, clicking on a row to select it and then using the up and down triangle buttons at the bottom of the table to change their order.&nbsp;</p>
+<p>She uses the <strong>Move Down</strong> and <strong>Move Up </strong>buttons to move attributes into the following order:</p>
+<ul>
+<li>Last_Name</li>
+<li>First</li>
+<li>Company</li>
+<li>License_Number&nbsp;</li>
+</ul>
+<p><img src="images/1712960443189.png" alt="Changing attribute order" width="904" height="282"></p>
+<p>Next, she renames &ldquo;First&rdquo; to &ldquo;first_name&rdquo; by typing in the <strong>Name&nbsp;</strong>cell of the table. She changes all the other attributes to lower case as well.</p>
+<p><img src="images/1712962271043.png" alt="Editing attribute names" width="600" height="368"></p>
+<p>She clicks&nbsp;<strong>OK&nbsp;</strong>to exit the dialog and apply the changes.</p>
+<h2 id="view-data-with-edited-schema">View Data with Edited Schema</h2>
+<p>Jennifer wants to preview her data with the edited schema. She clicks&nbsp;<strong>Run, </strong>and once the workspace is finished, she clicks her&nbsp;<strong>BusinessOwners</strong>&nbsp;feature type once to select it and then clicks<strong>&nbsp;View Written Data</strong>.</p>
+<p><img src="images/1712962310790.png" alt="View Written Data button" width="300" height="160"></p>
+<p>The data appears in<strong>&nbsp;Visual Preview</strong>. She can see in<strong>&nbsp;Table View</strong> that the schema has been edited, but the data is missing. This is because the features going into the writer feature type have attributes with different names.</p>
+<p><img class="image image-block image-center" src="images/1712962358758.png" alt="Table View with edited attributes" width="554" height="146"></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note"></p>
+<p>Note as well that the Esri Geodatabase writer added the OBJECTID column, which is a requirement of the format.</p>
+</blockquote>
+<p>To provide the correct values to the written data, Jennifer has to map her schema, connecting the source and destination schema.</p>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Jennifer&rsquo;s steps.</p>

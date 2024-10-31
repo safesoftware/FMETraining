@@ -1,0 +1,124 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:&nbsp;</p>
+<ul>
+<li>Use workspace prototyping and incremental development to build workspaces.</li>
+<li>Create simplified input data while prototyping.</li>
+<li>Employ version control techniques in workspace development.</li>
+<li>Use rejected feature handling.</li>
+</ul>
+<h2 id="prototyping">Prototyping</h2>
+<p>In the classical sense, prototyping means creating an incomplete application as a way to evaluate the feasibility of a project.</p>
+<p>Here, we'll stretch the definition to mean how to build a complex FME project incrementally, starting with an empty workspace and building it piece by piece to deliver a result that matches the final specification.</p>
+<p>We will cover the techniques used for building a workspace incrementally and how to handle data rejected by a transformer.</p>
+<h2 id="incremental-development">Incremental Development</h2>
+<p>The critical development technique for FME workspaces is <a href="https://en.wikipedia.org/wiki/Incremental_build_model" target="_blank" rel="noreferrer noopener">incremental updates</a>.</p>
+<p>The steps to this technique are:</p>
+<ul>
+<li>Plan your project as a series of small sections, each fitting inside a bookmark in FME.</li>
+<li>Design and implement a section in FME Workbench. It should ideally be between 3-10 transformers.</li>
+<li>Test each section immediately after it is completed. That way, you can identify problems early and easily because only a few changes are being made in any increment.</li>
+<li>Repeat the process, saving the workspace and testing it whenever you've added a new section.</li>
+</ul>
+<p>Although a range of 3-10 transformers is an arbitrary number, the more transformers you add, the more difficult it would be to identify the source of any problems. Beyond ten transformers is the point at which you should consider chopping that process into smaller sections.</p>
+<p>Here, an author has planned their workspace by laying it out as a set of bookmarks on the canvas:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.001.TranslationPreDef.png" alt="Bookmarks used to plan workspaces sections" /></p>
+<p>Now, the author can complete and test each section at a time, keeping the overall goal in mind simultaneously.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">It can be easy to start developing a workspace and forget to save it! FME keeps a recovery file as soon as the workspace is saved for the first time, but until then, you risk an irretrievable loss.</span></p>
+</blockquote>
+<h2 id="source-data">Source Data</h2>
+<p>When the FME project is large and complex, the source data will likely be large and complex, too. So, when creating a workspace in small increments and testing each part, it's better to avoid using the entire dataset. It's best to create a small sample of data - extracting it from your source and writing to a neutral format like FFS.</p>
+<p>Sampling is beneficial for databases because it also avoids the problems of waiting for network traffic and database responses.</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.002.SourceDataSample.png" alt="Using sampling with a Tiler" /></p>
+<p>Here, the workspace author extracts a sample of source data by reading from a database, splitting it into tiles, and writing just one tile to the FFS format. This one tile can be used for prototyping a solution in a way representative of the entire source database table.</p>
+<p>Another transformer to use would be the Sampler, although the features selected by it would not be spatially adjacent.</p>
+<h2 id="version-control">Version Control</h2>
+<p>When making incremental changes to a workspace, it's easy to work on a single workspace file only. However, there are various problems with this:</p>
+<ul>
+<li>Faults cannot be easily tracked because there is no record of what has changed and when</li>
+<li>It is not easy to create different versions for different platforms</li>
+<li>If the workspace file is lost or corrupted, then the entire project is lost</li>
+</ul>
+<p>Therefore, it is better to keep versioned workspaces, where a different copy is kept for each set of revisions. This precaution can be taken manually within the file system or using a version control system like <a href="https://git-scm.com/" target="_blank" rel="noreferrer noopener">Git</a>.</p>
+<p>It is a good idea to keep and version all materials related to an FME project, including:</p>
+<ul>
+<li>Workspace files</li>
+<li>Python files</li>
+<li>Log files</li>
+<li>Source datasets</li>
+</ul>
+<p>It's better not to store any information that is personal, or that includes passwords. Also, you don't need to store temporary files.</p>
+<p>You can use a few methods to keep track of version and editing history:</p>
+<ul>
+<li>Using an external version control system, the <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Version-Control.htm" target="_blank" rel="noopener">FME Flow version control system</a>, or both</li>
+<li>Including the date of the most recent edit in the filename, e.g., digital-plan-submission-2022-11-25.fmw</li>
+<li>Including a version number or name in a bookmark or annotation in the workspace itself</li>
+<li>Using the Overview and History&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/workspace_parameters.htm" target="_blank" rel="noreferrer noopener">Workspace Parameters</a>&nbsp;to store workspace metadata</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>⭐ <strong>New in FME 2023.0: </strong>a new and improved Workspace Comparison tool. This tool updates the Workspace Compare and Merge tool released in FME 2022. For information on Workspace Comparison, please see the <a href="https://academy.safe.com/compare-workspaces" target="_blank" rel="noopener">Compare Workspaces course</a>.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>⭐ <strong>New in FME 2023.0</strong>, you can <a href="https://github.com/safesoftware/workspace-comparison-configuration" target="_self">integrate Git into your Workbench comparison workflow</a>. You can use the command line, TortoiseGit, or Sourcetree to interface directly with the Compare Workspaces tool.</p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">&nbsp;</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">&nbsp;</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="rejected-features">Rejected Features</h2>
+<p>An essential part of any workflow is handling data that fails to process, for example, when a feature with no geometry is sent into a geometry-based transformer like the AreaBuilder.</p>
+<p>FME handles such failures by outputting the data through &lt;Rejected&gt; ports, which are found on many transformers:</p>
+<p><img class="image image-block image-center" src="images/1699312862503.png" alt="Rejected ports" width="592" height="264" /></p>
+<p>A parameter exists to control the action of &lt;Rejected&gt; ports and gives the workspace author a choice over what action to take.</p>
+<p>When a feature is rejected, the translation will stop, and a red circle with a number will appear on the &lt;Rejected&gt; port. You can click on the cache to inspect the feature and determine why it was rejected:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.500.RejectedFeature.png" alt="A Rejected port with a feature cache" /></p>
+<h2 id="rejected-feature-handling">Rejected Feature Handling</h2>
+<p>The parameter to control the handling of rejected features can be found in the Navigator window under Workspace Parameters:</p>
+<p><img class="image image-block image-center" src="images/1699313060675.png" alt="The Rejected Feature Handling parameter in the Navigator" width="719" height="326" /></p>
+<p>The two options are&nbsp;<em>Terminate Translation</em>&nbsp;and&nbsp;<em>Continue Translation</em>.</p>
+<p>When the parameter is set to&nbsp;<em>terminate</em>, then a feature that exits via a &lt;Rejected&gt; port causes the translation to stop. To visually denote this, the &lt;Rejected&gt; ports have a small black marker.</p>
+<p>When the parameter is set to&nbsp;<em>continue</em>, the translation will continue, regardless of how many features exit &lt;Rejected&gt; ports. In that case, the small black marker is removed:</p>
+<p><img class="image image-block image-center" src="images/1699313156079.png" alt="Continue Translation mode removes the black dot from Rejected ports" width="360" height="133" /></p>
+<p>In&nbsp;<em>terminate</em>&nbsp;mode, a rejected feature gets written to the log window with the error message:</p>
+<p>The below feature caused the translation to be terminated</p>
+<p>There will also be an error message relating to the transformer:</p>
+<p><code>Intersector_&lt;Rejected&gt;(TeeFactory): Intersector_&lt;Rejected&gt;: Termination Message: 'Intersector output a &lt;Rejected&gt; feature.</code></p>
+<p>This error is helpful because it tells the author which transformer experienced the failure.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">To quickly find these error messages, you can filter the Translation Log by clicking the Errors button.</span></p>
+</blockquote>
+<h2 id="mixed-mode">Mixed Mode</h2>
+<p>In&nbsp;<em>terminate</em>&nbsp;mode, a rejected feature will not cause the translation to stop, provided that the &lt;Rejected&gt; port is connected to a further object:</p>
+<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.007.RejectedFeatureMixedMode.png" alt="Terminate mode with a connected Rejected port" /></p>
+<p>In short, an author can create a mixed mode, where some transformers stop the translation on rejecting a feature (the Intersector above), but others will handle the feature another way (the Bufferer). That way, the author can try to handle rejected expected features but stop the translation if there are genuinely unexpected failures.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Generally:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;"><em>Terminate </em>mode is helpful if you do not want any features to be rejected. You want to verify all your data is correct.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;"><em>Continue </em>mode is helpful if you don't care if a feature is rejected. You assume rejections happen because of incorrect data and don't want to use those r</span><span style="font-family: inherit; font-size: 1em;">ecords.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;"><em>Mixed </em>mode is helpful if you want to pick and choose which transformers' &lt;Rejected&gt; ports you care about.</span></li>
+</ul>
+</blockquote>
+<h2 id="feature-counts-and-inspection">Feature Counts and Inspection</h2>
+<p>In continue mode, features that exit a &lt;Rejected&gt; port are counted and saved for inspection:</p>
+<p><img class="image image-block image-center" src="images/1699313307180.png" alt="A Rejected port with a feature cache using Continue mode" width="439" height="223" /></p>
+<p>Features will be saved for inspection even if there is no Logger or other transformer attached. The number tells us how many features were rejected, and the green icon can be clicked to inspect the data.</p>

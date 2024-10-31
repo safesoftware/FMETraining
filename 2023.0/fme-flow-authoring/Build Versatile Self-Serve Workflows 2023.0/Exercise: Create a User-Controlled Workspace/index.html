@@ -1,0 +1,153 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Give users options when using self-serve applications.</li>
+<li>Configure a self-serve service with published parameters.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-create-a-user-controlled-workspace.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-create-a-user-controlled-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-create-a-user-controlled-workspace-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-create-a-user-controlled-workspace-complete.fmw</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>In a recent project, you had to compile a list of customers to notify that were affected by a water pump failure. After the list was compiled, the customers were manually notified. In anticipation of an event similar to this in the future, you would like to publish the workspace to FME Flow to share with your colleagues, modify the workspace to accept an updated file, as well as automate it, so the workspace runs on a schedule.</p>
+<p>In this exercise, you will create user parameters before publishing the workspace to FME Flow.&nbsp;</p>
+<h2 id="1-open-fme-workbench">1) Open FME Workbench</h2>
+<p>Open starting workspace in FME Workbench (2023.0 or later).</p>
+<h2 id="2-open-the-generic-writer-published-parameters">2) Open the Generic Writer Published Parameters</h2>
+<p>Look at the Navigator window. This workspace uses a Generic writer, which can write to any FME-supported format.&nbsp;</p>
+<p>In the Navigator window, expand the Generic writer by clicking the arrow to the left of it, then expand Parameters.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/13QC_lIwjfL6Tais8upACBvLQf9nWCtRTb-pHboMRpZhLVY7YxreknzSFNB9aHTxdY-a5hHWRWAstbCqVEcqhLRnQViUnAWLHNMoP-GWlc3mqcCBiN1at5S2tL6SRRu5Qh_1q6Erw4B-llhqJaz_r2I" alt="Finding the Output Format parameter in the Navigator" width="428" height="391" /></p>
+<p>Currently, the default format is set to Esri Shapefile. But, the goal for this exercise is for the user to select the format of their choice from a small list, at run time. This step is accomplished with published parameters.&nbsp;</p>
+<p>Double-click the Output Format parameter, which shows that it&rsquo;s been set up so the user can select from any format.</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/eKOfd3r8KryuPJY6ZTZsq9BASFWUXgfcXH0vd0dKsm0bzixt77E2qCB2pJ2Ut8sG-qtloxLVNiXeebf_Wx9ChsMu90_rWLCoAnMfDqoAjuSI-EVODs2u9tfZyrKjN2a0eZv6fKbZ0zavQdF92QRV4uA" alt="Configuring the Output Format parameter" width="433" height="279" /></p>
+<p>But that&rsquo;s not what we want. The goal is to present the user with a list of four common formats. So, we will create a new user parameter and define it accordingly.</p>
+<h2 id="3-create-new-user-parameter">3) Create New User Parameter</h2>
+<p>In the Navigator window, right-click on User Parameters and select Manage User Parameters.<img class="image image-block image-center" src="https://lh4.googleusercontent.com/ixVU_luhARhU2gpE8vHJAq_rg5UBpo2fPP6BvqzARB_cTPcPOthgzmXsUUx2FQ2b9rEmCDpsMWfbayy8_pL6MJuo2s9EDQITFOSSDUYpX9bOuu2iKKLbQzLNj_0ca_2rFz2BSCOQN4HIST_5hz4MxIo" alt="Manage User Parameters" width="393" height="369" /><br /><br />Click on the Green plus sign then select Choice.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/A1omIbPYFXWn8B_QSSCFYOAhrtIBSNWYyEpFp81my9CBFwD7XFkppae4er4rMErHh02wKjgpQIc3fpl2av6XD-7i1dzLH0ghGrmAvWoLbsgZlA4eEZ8yG4Oe7CYDrINVA2adeN3C4K4-KfY3mmE9mmI" alt="Adding a Choice parameter" width="291" height="197" /><br /><br />On the right-hand side fill in the following parameter properties:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Parameter Identifier</strong></td>
+<td>Output_Format</td>
+</tr>
+<tr>
+<td><strong>Prompt</strong></td>
+<td>Enter an output format:</td>
+</tr>
+<tr>
+<td><strong>Published</strong></td>
+<td>Enabled</td>
+</tr>
+<tr>
+<td><strong>Required</strong></td>
+<td>Disabled</td>
+</tr>
+<tr>
+<td><strong>Disable Attribute Assignment:</strong></td>
+<td>Enabled</td>
+</tr>
+<tr>
+<td><strong>Choice Configuration</strong></td>
+<td>Drop-down</td>
+</tr>
+<tr>
+<td><strong>Conditional Visibility</strong></td>
+<td>Disabled</td>
+</tr>
+</tbody>
+</table>
+<p><br />Then for Choices enter the following:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td colspan="1" rowspan="1"><strong>Value</strong></td>
+<td colspan="1" rowspan="1"><strong>Display</strong></td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">SHAPEFILE</td>
+<td colspan="1" rowspan="1">Esri Shapefile</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">MITAB</td>
+<td colspan="1" rowspan="1">MapInfo TAB</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">GML</td>
+<td colspan="1" rowspan="1">GML</td>
+</tr>
+</tbody>
+</table>
+<p>Then select Esri Shapefile as the default value and click OK.<img class="image image-block image-center" src="https://lh6.googleusercontent.com/f9-3MaUwWgRz2FaqysQ6xJF-dard_gqOV8MBPkqKyz8ILSU8U38Y-1T8bhTU4TxpMnESZREUmYCv8iBt099coWyQm4W562C5_BPaYXit04YOVbqgO5dy78flKRXlfP2R_r_rtpxxvLtETGv93Wu8Q68" alt="Configured Output Format parameter" width="387" height="800" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">In FME 2021.0 and later, you can use the Import button in the Choices table to automatically fill in the table with selected reader formats, writer formats, or coordinate systems.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="4-link-published-parameter-to-output-format-parameter">4) Link Published Parameter to Output Format Parameter</h2>
+<p>Our new Output_Format parameter appears under User Parameters &gt; Published Parameters, but we still have to link it to the Generic Writer&rsquo;s Output Format parameter. Locate the Output [GENERIC] Writer, and expand it with the arrow to view the Parameters, the first one being Output Format. Right-click on Output Format, select Link to User Parameter.</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/3hAs6_LcmqpP1CQVkPVejqZWPm4VzDFsBQwl2DNJsvX0KnW8c3Jr7ffyZDNKfkLnDbRdZaWFSR4HTqmCnKJLyIJsi9rFk8wGeJoDOAIcFsGrBY-8LbrD6H917ugj0idsSxJHRSxZMJMkfB0S1kIlVCk" alt="Linking Output Format to a User Parameter" width="508" height="526" /></p>
+<p>&nbsp;</p>
+<p>Select the new Output_Format parameter we just created.</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/V6k-soG7fG9tbrKAc4Ft57pd3Ce-mjJ_byzo5olNela2xLdcYpKwFuYHGPZPBPYYQYIK9SPbfhRAjFs4i9eMniwmEeLhcVF_ja3a-Hw1vhQuee9ZTz5iA8Dky3UnfZ1EtZz8XTRDwoYnO-Ekh1yq5XQ" alt="Selecting a user parameter to link" width="324" height="221" /></p>
+<p>Click OK.</p>
+<h2 id="5-run-the-workspace">5) Run the Workspace</h2>
+<p>If you run the workspace immediately, it will use the default value and output an Esri Shapefile. However, if you select Prompt for Parameters then click Run, you will be prompted to choose the output format. Notice only those three formats are presented now in the drop-down list. Pick GML. The workspace runs successfully.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/yG_7k4_jOn6QjYiPucVdhlOFyMDXVuKEsKOZhlWAd9kUAOCjYPpamrQJFoQtfMlINdwUNYhZjSvO23HhtlPdAlHncvf9WK4ohwD3R1yyGFt9LZU9BFg7Zm2SBiMguFezxBBoAuKoDnnRxv8lB1_RA8w" alt="Turning Prompt for User Parameters on" width="308" height="217" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">If you are using FME 2022.0, you might see that the Prompt for Parameters dialog mentions an invalid parameter for the Geodatabase reader. You can ignore this, as the parameter is actually valid, and the workspace will run. This is a known issue.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>&nbsp;</p>
+<h2 id="6-publish-features-types-to-read-parameter">6) Publish Features Types to Read Parameter</h2>
+<p>Now let&rsquo;s set up the workspace so the user gets to choose which feature types they want to request.</p>
+<p>In the Navigator, expand the CommunityMap [FILEGDB] File Geodatabase Reader &gt; Parameters &gt; and double click Features to Read. This parameter lets the user decide which feature types to process when the workspace runs. Close the dialogue.</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/7O10Z1qG9pt5EMomTTIe4giVFO4klSCJaiLapogPiMXTgbG9oc3w0WUjW4JIVxq5FshaIMUpVFxMh-4s4rq4zy4JIoJjWvV3-pCNCjI_7vOGk1HfCvXIAUkSvYodmm2tEZ41z-nNhjDY4lv_MMOygfI" alt="Finding the Feature Types to Read parameter in the Navigator" width="588" height="545" /></p>
+<p>&nbsp;</p>
+<p>Right-click on Feature Types to Read parameter and select Create User Parameter. Go with the defaults for the definition, and click OK. Confirm the new parameter appears under Published Parameters.</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/EyJFq8Xz1mkpNqYMjjdeOTQ9AmFUkeZO9y8UVy8gbGJRC-B7_2l63QX0hgSh9QL1yYSIH2SnUQoK9AFGbNhSRxjrr3ORcgA1DNbWu-e5miQgyEJo5KCISj8OG3_FP6GmpDNIZiI5YCcGpcwSsEQY7KI" alt="Viewing the Feature Types to Read parameter" width="459" height="486" /></p>
+<p>&nbsp;</p>
+<h2 id="7-run-workspace-again">7) Run Workspace Again</h2>
+<p>Ensure that Prompt for Parameters is still enabled and rerun the workspace.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">Remember to use&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Run &gt; Rerun Entire Workspace&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">after you change user parameters. FME will only prompt you to choose parameter values for parts of the workspace that run, so it's best to run the entire workspace to make sure you are prompted.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>Notice that this time there are two parameters to set. Set it to whatever parameters you wish, and then click Run. Confirm that the workspace runs correctly.</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/8waD_qjn6nW5hBbmDS9pxm5S61O6ifSf_lCwp2fZkUAdE4PPOAk0HYdcZCe6kP4sUrUQBwDCRcPUWA-oeeGna23UDyM2zXdwMRvJKRfR7zQJYm4cJVks7xR3DUo_lZ7nNVPV0DgvuO0PHfS2xWhgmx4" alt="Selecting user parameter values" width="517" height="249" /></p>
+<p>&nbsp;</p>
+<h2 id="8-publish-to-fme-server">8) Publish to FME Flow</h2>
+<p>Now that we have the parameters set up and confirmed that the workspace runs correctly, we can publish it to FME Flow.&nbsp;</p>
+<p>Before publishing, save the workspace. Once saved, go to File &gt; Publish to FME Flow on the top menu bar.</p>
+<p>Connect to your FME Flow and publish to a repository called Training. Call the workspace CommunityMapping.fmw. Register it with the Data Download and Job Submitter services.&nbsp;</p>
+<h2 id="9-open-the-fme-server-web-user-interface">9) Open the FME Flow Web User Interface</h2>
+<p>Open and log into the FME Flow Web User Interface.</p>
+<h2 id="10-run-workspace">10) Run Workspace</h2>
+<p>On the side menu bar in FME Flow, click on Run Workspace. On the Run Workspace page, select Training for the Repository and the CommunityMapping workspace. Select Data Download for the Service.</p>
+<p>Check out the Published Parameters. The two parameters that were set up and just tested in FME Workbench are shown. Just as before, select an output format, and select one or more feature types.</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/vXDh2l1PDX_NdyZJAHYN-LBEENQBkT_PwVsvcBNGjqfaOgTUxj5hdlvjStJCk3IRxaPtGaURbQnlY7DhrP0POq9Lg8P423pZ_06J213g1ejCr89Ub3w1JaaYevOYfcpvGXb5Er0MySFFphceiH8Hpz8" alt="Selecting one feature type" width="733" height="261" /></p>
+<p>&nbsp;</p>
+<p>Once you have selected the parameters, click Run.</p>
+<h2 id="11-view-the-results">11) View the Results</h2>
+<p>The Data Download service presents a URL link to the translation results in a zip file. A quick inspection of the contents of the zip file confirms the results are what we expected.</p>

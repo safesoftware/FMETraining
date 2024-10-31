@@ -1,0 +1,44 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain how FME Flow can facilitate bulk translations.</li>
+<li>Explain how CPU-usage engines can improve performance with bursty workflows.</li>
+<li>Explain how custom transformers can let you automate your FME Flow Hosted instance for improved performance.</li>
+</ul>
+<h2 id="performance-fme-server-and-fme-cloud">Performance, FME Flow, and FME Flow Hosted</h2>
+<p>FME Flow adds an extra dimension to FME performance: scalability. In terms of performance, the item most easily scalable is the number of FME engines.</p>
+<p>Increasing the number of engines supports a higher volume of jobs, and the FME Flow Core contains a Software Load Balancer (SLB) to distribute jobs to the FME engines in a balanced way.</p>
+<div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>FME Flow is best known for its web-based abilities, but it has enormous potential to process large amounts of data in less time by creating multiple jobs on multiple engines.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="using-server-for-bulk-translations">Using FME Flow for Bulk Translations</h2>
+</div>
+<p>By default, utilizing multiple engines is only possible when you have multiple workspaces to run. When you have only a single workspace and wish to process it more efficiently on FME Flow, you must divide it into multiple jobs.</p>
+<p>To do so, I can create a parent workspace that divides my source data into separate parts and sends each to a different worker job using the&nbsp;<strong>FMEFlowJobSubmitter</strong>&nbsp;transformer.</p>
+<p>For example, I can calculate the bounds of tiles to be created and share the load over multiple engines by running the workspace separately for each tile.</p>
+<h2 id="cpu-usage-pricing-engines">CPU-Usage Pricing Engines</h2>
+<p>FME Flow supports a usage-based model for engine pricing. CPU-usage engines let you spin up multiple engines in response to bursty workflows, paying for CPU time rather than per engine. In cases where a lot of data needs to be processed at once but not frequently, CPU-usage engines can be performant from both a workflow and cost perspective. You can learn more by reading <a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/engines.htm" target="_blank" rel="noopener">the documentation</a>.</p>
+<h2 id="fme-cloud">FME Flow Hosted</h2>
+<p>FME Flow Hosted is a hosted deployment option for FME Flow. The benefit is that you don&rsquo;t have to purchase FME Flow; you can use it whenever you have a job that can take advantage of its power. You can create an instance with as many engines as you want, considering that the hardware you select will impact performance.</p>
+<p>You can gain performance improvements by automating engines with the FME Flow Hosted custom transformers available on the FME Hub:</p>
+<p><img class="image image-block image-center" src="images/1725661458056.png" alt="FME Flow Hosted transformers in Quick Add" width="725" height="383" /></p>
+<p>With the FMEFlowHostedInstanceLauncher transformer (or the FMEFlowHostedInstanceController), I can run my parent workspace, have it automatically start an FME Flow Hosted instance, and run one or more worker jobs on it.</p>
+<p>This way, I can start a new instance for each job or run several jobs on one instance, depending on the instance type and how many engines it has.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For more FME Flow Hosted performance tips, see these Knowledge Base articles: </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407551394829-FME-Flow-Administration-Job-Scalability-and-Management" target="_blank" rel="noopener">FME Flow Administration: Job Scalability and Management</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407714066829-How-to-Control-FME-Server-Engine-Memory-Usage" target="_blank" rel="noopener">How to Control FME Flow Engine Memory Usage</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>

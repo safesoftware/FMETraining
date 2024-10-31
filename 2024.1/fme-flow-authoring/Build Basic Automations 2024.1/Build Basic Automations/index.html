@@ -1,0 +1,212 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand what triggers are and how to use them.</li>
+<li>Know the difference between internal and external actions.</li>
+<li>Understand how to find and add nodes into an Automation.</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="how-to-build-an-automation">How to Build an Automation?</h2>
+<p>Automations are built using a drag-and-drop interface similar to FME Workbench. Your Automations can consist of the following components:</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000461700.png" alt="Manual Trigger icon" /><strong>Manual Trigger.</strong>&nbsp;Allows the automation to be run on demand rather than in response to a schedule or event. Extremely useful for testing as it allows sample JSON messages to be passed downstream.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000475072.png" alt="Trigger icon" /><strong>Triggers.&nbsp;</strong>A Trigger listens for and receives messages from an external client or from within FME Flow. Every automation begins with a Trigger.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000486750.png" alt="Action icon" /><strong>Actions.</strong> Process messages from a trigger with an FME workspace or other tool hosted on Flow.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000496075.png" alt="External action icon" /><strong>External Actions.&nbsp;</strong>Sends a message to an external client or another process in FME Flow. What happens afterward is no longer part of this Automation.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1654816502809.png" alt="External Action icon" /><strong>Split-Merge Block</strong>. Combines messages from multiple workspace actions. The message includes content from workspaces that run a single job, or multiple jobs, depending on the input message and workspace behavior.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000505617.png" alt="Annotation icon" /><strong>Annotations.</strong>&nbsp;Add annotations to the automation canvas just like FME Workbench which can be stand-alone or attached to components.</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-automations/build-basic-automations/images/1644000514332.png" alt="Bookmark icon" /><strong>Bookmarks.&nbsp;</strong>Organizes your workflow by grouping and separating components.</p>
+<div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">For a full description of triggers and actions available, please visit&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Automations.htm" target="_blank" rel="noreferrer noopener">the Automations documentation</a><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>Let's look at the different components of an Automation in more detail.</p>
+</div>
+<h2 id="clients">Clients</h2>
+<p>A client is a user or system that sends or receives a message to/from FME Flow. The client may be a physical person or may just be a component in a computer system. Either way, the majority of the time, a client is not a core part of FME Flow, rather someone or something that interacts with it. There are two trigger protocol exceptions to this (Schedules and System Events) whereby FME Flow is also the client sending the message.</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/fJRhHWQzCfbkg1c2UUTQ6qsLR-tvMdYBTWhyiKxhdePhIqx9KINw3DoHvDGs0OR9f_NIHCZK4Q_VYUq3Wc6P5DGkLOYfsWVAUDk4WkNQiKVzQBAYWcgkpSVeL-iIGxsN2Ok3H7APPpjsYaWTdReu-KU" alt="Client diagram" width="612" height="280" /></p>
+<p>For example, a database update might cause a trigger to send a notification to FME Flow, in which case the database system is the client. However, a client could also be a person who, for example, triggers a notification by sending an email to FME Flow.</p>
+<p>Likewise, FME Flow can send a notification for another client system. Alternatively, this client can also be a real person, who might receive a notification in the form of an email.</p>
+<h2 id="trigger">Trigger</h2>
+<p>A trigger is an FME Flow component that receives incoming notifications from a client.</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/Ux89Qo901jA8KzCBGmrh3LT3FO2JAjG8hAzqa6iMO02fdiUiqEqceq0XAGIILvTdpeRzfhu59HB47fM6AlTDcSLuw3GoNCKlBCJXncsDcz_QGORzjFjAqJqlViHMv98YeuCRvN8e4PCmol5aiLEywZk" alt="Trigger diagram" width="612" height="280" /></p>
+<p>To set up a trigger in FME Flow, a workspace author (or administrator) must create a new Automation. You can create an Automation in the FME Flow Web Interface on the Automations &gt; Build Automation page:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/ypFZunhZEzzXF-2Q60K3SbRKsmyxmV8BagVZYjtOmfOcQUh2gpbJj66OZMpXp1yEPBqJ6Y3XjNsikZ6EPhGDvhRTC23NYX_ifx-CX54RplKfdm4RPyGAon5qeix976_OfTANxBQA0l3J71p6Hz-jspA" alt="Automations canvas" width="612" height="272" /></p>
+<h2 id="action">Action</h2>
+<p>An action is an FME Flow component that sends outgoing notifications to a client.</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/osg23-7ML21ZqoLJRg02xSYd0aB1uvSUdbyF8Bffqd0HzP-JMunU0Yzd4COvghYjI1nL3KxrkRl13ixHlbMRno6uvmiMwsuVny1myNjZS5B-O7vylJIRFTCjhPLQ8y_jiYhrdlFiAAyppBMWTvg7tMY" alt="Actions diagram" width="612" height="280" /></p>
+<p>To send a notification in FME Flow, a workspace author (or administrator) must first create an Automation that contains a trigger, the output of this node is then connected to the action - just like how you connect transformers in FME Workbench.</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/M7ye_fJPygSwSCNXzMECABhcFJDQ_pTEnXY1fAnyVc2svJfMUwlQgbm9Q5oj-Y-gKCdHLQaFNo2JfPMh6s3GQ9SwxW-vRrRvo0dF36_2SP9XE_o6V5sAF6yFN-p_jR8oAwUpu9X9pQAq1kF3hpph01w" alt="Adding an External Action" width="612" height="275" /></p>
+<p>Comparable to the FME Workbench canvas, Automations are constructed in a user-friendly drag-and-drop interface. Triggers and actions are displayed on the canvas as nodes identifiable by their different color. Input and output ports are used to create connections that will pass messages from the trigger to the associated action. The user must configure a series of parameters for the Automation to succeed depending on the protocol.</p>
+<h2 id="protocols">Protocols</h2>
+<p>A protocol is a system of data exchange between FME Flow and a client.</p>
+<p>We know that FME sends and receives messages. Protocols are the method by which these messages are sent and received. Each Trigger and Action is defined using a particular communication protocol.</p>
+<p>To trigger an incoming message by email &ndash; for example &ndash; you would create an Automation using an Email - SMTP Trigger. To send a notification to a Java Message Service, you would create an Automation that contains a JMS Message Action.</p>
+<p>There are many different protocols available in FME Flow; some of them are only for use as a Trigger, others are only available as Actions, and some of them can be used with both types.</p>
+<p>This table lists the different Trigger and Action protocols and the following pages go into greater detail on some of the most commonly used types.</p>
+<table class="featureTable sort_table" style="width: 100%;">
+<thead class="thead sorted">
+<tr>
+<th style="width: 18.4943%;" scope="col">Protocol</th>
+<th style="width: 60.7201%;" scope="col">Description</th>
+<th style="width: 10.802%;" scope="col">Trigger</th>
+<th style="width: 10.1473%;" scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td style="width: 18.4943%;">Amazon S3</td>
+<td style="width: 60.7201%;">Monitoring activity in an AWS S3 bucket/Communication to Amazon&rsquo;s Simple Storage Service</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Amazon SNS</td>
+<td style="width: 60.7201%;">Communication with Amazon&rsquo;s Simple Notification Service</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Amazon SQS</td>
+<td style="width: 60.7201%;">Communication with Amazon&rsquo;s Simple Queue Service</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Azure Event Grid</td>
+<td style="width: 60.7201%;">Communication with Microsoft Azure Events</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Dropbox</td>
+<td style="width: 60.7201%;">Monitoring activity in a Dropbox folder/Communication of a notification (file) to the Dropbox web service</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Email (IMAP)</td>
+<td style="width: 60.7201%;">Receive email messages from an IMAP Server</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Email (SMTP)</td>
+<td style="width: 60.7201%;">FME Flow itself receives email messages/Communication via an email server</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Filter</td>
+<td style="width: 60.7201%;">Test incoming messages for the presence of a specified string</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FME Flow Topic</td>
+<td style="width: 60.7201%;">Receive/Send messages to a Topic to initiate workflow processes</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FME Workspace</td>
+<td style="width: 60.7201%;">Run an FME Form Workspace published to FME Flow</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FME Dynamic Workspace</td>
+<td style="width: 60.7201%;">Run an FME Form Workspace published to FME Flow, with the repository and workspace name coming from output keys in the Automation</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FTP Directory</td>
+<td style="width: 60.7201%;">Monitor activity/upload a file to an FTP Site</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">HTTP Request</td>
+<td style="width: 60.7201%;">Post HTTP requests to the specified URL</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">JMS</td>
+<td style="width: 60.7201%;">Communication with a Java Message Service</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Log</td>
+<td style="width: 60.7201%;">Write Event/Automation details to a log</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Merge</td>
+<td style="width: 60.7201%;">Combine messages before proceeding downstream in an Automation</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Resource or Network Directory</td>
+<td style="width: 60.7201%;">Monitor activity in a resource location or network directory</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">SFTP Directory</td>
+<td style="width: 60.7201%;">Communication with an SFTP site</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Schedule</td>
+<td style="width: 60.7201%;">Complete workflow tasks at specific times in the future</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">System Events</td>
+<td style="width: 60.7201%;">Communication with FME Flow systems</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">UDP</td>
+<td style="width: 60.7201%;">Communication via a User Datagram Protocol port</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">WebSocket</td>
+<td style="width: 60.7201%;">Communication via a WebSocket channel</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Webhook</td>
+<td style="width: 60.7201%;">Receive messages sent as HTTP Post requests from another application</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Protocols are pre-defined components in the FME Flow architecture and do not need to be defined in the web interface.</p>
+<p>However, a number of fields are made available to configure when an Automation is created.</p>
+<p>For example, here are the parameters for a Resource or Network Directory (updated) Trigger:</p>
+<p><img class="image image-block image-center" src="https://lh4.googleusercontent.com/Xp1dOzLVB3RoGmToylAAef6hVTKhrGcVBITLIM41KE5zVGzFiGJHWFaLSV5xUgGRZ6MXgrWE77sLlY5WmaHNCptAhShonuW9bRz_Di1wmLvWfje6g7Q9wvdlZc4iSHtf5UmFR2bgQGbeH6ysshZ6GYw" alt="Resource or Network Directory Details pane" width="488" height="664" /></p>
+<p>You must set these parameters when the Automation is created as they are needed for FME to watch and receive notifications about this Directory. If you don't configure these parameters, the Automation will not behave as anticipated when you enable it.</p>

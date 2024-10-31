@@ -1,0 +1,42 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain how conditional attribute values let you reduce workspace clutter.</li>
+<li>Understand how to fill in Parameter Condition Definition dialogs.</li>
+</ul>
+<h2 id="transformer-based-attribute-mapping">Transformer-Based Attribute Mapping</h2>
+<p>After filtering your data with a transformer like the Tester or the TestFilter, you can create attributes or set their values based on these divisions. Here, an author divides data into neighborhoods using a postcode attribute and the TestFilter:</p>
+<p><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.007.ConditionalWithTransformers.png" alt="Example using data mapping and filtering transformers" /></p>
+<p>However, many AttributeManager transformers like this are not a good idea. It causes the workspace to be bloated: hard to navigate and harder to edit. It could scale better, too. Since each value needs a separate TestFilter port and AttributeManager combination, it's easy to imagine the difficulties involved with more than 50 values!</p>
+<p>One solution is to use a simple&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/attributevaluemapper.htm" target="_blank" rel="noopener">AttributeValueMapper</a> transformer. However, that transformer only permits a single simple condition, such as X=Y. If a more advanced set of conditions is required, the preferred solution is conditional attribute values.</p>
+<h2 id="what-are-conditional-attribute-values">What are Conditional Attribute Values?</h2>
+<p>You can use conditional attribute values instead of many transformers of the same type. Instead of creating a set of conditions and values as separate objects in a workspace, you set both conditions and values inside a single transformer.</p>
+<p>The option for conditional attribute values is in the drop-down dialog wherever you can provide an attribute value. For example, in the AttributeManager:</p>
+<p><img class="image" src="images/1700856826393.png" alt="Conditional Value.. option in the Attribute Manager" width="605" height="320" /></p>
+<p>In the above screenshot, a workspace author creates a new attribute called NEIGHBORHOOD. The values for NEIGHBORHOOD are conditional upon other attribute values and &ndash; in this example &ndash; are set up like this:</p>
+<p><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.009.ConditionalDialog.png" alt="Defining Condition Statements" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can copy and paste conditions using the Copy Row and Paste Row buttons to save time and prevent data entry errors. You can copy and paste between transformers of a similar style, e.g., the Tester and TestFilter.</span></p>
+</blockquote>
+<p>Like the AttributeValueMapper, a series of conditions (left) map to different values (right). However, unlike the AttributeValueMapper, this dialog allows much more complex conditions than a simple 1:1 mapping. That&rsquo;s because full test capabilities are built into this dialog.</p>
+<p>The conditions are defined by double-clicking in the Test Condition field to open up a Tester-style dialog. Both the condition and the output value can be set within this dialog:</p>
+<p><img class="image" src="images/1700856642680.png" alt="Setting the Attribute Value result of a test" width="405" height="241" /></p>
+<p>Many options beyond simple text or numbers are available for setting the Attribute Value in the Parameter Conditional Definition dialog:</p>
+<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/use-conditional-values/what-are-conditional-attribute-values/images/1606173013870.png" alt="Options for Attribute Value result from a test" /></p>
+<p>Once the conditions are set, the original dialog &ndash; in this case, an AttributeManager &ndash; looks like this, with the number of conditions defining the number of possible values:</p>
+<p><img class="image" src="images/1700856672277.png" alt="AttributeManager showing multiple possible values" width="660" height="122" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Like attribute construction, conditional values apply to attributes and most FME parameters. For example, you can create labels conditional upon specific tests using the Labeller transformer itself:</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1700856737518.png" alt="Using conditional values for an FME parameter" width="363" height="212" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">This way, you don't have to create the labels in an AttributeManager and then apply them in the Labeller as a separate task.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use cached values in some transformers when providing an attribute value. This feature makes it faster and easier to build tests. For example, you could use this feature to filter out a specific value from NEIGHBORHOOD, searching the list of neighborhood names to find the correct one.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">In a transformer with a cache and an attribute value parameter, click the drop-down arrow and choose </span><strong style="font-family: inherit; font-size: 1em;">Cached Values&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">(if available). A list of values is displayed to choose from, including a search filter.</span></p>
+</blockquote>
+<h2 id="when-to-use-conditional-attribute-values">When to use Conditional Attribute Values?</h2>
+<p>Conditional attribute values are great for when you need to map (or set) an attribute in relation to the value of an existing attribute and when the conditions are more complex than can be handled in a simple AttributeValueMapper (or AttributeRangeMapper) transformer.</p>
+<p>In essence, conditional values are like a combination of TestFilter and AttributeCreators.</p>

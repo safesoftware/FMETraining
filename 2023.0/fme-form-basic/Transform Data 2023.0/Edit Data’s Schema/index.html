@@ -1,0 +1,106 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>View your data&rsquo;s schema.</li>
+<li>Edit your data&rsquo;s schema, including feature type and attribute names.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-datas-schema.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\edit-datas-schema.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-datas-schema-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\edit-datas-schema-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="view-source-schema">View Source Schema</h2>
+<p>Jennifer continues working on her <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-your-datas-schema.fmw" target="_blank" rel="noreferrer noopener">workspace</a> in FME Workbench (2023.0 or later). This workspace creates an Esri geodatabase from a PostGIS layer. Jennifer would like her geodatabase to have a different <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Understanding_Schema.htm" target="_blank" rel="noopener">schema</a>&nbsp;than her source PostGIS data. She&rsquo;d like to make the following changes:</p>
+<ul>
+<li>Change some attributes, so they make more sense to the public:
+<ul>
+<li>&ldquo;first&rdquo; renamed to &ldquo;first_name&rdquo; to match &ldquo;last_name&rdquo;</li>
+<li>Move &ldquo;last_name&rdquo; to the first column and sort it alphabetically, matching common conventions when working with names</li>
+<li>Remove &ldquo;latitude&rdquo; and &ldquo;longitude&rdquo; attributes</li>
+</ul>
+</li>
+<li>Rename feature types to reflect better what they contain:
+<ul>
+<li>&ldquo;public_BusinessOwners_point&rdquo; to &ldquo;BusinessOwners&rdquo;</li>
+<li>&ldquo;public_BusinessOwners_geom&rdquo; to &ldquo;BusinessOwners_incomplete&rdquo;. This feature type should contain any features missing geometry so the Quality Assurance team can fix them by adding geometry.</li>
+</ul>
+</li>
+<li>Remove empty feature types:
+<ul>
+<li>&ldquo;public_BusinessOwners_line&rdquo;</li>
+<li>&ldquo;public_BusinessOwners_polygon&rdquo;</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Manipulating schema (the formal definition of a dataset&rsquo;s structure) is a key process in FME. When creating an FME workspace that modifies schema, there are generally two steps:</span></p>
+<ol>
+<li><strong style="font-family: inherit; font-size: 1em;">Edit the schema</strong><span style="font-family: inherit; font-size: 1em;">: define what schema you want on the written data. In FME, this is done by changing the feature type parameters to reflect what you want, e.g. changing attribute or feature type names.</span></li>
+<li><strong style="font-family: inherit; font-size: 1em;">Map the schema</strong><span style="font-family: inherit; font-size: 1em;">: define the relationship between the source schema (what you have) and the destination schema (what you want). In FME this is accomplished by using transformers to define how the old and new schema are related.</span></li>
+</ol>
+<p>We&rsquo;ll cover these two steps in this lesson and the next.</p>
+</blockquote>
+<p><strong>Generate Workspace</strong> has duplicated the reader schema on the writer schema in Jennifer&rsquo;s workspace. Now she has to edit the schema to get the results she wants. The first step is to view the writer schema. She does that by double-clicking on the&nbsp;<strong>public_BusinessOwners_point&nbsp;</strong>feature type to open its dialog.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/edit-datas-schema/images/1652132329371.png" alt="double-clicking on the public_BusinessOwners_point feature type to open its dialog" /></p>
+<p>The writer&nbsp;<strong>Feature Type&nbsp;</strong>dialog contains all of the data&rsquo;s schema information:</p>
+<ul>
+<li>Feature type name (in this case,&nbsp;<strong>Feature Class or Table Name</strong>, but it varies by format)</li>
+<li>Allowed geometries (if any, in this case under&nbsp;<strong>Geometry</strong>)</li>
+<li>Attribute names (in the&nbsp;<strong>User Attributes t</strong>ab under the&nbsp;<strong>Name&nbsp;</strong>column)
+<ul>
+<li>They are now all lowercase, matching PostGIS specifications</li>
+</ul>
+</li>
+<li>Attribute data types (in the&nbsp;<strong>User Attributes</strong>&nbsp;tab under the&nbsp;<strong>Type&nbsp;</strong>column)</li>
+</ul>
+<p><img src="images/1690315296895.png" alt="Viewing writer feature type schema" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You can view your reader feature types' schema the same way, by double-clicking a reader feature type. Note, however, that the schema cannot be modified on a reader feature type. If you wish to modify your data in-place, you'll have to add a writer feature type for the table or layer you'd like to modify.</p>
+</blockquote>
+<h2 id="rename-output">Rename Output</h2>
+<p>Jennifer wants to rename the feature types to &ldquo;BusinessOwners&rdquo; and &ldquo;BusinessOwners_incomplete&rdquo; to distinguish features with and without geometry. She renames<strong>&nbsp;Feature Class or Table Name</strong> to &ldquo;BusinessOwners.&rdquo;</p>
+<p><img src="images/1690315412890.png" alt="Renamed writer feature type" /></p>
+<p>After changing the text, she clicks&nbsp;<strong>OK</strong>.</p>
+<p>The name of the feature type is updated on the canvas.</p>
+<p>Then she runs the workspace.</p>
+<p><img src="images/1690315491368.png" alt="Renamed writer feature type on the canvas" /></p>
+<p>Jennifer can see some of her data is missing geometry. She can tell because the&nbsp;<strong>GeometryFilter&nbsp;</strong>has results coming out of the&nbsp;<strong>Null&nbsp;</strong>port, which means that those features are neither points, lines, or polygons.</p>
+<p><img src="images/1690315592534.png" alt="Null geometry is filtered" /></p>
+<p>She wants to route the features missing geometry to their own feature class so the Quality Assurance team can fix them. Therefore, she renames the<strong>&nbsp;public_BusinessOwners_geom</strong> feature type to &ldquo;BusinessOwners_incomplete.&rdquo;</p>
+<p><img src="images/1690315665300.png" alt="Renamed writer feature type - incomplete" /></p>
+<p>When the geodatabase is written, its feature classes will have these names.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In some cases, the name of a feature type will be the same name as the file created. In other cases, such as with files with multiple tables or layers, the feature type will indicate the name of the table or layer, not the file. The first parameter in all writer feature type dialogs indicates what will be created, e.g., </span><strong style="font-family: inherit; font-size: 1em;">Feature Class or Table Name</strong><span style="font-family: inherit; font-size: 1em;"> for geodatabases or </span><strong style="font-family: inherit; font-size: 1em;">Sheet Name&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">for Excel. You can set the output file or folder name in the first parameter under the writer in the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Navigator</strong><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="remove-empty-writer-feature-types">Remove Empty Writer Feature Types</h2>
+<p>Jennifer looks at the feature counts along the connection lines coming out of the <strong>GeometryFilter</strong>. She notices no features are coming out of the <strong>Line</strong>,&nbsp;<strong>Area</strong>,&nbsp;<strong>Surface</strong>,&nbsp;<strong>Collection</strong>, or&nbsp;<strong>&lt;Unfiltered&gt;</strong> ports. That means there are only point and null geometries in the source data. Therefore, handling features from the <strong>Line</strong>, <strong>Area</strong>, and <strong>Surface </strong>output ports is unnecessary, as FME won&rsquo;t create empty feature classes. Since nothing is being written to these feature types, she deletes the&nbsp;<strong>public_BusinessOwners_line&nbsp;</strong>and&nbsp;<strong>public_BusinessOwners_polygon</strong>&nbsp;feature types by right-clicking them and selecting&nbsp;<strong>Delete</strong>. Now her workspace looks like this:</p>
+<p><img src="images/1690317858269.png" alt="Removed empty feature types" /></p>
+<h2 id="edit-writer-feature-type-attributes">Edit Writer Feature Type Attributes</h2>
+<p>Now that Jennifer has edited the feature type names, she would also like to change the attributes. She double-clicks the&nbsp;<strong>BusinessOwners&nbsp;</strong>feature type to open the dialog. She clicks the<strong> User Attributes </strong>tab to view the attributes she wants to edit.</p>
+<p><img src="images/1690317936793.png" alt="User Attributes tab" /></p>
+<p>The table listing them can be edited. She can rename them, change their type, reorder them, or add a new attribute. She renames &ldquo;first&rdquo; to &ldquo;first_name&rdquo; by typing in the&nbsp;<strong>Name&nbsp;</strong>cell of the table.</p>
+<p><img src="images/1690317980397.png" alt="Editing attribute name" width="590" height="348" /></p>
+<p>She also changes the order of the attributes, clicking on a row to select it and then using the up and down triangle buttons at the bottom of the table to change their order. She uses the&nbsp;<strong>Move Down</strong> button to move &ldquo;first_name&rdquo; down one spot so it comes after &ldquo;last_name."</p>
+<p><img src="images/1690318079360.png" alt="Changing attribute order" /></p>
+<p>Jennifer no longer wants the latitude and longitude attributes written to her feature class, so she deletes those attributes from the User Attributes tab of the writer feature type dialog. She selects their rows and clicks the<strong>&nbsp;Remove Row</strong>&nbsp;button.</p>
+<p><img src="images/1690318151924.png" alt="Removing attributes" width="590" height="348" /></p>
+<p>She clicks&nbsp;<strong>OK&nbsp;</strong>to exit the dialog and apply the changes.</p>
+<h2 id="view-data-with-edited-schema">View Data with Edited Schema</h2>
+<p>Jennifer wants to preview her data with the edited schema. She clicks&nbsp;<strong>Run, </strong>and once the workspace is finished, she clicks her&nbsp;<strong>BusinessOwners</strong>&nbsp;feature type once to select it and then clicks<strong>&nbsp;View Written Data</strong>.</p>
+<p><img src="images/1690318216466.png" alt="View Written Data button" /></p>
+<p>The data appears in<strong>&nbsp;Visual Preview</strong>. She can see in<strong>&nbsp;Table View</strong> that the schema has been edited, but some data is missing. For example, &ldquo;last_name&rdquo; is in the correct position, but &ldquo;first_name&rdquo; doesn&rsquo;t have any values.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/edit-datas-schema/images/888-e-8-ac-9-17-b-2-4568-bb-09-4295-ca-084-ef-5.png" alt="Table View with edited attributes" /></p>
+<p>To provide the correct values to the written data, Jennifer has to map her schema, connecting the source and destination schema.</p>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Jennifer&rsquo;s steps.</p>

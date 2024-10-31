@@ -1,0 +1,107 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Describe why debugging is an important skill.</li>
+<li>Distinguish between different types of log messages.</li>
+<li>Find the text and spatial log files.</li>
+<li>Explain the difference between errors and warnings.</li>
+</ul>
+<h2 id="debugging">Debugging</h2>
+<p>In this course, we&rsquo;ll cover best practices for debugging your workspaces.</p>
+<p>Even skilled FME users seldom produce new workspaces with zero defects. For that reason, all users must be aware of the debugging techniques available in FME.</p>
+<p>Generally, debugging in FME consists of determining whether a problem has occurred and then tracking down the problem's source (for example, where it appears in the workspace). Once you have determined where a problem arises, you can investigate it.</p>
+<p>There are various debugging techniques available in FME, and it's essential to use these in the correct order. For example, you shouldn't waste time randomly changing parameters and re-running the workspace when a simple log message explains the issue!</p>
+<p>A logical order would be:</p>
+<ul>
+<li><strong>Check for any problem</strong>
+<ul>
+<li>Interpret the log for warnings and errors</li>
+<li>Inspect the output datasets</li>
+</ul>
+</li>
+<li><strong>Locate the problem</strong>
+<ul>
+<li>Review connection feature counts</li>
+<li>Inspect the data at key stages of the translation</li>
+</ul>
+</li>
+<li><strong>Determine the problem</strong>
+<ul>
+<li>Check reader, writer, or transformer parameters at the point of failure</li>
+<li>If necessary, run the workspace in feature debug mode</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In software development, debugging a process after completion is called "post-mortem debugging"! We're trying to find out what caused a fatality.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>If we can't determine the cause by a post-mortem, we'll re-run the process with various tracing options turned on. We can call that "interactive debugging."</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="log-interpretation">Log Interpretation</h2>
+<p>FME logs contain a record of all stages and processes within a translation. The contents are vital for debugging purposes.</p>
+<p><strong>Log Message Types</strong></p>
+<p>Different message types appear in the log window, including:</p>
+<ul>
+<li><strong>Error</strong>
+<ul>
+<li>An error, denoted in the log by red text and the term ERROR, indicates that a problem has caused FME to cease processing. For example, FME cannot write the output dataset because of incorrect user permissions.</li>
+</ul>
+</li>
+<li><strong>Warning</strong>
+<ul>
+<li>A warning, denoted by blue text and the term WARN, indicates a processing problem. The problem is sufficiently minor to allow FME to complete the translation, but you may want to check if the output was adversely affected. For example, FME cannot write features because its geometry is incompatible with the writer format. FME Workbench will drop the features from the translation and issue a warning in the log.</li>
+</ul>
+</li>
+<li><strong>Information</strong>
+<ul>
+<li>Information messages, denoted by the term INFORM, indicate information that may help users determine whether their translation functioned correctly. For example, FME sometimes logs confirmation of a particular dataset parameter, such as the coordinate system.</li>
+</ul>
+</li>
+<li><strong>Statistics</strong>
+<ul>
+<li>Statistics messages, denoted by the term STATS, provide information on various numbers relating to the translation, such as the number of features FME read from a source dataset and the time it took.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Log window is displayed as a table. The Transformer column shows you which transformer an error/information message is coming from. Click the hyperlinked transformer name to navigate to the canvas element producing the message. Using this link to identify where errors are occurring will make your debugging more efficient.</span></p>
+</blockquote>
+<h2 id="spatial-log-file">Spatial Log File</h2>
+<p>Besides writing the log to a text file (&lt;workspace name&gt;.log), FME also writes a spatial log:</p>
+<p><img class="image image-block image-center" src="images/1701285750330.png" alt="Spatial log file" width="828" height="145" /></p>
+<p>The spatial log is a dataset of features (in FME Feature Store format) that the log mentions. FME generates a spatial log from &lt;Rejected&gt; Features when Navigator &gt; Workspace Parameters &gt; Reader/Writer Redirect is enabled or when a Logger has Feature Logging set to "Log and Record. You can open the FFS dataset within FME Data Inspector or the Visual Preview window in FME Workbench to inspect the features and identify any problems that caused FME to reject them.</p>
+<h2 id="interpreting-the-log-window">Interpreting the Log Window</h2>
+<p>The Translation Log window should be the first place you check when a translation finishes. It will tell you if there are any concerning errors or warnings.</p>
+<p><strong>Errors</strong></p>
+<p>If an ERROR occurs, FME will likely stop the translation. There will be red text in the log and some statements such as:</p>
+<div>
+<pre><code>Program Terminating
+Translation FAILED.</code><br /><br /></pre>
+</div>
+<p>There may be several ERROR messages, so scroll back up the log window and identify the first of these, which is the likely cause of the problem. For example, this message:</p>
+<div>
+<pre><code>ERROR |Error connecting to PostgreSQL database(host='postgis.train.safe.com', port='5432', dbname='fmedata', user='fmedata', password='*'): 'FATAL: password authentication failed for user "fmedata" FATAL: password authentication failed for user "fmedata"<br /><br /></code></pre>
+</div>
+<p>...is an obvious problem authenticating a database connection.</p>
+<p><strong>Warnings</strong></p>
+<p>Even when a translation succeeds, it's essential to check the log for the following comment:</p>
+<div>
+<pre><code>Translation was SUCCESSFUL with X warning(s)</code><br /><br /></pre>
+</div>
+<p>If there are any warnings (for example, if X &gt; 0), use the search option to look for the word WARN. Any warning messages might significantly affect the quality of the output data.</p>
+<p><strong>Finding the Error's Source</strong></p>
+<p>Click the log hyperlink to look at the object on the canvas that produced the error.</p>
+<p><img class="image image-block" src="images/1717090530397.gif" alt="Transformer link in log" width="860" height="850" /></p>

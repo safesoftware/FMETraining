@@ -1,0 +1,73 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Set the Attribute References parameter to control how a custom transformer handles attribute inputs.</li>
+<li>Explain how the "Handle With Published Parameters" setting affects custom transformer parameters.</li>
+<li>Control which attributes are exposed to and output by a custom transformer.</li>
+</ul>
+<h2 id="custom-transformers-and-parameter-input">Custom Transformers and Parameter Input</h2>
+<p>FME transformers have parameters whose value can be supplied by attributes or<em> </em>user input. The same is still true of transformers inside a custom transformer definition. However, these inputs must be flexible because a custom transformer can be reused in multiple places.</p>
+<h2 id="parameter-input-by-attributes">Parameter Input by Attributes</h2>
+<p>Many transformer parameters can be set up to accept values from attributes.</p>
+<p>Take this custom transformer that creates custom map labels:</p>
+<p><img class="image image-block image-center" src="images/1724705647729.png" alt="Example custom transformer" width="428" height="133" /></p>
+<p>Inside that custom transformer is a LabelPointReplacer transformer. It uses&nbsp;<code>AddressID</code>&nbsp;as the value for the label:</p>
+<p><img class="image image-block image-center" src="images/1724705654923.png" alt="AddressID attribute used for the Label parameter" width="606" height="243" /></p>
+<p>As created, the custom transformer works fine. However, consider if that transformer is used in a context where <code>AddressID</code>&nbsp;does not exist:</p>
+<p><img class="image image-block image-center" src="images/1724705670367.png" alt="Using the same custom transformer with different data" width="471" height="221" /></p>
+<p>This transformer is flagged as "incomplete". It is used in a scenario where&nbsp;<code>AddressID</code>&nbsp;is not available.</p>
+<h2 id="parameter-input-by-user-parameters">Parameter Input by User Parameters</h2>
+<p>Besides attributes, most FME parameters can be set up to accept values from User Parameters.</p>
+<p>In a similar setup to above, here a custom transformer contains a LabelPointReplacer transformer whose label value is selected by user input:</p>
+<p><img class="image image-block image-center" src="images/1724705677269.png" alt="Using a user parameter for the Label parameter" width="606" height="243" /></p>
+<p>Here, the issue is not <em>where</em> the custom transformer is used; it's duplication. If each instance of the custom transformer uses the same user parameter, they will all get the same input.</p>
+<p>We need a mechanism for the user to enter different values per transformer instance.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">As an analogy, consider a mobile device such as a cell phone. On my phone, I can change the default language from English to (for example) Swedish. The manufacturer implemented this because they cannot tell where the phone might be used, by whom, or what language might be used for input.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">In much the same way, an FME custom transformer could be used outside of its expected area. The author must, therefore, implement the transformer to be adaptable to different inputs. This can be done either automatically or manually...</span></p>
+</blockquote>
+<h2 id="automatic-parameter-handling">Automatic Parameter Handling</h2>
+<p>Let's look at how we can handle the complications that might arise if a custom transformer is reused.</p>
+<h2 id="automatic-handling-of-user-parameters">Automatic Handling of User Parameters</h2>
+<p>To take the handling of user parameters first, when a transformer with a published parameter is incorporated into a custom transformer, the published parameter is automatically moved from the Navigator window of the main canvas to the Navigator window of the custom transformer:</p>
+<p><img class="image image-block image-center" src="images/1724705688633.png" alt="Example of user parameters in a custom transformer" width="431" height="388" /></p>
+<p>This means the user is no longer prompted for these when running the workspace! But... those parameters instead become available on the Custom Transformer itself:</p>
+<p><img class="image image-block image-center" src="images/1724705701685.png" alt="Custom transformer user attributes become parameters in the main workspace" width="347" height="215" /></p>
+<p>That way, the parameters can be set differently for each instance of the custom transformer. If user input is required at run-time, then these new parameters can be published and shared if you want them all to have the same value.</p>
+<h2 id="automatic-handling-of-user-attributes">Automatic Handling of User Attributes</h2>
+<p>Now, let's look at how attributes are handled. When a custom transformer is created, one of the parameters in the Create Custom Transformer dialog is labeled Attribute References:</p>
+<p><img class="image image-block image-center" src="images/1724705711888.png" alt="Setting the Attribute References parameter" width="580" height="112" /></p>
+<p>"Handle with Published Parameters" is the automatic way of handling attribute references in the custom transformer. It ensures that every attribute referenced within the custom transformer is supported outside&nbsp;the transformer definition.</p>
+<p>It does that by creating a new user parameter for each attribute:</p>
+<p><img class="image image-block image-center" src="images/1724705721328.png" alt="Creating a user parameter for each attribute" width="425" height="212" /></p>
+<p>The transformer inside the custom transformer still references the attribute name, but FME maps the user parameter to that attribute.</p>
+<p>When the custom transformer is used in a place without the required attribute, it is still flagged as "incomplete." However, the user parameter allows the workspace author to select an available attribute:</p>
+<p><img class="image image-block image-center" src="images/1724705730944.png" alt="Changing the attribute supplying a value to AddressID" width="717" height="460" /></p>
+<p>So (in the above), <code>AddressID</code> is unavailable, but the author can select a different attribute instead.</p>
+<p>This illustrates how FME has automatically solved the attribute reference problem using user parameters. To make the custom transformer more generic, the workspace author can change the prompts on these parameters from "AddressID" to "Select an ID Attribute to Process."</p>
+<h2 id="post-creation-parameter-handling">Post-Creation Parameter Handling</h2>
+<p>As we know, custom transformers can be edited after creation.</p>
+<p>The "Handle with Published Parameters" setting handles attributes used in a custom transformer&nbsp;<em>only when it is created</em>. We also need to provide a mechanism for handling future edits to a custom transformer (or for creating a custom transformer from scratch).</p>
+<h2 id="handling-incoming-attributes">Handling Incoming Attributes</h2>
+<p>Attributes entering a custom transformer are handled using a setting inside the transformer definition.</p>
+<p>For example, an author puts a StringConcatenator inside a newly created custom transformer. The author wishes to concatenate <code>AddressID</code>&nbsp;and&nbsp;<code>PostalCode</code>.</p>
+<p><img class="image image-block image-center" src="images/1724705740397.png" alt="Attributes from outside the custom transformer are not present unless exposed" width="632" height="456" /></p>
+<p><code>AddressID</code> is available in the custom transformer because it was used when the custom transformer was created (and Handle With Published Parameters was set).</p>
+<p>However,&nbsp;<code>PostalCode</code>&nbsp;is not available. It was not being used when the custom transformer was created.</p>
+<p>Therefore, the author must expose that attribute. They do so by inspecting the parameters for the Input port, where they can specify other incoming attributes to expose:</p>
+<p><img class="image image-block image-center" src="images/1724705750278.png" alt="Exposing an input attribute in a custom transformer" width="688" height="275" /></p>
+<p>Now, PostalCode becomes available to the StringConcatenator and, additionally, is made into a user parameter so that back on the main canvas, the custom transformer can accept a different attribute selection should <code>PostalCode</code>&nbsp;not be available.</p>
+<h2 id="handling-outgoing-attributes">Handling Outgoing Attributes</h2>
+<p>In addition to incoming attributes, there is also the question of what attributes should emerge from the output of a custom transformer.</p>
+<p>Best practice suggests that we only output attributes that the user expects. We should hide or remove any attributes that are part of a calculation or otherwise generated inside the custom transformer but aren&rsquo;t necessary for the output.</p>
+<p>Here, a custom transformer calculates the average area of several polygon features. It has renamed ports and a specific output port to deal with bad features, but it is outputting more attributes than are helpful:</p>
+<p><img class="image image-block image-center" src="images/1724705759498.png" alt="Outputting excess attributes from a custom transformer" width="593" height="395" /></p>
+<p>The workspace author should clean up this output. They can do this by visiting the custom transformer definition, viewing the output port object, and they're choosing which attributes are to be output:</p>
+<p><img class="image image-block image-center" src="images/1724705766085.png" alt="Exposing an output attribute in a custom transformer" width="580" height="493" /></p>
+<p>The Attributes to Output setting gives the option of outputting all attributes or only those that have a checkmark next to them, as above.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>⭐<strong>New for FME 2023.0:</strong> we've added <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Controlling-Visibility-Published-Parameters.htm" target="_blank" rel="noopener">conditional visibility</a> to user parameters, allowing you to have parameters selectively appear to the end user based on how they have configured other parameters.</p>
+<p>Combine this feature with the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">Group Box option in the Parameter Manager</a>, and you can replicate many of the functions of native FME transformers.</p>
+</blockquote>

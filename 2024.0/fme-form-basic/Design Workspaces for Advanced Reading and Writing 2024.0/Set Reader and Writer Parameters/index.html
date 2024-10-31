@@ -1,0 +1,87 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:&nbsp;</p>
+<ul>
+<li>Set reader and writer parameters.</li>
+<li>Set reader and writer feature type parameters.</li>
+</ul>
+<h2 id="reader-parameters">Reader Parameters</h2>
+<p>As we know, a workspace contains a reader to read a dataset, and each feature type in that dataset is shown in the workspace canvas:</p>
+<p><img class="image image-block image-center" src="images/1715376159462.png" alt="Reader feature types" width="227" height="174" /></p>
+<p>To control how that reader operates requires the use of&nbsp;<strong>reader parameters</strong>.</p>
+<h2 id="finding-reader-parameters">Finding Reader Parameters</h2>
+<p>You can find reader parameters by clicking Parameters in the Generate Workspace or Add Reader dialogs:</p>
+<p><img class="image image-block image-center" src="images/1715376242762.png" alt="The reader Parameters button on the Generate Workspace dialog" width="463" height="182" /></p>
+<p>They can also be found in the Navigator window in Workbench:</p>
+<p><img class="image image-block image-center" src="images/1715376451159.png" alt="Reader parameters in the Navigator" width="518" height="262" /></p>
+<p>Because parameters refer to specific components and characteristics of the related format, readers of different formats have different control parameters.</p>
+<h2 id="setting-reader-parameters">Setting Reader Parameters</h2>
+<p>Double-click on any parameters to edit a parameter in the Navigator window. Doing so opens up a dialog where the parameter&rsquo;s value may be set:</p>
+<p><img class="image image-block image-center" src="images/1715376526883.png" alt="Esri file geodatabase reader parameters" width="536" height="394" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Reader parameters control all feature types in the dataset. Think of it like brewing a pot of coffee. The strength control on the coffee machine affects all the cups poured.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Because some reader parameters affect how feature types are generated (e.g., how do you want to slice a JSON or XML file?), they can only be set when you add the reader. If you set them incorrectly or want to change them, you have to delete the reader and add it again.</p>
+<p><span style="font-family: inherit; font-size: 1em;">This behavior does not exist in writer parameters.</span></p>
+</blockquote>
+<h2 id="writer-parameters">Writer Parameters</h2>
+<p>Like readers, we know a workspace contains a writer to write a dataset, and each feature type to be written is shown in the workspace canvas:</p>
+<p><img class="image image-block image-center" src="images/1715376579102.png" alt="Writer feature types" width="208" height="163" /></p>
+<p>To control how that writer operates requires the use of&nbsp;<strong>writer parameters</strong>.</p>
+<h2 id="finding-writer-parameters">Finding Writer Parameters</h2>
+<p>Writer parameters can be located - and set - by clicking Parameters when a new workspace is being generated:</p>
+<p><img class="image image-block image-center" src="images/1715376667848.png" alt="The writer Parameters button on the Generate Workspace dialog" width="483" height="219" /></p>
+<p>They can also be found in the Navigator window in Workbench:</p>
+<p><img class="image image-block image-center" src="images/1715376937340.png" alt="Writer parameters in the Navigator" width="605" height="571" /></p>
+<p>Finally, there is a button that appears when you select feature types that can take you directly to the reader/writer parameters:</p>
+<p><img src="images/1715379126529.png" alt="Edit reader/writer parameters button on feature types" /></p>
+<p>Because parameters refer to specific components and characteristics of the related format, writers of different formats have different control parameters.</p>
+<h2 id="setting-writer-parameters">Setting Writer Parameters</h2>
+<p>Double-click on any parameters to edit a parameter in the Navigator window. Doing so opens up a dialog where the parameter&rsquo;s value may be set:</p>
+<p><img class="image image-block image-center" src="images/1715376976236.png" alt="Setting GML writer parameters" width="660" height="293" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>Like readers, writer parameters control all feature types in the dataset. In the above screenshot, all feature types are version 3.1.1.</p>
+<p>However, each reader and writer feature type has settings, just as each cup of coffee can be adjusted with cream and sugar. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FeatureTypeProperties/feat_type_props_editing_reader.htm" target="_blank" rel="noopener">You can learn more in the documentation</a>.</p>
+</blockquote>
+<h2>Setting Reader and Writer Feature Type Parameters</h2>
+<p>Feature types also have parameters controlling how FME reads or writes a table, layer, or other data group.</p>
+<p>You can view and edit these parameters by double-clicking a feature type to open the Feature Type dialog:</p>
+<p><img src="images/1715377883339.png" alt="Opening the feature type dialog" /></p>
+<p>You can also find them in the Navigator under the reader or writer &gt; Feature Types &gt; feature type name &gt; Parameters:</p>
+<p><img src="images/1715377965460.png" alt="Feature type parameters in the Navigator" width="605" height="320" /></p>
+<p>Like reader and writer parameters, the options available here vary by format.</p>
+<p>For example, with the Esri File Geodatabase Open API reader, reader feature types have a single parameter: a WHERE Clause that can be used to restrict data on reading:</p>
+<p><img src="images/1715378917808.png" alt="An example reader feature type parameter" /></p>
+<p>Some formats do not have any parameters, such as GML writer feature types:</p>
+<p><img src="images/1715378981634.png" alt="Writer feature type without parameters" /></p>
+<p>It's worth exploring the options available to you based on format. There are some very powerful feature type parameters. For example:</p>
+<ul>
+<li>The reader feature type WHERE Clause parameter (available for select formats) can restrict how much data FME reads, improving the performance of your workspace</li>
+<li>Most database format writer feature types have several parameters you can use to control database writing, including Feature Operation and Table Handling.
+<ul>
+<li>You can use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/DatabaseWriterMode/feature_operations.htm" target="_blank" rel="noopener">fme_db_operation</a> to control Feature Operation, allowing you to Insert/Update/Upsert/Delete/etc. with a single writer feature type.</li>
+</ul>
+</li>
+</ul>
+<h2 id="cross-operating-system-compatibility">Cross-Operating System Compatibility</h2>
+<p>One important consideration in overall workspace design is cross-OS compatibility. Generally, FME is designed so your workspaces will run on any of our supported operating systems. However, there are a few best practices to keep in mind that could save you from problems in the future. These include:</p>
+<ul>
+<li>File paths
+<ul>
+<li>Because operating systems use different rules for file path construction, we recommend using the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/path/PATH_reader.htm" target="_blank" rel="noopener">Directory and File Pathnames reader</a>&nbsp;and FME&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">user parameters</a>&nbsp;to handle file paths wherever possible. Hardcoding paths is a sure-fire way to cause cross-OS compatibility issues</li>
+</ul>
+</li>
+<li>Special characters
+<ul>
+<li>It's best practice to, at a minimum, avoid using non-printable characters (including&nbsp;<a href="https://en.wikipedia.org/wiki/Control_character" target="_blank" rel="noreferrer noopener">ASCII control characters</a>) and&nbsp;<code>\/:*?"&lt;&gt;|</code>, null, and&nbsp;<code>/</code>&nbsp;in your file and folder names. For more advice, see this&nbsp;<a href="https://superuser.com/questions/358855/what-characters-are-safe-in-cross-platform-file-names-for-linux-windows-and-os" target="_blank" rel="noreferrer noopener">thread</a>.</li>
+</ul>
+</li>
+<li>Case insensitivity
+<ul>
+<li>Databases might have different case expectations. For example, some databases allow <code>myObject</code>&nbsp;and&nbsp;<code>myobject</code>, while others reject these fields as duplicate violations. Assuming case insensitivity is the safest method.</li>
+</ul>
+</li>
+</ul>

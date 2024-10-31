@@ -1,0 +1,148 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Configure a workspace to run under the Data Download and Data Streaming Services.</li>
+<li>Enable file upload options for a workspace on FME Server.</li>
+</ul>
+<h2 id="implementing-self-serve">Implementing Self Serve</h2>
+<p>Implementing a self-serve system makes use of the appropriate services available on FME Server: data download or data upload.</p>
+<h2 id="data-download-service">Data Download Service</h2>
+<p>Creating and using a data download service is very easy. A workspace becomes available for data download use when the author registers it against the Data Download service when publishing it to FME Server:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.006.RegisterDataDownload.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.006.RegisterDataDownload.png" alt="Selecting the Data Download service" /></a></p>
+<p>Once registered this way, Data Download becomes an acceptable way to run this workspace. This might be run in a number of ways, one of which is selecting Data Download as the service in the FME Server Web interface:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-self-serve-workflows/configure-workflows-for-the-web/images/42-e-71-e-5-e-5-dc-3-4-cab-abbf-7-b-8681306269.PNG" alt="Selecting a service" width="539" height="232" /></p>
+<p>The results of the workspace are not written to a specific output location; instead, they are delivered to the user in the form of a hyperlink to a zipped dataset:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-self-serve-workflows/configure-workflows-for-the-web/images/1654624392934.png" alt="Completed workspace page with zipped download of the output" /></p>
+<p>The ZIP file will contain any data written to a file- or format-based format writer (i.e. not to a database or web URL). It can include the output from one or more writers and can contain one or more output files.</p>
+<p>To control the folder structure of the ZIP file, from the Register Services page, click Edit beside the Data Download service. Next, then click the '...' button beside Include Writers in Download, then click on 'More...'. This will open a dialog that will let you set up the paths for each of the files within the zip file.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-basic-self-serve-workflows/configure-workflows-for-the-web/images/1625863105827.png" alt="Editing path within ZIP file for Data Download service" /></p>
+<h2 id="data-upload-service">Data Upload Service</h2>
+<p>The Data Upload service is different in that a workspace is not registered specifically to this utility service. Instead, publishing source dataset parameters in the workspace allows data upload to take place.</p>
+<p>On FME Server there are two ways to upload data, depending on the requirements for the data. There is a specific Data Upload Service and there is also the Resources file system.</p>
+<p>The Data Upload Service uploads data to a particular workspace in a particular repository. The data is held temporarily for the workspace to be run.</p>
+<p>The Resources file system allows data to be uploaded to a folder for use by any workspace in any repository. This upload is persistent and the data is held there for as long as required.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>You will have already met the Data Upload service: It's what is used when data is published to a repository alongside a workspace in the Workbench FME Server Publishing Wizard.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>When creating a customized solution that involves data upload, the author can choose whether to use the Data Upload service or the Resources file system instead. The main difference is whether the data needs to reside on the Server permanently (Resources) or just temporarily (Data Upload).</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Learn more about user parameters in the&nbsp;<a href="https://safe.my.trailhead.com/en/content/safe/modules/build-versatile-self-serve-workflows" target="_blank" rel="noreferrer noopener">Build Versatile Self-Serve Workflows</a>&nbsp;course.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="other-self-serve-services">Other Self-Serve Services</h2>
+<p>Although most people look at self-serve mostly in the context of Data Download, that is not the only self-serve service available.</p>
+<h2 id="data-streaming-service">Data Streaming Service</h2>
+<p>Data Streaming is another service that a workspace can be registered against:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.009.DataStreamingRegistration.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.009.DataStreamingRegistration.png" alt="Selecting the Data Streaming service" /></a></p>
+<p>Whereas the Job Submitter service writes data, and the Data Download service returns a link to the data, a Data Streaming service returns a file or the data itself, streamed back to the client.</p>
+<p>For example, if the Data Streaming URL for a workspace is posted into a web browser, the data will be automatically downloaded and opened in whatever application the browser associates with that file type (some data might open directly in the web browser itself).</p>
+<p>Alternatively, the URL can be used directly as the source for a client application, like a GIS tool. When the client actively downloads the contents on a regular basis &ndash; as a GeoRSS reader would &ndash; then you have a feed, which is significantly different from a regular data download service.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/georss/georss.htm" target="_blank" rel="noreferrer noopener">GeoRSS</a>&nbsp;is a format extended from RSS (in turn extended from XML) that encodes spatial data as part of a web feed.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Data Streaming is a slight misnomer in that a data streaming service does not supply a continuous stream of data; it merely provides a snapshot of the data at a particular point in time. If you are looking to use real-time data with FME Server, check out&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Streams.htm" target="_blank" rel="noreferrer noopener">Streams</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>What Formats Can Be Streamed?</strong></p>
+<p>You can use any workspace with the data streaming service, provided it writes data in a format that is file-based or folder-based (similar to the Data Download service).</p>
+<p>If an output dataset is comprised of more than one file, the data streaming service automatically creates a compressed (zip) folder out of the data. For example, AutoCAD DWG format could be streamed, whereas Esri Shape would be returned in a zipped file.</p>
+<p>The most popular formats to stream are those that have a suitable client to read the feed. Some of the main formats that are output using the data streaming services include:</p>
+<ul>
+<li>RSS</li>
+<li>GeoRSS</li>
+<li>GeoJSON</li>
+<li>KML</li>
+<li>HTML</li>
+<li>JSON</li>
+<li>XML</li>
+<li>PDF</li>
+<li>PNG</li>
+<li>JPEG</li>
+</ul>
+<p><strong>MIME Types in Workspaces</strong></p>
+<p>A MIME header is a component of a file or e-mail message that is capable of indicating the content type of the file; for example,&nbsp;<strong><em>Content-Type: text/plain</em></strong>&nbsp;indicates a simple text file.</p>
+<p>The application chosen to open a streamed file will depend on the MIME type and file association on the client&rsquo;s system.</p>
+<p>Setting MIME type is most important for FME writers where the content is not specifically defined by the writer. For example, the HTML writer has no MIME type setting because it is obviously providing text/HTML. The TextFile writer has a MIME type setting because the nature of its contents is ambiguous; it might be writing plain text (text/plain) or XML (text/XML) or it might even write the contents of a blob attribute containing a raster png image (image/png):</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.010.TextFileMimeType.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.010.TextFileMimeType.png" alt="Selecting the MIME Type" /></a></p>
+<p>Here the author is saying that the content of the text file is valid PNG and should be opened in the default PNG application (possibly a web browser or graphic editor).</p>
+<h2 id="job-submitter-service">Job Submitter Service</h2>
+<p>The Job Submitter service simply accepts and runs workspace job requests. The Job Submitter service works with any workspace. The data is read and written as specified in the workspace, but not directly provided to the user running the workspace.</p>
+<h2 id="kml-network-link-service">KML Network Link Service</h2>
+<p>Google&nbsp;<a href="https://developers.google.com/kml/documentation/kml_tut#network-links" target="_blank" rel="noreferrer noopener">describes a KML Network Link</a>&nbsp;as a type of&nbsp;<em>bookmark</em>; a link from Google Earth (or any other KML-reading application) to the true set of data.</p>
+<p>In FME you can register any workspace that writes KML as a KML Network Link service:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.011.KMLLinkRegistration.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.011.KMLLinkRegistration.png" alt="Selecting the KML Network Link service" /></a></p>
+<p>Running the workspace using this service merely returns a small KMZ (compressed KML) file that contains this "bookmark". The bookmark is a link back to the workspace using a URL that points to the Data Streaming service.</p>
+<p>When Google Earth opens a KML Network Link service from FME Server, it receives the link to the workspace:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.012.KMLLinkInGE.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img3.012.KMLLinkInGE.png" alt="Viewing the KML Network Link in Google Earth" /></a></p>
+<p>When the link is followed, it triggers FME Server into running the workspace and returning the results as a stream of KML data.</p>
+<p>Because Google Earth permits a refresh rate for network links, the translation can be re-run at a user-defined interval. This way the results are always as up-to-date as the chosen interval.</p>
+<p>Of course, in this scenario the output is never written to a permanent dataset; the resulting data is simply streamed to Google Earth, which writes it to a cache.</p>
+<h2 id="notification-service">Notification Service</h2>
+<p>The FME Server Notification Service pushes data to and from FME Server in the form of messages when an event occurs. It uses a system of publications and subscriptions. This system has largely been replaced by&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Automations.htm" target="_blank" rel="noreferrer noopener">Automations</a>. In most cases, it is easier to use an&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/automations/automations.htm" target="_blank" rel="noreferrer noopener">Automation writer</a>&nbsp;in your workspace rather than publishing to the Notification Service.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Learn more about Automations in the&nbsp;<a href="https://safe.my.trailhead.com/en/content/safe/modules/automate-workflows" target="_blank" rel="noreferrer noopener">Automate Workflows</a>learning path.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

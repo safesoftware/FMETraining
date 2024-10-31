@@ -1,0 +1,96 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand how filtering lets you create multiple data streams in your workspaces.</li>
+<li>Filter your data using a Tester transformer.</li>
+<li>Choose an output port feature cache to inspect.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="creating-multiple-streams-of-data">Creating Multiple Streams of Data</h2>
+<p>FME workspaces send data from left to right across the canvas from reader feature types to writer feature types. The simplest workspace only has one &ldquo;stream&rdquo; of data: features are read in, all processed in the same way, and then written out. However, workspaces can have multiple data streams, splitting and merging features as required.&nbsp;</p>
+<p>Did you find the right trasnformer in the last exercise?</p>
+<p>&nbsp;It was the <strong>DatabaseJoiner</strong>, which created multiple streams in Jennifer's workspace when it split the features into <strong>Joined </strong>and <strong>Unjoined </strong>streams:</p>
+<p><img src="images/1713292839987.png" alt="DatabaseJoiner" /></p>
+<p>Jennifer connected the <strong>Unjoined</strong> port to the writer feature type, since in this case she wanted to retain features without a revoked business license.</p>
+<p>Now, Jennifer wants to add another filter to her data before FME writes it out. She needs to remove the business license for Arcu Ltd. She can use a <strong>Tester </strong>transformer to do that.</p>
+<h2 id="filter-your-data-using-a-tester">Filter Your Data Using a Tester</h2>
+<p>Jennifer adds a&nbsp;<strong>Tester&nbsp;</strong>connected to the <strong>DatabaseJoiner's Unjoined </strong>port<strong> </strong>and the <strong>BusinessOwners </strong>writer feature type using<strong> Quick Add:</strong></p>
+<p><img src="images/1713293001000.png" alt="Adding a Tester transformer" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">We are filtering our features into two streams with the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Tester</strong><span style="font-family: inherit; font-size: 1em;">. Other transformers with &ldquo;Filter&rdquo; in their name, such as the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/testfilter.htm" target="_blank" rel="noopener">TestFilter</a>, can route features into multiple streams based on various operations</span><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>Before opening the&nbsp;<strong>Tester&nbsp;</strong>to configure it, Jennifer knows a trick to save time.</p>
+<p>She clicks the&nbsp;<strong>Run&nbsp;</strong>button.</p>
+<p>FME issues a warning dialog: <strong>Incomplete Transformers</strong>. This dialog appears because the Tester has been added to the Canvas, but it is not configured yet. However, we have a good reason to run, as you will see in a moment. She clicks <strong>OK</strong>.</p>
+<p>After the workspace runs and FME creates feature caches, she double-clicks the <strong>Tester&nbsp;</strong>to open its&nbsp;<strong>Parameters&nbsp;</strong>dialog. The table here allows her to enter a logical test or series of tests against incoming features. It works a bit like&nbsp;<a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)%23If%25E2%2580%2593then(%25E2%2580%2593else)" target="_blank" rel="noreferrer noopener">an &ldquo;if-then-else&rdquo; statement in programming languages</a>. If the feature meets the test(s) criteria, it comes out of the <strong>Passed&nbsp;</strong>port. If it does not, it comes out of the&nbsp;<strong>Failed</strong>&nbsp;port. The&nbsp;<strong>Tester</strong> filters data and allows for simple branching of your data integration workflow.</p>
+<p>Jennifer sets up her&nbsp;<strong>Tester&nbsp;</strong>as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td colspan="1" rowspan="1"><strong>Logic</strong></td>
+<td colspan="1" rowspan="1"><strong>Left Value</strong></td>
+<td colspan="1" rowspan="1"><strong>Operator</strong></td>
+<td colspan="1" rowspan="1"><strong>Right Value<br /></strong></td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">NOT</td>
+<td colspan="1" rowspan="1">company</td>
+<td colspan="1" rowspan="1">=</td>
+<td colspan="1" rowspan="1">Arcu Ltd</td>
+</tr>
+</tbody>
+</table>
+<p>The reason she ran her workspace before configuring the <strong>Tester</strong> becomes apparent when she enters the value for&nbsp;<strong>Right Value</strong>. If the <strong>Tester </strong>has a feature cache available for the features entering the transformer, she can search the Cached Values to help her choose the right one. As she types "arc" into the field, a list of values to choose from shows up:</p>
+<p><img src="images/1713293574092.png" alt="Selecting from cached values" /></p>
+<p>She can click Arc Ltd to enter it or use the arrow keys and Enter.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You can browse a full list of values by clicking the downward pointing arrow and choosing <strong>Cached Values</strong>.</p>
+<p><img src="images/1713293783258.png" alt="Cached Values" /></p>
+<p>This feature is available in many transformers where you set values or construct tests, e.g., the AttributeManager, AttributeCreator, and TestFilter.</p>
+</blockquote>
+<p>These settings do the following: &ldquo;For each feature being read by the&nbsp;<strong>Tester</strong>, if it does NOT have the value Arcu Ltd for the attribute 'company', it passes. Otherwise, it fails.&rdquo; This test accomplishes our goal of sending that specific license to the <strong>Failed</strong> port.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>We used the NOT Logic operator in this example. You can combine different Logic operators like OR or AND for more complex tests.&nbsp;</p>
+<p><span style="font-family: inherit; font-size: 1em;">See the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/tester.htm" target="_blank" rel="noreferrer noopener">Tester documentation</a> for more information.</span></p>
+</blockquote>
+<p>Jennifer uses&nbsp;<strong>Run to This&nbsp;</strong>on the&nbsp;<strong>Tester&nbsp;</strong>and sees 95 results exit the <strong>Passed </strong>port and one exit the <strong>Failed&nbsp;</strong>port.</p>
+<h2 id="inspect-your-filtered-data">Inspect Your Filtered Data</h2>
+<p>Jennifer wants to inspect the <strong>Tester </strong>to ensure the correct features are filtered out.</p>
+<p>She notices an FME behavior that is worth noting. When she clicks the <strong>Tester</strong> to select it, the <strong>Tester's Passed</strong> port feature cache appears in <strong>Visual Preview</strong>. This is because she has <strong>Toggle Automatic Inspect on Selection</strong> enabled (button in the top left corner of<strong> Visual Preview</strong>). She notes that <strong>Visual Preview</strong> always shows the top port with a cache when inspecting data this way.</p>
+<p>In order to see the data she filtered out instead, she clicks the<strong> Tester's Failed</strong> feature cache. She sees&nbsp;<strong>Visual Preview&rsquo;s Table View</strong> reporting in the bottom-right corner that one row is displayed. She verifies the company name is Arcu Ltd:</p>
+<p><img src="images/1713297245168.png" alt="Filtered data" /></p>
+<h2 id="inspect-final-results">Inspect Final Results</h2>
+<p>Now that her workspace is complete, Jennifer turns off feature caching from the toolbar (<strong>Run</strong>&nbsp;&gt; uncheck&nbsp;<strong>Enable Feature Caching</strong>) and then clicks&nbsp;<strong>Run</strong>. Her entire workspace runs&nbsp;successfully.</p>
+<p>Then she clicks the&nbsp;<strong>BusinessOwners&nbsp;</strong>writer feature type to select it and clicks&nbsp;<strong>View Written Data</strong>.&nbsp;</p>
+<p><img src="images/1713297294216.png" alt="View Written Data button" /></p>
+<p>This shows the 95 valid records that were written to this feature class. FME automatically added the required <strong>OBJECTID&nbsp;</strong>column to the data as required by the geodatabase format.</p>
+<p><img class="image image-block image-center" src="images/1713297218047.png" alt="Viewing the new OBJECTID column in Table View" /></p>
+<p>Jennifer clicks one of the writer feature types and then&nbsp;<strong>Open Containing Folder</strong>, viewing the geodatabase in her file browser. She can open the geodatabase in ArcGIS Pro from there.</p>
+<h2 id="exercise">Exercise</h2>
+<p>Jennifer notices a problem. There is now a <strong>_matched_records</strong> attribute on her features. She doesn't want this to be written to the final data.</p>
+<p>Follow along with Jennifer&rsquo;s steps above, and then use one of the techniques covered earlier in the course to ensure that _<strong>matched_records</strong> is not written. You have a few options:</p>
+<ul>
+<li>Use the <strong>AttributeManager </strong>after the <strong>DatabaseJoiner </strong>and remove &nbsp;<strong>_matched_records&nbsp;</strong>
+<ul>
+<li>You'll also have to update the <strong>DatabaseJoiner </strong>because the attribute names it uses will have changed</li>
+</ul>
+</li>
+<li>Switch the <strong>BusinessOwners </strong>writer feature type <strong>Attribute Definition</strong> mode back to <strong>Manual</strong>, and then remove <strong>_matched_records</strong></li>
+<li>Use an <strong>AttributeRemover </strong>transformer before writing to remove <strong>_matched_records</strong></li>
+</ul>
+<p>For an optional extra challenge, find an add a transformer to order features alphabetically by the value of <strong>last_name</strong>.</p>

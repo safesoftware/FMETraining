@@ -1,0 +1,93 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Inspect features at any point in your workflow with&nbsp;feature caching.</li>
+<li>Speed up workspace authoring with partial runs.</li>
+<li>Quickly author and debug your workspaces.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="http://ior.ad/6V5B" target="_blank" rel="noreferrer noopener">Interactive tutorial to help you follow along</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/author-and-debug-workspaces-efficiently.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/author-and-debug-workspaces-efficiently-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a></li>
+</ul>
+<h2 id="video">Video</h2>
+<p><iframe class="image-center" title="Video Content" src="https://play.vidyard.com/q5g6dwWYZMdMu6JRx4FBL6?" width="640" height="360" allowfullscreen=""></iframe></p>
+<h2 id="view-your-data-at-any-point-in-the-workspace">View Your Data at Any Point in the Workspace</h2>
+<p>Jennifer has edited her data&rsquo;s schema using an&nbsp;<strong>AttributeManager</strong>. She knows that the data changed because she can see the colored attribute ports, which show successful schema mapping. However, Jennifer wants to see the changes to her data in&nbsp;<strong>Visual Preview</strong>.</p>
+<p>Jennifer can do this using feature caching. Feature caching is an authoring mode set on the&nbsp;<strong>Run&nbsp;</strong>menu and&nbsp;enabled by default. When enabled, a local cache of data is stored at every output port in the workspace. These caches let you view and compare data at any point in your workspace.</p>
+<p>Jennifer continues to work in FME Workbench (2022.0 or later). Now that she has set up her&nbsp;<strong>AttributeManager&nbsp;</strong>and run the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/author-and-debug.fmw" target="_blank" rel="noreferrer noopener">workspace</a>, Jennifer sees a cache on the transformer. Caches are indicated by a green magnifying glass icon. She clicks it to open that cache in&nbsp;<strong>Visual Preview</strong>.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/author-and-debug-workspaces-efficiently/images/f-883-d-7-ea-817-c-446-e-b-52-d-90469058-e-935.png" alt="Clicking feature cache to inspect it" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+</blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>As covered in a&nbsp;<a href="https://safe.my.trailhead.com/content/safe/modules/connect-to-data" target="_blank" rel="noreferrer noopener">previous course</a>, you can also inspect caches by clicking any object with a cache (feature type or transformer) as long as&nbsp;<strong>Automatic Inspect on Selection&nbsp;</strong>is enabled. Note, however, that this inspects&nbsp;all&nbsp;the caches on that object at once. You&rsquo;ll have to use the<strong>&nbsp;Display Control</strong>&nbsp;window and the drop-down menu in&nbsp;<strong>Table View&nbsp;</strong>to control which cache you are inspecting.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Feature caching is great when you are authoring a workspace. It lets you use&nbsp;<a href="https://en.wikipedia.org/wiki/Iterative_and_incremental_development" target="_blank" rel="noreferrer noopener">iterative and incremental development</a>&nbsp;to add one transformer or feature type at a time, create a cache, and inspect it to confirm the data looks as you expect. It is particularly useful when working with web, database, or compressed data, allowing you to download, query, or extract the data once and work with a cache, saving time and effort when reading large datasets or making API calls. However, creating these caches takes time, so it&rsquo;s wise to disable this mode when you want FME to run at peak efficiency.</p>
+<p>Feature caching can be disabled by clicking the drop-down triangle next to&nbsp;<strong>Run&nbsp;</strong>to access the&nbsp;<strong>Run&nbsp;</strong>menu, then deselecting&nbsp;<strong>Enable Feature Caching</strong>.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/author-and-debug-workspaces-efficiently/images/dbfc-9-a-01-0-ed-0-4871-98-a-1-9-ef-4192-d-445-c.png" alt="Enable Feature Caching" /></p>
+<h2 id="debug-your-workspace-with-partial-runs">Debug Your Workspace with Partial Runs</h2>
+<p>Jennifer will use another feature, partial runs, to speed her authoring of workspaces and debug them as she works.</p>
+<p>Partial runs allow you to run specified sections of your workspace instead of the entire thing. This feature works in tandem with feature caches to enable incremental development. When you add a new transformer or feature type, you can run that new object independently and inspect its cache for any problems. Authoring workspaces this way saves time by allowing you to detect and fix problems early.</p>
+<p>Jennifer wants to run her workspace to ensure the&nbsp;<strong>AttributeManager&nbsp;</strong>worked properly. She could just click&nbsp;<strong>Run</strong>&nbsp;&gt;&nbsp;<strong>Rerun Entire Workspace</strong>. However, as workspaces grow in size, it&rsquo;s better to just run the section that changed. She does this by clicking the&nbsp;<strong>AttributeManager&nbsp;</strong>to select it, then clicking&nbsp;<strong>Run To This</strong>&nbsp;above the transformer. She can see what part of the workspace will run because it is highlighted in green.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/author-and-debug-workspaces-efficiently/images/1652134153377.png" alt="Run to here" /></p>
+<p>The relevant section of the workspace runs. When it&rsquo;s finished,&nbsp;<strong>Visual Preview</strong>&nbsp;will show the features coming out of the&nbsp;<strong>AttributeManager&nbsp;</strong>output port. Jennifer looks at&nbsp;<strong>Table View</strong>&nbsp;to ensure that the schema appears as she intended. It does.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/author-and-debug-workspaces-efficiently/images/7-b-5-edefc-1310-44-f-3-a-4-cd-c-126-ad-27-c-90-c.png" alt="Table View" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Partial runs will utilize any connected caches that exist &ldquo;upstream&rdquo; (i.e. earlier in the flow of data). As few transformers or feature types will run as are required to carry out the partial run, saving Jennifer time. For example, if Jennifer had already run the&nbsp;<strong>AttributeManager</strong>, using&nbsp;<strong>Run To This</strong>&nbsp;on the&nbsp;<strong>GeometryFilter&nbsp;</strong>would use the cache from the&nbsp;<strong>AttributeManager</strong>.</p>
+</blockquote>
+<p>If any changes have been made to the workspace, any &ldquo;downstream&rdquo; (i.e. later in the flow of data) caches turn yellow, indicating they are invalid. These are known as invalid caches and can be rerun to make them valid again. For example, if a change was made to the&nbsp;<strong>AttributeManager</strong>, its cache and that of the&nbsp;<strong>GeometryFilter&nbsp;</strong>would become invalid, but the upstream reader feature type cache would remain valid.</p>
+<p>Other options for partial runs exist depending on the object&rsquo;s location on the canvas:</p>
+<ul>
+<li><strong>Run From This</strong>&nbsp;(or&nbsp;<strong>Selected</strong>&nbsp;if multiple objects are selected): all parts of the workspace downstream of a selected object (or objects) run.</li>
+<li><strong>Run Just This</strong>&nbsp;(or&nbsp;<strong>Selected</strong>): only a selected object (or objects) runs.</li>
+<li><strong>Run To This</strong>&nbsp;(or&nbsp;<strong>Selected</strong>): all parts of the workspace that are upstream of a selected object (or objects) run.</li>
+<li><strong>Run Between Selected</strong>: all parts of the workspace between selected objects run.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Now that she&rsquo;s confirmed the schema is correct, Jennifer wants to write the data, so she hovers over the&nbsp;<strong>Run&nbsp;</strong>button. Notice how the reader feature type is not highlighted in green. FME will use its cache instead of reading the data again. &nbsp;When she clicks&nbsp;<strong>Run</strong>, the rest of the workspace runs, and FME writes her data.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/author-and-debug-workspaces-efficiently/images/1652134372735.png" alt="Run from this" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>If Jennifer made changes to her workspace and wanted to update all the caches, she could choose<strong>&nbsp;Rerun Entire Workspace</strong>&nbsp;from the&nbsp;<strong>Run&nbsp;</strong>menu.</p>
+</blockquote>
+<p>If the source database changed and she wanted to update the data, she could find the<strong>&nbsp;FME Training PostGIS Database [POSTGIS] Reader</strong>&nbsp;in the&nbsp;<strong>Navigator</strong>, right-click it, and select&nbsp;<strong>Update</strong>. When the underlying data changes additional features matching the existing reader schema will be read in, but if the schema changes (e.g. new table, new attributes, renamed attributes, etc.), these changes will only be reflected if the reader is updated.</p>
+<p><a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/Updating-Readers-Writers.htm" target="_blank" rel="noreferrer noopener">Learn more about updating readers and writers</a></p>
+<p><a href="https://knowledge.safe.com/articles/1050/dynamic-workflow-tutorial-introduction.html" target="_blank" rel="noreferrer noopener">Learn how to make dynamic workspaces that can automatically account for schema changes</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Jennifer&rsquo;s steps.</p>

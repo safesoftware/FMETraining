@@ -1,0 +1,63 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use batch processing with the WorkspaceRunner transformer to run a workspace simultaneously on multiple input data sources.</li>
+<li>Design a batch-processing workspace.</li>
+<li>Use the Batch Deploy Wizard.</li>
+</ul>
+<h2 id="batch-processing">Batch Processing</h2>
+<p>Batch processing involves processing multiple source datasets using the same workspace.&nbsp;<em>Sometimes</em>, it can result in performance improvements, but like many things in the world of FME performance, you'll have to experiment based on your situation.</p>
+<p>There are quite a few ways to run a workspace, some of which can be considered batch processing. Here's an overview:</p>
+<ul>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/workspaces_about.htm" target="_blank" rel="noopener">FME Workbench</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/QuickTranslator/Welcome_FME_QuickTranslator.htm" target="_blank" rel="noopener">FME Quick Translator</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407714221069-Batch-Processing-Method-1-Command-Line-or-Batch-File" target="_blank" rel="noopener">The command line</a> (<a href="https://docs.safe.com/fme/html/FME_CommandLine/" target="_self">docs</a>)
+<ul>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407714221069-Batch-Processing-Method-1-Command-Line-or-Batch-File" target="_self">A batch file</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407587905037-Batch-Processing-Method-2-Command-File" target="_blank" rel="noopener">A command file</a> (<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_with_Command_Files.htm" target="_blank" rel="noopener">docs</a>)</li>
+</ul>
+</li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407469060237-Batch-Processing-Method-3-Batch-Deploy" target="_blank" rel="noopener">The Batch Deploy option</a> (<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Running_a_Batch_Translation.htm" target="_self">docs</a>)</li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407667700365-Batch-Processing-Using-the-WorkspaceRunner" target="_self">The WorkspaceRunner transformer</a> (<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/workspacerunner.htm" target="_blank" rel="noopener">docs</a>)</li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/fmeflowjobsubmitter.htm" target="_blank" rel="noopener">The FMEFlowJobSubmitter transformer</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/Home.htm" target="_blank" rel="noopener">FME Flow</a>
+<ul>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Run-Workspace.htm" target="_blank" rel="noopener">The Run Workspace page</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-General/Automations.htm" target="_blank" rel="noopener">Automations</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Streams.htm" target="_blank" rel="noopener">Streams</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Flow-Apps.htm" target="_blank" rel="noopener">Flow Apps</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/schedules.htm" target="_blank" rel="noopener">Schedules</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html" target="_blank" rel="noopener">REST API</a></li>
+</ul>
+</li>
+</ul>
+<p>In this section, we'll cover the WorkspaceRunner and Batch Deploy options. For more information on the other methods, check out the links above.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>The <a href="https://academy.safe.com/path/fme-flow-authoring" target="_blank" rel="noopener">FME Flow Authoring course</a> covers most of the FME Flow options listed above.</p>
+</blockquote>
+<h2 id="batch-processing-using-the-workspace-runner">Batch Processing Using the WorkspaceRunner</h2>
+<p>The WorkspaceRunner is a transformer that runs another FME workspace when used in a translation. One use of it is for chaining multiple workspaces to run one after another. However, it can run multiple workspaces simultaneously through batch processing and is especially effective when used in conjunction with the Directory and File Pathname reader.</p>
+<p>For example, we have a workspace that reads in orthophoto tiles and clips them to neighborhood boundaries, writing them using a combination of tile and neighborhood as the output filename:</p>
+<p><img class="image image-block image-center" src="images/1725041963405.png" alt="A workspace that reads in orthophoto tiles and clips them" width="967" height="315" /></p>
+<p>Imagine we get new orthophotos each week. Instead of changing the data in the previous workspace each time, we create a workspace to batch process all the new files. This allows FME to start multiple processes simultaneously so that the data is processed faster:</p>
+<p><img class="image image-block image-center" src="images/1725042071131.png" alt="Creating a batch processing workspace with the WorkspaceRunner" width="842" height="339" /></p>
+<p>To set up the WorkspaceRunner in a workspace (the&nbsp;<em>Parent</em>), the FME Workspace parameter is pointed to the workspace to be batch processed (the&nbsp;<em>Worker</em>&nbsp;or&nbsp;<em>Helper</em>). The Source File parameter is set to&nbsp;<em>path_windows</em>, an attribute created by the Directory and File Pathnames Reader:</p>
+<p><img class="image image-block image-center" src="images/1725042163511.png" alt="WorkspaceRunner parameters" width="761" height="447" /></p>
+<p>The option to Wait for Jobs to Complete ensures one job is completed before starting another. Setting this option prevents multiple Concurrent FME Processes.</p>
+<p>If the job order is unimportant, the parameter Maximum Number of Concurrent FME Processes can be set. This causes multiple FME processes (up to a maximum of seven) to be launched, and these can be seen in the Details tab of Windows Task Manager:</p>
+<p><img class="image image-block image-center" src="images/1710527222603.png" alt="Examining multiple FME.EXE processes in the Windows Task Manager" width="636" height="425" /></p>
+<p>Notice that the FME Engine processes are separate from the FME Workbench and Data Inspector processes. One of the FME.EXE processes runs the parent workspace, and the others run the helpers.</p>
+<h2 id="batch-processing-using-the-batch-deploy-wizard">Batch Processing Using the Batch Deploy Wizard</h2>
+<p>Batch deploy is available under the Run menu in FME Workbench. It supports both instant batch processing and the creation of batch files. This allows you to process a large number of source datasets in the current workspace and produce a separate output for each:</p>
+<p><img class="image image-block image-center" src="images/1725042275241.png" alt="Batch Deploy option in the Run menu" width="315" height="198" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If the Run &gt; Batch Deploy option is disabled, it is because there is currently no source or destination dataset defined in the workspace. &nbsp;</p>
+</blockquote>
+<p>Batch deploy operates like a Wizard. The user specifies the input and output datasets and other relevant settings, such as a suffix for the output file names.</p>
+<p>If the process is not carried out immediately, FME creates a batch .tcl file containing the batch process settings and a .bat file you can run to start the process later.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Batch Processing (on Form) can also be done using the command line or an FME Command File. This course does not cover these techniques, but you can check out the <a href="https://support.safe.com/hc/en-us/articles/25407681862925-FME-Batch-Processing-Methods" target="_self">FME Batch Processing Methods Knowledge Base article</a> if you want to learn more</span><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>

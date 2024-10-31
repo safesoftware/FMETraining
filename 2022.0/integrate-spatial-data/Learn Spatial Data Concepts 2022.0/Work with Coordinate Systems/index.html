@@ -1,0 +1,132 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand the process of reprojecting spatial data.</li>
+<li>Explain how to set coordinate systems using FME.</li>
+<li>Explain how to reproject data using FME.</li>
+</ul>
+<h2 id="reprojecting-spatial-data">Reprojecting Spatial Data</h2>
+<p>Spatial data can come in all shapes and sizes thanks to the wonderful world of coordinate systems. While having more options gives you the flexibility to do what you want, it also means that everyone else has more options to do what they want. And that can make things tricky.</p>
+<p>When it comes to sharing or integrating spatial datasets, you&rsquo;ll inevitably need to perform data transformation tasks that translate all the data you&rsquo;re working with to use a common coordinate system. This is what&rsquo;s called &ldquo;reprojecting your data&rdquo;.</p>
+<p>Performing reprojections is one of the most common manipulations that need to happen when dealing with spatial data. While there are various ways to perform a reprojection, one of the easiest methods is using software that supports this function.</p>
+<p>Data integration software like&nbsp;<a href="https://www.safe.com/fme/" target="_blank" rel="noreferrer noopener">FME</a>&nbsp;gives you the ability to perform reprojections alongside other transformation tasks. No matter what your situation is when it comes to using your data, FME has all the major reprojection tasks covered.</p>
+<p>You can use FME to:</p>
+<ul>
+<li>Reproject your data to any of the 5,600 natively supported coordinate systems</li>
+<li>Reproject your data to a&nbsp;<a href="https://demos-safe-software.fmecloud.com/fmedatastreaming/Coordsys/Start.fmw" target="_blank" rel="noreferrer noopener">custom coordinate system</a>&nbsp;you&rsquo;ve defined</li>
+<li>Apply a projection to spatial data that doesn&rsquo;t have a defined coordinate system</li>
+<li>Integrate multiple datasets with various coordinate systems into a single output using one coordinate system</li>
+<li>Migrate data from an outdated coordinate system to a newer, accepted standard</li>
+</ul>
+<h2 id="set-coordinate-systems-in-fme">Set Coordinate Systems in FME</h2>
+<p>Each reader and writer within FME can be assigned a coordinate system. That coordinate system is set in the Navigator window of Workbench or the Generate Workspace dialog.</p>
+<p>Like the source schema, the reader coordinate system is&nbsp;<strong><em>"what we have"</em></strong>&nbsp;and the writer coordinate system is&nbsp;<strong><em>"what we want"</em></strong>. Here the source coordinate system has been defined as UTM83-10 and the destination as BCALB-83:</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/learn-spatial-data-concepts/work-with-coordinate-systems/images/1610144883416.png" alt="Viewing writer coordinate system in the Navigator" /></p>
+<p>Each feature processed by the reader is tagged with the coordinate system defined in its parameter.</p>
+<p>When a feature arrives at a writer, if it is tagged with a different coordinate system to what is defined for that writer, then FME automatically reprojects the data, so that the output is in the correct location.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Once tagged with a coordinate system, each feature retains this throughout the translation; FME knows what coordinate system it belongs to at all times.</p>
+</blockquote>
+<p>This is important when carrying out geometric transformations (like calculating area) or when reading multiple datasets that belong to different coordinate systems (yes, FME will handle that).</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="automatic-detection-of-coordinate-systems">Automatic Detection of Coordinate Systems</h2>
+<p>It's not always necessary to set the coordinate system parameters manually. Some data formats (for example Esri Shapefile) are capable of storing information about the coordinate system in which they are held, and FME will retrieve this information where it can.</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/learn-spatial-data-concepts/work-with-coordinate-systems/images/1610145851691.png" alt="Viewing unset coordinate system in the Navigator" /></p>
+<p>Here, because the reader coordinate system is marked &lt;not set&gt;, FME will try to determine the coordinate system from the source dataset. If it can't, then the feature will be tagged with a coordinate system of &lt;unknown&gt;.</p>
+<p>There are a number of reprojection scenarios that may occur depending on the combination of coordinate system (CS) information available. Here&nbsp;<strong>N</strong>&nbsp;means "not set" and&nbsp;<strong>S</strong>&nbsp;means "set":</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Dataset CS</strong></td>
+<td><strong>Reader CS</strong></td>
+<td><strong>Writer CS</strong></td>
+<td><strong>Reprojection</strong></td>
+</tr>
+<tr>
+<td>N</td>
+<td>S</td>
+<td>S</td>
+<td>Reprojects from Reader CS to Writer CS</td>
+</tr>
+<tr>
+<td>S</td>
+<td>N</td>
+<td>S</td>
+<td>Reprojects from Dataset CS to Writer CS</td>
+</tr>
+<tr>
+<td>N</td>
+<td>N</td>
+<td>S</td>
+<td>Error: Cannot reproject without Dataset or Reader CS</td>
+</tr>
+<tr>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>Reprojects from Reader CS to Writer CS</td>
+</tr>
+<tr>
+<td>S</td>
+<td>S</td>
+<td>N</td>
+<td>No reprojection unless the format requires it</td>
+</tr>
+</tbody>
+</table>
+<p>If the coordinate system is not set on the writer, then no reprojection will take place unless the output format requires it. For example, the KML format requires data to be in Latitude/Longitude. If neither the source dataset or the reader coordinate system is defined, then the translation will fail.</p>
+<h2 id="reproject-data-in-fme">Reproject Data in FME</h2>
+<p>There are two ways to change the coordinate system of your data using FME:</p>
+<ul>
+<li>Setting the coordinate system on the writer</li>
+<li>Using a transformer</li>
+</ul>
+<p>If you set your writer to use your desired coordinate system as explained above, your data will be reprojected just before being written.</p>
+<p>If you instead need to reproject data in the middle of a translation, you can use a projection transformer. The most popular is the Reprojector transformer. Simply connect your data to the input port of this transformer and select your desired coordinate system.&nbsp;</p>
+<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/learn-spatial-data-concepts/work-with-coordinate-systems/images/1610146241853.png" alt="Choosing a coordinate system to reproject to" /></p>
+<p>You might use this transformer if you want to both read and write data using a geographic coordinate system, but need to conduct spatial analysis during your translation. Perhaps you need to buffer points or calculate an area. As you learned from&nbsp;<a href="https://safe.my.trailhead.com/en/content/safe/modules/learn-spatial-data-concepts/distinguish-between-geographic-and-projected-coordinate-systems?trail_id=integrate-spatial-data" target="_blank" rel="noreferrer noopener">the last lesson</a>, spatial analysis should only be conducted using projected coordinate systems.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>FME has a variety of transformers useful for working with coordinate systems.</p>
+<p><a href="https://www.safe.com/transformers/?page=1&amp;perpage=20&amp;sortby=rank&amp;category=coordinates" target="_blank" rel="noreferrer noopener">View them here</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p>Part of this lesson was adapted from a&nbsp;<a href="https://www.safe.com/blog/2020/11/coordinate-systems-101-basics/" target="_blank" rel="noreferrer noopener">post</a>&nbsp;on the&nbsp;<a href="https://www.safe.com/blog/" target="_blank" rel="noreferrer noopener">Safe Software blog</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
