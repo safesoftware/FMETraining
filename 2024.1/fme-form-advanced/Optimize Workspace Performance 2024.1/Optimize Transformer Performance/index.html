@@ -59,7 +59,13 @@
 <p>...it makes sense to remove excess attributes from the translation as soon as possible.</p>
 <p>There are two ways to remove attributes. Some reader formats (but not all) have a setting in the reader feature type to avoid reading excess attributes in the first place:</p>
 <p><img class="image image-block image-center" src="images/1725649460567.png" alt="Manually unexposing reader feature type attributes" width="552" height="377" /></p>
-<p>With that, you can ensure that&nbsp;<em>only</em> exposed attributes are read. The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
+<p>With that, you can ensure that&nbsp;<em>only</em> exposed attributes are read.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>For database formats, FME won't read unexposing attributes on reader feature types, offering a performance improvement.</p>
+<p>For non-database formats, FME still reads the unexpose attributes, but it won't show them anywhere downstream and won't write them out. There is no direct performance benefit on reading, but it saves the performance cost of removing them and can clean up your attribute lists.</p>
+</blockquote>
+<p>The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
 <p><img class="image image-block image-center" src="images/1725649564898.png" alt="Removing unnecessary attributes with an AttributeManager" width="630" height="523" /></p>
 <p>This ensures that the extra attributes don't drain resources when processed by further transformers.</p>
 <h2 id="lists">Lists</h2>
@@ -92,6 +98,10 @@
 <blockquote>
 <p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
 <p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noopener">Learn more about bulk mode in the documentation.</a></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>For maximum performance, in an Arithmetic editor, use the functions <code>@add()</code>, <code>@multi()</code>, and <code>@div()</code> instead of using the equivalent operators (<code>+</code> <code>*</code> and <code>/</code>). These functions work at a lower - much faster - level of processing. Plus, they have the added bonus of handling nulls better.</p>
 </blockquote>
 </div>
 </div>
