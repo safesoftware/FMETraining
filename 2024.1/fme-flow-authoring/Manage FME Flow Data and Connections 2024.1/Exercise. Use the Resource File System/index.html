@@ -1,0 +1,92 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create folders and upload datasets to Resources using the Upload button.</li>
+<li>Run a workspace on FME Flow using data uploaded to Resources.</li>
+<li>Author workspaces that automatically use data uploaded to Resources when running a workspace on FME Flow.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" target="_blank" rel="noreferrer noopener">Starting workspace template</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-publish-data-with-a-workspace.fmwt</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace-complete.fmwt" target="_blank" rel="noreferrer noopener">Complete workspace template</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-publish-data-with-a-workspace-complete.fmwt</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-use-the-resource-file-system-complete.fsproject" target="_blank" rel="noreferrer noopener">Complete FME Flow project</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-use-the-resource-file-system-complete.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">ElectionVoting.gml</a> | C:\FMEData\Data\Elections\ElectionVoting.gml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_blank" rel="noreferrer noopener">ElectionVoting.xsd</a> | C:\FMEData\Data\Elections\ElectionVoting.xsd</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a> | C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+<h2>Video</h2>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>You have already created a workspace to translate data and published it to FME Flow, both with data and using data uploaded temporarily.</p>
+<p>However, such data management tools are not particularly suited to a long-term project, so the task here is to upgrade workspaces to use datasets stored in a Resources folder. There we can store source data and write destination data.</p>
+<h2 id="1-open-fme-server-web-interface">1) Open FME Flow Web Interface</h2>
+<p>Log in to the FME Flow web interface using an administrator account (admin/FMElearnings on Safe Software training machines). Click Resources on the side menu bar to navigate to the resources management pages.</p>
+<h2 id="2-create-folder">2) Create Folder</h2>
+<p>In most cases, data should be stored under the Data folder, so click on Data on the Resources page to open that folder. To avoid mixing datasets, our data should go into its own subfolder. So click on the +New button and create a folder called Election:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/0CWJ1L_w5GZGOMOq4nydxmZlC-XFBFrUzb3OLFldIs-h4ayXGyUoc43nJPimfRdnEZKUN5yhmzuuNgaggC4XFw-8f1C1brRR9fs1wXbQpNIecF7R1RTqT1yGvKMQgnGSMsk9Om6KwZ5ubKPDk5YC7H4" alt="Creating a new folder" width="584" height="260" /></p>
+<p>Next, click on the Election folder, and then create&nbsp;new&nbsp;subfolders called Input and Output:</p>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/0FqHaGdOcOtvlGz4czk34WjAIH0Rf-ua4tp-vZUMbz2s2vu9sk9wFdX4bcPTNpXE0BlZ7FhGlMoV-uFEZd-dCHKKDtVhPkT9ETHDt362INCq9KRLZ1T9Nf4qxMYiXfsveB-oNgcJjWqm4l3G4fGddr4" alt="Input and Output folders created" width="584" height="408" /></p>
+<h2 id="3-upload-source-datasets">3) Upload Source Datasets</h2>
+<p>Browse to the Input folder, click the Upload button, and select Files. Download the files below (right-click &gt; Save link as...) and then upload them as the source datasets for the current translation:</p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">ElectionVoting.gml</a> | C:\FMEData\Data\Elections\ElectionVoting.gml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_blank" rel="noreferrer noopener">ElectionVoting.xsd</a> | C:\FMEData\Data\Elections\ElectionVoting.xsd</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a> | C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/ZJ7xLYY9YXEN2FLbKey03KutkGSNzJnaryEdzclaNd-ruFAEUcReLPG_al2h94GCAYdKn8BY9vs4RN0LykDbSM-6zizoX0CmyOckl-v7-6M-YZn9WuEQ19icoRhZBKZY4EGvIzBMY_wLYVqcK70luwM" alt="Uploaded source datasets" width="584" height="468" /></p>
+<p>So we now have both source datasets and a folder to write the output data to.</p>
+<h2>4) Open and Run the Workspace&nbsp;</h2>
+<p>Select the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-publish-data-with-a-workspace.fmwt" target="_self">starting workspace</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-publish-data-with-a-workspace.fmwt) from the Run Workspace page in FME Flow. This workspace was published in the last exercise.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>If you haven't completed the last exercise you'll need to publish the workspace to FME Flow. Do not upload data unless you have not completed the previous exercises. Register the workspace against the Job Submitter service.</p>
+</blockquote>
+<p>Return to the FME Flow web interface. Locate the workspace under the Run Workspace dialog.</p>
+<p><img class="image image-block image-center" src="images/1730935576660.png" alt="Published parameters" width="719" height="611" /></p>
+<p>For each file, click the Browse Resources button, browse to the Input subfolder in Resources, and select/set the file location.</p>
+<p><strong>Be sure to remove the old dataset path </strong>by clicking the X next to it; you should only provide one dataset for each parameter:</p>
+<p><img src="images/1729289063233.png" alt="Ensuring only one GML file is selected" /></p>
+<p>Since the Geodatabase does not exist yet, you'll need to type the file name manually for the Geodatabase output location:</p>
+<pre>$(FME_SHAREDRESOURCE_DATA)/Election/Output/DepartmentData.gdb<br /><br /></pre>
+<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/_GteVCy3hDMP1ZwJ5qjgagn361QPvvJIy_2-EDlFKWAL1Tk3AD58ORn5nmkF5Vbyv0yjHa_XIzD39D9adOSjSpDFkpJdR4UNtK42x4r8_s9puQmzhGMFvnjWglYm-FKmaQ1iW0i7Pp9dqm9vZj0FhKU" alt="Specifying destination folder" width="800" height="441" /></p>
+<p>Once you have set all three parameter paths, click Run.</p>
+<p>When the workspace finishes, you should be see a completed Geodatabase file in the folder Resources\Data\Election\Output:</p>
+<p><img class="image image-block image-center" src="images/1729289223186.png" alt="Written geodatabase appears in Resources folder" width="613" height="392" /></p>
+<h2 id="9-apply-fme-server-parameter">7) Apply FME Flow Parameter</h2>
+<p>Although the workspace ran correctly and used the data in the resources folder, that's only because we selected that data at runtime. It is not a permanent feature of the workspace.</p>
+<p>It would be much better if we designed the workspace to look into the resources folders automatically.</p>
+<p>So, return to the workspace in FME Workbench.</p>
+<p>If we set the workspace to read from the resources folders, we don't want to give users the chance to change that. So in the Navigator window, locate the three parameters for source and destination datasets and delete them:</p>
+<p><img class="image image-block image-center" src="images/1730935893922.png" alt="Deleting the Source Google KML File or URL user parameter" width="671" height="452" /></p>
+<h2 id="10-set-source-destination-parameters">8) Set Source/Destination Parameters</h2>
+<p>Now, locate the source and destination dataset parameters for the two readers and one writer. Double-click each and change them to:</p>
+<table class="featureTable sort_table" style="width: 43.2275%;">
+<tbody class="tbody">
+<tr>
+<td style="width: 21.6216%;">KML Reader</td>
+<td style="width: 78.3784%;">$(FME_SHAREDRESOURCE_DATA)\Election\Input\VancouverNeighborhoods.kml</td>
+</tr>
+<tr>
+<td style="width: 21.6216%;">GML Reader</td>
+<td style="width: 78.3784%;">$(FME_SHAREDRESOURCE_DATA)\Election\Input\ElectionVoting.gml</td>
+</tr>
+<tr>
+<td style="width: 21.6216%;">Geodatabase Writer</td>
+<td style="width: 78.3784%;">$(FME_SHAREDRESOURCE_DATA)\Election\Output\DepartmentData.gdb</td>
+</tr>
+</tbody>
+</table>
+<p><img class="image image-block image-center" src="images/1730936145690.png" alt="Setting all paths using the FME Server parameter" width="705" height="606" /></p>
+<p>Save the workspace and publish it back to FME Flow.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you try running this workspace in FME Workbench now that you've updated the dataset parameters to use the FME Flow Shared Resource parameter, you will get an error because Workbench won't recognize that FME Flow parameter.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you still want to be able to test this workspace in Workbench, you can set a value for the FME_SHAREDRESOURCE_DATA parameter. Configure it to point to a local file path that matches the folder structure used on FME Flow. The workspace will still run on FME Flow as Flow will automatically override any value for that parameter and replace it with the correct path.</span></p>
+</blockquote>
+<h2 id="11-re-run-workspace">9) Re-Run Workspace</h2>
+<p>Now run the workspace on FME Flow. This time you will not be prompted with a parameter to select the source (or destination) datasets, but they will be used from the resources folders just the same.&nbsp;</p>

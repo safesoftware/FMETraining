@@ -1,0 +1,120 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Export a custom transformer.</li>
+<li>Switch the mode of a custom transformer instance.</li>
+<li>Delete an embedded custom transformer.</li>
+<li>Edit and create a new version of a linked custom transformer.</li>
+<li>Update a linked custom transformer instance to the latest version.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-build-a-shared-library-of-custom-transformers.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-build-a-shared-library-of-custom-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-build-a-shared-library-of-custom-transformers-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-build-a-shared-library-of-custom-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/AverageLengthCalculator.fmx" target="_blank" rel="noreferrer noopener">AverageLengthCalculator custom transformer</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\AverageLengthCalculator.fmx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/AGOL/data/Zipped%20Shapefiles/BikePaths_M.zip" target="_blank" rel="noreferrer noopener">Bike routes dataset</a>
+<ul>
+<li>C:\FMEData\Resources\AGOL\data\Zipped Shapefiles\BikePaths_M.zip</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>You arrived early at the office for a meeting, but someone canceled it at the last minute. Typical! Still, it gives you time to carry out an FME project that has been on your mind: a transformer to calculate the average length of linear features.</p>
+<h2 id="1-open-workspace">1) Open Workspace</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-build-a-shared-library-of-custom-transformers.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> in FME Workbench (2024.1 or later).</p>
+<p>You&rsquo;ll see that the workspace reads a set of bicycle path data and then does some minor processing to get it into a reasonable state for use in the custom transformer.</p>
+<p>You may want to run the workspace to examine the output and determine what data we are dealing with, but remember that the custom transformer we create should work on any linear data.</p>
+<h2 id="2-add-length-calculator">2) Add LengthCalculator</h2>
+<p>The contents of the transformer will be relatively straightforward, and we&rsquo;ll start with just two transformers. So, add a&nbsp;<strong>LengthCalculator&nbsp;</strong>and a&nbsp;<strong>StatisticsCalculator&nbsp;</strong>transformer to the workspace.</p>
+<p><img class="image image-block image-center" src="images/1724781944377.png" alt="Adding a LengthCalculator and StatisticsCalculator to the Canvas" width="921" height="183" /></p>
+<h2 id="3-create-custom-transformer">3) Create Custom Transformer</h2>
+<p>Select the two newly placed transformers and turn them into a custom transformer called AverageLengthCalculator. Ensure you set Attribute References to Handle With Published Parameters, although there aren&rsquo;t any references to handle now.</p>
+<p><img class="image image-block image-center" src="images/1724781955053.png" alt="Filling out the Create Custom Transformer dialog" width="580" height="465" /></p>
+<h2 id="4-edit-custom-transformer">4) Edit Custom Transformer</h2>
+<p>Now we have a new custom transformer, let&rsquo;s tidy it up and make it functional.</p>
+<p>Firstly, rename the input port object to <strong>Lines </strong>(thus communicating what geometry the transformer expects).</p>
+<p><img src="images/1730935775199.png" alt="Right-click LengthCalculator_Input and Rename it to Lines" width="547" height="236" /></p>
+<p>Then, add an output port object by right-clicking the Canvas. and choosing <strong>Insert Transformer Output:</strong></p>
+<p><img src="images/1730935925530.png" alt="Insert Transformer Output" width="283" height="339" /></p>
+<p>Name it <strong>Output</strong>. <span style="font-family: inherit; font-size: 1em;">Then connect it to the </span><strong style="font-family: inherit; font-size: 1em;">StatisticsCalculator's Complete </strong><span style="font-family: inherit; font-size: 1em;">port:</span></p>
+<p><img class="image image-block image-center" src="images/1724781965628.png" alt="New ports" width="801" height="111" /></p>
+<p>Inspect the&nbsp;<strong>StatisticsCalculator&nbsp;</strong>parameters. Set the first-row<strong>&nbsp;Attribute&nbsp;</strong>to&nbsp;<code>_length</code>. Check&nbsp;<strong>Mean</strong>.</p>
+<p><img class="image image-block image-center" src="images/1724781972502.png" alt="Filling out the StatisticsCalculator" width="763" height="429" /></p>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<p>The&nbsp;<strong>StatisticsCalculator&nbsp;</strong>will now output a variable called&nbsp;<code>_length.mean</code>. Add an&nbsp;<strong>AttributeRenamer&nbsp;</strong>and rename&nbsp;<code>_length.mean</code>&nbsp;to&nbsp;<code>AverageLength</code>.</p>
+<p><img class="image image-block image-center" src="images/1724781984243.png" alt="Filling out the AttributeRenamer" width="427" height="346" /></p>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<h2 id="5-run-workspace">5) Run Workspace</h2>
+<p>Run the workspace and inspect the output to ensure everything works as expected.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Please take note of the&nbsp;</span><code>AverageLength</code><span style="font-family: inherit; font-size: 1em;"> value; you&rsquo;ll need it for the quiz.</span></p>
+</blockquote>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If your AverageLengthCalculator only outputs one feature, you probably still have the StatisticCalculator's Summary port connected. Make sure you use the Complete port instead.</span></p>
+</blockquote>
+<h2 id="6-export-custom-transformer">6) Export Custom Transformer</h2>
+<p>Now, let&rsquo;s experiment with different transformer modes.</p>
+<p>Return to the&nbsp;<strong>AverageLengthCalculator&nbsp;</strong>tab and select&nbsp;<strong>File &gt; Export as Custom Transformer</strong>&nbsp;from the menu bar. In the&nbsp;<strong>Export as Custom Transformer&nbsp;</strong>dialog, set <strong>Insert Mode&nbsp;</strong>to Linked by Default. Make sure the&nbsp;<strong>Save Location&nbsp;</strong>is the default for storing custom transformers (<code>&lt;user&gt;\Documents\FME\Transformers</code> on Windows):</p>
+<p><img class="image image-block image-center" src="images/1724781992774.png" alt="Filling out the dialog to export the custom transformer" width="452" height="307" /></p>
+<p>Click&nbsp;<strong>OK&nbsp;</strong>to close the dialog.&nbsp;</p>
+<p>The custom transformer is saved (as AverageLengthCalculator.fmx), and this file will open in a new instance of FME Workbench.</p>
+<h2 id="7-examine-workspace">7) Examine Workspace</h2>
+<p>Go back to the instance of FME Workbench where the original workspace is open. The custom transformer is now a dark green color to denote that it is now a linked transformer. It&rsquo;s linked because we chose &ldquo;Linked By Default&rdquo;:</p>
+<p><img class="image image-block image-center" src="images/1724782004734.png" alt="Workspace with linked transformer" width="809" height="131" /></p>
+<p>Right-click the&nbsp;<strong>AverageLengthCalculator </strong>and&nbsp;choose <strong>Embed</strong>.<strong> </strong></p>
+<p>If you want to switch back to the linked version, it's as easy as right-clicking&gt; <strong>Link</strong>. In a real-life scenario, the choice depends on whether you plan to share the transformer.</p>
+<p>Continuing in embed mode, right-click the transformer and choose <strong>Edit Embedded Transformer</strong>. Make any changes to the transformer. Go back to the Main canvas. You&rsquo;ll find that you can no longer change back to linked mode because the two definitions are now different!</p>
+<p><strong>Delete&nbsp;</strong>the embedded transformer. FME will prompt you whether you wish to delete the definition, too. Click <strong>Yes</strong>.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">It&rsquo;s important to realize that the definition of an embedded custom transformer can remain in the workspace even if you don&rsquo;t use it. If you clicked &ldquo;No&rdquo; above, that&rsquo;s what would have happened. You can tell if such a definition remains by looking in the Embedded Transformers section of the transformer gallery.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You&rsquo;d usually click&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">No&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">(and keep the definition) if you wanted to use it later. You&rsquo;d usually click </span><strong style="font-family: inherit; font-size: 1em;">Yes</strong><span style="font-family: inherit; font-size: 1em;"> (and remove the definition) if you decide the custom transformer is no longer required.</span></p>
+</blockquote>
+<h2 id="8-examine-custom-transformer">8) Examine Custom Transformer</h2>
+<p>Select&nbsp;<strong>Tools &gt; FME Options</strong>&nbsp;on the menu bar. Click the&nbsp;<strong>Work</strong><strong>bench&nbsp;</strong>section and locate and expand the&nbsp;<strong>Transformer Options</strong>. Check the option to&nbsp;<strong>Display the Transformer Version</strong>:</p>
+<p><img class="image image-block image-center" src="images/1724782012389.png" alt="Checking display transformer version" width="698" height="305" /></p>
+<p>Using the Quick Add menu or the Transformer Gallery, place a new instance of the&nbsp;<strong>AverageLengthCalculator&nbsp;</strong>custom transformer in the workspace (it is linked by default, which is fine). If you hover the mouse cursor over the transformer, the pop-up text will show version 1.</p>
+<p><img class="image image-block image-center" src="images/1724782022902.png" alt="Checking the version of a custom transformer in a tooltip" width="512" height="85" /></p>
+<p>Return to the instance of Workbench where the FMX file is open. Move one of the objects to activate the save button. Then, save the file. Notice that FME does not prompt you to save a new version. That&rsquo;s because FME has not applied versioning yet. There is only one version of the transformer to edit.</p>
+<p>So, leaving Workbench open, close the FMX file. Next, click&nbsp;<strong>Open&nbsp;</strong>and open&nbsp;<strong>AverageLengthCalculator.fmx</strong>. Then click <strong>Save</strong>. Because the transformer definition is in a new editing session, FME will prompt you to apply versioning when you save the transformer.</p>
+<p>Click <strong>Cancel</strong>; we'll save a proper new version in the next step.</p>
+<h2 id="9-update-custom-transformer">9) Update Custom Transformer</h2>
+<p>Let&rsquo;s update this transformer rather than just jiggling objects about to prove a point. We could filter data by geometry, so we aren&rsquo;t trying to measure the length of a point feature or similar.</p>
+<p>So, in the FMX edit session, add a <strong>GeometryFilter&nbsp;</strong>transformer in front of the&nbsp;<strong>LengthCalculator</strong>. Inspect the parameters, set&nbsp;<strong>Mode&nbsp;</strong>to Detailed, and select IFMELine and IFMEArc (both under <strong>IFMECurve&nbsp;</strong>&gt; <strong>IFMESegment</strong>) as the <strong>Output Ports</strong>:</p>
+<p><img class="image image-block image-center" src="images/1724782037194.png" alt="Filter by IFMEArc and IFMELine" width="454" height="267" /></p>
+<p>Adjust the feature mapping to connect the&nbsp;<strong>Line&nbsp;</strong>and&nbsp;<strong>Arc&nbsp;</strong>ports to the&nbsp;<strong>LengthCalculator</strong>. Add a second output port object by right-clicking on the canvas and selecting&nbsp;<strong>Insert Transformer Output</strong>. Call the newly placed port &lt;Rejected&gt; and connect the &lt;Unfiltered&gt; data to it like so:</p>
+<p><img class="image image-block image-center" src="images/1724782049729.png" alt="Adding a &lt;Rejected&gt; port" width="639" height="150" /></p>
+<p>Now click the&nbsp;<strong>Save&nbsp;</strong>button to save the custom transformer. FME will prompt you whether you want to create a new version. Click the button labeled New Version to do so:</p>
+<p><img class="image image-block image-center" src="images/1724782063703.png" alt="Save Transformer prompt" width="502" height="179" /></p>
+<p>The title of the Workbench window, where it should say Version 2, tells you FME created a new version.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you weren&rsquo;t prompted with the Save Transformer dialog box when you saved, you forgot to close the first edit session. Undo your changes back to how the original custom transformer was (without the GeometryFilter and Rejected output port) and save again. This time, close the .fmx file and re-open it. FME will prompt you to create a new version when you make your changes.</span></p>
+</blockquote>
+<h2 id="10-update-workspace">10) Update Workspace</h2>
+<p>Go back to the instance of FME Workbench where the original workspace is open. Click the&nbsp;<strong>refresh button&nbsp;</strong>on the&nbsp;<strong>Transformer Gallery&nbsp;</strong>for FME to scan all custom transformers and discover the new version we&rsquo;ve just created:</p>
+<p><img class="image image-block image-center" src="images/1724782077265.png" alt="Refreshing the Transformer Gallery" width="261" height="227" /></p>
+<p>Now right-click on the&nbsp;<strong>AverageLengthCalculator&nbsp;</strong>custom transformer, and there should be an option to&nbsp;<strong>Upgrade To Latest Version</strong>. Choose this option:</p>
+<p><img class="image image-block image-center" src="images/1724782090939.png" alt="Upgrading a custom transformer to the latest version" width="511" height="238" /></p>
+<p>The transformer will be refreshed and updated, which you can tell by the presence of a&nbsp;<strong>&lt;Rejected&gt;</strong> port and the tooltip, which should say Version 2.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Now that you have this custom transformer, you have various options to share it.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can put the transformer into a shared folder and then have other users use&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Tools &gt; FME Options &gt; Default Paths</strong><span style="font-family: inherit; font-size: 1em;"> to link their FME to that shared folder.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can send (e.g., via email) the fmx file to other users and have them install it on their machines. They can install it by double-clicking the file or saving it to their default FME resource folder.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can publish the transformer to FME Flow for you (and others) to use there.</span></p>
+</blockquote>
