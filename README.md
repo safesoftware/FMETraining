@@ -6,6 +6,8 @@ This repository contains an archive of Safe Software's training content, includi
 2. Content for the original FME Academy online learning platform (2020-2022)
 3. Content from the [relaunched FME Academy](https://academy.safe.com/) online learning platform (2023-present)
 
+The relaunched FME Academy content is also [available on S3](https://safeskilljar.s3.us-west-2.amazonaws.com/index.html).
+
 This training material can be reused and adapted under our [Terms of Use](https://engage.safe.com/legal/terms-and-conditions/fme-training/) and [License](LICENSE.md).
 
 # FME Academy Content
