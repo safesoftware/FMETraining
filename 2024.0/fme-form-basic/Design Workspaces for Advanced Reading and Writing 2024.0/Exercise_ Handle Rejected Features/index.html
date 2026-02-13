@@ -13,6 +13,36 @@
 <li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-handle-rejected-features.fmw</li>
 </ul>
 </li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_self">Parks.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip" target="_self">Addresses.zip</a> (Esri Geodatabase)
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.xlsx" target="_self">BusinessOwners.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessLicenses.xlsx" target="_self">BusinessLicenses.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessLicenses.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/food-vendors.csv" target="_self">food-vendors.csv</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\food-vendors.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" target="_self">Zoning.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Zoning\Zoning.tab</li>
+</ul>
+</li>
 </ul>
 <h2 id="rejected-features">Rejected Features</h2>
 <p>An essential part of any workflow is handling data that fails to process, for example, when a feature with no geometry is sent into a geometry-based transformer like the AreaBuilder.</p>
@@ -25,25 +55,25 @@
 <p>The parameter to control the handling of rejected features can be found in the Navigator window under Workspace Parameters:</p>
 <p><img class="image image-block image-center" src="images/1714692393845.png" alt="The Rejected Feature Handling parameter in the Navigator" width="719" height="326" /></p>
 <p>The two options are&nbsp;<em>Terminate Translation</em>&nbsp;and&nbsp;<em>Continue Translation</em>.</p>
-<p>When the parameter is set to&nbsp;<em>terminate</em>, a feature exiting via a &lt;Rejected&gt; port causes the translation to stop. To visually denote this, the &lt;Rejected&gt; ports have a small black marker:</p>
+<p>When the parameter is set to <em>Terminate Translation</em>, a feature exiting via a &lt;Rejected&gt; port causes the translation to stop. To visually denote this, the &lt;Rejected&gt; ports have a small black marker:</p>
 <p><img src="images/1714692535314.png" alt="Rejected port with Terminate mode enabled" width="200" /></p>
-<p>The translation will continue when the parameter is set to&nbsp;continue, regardless of how many features exit &lt;Rejected&gt; ports. In that case, the small black marker is removed:</p>
+<p>When the parameter is set to <em>Continue Translation</em>, the translation will continue to run regardless of how many features exit &lt;Rejected&gt; ports. In that case, the small black marker is removed:</p>
 <p><img src="images/1714692478638.png" alt="Rejected port with Continue mode enabled" width="186" height="158" /></p>
-<p>In&nbsp;<em>terminate</em>&nbsp;mode, a rejected feature gets written to the log window with the error message:</p>
+<p>In <em>Terminate Translation </em>mode, a rejected feature gets written to the log window with the error message:</p>
 <p><code>The below feature caused the translation to be terminated</code></p>
 <p>There will also be an error message relating to the transformer:</p>
 <p><code>Intersector_&lt;Rejected&gt;(TeeFactory): Intersector_&lt;Rejected&gt;: Termination Message: 'Intersector output a &lt;Rejected&gt; feature.</code></p>
 <p>This error is helpful because it tells the author which transformer experienced the failure.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">To quickly find these error messages, you can filter the Translation Log by clicking the Errors button.</span></p>
 </blockquote>
 <h2 id="mixed-mode">Mixed Mode</h2>
-<p>In&nbsp;<em>terminate</em>&nbsp;mode, a rejected feature will not cause the translation to stop, provided that the &lt;Rejected&gt; port is connected to a further object:</p>
+<p>There is an important exception to the behavior of <em>Terminate Translation </em>mode: a rejected feature will not cause the translation to stop provided that the &lt;Rejected&gt; port is connected to a further object:</p>
 <p><img class="image image-block image-center" src="images/1714691948669.png" alt="Terminate mode with a connected Rejected port" width="462" height="220" /></p>
-<p>In short, an author can create a mixed mode, where some transformers stop the translation on rejecting a feature (the Intersector above), but others will handle the feature another way (the Bufferer). That way, the author can try to handle rejected expected features but stop the translation if there are genuinely unexpected failures.</p>
+<p>In short, an author can create a <em>mixed mode</em>, where some transformers stop the translation on rejecting a feature (the Intersector above), but others will handle the feature another way (the Bufferer). That way, the author can try to handle rejected expected features but stop the translation if there are genuinely unexpected failures.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Generally:</span></p>
 <ul>
 <li><span style="font-family: inherit; font-size: 1em;"><em>Terminate </em>mode is helpful if you do not want any features rejected and want to verify that all your data is correct.</span></li>

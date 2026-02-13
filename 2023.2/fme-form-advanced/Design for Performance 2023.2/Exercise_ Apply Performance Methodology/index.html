@@ -28,7 +28,7 @@
 <h2 id="2-examine-workspace">2) Examine Workspace</h2>
 <p>The workspace is pretty unorganized. Let&rsquo;s examine it in sections to figure out how it works.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Your colleague has modified the workspace slightly, so it won't match this diagram exactly, but it's close enough to understand how it works.</span></p>
 </blockquote>
 <p><img class="image image-block image-center" src="images/1710458385569.png" alt="Unorganized workspace" width="1063" height="422" /></p>
@@ -45,7 +45,7 @@
 <li>The PointOnAreaOverlayer joins the point data containing the crime, distance to park, and addresses with the NoiseControlAreas polygons. This joined data assigns the noise restrictions to any overlapping points. The AttributeValueMapper is used to assign the zone with a score, creating the attribute NoiseZoneScore. This new attribute will reflect that addresses in noise-restricted areas are more walkable.</li>
 </ol>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">You can optionally use Tools &gt; Apply Auto-Layout or follow the advice in </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/document-your-workspace" target="_blank" rel="noopener">Document Your Workspace</a><span style="font-family: inherit; font-size: 1em;">&nbsp;to clean up the workspace if you want.</span></p>
 </blockquote>
 <h2 id="3-determine-performance-improvements">3) Determine Performance Improvements</h2>
@@ -63,7 +63,7 @@
 <h2 id="5-remove-lists">5) Remove Lists</h2>
 <p>If you inspect a single feature in the Aggregator's Output port cache, you will see it stores a lot of attributes like CrimeList{}.City or CrimeList{}.Block. The final output of the workspace is a single score, so keeping all of these component attributes that were used to calculate the score is not necessary. These excess attributes clutter the display and inspecting the output becomes hard. Keeping these unused, large attributes also slows the performance of the workspace - even if that's mitigated by using caches during development.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If you have identified a troublesome attribute on a feature but are unsure where it is being generated, you can track it down by pressing Ctrl+F and searching for its name. Try this with CrimeList. The search results show up in the Navigator window, and there you will find the Aggregator transformer is creating CrimeList.</span></p>
 </blockquote>
 <p>Check the parameters for the Aggregator transformer and turn off the Generate List parameter, to prevent the list from being created. This step will cause many caches to become stale, but we will re-run the workspace shortly to solve this.</p>
@@ -72,7 +72,7 @@
 <h2 id="7-collapse-the-bookmark">7) Collapse the Bookmark</h2>
 <p>Another source of excess caching is transformers producing output that we don't need to inspect. These can be prevented by hiding these transformers within a collapsed bookmark.</p>
 <p>Add a bookmark around all of the transformers between the PostalAddress reader and the FeatureJoiner, by selecting all the transformers and pressing&nbsp;ctrl+B&nbsp;on your keyboard. Then name the bookmark Prepare Addresses to Join:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.210.Ex2.AddABookmark.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.210.Ex2.AddABookmark.png" alt="Collapsing this bookmark will reduce the number of feature caches generated" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.210.Ex2.AddABookmark.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.210.Ex2.AddABookmark.png" alt="Collapsing this bookmark will reduce the number of feature caches generated" /></a></p>
 <p>Now we can collapse the bookmark and then when we re-run the translation only the last transformer will have a cache. To collapse the bookmark, click on the arrow beside the bookmark name:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.211.Ex2.CollapsedBookmarks.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/1710458470037.png" alt="Clicking the arrow to collapse the bookmark" width="625" height="274" /></a></p>
 <h2 id="8-run-the-workspace">8) Run the Workspace</h2>

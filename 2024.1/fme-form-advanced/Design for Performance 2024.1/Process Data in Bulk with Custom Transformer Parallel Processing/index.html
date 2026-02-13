@@ -12,7 +12,7 @@
 <p>Parallel processing in FME covers not an entire workspace but just a specific subsection of the workspace. You control where parallel processing occurs through custom transformers, a natural method to subdivide a large translation.</p>
 <p>Parallel processing runs on features grouped by attribute values, similar to Group-Based transformers. Custom transformers using parallel processing assign each group to a separate process.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">You can use multiple engines on FME Flow to process multiple workspaces in parallel.&nbsp; For more information, see <a href="https://safe6501.zendesk.com/hc/en-us/articles/25407619100045-Job-Orchestration-with-Automations" target="_blank" rel="noopener">Job Orchestration with Automations</a>&nbsp;or&nbsp;<a href="https://safe6501.zendesk.com/hc/en-us/articles/25407757564045-Getting-Started-with-the-Split-Merge-Block" target="_blank" rel="noopener">Getting Started with the Split-Merge Block</a>.</span></p>
 </blockquote>
 <h2 id="activating-parallel-processing">Activating Parallel Processing</h2>
@@ -89,7 +89,7 @@
 </tbody>
 </table>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">These numbers - we should note - are the maximum number of processes&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">at any one time</strong><span style="font-family: inherit; font-size: 1em;">. It&rsquo;s possible to divide data into more groups and process them separately, but they won&rsquo;t coincide. For example, given a quad-core machine, moderate processing, and 20 groups of features, there will be a total of 20 processes, but only four will run at any one time. When one of the four finishes, a new one is started.</span></p>
 </blockquote>
 <h2 id="parallel-processing-groups">Parallel Processing Groups</h2>
@@ -99,7 +99,7 @@
 <p>Instead, you can publish this parameter (and one for Complete Groups mode) to make them available as one of the custom transformer parameters:</p>
 <p><img class="image image-block image-center" src="images/1725483377019.png" alt="Publishing this parameter makes parallel processing mode available in custom transformers" width="636" height="343" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Parallel processing is most effective in two specific scenarios. The first scenario involves a small number of groups, each with a large amount of processing. Parallel processing is less effective when there are many small groups. The second scenario involves many small tasks that the workspace is offloading elsewhere. For example, when the workspace passes features to a web service HTTPCaller transformer, it&rsquo;s most efficient to have FME fire off as many requests as it can as quickly as possible.</span></p>
 </blockquote>
 <h2 id="parallel-processing-and-custom-transformer-design">Parallel Processing and Custom Transformer Design</h2>
@@ -108,7 +108,7 @@
 <p>It&rsquo;s essential to be aware that features in different groups cannot be related because each group is processed independently. If features are related and their results depend on each other, they must be in the same group.</p>
 <p>The easiest way to think of this is that the custom transformer is a Group-Based transformer. Because it is a wrapper for all the individual FME transformers in the definition, it allows them to operate in groups, even if they are Feature-Based.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Learn more about&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Group_Based_Transformers.htm" target="_blank" rel="noopener">Group-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Feature_Based_Transformers.htm" target="_blank" rel="noopener">Feature-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;transformers.</span></p>
 </blockquote>
 <h2 id="creating-artificial-groups">Creating Artificial Groups</h2>

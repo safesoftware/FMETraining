@@ -12,7 +12,7 @@
 <p><em>User attributes</em> are attributes with domain information about a feature, such as <code><span class="Code">parcel_identifier</span></code>,&nbsp;<code><span class="Code">owner_name</span></code>, and&nbsp;<code><span class="Code">date_surveyed</span></code>. User attributes are always part of the feature no matter which format they are stored in and hence persist when translating from one format to another. User attributes may come from a source dataset or may be created as needed within FME. Not all formats accept user attributes, and the ones that do sometimes put restrictions on them. Each user attribute is defined by its name, data type, width, and number of decimal places. FME uses the term user attribute when some relational databases might use the term column or field.</p>
 <p><em>Format attributes</em> are specific to a format's schema. Some examples are&nbsp;<code><span class="Code">autocad_block_name</span></code>&nbsp;and&nbsp;<code><span class="Code">sde30_justification</span></code>. FME does not generically support them and will change or be dropped when translated into a different format. In general, format attributes are designed for translations to and from the same format, although advanced users may find them helpful in writing to other formats when using customized <span class="mc-variable ProductNames.workspace variable">workspace</span>s.</p>
 <blockquote>
-<p><strong><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></strong></p>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
 <p><strong>Warning</strong>: avoid naming user attributes with the prefix <code>fme_</code>. FME may not recognize a user attribute prefixed with fme_ because FME uses this prefix to process many format attributes. Also, avoid naming user attributes with the same names as other format attributes to prevent similar conflicts.</p>
 </blockquote>
 <p>A particular set of format attributes has the prefix&nbsp;<code>fme_</code>. These attributes represent the data as it is perceived by FME and are known as FME attributes. These attributes are often used by transformers; you will normally not set their values yourself. One common FME attribute that is worth knowing about is <code>fme_feature_type</code>, which stores the name of features' feature type.</p>
@@ -25,7 +25,7 @@
 <p>In addition to format attributes, unexposed attributes can originate from dynamic workflows or when working with JSON or XML data. For example,&nbsp;<a href="https://community.safe.com/general-10/question-of-the-week-dealing-with-an-unknown-or-dynamic-schema-18145" target="_blank" rel="noopener">this article</a> in the FME Community discusses dealing with attributes unknown to the schema in a dynamic workflow. Some transformers, such as XMLFlattener, have settings to expose attributes.</p>
 <p>When viewing attributes in the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/DataInspector/Feature-Information.htm" target="_blank" rel="noopener">Feature Information</a>&nbsp;window, exposed attributes show their&nbsp;<a class="MCXref xref" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FeatureTypeProperties/FME-Data-Types.htm" target="_blank" rel="noopener">FME Data Types</a>; unexposed attributes do not.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Understanding_Schema.htm" target="_blank" rel="noopener">Learn more</a><span style="font-family: inherit; font-size: 1em;">&nbsp;about how FME handles schema.</span></p>
 </blockquote>
 <h2 id="manage-your-attributes">Manage Your Attributes</h2>
@@ -77,17 +77,17 @@
 </tbody>
 </table>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Understand the </span><strong style="font-family: inherit; font-size: 1em;">BulkAttributeRenamer</strong><span style="font-family: inherit; font-size: 1em;">. It changes the case - or adds suffixes/prefixes - to the attribute&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">name</strong><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><em style="font-family: inherit; font-size: 1em;">not</em><span style="font-family: inherit; font-size: 1em;">&nbsp;the attribute value.</span></p>
 </blockquote>
 <p>Many of these transformers can carry out similar operations, and you can see that the AttributeManager does so many tasks you can use it almost exclusively.</p>
 <p>However, it's important to note that the AttributeManager is a general-purpose tool. Using transformers with more specific functions, e.g., the AttributeRenamer, can boost performance. The only time AttributeManager tends to be faster than individual function attribute transformers is when you need to undertake many different attribute transformations in a row. Then, the AttributeManager is more performant.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">See this&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://aurelienchaumet.github.io/articles/fme_performance_attributemanager_en/" target="_blank" rel="noreferrer noopener">blog post</a><span style="font-family: inherit; font-size: 1em;"> by FME user Aur&eacute;lien Chaumet for more information on attribute transformer performance.</span></p>
 <p><span style="font-family: inherit; font-size: 1em; color: #222222;">For further reading, check out </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://www.safe.com/blog/2015/11/fmeevangelist141/" target="_blank" rel="noreferrer noopener">this article on Attribute Management</a><span style="font-family: inherit; font-size: 1em; color: #222222;"> on the Safe Software blog.</span></p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>⭐ <strong>New in FME 2023</strong>: the AttributeManager and AttributeCreator transformers let you manage your attributes' data types. <a href="https://www.youtube.com/live/_MoalhW8zlA?feature=share&amp;t=458" target="_blank" rel="noopener">Check out this video to learn more</a>.</p>
 </blockquote>

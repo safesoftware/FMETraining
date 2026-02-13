@@ -72,7 +72,7 @@
 </table>
 <p>With this configuration, the FeatureReader will read the GeoTIFF files that overlap the neighborhoods of interest.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">In this case, we want to read each photo that intersects any neighborhood and just read it once. That is why we used a Dissolver to get a single initiator feature. But the FeatureReader can also be used in scenarios with multiple initiators. If we skipped the Dissolver in this case, we'd read some of the photos multiple times, as we would read intersecting photos for each neighborhood feature separately. Try that out - you'll need the number of features to answer a Quiz question below.</span></p>
 </blockquote>
 <p>Click&nbsp;<strong>OK</strong>.</p>
@@ -85,7 +85,7 @@
 <p><img class="image image-block image-center" src="images/1726527620150.png" alt="Orthophotos clipped to neighborhood boundaries" width="646" height="392" /></p>
 <p><em>Map tiles &copy; <a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy; <a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy; <a href="Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Note that raster images can take a few seconds to show up in Visual Preview.</p>
 </blockquote>
 <h2 id="5-add-a-feature-writer">5) Add a FeatureWriter</h2>
@@ -101,7 +101,7 @@
 </tr>
 <tr style="height: 32.5px;">
 <td style="width: 34.7088%; height: 32.5px;"><strong>Dataset</strong></td>
-<td style="width: 65.1127%; height: 32.5px;">C:\FMEData\Output\Training\Orthophotos</td>
+<td style="width: 65.1127%; height: 32.5px;">C:\FMEData\Output\Training\Orthophotos.zip</td>
 </tr>
 <tr style="height: 48.25px;">
 <td style="width: 34.7088%; height: 48.25px;"><strong>General &gt; Raster File Name</strong></td>
@@ -114,46 +114,38 @@
 <p>You'll see the name of the port change again, this time to @Value(NeighbohoodName), reflecting the feature type fanout setting.</p>
 <p>Run your workspace to write out the images. Click the&nbsp;<strong>FeatureWriter</strong>&nbsp;once to select it and click the&nbsp;<strong>Open Containing Folder button</strong>&nbsp;to see the written images:</p>
 <p><img class="image image-block image-center" src="images/1726527814000.png" alt="Open Containing Folder and output files" width="998" height="150" /></p>
-<h2 id="6-add-a-connector-transformer">6) Add a Connector Transformer</h2>
-<p>The FeatureWriter is working properly to write the data, but now it's time to take advantage of being able to continue a workspace after writing. We can use a Connector transformer to upload these files somewhere.</p>
+<h2 id="6-add-a-connector-transformer">6) Add an FTPCaller Transformer</h2>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p><span style="font-family: inherit; font-size: 1em;">For this example, we'll use an FMEFlowResourceConnector to upload the files to FME Server, which you will need access to. If you don't have FME Server, you can try another Connector for which you have an account, e.g., GoogleDriveConnector, DropBoxConnector, etc.</span></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Alternatively, you can try using a different Connector transformer with a web service you have access to, like a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/googledriveconnector.htm" target="_blank" rel="noopener">GoogleDriveConnector</a> or <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/dropboxconnector.htm" target="_blank" rel="noopener">DropboxConnector</a>.</p>
 </blockquote>
-<p>Click the&nbsp;<strong>Summary cache</strong>&nbsp;to inspect it. You should see an attribute called _dataset. This attribute was created by the FeatureWriter and stores the path to the written data. You can use this path to find the files that were just written and do something with them; in this case, upload them to FME Server.</p>
-<p><img class="image image-block image-center" src="images/1726527901473.png" alt="_dataset parameter" width="538" height="227" /></p>
-<p>Add an FMEFlowResourceConnector after the FeatureWriter and connect it to the Summary port.</p>
-<p><img class="image image-block image-center" src="images/1726527941664.png" alt="Added an FMEServerResourceConnector" width="571" height="207" /></p>
-<p>Before configuring the FMEFlowResourceConnector, we need an FME Server Web Connection. If you don't already have one saved, on Safe Software training machines, you can add an FME Server Web Connection using the following credentials under Tools &gt; FME Options &gt; Web Connections &gt; Plus button:</p>
-<ul>
-<li><strong>Connection Name:</strong> Training FME Flow</li>
-<li><strong>FME Server URL:</strong>&nbsp;<a href="http://localhost/" target="_blank" rel="noreferrer noopener">http://localhost</a></li>
-<li><strong>Username:</strong>&nbsp;admin</li>
-<li><strong>Password:</strong>&nbsp;FMElearnings</li>
-</ul>
-<p><img class="image image-block image-center" src="images/1726528058293.png" alt="Training FME Server Web Connection" width="299" height="398" /></p>
-<p>Once you have a Web Connection configured, double-click the&nbsp;<strong>FMEFlowResourceConnector</strong>&nbsp;to open its parameters. Configure it as follows:</p>
-<table class="featureTable sort_table">
-<tbody class="tbody">
+<p>The FeatureWriter is working properly to write the data, but now it's time to take advantage of being able to continue a workspace after writing. We can use a Connector transformer, or in this example, an FTPCaller, to upload these files somewhere.</p>
+<p>Click the&nbsp;<strong>Summary cache</strong> to inspect it. You should see an attribute called _dataset. This attribute was created by the FeatureWriter and stores the path to the written data. You can use this path to find the files that were just written and do something with them; in this case, upload them to an FTP server.</p>
+<p><img class="image image-block image-center" src="images/1749853295382.png" alt="_dataset parameter" width="543" height="289" /></p>
+<p>Add an&nbsp;<strong>FTPCaller</strong>&nbsp;after the FeatureWriter and connect it to the Summary port.</p>
+<p><img class="fr-fic fr-fil fr-dib fr-draggable" src="images/1749853044854.png" width="597" height="241" /></p>
+<p>Once you have a Web Connection configured, double-click the&nbsp;<strong>FTPCaller</strong>&nbsp;to open its parameters. Configure it as follows:</p>
+<table>
+<tbody>
 <tr>
-<td>FME Server Account</td>
-<td>Training FME Flow</td>
+<td>URL</td>
+<td>ftp://ftp.safe.com/incoming/training/@UUID()-Orthophotos.zip</td>
 </tr>
 <tr>
-<td>Upload</td>
-<td>Folder</td>
+<td>Transfer Type</td>
+<td>Upload from a File</td>
 </tr>
 <tr>
-<td>Folder to Upload</td>
+<td>File to Upload</td>
 <td>_dataset</td>
 </tr>
 <tr>
-<td>Folder ID</td>
-<td>Click the ellipsis [<strong>. . .</strong>] and browse to the Data folder. You can make a subfolder here if you like using the FME Server web interface.<br /><br />Once you click&nbsp;<strong>OK</strong>, it will show the path using an FME Server parameter,&nbsp;<code>FME_SHAREDRESOURCE_DATA/filesys</code>.</td>
+<td>Authentication Type</td>
+<td>None/Anonymous</td>
 </tr>
 </tbody>
 </table>
 <p>Click&nbsp;<strong>OK</strong>.</p>
-<p>Run your workspace. The entire folder of recently-written files will be uploaded to FME Server. You can log into the web interface (<a href="http://localhost/" target="_blank" rel="noreferrer noopener">localhost</a> with username admin and password FMElearnings on Safe Software training machines) and navigate to Files &amp; Connections &gt; Resources &gt; Data &gt; Orthophotos to confirm:</p>
-<p><img class="image image-block image-center" src="images/1726528178308.png" alt="Recently-uploaded orthophotos on FME Flow" width="970" height="622" /></p>
+<p>Run your workspace. In the log file, you will find the confirmation that the dataset was uploaded to the FTP Server:</p>
+<p><img class="fr-fic fr-fil fr-dib fr-draggable" src="images/1749853383428.png" width="932" height="434" /></p>
 <p>Here is the key advantage of the FeatureWriter: your workspace can continue after you write data.</p>

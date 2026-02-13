@@ -7,29 +7,29 @@
 </ul>
 <h2 id="dataset-fanout">Dataset Fanout</h2>
 <p>A Dataset Fanout delivers data to the same feature type, but in multiple datasets. Using the elevation example again, here the output is a different dataset for each elevation value:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/create-multiple-datasets-with-dataset-fanouts/images/dataset.png" alt="Dataset fanout diagram" /></p>
+<p><img class="image image-block image-center" src="images/dataset.png" alt="Dataset fanout diagram" /></p>
 <p>The result of this fanout is a series of DXF datasets, each of which has one elevation&rsquo;s worth of contours on one layer.</p>
 <h2 id="setting-a-dataset-fanout">Setting a Dataset Fanout</h2>
 <p>A Dataset Fanout is defined in the Navigator window in Workbench, just below the writer&rsquo;s dataset parameter:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/create-multiple-datasets-with-dataset-fanouts/images/3-b-4-dc-729-c-052-46-b-8-b-860-cd-45-e-5026-ac-8.png" alt="Fanout Dataset parameter in the Navigator" /></p>
+<p><img class="image image-block image-center" src="images/3-b-4-dc-729-c-052-46-b-8-b-860-cd-45-e-5026-ac-8.png" alt="Fanout Dataset parameter in the Navigator" /></p>
 <p>Double-clicking the Fanout Dataset parameter opens a dialog in which a Fanout checkbox is set. Here you can define the folder to write to and the Fanout Expression to use. The default values set the Fanout Directory from the destination dataset path and the Fanout Expression from the destination dataset file name:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/create-multiple-datasets-with-dataset-fanouts/images/6-b-4984-f-4-b-94-b-4-a-65-8402-0-b-6-bfb-42-e-03-b.png" alt="Dataset fanout dialog" /></p>
+<p><img class="image image-block image-center" src="images/6-b-4984-f-4-b-94-b-4-a-65-8402-0-b-6-bfb-42-e-03-b.png" alt="Dataset fanout dialog" /></p>
 <p>To achieve a fanout (a different file per attribute value) select an attribute to include in the file name, such as this:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/create-multiple-datasets-with-dataset-fanouts/images/af-0437-e-0-18-e-0-4-e-03-9419-5641-e-431-b-68-e.png" alt="Setting a Fanout Expression with an attribute" /></p>
+<p><img class="image image-block image-center" src="images/af-0437-e-0-18-e-0-4-e-03-9419-5641-e-431-b-68-e.png" alt="Setting a Fanout Expression with an attribute" /></p>
 <p>In this case, each different neighborhood produces a separate file of park features.</p>
 <p>It's important to note that the Text Editor dialog can be used to add different components to both the Fanout Directory and the Fanout Expression, including user parameters, functions, and datetimes. Generally, even if the requirement is to use an attribute to define a sub-folder, it would go into the Fanout Expression, rather than the Fanout Directory.</p>
 <h2 id="combining-dataset-fanout-and-zip-files">Combining Dataset Fanout and Zip Files</h2>
 <p>It's easily possible to both apply a fanout to a writer and zip (compress/archive) the files that are written. In fact, there are several methods to do so.</p>
 <p><strong>Fanout to a Single Zip File</strong></p>
 <p>By setting the Destination Fanout Directory as a zip file, it's possible to write multiple, fanned-out datasets, to a single zip file:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/create-multiple-datasets-with-dataset-fanouts/images/a-876-b-40-d-6-f-4-f-4-f-92-81-f-9-a-34-a-4-dde-97-bc.png" alt="Setting a fan out to a single zip file" /></p>
+<p><img class="image image-block image-center" src="images/a-876-b-40-d-6-f-4-f-4-f-92-81-f-9-a-34-a-4-dde-97-bc.png" alt="Setting a fan out to a single zip file" /></p>
 <p>Here the user is fanning out to Shapefile based on the NeighborhoodName attribute. The output directory is set to a zip file meaning the output is a single zip file with multiple datasets. Because this is Shapefile format, each dataset is a folder containing a number of files (.shp, .shx, and so on).</p>
 <p><strong>Fanout to Multiple Zip Files</strong></p>
 <p>By setting the Fanout Expression with a zip file extension, it's possible to write multiple, fanned-out zip files, each containing a single dataset.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/create-multiple-datasets-with-dataset-fanouts/images/8-b-754774-2-c-2-e-452-e-8417-837-b-69-afd-513.png" alt="Creating a zipped fanout by adding .zip to the expression" /></p>
+<p><img class="image image-block image-center" src="images/8-b-754774-2-c-2-e-452-e-8417-837-b-69-afd-513.png" alt="Creating a zipped fanout by adding .zip to the expression" /></p>
 <p>Here the user is also fanning out to Shapefile based on the NeighborhoodName attribute. The output directory is set to a plain directory, but the Fanout Expression is given a zip file extension. This leads to multiple zip files, one per dataset.</p>
 <p>This sort of fanout is potentially useful when the output format includes multiple files (like Shapefile format) and you wish to handle the output some way, post-translation. It's also useful for large datasets (such as raster) where a single file can be way larger than its zipped equivalent.</p>
 <p><strong>Fanout to Multiple Zip Files Inside a Single Zip File</strong></p>
 <p>By using both of the above techniques (in other words giving both the directory and the fanout parameters a zip file extension) you are able to write multiple zip files containing a single dataset, into a single zip file!</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-from-and-write-to-multiple-locations/create-multiple-datasets-with-dataset-fanouts/images/1-b-29-ff-75-0841-4-d-5-c-a-68-f-2-aea-746-ed-3-ab.png" alt="Creating multiple zip files with a fanout" /></p>
+<p><img class="image image-block image-center" src="images/1-b-29-ff-75-0841-4-d-5-c-a-68-f-2-aea-746-ed-3-ab.png" alt="Creating multiple zip files with a fanout" /></p>
 <p>Here the output is a single zip file (Training.zip) containing a series of zipped dataset files!</p>

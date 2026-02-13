@@ -5,23 +5,21 @@
 <li>Use the FME_SHAREDRESOURCE_DATA parameter when authoring to read and write data from Resources.</li>
 <li>Quickly find the path to data on Resources by copying and pasting it from FME Flow.</li>
 </ul>
-<h2>Video</h2>
 <!-- The script tag should live in the head of your page if at all possible -->
 <p>
 <script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
 </p>
 <!-- Put this wherever you would like your player to appear -->
-<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
 <h2 id="author-for-the-resources-system">Author for the Resources System</h2>
 <p>Using the FME Flow web interface, it's simple to select data from the resources folder at run-time. However, in some cases, the author will want to read data from a resources folder without the end-user having to select it.</p>
 <p>To do this requires the use of an FME parameter to define the data as coming from the resources folders.</p>
 <h2 id="fme-parameters-for-server">FME Parameters for Flow</h2>
-<p><span class="c3">In FME Workbench, the Navigator window has a section called User Parameters. You might have noticed that one part of this is a list of FME Flow-specific parameters. For a detailed description of all of the Flow Parameters, please see the&nbsp;</span><span class="c18"><a class="c16" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/FME-Flow-Parameters.htm" target="_self">FME Flow Parameters documentation</a></span><span class="c0">:</span></p>
+<p><span class="c3">In FME Workbench, the Navigator window has a section called FME Flow Parameters, which is a list of FME Flow-specific parameters that can be integrated into workspace parameters. For a detailed description of all of the Flow Parameters, please see the </span><span class="c18"><a class="c16" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/FME-Flow-Parameters.htm" target="_self">FME Flow Parameters documentation.</a></span></p>
 <p><img class="image image-block image-center" src="images/1730499387115.png" alt="FME Flow parameters" width="464" height="534" /></p>
-<p>The uses of these are many and varied; for example, FME_SECURITY_USER returns the name of the user running the workspace and could be used to either write to a custom log or perhaps filter data in different ways in the workspace based on the specific user. FME_TOPIC would return the name of the notification topic (if any) that invoked the workspace.</p>
-<p>However, when authoring for resource data, the most useful parameter is FME_SHAREDRESOURCE_DATA.</p>
+<p>The uses of these are many and varied; for example, FME_SECURITY_USER returns the name of the user running the workspace and could be used to either write to a custom log or perhaps filter data in different ways in the workspace based on the specific user. FME_JOB_ID would return the job ID number for running the workspace, often used to query for the job log file using the REST API.</p>
+<p>However, when authoring workspaces to use data from the FME Flow Shared Resources Data folder, the most useful parameter is FME_SHAREDRESOURCE_DATA.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">A common factor to all these parameters is that they only have an effect when the workspace is run on FME Flow. If the workspace is run on FME Form, it won't return a value. Therefore to test a workspace containing such a parameter on Form requires you to provide a dummy value.</span></p>
 </blockquote>
 <h2 id="fme-sharedresource-data">FME_SHAREDRESOURCE_DATA</h2>
@@ -32,7 +30,7 @@
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.027.FMEParametersForServerInSourceNav.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/1730499782706.png" alt="Navigator after using an FME Flow parameter in a path" width="612" height="261" /></a></p>
 <p>Although the parameter is colored red in Form, when the workspace is run on Flow the parameter is replaced by the actual path and the data is read as expected.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">It's important to remember (for example notice in the screenshots above) that the Flow parameter FME_SHAREDRESOURCE_DATA includes the 'Data' folder in its path.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">For example, I use <strong>FME_SHAREDRESOURCE_DATA</strong>\Zoning\Zones.tab not <strong>FME_SHAREDRESOURCE_DATA\Data</strong>\Zoning\Zones.tab</span></p>
 </blockquote>

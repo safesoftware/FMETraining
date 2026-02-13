@@ -78,7 +78,7 @@
 <p>Firstly, check the log window for errors and warnings. There are no errors, but there are many warnings, which is not a good sign:</p>
 <p><img class="image image-block image-center" src="images/1717103095039.png" alt="Many warnings" width="498" height="37" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">The number of warnings in the Translation Log may differ in your workspace. These numbers can vary based on the Logging Parameters set in FME Options.</span></p>
 </blockquote>
 <p>Click on the warnings button to filter out the warnings. The warnings say:</p>
@@ -88,7 +88,7 @@
 <p>Inspect the output cache on the ExpressionEvaluator (you can click the link next to the warning in the log to focus on it). You will find some addresses have a Walkability value of &lt;null&gt;.</p>
 <p>We know there is a problem. Let's find out where the problem is and why it occurs.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>There were no errors, but the workspace's output is still incorrect. Always inspect your workspace's results to ensure you have configured it correctly.</p>
 </blockquote>
 <h2 id="5-locate-the-problem">4) Locate the Problem</h2>
@@ -102,6 +102,10 @@
 <p>What about the 3,698 features that do not have a crime; what CrimeValue do they get? Inspect the UnjoinedLeft output from the FeatureJoiner, and you will see that they do not have the CrimeValue attribute. That's why the ExpressionEvaluator says that there are missing values. These features do not have a CrimeValue because they don't enter the AttributeValueMapper, which assigns a value to CrimeValue.</p>
 <p>You can confirm this issue by inspecting the NeighborFinder's MatchedBase cache, which contains addresses with and without crime values. You can sort CrimeValue and see that it has missing values here:</p>
 <p><img src="images/1717103352678.png" alt="Missing values for CrimeValue" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Due to a bug, if you are using FME 2025.0, you may not see the City, Province, and other Base feature attributes. You can check Attribute Accumulation &gt; Merge Attributes at the bottom of the NeighborFinder parameters to ensure the transformer exposes them.</p>
+</blockquote>
 <h2 id="6-fix-the-problem">5) Fix the Problem</h2>
 <p>Those features not having a CrimeValue attribute is causing the problem, so we should give them one. To do so, add an AttributeCreator transformer to the workspace between the FeatureJoiner's UnjoinedLeft output port and the NeighborFinder's Base input port:</p>
 <p><img class="image image-block image-center" src="images/1717103431379.png" alt="Adding an AttributeCreator" width="783" height="186" /></p>
@@ -135,7 +139,7 @@
 </table>
 </div>
 <p>When prompted, select only the leisure feature type:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/exercise-debugging-a-workspace/images/8-d-774-e-66-e-405-49-da-ad-36-668-d-9-fba-78-c-9.png" alt="Selecting the leisure feature type" width="397" height="241" /></p>
+<p><img class="image image-block image-center" src="images/1744659827079.png" alt="Selecting the leisure feature type" width="398" height="324" /></p>
 <p>Then, move the new leisure reader near the Parks reader and connect it to the NeighborFinder's Candidate input port. Then right-click on the Parks reader and select Disable.</p>
 <h2 id="8-filter-leisure-data">7) Filter Leisure Data</h2>
 <p>If you inspect the leisure data, you'll notice various leisure facility&nbsp;types, with the type recorded in the leisure attribute.</p>
@@ -154,12 +158,12 @@
 <p>PoolDistance is the source of the problem. There is no related log message to give a clue, and the Feature Count numbers look correct.</p>
 <p>Let's inspect the data. Click on the leisure reader, and while holding the Shift key, click on the NeighborFinder. This step will open all the selected caches in Visual Preview.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you have Toggle Automatic Inspect on Selection disabled, you'll have to right-click on either object and select Inspect Cached Features after selecting them both, or Ctrl click the cache itself instead of the transformer.</p>
 </blockquote>
 <p>Right-click in the Graphics view, go to Background Map, and select Background map off. Visual Preview shows two specks of data a long distance apart. This result is typical of a mismatch of coordinate systems.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>We turn the background map off because otherwise, Visual Preview automatically reprojects data with mismatched coordinate systems. Turning the background map off lets us see these are not using the same coordinate system.</p>
 </blockquote>
 <p>Click on some features and select the Feature Information button. In this window, you will see that the primary data has a coordinate system of UTM83-10, while the leisure data from OSM has a coordinate system of LL84.</p>

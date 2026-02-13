@@ -23,35 +23,35 @@
 <p>In this workspace, a colleague tries to write a list of parks to a Geodatabase dataset. The parks must be in alphabetical order &ndash; according to their name &ndash; and features with no park names must be written as null and appear last in the dataset.</p>
 <p>However, their workspace needs to be configured correctly. The parks are sorted alphabetically, but unnamed parks always appear first.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">By default, FME will display&nbsp;</span><code>&lt;null&gt;</code><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><code>&lt;missing&gt;</code><span style="font-family: inherit; font-size: 1em;">, and empty values at the top of attribute columns sorted alphabetically or naturally, ascending. This sorting behavior applies to Visual Preview manual attribute column sorting and the Sorter transformer output. This feature is helpful when working with your data, as you'll be more likely to spot them quickly when inspecting data. However, in cases where you need to ensure they are written last, you must do some attribute handling.</span></p>
 </blockquote>
 <h2 id="1-start-workbench">1) Start Workbench</h2>
 <p>Open the starting workspace in FME Workbench (2023.2 or later).</p>
 <p>Using feature caching, run the workspace and inspect the source dataset as a table. You&rsquo;ll see that the data is in order of&nbsp;<code>ParkId</code>, not&nbsp;<code>ParkName</code>, and that there are&nbsp;<code>&lt;missing&gt;</code>&nbsp;values scattered throughout:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.228.Ex4.InitialData.png" alt="Parks data with missing values scattered throughout" /></p>
+<p><img class="image image-block image-center" src="images/Img1.228.Ex4.InitialData.png" alt="Parks data with missing values scattered throughout" /></p>
 <p>To sort the&nbsp;<code>&lt;missing&gt;</code> data, we'll need to set their ParkName attribute to something that appears at the bottom of a sorted list,&nbsp;then set them back to&nbsp;<code>&lt;null&gt;</code>&nbsp;afterward.</p>
 <h2 id="2-add-null-attribute-mapper">2) Add NullAttributeMapper</h2>
 <p>Add a NullAttributeMapper transformer before the Sorter transformer. Inspect the parameters.</p>
 <p>Ensure &ldquo;Map&rdquo; is set to Selected Attributes, and choose the attribute&nbsp;<code>ParkName</code>:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.229.Ex4.NullAttributeMapperParameters1.png" alt="Choosing the Selected Attributes in the NullAttributeMapper" /></p>
+<p><img class="image image-block image-center" src="images/Img1.229.Ex4.NullAttributeMapperParameters1.png" alt="Choosing the Selected Attributes in the NullAttributeMapper" /></p>
 <p>Underneath that is a section of what to map to.</p>
 <p>We know the values here are currently listed as <code>&lt;missing&gt;</code>, so set the &ldquo;If Attribute Value Is&rdquo; parameter to Missing (Selected Attributes Only).</p>
 <p>We want to map these to a value at the bottom of an alphabetically sorted list, so change &ldquo;Map To&rdquo; to New Value and enter ZZZ as the new value.</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.230.Ex4.NullAttributeMapperParameters2.png" alt="Mapping missing attribute values to a new value of ZZZ" /></p>
+<p><img class="image image-block image-center" src="images/Img1.230.Ex4.NullAttributeMapperParameters2.png" alt="Mapping missing attribute values to a new value of ZZZ" /></p>
 <p>Click OK to accept the parameter changes.</p>
 <h2 id="3-add-null-attribute-mapper">3) Add NullAttributeMapper</h2>
 <p>Now add a second NullAttributeMapper; this time, it should be connected <em>after</em>&nbsp;the Sorter.</p>
 <p>Open the parameters and, once again, ensure &ldquo;Map&rdquo; is set to Selected Attributes and select the&nbsp;<code>ParkName</code> attribute. This time, turn the ZZZ values back to nulls:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.231.Ex4.NullAttributeMapperParameters3.png" alt="Mapping ZZZ to null" /></p>
+<p><img class="image image-block image-center" src="images/Img1.231.Ex4.NullAttributeMapperParameters3.png" alt="Mapping ZZZ to null" /></p>
 <p>Technically, we could turn them back into <code>&lt;missing&gt;</code>; the Geodatabase writer will write them out as nulls. However, assuming we didn&rsquo;t know that, null is the safer option and will give us what we want.</p>
 <h2 id="4-save-and-run-workspace">4) Save and Run Workspace</h2>
 <p>Save the workspace and then run it. Inspect the output. This time, the data should be sorted by <code>ParkName</code>, but with all null values at the end of the dataset:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.232.Ex4.SortedOutputData.png" alt="Resulting data with null values at the bottom" /></p>
+<p><img class="image image-block image-center" src="images/Img1.232.Ex4.SortedOutputData.png" alt="Resulting data with null values at the bottom" /></p>
 <h2 id="5-fix-ref-park-id">5) Fix RefParkId</h2>
 <p>Your colleague now asks you to fix the&nbsp;<code>RefParkId</code> field. You'll have noticed that a lot of the values are -9999. That's the MapInfo equivalent of "nothing," but it would be better to set these to proper nulls for Geodatabase.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">That's very simple to do. Take a moment to think about how before you look at the instructions!</span></p>
 </blockquote>
 <p>To do this, open the parameters dialog for the first NullAttributeMapper. Add <code>RefParkId</code>&nbsp;to the list of attributes for processing. Then add -9999 to the "Or If Attribute Value Is" field:</p>

@@ -11,9 +11,9 @@
 <p>The geometry permitted in an output dataset depends on the format used. Some formats allow any geometry - or mix of geometries - to exist in a feature type.</p>
 <p>However, some formats do not allow a mix of geometries in a single feature type, which can cause problems.</p>
 <p>For example, a standard (static) Geodatabase writer feature type allows you to pick the geometry allowed in that file:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/define-schema-dynamically-from-an-external-source/set-geometry-dynamically/images/1673388246767.png" alt="Defining geometry on a writer feature type" /></p>
+<p><img class="image image-block image-center" src="images/1673388246767.png" alt="Defining geometry on a writer feature type" /></p>
 <p>In a dynamic workspace, this changes. The geometry type can be chosen manually, depending on the first feature, or depending on the chosen schema definition:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/define-schema-dynamically-from-an-external-source/set-geometry-dynamically/images/1673388278252.png" alt="Defining Geometry From Schema Definition" /></p>
+<p><img class="image image-block image-center" src="images/1673388278252.png" alt="Defining Geometry From Schema Definition" /></p>
 <p>In Schema Definition mode, when the read data provides the schema, the permitted geometry duplicates that source dataset's schema.</p>
 <p>But when the Schema Source parameter is changed to point to another dataset, then the permitted geometry is defined by that dataset's schema.</p>
 <p>If the geometry of the written data is different from that schema and the destination format does not support multiple geometry types, then FME drops features instead of writing them.</p>
@@ -22,7 +22,7 @@
 <p>This step overrides the geometry defined by the chosen schema source so that the writer writes only polygon features.</p>
 <h2 id="first-feature-geometry-definition">First Feature Geometry Definition</h2>
 <p>The other option for defining geometry type is First Feature Defines Geometry Type.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/define-schema-dynamically-from-an-external-source/set-geometry-dynamically/images/1673388310928.png" alt="Defining Geometry with First Feature Defines Geometry Type" /></p>
+<p><img class="image image-block image-center" src="images/1673388310928.png" alt="Defining Geometry with First Feature Defines Geometry Type" /></p>
 <p>Geometry type can be challenging to handle in a dynamic translation because there is a degree of uncertainty about what geometry types might be in the source data and how well they will match up to the geometry types specified in the source schema. However, this same uncertainty makes it difficult to set a fixed geometry definition.</p>
 <p>The First Feature Defines Geometry Type option solves this. When selected, the first feature to arrive at the writer gets to set the geometry type. That way, the author does not need to know in advance what geometry the writer will encounter or what geometry the schema will permit.</p>
 <p>For example, if the first feature is a polygon, then the geometry type for that feature type is set to polygon only; the writer will refuse subsequent features destined for the same feature type if they do not have the same polygon geometry.</p>

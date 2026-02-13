@@ -42,9 +42,9 @@
 <h2 id="1-open-workspace">1) Open Workspace</h2>
 <p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-create-a-custom-transformer-for-parallel-processing.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>.</p>
 <p>This workspace reads OpenStreetMap building data and then performs several validation tasks. Firstly, it overlays it with the city address database to see if it has a matching address. Secondly, it tests the building geometry with a <strong>GeometryValidator&nbsp;</strong>transformer. Finally, it overlays the buildings against the city zoning data to see if they properly fall inside a single zone:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-for-performance/exercise-create-a-custom-transformer-for-parallel-processing/images/1644348622334.png" alt="Starting workspace" /></p>
+<p><img class="image image-block image-center" src="images/1644348622334.png" alt="Starting workspace" /></p>
 <p>Turn on feature caching and run the workspace. Inspect the data at each step to become familiar with what it is doing. Specifically, take note of the feature counts so that we can be sure that any changes we make do not affect the results:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-for-performance/exercise-create-a-custom-transformer-for-parallel-processing/images/1644348640900.png" alt="Starting feature counts" /></p>
+<p><img class="image image-block image-center" src="images/1644348640900.png" alt="Starting feature counts" /></p>
 <p>Although the workspace does not take long to run, a custom transformer with parallel processing might improve performance.</p>
 <h2 id="2-create-custom-transformer">2) Create Custom Transformer</h2>
 <p>The first thing to consider is managing data as separate groups for parallel processing. Because OSM is crowdsourced data, there&rsquo;s no guarantee that any particular attribute will have values. If you check the source OSM data, you&rsquo;ll notice that it has very few values for any attribute.</p>
@@ -69,13 +69,13 @@
 <p>Now, return to the main canvas window. Open the parameters for the <strong>BuildingValidator&nbsp;</strong>custom transformer. For the&nbsp;<strong>Group By</strong>&nbsp;parameter, select the attribute&nbsp;<code>PostcodePrefix</code>:</p>
 <p><img class="image image-block image-center" src="images/1710540176769.png" alt="Setting the Group By for parallel processing" width="665" height="250" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If you don&rsquo;t have a&nbsp;</span><code>PostcodePrefix</code><span style="font-family: inherit; font-size: 1em;"> attribute, follow the steps for the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">SubstringExtractor&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">above.</span></p>
 </blockquote>
 <h2 id="5-run-workspace">5) Run Workspace</h2>
 <p>Now, it&rsquo;s time to run the workspace. However, before you do, disable feature caching. Also, turn off <strong>Stop at Breakpoints</strong> if it is enabled.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><strong style="font-family: inherit; font-size: 1em;">Do</strong><strong style="font-family: inherit; font-size: 1em;">&nbsp;not&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">run this with either feature caching or breakpoints enabled. If you do, parallel processing won&rsquo;t work!</span></p>
 </blockquote>
 <p>The log window will now show several processes being started and stopped. You can open the task or process manager for your system to look for multiple FME processes running (note that some processes related to FME Flow may exist if you have it installed and active). Look for fmeworker.exe, one of which should be running for each group.</p>
@@ -90,7 +90,7 @@
 <p>Now, switch to the <strong>BuildingValidator&nbsp;</strong>tab. Add a&nbsp;<strong>Creator&nbsp;</strong>transformer and a&nbsp;<strong>FeatureReader&nbsp;</strong>transformer, and connect them. Open the&nbsp;<strong>FeatureReader&nbsp;</strong>parameters and set it up to read the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" target="_self">Zoning MapInfo TAB dataset</a>:</p>
 <p><img class="image image-block image-center" src="images/1710542623408.png" alt="Configuring FeatureReader" width="868" height="245" /></p>
 <p>Now connect the Zones output from the&nbsp;<strong>FeatureReader</strong>&nbsp;into the&nbsp;<strong>SpatialRelator's Supplier </strong>port (in place of the&nbsp;<strong>SpatialRelator_Supplier&nbsp;</strong>Input object, which you can now delete):</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-for-performance/exercise-create-a-custom-transformer-for-parallel-processing/images/1644349366727.png" alt="Replacing Input port with FeatureReader" /></p>
+<p><img class="image image-block image-center" src="images/1644349366727.png" alt="Replacing Input port with FeatureReader" /></p>
 <p>Now, re-run the workspace and check the output. This time, only 250 features should have a value of <em>Unzoned building&nbsp;</em>for the&nbsp;<code>_ValidationZones</code>&nbsp;attribute, and 218 features should have a value of&nbsp;<em>Overlapping zones building</em>.</p>
 <p>The workspace is now producing the correct results using parallel processing. But was it worth making these changes?</p>
 <h2 id="7-assess-parallel-processing">7) Assess Parallel Processing</h2>

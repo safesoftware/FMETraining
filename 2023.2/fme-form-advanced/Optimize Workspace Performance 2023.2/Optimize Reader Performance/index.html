@@ -8,18 +8,18 @@
 <h2 id="optimizing-fme-performance">Optimizing FME Performance</h2>
 <p>This course focuses on optimizing the performance of your workspaces. It contains advice for reading, writing, transformers, and FME Flow.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Many of the tips in this course are also collected in the comprehensive Knowledge Base article,&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/performance-tuning-fme" target="_blank" rel="noopener">Performance Tuning FME</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
 </blockquote>
 <h2 id="improving-reader-performance">Improving Reader Performance</h2>
 <p>The most important method to improve reading performance is to minimize the amount of data being read. As already mentioned, reading excess features counts as unnecessary work and is, therefore, inefficient. In many workspaces, read features are preserved through most of the workflow. This fact means that every transformer can potentially run on all the input data, making it vital that you remove unnecessary data from your workflow as early as possible.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">It's bad enough to read extra features, but that effect can be multiplied many times when Feature Caching is turned on. Therefore, you need to be extra careful to read no more data than is necessary.</span></p>
 </blockquote>
 <h2 id="filtering-input">Filtering Input</h2>
 <p>For example, this workspace reads nearly 14,000 features but immediately discards all except 419 of them (ones where the owner's name begins with "C"):</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.010.ImprovingReaderPerformanceBadWorkspace.png" alt="Filtering input with a Tester" /></p>
+<p><img class="image image-block image-center" src="images/Img2.010.ImprovingReaderPerformanceBadWorkspace.png" alt="Filtering input with a Tester" /></p>
 <p>In this scenario, it would be much more efficient to just read those approximately 400 features directly. Not only does it avoid reading unnecessary data, but it also avoids caching it twice over!</p>
 <p>Fortunately, all formats have various sets of parameters that speed up feature reading by filtering the amount of data being read:</p>
 <p><img class="image image-block image-center" src="images/1711045999713.png" alt="The Search Envelope and Features to Read parameters in the Navigator" width="569" height="418" /></p>
@@ -29,13 +29,13 @@
 <p>Other formats &ndash; particularly databases &ndash; have additional clauses that can help reduce the data flow:</p>
 <p><img class="image image-block image-center" src="images/1711046351526.png" alt="The WHERE clause in a reader feature type" width="557" height="293" /></p>
 <p>Here, for example, this Geodatabase reader has a &lsquo;WHERE Clause&rsquo; parameter that applies the "owner name begins with 'C' test" in a way that is more efficient than reading the entire contents of a large table and using a Tester transformer.</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.013.ImprovingReaderPerformanceSQLWhereResults.png" alt="Using a WHERE clause instead of a Tester" /></p>
+<p><img class="image image-block image-center" src="images/Img2.013.ImprovingReaderPerformanceSQLWhereResults.png" alt="Using a WHERE clause instead of a Tester" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">In short, it is more efficient to use a reader parameter to filter source data than to read all the source data and then filter it with a transformer. Caching the reader feature type does not necessarily help, as you still have to wait for the large cache to be created and are stuck working with a large amount of data for all additional processing.</span></p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" style="color: #6f6f6f; font-family: inherit; font-size: 1em;" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" style="color: #6f6f6f; font-family: inherit; font-size: 1em;" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If you are reading an SQL database, SQL transformers are often more performant than readers. </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/sqlcreator-sqlexecutor-1" target="_blank" rel="noopener">Learn more about SQL transformers</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
 </blockquote>
 <h2 id="excess-feature-types">Excess Feature Types</h2>
@@ -43,7 +43,7 @@
 <p>Here, the user has added two tables to their Geodatabase reader:</p>
 <p><img class="image image-block image-center" src="images/1711046270206.png" alt="Reader feature types in the Navigator" width="569" height="137" /></p>
 <p>However, looking at the workspace, you'll find that the PostcodeBoundaries table is not connected to anything. The unconnected table is still being read - and cached - but the data is being ignored:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.015.ReaderPerformanceUnusedFeatureType.png" alt="An unattached reader feature type" /></p>
+<p><img class="image image-block image-center" src="images/Img2.015.ReaderPerformanceUnusedFeatureType.png" alt="An unattached reader feature type" /></p>
 <p>Presumably, the user added the tables for some reason but then decided they did not need them; in that case, they should delete the feature type from the FME workspace. Then, the table will not be read, and performance will improve.</p>
 <h2 id="remove-unattached">Remove Unattached</h2>
 <p>When developing a workspace, it is easy to lose unused feature types, especially once the workspace grows in size. To remove these unused feature types quickly, go to Tools &gt; Remove &gt; Unattached... in the menu bar.</p>

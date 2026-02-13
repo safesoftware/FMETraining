@@ -8,7 +8,7 @@
 </ul>
 <h2 id="workspaces-as-a-trigger">Workspaces as a Trigger</h2>
 <p>Workspaces and other Internal Actions are the only protocols that have both input and output ports. This means that although they are treated as an Action because they need something to kick them off, they can also act as a Trigger to downstream Actions.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1657150594029.png" alt="Automations workspace as trigger diagram" /></p>
+<p><img class="image image-block image-center" src="images/1657150594029.png" alt="Automations workspace as trigger diagram" /></p>
 <p>Workspaces can send messages containing content from the data being processed and report the status of a translation, such as whether it ran successfully or ended in failure.</p>
 <h2 id="workspace-action-output-ports">Workspace Action Output Ports</h2>
 <p>By default, workspace nodes have two outports representing the workspace status: one for Success and one for Failure. These ports allow you to build an action in response to one or both job statuses. Each output includes a set of output keys with additional information about the workspace that was run that can be used by Actions connected to either port.</p>
@@ -18,7 +18,7 @@
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -62,7 +62,7 @@
 <li>Disable or enable keys. By default, all applicable keys are enabled in the outgoing message as it passes downstream.</li>
 <li>Create user keys with a user-defined name, and prefixed with the user. tag. You can assign the value of a user key from an existing key, or a constant.</li>
 </ul>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008082802.png" alt="Using Output Keys" /></p>
+<p><img class="image image-block image-center" src="images/1630008082802.png" alt="Using Output Keys" /></p>
 <p>The primary benefit of disabling keys or creating user keys is to prevent them from being overwritten, where desired. The values of JSON objects with the same key strings are overwritten as they pass through a workflow. For example, consider a workflow that contains two Run Workspace Actions in sequence. Both Actions pass a&nbsp;<code>job.timeStarted</code>&nbsp;key, but the value that key produces in the first action is overwritten by the second Action. If you want to preserve only the&nbsp;<code>job.timeStarted</code>&nbsp;value of the first workspace, you can disable the&nbsp;<code>job.timeStarted</code>&nbsp;key in the configuration of the second Action, and preserve it in the first.</p>
 <p>But what if you wanted to preserve both&nbsp;<code>job.timeStarted</code>&nbsp;values? In this case, you can create a user key in both workspaces, give them each unique names, and base their values on&nbsp;<code>job.timeStarted</code>. Optionally, you can also disable&nbsp;<code>job.timeStarted</code>&nbsp;in both workspaces.</p>
 <p>You can use user keys anywhere in a workflow that allows you to specify a key for a parameter value.</p>
@@ -70,18 +70,18 @@
 <p>You can create your own key-value pairs, prefixed with the&nbsp;<code>global.</code>&nbsp;tag. Global keys allow you to reference a value in multiple components of a workflow without having to explicitly define it each time. You can use global keys anywhere in a workflow that allows you to specify an output key for a parameter value.</p>
 <p>You can create global keys in two ways.</p>
 <p>On the Automations toolbar, click the Global Keys Editor button:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008377017.png" alt="Global Keys Editor button" /></p>
+<p><img class="image image-block image-center" src="images/1630008377017.png" alt="Global Keys Editor button" /></p>
 <p>Dynamically, when&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Working-With-Parameters-Automations.htm" target="_blank" rel="noreferrer noopener">specifying a parameter value</a>&nbsp;in a workflow. From an applicable parameter drop-down list, select Add to Global Keys.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008494541.png" alt="Adding to Global Keys" /></p>
+<p><img class="image image-block image-center" src="images/1630008494541.png" alt="Adding to Global Keys" /></p>
 <p>In the Global Keys Editor, click&nbsp;+&nbsp;to start a new&nbsp;Global Key, enter a name (<code>global.&lt;your_name&gt;</code>), specify a&nbsp;Value, and click&nbsp;OK.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/connect-automations-with-job-orchestration/connect-workspaces-in-automations/images/1630008851422.png" alt="Global Keys Editor dialog" /></p>
+<p><img class="image image-block image-center" src="images/1630008851422.png" alt="Global Keys Editor dialog" /></p>
 <h2 id="filtering-on-an-output-key">Filtering on an Output Key</h2>
 <p>You can use the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Actions/Action-Filter.htm" target="_blank" rel="noreferrer noopener">Filter Messages</a>&nbsp;Action to test for the presence of a string in an output key, and route messages in your workflow accordingly. For example, if the&nbsp;<code>email.subject</code>&nbsp;key from an&nbsp;<a href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-Triggers/Trigger-Email_SMTP.htm" target="_blank" rel="noreferrer noopener">Email Received (SMTP)</a>&nbsp;trigger contains a specific string, you might choose to route the message differently from other emails that do not contain that string.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>

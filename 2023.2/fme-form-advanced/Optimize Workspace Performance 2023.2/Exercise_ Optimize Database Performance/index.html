@@ -31,12 +31,12 @@
 <p>Members of the public often call the city to ask what day their garbage collection is. To help, the city has an internal system hosted on FME Flow. Planning department members can look up an address ID and enter it into a published parameter, and the system retrieves the garbage pickup information.</p>
 <p>The system works but is slower than it should be. Let&rsquo;s run this short exercise to discover why.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">This exercise uses a PostGIS database hosted on Amazon RDS or an Esri Geodatabase. You can use either one (no extra license is required). Please open the correct workspace and follow the instructions for your chosen format.</span></p>
 </blockquote>
 <h2 id="1-create-database-connection-post-gis-only">1) Create Database Connection (PostGIS Only)</h2>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>You can skip this step while taking a Safe Software-hosted training course. The Database Connection <em>FME Training PostGIS Database </em>should already exist on your training machine.</p>
 </blockquote>
 <p>To use a PostGIS database as a source requires a connection to it. If you are using Geodatabase instead of PostGIS, you can skip to step 2.</p>
@@ -49,7 +49,7 @@
 <h2 id="2-open-and-run-workspace">2) Open and Run Workspace</h2>
 <p>Open the starting workspace of your choice (<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-postgis.fmw" target="_blank" rel="noreferrer noopener">PostGIS</a>&nbsp;or&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-optimize-database-performance-geodatabase.fmw" target="_blank" rel="noreferrer noopener">Esri Geodatabase</a>) in FME Workbench (2023.2 or later).</p>
 <p>The workspace looks something like this:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.222.Ex4.InitialWorkspace.png" alt="Starting workspace" /></p>
+<p><img class="image image-block image-center" src="images/Img2.222.Ex4.InitialWorkspace.png" alt="Starting workspace" /></p>
 <p>A published parameter accepts an address ID. The postal address database is read and filtered against this ID. The chosen address is used in a spatial overlay against garbage zones. The result is formatted in HTML and written with a Text File writer.</p>
 <p>To get a comparison, run the workspace. Use Prompt Mode to be prompted for an address ID. A suitable address ID is 127209 (PostGIS) or 6135 (Geodatabase).</p>
 <p>The result, in a web browser, is this:</p>
@@ -72,7 +72,7 @@ INFORM|END - ProcessID: 32380, peak process memory usage: 166800 kB, current pro
 <h2 id="4-delete-tester">4) Delete Tester</h2>
 <p>Now we have the WHERE clause, and the Tester transformer is no longer required, so delete it.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If you collapse the bookmark and then delete the bookmark, it deletes both the bookmark and the transformer in one step:</span></p>
 <p><span style="font-family: inherit; font-size: 1em;"><img src="images/1711147696146.png" alt="Collapsed bookmark" width="315" height="80" /></span></p>
 </blockquote>
@@ -86,11 +86,11 @@ INFORM|END - ProcessID: 32380, peak process memory usage: 166800 kB, current pro
 <h2 id="6-use-sql-creator-post-gis-only">6) Use SQLCreator (PostGIS Only)</h2>
 <p>SQL transformers can be faster than using database readers.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/sqlcreator-sqlexecutor-1" target="_blank" rel="noopener">Learn more about SQL transformers</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
 </blockquote>
 <p>Add an SQLCreator to your canvas above the PostGIS reader.</p>
-<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/optimize-workspace-performance/exercise-optimize-database-performance/images/1620858090949.png" alt="SQLCreator" /></p>
+<p><img class="image image-block" src="images/1620858090949.png" alt="SQLCreator" /></p>
 <p>Double-click it to open its parameters. Select PostGIS for the Format and FME Training Database Connection for the Connection.</p>
 <p><img class="image image-block" src="images/1711395348729.png" alt="SQLCreator parameters" width="390" height="361" /></p>
 <p>Click the ellipsis button next to SQL Statement. Enter the following SQL statement:</p>
@@ -110,7 +110,7 @@ WHERE "AddressId" = $(AddressID)</code><br /><br /></pre>
 <p>Click OK. The Enter Attributes to Expose dialog will be populated with all the attributes in the PostalAddress table. These will now be exposed properly.</p>
 <p><img class="image image-block" src="images/1716416470937.png" alt="Attributes to Expose" width="341" /></p>
 <p>Click OK twice to finish configuring the SQLCreator. Connect its Result port to the PointOnAreaOverlayer Point port and disable the PostGIS reader feature type:&nbsp;</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/optimize-workspace-performance/exercise-optimize-database-performance/images/1653693862712.png" alt="Using an SQLCreator instead of a reader" /></p>
+<p><img class="image image-block image-center" src="images/1653693862712.png" alt="Using an SQLCreator instead of a reader" /></p>
 <p>Run your workspace. Performance will probably be similar, but this route could save valuable time if the query were more complex.</p>
 <div>
 <pre><code>INFORM|FME Session Duration: 2.2 seconds. (CPU: 0.2s user, 0.1s system)<br />INFORM|END - ProcessID: 27756, peak process memory usage: 128100 kB, current process memory usage: 116328 kB</code><br /><br /></pre>
@@ -122,7 +122,7 @@ WHERE "AddressId" = $(AddressID)</code><br /><br /></pre>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/tutorial-let-the-database-do-the-work" target="_blank" rel="noopener">See the tutorial series Let the Database Do the Work</a><span style="font-family: inherit; font-size: 1em;"> for more database performance tips.</span></p>
 </blockquote>
 </div>

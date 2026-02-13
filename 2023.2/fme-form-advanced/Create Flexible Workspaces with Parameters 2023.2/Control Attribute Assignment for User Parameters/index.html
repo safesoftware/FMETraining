@@ -32,14 +32,14 @@
 <p><img src="images/1707776284436.png" alt="Cannot choose an attribute" width="370" height="209" /></p>
 <p>Instead, they are required to type in a single text value.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Only some FME parameters allow attribute assignment. Enabling attribute assignment in a user parameter will not change this. For example, the Snapper tolerance is never allowed to use attribute assignment, even if the value is set by a user parameter with the Disable Attribute Assignment box unchecked.<br /><br />If you share and linke a user parameter with attribute assignment disabled to an FME parameter that allows attribute assignment and one that doesn't, FME takes the safe option and disallows attribute selection.</p>
 </blockquote>
 <h3 id="attribute-name-parameter">Attribute Name Parameter</h3>
 <p>So, attribute assignment handles the case where you want the user to enter a fixed value, and you may also give the end user the option to select an attribute.</p>
 <p>However, the reverse case must also be handled: you don't want the user to be able to enter a fixed value; you <em>only</em>&nbsp;want them to be able to select an attribute.</p>
 <p>For example, here, an author is adding a label to the data:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.043.LabelReplacerNeedsUserInput.png" alt="" /></p>
+<p><img src="images/Img4.043.LabelReplacerNeedsUserInput.png" alt="" /></p>
 <p>The author wants the user to select an attribute to provide the label but cannot enter text. In this scenario, they need to create a user parameter with a particular type called Attribute Name:</p>
 <p><img src="images/1707773643763.png" alt="Attribute name user parameter configuration" width="361" height="500" /></p>
 <p>After linking this user parameter to the LabelPointReplacer's FME parameter, when the workspace is run, the user is permitted to select an attribute and ONLY an attribute:</p>
@@ -47,10 +47,10 @@
 <p><strong>However!</strong></p>
 <p>There is a catch to this operation. As the type suggests, the user parameter returns an attribute name but not the attribute value.</p>
 <p>If the workspace is run in this state, then the LabelPointReplacer is supplied with the attribute name (not value) and uses it as the label, like so:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.046.AttrNameParameterBadResult.png" alt="Incorrect initial result" width="541" height="261" /></p>
+<p><img src="images/Img4.046.AttrNameParameterBadResult.png" alt="Incorrect initial result" width="541" height="261" /></p>
 <p>The author must embed the user parameter name inside an FME function to fetch the value of the attribute to which it refers.</p>
 <p>To do this, the author finds the LabelPointReplacer parameter and changes it (either directly in the FME parameter or via the Text Editor window) to be <code>@Value($(UserAttrSelection))</code>.</p>
 <p>The <code>@Value()</code> function replaces the name of the attribute with its actual value:</p>
 <p><img src="images/1707774653737.png" alt="Proper use of the attribute name user attribute to supply a value" width="363" height="250" /></p>
 <p>Now, when the workspace is run, the output will be correct:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.048.AttrNameParameterGoodResult.png" alt="Correct result" width="584" height="256" /></p>
+<p><img src="images/Img4.048.AttrNameParameterGoodResult.png" alt="Correct result" width="584" height="256" /></p>

@@ -58,14 +58,14 @@
 <p><strong>1) Start Workbench</strong></p>
 <p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-flood-risk-project.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\exercise-flood-risk-project.fmw). This is the workspace as your colleague has created it so far.</p>
 <p>Turn on feature caching and run the workspace. Inspect all three CoastalZones [GML] reader feature type caches and the AttributeRenamer's Output cache (Ctrl or ⌘-click) to observe the data.</p>
-<p><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.211.Ex2.InitialDataProcessed.png" alt="Flood risk zones and addresses" /></p>
+<p><img class="image" src="images/Img1.211.Ex2.InitialDataProcessed.png" alt="Flood risk zones and addresses" /></p>
 <p>This colored screenshot shows how the addresses fall within (and are assigned) a zone denoting their distance from the shoreline. They also possess an elevation value. We must now use this information to assign a flood risk to each address.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">As with most FME projects, there are multiple ways to carry out this task. The two primary techniques are </span><strong style="font-family: inherit; font-size: 1em;">conditional filtering</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">data mapping</strong><span style="font-family: inherit; font-size: 1em;">.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">Conditional filtering means separating the data according to the elevation and shoreline zone. Data mapping means we set an attribute value (flood risk) according to the value of other attributes.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">Here is an example of how we might mix filtering data by coastal zone with mapping data by elevation:</span></p>
-<p><span style="font-family: inherit; font-size: 1em;"><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.212.Ex2.SimpleFiltering.png" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/Img1.212.Ex2.SimpleFiltering.png" /></span></p>
 <p><span style="font-family: inherit; font-size: 1em;">However, we can avoid filtering data by using Conditional Values. The filter conditions are incorporated as the conditions for our Conditional Values.</span></p>
 </blockquote>
 <p><strong>2) Finish Configuring AttributeManager</strong></p>
@@ -82,7 +82,7 @@
 <p><img class="image" src="images/1701995553037.png" alt="Defining Logic and setting the Attribute Value" width="340" height="339" /></p>
 <p>Now click&nbsp;<strong>OK</strong>&nbsp;to close this part of the dialog.</p>
 <p>The main Conditional Definition dialog is complete. It should look like this:</p>
-<p><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.219.Ex2.FinalAttrManagerConditions.png" alt="Dialog with remaining tests entered" /></p>
+<p><img class="image" src="images/Img1.219.Ex2.FinalAttrManagerConditions.png" alt="Dialog with remaining tests entered" /></p>
 <p>It is essential to keep these in the correct order; otherwise, a feature may pass the tests in the wrong order and receive a lesser risk than expected.</p>
 <p>Accept the changes, and the main AttributeManager dialog now looks like this:</p>
 <p><img class="image" src="images/1700864523576.png" alt="FloodRisk with 6 possible values" width="780" height="142" /></p>
@@ -90,9 +90,9 @@
 <p>Inspecting cached data doesn't allow you to separate that data for easier inspection unless you use an Inspector transformer. So, place a single Inspector transformer and connect the AttributeManager output.</p>
 <p>Open the Inspector parameters dialog, check Group Processing and set Group-By to the newly created attribute called <strong>FloodRisk</strong>.</p>
 <p>Save and run the workspace. You should see each address colored to match its flood risk. You can adjust the feature symbology to produce a better result, like so:</p>
-<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/use-conditional-values/exercise-flood-risk-project/images/1606258258073.png" alt="Result with five flood risk groups of address points" /></p>
+<p><img class="image image-block" src="images/1606258258073.png" alt="Result with five flood risk groups of address points" /></p>
 <p>You can also turn off each zone to see which addresses are most/least at risk.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Best practice should always play a part in any workspace. There are fewer transformers in this case, but does this improve the workspace? Is it a more aesthetic (good-looking) workspace? The decision on which method to use may depend on who will maintain the workspace. In most cases, conditional filters or data mapping are both valid options.</span></p>
 </blockquote>

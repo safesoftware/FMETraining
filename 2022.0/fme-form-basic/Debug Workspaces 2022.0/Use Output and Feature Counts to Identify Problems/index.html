@@ -23,7 +23,7 @@
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -39,24 +39,24 @@
 </div>
 <h2 id="feature-counts">Feature Counts</h2>
 <p>A workspace&nbsp;feature count&nbsp;refers to the numbers shown on each connection once a translation is complete:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/use-output-and-feature-counts-to-identify-problems/images/0-cfafefa-c-769-41-ff-9005-39-c-3-d-4523507.png" alt="Feature counts on connection lines" width="624" height="287" /></p>
+<p><img class="image image-block image-center" src="images/0-cfafefa-c-769-41-ff-9005-39-c-3-d-4523507.png" alt="Feature counts on connection lines" width="624" height="287" /></p>
 <p>Once you find an error or problem, feature counts help us identify where that problem occurred.</p>
 <p>In the above screenshot, if the Clipper output were incorrect, then you would inspect the prior feature counts to see if any counts looked wrong. Perhaps you know that there are seven neighborhoods, but the feature count shows only six.</p>
 <h2 id="incorrect-output">Incorrect Output</h2>
 <p>When the number of output features is incorrect, then there are several things to check.</p>
 <p>If you get zero output, and the feature counts show that all features entered a transformer, but none emerged, then you can be reasonably confident that the transformer is the cause of the problem:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/use-output-and-feature-counts-to-identify-problems/images/f-21-e-6901-edf-4-4-e-6-e-be-71-88405-a-0-de-9-fc.png" alt="Debugging by checking feature counts" width="454" height="304" /></p>
+<p><img class="image image-block image-center" src="images/f-21-e-6901-edf-4-4-e-6-e-be-71-88405-a-0-de-9-fc.png" alt="Debugging by checking feature counts" width="454" height="304" /></p>
 <p>For example, 80 features enter the Clipper transformer (to be clipped against a single boundary), but none emerged. The Clipper transformer is almost certainly the cause of any incorrect output.</p>
 <p>The transformer does not reject the data; it merely does not pass the test expected. It's possible that Clipper and Clippee don't occupy the same coordinate system; hence, one does not fall inside the other.</p>
 <p>Turning on feature caching helps to confirm this to be the case:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/use-output-and-feature-counts-to-identify-problems/images/d-88-ab-642-3674-4-edf-b-4-f-9-adcb-2-d-5-a-9-a-73.png" alt="Using feature caching to find output" width="442" height="292" /></p>
+<p><img class="image image-block image-center" src="images/d-88-ab-642-3674-4-edf-b-4-f-9-adcb-2-d-5-a-9-a-73.png" alt="Using feature caching to find output" width="442" height="292" /></p>
 <p>Alternatively &ndash; and this is a common cause of missing features &ndash; the author has connected the wrong output port! For example, this user connected the StatisticsCalculator Summary output port when they wanted the features from the Complete port:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/use-output-and-feature-counts-to-identify-problems/images/5-c-9900-c-7-55-fa-44-e-3-8-f-82-7-f-388-d-8-c-00-fb.png" alt="Using feature caching to confirm correct port is connected" width="414" height="174" /></p>
+<p><img class="image image-block image-center" src="images/5-c-9900-c-7-55-fa-44-e-3-8-f-82-7-f-388-d-8-c-00-fb.png" alt="Using feature caching to confirm correct port is connected" width="414" height="174" /></p>
 <p>You can observe feature counts and feature caches to ensure you are getting the expected number of features and they look correct.</p>
 <h2 id="rejected-features">Rejected Features</h2>
 <p>Sometimes when features go missing, they are being rejected by a transformer. Many transformers include a &lt;Rejected&gt; port to output these invalid features:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/use-output-and-feature-counts-to-identify-problems/images/11652-c-6-d-77-c-4-43-d-8-ab-3-f-1-e-48-af-41-f-8-c-7.png" alt="Observing rejected feature counts" width="383" height="148" /></p>
+<p><img class="image image-block image-center" src="images/11652-c-6-d-77-c-4-43-d-8-ab-3-f-1-e-48-af-41-f-8-c-7.png" alt="Observing rejected feature counts" width="383" height="148" /></p>
 <p>Remember, features are automatically counted and stored on a &lt;Rejected&gt; port, even if feature caching is off.</p>
 <p>As an additional benefit, the rejected features will often include a rejection code attribute explaining the problem:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/use-output-and-feature-counts-to-identify-problems/images/2-bee-951-d-bdb-9-4340-8-a-83-d-015-d-1-b-60-c-4-e.png" alt="Observing fme_rejection_code in Visual Preview" width="605" height="218" /></p>
+<p><img class="image image-block image-center" src="images/2-bee-951-d-bdb-9-4340-8-a-83-d-015-d-1-b-60-c-4-e.png" alt="Observing fme_rejection_code in Visual Preview" width="605" height="218" /></p>
 <p>Simply reading a rejection code can often help you identify the problem. If it does not, you can refer to the transformer documentation for more information.</p>

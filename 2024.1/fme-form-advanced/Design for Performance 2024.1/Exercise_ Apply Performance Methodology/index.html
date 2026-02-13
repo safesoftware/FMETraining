@@ -18,6 +18,21 @@
 <li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-apply-performance-methodology-complete.fmw</li>
 </ul>
 </li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb.zip</a> (Esri Geodatabase)
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Emergency/Crime.csv" target="_self">Crime.csv</a>
+<ul>
+<li>C:\FMEData\Data\Emergency\Crime.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm" target="_self">leisure.osm</a>
+<ul>
+<li>C:\FMEData\Data\OpenStreetMap\leisure.osm</li>
+</ul>
+</li>
 </ul>
 <h2 id="exercise">Exercise</h2>
 <p>You have been assigned to a project to calculate the "walkability" of each address in the city of Vancouver. Walkability measures how easy it is to access local facilities on foot. The starting workspace calculates a walkability score based on several criteria.</p>
@@ -28,7 +43,7 @@
 <h2 id="2-examine-workspace">2) Examine Workspace</h2>
 <p>The workspace is pretty unorganized. Let&rsquo;s examine it in sections to figure out how it works.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Your colleague has modified the workspace slightly, so it won't match this diagram exactly, but it's close enough to understand how it works.</span></p>
 </blockquote>
 <p><img class="image image-block image-center" src="images/1724952000526.png" alt="Starting workspace" width="1543" height="489" /></p>
@@ -60,7 +75,7 @@
 <p>If you inspect a single feature in the Aggregator's Output port cache in the Feature Information window, you will see it stores a lot of attributes like CrimeList{}.City or CrimeList{}.Block.</p>
 <p>The final output of the workspace is a single score, so keeping all of these component attributes that were used to calculate the score is not necessary. These excess attributes clutter the display and inspecting the output becomes hard. Keeping these unused, large attributes also slows the performance of the workspace - even if that's mitigated by using caches during development. The AttributeKeeper we added removes CrimeList&nbsp;<em>eventually</em>, but consider that all those extra attributes are present on features processed between the Aggregator and the AttributeKeeper. This clutter slows down the workspace.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If you have identified a troublesome attribute on a feature but are unsure where it is being generated, you can track it down by pressing Ctrl+F and searching for its name. Try this with CrimeList. The search results show up in the Navigator window, and there you will find the Aggregator transformer is creating CrimeList.</span></p>
 </blockquote>
 <p>Check the parameters for the Aggregator transformer and turn off the Generate List parameter, to prevent the list from being created. This step will cause many caches to become stale, but we will re-run the workspace shortly to solve this.</p>

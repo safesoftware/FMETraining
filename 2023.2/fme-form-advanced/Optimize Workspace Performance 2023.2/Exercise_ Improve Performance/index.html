@@ -81,7 +81,7 @@
 </table>
 <div class="box message info">
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If the orthophotos reading takes too long, you can download the .zip file, extract it, and select the TIF files in the extracted folder. Reading the data locally will be faster.</span></p>
 </blockquote>
 <p><span style="font-family: inherit; font-size: 1em;">The Feature Type Name(s) parameter ensures the Data Inspector lists files by name.</span></p>
@@ -107,10 +107,10 @@
 <p>It appears that FME is reading GeoTIFF files unnecessarily. This causes a performance hit, especially when feature caching is turned on. We could select the files we want to read, but if the neighborhoods dataset changed,&nbsp;this list might not be correct.</p>
 <p>So, return to FME Workbench.</p>
 <p>Delete the GeoTIFF format reader from the workspace. Add a FeatureReader transformer in its place. Make the reprojected Neighborhoods data the Initiator (create a separate connection):</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.205.Ex3.FeatureReader.png" alt="Replacing the GeoTIFF reader with a FeatureReader" /></p>
+<p><img class="image image-block image-center" src="images/Img2.205.Ex3.FeatureReader.png" alt="Replacing the GeoTIFF reader with a FeatureReader" /></p>
 <p>Open the FeatureReader parameters. Set the Format to GeoTIFF and set <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip</a>&nbsp;as the Dataset.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you are taking a Safe Software-hosted training course, it will be faster to select all the files in C:\FMEData\Data\Orthophotos instead.</p>
 </blockquote>
 <p>Set the&nbsp;<strong>Spatial Filter</strong>&nbsp;parameter to&nbsp;<em>Initiator OGC-Intersects Result</em>:</p>
@@ -127,7 +127,7 @@
 <p><img class="image image-block image-center" src="images/1712008138851.png" alt="Changing writer order" width="637" height="167" /></p>
 <p>Re-run the workspace. Although the workspace wasn't slow to start with, you should notice it now runs slightly faster, using less memory.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Another writer feature to consider is whether the Excel dataset is being deleted/recreated or just emptied of data. In theory, it might be (very marginally) quicker to empty the sheets rather than create the whole spreadsheet from scratch.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">To try this, change the writer parameter Overwrite Existing File to No and change the writer feature type parameter for Truncate Existing Sheet to Yes:</span></p>
 <p><span style="font-family: inherit; font-size: 1em;"><img src="images/1711132818094.png" alt="Setting Truncate Existing Sheet/Named Range to Yes" /></span></p>
@@ -142,33 +142,33 @@
 <p>Upgrading transformers only sometimes makes them operate faster - some changes are functional or cosmetic - and might make their results slightly different. Therefore, upgrading all transformers is only advisable after checking what the upgrade involves.</p>
 <p>However, in this case, both transformers should be safe to upgrade and may even improve performance from the upgrade. So go ahead and upgrade all the transformers.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">The Tester transformer uses bulk mode. You'll remember, however, that this might change the order of features emerging from the transformer.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">Do you see any part of the workspace that relies on feature order? If not, you can safely upgrade this transformer to its newest version for a performance boost. By default, the new parameter Advanced &gt; Preserve Feature Order is set to Across Output Ports. This preserves feature order but does not allow the Tester to take advantage of bulk mode. To improve performance, change it to Per Output Port.</span></p>
 <p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/tester.htm" target="_blank" rel="noopener">Learn More</a></p>
 </blockquote>
 <h2 id="6-check-transformer-order">6) Check Transformer Order</h2>
 <p>Look at the bookmark labeled&nbsp;<em>Prepare Data for Excel Writer</em>:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/optimize-workspace-performance/exercise-improve-performance/images/1625607268417.png" alt="Prepare Data for Excel Writer bookmark" /></p>
+<p><img class="image image-block image-center" src="images/1625607268417.png" alt="Prepare Data for Excel Writer bookmark" /></p>
 <p>Inspect the transformers, and you will see that they sort the data into order for writing. Then, they filter out unnecessary features and remove unnecessary attributes.</p>
 <p>This is not the correct order to maximize performance: the sorting action processes unnecessary features with unnecessary attributes. Remember, the essential order is Filter-Remove-Action.</p>
 <p>So, move the Sorter transformer after the AttributeRenamer:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/optimize-workspace-performance/exercise-improve-performance/images/1625607299668.png" alt="Moving Sorter to the end" /></p>
+<p><img class="image image-block image-center" src="images/1625607299668.png" alt="Moving Sorter to the end" /></p>
 <p>Notice that the Sorter transformer is now flagged as incomplete. Inspect the parameters and you'll notice that the attribute _overlaps no longer exists; the AttributeRenamer renamed it to ArtWorks.</p>
 <p>So change the Sorter to sort by ArtWorks, and the transformer will work again.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If the features coming into the Sorter were already grouped by one attribute, we could group by that attribute and sort by another for performance improvement. But, in this case, that would not work.</span></p>
 </blockquote>
 <p>The other thing to consider is whether data can be filtered or removed earlier in the workspace. The two filtering transformers in this workspace are the Tester and DuplicateFilter. Can we move these to earlier in the workspace? Can the Tester transformer be moved? Note your answer: you'll need it for the quiz.</p>
 <p>Can the AttributeRemover and AttributeRenamer transformers be moved? The AttributeRenamer can't be <em>moved</em>&nbsp;because it renames the _overlaps attribute, an action that can only happen here. However, removing attributes could be carried out much earlier.</p>
 <p>The most straightforward technique is to add an AttributeRemover after every reader whose attributes can be removed:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/optimize-workspace-performance/exercise-improve-performance/images/1625607492383.png" alt="Adding AttributeRemovers" /></p>
+<p><img class="image image-block image-center" src="images/1625607492383.png" alt="Adding AttributeRemovers" /></p>
 <p>Remove the existing AttributeRemover, add an AttributeRemover to each input that can be cleaned, and remove whatever attributes are unnecessary to the workspace. You can tell if you remove a necessary attribute if a transformer or writer feature type downstream is flagged as incomplete, with a red port on the expanded writer feature type.</p>
 <p>Note that the fme_feature_type attribute used on the GeoTIFF writer isn't required.</p>
 <p>Now, we have removed all unnecessary attributes from the workspace as soon as possible.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">An alternative solution for database-type formats is not to read the attributes at all. In our workspace, the Excel reader is capable of this. You could open the reader feature type, change the Attributes to Read to Exposed Attributes and uncheck Name and Title.</span></p>
 </blockquote>
 <div class="box message info">
@@ -200,6 +200,6 @@
 <h2 id="8-re-run-workspace">8) Re-Run Workspace</h2>
 <p>With <strong>Feature Caching</strong> off, re-run the entire workspace. Check if the log results show that the workspace is quicker and more memory efficient than it was before. The code review of your colleague's workspace is complete.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Overall, the difference might be very slight. The workspace may not be hugely faster or more memory efficient. However, it is better designed than the original workspace. This makes it more scalable and will help teach your colleague techniques that might have a more significant effect elsewhere.</span></p>
 </blockquote>

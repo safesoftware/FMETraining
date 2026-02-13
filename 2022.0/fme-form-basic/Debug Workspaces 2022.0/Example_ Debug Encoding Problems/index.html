@@ -19,17 +19,17 @@
 <p>In this scenario, the author should check the data at key stages to determine when the data last looked correct.</p>
 <h2 id="inspect-the-source-data-before-reading">Inspect the Source Data Before Reading</h2>
 <p>It's easy to assume source data is correct without checking it. If possible, you should inspect the source data in its native application to confirm its accuracy:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/example-debug-encoding-problems/images/3869-c-484-7-c-27-41-ed-bc-60-874-efcda-9026.png" alt="Viewing encoding in ArcCatalog" width="624" height="279" /></p>
+<p><img class="image image-block image-center" src="images/3869-c-484-7-c-27-41-ed-bc-60-874-efcda-9026.png" alt="Viewing encoding in ArcCatalog" width="624" height="279" /></p>
 <p>If the data is incorrect at the source, then there is little chance the translation output will be correct. However, in our example, it is valid in ArcGIS, so the translation should work.</p>
 <h2 id="inspect-the-source-data-after-reading">Inspect the Source Data After Reading</h2>
 <p>If the source data is correct in its native application, then inspect it using FME. Either open the data directly in the FME Data Inspector or - if you ran the workspace with caching turned on - open it in FME Workbench:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/example-debug-encoding-problems/images/53-b-94676-d-25-a-4-e-04-b-20-c-153-f-821-eec-05.png" alt="Viewing encoding in Visual Preview" width="624" height="209" /></p>
+<p><img class="image image-block image-center" src="images/53-b-94676-d-25-a-4-e-04-b-20-c-153-f-821-eec-05.png" alt="Viewing encoding in Visual Preview" width="624" height="209" /></p>
 <p>If the data is incorrect at this point, then the process of reading the data with FME is at fault. Again, in our example, the data is correct, so we must continue to diagnose the problem.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -45,31 +45,31 @@
 <p>Now we should inspect the data between transformation and writing.</p>
 <p>If you ran the workspace with caching turned on (Run &gt; Enable Feature Caching), the data is available for inspection. Otherwise, turn on this option (or Writers &gt; Redirect to FME Data Inspector) and re-run the workspace.</p>
 <p>Inspect the data to see if it was correct at the point just before writing:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/example-debug-encoding-problems/images/5261-dab-1-c-6-f-2-4-a-56-8-a-90-0562-eb-680-cfd.png" alt="Viewing encoding before writing" width="624" height="236" /></p>
+<p><img class="image image-block image-center" src="images/5261-dab-1-c-6-f-2-4-a-56-8-a-90-0562-eb-680-cfd.png" alt="Viewing encoding before writing" width="624" height="236" /></p>
 <p>If Visual Preview shows � characters at this point, then we can assume that the problem occurs in data transformation before writing. You can use Feature Caching to inspect each step of the process to locate where the problem appears.</p>
 <p>In our example, the data is still correct, so we should test the output dataset next.</p>
 <h2 id="inspect-the-output-dataset">Inspect the Output Dataset</h2>
 <p>If the data is correct before writing, then writing might be the problem.</p>
 <p>Open the output dataset in Visual Preview. This step will show the data as FME wrote it (and, of course, read it back). If the data is incorrect here, then the problem will have likely occurred during the writing of the data:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/example-debug-encoding-problems/images/7-c-106673-b-8-db-496-a-8-b-7-d-97-ff-1-ea-1285-d.png" alt="Viewing encoding after writing" /></p>
+<p><img class="image image-block image-center" src="images/7-c-106673-b-8-db-496-a-8-b-7-d-97-ff-1-ea-1285-d.png" alt="Viewing encoding after writing" /></p>
 <p>In the above example, if Visual Preview shows � characters at this point, then the data has been mangled during writing. That appears to be the case here.</p>
 <p>Another check to make is to open the data in a text editor. For obvious reasons, it will not be possible to do this for every dataset (binary files or databases, for example). However, for text-based files, it can provide definitive proof of whether the data is correct at this point:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/example-debug-encoding-problems/images/e-14-bc-9-eb-312-a-4345-a-9-b-8-aa-3-cc-22-d-4371.png" alt="Viewing encoding in destination application" width="624" height="347" /></p>
+<p><img class="image image-block image-center" src="images/e-14-bc-9-eb-312-a-4345-a-9-b-8-aa-3-cc-22-d-4371.png" alt="Viewing encoding in destination application" width="624" height="347" /></p>
 <p>For our example, this confirms that the problem occurs when writing the data. However, this might not always be the case.</p>
 <h2 id="inspect-the-output-dataset-in-another-application">Inspect the Output Dataset in Another Application</h2>
 <p>If FME (and a text editor) can display the output data, then it might be that the intended application is not interpreting the data correctly.</p>
 <p>So, open the output dataset in the destination application. If FME can read the data correctly, and it looks correct in a text editor, then the problem is more likely to be with how the end application interprets the data:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/example-debug-encoding-problems/images/e-538-ca-5-a-5770-40-e-6-b-285-de-55-c-9-c-51765.png" alt="Viewing data in another application" width="624" height="175" /></p>
+<p><img class="image image-block image-center" src="images/e-538-ca-5-a-5770-40-e-6-b-285-de-55-c-9-c-51765.png" alt="Viewing data in another application" width="624" height="175" /></p>
 <p>That would be particularly true if the format were non-native to that application, for example, reading a Geodatabase outside of an Esri product.</p>
 <p>These techniques narrow down where an error might have occurred but don't always specify the cause. For example, incorrect output could mean that FME has a limitation in that writer. The workspace author has set an incorrect parameter, or one application uses a different default encoding to another.</p>
 <p>In this case, knowing the writer is at fault, we can check the writer parameters and find one that appears to be setting an incorrect encoding:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/example-debug-encoding-problems/images/08-ccc-6-fc-1-c-72-4101-b-46-b-6583-a-4097423.png" alt="Viewing Character Encoding parameter in the Navigator" width="383" height="224" /></p>
+<p><img class="image image-block image-center" src="images/08-ccc-6-fc-1-c-72-4101-b-46-b-6583-a-4097423.png" alt="Viewing Character Encoding parameter in the Navigator" width="383" height="224" /></p>
 <p>In short, these techniques identify where to investigate first but won't provide an absolute answer by themselves.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>

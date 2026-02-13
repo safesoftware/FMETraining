@@ -26,22 +26,22 @@
 <p>You are continuing to work with the city parks data. You've been asked to find the average size of parks in each neighborhood. You can use the Group By parameter with an existing workspace to do this task.</p>
 <p><strong>1) Start FME Workbench</strong></p>
 <p>Start FME Workbench (2023.0 or later) and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-process-data-in-groups.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>. This workspace calculates the total area of all parks in the city using the StatisticsCalculator.</p>
-<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/filter-data/exercise-process-data-in-groups/images/1652294060562.png" alt="Starting workspace" /></p>
+<p><img class="image image-block" src="images/1652294060562.png" alt="Starting workspace" /></p>
 <p>You can view the total area by running the workspace and inspecting the AttributeRenamer Output port. AverageParkArea is 70,248 m&sup2; for the entire dataset:</p>
-<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/filter-data/exercise-process-data-in-groups/images/1652294161879.png" alt="AverageParkArea in Table View" /></p>
+<p><img class="image image-block" src="images/1652294161879.png" alt="AverageParkArea in Table View" /></p>
 <blockquote>
-<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img src="images/safe_note.png" alt="Note" /></p>
 <p>Remember that you can view the units for area or length calculations by checking the coordinate system of your data using the Feature Information Window. See <a href="https://academy.safe.com/connect-to-data/75314" target="_blank" rel="noopener">View Information about a Specific Feature</a> for more details.</p>
 </blockquote>
 <p><strong>2) Set Group By in the StatisticsCalculator</strong></p>
 <p>Changing the workspace to calculate the park area by neighborhood is straightforward. View the parameters for the StatisticsCalculator transformer. Check Group Processing and click the '...' button beside the Group By parameter. Select the attribute called Neighborhood:</p>
-<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/filter-data/exercise-process-data-in-groups/images/1652294293887.png" alt="Group By Neighborhood" /></p>
+<p><img class="image image-block" src="images/1652294293887.png" alt="Group By Neighborhood" /></p>
 <p>Click OK/Apply to apply the changes to the transformer.</p>
 <blockquote>
-<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img src="images/safe_note.png" alt="Note" /></p>
 <p>Older versions of FME had a Cumulative output port for the StatisticsCalculator. If you wish to calculate a cumulative or running statistic, which is updated each feature, check Advanced - Output Cumulative Results. This method can be useful if you have to determine when a cumulative sum, count, or mean surpasses a certain threshold value. In that case, you would need to combine the output of the StatisticsCalculator Cumulative port with a filtering transformer like a Tester.</p>
 </blockquote>
 <p><strong>3) Run the Workspace</strong></p>
 <p>Click on the StatisticsCalculator and then click on Run To This. Inspect the Summary output port in Visual Preview. The Summary output port creates a summarized table of the statistics you are calculating.</p>
 <p>You should see that each neighborhood now has its own value for ParkArea.mean (renamed to AverageParkArea by the AttributeRenamer):</p>
-<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/filter-data/exercise-process-data-in-groups/images/1652294361336.png" alt="Average park area by neighborhood in Table View" /></p>
+<p><img class="image image-block" src="images/1652294361336.png" alt="Average park area by neighborhood in Table View" /></p>

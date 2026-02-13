@@ -32,7 +32,7 @@
 </ul>
 <p>These can be accomplished using reader/writer/feature type parameters. Let's get to work!</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Try accomplishing the three tasks above without reading the instructions for an added challenge. Although you could solve them using transformers, try only to use reader/writer/feature type parameters. It's possible!</p>
 </blockquote>
 <h2 id="learning-objectives">Open and Run the Workspace</h2>
@@ -51,7 +51,7 @@
 <p>Inspect the CommunityCentre reader feature type cache again. Note that FME did not read (or, therefore, write) the Mount Pleasant feature:</p>
 <p><img src="images/1715385107361.png" alt="Data after WHERE Clause is applied" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Use this parameter "where" you can to avoid reading too much data! 😉</p>
 <p>We cover more tips like this in our <a href="https://academy.safe.com/optimize-workspace-performance" target="_blank" rel="noopener">Optimize Workspace Performance course</a>.</p>
 </blockquote>
@@ -83,13 +83,13 @@
 <p>Now, if you were to run the workspace (don't!), you would&nbsp;<em>append </em>69 records to the database. That's because the default database operation for FME writers is Insert. You can confirm this by examining the Parks SQLite writer feature type. Double-click it and observe that General &gt; Feature Operation is set to Insert and Table Handling is set to Create If Needed:</p>
 <p><img src="images/1715640495702.png" alt="Feature Operation and Table Handling parameters" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Suppose you accidentally mess up the starting database while doing this exercise. In that case, you can always enable Overwrite Existing Database, Insert, and Create If Needed and rerun the workspace to return to the starting state.</p>
 </blockquote>
 <p>However, the imaginary scenario you need to adapt to now is that the City has passed a law stating that indigenous language place names must be used alongside English names. So, you have to update the park names. How can we update the names that already exist in the database?</p>
 <p>A writer feature type parameter!</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>This is an imaginary scenario, but such initiatives <a href="https://vancouversun.com/news/local-news/the-rebirth-of-x%CC%B1way%CC%93x%CC%B1way-x%CC%B1epx%CC%B1pay%CC%93em-and-iy%CC%93al%CC%93mexw-as-vancouver-place-names" target="_blank" rel="noopener">do exist</a>.</p>
 </blockquote>
 <p>Change Feature Operation to fme_db_operation:</p>
@@ -103,7 +103,7 @@
 <p><img src="images/1715640917183.png" alt="Adding a Tester" /></p>
 <p>Ensure it's <strong>not </strong>connected to the writer feature type yet! We don't want to write a feature to the database before we are ready.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you are nervous about this, you can right-click the writer feature type and Disable it until you are ready to write. Just make sure to Enable it before writing!</p>
 </blockquote>
 <p>We'll update a single park name as an example for now, so configure the Tester to pass features where ParkName = Stanley Park:</p>
@@ -132,7 +132,7 @@
 </table>
 <p><img src="images/1715641144919.png" alt="AttributeCreator configuration" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Spapəy̓əq roughly translates to "bent at the end" in Hunquminum, the language spoken by the <a href="https://en.wikipedia.org/wiki/Musqueam_First_Nation" target="_blank" rel="noopener">Musqueum First Nation</a>. It refers to a specific part of the area now known as Stanley Park, Brockton Point. The phonetic pronunciation is "spah-pee-ahk."</p>
 <p>Learn more from the <a href="https://vancouver.ca/news-calendar/musqueam-squamish-and-tsleil-waututh-flags-permanently-raised-at-stanley-park-s-brockton-point.aspx" target="_blank" rel="noopener">City of Vancouver</a> or <a href="https://placesthatmatter.ca/location/musqueam-spap%C9%99y%CC%93%C9%99q/" target="_blank" rel="noopener">Vancouver Heritage Foundation</a>.</p>
 </blockquote>
@@ -144,6 +144,6 @@
 <p><img src="images/1715641325968.png" alt="Feature successfully updated" /></p>
 <p>Using this method, you can control the database operation performed at the feature level. That's the power of parameters!</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>We could get the same output data using the parameters we started with: Insert, Create as Needed, and Overwrite Existing Database. However, these use cases are the same only if you want to write the entire table each time. If you want to update certain records each time the workspace runs, for example, loading new or changed records every 10 minutes, you would have to use the fme_db_operation parameter.</p>
 </blockquote>

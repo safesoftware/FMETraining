@@ -33,7 +33,7 @@
 <p>Alternatively, you can open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-use-multiple-readers-and-writers.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>.</p>
 <p><img class="image image-block image-center" src="images/1699635673633.png" alt="Staring workspace with several transformers already connected" width="1063" height="374" /></p>
 <p>The remaining transformers in the "Transformers" bookmark are these:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.215.Ex2.StartWorkspaceTransformers.png" alt="Remaining transformers to add" /></p>
+<p><img class="image image-block image-center" src="images/Img3.215.Ex2.StartWorkspaceTransformers.png" alt="Remaining transformers to add" /></p>
 <p><strong>2) Add Reader</strong></p>
 <p>The first task is to identify which planning zone each address falls inside. We need to read the zoning data and carry out a spatial join. To read a new dataset of data in a different format requires a new reader.</p>
 <p>So, select Readers &gt; Add Reader from the menu bar. When prompted, enter the following parameters:</p>
@@ -53,11 +53,11 @@
 </table>
 <p><img class="image image-block image-center" src="images/1699575697239.png" alt="Configured Add Reader dialog" width="475" height="266" /></p>
 <p>FME adds a reader to the Navigator window and a feature type to the canvas. Move the feature type into the Zoning bookmark:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.217.Ex2.ZoningReaderAdded.png" alt="Zones reader feature type on the canvas" /></p>
+<p><img class="image image-block image-center" src="images/Img3.217.Ex2.ZoningReaderAdded.png" alt="Zones reader feature type on the canvas" /></p>
 <p><strong>3) Create Spatial Join</strong></p>
 <p>To carry out a spatial join, we'll use a PointOnAreaOverlayer transformer, a type of join called Point-in-Polygon.</p>
 <p>So, move the PointOnAreaOverlayer transformer from the "Transformers" bookmark to the "Spatial Join" bookmark. Connect the newly added Zoning data to the Area port and the output from the Sampler to the Point port:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.218.Ex2.POAOCanvas.png" alt="Adding a PointOnAreaOverlayer" /></p>
+<p><img class="image image-block image-center" src="images/Img3.218.Ex2.POAOCanvas.png" alt="Adding a PointOnAreaOverlayer" /></p>
 <p>Run the translation, ignore the Invalid Transformer Parameters dialog that pops up, and click Run. This dialog pops up because we have previously run the translation to the Aggregator, but now we have broken that connection. We will fix it in a bit.</p>
 <p>Click on the PointOnAreaOverlayer's Point output port to view the data in the Visual Preview window. View both the Graphics and Table view. The overlay and attribute merging should cause each address to be given a zone name and category from the underlying zone.</p>
 <p><strong>4) Calculate Residents</strong></p>
@@ -107,19 +107,19 @@
 <p>For example, zones RS-1, RS-2, and RS-3 are all single-family zones, and we assume two adults per address. This assumption makes it slightly more complicated because we need to match a zone type using a "begins with" string comparison.</p>
 <p>This match can be done using an AttributeManager with&nbsp;<strong>Conditional Values</strong>.</p>
 <p>This step is slightly complex, but luckily, the AttributeManager inside the "Transformers" bookmark is already set up for this purpose. So move the AttributeManager into the "Calculate Residents" bookmark and connect it to the PointOnAreaOverlayer's Point output port:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.220.Ex2.AttrManagerCanvas.png" alt="Adding an AttributeManager" /></p>
+<p><img class="image image-block image-center" src="images/Img3.220.Ex2.AttrManagerCanvas.png" alt="Adding an AttributeManager" /></p>
 <p>Your features will have a new attribute called Persons that estimtes how many people live at each address based on its zone.</p>
 <p><strong>5) Create Residents</strong></p>
 <p>We now have approximated the number of residents per address. However, we must use that number in a way that will affect the output. The simplest way to do this is to create multiple copies of each address, one for each resident.</p>
 <p>For example, we'll create eight address points for an address with eight residents.</p>
 <p>We can do this with a Cloner transformer. So, move the Cloner transformer from the "Transformers" bookmark to the "Calculate Residents" bookmark. Connect the AttributeManager to the Cloner's input and its output to the StatisticsCalculator:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.223.Ex2.ClonerCanvas.png" alt="Adding a Cloner" /></p>
+<p><img class="image image-block image-center" src="images/Img3.223.Ex2.ClonerCanvas.png" alt="Adding a Cloner" /></p>
 <p>The Cloner is configured to <span style="font-family: inherit; font-size: 1em;">create&nbsp;</span><em style="font-family: inherit; font-size: 1em;">&lt;Persons&gt;</em><span style="font-family: inherit; font-size: 1em;"> copies of the original addresses.</span></p>
 <p><strong>6) Run Translation</strong></p>
 <p>Ensure an Inspector is still attached to the Aggregator transformer and run the translation. The output should be five groups of point features again, but in a different pattern than the end of the previous exercise:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.226.Ex2.ResidentialResults.png" alt="Viewing the five groups of points" /></p>
+<p><img class="image image-block image-center" src="images/Img3.226.Ex2.ResidentialResults.png" alt="Viewing the five groups of points" /></p>
 <p><strong>7) Write the Output</strong></p>
 <p>Now, to write some output. Connect the Aggregator output to the GarbageZones output feature type and re-run the workspace.</p>
 <p>Your writer feature type should look something like this:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.227.Ex2.EditedWriterFT.png" alt="Adding the GarabageZones writer feature type" /></p>
+<p><img class="image image-block image-center" src="images/Img3.227.Ex2.EditedWriterFT.png" alt="Adding the GarabageZones writer feature type" /></p>
 <p>Congratulations. Now, you have a dataset of addresses grouped by their new garbage collection zone. The next exercise will turn these points into non-overlapping polygons designating the zones.</p>

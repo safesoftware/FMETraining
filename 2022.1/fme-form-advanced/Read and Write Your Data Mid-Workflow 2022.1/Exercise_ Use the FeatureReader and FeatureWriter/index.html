@@ -46,10 +46,10 @@
 <li>Then we need to configure a FeatureWriter to write out the individual raster files.</li>
 <li>Then we can use a Connector transformer to upload the files to a web storage location.</li>
 </ol>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1666989509104.png" alt="Starting workspace" /></p>
+<p><img class="image image-block image-center" src="images/1666989509104.png" alt="Starting workspace" /></p>
 <h2 id="3-add-a-feature-reader">3) Add a FeatureReader</h2>
 <p>Add a FeatureReader to the Orthophotos bookmark above the Dissolver. Connect the Dissolver:Area port to the FeatureReader Initiator port.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667247198676.png" alt="Connecting Dissolver to FeatureReader" /></p>
+<p><img class="image image-block image-center" src="images/1667247198676.png" alt="Connecting Dissolver to FeatureReader" /></p>
 <p>Double-click the&nbsp;<strong>FeatureReader</strong>&nbsp;to open its Parameters dialog. Configure it as follows:</p>
 <table class="featureTable sort_table">
 <tbody class="tbody">
@@ -72,21 +72,21 @@
 </table>
 <p>With this configuration, the FeatureReader will read the GeoTIFF files that overlap the neighborhoods of interest.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">In this case, we want to read each photo that intersects any neighborhood and just read it once. That is why we used a Dissolver to get a single initiator feature. But the FeatureReader can also be used in scenarios with multiple initiators. If we skipped the Dissolver in this case, we'd read some of the photos multiple times, as we would read intersecting photos for each neighborhood feature separately. Try that out - you'll need the number of features to answer a Quiz question below.</span></p>
 </blockquote>
 <p>Click&nbsp;<strong>OK</strong>.</p>
 <p>Use Run to This on the FeatureReader. Inspect the GEOTIFF output port to view the matching orthophotos. Take note of how many there are; you'll need it for the quiz. The results should look like this:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667249454581.png" alt="Matching orthophotos" /></p>
+<p><img class="image image-block image-center" src="images/1667249454581.png" alt="Matching orthophotos" /></p>
 <p>Map tiles by&nbsp;<a href="https://stamen.com/" target="_blank" rel="noreferrer noopener">Stamen Design</a>, under&nbsp;<a href="http://creativecommons.org/licenses/by/3.0" target="_blank" rel="noreferrer noopener">CC BY 3.0</a>. Data by&nbsp;<a href="http://openstreetmap.org/" target="_blank" rel="noreferrer noopener">OpenStreetMap</a>, under&nbsp;<a href="http://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noreferrer noopener">CC BY SA</a>.</p>
 <h2 id="4-run-the-workspace">4) Run the Workspace</h2>
 <p>Seeing that the FeatureReader is configured properly, connect the FeatureReader's &nbsp;GEOTIFF output port to the RasterMosaicker input port.</p>
 <p>Run the workspace to update the feature caches. Inspect the RasterBandNoDataSetter Output port. You should see the images from earlier but now clipped to the neighborhood outlines and with transparent pixels for the NoData values.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667249569945.png" alt="Orthophotos clipped to neighborhood boundaries" /></p>
+<p><img class="image image-block image-center" src="images/1667249569945.png" alt="Orthophotos clipped to neighborhood boundaries" /></p>
 <p>Map tiles by&nbsp;<a href="https://stamen.com/" target="_blank" rel="noreferrer noopener">Stamen Design</a>, under&nbsp;<a href="http://creativecommons.org/licenses/by/3.0" target="_blank" rel="noreferrer noopener">CC BY 3.0</a>. Data by&nbsp;<a href="http://openstreetmap.org/" target="_blank" rel="noreferrer noopener">OpenStreetMap</a>, under&nbsp;<a href="http://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noreferrer noopener">CC BY SA</a>.&nbsp;</p>
 <h2 id="5-add-a-feature-writer">5) Add a FeatureWriter</h2>
 <p>Add a FeatureWriter and connect the RasterBandNoDataSetter Output port to the Connect Input port:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667252118611.png" alt="Connecting to a FeatureWriter" /></p>
+<p><img class="image image-block image-center" src="images/1667252118611.png" alt="Connecting to a FeatureWriter" /></p>
 <p>It will turn into a port named Output, the default name of the feature type it will create.</p>
 <p>Double-click the&nbsp;<strong>FeatureWriter</strong>&nbsp;to open its Parameters. Configure them as follows:</p>
 <table class="featureTable sort_table">
@@ -108,17 +108,17 @@
 <p>With this configuration, the FeatureWriter will use a feature-type fanout to create a separate GeoTIFF file for each neighborhood. Click&nbsp;<strong>OK</strong>.</p>
 <p>You'll see the name of the port change again, this time to @Value(NeighbohoodName), reflecting the feature type fanout setting.</p>
 <p>Run your workspace to write out the images. Click the&nbsp;<strong>FeatureWriter</strong>&nbsp;once to select it and click the&nbsp;<strong>Open Containing Folder button</strong>&nbsp;to see the written images:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667253029859.png" alt="Open Containing Folder and output files" /></p>
+<p><img class="image image-block image-center" src="images/1667253029859.png" alt="Open Containing Folder and output files" /></p>
 <h2 id="6-add-a-connector-transformer">6) Add a Connector Transformer</h2>
 <p>The FeatureWriter is working properly to write the data, but now it's time to take advantage of being able to continue a workspace after writing. We can use a Connector transformer to upload these files somewhere.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">For this example, we'll use an FMEServerResourceConnector to upload the files to FME Server, which you will need access to. If you don't have FME Server, you can try another Connector for which you have an account, e.g., GoogleDriveConnector, DropBoxConnector, etc.</span></p>
 </blockquote>
 <p>Click the&nbsp;<strong>Summary cache</strong>&nbsp;to inspect it. You should see an attribute called _dataset. This attribute was created by the FeatureWriter and stores the path to the written data. You can use this path to find the files that were just written and do something with them; in this case, upload them to FME Server.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667340469910.png" alt="_dataset parameter" /></p>
+<p><img class="image image-block image-center" src="images/1667340469910.png" alt="_dataset parameter" /></p>
 <p>Add an FMEServerResourceConnector after the FeatureWriter and connect it to the Summary port.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667340324672.png" alt="Added an FMEServerResourceConnector" /></p>
+<p><img class="image image-block image-center" src="images/1667340324672.png" alt="Added an FMEServerResourceConnector" /></p>
 <p>Before configuring the FMEServerResourceConnector, we need an FME Server Web Connection. If you don't already have one saved, on Safe Software training machines, you can add an FME Server Web Connection using the following credentials under Tools &gt; FME Options &gt; Web Connections &gt; Plus button:</p>
 <ul>
 <li><strong>Connection Name:</strong>&nbsp;Training FME Server</li>
@@ -126,7 +126,7 @@
 <li><strong>Username:</strong>&nbsp;admin</li>
 <li><strong>Password:</strong>&nbsp;FMElearnings</li>
 </ul>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667340747592.png" alt="Training FME Server Web Connection" /></p>
+<p><img class="image image-block image-center" src="images/1667340747592.png" alt="Training FME Server Web Connection" /></p>
 <p>Once you have a Web Connection configured, double-click the&nbsp;<strong>FMEServerResourceConnector</strong>&nbsp;to open its parameters. Configure it as follows:</p>
 <table class="featureTable sort_table">
 <tbody class="tbody">
@@ -150,5 +150,5 @@
 </table>
 <p>Click&nbsp;<strong>OK</strong>.</p>
 <p>Run your workspace. The entire folder of recently-written files will be uploaded to FME Server. You can log into the web interface (<a href="http://localhost/" target="_blank" rel="noreferrer noopener">localhost</a> with username admin and password FMElearnings on Safe Software training machines) and navigate to Files &amp; Connections &gt; Resources &gt; Data &gt; Orthophotos to confirm:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/read-and-write-your-data-mid-workflow/exercise-use-the-featurereader-and-featurewriter/images/1667341554475.png" alt="Recently-uploaded orthophotos on FME Server" /></p>
+<p><img class="image image-block image-center" src="images/1667341554475.png" alt="Recently-uploaded orthophotos on FME Server" /></p>
 <p>Here is the key advantage of the FeatureWriter: your workspace can continue after you write data.</p>

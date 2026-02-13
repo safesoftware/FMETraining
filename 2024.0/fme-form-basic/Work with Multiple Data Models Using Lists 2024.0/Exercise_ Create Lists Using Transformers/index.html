@@ -9,18 +9,27 @@
 <ul>
 <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-create-lists-using-transformers.fmw" target="_blank" rel="noopener">Starting workspace</a>
 <ul>
-<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-create-lists-using-transformers.fmw</li>
-<li>park_trees_start.fmwt</li>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-create-lists-using-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_self">Parks.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip" target="_self">Addresses.zip</a> (Esri GDB)
+<ul>
+<li>C:\FMEData\Data\Addresses.zip</li>
 </ul>
 </li>
 </ul>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>There is no 2023 video available for this lesson. You can <a href="https://safesoftware.hubs.vidyard.com/watch/PWviSJ8aET87z8Zbvi5Eaa?" target="_blank" rel="noopener">view the 2022 video instead</a> if you'd like, but remember, it might not match the instructions.</p>
 </blockquote>
 <h2 id="introduction">Introduction</h2>
 <p>Many FME transformers have a&nbsp;<em>Generate List</em>&nbsp;checkbox under the&nbsp;<em>Attribute Accumulation</em> section of their parameters dialog. For example</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/work-with-multiple-data-models-using-lists/exercise-create-lists-using-transformers/images/1639088915106.png" alt="Generate List checkbox" /></p>
+<p><img class="image image-block image-center" src="images/1639088915106.png" alt="Generate List checkbox" /></p>
 <p>For query transformers that can return multiple results, like the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pointonareaoverlayer.htm" target="_blank" rel="noopener">PointOnAreaOverlayer</a>, these parameters can be used to generate a list to store the results.</p>
 <p>In this scenario, we want to create park polygons with attributes telling us what trees exist in each park. We will merge tree points with park polygons using the PointOnAreaOverlayer. However, it isn't enough to copy attributes from each tree to their respective park polygons because what if there is more than one tree per park?</p>
 <p>List attributes are perfect for this scenario: if more than one tree falls within the same park polygon, we can use a list attribute to store information for <em>all</em> trees in each park. The PointOnAreaOverlayer allows us to generate a list that stores the values for all points overlaid on the area.</p>
@@ -35,7 +44,7 @@
 <p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-create-lists-using-transformers.fmwt" target="_blank" rel="noopener">starting workspace </a>(C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-create-lists-using-transformers.fmw) in FME Workbench (2024.0 or later).</p>
 <h2 id="2-run-the-workspace-and-inspect-the-data">2) Run the Workspace and Inspect the Data</h2>
 <p>Run the workspace to generate feature caches.</p>
-<p>Inspect the Parks and DataBaseJoiner's Joined cache (the trees) by clicking each cache while holding down the Ctrl or Cmd key. You will find that some parks overlap with more than one tree. For example, China Creek Park North contains two trees (very close together). You can confirm this by following these steps:</p>
+<p>Inspect the Parks and DataBaseJoiner's Joined cache (the trees) by clicking each cache while holding down the Ctrl or Cmd key. You will find that some parks overlap with more than one tree. For example, China Creek North Park contains two trees (very close together). You can confirm this by following these steps:</p>
 <ol>
 <li>Search for "China Creek North" using the Filter field at the bottom of Table View with the Parks table displayed.</li>
 <li><span style="font-family: inherit; font-size: 1em;">Navigate to the park by selecting the row in Table View and then using the Zoom to Selected Feature button in Graphics View.</span></li>
@@ -49,7 +58,7 @@
 <p><img class="image image-block image-center" src="images/1714167094973.png" alt="Merge Attributes, don't generate lists" width="452" height="503" /></p>
 <p>Click OK to close the parameters.</p>
 <h2 id="4-run-the-workspace">4) Run the Workspace</h2>
-<p>Rerun the workspace and inspect China Creek Park North again, which contains two tree points. The PointOnAreaOverlayer adds an <code>_overlaps</code>&nbsp;attribute that counts the number of points in each area. In the Feature Information pane, we can see that it has two overlaps, but attributes from only one of the tree species have been added:</p>
+<p>Rerun the workspace and inspect China Creek North Park again, which contains two tree points. The PointOnAreaOverlayer adds an <code>_overlaps</code>&nbsp;attribute that counts the number of points in each area. In the Feature Information pane, we can see that it has two overlaps, but attributes from only one of the tree species have been added:</p>
 <p><img class="image image-block image-center" src="images/1714167108639.png" alt="Attributes from one tree species" width="1063" height="377" /></p>
 <p>This is the result of merging the incoming features. We will need to create a list to include all trees in a given park.</p>
 <h2 id="5-set-point-on-area-overlayer-parameters-generate-list">5) Set PointOnAreaOverlayer Parameters: Generate List</h2>
@@ -57,7 +66,7 @@
 <p><img class="image image-block image-center" src="images/1714167119327.png" alt="Don't Merge Attributes, Generate List on Area" width="486" height="505" /></p>
 <p>Click OK to close the parameters.</p>
 <h2 id="6-run-the-workspace">6) Run the Workspace</h2>
-<p>Run the workspace and inspect China Creek Park North again. The Feature Information pane shows a list attribute,&nbsp;<code>_trees{}</code>, which contains information from both tree points in the park:</p>
+<p>Run the workspace and inspect China Creek North Park again. The Feature Information pane shows a list attribute, <code>_trees{}</code>, which contains information from both tree points in the park:</p>
 <p><img class="image image-block image-center" src="images/1714167131443.png" alt="Tree list" width="1063" height="454" /></p>
 <p>We successfully used the PointOnAreaOverlayer to create a list called <code>_trees{}</code>, which stores the values of multiple tree points within each park polygon. Note how each numbered list element contains the same attributes: <code>CommonName</code>,&nbsp;<code>Diameter</code>, etc.</p>
 <h2 id="next-steps">Next Steps</h2>
