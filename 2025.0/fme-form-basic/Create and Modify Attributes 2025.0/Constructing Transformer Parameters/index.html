@@ -1,0 +1,81 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this course, you'll be able to:</p>
+<ul>
+<li>Use attribute values to set parameters.</li>
+<li>Construct parameter values using the Arithmetic Editor or Text Editor.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/constructing-transformer-parameters.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\constructing-transformer-parameters.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/constructing-transformer-parameters-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\constructing-transformer-parameters-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb</a><br />
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2>Introduction</h2>
+<p>Let's briefly put attributes to one side and look at transformer parameters.</p>
+<p>Transformer parameters are often set in a fixed way (hard-coded) or set to take on the value of a particular attribute. However, just as you can construct attributes using the Text or Arithmetic Editor, you can build values for transformer parameters.</p>
+<h2 id="using-attributes-for-parameters">Using Attributes for Parameters</h2>
+<p>As noted, most transformer parameters allow the user to select an attribute value instead of manually entering a fixed value. For example, the LabelPointReplacer can create a label whose contents and height are specified by attribute values:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.032.LabelPointReplacerDialogWithAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1713480129196.png" alt="The parameters of the LabelPointReplacer" width="350" height="241" /></a></p>
+<p>This feature is helpful because it allows the parameters (for example, label size) to get a different value for each feature. An attribute could be read from a source dataset or calculated using an ExpressionEvaluator so that one feature creates a label ten units in height, another creates a label 15 units high, and so on. It is no longer a fixed value.</p>
+<h2 id="constructing-parameter-values">Constructing Parameter Values</h2>
+<p>If you need to calculate or construct a parameter value, you can use integrated string and numeric editors built into parameter dialogs instead of a separate transformer.</p>
+<p>For example, here, the user is choosing to calculate label height using an arithmetic calculator:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.033.LabelPointReplacerDialogPickingCalc.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1713480141118.png" alt="Using the Arithmetic Editor so set Label Height" width="520" height="332" /></a></p>
+<p>The calculator allows the selection and use of FME attributes, other parameters, and mathematical and string-based functions. For example, here, the user has chosen to calculate the height of their labels using the logarithm of the visitor count for a park:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.034.LabelPointReplacerArithCalc.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1713480159393.png" alt="Setting Label Height to use a mathematical expression" width="781" height="302" /></a></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">It's a fixed rule that the editor dialogs available depend on the parameter type. For instance, the Label parameter in a LabelPointReplacer opens a text editor because it requires a text value. In contrast, the Label Height parameter opens an arithmetic editor because it requires a numeric value.</span></p>
+</blockquote>
+<h2 id="reducing-workspace-congestion">Reducing Workspace Congestion</h2>
+<p>Workspaces are more compact when as many peripheral operations as possible are directly integrated into a single transformer or parameter. However, as with attributes, it's important to add proper annotation, or it's difficult for a casual observer to understand what the workspace is doing.</p>
+<p>Another drawback specific to parameters is that constructing them <em>in situ </em>means you don't get the information as an attribute to use elsewhere. For example, if you construct a label string in the LabelPointReplacer, that string isn't available as an attribute elsewhere in the workspace.</p>
+<p>If you need to use this constructed value in multiple places, creating it as an attribute is essential.</p>
+<h2>Exercise</h2>
+<p>Jennifer would like to create and construct some new attributes.</p>
+<h2>1) Open Workspace</h2>
+<p>Jennifer opens the&nbsp;<a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/constructing-transformer-parameters.fmw" target="_blank" rel="noopener">starting workspace</a> (<span style="font-family: inherit; font-size: 1em;">C:\FMEData\Workspaces\TransformAttributes\constructing-transformer-parameters.fmw) </span>in FME Workbench (2025.0.1 or later).</p>
+<p>Jennifer chose to use an AttributeCreator in this bookmark:</p>
+<p><img src="images/1744911136487.png" alt="AttributeCreator in the bookmark" /></p>
+<p>She will use the AttributeCreator to create a new attribute called Label and then use that attribute to set the label text in the LabelPointReplacer. This method has the advantage that the Label attribute will be available for use later in the workspace, if needed.</p>
+<h2>2) Configure AttributeCreator</h2>
+<p>She double-clicks the AttributeCreator to open its parameters.</p>
+<p>She creates a new Output Attribute called Label and uses the Text Editor to set its value to:</p>
+<p><code>@Value(NeighborhoodName)</code><br /><code>@Value(CFSAUID)</code></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The line break here is intentional to improve label readability.</p>
+</blockquote>
+<p><img src="images/1745612753817.png" alt="Using Text Editor" /></p>
+<p>The label will report the neighborhood name&nbsp;and, in a new line, the first three digits of the neighborhood's most central postcode.</p>
+<p>Her dialog looks like this:</p>
+<p><img src="images/1744911568194.png" alt="AttributeCreator parameters filled out" /></p>
+<p>She clicks OK.</p>
+<h2>3) Configure LabelPointReplacer</h2>
+<p>Jennifer double-clicks the LabelPointReplacer to open its parameters.</p>
+<p>Now that the Label attribute is available for use,&nbsp; she selects it to provide the value for Label Text:</p>
+<p><img src="images/1745612839427.png" alt="Setting a transformer value to use an attribute value" width="663" height="408" /></p>
+<p>She clicks OK.</p>
+<h2>4) View Results</h2>
+<p>Jennifer runs her workspace.</p>
+<p>She clicks the Labels writer feature type and chooses View Written Data.</p>
+<p>She sees her new labels in Visual Preview's Graphics view:</p>
+<p><img src="images/1744912140704.png" alt="Labels" /></p>
+<p>Jennifer saves her workspace and shares it with her colleagues for feedback. She successfully used attribute managing transformers to edit her data's schema, constructed attributes, and used attributes to supply values to transformer parameters.</p>

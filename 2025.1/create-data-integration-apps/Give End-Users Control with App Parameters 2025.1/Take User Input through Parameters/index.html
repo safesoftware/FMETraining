@@ -1,0 +1,141 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Understand how published user parameters enable end-users to control how workspaces run.</li>
+<li>Configure parameters to take user input through a Workspace App.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create-data-integration-apps--starting-project.fsproject" target="_blank" rel="noopener">Starting FME Flow project</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\create-data-integration-apps--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/community-map-data-download.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\community-map-data-download.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/community-map-data-download-complete.fmw" target="_blank" rel="noopener">Complete workspace </a>| C:\FMEData\Workspaces\CreateDataIntegrationApps\community-map-data-download-complete.fmw</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow.&nbsp;</p>
+<ul><!-- BEGIN: Reusable Custom Expandable Section --></ul>
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>
+<div>1) Download the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create-data-integration-apps--starting-project.fsproject" target="_blank" rel="noopener">starting project</a>&nbsp;and the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create_data_integration_apps.jceks" target="_blank" rel="noopener">encryption key</a>.</div>
+<div>2) Upload the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create_data_integration_apps.jceks" target="_blank" rel="noopener">create_data_integration_apps.jceks&nbsp;</a>encryption key to your FME Flow. This must be done by an fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create-data-integration-apps--starting-project.fsproject" target="_blank" rel="noopener">create-data-integration-apps--starting-project.fsproject&nbsp;</a>as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1759853954840.jpg" alt="" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1759854242215.jpg" alt="" /></div>
+<div>6) The next step is to select connections and tokens to import. This project doesn't contain any connections, parameters, tokens, or users to import. Click Continue through Step 2 and Step 3. Click Import Project on Step 4. The project will import and display its import status from the same page.&nbsp;</div>
+</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If the issue persists, please contact us at train@safe.com.&nbsp;</div>
+</details><!-- The script tag should live in the head of your page if at all possible -->
+<h2 id="self-serve-and-parameters">User Parameters</h2>
+<p><strong>Parameters</strong> are controls that define how FME operates, and almost every component in FME has parameters of one type or another. FME uses parameters to reference system settings, control how readers and writers operate, hold values that are inputs to workspaces, and much more. You've likely encountered them while using FME already. In just this course, you've used a parameter to take source data as input to a workspace through a Workspace App.&nbsp;</p>
+<p>Often, workspaces have parameters that take input values to control how the workspace functions, which we refer to as user parameters. Workspace authors create user parameters to easily set specific values at run-time for the workspace to use, giving the end-user greater control over how the workspace translation reads, writes, and transforms their data. There are many types of user parameters; some common to self-serve workflows include:</p>
+<ul>
+<li><strong>Choice</strong> to present the user with options to select.</li>
+<li><strong>Coordinate System</strong> selects the coordinate system in which to deliver data.</li>
+<li><strong>Geometry</strong> to take a geographic area of interest as an input value.&nbsp;</li>
+<li><strong>File/Folder/URL&nbsp;</strong>to use as the source data for files and folders in the workspace.&nbsp;</li>
+<li><strong>Text</strong><span style="text-decoration: underline;">&nbsp;</span>values as input string values to the workspace.&nbsp;</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For a complete list of user parameters, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">Creating and Modifying User Parameter Types</a>.&nbsp;</p>
+<p>For more in-depth training on the various types of parameters in FME, you can take <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters</a> or the FME Form Advanced module <a href="https://academy.safe.com/path/fme-form-advanced/create-flexible-workspaces-with-parameters" target="_blank" rel="noopener">Create Flexible Workspaces with Parameters</a>.&nbsp;</p>
+</blockquote>
+<p>You can create a user parameter directly at the setting where you want to reference the parameter value.</p>
+<p><img src="images/1747941445010.jpg" alt="" width="768" height="331" /></p>
+<p>Alternatively, you can create and manage all workspace user parameters from the Parameter Manager, which you access by right-clicking User Parameters in the Navigator window on FME Workbench and selecting Manage User Parameters.&nbsp;</p>
+<p>You can use the Parameter Manager to add, configure, reorder, and group parameters. <span class="c0">The left-hand side of the Parameter Manager displays all your user parameters, along with options to add new ones, group, copy and paste, reorder, and delete. </span><span class="c0">The right-hand side shows the properties for the newly created or selected parameter. </span>In the parameter properties, you can customize the requirements and display for each parameter. If a parameter is <strong>required</strong>, you must provide a value for the workspace to run; FME disables the Run button if the value is empty. To ensure your workspace presents the parameter to the end-user, you should ensure that it is <strong>published</strong>. If it is unpublished, your parameter will not be visible to the end-user for inputting a value, and the workspace will use the default value. You may want to use an unpublished parameter when you want to set a value in one place and link to it in multiple places throughout the workspace, without allowing the end-user to alter the value.&nbsp;</p>
+<p><img src="images/1747942387124.jpg" alt="" width="975" height="600" /></p>
+<p>Once you create the parameter, you must link it to the setting you wish to control with the parameter.&nbsp;</p>
+<p><img src="images/1747941789495.jpg" alt="" width="755" height="389" /></p>
+<h2 id="types-of-published-parameters">Using Parameters in Workspace Apps</h2>
+<p>After you deploy your workspace with user parameters on FME Flow and begin to create your Workspace App, you will see a Parameter Defaults section on the Create Workspace App page. This section will only display <strong>published</strong> parameters for the workspace, like the Run Workspace page. If a parameter is <strong>unpublished</strong>, it will not be visible or editable when you create your app.&nbsp;</p>
+<p>For example, a workspace with the following three user parameters will only display two parameters in the Parameter Defaults section, the two that are published. The lock icon denotes unpublished parameters in FME Workbench.&nbsp;</p>
+<p><img src="images/1747942821722.jpg" alt="" />&nbsp; &nbsp; &nbsp; <img src="images/1760472153683.jpg" alt="" width="907" height="558" /></p>
+<p>Before creating your app, you can modify the default values set for each parameter or deselect 'Show in App' to remove the parameter from the app.</p>
+<p><img src="images/1760473372554.jpg" alt="" /> &nbsp; &nbsp;<img src="images/1760473391325.jpg" alt="" /></p>
+<p>If you do not show your parameter in the app, FME will use the default value for the parameter when running the workspace.&nbsp;</p>
+<p><img src="images/1760472633339.jpg" alt="" /> &nbsp; &nbsp; <img src="images/1760472662519.jpg" alt="" /></p>
+<p>Published parameters, default values, and the ability to hide the parameter in your app allow you to choose which controls you grant to end-users in your workflow.&nbsp;</p>
+<h2>Exercise</h2>
+<p><img src="images/1747946810023.png" alt="" width="241" height="256" /></p>
+<p>Jennifer, a GIS Specialist, has a Workspace App that allows users to download community data from a geodatabase. Currently, her app utilizes the Data Download service to deliver community map layers to users as Esri shapefiles. While her app is working as she expects, she has received some requests for specific layers in various formats. Jennifer is going to use parameters to give her app users more control to customize the app output.&nbsp;</p>
+<h3>1) Run Current App</h3>
+<p>Jennifer navigates to FME Flow and opens Flow Apps &gt; Manage Workspace Apps. She finds the community-data-download app and clicks Open App.&nbsp;</p>
+<p><img src="images/1760477308766.jpg" alt="" /></p>
+<p>The app opens in another tab. Since it has no configurable parameters for the end-user, Jennifer clicks Run.</p>
+<p><img src="images/1760477850922.jpg" alt="" /></p>
+<p>Once the workspace is complete, FME Flow presents the Data Download URL. Jennifer clicks the URL to download the zip file, opens the File Explorer, extracts the file, and views the data. The workspace includes all the layers in the CommunityMap.gdb as shapefiles, comprising 40 individual files.&nbsp;</p>
+<p><img src="images/1760478177943.jpg" alt="" /></p>
+<h3>2) Open Workspace in FME Workbench</h3>
+<p>Jennifer opens <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/community-map-data-download.fmw" target="_blank" rel="noopener">her workspace</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\community-map-data-download.fmw) in FME Workbench. Currently, Jennifer's workspace does not have any user parameters. Jennifer will add two choice parameters - one to select which layers to read from the geodatabase and one to choose the output writer format.&nbsp;</p>
+<p><img src="images/1760478980671.jpg" alt="" /></p>
+<h3>3) Add Feature Types to Read Parameter</h3>
+<p>Jennifer expands the CommunityMap reader section in the Navigator. She expands the Parameters and Features to Read. On the Feature Types to Read parameter, Jennifer right-clicks and selects Create User Parameter.</p>
+<p><img src="images/1760479856696.jpg" alt="" /></p>
+<p>Jennifer changes the Prompt to&nbsp;<em>Select Community Map Layers to Download</em>, and clicks OK to create the user parameter.&nbsp;</p>
+<p><img src="images/1760480208264.jpg" alt="" /></p>
+<p>The new user parameter is displayed in the Navigator under User Parameters, and Feature Types to Read indicates that it links to the 'FEATURE_TYPES' parameter.&nbsp;</p>
+<p><img src="images/1760480386105.jpg" alt="" /></p>
+<h3>4) Add Writer Output Format Parameter</h3>
+<p>Jennifer expands the Output [GENERIC] writer settings in the Navigator window. She then expands Parameters to find the Output Format parameter; it is currently set to a shapefile. She right-clicks the Output Format parameter and selects Create User Parameter...&nbsp;</p>
+<p><img src="images/1760556900343.jpg" alt="" /></p>
+<p>Jennifer sets the Parameter Identifier to 'FORMAT' and expands the Choice Configuration section. Beneath the Choices, Jennifer clicks Import and then selects Writer Formats...</p>
+<p><img src="images/1760557212229.jpg" alt="" /></p>
+<p>Jennifer uses the Search to filter and select Esri Shapefile, MapInfo TAB, and OGC / Google KML formats. FME will present these formats to the end-user when they configure the workspace to run.&nbsp; If Jennifer did not select any writer formats, the user will see an overwhelming list of all possible formats to choose from.&nbsp; Now, Jennifer will limit the selection to these three formats and may update the workspace to use other formats later.&nbsp; Once Jennifer selects the three formats, she clicks OK.&nbsp;</p>
+<p><img src="images/1760557754060.jpg" alt="" /></p>
+<p>Jennifer checks her parameter settings and clicks OK again to complete the parameter creation.&nbsp;</p>
+<p><img src="images/1760557898291.jpg" alt="" /></p>
+<p>The Navigator will show Jennifer's new parameter linked to the Output Format writer parameter.&nbsp;</p>
+<p><img src="images/1760558013536.jpg" alt="" /></p>
+<h3>5) Publish Workspace to FME Flow</h3>
+<p>Jennifer saves her workspace and then publishes it to FME Flow.&nbsp;</p>
+<p><img src="images/1748285818571.jpg" alt="" /></p>
+<p>She selects the Training repository and clicks the community-map-data-download.fmw workspace to overwrite it.&nbsp; Jennifer then clicks Next, and FME gives a warning about replacing the existing workspace on FME Flow.&nbsp; Jennifer selects Replace to confirm overwriting the existing workspace on FME Flow.&nbsp;</p>
+<p><img src="images/1760558481527.jpg" alt="" /> &nbsp; &nbsp;<img src="images/1760558720245.jpg" alt="" /></p>
+<p>Jennifer registers the workspace with the Data Download and Job Submitter services, then clicks Publish.&nbsp;</p>
+<p><img src="images/1760558924843.jpg" alt="" /></p>
+<h3>6) Edit Workspace App</h3>
+<p>Jennifer navigates to FME Flow and returns to the Manage Workspace Apps page.&nbsp; She clicks the community-data-download app to edit it.</p>
+<p><img src="images/1760559241829.jpg" alt="" /></p>
+<p>On the editing page, Jennifer scrolls down and expands the Parameter Defaults section.&nbsp; The two parameters she created in FME Workbench are listed. Jennifer clicks Save.&nbsp;</p>
+<p><img src="images/1760559449909.jpg" alt="" /></p>
+<h3>7) Run Workspace App</h3>
+<p>After saving, Jennifer clicks the app URL to open it. Now, her app presents the user with the choice parameters. Jennifer uses the drop-downs to select a couple of layers and an output format, then clicks Run.&nbsp;</p>
+<p><img src="images/1760559975685.jpg" alt="" /></p>
+<p>Again, FME Flow presents Jennifer with a Data Download URL once the workspace completes. Jennifer downloads the data and inspects it to confirm that the Workspace App functions as expected, with only the layers the user selects and in the format the user chooses. Now, Jennifer is ready to share her self-serve app with others, allowing them to access the community map layers in the format they desire.&nbsp;</p>

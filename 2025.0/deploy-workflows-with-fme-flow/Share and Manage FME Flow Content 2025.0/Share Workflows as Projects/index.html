@@ -1,0 +1,144 @@
+<h2><span style="font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;">Learning Objectives</span></h2>
+<p><span style="font-weight: 400;">After completing this lesson, you'll be able to:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1">Create and export FME Flow Projects.</li>
+<li style="font-weight: 400;" aria-level="1">Understand item dependencies.&nbsp;</li>
+<li style="font-weight: 400;" aria-level="1">Understand the implications of system encryption alongside Projects.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-with-fme-flow--starting-project.fsproject" target="_self">Starting project</a><span style="font-weight: 400;"> | </span><span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\deploy-workflows-with-fme-flow--starting-project.fsproject</span></li>
+</ul>
+<div class="message-media-content">
+<h2>Share Content Through Projects</h2>
+<p>Projects group FME Flow items that share a common solution, or 'project', in your organization. Projects let you reference all items in a workflow in one easy place and can include just about any <span class="mc-variable ProductNames.ProductName-FMEFlow variable">FME&nbsp;Flow</span>&nbsp;item.</p>
+<p>The main advantage of using projects is that they allow you to transfer content between FME Flow instances easily. This transfer is essential when migrating through various stages of development (from development, testing, to production servers).</p>
+<p>Projects also allow you to share multiple items simultaneously. Compiling a project will enable you to package up all the required workspaces, repositories, files, and other components in a single .fsproject file. You can share the project file with other users within a Flow instance or export and import it into other Flow instances.</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="" width="63" height="64" /></p>
+<p>Encryption was introduced to FME Flow in 2023.1 and is something to be aware of when importing and exporting projects between different FME Flow instances. The default encryption mode setting is &ldquo;Standard,&rdquo; which applies a custom encryption key specific to your FME Flow installation.</p>
+<p>If you are using a Safe Software-provided machine for the Flow Authoring course the Flow Instance will be set to "Weak."&nbsp;For more information please see our&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption Documentation</a>.</p>
+</blockquote>
+<h2>Creating the Project</h2>
+<p>From the side menu, you can click Projects to go to the Manage Projects screen. To open a dialogue for a new project, click Create Project in the menu or the blue Create button on the Projects page. First, you need to give your project a name and description.&nbsp;</p>
+<p>&nbsp;<img src="images/1750815684059.jpg" alt="" width="939" height="605" /></p>
+<p>To add content, you must use the Add Items dialog, where you select the Item Type and then add individual items to the project.&nbsp;</p>
+<p><img src="images/1750815749183.jpg" alt="" width="886" height="185" /></p>
+<p><img src="images/1750816444702.jpg" alt="" width="1043" height="563" /></p>
+<p>Once you add an item, FME Flow lists it and its dependencies under Selected Items on the right side.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="" width="63" height="64" /></p>
+<p>You can only include some items, such as tokens and workspace apps, if you are the owner. You can set permissions for other roles accordingly to allow access to items you do not own. For more information, please see <a href="https://support.safe.com/hc/en-us/articles/25407725018893-Getting-Started-With-FME-Flow-Projects">Getting Started with FME Flow Projects.</a></p>
+</blockquote>
+<p>After you create your project, FME Flow displays all details about it and the items you added to it.&nbsp;</p>
+</div>
+<div class="message-media-content">
+<p><img src="images/1750861101926.jpg" alt="" width="1175" height="593" /></p>
+<h2>Dependencies</h2>
+<p>When you add items that require additional FME Flow items to function, FME Flow automatically includes those items in your project as dependencies. Dependencies may consist of web or database connections to run a workspace, or workspaces that are part of an Automation, or any other item necessary to run the workflow.&nbsp;</p>
+<p>When you add an item with dependencies, FME Flow lists them in the expandable section of Selected Items for that item.&nbsp;</p>
+<p><img src="images/1750816225842.jpg" alt="" width="346" height="253" /></p>
+<p>This Parks Data Sync Automation has three dependencies: a Resources file, a workspace, and a database connection.&nbsp;</p>
+<p>Once you create the project, you may see the dependencies for an item from the Actions options.&nbsp;</p>
+<p><img src="images/1750861477311.jpg" alt="" width="1295" height="158" /></p>
+<p>FME Flow automatically includes dependencies in your project; however, you can exclude certain sensitive items like connections and tokens upon exporting the project. Additionally, users may choose to exclude sensitive dependencies when importing the project.</p>
+<h2>Exporting Projects</h2>
+</div>
+<p><span style="font-weight: 400;">To export a project, navigate to Projects &gt; Manage Projects. Select the project you want to export and then click Export.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750861700468.jpg" alt="" width="1225" height="368" /></span></p>
+<p><span style="font-weight: 400;">The Export Project page asks you to choose a project file name, set the project export location, and configure Security Settings.&nbsp;</span></p>
+<p><img src="images/1750861773751.jpg" alt="" width="752" height="549" /></p>
+<p>Under Security Settings, you have the option to include Sensitive Data. Sensitive Data includes users, tokens, connections, and anything else that may be sensitive to share from a security perspective. If you wish to include Sensitive Data, FME Flow will encrypt the project file, and you will need the encryption key to import the project to another FME Flow.&nbsp;</p>
+<p><img src="images/1750862119828.jpg" alt="" width="1027" height="398" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-weight: 400;">Security Settings are important to consider on your own FME Flow, and you should be aware of encryption requirements. &nbsp;Default encryption was introduced in FME Flow 2023.1 and in order to import projects containing sensitive information, the encryption key needs to match or be imported to FME Flow ahead of importing the project. If you are using a Safe Software-provided machine, the encryption is set to weak. For more information on this, please see our <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Exporting-Importing-Projects.htm" target="_blank" rel="noopener">documentation on Encryption.</a></span></p>
+</blockquote>
+<p>Once you click Export, your project will download or save in Resources.&nbsp;</p>
+<p><img src="images/1750817686482.jpg" alt="" /></p>
+<p>You can share the .fsproject file with others or import it into another FME Flow instance. For example, you should use projects when migrating content between your organization's development and production FME Flow instances.&nbsp;</p>
+<h2><span style="font-weight: 400;">Exercise</span></h2>
+<p><span style="font-weight: 400;"><img src="images/1750814637240.png" alt="" width="270" height="286" /></span></p>
+<p>Frank and his colleagues have successfully deployed some FME workflows on FME Flow. A neighboring municipality is also deploying FME Flow, and they've asked Frank to share some of their workflows for inspiration. To do this, Frank will prepare an FME Flow Project containing some of their workflows and then export it to share with the municipality.&nbsp;</p>
+<p>Follow along with Frank's steps as he creates and exports an FME Flow Project.&nbsp;</p>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, the content required for this lesson has already been imported into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. If you don't want to import this project on your own FME Flow, you can just read along.&nbsp;</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>1) Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener">starting project</a><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener"><span style="font-weight: 400;">&nbsp;</span></a>and the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy_workflows_with_fme_flow.jceks" target="_blank" rel="noopener">encryption key</a>.</div>
+<div>2) Upload the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy_workflows_with_fme_flow.jceks" target="_blank" rel="noopener">deploy_workflows_with_fme_flow.jceks</a> encryption key to your FME Flow. An fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption must do this. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload deploy-workflows-with-fme-flow--starting-project.fsproject as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1748468057405.jpg" alt="" width="651" height="467" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1748468960290.jpg" alt="" width="716" height="469" /></div>
+<div>6) The next step is to select connections and tokens to import. By default, FME Flow does not select them for import. <strong>Select both the FME Training PostGIS Database Connection and the Workspace App - Data Validation Token to import. </strong>If you do not import these, the workflows will not run successfully. Click Continue.&nbsp;</div>
+<div><img src="images/1748469141379.jpg" alt="" width="737" height="336" /></div>
+<div>7) The Resolve Owners step only allows you to reassign the project contents to a different user if the admin user doesn't exist on your FME Flow. Click Continue and then click Import Project from the Additional Options step. The project will import and display its import status from the same page.</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If it still fails, contact us at train@safe.com.&nbsp;</div>
+</details>
+<h3>1) Create a Project</h3>
+<p><span style="font-family: inherit; font-size: 1em;">On the FME Flow side menu, Frank selects Projects &gt; Create Project. He gives the project a name and description.&nbsp;</span></p>
+<p><img src="images/1750815684059.jpg" alt="" width="1090" height="702" /></p>
+<p>He scrolls down and selects Add Items.&nbsp;</p>
+<p><img src="images/1750815749183.jpg" alt="" width="982" height="205" /></p>
+<h3>2) Add Items to Project</h3>
+<p>Under Item Type, Frank selects Automation, and FME Flow displays the Automations on his FME Flow. He clicks the + icon to add the Parks Data Sync Automation to the Project.&nbsp;</p>
+<p><img src="images/1750816010680.jpg" alt="" width="788" height="465" /></p>
+<p>FME Flow adds the Automation to the project on the right side under Selected Items, and Frank expands it to see its dependencies.&nbsp;</p>
+<p><img src="images/1750816225842.jpg" alt="" width="346" height="253" /></p>
+<p>Next, Frank changes the Item Type to Workspace and selects the Data Validation Repository. He adds the CAD_Data_Validation.fmw workspace to the project. This workspace doesn't contain any dependencies, so FME Flow only adds the workspace to the Selected Items.</p>
+<p><img src="images/1750816444702.jpg" alt="" width="1043" height="563" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-weight: 400;">Optional: If you completed the previous lesson, Share Workspaces as Apps, add Jennifer's community-data-download Workspace App to the Project.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750816621467.jpg" alt="" width="1020" height="499" /></span></p>
+</blockquote>
+<p>Frank clicks Add Items to finish and close the Add Items window. FME Flow lists the items under Project Contents.&nbsp;</p>
+<p><img src="images/1750816735981.jpg" alt="" width="920" height="455" /></p>
+<p>Frank scrolls to the bottom and clicks Create. FME Flow displays an overview of the project.&nbsp;</p>
+<p><img src="images/1750816848890.jpg" alt="" width="1216" height="568" /></p>
+<h3>3) Export Project</h3>
+<p>Frank expands Actions and selects Export, which opens the Export Project page.&nbsp;</p>
+<p><img src="images/1750817005524.jpg" alt="" width="331" height="289" /></p>
+<p>Under Export Details, Frank doesn't change any settings.&nbsp;</p>
+<p><img src="images/1750817169461.jpg" alt="" width="893" height="508" /></p>
+<p>However, under Security Settings, Frank deselects the option to Include sensitive information. He shouldn't share any sensitive or confidential information with the neighboring municipality.&nbsp;</p>
+<p><img src="images/1750817491725.jpg" alt="" width="1065" height="573" /></p>
+<p>Frank doesn't need to alter other settings, so he clicks Export. Frank's project immediately downloads as an .fsproject file, which he can share with the neighboring municipality to import into their FME Flow.&nbsp;</p>
+<p><img src="images/1750817686482.jpg" alt="" /></p>

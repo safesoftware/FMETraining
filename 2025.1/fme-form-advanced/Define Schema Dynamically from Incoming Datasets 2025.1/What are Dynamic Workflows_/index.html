@@ -1,0 +1,99 @@
+<p><span style="font-size: 2.3125em;">What are Dynamic Workflows?</span></p>
+<p>Dynamic workflows are a way to create "schema-less&rdquo; workspaces.</p>
+<p>Most workspaces covered elsewhere in FME training involve defining a static schema in the workspace. In other words, the source and destination schema reflect the structure of the source data (what we have) and the structure of the destination data the user requires (what we want).</p>
+<p><img class="image image-block image-center" src="images/1723488672212.png" alt="A workspace with a fixed schema" width="497" height="264" /></p>
+<p>A &ldquo;traditional&rdquo; static workspace like this is bound to a static schema.</p>
+<p>When you press the Run button:</p>
+<ul>
+<li>The reader schema is what the workspace accepts as input.</li>
+<li>The writer schema is what the workspace creates as output.</li>
+</ul>
+<p>The two schemas are the same by default, but don&rsquo;t have to be. The writer schema can be manually edited to create different outputs. However, in a static workspace, that destination schema is still defined in the workspace itself.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Schema is another term for &ldquo;data model.&rdquo; It&rsquo;s the structure of the data. In a static workflow, the reader schema defines the data you have, and the writer schema defines the data you want to get. For this section, think of a schema as a trio of objects: feature types, attributes, and geometry types.</span></p>
+</blockquote>
+<p>In contrast, a dynamic workspace does not make source or destination schema assumptions. It&rsquo;s an approach to workspace design that lets the workspace handle data regardless of the schema used.</p>
+<p><img class="image image-block image-center" src="images/1723489053621.png" alt="A dynamic workspace" width="537" height="151" /></p>
+<p>When you press the Run button:</p>
+<ul>
+<li>The workspace can accept any input, regardless of schema.</li>
+<li>The workspace accepts a new output schema from many sources.</li>
+<li>The writer schema source may be:
+<ul>
+<li>Any incoming dataset</li>
+<li>Any external dataset</li>
+<li>A lookup table</li>
+<li>Defined within the workspace</li>
+</ul>
+</li>
+</ul>
+<p>In other words, the schemas do not need to be defined beforehand. They are fetched&nbsp;<em>dynamically</em> at "run time."</p>
+<p>The key issue is that some FME Workbench functionality depends on knowing the schema at "author time," i.e., when authoring the workspace. Some functionality is only available when working with a fixed schema. For example, for a transformer to access an attribute, it must be exposed and defined in the workspace. Therefore, dynamic workspaces and their schema&nbsp;require a different way of working, which we cover in this course and subsequent courses in the <a href="https://academy.safe.com/path/fme-form-advanced" target="_blank" rel="noopener">FME Form Advanced learning path</a>.</p>
+<h2 id="dynamic-readers">Dynamic Readers</h2>
+<p>On the reader's side, a dynamic workspace is very similar to using Merge Parameters; feature types are given free entry to a workspace, regardless of whether they are defined there.</p>
+<p>Data is also read regardless of attributes or geometry type.</p>
+<p><img class="image image-block image-center" src="images/1669072220073.png" alt="Dynamic reading" />&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You might think of dynamic reading as &ldquo;I&rsquo;ll read whatever you give me."</span></p>
+</blockquote>
+<h2 id="dynamic-writers">Dynamic Writers</h2>
+<p>The writer side of a dynamic workspace mimics the reader part; feature types are written to the destination dataset, regardless of whether they are defined in the workspace.</p>
+<p>Additionally, all attributes and geometries get written, regardless of whether they have been predefined in a writer feature type.</p>
+<p><img class="image image-block image-center" src="images/1669072237348.png" alt="Dynamic writing" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Similarly, you might think of dynamic writing as &ldquo;I&rsquo;ll write whatever you give me.&rdquo;</span></p>
+</blockquote>
+<h2 id="common-uses-for-dynamic-workflows">Common Uses for Dynamic Workflows</h2>
+<p>Dynamic workflows can be helpful in cases like:</p>
+<ul>
+<li>Applying a relatively simple data transformation to all data coming into a workflow, regardless of its schema (for example, clipping, format translations,&nbsp;coordinate transformations).</li>
+<li>When the source dataset&rsquo;s schema is not predictable or well-defined.</li>
+<li>Performing ad hoc data transformations on many different input datasets (for example, calculating the average values for a selection of attributes)</li>
+<li>When long-term maintenance of the workspace is required (for example, if new feature types or attributes are added to the source data, the workspace would not need to be changed).</li>
+</ul>
+<h2 id="generic-versus-dynamic">Generic Versus Dynamic</h2>
+<p>Understanding the differences between generic and dynamic workspaces and when to use each tool is essential.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For more details on generic workspaces, refer to&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/read-and-write-any-data-format-with-generic-mode" target="_blank" rel="noopener">Read and Write Any Data Format with Generic Mode</a><span style="font-family: inherit; font-size: 1em;">. For more details on fanouts, see&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/read-and-write-your-data-mid-workflow" target="_blank" rel="noopener">Read and Write Your Data Mid-Workflow</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>This table is helpful as a reference guide:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>&nbsp;</td>
+<td><strong>I know the format</strong></td>
+<td><strong>I don&rsquo;t know the format</strong></td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td><strong>I know the feature types</strong></td>
+<td>Static</td>
+<td>Generic + Static</td>
+<td><strong>I know the attributes</strong></td>
+</tr>
+<tr>
+<td><strong>I don&rsquo;t know the feature types</strong></td>
+<td>Fanout</td>
+<td>Generic + Fanout</td>
+<td><strong>I know the attributes</strong></td>
+</tr>
+<tr>
+<td><strong>I know the feature types</strong></td>
+<td>Dynamic</td>
+<td>Generic + Dynamic</td>
+<td><strong>I don&rsquo;t know the attributes</strong></td>
+</tr>
+<tr>
+<td><strong>I don&rsquo;t know the feature types</strong></td>
+<td>Dynamic</td>
+<td>Generic + Dynamic</td>
+<td><strong>I don&rsquo;t know the attributes</strong></td>
+</tr>
+</tbody>
+</table>
+<p>For example, let&rsquo;s assume you operate a data upload website. The data will be in a known structure (feature types) and with known attributes. However, you don&rsquo;t know what format it will be. That needs a static schema (because that part is known), but with a generic reader.</p>
+<p>On the other hand, if the format is always the same but the attributes are unknown, a dynamic workspace will be required.</p>

@@ -1,0 +1,281 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define a transformer.</li>
+<li>Make HTTP calls using the HTTPCaller transformer.</li>
+<li>Turn a JSON response into features using the JSONFlattener transformer.</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learning content in the FME Academy presents a user's story addressing their data integration challenges with FME. </span><strong style="font-family: inherit; font-size: 1em;">You should follow along with their actions using your installation of FME (2025.0 or later) </strong><span style="font-family: inherit; font-size: 1em;">or request an on-demand virtual machine in the footer link below. Some lessons will require you to follow their steps or take additional steps to answer a quiz question.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Resources</strong><span style="font-family: inherit; font-size: 1em;"> section will provide links to interactive tutorials and starting workspaces when necessary.</span></p>
+</blockquote>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces\IntegrateDataWithTheFMEPlatform\read-web-data-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\read-web-data-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+</ul>
+<h2 id="jumpstart-your-data-integration-workflows">Read Web Data</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer is a GIS Specialist working for a local government. She needs to read business license data from an <a href="https://en.wikipedia.org/wiki/API" target="_blank" rel="noopener">API</a> and write it to an Esri geodatabase, a widely used spatial database. The API is used internally, while the geodatabase is used in public-facing applications. Therefore, she wants to edit the attribute names and filter out some features with revoked business licenses in the final geodatabase to have appropriate data for displaying to the public.</p>
+<p>In this section, we'll follow along with Jennifer to learn how to read web data and use transformers to change the content and structure of our data.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Jennifer is working with the same BusinessOwners dataset as Sven from the previous course, but she&rsquo;s reading it from an API instead of an Excel spreadsheet.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>In previous versions of this training, we taught Generate Workspace in this lesson. Generate Workspace is an alternative way to start building a workspace: You define a reader and writer, and FME automatically generates a workspace for you. We've changed approaches and won't cover Generate Workspace. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/workspace-dialog-using.htm" target="_blank" rel="noopener">You can refer to the documentation</a> if you'd like to learn how it works.</p>
+</blockquote>
+<p>Jennifer starts FME Workbench (2025.0 or later) and clicks <strong>New&nbsp;</strong>in the Start tab.</p>
+<p><img src="images/1742423925296.png" alt="New button" width="252" height="180" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Follow along with Jennifer's steps using your own version of FME.</span></p>
+</blockquote>
+<h2 id="connect-to-a-database">Adding an HTTPCaller</h2>
+<p>So far, we've been using readers to read data.</p>
+<p>However, in some cases, you will read data using transformers.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>A <strong>transformer </strong>is an FME Workbench object that carries out feature restructuring. There are hundreds of different transformers that perform different types of restructuring.</p>
+</blockquote>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use transformers to change your data without writing code. If you prefer to write SQL or Python, you can use transformers like the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasequerier.htm" target="_blank" rel="noopener">DatabaseQuerier</a> or <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pythoncaller.htm" target="_blank" rel="noopener">PythonCaller</a>. </span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can access <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_self">AI Assist</a> in compatible transformers to help you write regular expressions, SQL, or Python.</span></p>
+<p><strong>⭐ New for FME 2025.1:</strong> the FeatureReader can now execute queries against databases that support SQL/Cypher. Set Define Read Criteria By to Custom Query and enter a query using SQL or Cypher depending on the format. All features will come out of the &lt;Generic&gt; port. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/featurereader.htm" target="_blank" rel="noopener">Check out the documentation to learn more</a>.</p>
+<p>Also new for 2025.1 is theransformer, which combines the functionality of the existing <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlexecutor.htm" target="_blank" rel="noopener">SQLExecutor</a> and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlcreator.htm" target="_blank" rel="noopener">SQLCreator</a> transformers. This transformer lets you execute SQL or other query language statements against a database, and it includes an optional Inititator port.</p>
+</blockquote>
+<p>Transformers are primarily used to change data in some way, modifying its content or structure. However, some transformers can also read data.&nbsp;</p>
+<p>Jennifer knows the standard way to make an API call using FME is with the HTTPCaller transformer. So she clicks on the blank canvas to ensure it's focused and then types HTTPCaller. As she begins to type, the Quick Add dialog appears.</p>
+<p><img src="images/1742424052581.png" alt="HTTPCaller in Quick Add" width="734" height="419" /></p>
+<p>She double-clicks <strong>HTTPCaller</strong> or presses Enter to add the transformer to the canvas.</p>
+<p><img src="images/1712857387204.png" alt="HTTPCaller on Canvas" width="200" /></p>
+<p>She notices that the HTTPCaller requires an <strong>Input</strong> feature to work. What feature should she use?</p>
+<h2 id="connect-to-a-database">Adding a Creator</h2>
+<p>If she wanted to make many API calls, she could send features into the Input port containing requests or query parameters to fill in while making the call. For example, maybe she would send features with a Request attribute with the following values:</p>
+<ul>
+<li><code>https://my-api.com/v1/business-licenses?neighborhood=Downtown&amp;page=1</code></li>
+<li><code>https://my-api.com/v1/business-licenses?neighborhood=Downtown&amp;page=2</code></li>
+<li><code>https://my-api.com/v1/business-licenses?neighborhood=Downtown&amp;page=3</code></li>
+</ul>
+<p>Or she could send features with the query parameter values and use those in the HTTPCaller to construct each call:</p>
+<table style="border-collapse: collapse; width: 99.9509%; height: 129.556px;" border="1">
+<tbody>
+<tr style="height: 32.3889px;">
+<td style="width: 33.3165%; height: 32.3889px;"><strong>FeatureID</strong></td>
+<td style="width: 33.3165%; height: 32.3889px;"><strong>Neighborhood</strong></td>
+<td style="width: 33.3179%; height: 32.3889px;"><strong>Page</strong></td>
+</tr>
+<tr style="height: 32.3889px;">
+<td style="width: 33.3165%; height: 32.3889px;">19b16b26</td>
+<td style="width: 33.3165%; height: 32.3889px;">Downtown</td>
+<td style="width: 33.3179%; height: 32.3889px;">1</td>
+</tr>
+<tr style="height: 32.3889px;">
+<td style="width: 33.3165%; height: 32.3889px;">a43c3e7a</td>
+<td style="width: 33.3165%; height: 32.3889px;">Downtown</td>
+<td style="width: 33.3179%; height: 32.3889px;">2</td>
+</tr>
+<tr style="height: 32.3889px;">
+<td style="width: 33.3165%; height: 32.3889px;">66f88db0</td>
+<td style="width: 33.3165%; height: 32.3889px;">Downtown</td>
+<td style="width: 33.3179%; height: 32.3889px;">3</td>
+</tr>
+</tbody>
+</table>
+<p>However, in this case, she wants to make a single call and receive a JSON payload, and she already knows the URL in advance.</p>
+<p>In this case, she must use a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/creator.htm" target="_blank" rel="noopener">Creator</a> transformer to make the call. The Creator transformer creates simple features. It's unusual in that it only has one output port. Jennifer can use it to make a single empty feature and use that to kick off the API call.</p>
+<p>So, she keeps the <strong>HTTPCaller</strong> selected and uses Quick Add to add a <strong>Creator</strong>.</p>
+<p><img src="images/1742424115102.png" alt="Adding a Creator with Quick Add" width="734" height="463" /></p>
+<p>Because the <strong>HTTPCaller</strong> was selected, and FME knows the <strong>Creator</strong> only has an output port, it will correctly add it to the canvas already connected to the <strong>HTTPCaller's Input </strong>port:</p>
+<p><img src="images/1712857947727.png" alt="Creator connected to HTTPCaller" width="400" /></p>
+<h2 id="connect-to-a-database">Configuring the HTTPCaller</h2>
+<p>Now that the <strong>HTTPCaller</strong> has a feature going into Input, it will make one HTTP request. Jennifer double-clicks the <strong>HTTPCaller</strong> to open its parameters and configure them.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>All transformers have parameters you can (or must, depending on the transformer) configure. How each is configured depends on the transformer, as they all do different things. To learn how to configure a transformer, check out the FME Help, which is accessible via the Help button at the bottom left of all transformer dialogs.</p>
+</blockquote>
+<p>She enters <code>http://fme.ly/businessowners</code>&nbsp;for the <strong>Request URL </strong>and chooses GET for the <strong>HTTP Method</strong>.</p>
+<p><img src="images/1742424575418.png" alt="Request URL" width="575" height="285" /></p>
+<p>She also sets Response Handling &gt; Save Response Body to Attribute &gt; <strong>Response Body Encoding</strong> to System Default (fme-system). This step ensures the JSON will be read as text and not a binary file.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are unfamiliar with HTTP requests, you can <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" target="_blank" rel="noopener">learn more here</a>.</p>
+<p>&nbsp;</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>We are "faking" an API request here for simplicity's sake. Usually, you'd make a request that included authentication and query parameters, all possible with the HTTPCaller. But to simplify this example, we'll GET a JSON payload directly.</p>
+<p>You could also use a JSON reader, which would work fine. However, the HTTPCaller method is generally better when working with real API data.</p>
+<p><a href="https://support.safe.com/s/article/getting-started-with-apis-1" target="_self">Learn more about using APIs with FME.</a></p>
+</blockquote>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p><strong>⭐New for FME 2024.1</strong><span style="font-family: inherit; font-size: 1em;">: you can now directly import requests using an </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://www.openapis.org/" target="_blank" rel="noopener">OpenAPI</a><span style="font-family: inherit; font-size: 1em;"> specification JSON or YAML file using the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/openapicaller.htm" target="_blank" rel="noopener">OpenAPICaller</a> transformer.</span></p>
+</blockquote>
+<h2 id="connect-to-a-database">Testing the HTTPCaller</h2>
+<p>Jennifer knows it is vital to test transformers after configuring them. Normally, she'd just run her workspace, taking advantage of partial runs to only run the transformer she just configured.</p>
+<p>However, the HTTPCaller has a special<strong> Send Test Request </strong>button she can use to test her query without needing to run the workspace. She clicks it.</p>
+<p><img src="images/1742487246224.png" alt="HTTPCaller Send Test Request button" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐New for FME 2024.1: </strong>you can preview URLs, test requests, and view responses directly within the HTTPCaller and OpenAPICaller Parameters dialog. This integrated approach reduces setup time, provides immediate feedback, and simplifies configuring and analyzing HTTP requests.</p>
+</blockquote>
+<p>The HTTP Test Request Preview dialog opens. At this point, if the request required test values, she could enter them. It doesn't, so she just clicks <strong>Send Test Request</strong>.</p>
+<p>The Test Response Preview section is populated with the JSON response body from the GET request:</p>
+<p><img src="images/1758824501546.png" alt="Viewing test response JSON" /></p>
+<p>Looks good!</p>
+<p>She clicks <strong>OK </strong>to close the transformer parameters.&nbsp;</p>
+<h2 id="connect-to-a-database">Viewing HTTPCaller Response Attribute</h2>
+<p>Jennifer wants to confirm where the HTTP call response will be stored on her feature.</p>
+<p>She clicks the <strong>Run </strong>button.</p>
+<p>The Creator creates a single feature and sends it to the HTTPCaller. The HTTPCaller makes a single HTTP GET request to the request URL. It returns a JSON payload stored as a text attribute in the default attribute <strong>_response_body</strong>.</p>
+<p><strong>Visual Preview </strong>should automatically open to show the HTTPCaller's feature cache, but if it doesn't, click the cache icon on the <strong>HTTPCaller's Output </strong>port.</p>
+<p><img src="images/1712860285837.png" alt="The HTTPCaller feature cache" width="400" /></p>
+<p>The results of the call are displayed in Visual Preview. Jennifer notices two things:</p>
+<p><img src="images/1712860408178.png" alt="Ellipsis button and HTTP response code" width="550" /></p>
+<p>The JSON is stored in the <strong>_response_body </strong>attribute. Because it's quite a lot of text, an ellipsis button <strong>[. . .]</strong> is provided. Clicking that will open the entire text in a separate dialog.</p>
+<p>Additionally, the HTTPCaller added an attribute called <strong>_http_status_code</strong>. This reports the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" target="_blank" rel="noopener">HTTP status code</a>, indicating the success of the call. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200" target="_blank" rel="noopener">A code of 200</a> indicates a successful call.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Attributes created by transformers use an underscore _ prefix to indicate that FME created them.</p>
+</blockquote>
+<p>Jennifer clicks the ellipsis button <strong>[. . .] </strong>in the <strong>_response_body </strong>attribute. A dialog appears showing the full JSON payload.</p>
+<p>She clicks the Syntax Highlighting button in the bottom-left of the dialog and chooses JSON to format the text as JSON:</p>
+<p><img src="images/1712860846133.png" alt="Formatting response as JSON" width="125" /></p>
+<p>Now, she can examine the response to understand its structure.</p>
+<p>She can see it consists of an array of JSON objects, indicated by the opening and closing square braces <code>[]</code>.</p>
+<p>Each object has attribute-value pairs with a predictable schema. It also contains some geometry information.</p>
+<p><code>{</code><br /><code>&nbsp; &nbsp; "json_featuretype": "BusinessOwners",</code><br /><code>&nbsp; &nbsp; "First": "Garth",</code><br /><code>&nbsp; &nbsp; "Last Name": "Garrett",</code><br /><code>&nbsp; &nbsp; "Company": "Hendrerit Consectetuer Cursus Industries",</code><br /><code>&nbsp; &nbsp; "License Number": "8BCB7F",</code><br /><code>&nbsp; &nbsp; "Longitude": -123.1006079306,</code><br /><code>&nbsp; &nbsp; "Latitude": 49.24906160267,</code><br /><code>&nbsp; &nbsp; "json_ogc_wkt_crs": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]",</code><br /><code>&nbsp; &nbsp; "json_geometry": {</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; "type": "Point",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; "coordinates": [</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -123.1006079306,</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 49.2490616027</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; ]</code><br /><code>&nbsp; &nbsp; }</code><br /><code>}</code></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>Schema</strong> (sometimes known as "data model") can be described as the structure of a dataset&nbsp;or, more accurately, a formal definition of its structure.</p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Understanding_Schema.htm" target="_blank" rel="noopener">Learn more</a></p>
+</blockquote>
+<p>This response matches her expectations. Her goal is to take these JSON attribute-value pairs and create FME features.</p>
+<p>Jennifer closes the dialog.</p>
+<h2 id="connect-to-a-database">Adding a JSONFragmenter</h2>
+<p>Jennifer selects her <strong>HTTPCaller</strong>&nbsp;and then uses Quick Add to add a <strong>JSONFragmenter</strong> transformer.</p>
+<p><img src="images/1712861272031.png" alt="Adding a JSONFragmenter" width="600" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>There are many transformers for manipulating JSON.</p>
+<p><a href="https://support.safe.com/s/article/tutorial-getting-started-with-json" target="_blank" rel="noopener">Learn more on the Knowledge Base.</a></p>
+</blockquote>
+<p>She double-clicks the <strong>JSONFragmenter</strong> to open its parameters. She makes the following changes:</p>
+<table style="border-collapse: collapse; width: 99.9509%;" border="1">
+<tbody>
+<tr>
+<td style="width: 49.9754%;"><strong>Source &gt; JSON Attribute</strong></td>
+<td style="width: 49.9754%;">_response_body</td>
+</tr>
+<tr>
+<td style="width: 49.9754%;"><strong>Flattening &gt; Flatten Query Result into Attributes</strong></td>
+<td style="width: 49.9754%;">Yes</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/1742424784141.png" alt="Configuring the JSONFragmenter" /></p>
+<p>With these settings, the <strong>JSONFragmenter</strong> will split each entry in the JSON array into an FME feature. Then, it will "flatten" the nested structure of JSON into the columnar structure of FME attributes.</p>
+<p>However, if Jennifer only uses these settings, the resulting attributes will be unexposed; they will not appear in the <strong>Table</strong> view or be accessible within the workspace. This is because FME is designed to work with a fixed schema. It is not known in advance what names these attributes will have, because the JSON could contain anything. So we have to expose the attributes we expect.</p>
+<p>Exposing attributes can be done with the&nbsp;<strong>Attributes to Expose</strong> parameter in the JSONFragmenter, but Jennifer can use the attributes stored in the feature cache if she uses an <strong>AttributeExposer&nbsp;</strong>transformer instead.</p>
+<h2>Adding an AttributeExposer</h2>
+<p>Jennifer clicks&nbsp;<strong>OK&nbsp;</strong>to close the <strong>JSONFragmenter</strong> parameters and then runs the workspace to create the cache on the&nbsp;JSONFragmenter<strong>.&nbsp;</strong>Then Jennifer adds an <strong>AttributeExposer&nbsp;</strong>transformer.</p>
+<p><img src="images/1742424734170.png" alt="Added an AttributeExposer" width="559" height="110" /></p>
+<p>She double-clicks the <strong>AttributeExposer</strong> to open its parameters and then clicks on <strong>Import-&gt;From Feature Cache...</strong></p>
+<p><strong><img src="images/1725984428857.png" alt="Importing attriburtes to expose from the feature cache" width="457" height="416" /></strong></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The Import button appears in many FME dialogs. It lets you import values from a dataset and can be helpful when you need to supply a list of:</p>
+<ul>
+<li>attribute names from an existing dataset</li>
+<li>feature type names from an existing dataset</li>
+<li>coordinate systems</li>
+<li>formats</li>
+</ul>
+</blockquote>
+<p>An&nbsp;<strong>Import from Feature Cache&nbsp;</strong>dialog appears. By default, all the attributes found in the cache are selected for exposing.&nbsp;</p>
+<p><img src="images/1725984826402.png" alt="Selecting all attributes to expose" width="407" height="368" /></p>
+<p>Jennifer clicks&nbsp;<strong>Import&nbsp;</strong>and then <strong>OK</strong> to expose all of the added attributes.</p>
+<p><img src="images/1725984933994.png" alt="AttributeExposer added" width="584" height="395" /></p>
+<h2 id="connect-to-a-database">Testing the JSONFragmenter</h2>
+<p>To see if she configured the transformer correctly, she clicks the <strong>Run</strong> button.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Notice how only the <strong>JSONFragmenter </strong>is highlighted in green when you mouse over the Run button. This highlighting indicates which parts of the workspace will run. When FME has feature caches, it will only run sections of the workspace that don't have caches yet.</p>
+</blockquote>
+<p>The workspace runs, and then <strong>Visual Preview's Table view</strong> shows the results of the <strong>JSONFragmenter</strong> cache. It now has the attributes Jennifer wants:</p>
+<p><img src="images/1712864865603.png" alt="Attributes added" width="800" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You might have to scroll the Table view to the right to see all the new attributes.</p>
+</blockquote>
+<p>Jennifer has successfully read the web data and extracted the attributes.</p>
+<p>In the next lesson, she'll generate geometry from coordinates and write the data to a geodatabase.</p>
+<h2 id="exercise">Exercise</h2>
+<p>Follow along with Jennifer&rsquo;s steps.</p>
+<h2>Optional Challenge: Integrate with Generative AI</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>This is an optional section. The changes Jennifer makes to the workspace won't be carried into the next lesson.</p>
+<p>To learn more about AI features in FME, <a href="https://fme.safe.com/blog/2024/02/ai-and-fme-12-inspiring-scenarios-for-data-integration/" target="_blank" rel="noopener">check out this blog post</a>. You can also download our <a href="http://fme.safe.com/security" target="_blank" rel="noopener">AI security whitepaper</a>.</p>
+</blockquote>
+<p>Jennifer would like to generate a short text summary of each business for use in the city's annual business license renewal emails. She doesn't want to write one for every feature, so this is a good use case for generative AI using a large language model.</p>
+<p><strong>Add a Sampler</strong></p>
+<p>To test this workflow, Jennifer adds a Sampler using a new connection to the AttributeExposer:</p>
+<p><img src="images/1756850884577.png" alt="Added a Sampler" /></p>
+<p>She sets the Sampler to a Sampling Rate of 1 and a Sampling Type of First N Features:</p>
+<p><img src="images/1747089422016.png" alt="Sampler configuration" /></p>
+<p>With this configuration, the Sampler will take just the first feature, which she can use to test her workflow. Once she's happy with the test, she can disable or remove the Sampler.</p>
+<p><strong>Add an OpenAIConnector</strong></p>
+<p>At this point, Jennifer could use another HTTPCaller to call the OpenAI API, but someone has already created an FME <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/custom_transformer_creating.htm" target="_self">custom transformer</a> that makes this process even easier. She can quickly download it from the <a href="http://hub.safe.com/" target="_self">FME Hub</a> and use it in her workspace.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Because FME is the all-data, any-AI platform, Jennifer could connect to any AI provider she wished via API. She chose OpenAI because she's familiar with their products.</p>
+</blockquote>
+<p>She uses Quick Add to add the OpenAIConnector after the Sampler. She is prompted to choose if she'd like to Install this custom transformer from the FME Hub:</p>
+<p><img src="images/1747161962223.png" alt="Installing a custom transformer from the FME Hub" /></p>
+<p>She clicks Install and the transformer appears on the canvas:</p>
+<p><img src="images/1747162037282.png" alt="Added an OpenAIConnector" width="348" height="97" /></p>
+<p>She double-clicks the new transformer to open its parameters.</p>
+<p>She provides her own API Key.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you would like to test this workflow, please create an OpenAI Account and retrieve an API key to use.</p>
+</blockquote>
+<p>She chooses Text Generation as the Action and gpt-4o as the model.</p>
+<p>For Instructions, which will instruct the AI assistant what persona to use in its answers, she enters:</p>
+<blockquote>
+<p>You are an employee working for a city's Business License department. Your tone should be professional, friendly, and to the point.</p>
+</blockquote>
+<p>For User Prompt, which provides the assistant's instructions, she enters:</p>
+<blockquote>
+<p>Please generate a 2-sentence summary of the following business.</p>
+<p>Here are the details:</p>
+<p>Company Name: @Value(Company)</p>
+<p>Business License Number: @Value(License Number)</p>
+<p>Business Owner Name: @Value(First) @Value(Last Name)</p>
+<p>Business Location: @Value(Latitude), @Value(Longitude)</p>
+<p>Please only return the summary address in your response; provide no extra text or formatting.</p>
+</blockquote>
+<p>She clicks OK.</p>
+<p><strong>Test AI Integration</strong></p>
+<p>Jennifer runs the workspace and inspects the single result. The Response attribute contains the assistant's summary:</p>
+<blockquote>
+<p>Hendrerit Consectetuer Cursus Industries, owned by Garth Garrett, operates under business license number 8BCB7F. The business is located at coordinates 49.24906160267, -123.1006079306.</p>
+</blockquote>
+<p>It's pretty basic, but it will save her time from having to write it herself. If she adds more business information in the future, she could ask the assistant to add more detail or conduct other tasks like classifying business into <a href="https://en.wikipedia.org/wiki/North_American_Industry_Classification_System" target="_blank" rel="noopener">NAICS codes</a> or flagging business with potentially incorrect attribute values.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><a href="https://fme.safe.com/webinars/ai-agents-made-simple-unleash-the-power-of-all-your-data-with-any-ai/" target="_self">Learn more about integrating FME with AI in this webinar.</a></p>
+</blockquote>

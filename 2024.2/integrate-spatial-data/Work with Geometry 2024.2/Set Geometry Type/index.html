@@ -1,0 +1,119 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>View allowed geometries on feature types.</li>
+<li>Set geometry on writer feature types.</li>
+<li>Use the GeometryFilter transformer to control which geometry types you write.</li>
+</ul>
+<h2>Controlling Geometry on Feature Types</h2>
+<p>Setting the appropriate geometry type is often necessary when writing data to a new format. For instance, you might read data from a PostGIS database table that (optionally) allows mixed geometries, but you need to write those features to an Esri geodatabase that restricts features to a single geometry type. What do you do in such a situation?</p>
+<p>Geometry is part of the feature type schema, and you can view it in the reader and writer Feature Type parameters:</p>
+<p><img src="images/1738100780341.png" alt="Reader feature type geometry parameter" /><img src="images/1738101116090.png" alt="Writer feature type geometry" /></p>
+<p>Reader feature types (on the left) only display the Allowed Geometries from the source data and cannot be changed. Writer feature types (on the right) display the Geometry, and you can edit them to control what geometry type FME writes. If you don't set this parameter for formats that require it, the translation will fail. If the writer feature type receives invalid geometry, FME will drop and not write the features. The Translation Log will issue a warning for each feature like this:</p>
+<p><code>FileGDB Writer: Failed to write Geometry to feature class 'lines' with geometry type 'esriGeometryPolyline'. Dropping containing feature</code></p>
+<p>The geometry type reported here is format-specific. You can learn more about these definitions and their correspondence to FME's geometry model by reading the reader/writer documentation for that format.</p>
+<h2>Filtering Geometry Using the GeometryFilter Transformer</h2>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometryfilter.htm" target="_blank" rel="noopener">GeometryFilter</a> transformer simplifies workflows by isolating features based on their geometry type. For example, you might filter a dataset of mixed geometries to separate points from polygons.</p>
+<p><strong>Steps to Use the GeometryFilter</strong>:</p>
+<ul>
+<li>Add the GeometryFilter transformer to your workspace.</li>
+<li>Connect a source dataset containing mixed geometries to the transformer.</li>
+<li>Configure the transformer&rsquo;s parameters to specify the geometry types to filter (e.g., points, lines, or polygons).</li>
+<li>Use the filtered outputs to control the flow of geometries in your workspace.</li>
+</ul>
+<p><img src="images/1738272372300.png" alt="GeometryFilter example" /></p>
+<p>Features with geometry not matching any selected types will come from the &lt;Unfiltered&gt; port.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The GeometryFilter has a Detailed mode that lets you filter any specific IFME geometry types from FME's data model.</p>
+</blockquote>
+<h2>Set Geometry using the GeometryCoercer</h2>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrycoercer.htm" target="_blank" rel="noopener">GeometryCoercer</a> transformer forces features into a specific geometry type where possible. For example, you can coerce:</p>
+<ul>
+<li>Polygons to lines</li>
+<li>Closed lines to polygons</li>
+</ul>
+<p>The GeometryCoercer is strict about changing a feature's geometry type. For example, you can't coerce points into point clouds. Unaffected features will come out of the Untouched port.</p>
+<p><img src="images/1738272618884.png" alt="GeometryCoercer example" /></p>
+<p>We'll cover other transformers that modify geometry in the next lesson.</p>
+<h2>Exercise: Set and Filter Geometry</h2>
+<p>Amar is continuing to learn about FME's geometry handling. He is reading a table from a PostGIS database called public.BusinessOwners. It contains information about the location of local businesses.</p>
+<h2>1) Open and Run Starting Workspace</h2>
+<p>Amar opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/set-geometry-type.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench (2024.2 or later).</p>
+<p>This workspace requires access to a PostGIS database to work.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-hosted training course, this database connection should already exist and you can skip to step #2.</p>
+</blockquote>
+<p>He expands FME Training PostGIS Database [POSTGIS] in the Navigator, double-clicks the Connection parameter, and chooses <strong>Add Database Connection</strong>.</p>
+<p><img src="images/1742933573883.png" alt="Fixing database reference" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p><span style="font-family: inherit; font-size: 1em;">He fills in the database connection details shown below:</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><img class="image image-block image-center" src="images/1713290827108.png" alt="Training database connection setup" width="342" height="318" /></p>
+<p>He clicks <strong>Test&nbsp;</strong>and then&nbsp;<strong>Save</strong>. FME tests the connection and confirms that it is working.</p>
+<h2>2) Run Starting Workspace and Inspect Data</h2>
+<p>He runs the workspace to generate caches. He inspects the public.BusinessOwners cache and realizes that some of his points have null geometry and attributes:</p>
+<p><img src="images/1738265153117.png" alt="Source data feature cache" /></p>
+<p>Inspecting any feature with &lt;null&gt; attribute values shows these features also do not have geometry, as it is missing from the Feature Information Window:</p>
+<p><img src="images/1738278388034.png" alt="Missing geometry" /></p>
+<p>He'd like to filter out these null geometry features before writing to an Esri Geodatabase.</p>
+<h2>3) Add a GeometryFilter</h2>
+<p>To ensure he only writes valid points, Amar adds a GeometryFilter and connects it to the public.BusinessOwners reader feature type.</p>
+<p><img src="images/1738265199385.png" alt="Connecting the GeometryFilter" /></p>
+<p>He double-clicks the GeometryFilter and sets Output Ports to Null and Point:</p>
+<p><img src="images/1738265254969.png" alt="Filtering Null and Point" /></p>
+<p>He clicks OK to close the dialog.</p>
+<p>He runs the workspace to view the results and notes the number of null and valid point features.</p>
+<h2>4) Add a Writer Feature Type and Set Geometry</h2>
+<p>Now that he has point features, Amar wants to write them out to Esri Geodatabase.&nbsp;</p>
+<p>He uses Quick Add to add an Esri Geodatabase (File Geodb Open API) writer configured like this:</p>
+<table style="border-collapse: collapse; width: 100%; height: 130px;" border="1">
+<tbody>
+<tr style="height: 32.5px;">
+<td style="width: 49.9676%; height: 32.5px;"><strong>Format</strong></td>
+<td style="width: 49.9676%; height: 32.5px;">Esri Geodatabase (File Geodb Open API)</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 49.9676%; height: 32.5px;"><strong>Dataset</strong></td>
+<td style="width: 49.9676%; height: 32.5px;">C:\FMEData\Output\Training\BusinessOwners.gdb</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 49.9676%; height: 32.5px;"><strong>Parameters &gt; Overwrite Existing Geodatabase</strong></td>
+<td style="width: 49.9676%; height: 32.5px;">Enabled</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 49.9676%; height: 32.5px;"><strong>Feature Class or Table Definition</strong></td>
+<td style="width: 49.9676%; height: 32.5px;">Automatic...</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/1738267481121.png" alt="Esri Geodatabase writer parameters" width="834" height="283" /></p>
+<p>He clicks OK to add the writer. A Feature Type dialog appears where he can configure the new feature type. He sets Feature Class or Table Name to BusinessOwners.</p>
+<p>Then he clicks the dropdown and chooses from the format's supported geometry types for Geometry, selecting geodb_point:</p>
+<p><img src="images/1738267395200.png" alt="Geodatabase writer feature type parameters" width="589" height="348" /></p>
+<p>He clicks OK, and FME adds the writer feature type to the canvas.</p>
+<h2>5) Write Data</h2>
+<p>He connects the GeometryFilter's Point port to the BusinessOwners writer feature type and runs the workspace.</p>
+<p><img src="images/1738267499011.png" alt="Writer feature type on the canvas" /></p>
+<p>FME only writes out the valid point features, filtering out the null geometry. He confirms by using Inspect Written Data on the BusinessOwners writer feature type and confirms only points are present:</p>
+<p><img src="images/1738267577152.png" alt="View Written Data button" /><img src="images/1738267622293.png" alt="Points result" /></p>
+<p><em>Map tiles &copy;&nbsp;<a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy;&nbsp;<a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy;&nbsp;<a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy;&nbsp;<a href="https://academy.safe.com/path/fme-form-basic/connect-to-data/Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If these features had more information, like invalid geometry he could repair or attributes that he could use to identify and fix the data, he could keep working on the data from the Null port. However, neither is true, so he'll discard the null geometry features.</p>
+</blockquote>
+<h2>Challenge</h2>
+<p>Amar also has a set of address Point features in his workspace in the PostalAddress feature type. He'd like to create MultiPoints from them using the Postalcode attribute to group the Points. What transformer can he use for that? How many MultiPoints does it result in?</p>
+<p><img src="images/1738267607301.png" alt="Challenge question" /></p>
+<p>Experiment to find out, taking note of your answers; you'll need them for the Quiz.</p>

@@ -1,0 +1,92 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the advantages of using the SQL family of transformers for reading databases.</li>
+<li>Optimize database writing performance using the Features Per Bulk Write parameter.</li>
+<li>Optimize database writing performance using the Features Per Transaction parameter.</li>
+<li>Optimize database writing performance when working with indexes.</li>
+<li>Optimize database writing performance using table creation.</li>
+</ul>
+<h2 id="database-optimization">Database Optimization</h2>
+<p>FME can only be as fast as the database it reads from or writes to. This section will help FME increase its efficiency when working with databases.</p>
+<h2 id="database-reading">Database Reading</h2>
+<p>Reading and filtering data (querying) from a database is nearly always faster when you can use the native functionality of the database. The previously introduced search envelopes and WHERE clauses techniques can drastically improve your database reading performance.</p>
+<h2 id="database-transformers">The DatabaseQuerier</h2>
+<p>Besides readers, transformers can also be used to query database data. The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasequerier.htm" target="_blank" rel="noopener">DatabaseQuerier</a> transformer (new in FME 2025.1) is the best option. This transformer unifies querying across SQL and NoSQL databases, replacing the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlexecutor.htm" target="_blank" rel="noopener">SQLExecutor</a> and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlcreator.htm" target="_blank" rel="noopener">SQLCreator</a>, allowing you to execute complex queries in a single, configurable tool.</p>
+<p>The DatabaseQuerier has two modes:</p>
+<ul>
+<li><strong>Run Once</strong>: runs a single query that generates features.
+<ul>
+<li>When set to this mode, the transformer does not have an input port.</li>
+</ul>
+</li>
+<li><strong>Input Driven</strong>: runs a query for each incoming feature.
+<ul>
+<li>When set to this mode, the transformer has an Initiator input port like a FeatureReader. It will make one query per input feature.</li>
+</ul>
+</li>
+</ul>
+<p>Here is an example of the Run Once configuration, where the &nbsp;DatabaseQuerier reads the park features in the Downtown neighborhood from a PostGIS table.</p>
+<p><img class="image image-block image-center" src="images/1755277800215.png" alt="DatabaseQuerier's Run Once mode" width="505" height="477" /></p>
+<p>It's using this Query:</p>
+<p><code>SELECT * FROM "public"."Parks"</code><br /><code>WHERE "NeighborhoodName" = "Downtown"</code></p>
+<p>And here is an example of the Input Driven configuration, where the DatabaseQuerier makes a query to the database for every Neighborhood feature:</p>
+<p><img src="images/1755278363275.png" alt="DatabaseQuerier's Input Driven mode" width="501" height="512" /></p>
+<p>It's using this Query, which makes use of the incoming features' attribute NeighborhoodName:</p>
+<p><code>SELECT * FROM "public"."Parks"</code><br /><code>WHERE "NeighborhoodName" = '@Value(NeighborhoodName)'</code></p>
+<p>The output from the&nbsp;DatabaseQuerier is an entirely new feature. The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasejoiner.htm" target="_blank" rel="noopener">DatabaseJoiner</a> transformer is more appropriate if you want to retrieve attributes to attach to the incoming feature.</p>
+<p>If you don&rsquo;t want to write SQL or another query language, use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/featurereader.htm" target="_blank" rel="noopener">FeatureReader</a> transformer to conduct similar input-driven reading. However, the FeatureReader operates more generically and is therefore slower.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_blank" rel="noopener">AI Assist</a> button in compatible transformers to help you craft SQL statements.</p>
+</blockquote>
+<p><strong>Exposing Attributes from the Query</strong></p>
+<p>You might notice that your attributes are unexposed when using the DatabaseQuerier. That's because FME doesn't know the attribute names and types before the query is executed at run time. You can define these by clicking the ellipsis button next to Attributes to Expose:</p>
+<p><img src="images/1755278725964.png" alt="Attributes to Expose" /></p>
+<p>However, it can be tedious to manually type them all in. Instead, we recommend using the Populate from Query... button:</p>
+<p><img src="images/1755278783953.png" alt="Populate from Query button" /></p>
+<p>This button lets you re-use your query and FME will automatically identify which attributes to expose based on the results. Even if you don't want to expose all the attributes, it's often faster to add them all and remove the ones you don't want, rather than manually typing each one in.</p>
+<h2 id="database-writing">Database Writing</h2>
+<p>Whereas the performance of reading from a database mainly depends on the database setup itself, many FME parameters can help fine-tune the overall performance when writing to a database.</p>
+<p>Remember that writing to a database incurs network overhead. There has to be a balance between various factors:</p>
+<ol>
+<li>The amount of data and the number of requests being sent (network traffic)</li>
+<li>The amount of data stored by FME awaiting transfer to the database (FME performance)</li>
+<li>The amount of data stored in the database awaiting committal (database performance)</li>
+<li>The risk of losing uncommitted data</li>
+</ol>
+<p>Each database writer has a set of parameters for handling these components. Not every format supports these, but the two most common parameters are&nbsp;<em>Features Per Transaction</em>&nbsp;and&nbsp;<em>Features Per Bulk Write</em>.</p>
+<h2 id="features-per-bulk-write">Features Per Bulk Write</h2>
+<p>The Features Per Bulk Write parameter controls the second factor in the list (the amount of data stored by FME awaiting transfer to the database).</p>
+<p>A numeric value defines the parameter. Features sent to an FME database writer get cached in memory until the number of features specified by this parameter is reached. Only then will they be sent to the database. This is also known as <em>chunk size</em>.</p>
+<p>This parameter balances network traffic with FME performance. A higher number means FME caches more features (using more system resources) but makes fewer requests to the database (and, therefore, causes less network traffic).</p>
+<p>A lower number means FME caches less data, but more requests are made to the database.</p>
+<p>Features Per Bulk Write must also be considered against the value of Features Per Transaction.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For an example of this parameter, refer to the documentation on&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/oracle_database/oracle_database_writer.htm#" target="_blank" rel="noopener">Bulk Write Size for the Oracle writer</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="features-per-transaction">Features Per Transaction</h2>
+<p>Features Per Transaction (sometimes called Transaction Interval) controls the third factor in the list (the amount of data stored in the database awaiting committal).</p>
+<p>This, too, is defined by a numeric value. Features sent to the database by FME are cached in the database's memory. When the number of features specified by this parameter is reached, FME sends the command to commit them.</p>
+<p>Each commit delays the writing process, so setting this parameter must balance the translation speed (set a higher number) against the risk that a translation may fail and features must be rolled back (set a lower number).</p>
+<p><strong>Features Per Transaction Examples</strong></p>
+<p>If Features Per Transaction is set to 1, every feature is committed individually. If the process fails, only the last feature will be lost from the database. The cost for this reduced risk is a matching reduction in performance.</p>
+<p>If Features Per Transaction is set to a very high value (more than the number of features being written), then only one commit takes place. If the process fails, all features submitted to the database will be lost. The benefit of this increased risk is a matching increase in performance.</p>
+<h2 id="features-per-transaction-and-bulk-writes">Features Per Transaction and Bulk Writes</h2>
+<p>An interaction between these two parameters&nbsp;controls where features are cached.</p>
+<p>If Features Per Transaction is less than or equal to Features Per Bulk Write, then FME caches several features and sends them to the database, immediately committing them.</p>
+<p>If Features Per Transaction is greater than Features Per Bulk Write, then FME sends features to the database, which will be cached until the transaction commit total is reached.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Transaction and Chunk parameters can differ from format to format, so please review the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/Format-List-All.htm" target="_blank" rel="noopener">format documentation</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="writing-and-database-indexing">Writing and Database Indexing</h2>
+<p>Whereas indexes can improve performance for reading data, they can cause a significant reduction in writing speed.</p>
+<p>That&rsquo;s because the database automatically updates the index with every written feature. This occurs on a per-feature basis, regardless of commit intervals.</p>
+<p>To remedy this, it&rsquo;s suggested that you drop (delete) indexes before bulk-inserting data into a database table. You can do this directly on the database or using an FME SQLExecutor transformer.</p>
+<h2 id="writing-and-table-creation">Writing and Table Creation</h2>
+<p>A writer feature type also has options to truncate or drop tables when writing to them:</p>
+<p><img class="image image-block image-center" src="images/1725660370542.png" alt="Database writer feature type Table Handling parameter." width="574" height="208" /></p>
+<p>As with the above, dropping a table is more efficient than truncating it because the drop action also removes the indexes.</p>
+<p>For similar reasons, you may want to turn off networking connectivity when writing data to a Geodatabase geometric network.</p>

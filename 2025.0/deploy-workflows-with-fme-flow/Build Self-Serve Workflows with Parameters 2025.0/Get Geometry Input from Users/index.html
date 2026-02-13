@@ -1,0 +1,225 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand the different options to define a geographic area of interest.&nbsp;</li>
+<li>Create a Geometry published parameter.</li>
+<li>Implement the Geometry published parameter in a self-serve data download workflow.&nbsp;</li>
+<li>Use a Geometry published parameter as an end-user on FME Flow.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/get-geometry-input-from-users.fmw" target="_blank" rel="noopener">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\get-geometry-input-from-users.fmw</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/get-geometry-input-from-users--complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\get-geometry-input-from-users--complete.fmw</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_blank" rel="noreferrer noopener">Addresses.gbd.zip</a> | C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="geographic-area-of-interest">Geographic Area of Interest</h2>
+<p>Some self-serve spatial workflows benefit from letting the user choose to download data within a geographic area of interest. There are three ways of doing so with FME:</p>
+<ul>
+<li><span style="margin: 0px; padding: 0px;">A simple, rectangular&nbsp;<strong>bounding box&nbsp;</strong>restricts the reader to only reading features within the specified box.</span></li>
+<li><span style="margin: 0px; padding: 0px;">You can use an <strong>existing boundary</strong> to read data within any area feature, either using the reader SQL WHERE clause or providing a boundary dataset.</span></li>
+<li>An <strong>ad hoc boundary is </strong>where FME derives it from an area that the user draws as input.</li>
+</ul>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>Generally, the bounding box option is tedious and the most restrictive. The user must manually enter four bounding coordinates. <br />The ad hoc or existing boundaries are more versatile and user-friendly.&nbsp;<br />For more information on setting up each type of geometry input with parameters, see <a href="https://academy.safe.com/path/integrate-data-with-the-fme-platform" target="_blank" rel="noopener">Integrate Data with the FME Platform</a>.&nbsp;</p>
+</blockquote>
+<h2>Geometry Parameter Interactive Web Map</h2>
+<p>You create the ad hoc boundary option using a Geometry user parameter, which you link to create a feature in the workspace. This parameter lets you draw a point or an area of interest to input into a workspace on FME Flow.&nbsp;</p>
+<p>When configuring a workspace to run on FME Flow containing a Geometry published parameter, the user accesses a web map from the Run Workspace page to create the geometry feature - a point, line, polygon, or rectangle. When you draw a polygon, close the shape by clicking the starting point.&nbsp;</p>
+<p>You can access the web map in-line under Published Parameters...</p>
+<p><img src="images/1748378156757.gif" alt="" width="1024" height="662" /></p>
+<p>... or as a pop-up web map.&nbsp;</p>
+<p><img src="images/1748379495911.gif" alt="" /></p>
+<p>You may collapse the pop-up map by clicking <img src="images/1749246774235.jpg" alt="" /> and expand the menu in the inline map<img src="images/1749246807780.jpg" alt="" />for the option to pop it out into its own window.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on the Geometry Parameter and setting custom basemaps for the web map in FME Flow, please see <a href="https://support.safe.com/hc/en-us/articles/25407744364941-Using-the-Geometry-Parameter#:~:text=In%20FME%20Flow,%20go%20to,tile%20column,%20row%20and%20matrix" target="_blank" rel="noopener">Using the Geometry Parameter</a>.</p>
+</blockquote>
+<p><span style="font-size: 2.3125em;">Exercise</span></p>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer continues to update workspaces to use parameters to allow end-users greater control over how the workspace operates. This time, she is responsible for managing a workflow for mailing construction alerts to residents who might be affected by noise from City construction work. Normally, someone would have to generate the list of affected residents manually. However, Jennifer wants to let the construction teams create the list, saving valuable time.</p>
+<p>So far, Jennifer has a workspace that generates the list of affected residents and allows users to choose the format for their data download. Now, she needs to add a Geometry published parameter to let users interactively choose their area of interest.</p>
+<h3 id="1-open-workspace">1) Open Workspace</h3>
+<p>Jennifer opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow\get-geometry-input-from-users.fmw" target="_blank" rel="noopener">starting workspace</a> (<span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\get-geometry-input-from-users.fmw</span>) in FME Workbench.</p>
+<p><strong><img src="images/1748294078106.jpg" alt="" width="1182" height="462" /></strong></p>
+<p>The workspace reads in Addresses, clips them to a buffered geometry input, and writes the clipped Address data in the user's choice format. The GeometryReplacer transformer is incomplete; it's missing input geometry, which Jennifer will remedy once she creates the Geometry parameter.&nbsp;</p>
+<h3 id="2-inspect-published-parameters">2) Open User Parameters</h3>
+<p>The workspace already has a published parameter that lets users choose the output format of the clipped Addresses. Jennifer right-clicks User Parameters in the Navigator and selects Manage User Parameters...</p>
+<p>The Output Format parameter limits the format options to specific formats. It appears to the user as a drop-down selection, and the default format is Microsoft Excel.&nbsp;</p>
+<p><img src="images/1748296026770.jpg" alt="" width="874" height="657" /></p>
+<h3 id="3-create-a-geometry-published-parameter">3) Create a Geometry Parameter</h3>
+<p>Jennifer clicks the green + icon in the top-left to add a Geometry user parameter to take a construction area as input from the user. Jennifer selects Geometry and configures it with the following options:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Type</strong></td>
+<td>Geometry</td>
+</tr>
+<tr>
+<td><strong>Parameter Identifier</strong></td>
+<td>GEOM_COORDS</td>
+</tr>
+<tr>
+<td><strong>Prompt</strong></td>
+<td>Select Construction Area:</td>
+</tr>
+<tr>
+<td><strong>Published</strong></td>
+<td>Checked</td>
+</tr>
+<tr>
+<td><strong>Required</strong></td>
+<td>Checked</td>
+</tr>
+<tr>
+<td><strong>Disable Attribute Assignment</strong></td>
+<td>Checked</td>
+</tr>
+<tr>
+<td><strong>Conditional Visibility</strong></td>
+<td>Unchecked</td>
+</tr>
+</tbody>
+</table>
+<p>For Geometry Configuration, Jennifer sets the following:</p>
+<table class="featureTable sort_table" style="width: 24.5625%; height: 259px;">
+<tbody class="tbody">
+<tr style="height: 32.5px;">
+<td style="width: 65.7982%; height: 32.5px;"><strong>Geometry Encoding</strong></td>
+<td style="width: 33.9916%; height: 32.5px;">GeoJSON</td>
+</tr>
+<tr style="height: 48.25px;">
+<td style="width: 65.7982%; height: 48.25px;"><strong>Geometry Types</strong></td>
+<td style="width: 33.9916%; height: 48.25px;">Polygon, Box, Line</td>
+</tr>
+<tr style="height: 48.25px;">
+<td style="width: 65.7982%; height: 48.25px;"><strong>Specify initial bounds for map display</strong></td>
+<td style="width: 33.9916%; height: 48.25px;">Checked</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 65.7982%; height: 32.5px;"><strong>Top (-90..90)</strong></td>
+<td style="width: 33.9916%; height: 32.5px;">49.2548</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 65.7982%; height: 32.5px;"><strong>Left (-180..180)</strong></td>
+<td style="width: 33.9916%; height: 32.5px;">-123.244</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 65.7982%; height: 32.5px;"><strong>Bottom (-90..90)</strong></td>
+<td style="width: 33.9916%; height: 32.5px;">49.3034</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 65.7982%; height: 32.5px;"><strong>Right (-180..180)</strong></td>
+<td style="width: 33.9916%; height: 32.5px;">-123.071</td>
+</tr>
+</tbody>
+</table>
+<p>The initial bounds will be the area shown in FME Flow when the user opens the Geometry parameter map. Larger bounds will have the map zoomed out, and smaller bounds will have the map zoomed in. Jennifer's Geometry Parameter configuration looks like this:&nbsp;</p>
+<p><img src="images/1748296758806.jpg" alt="" width="471" height="561" /></p>
+<p>Jennifer reorders the parameter so the Geometry one appears at the top of the list and clicks OK to close the Parameter Manager.</p>
+<h3 id="4-create-the-area-of-interest-polygon">4) Link the Geometry Parameter</h3>
+<p>Now that Jennifer has set up the geometry published parameter, she needs to link it within the workflow.&nbsp;</p>
+<p>Jennifer opens the parameters for the GeometryReplacer. She ensures the Geometry Encoding is GeoJSON and then sets the Geometry Source to the GEOM_COORDS parameter.</p>
+<p><img src="images/1748298593253.jpg" alt="" width="833" height="425" /></p>
+<p>The GeometryReplacer uses the user parameter input to ensure the user's desired geometry clips the Addresses. Jennifer clicks OK to close the GeometryReplacer Parameters.&nbsp;</p>
+<h3 id="9-test-writing-results-to-shapefile">5) Test Writing Results to Shapefile</h3>
+<p>Now, Jennifer will test her workspace results before deploying it on FME Flow. She clicks Run to run the workspace. In the translation parameters prompt, Jennifer selects Esri Shapefile as the output format.&nbsp;</p>
+<p>For the Geometry parameter, Jennifer has to supply GeoJSON to test on FME Workbench. FME Flow has the advantage of using the interactive web map. For now, Jennifer pastes the following GeoJSON code to test the parameter:</p>
+<pre><code>{"type":"Polygon","coordinates":[[[-123.131762,49.282752],[-123.132148,49.282465],[-123.131579,49.282087],[-123.131139,49.282332],[-123.131762,49.282752]]]}<br /><br /><img src="images/1748360146464.jpg" alt="" width="707" height="271" /><br /><br /></code></pre>
+<p>Jennifer clicks Run and waits for the translation to finish. Then she clicks the NotifyList writer feature type and clicks View Written Data.&nbsp;</p>
+<p><img src="images/1749247858840.jpg" alt="" /></p>
+<p>Jennifer adds NotifyList.shp to the end of the Dataset parameter path and clicks OK.&nbsp;</p>
+<p><strong><img src="images/1748360568697.jpg" alt="" width="545" height="221" /></strong></p>
+<p>The addresses to notify, those within 100m of the area of interest Jennifer input, appear in the Visual Preview window.</p>
+<p><strong><img src="images/1748360721405.jpg" alt="" width="1283" height="436" /></strong></p>
+<p>&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">We have provided GeoJSON code for testing the Geometry parameter. If you want to get your own GeoJSON to test, you can publish your unfinished workspace to FME Flow, fill out the Geometry parameter, and copy the resulting GeoJSON code. Alternatively, you can use an online service to generate the GeoJSON for you, e.g. </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://geojson.io/" target="_blank" rel="noreferrer noopener">https://geojson.io/</a><span style="font-family: inherit; font-size: 1em;">. Just remember the parameter expects a single feature.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h3 id="10-publish-to-fme-server">6) Publish to FME Flow</h3>
+<p>With the workspace complete, Jennifer can now publish to FME Flow. Jennifer publishes the workspace to the Training repository and sets Data Download and Job Submitter as the services.</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps on Publishing to FME Flow</summary>
+<div>The publishing wizard sets all configurations for publishing workspaces to FME Flow. To open it, click Publish in the top toolbar.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div>The first steps are to confirm your FME Flow connection, select a Repository to house the workspace, and optionally alter the workspace's name. To create a new Repository, click New and enter its details.&nbsp;</div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>Optionally, you may <em>Upload data files</em> to publish the workspace's source data files to FME Flow along with the workspace. You can control which files from the&nbsp;<em>Select Files...</em> option.</div>
+<div>Next, if your workspace has any connections, you may select whether or not they will also be published to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>The last step of publishing is to register services for the workspace to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" width="532" height="453" /></div>
+<div>After publishing, the translation log generates a report on the publishing and provides a direct link to run the workspace on FME Flow.</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow Services and Publishing to FME Flow, see <a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-20250" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</details><!-- END: Reusable Custom Expandable Section -->
+<h3 id="11-test-on-fme-server">7) Run Workspace on FME Flow</h3>
+<p>Jennifer opens the Run Workspace page on FME Flow and selects the workspace she just published. She sets the service to Data Download. The result will contain the list of addresses to notify about construction in the format of the user's choosing.&nbsp;</p>
+<p>Under Published Parameters, Jennifer clicks the map icon for the Select Construction Area parameter.&nbsp;</p>
+<p><img src="images/1748367458357.jpg" alt="" /></p>
+<p>The Geometry parameter web map appears. It shows the area specified in the parameter settings on FME Workbench and offers options along the top to select which geometry type Jennifer wishes to input.</p>
+<p><img src="images/1748367663171.jpg" alt="" width="875" height="593" /></p>
+<p>Jennifer zooms into downtown Vancouver, uses the polygon tool to pick an area, and clicks Confirm to close the map.&nbsp;</p>
+<p><img src="images/1748368150241.jpg" alt="" width="872" height="469" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">To close an area in a polygon, click on the starting point to complete the shape. <br /></span><span style="font-family: inherit; font-size: 1em;">For this workspace to run correctly, you need to select buildings with addresses. If you select an area without an address the workspace won&rsquo;t write out any data.&nbsp;</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p>Jennifer confirms that GeoJSON coordinates are now present in the Select Construction Area parameter and leaves Microsoft Excel as the output format by default.&nbsp;</p>
+<p><img src="images/1748368265199.jpg" alt="" /></p>
+<p>Jennifer clicks Run to run the workspace and waits for the Data Download URL.&nbsp;</p>
+<h3>&nbsp;8) Inspect Results</h3>
+<p>Once the workspace finishes running, Jennifer clicks on the Data Download URL to download the data.&nbsp;</p>
+<p><img src="images/1748368492814.jpg" alt="" width="827" height="275" /></p>
+<p>Optionally, Jennifer extracts and opens the data in FME Data Inspector. She can use this list to send letters to the residents affected by the construction.</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.231.Ex3.ExcelResults.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.231.Ex3.ExcelResults.png" alt="Viewing the resulting addresses in Microsoft Excel" /></a></p>

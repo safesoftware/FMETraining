@@ -1,0 +1,87 @@
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-detect-schema-drift-with-the-schemascanner-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-detect-schema-drift-with-the-schemascanner-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/BikePaths_L.zip" target="_blank" rel="noreferrer noopener">BikePaths_L.zip</a>
+<ul>
+<li>C:\FMEData\Resources\DynamicWorkflows\Data\BikePaths_L.shp</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Updated_BikePaths_L.zip" target="_blank" rel="noreferrer noopener">Updated_BikePaths_L.zip</a>
+<ul>
+<li>C:\FMEData\Resources\DynamicWorkflows\Data\Updated_BikePaths_L.shp</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>In many workplaces, data sources and their schemas can change without notice. Attributes and data types can be added, removed, and changed depending on who manages and uploads the data.</p>
+<p>Imagine a scenario where a new hire doesn&rsquo;t know the set schemas for current datasets and tries to update a dataset with some newly created data. Now, you either have a dataset with unwanted additional columns that duplicate the old columns, or you&rsquo;re missing data in your existing dataset because the schemas didn&rsquo;t match. This can be a massive headache for whoever manages the data in the long term, and nobody likes going back and correcting datasets.&nbsp;</p>
+<p>Schema drift can even occur in organizations with more robust data governance practices. Consider what happens if you build an integration with one version of an external vendor API, but then the API is upgraded, and the results of your call change. You are now dealing with a new schema due to factors largely outside your control.</p>
+<p>With the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/schemascanner.htm" target="_blank" rel="noopener">SchemaScanner</a>&nbsp;transformer, we can be proactive by detecting and reacting to schema drift in our datasets. These two essential steps make it easy to adapt to changing schemas with FME.</p>
+<p>For example, we have a dataset in our database with a table containing the following attributes:</p>
+<ul>
+<li>PathID, PathName, PathLength, PathType</li>
+</ul>
+<p>An employee uploads a new set of recordings every few days&nbsp;to add to this data. The employee may not be familiar with the original dataset and may have made some assumptions about naming the attributes. Their dataset contains the following attributes:</p>
+<ul>
+<li>PathId, PathName, Distance</li>
+</ul>
+<p><img src="https://support.safe.com/hc/article_attachments/25409060540941" alt="Schema drift visualized" width="651" height="301" /></p>
+<p>In this case, the schema has drifted, with the PathType attribute missing and the PathLength attribute having the incorrect name: Distance.<br />Before the user can upload the data to the existing dataset, we want to be able to detect changes in the schema so we can notify the user to change their input data schema.</p>
+<p>This is where the SchemaScanner comes into use. It allows us to extract the schema of the incoming dataset and compare it against the known, existing dataset before allowing the data to be uploaded. If the schemas match, then all is good to go, and we can allow the data to flow freely into the base dataset. However, if the data&rsquo;s schema doesn&rsquo;t match the base dataset, we must react to what is happening here. In our case, we will create a Schema Change Report that we can then return to the user using email or an FME Flow App.</p>
+<h2 id="exercise">Exercise</h2>
+<p>The first step in our example is to detect the schema drift. We will use the SchemaScanner and the ChangeDetector transformer to detect changes between the original schema and the schema of the uploaded data.</p>
+<h2 id="1-open-fme-workbench">1. Open FME Workbench</h2>
+<p>First, create a new blank workspace in FME Workbench (2025.1 or later).</p>
+<h2 id="2-add-a-shapefile-reader">2. Add a Shapefile Reader</h2>
+<p>Add a reader to the workspace and set the Format to Esri Shapefile.</p>
+<p>Set Dataset to&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/BikePaths_L.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/BikePaths_L.zip</a>&nbsp;(or C:\FMEData\Resources\DynamicWorkflows\Data\BikePaths_L.shp).</p>
+<p>Press OK to add the reader to the canvas.</p>
+<p><img src="images/1724106388865.png" alt="Shapefile Reader parameters - original dataset" width="475" height="266" /></p>
+<h2 id="3-add-another-shapefile-reader">3. Add Another Shapefile Reader</h2>
+<p>Now that we have the original dataset in our workspace, we want to add the updated data to compare against it.</p>
+<p>Again, add a reader to the canvas and select Esri Shapefile as the Format.</p>
+<p>Set Dataset to&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Updated_BikePaths_L.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Updated_BikePaths_L.zip</a>&nbsp;(or C:\FMEData\Resources\DynamicWorkflows\Data\Updated_BikePaths_L.shp).</p>
+<p>Because the dataset may change at any time, we want to ensure we can read the data dynamically. To do so, change Workflow Options to Single Merged Feature Type.&nbsp;</p>
+<p><img src="images/1724106446646.png" alt="Shapefile Reader parameters - new upload dataset" width="479" height="266" /></p>
+<p>Press OK to add the reader to the canvas.</p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p><strong>Improving workspace performance tip:</strong>&nbsp;Since we only need to receive one feature from the reader to extract the dataset&rsquo;s schema, we can limit the reader to reading a single feature. To do this, go to the Navigator Window, expand the reader&rsquo;s parameters, click on Parameters &gt; Features to Read, and set Max Features to Read to 1. You can do this for both the shapefile readers.</p>
+<p><img src="images/1759523479508.png" alt="Workspace performance tip" width="409" height="449" /></p>
+</blockquote>
+<h2 id="4-add-a-schema-scanner-transformer">4. Add a SchemaScanner Transformer</h2>
+<p>Next, we need to extract the schema from the source base dataset and prepare it for comparison against the newly uploaded dataset. To do this, add a&nbsp;<strong>SchemaScanner</strong>&nbsp;to our workspace and connect the&nbsp;<strong>BikePaths_L</strong>&nbsp;shapefile feature type to it.</p>
+<p><img class="image image-block image-center" src="images/1724106554603.png" alt="SchemaScanner added to workspace" width="377" height="109" /></p>
+<h2 id="6-add-a-list-exploder">5. Add a ListExploder</h2>
+<p>If we were to run the workspace, the output schemas from the SchemaScanner would not be visible in the Visual Preview table, as they remain part of the attributes{} list; they would only be visible in the Feature Information window.</p>
+<p>Add a <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/listexploder.htm" target="_blank" rel="noreferrer noopener">ListExploder</a> transformer to your workspace and connect it to the SchemaScanner's &lt;Schema&gt; port.</p>
+<p>In the parameters, set the&nbsp;<em>List Attribute</em>&nbsp;to&nbsp;<strong>attribute{}</strong>.</p>
+<p><img src="images/1724106731054.png" alt="ListExploder parameters" width="349" height="373" /></p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>If you see "No list attributes available" when configuring the ListExploder, you have connected it to the SchemaScanner's Output port instead of its &lt;Schema&gt; port. Change the connection, and you should see the attribute{} list.</p>
+</blockquote>
+<h2 id="7-duplicate-the-schema-scanner-amp-list-exploder">6. Duplicate the SchemaScanner &amp; ListExploder</h2>
+<p>We also want to extract the schema from the Updated dataset to compare it against the original dataset. Hold the CTRL key and select both the <strong>SchemaScanner</strong>&nbsp;and the&nbsp;<strong>ListExploder</strong>. Then, duplicate (CTRL+D or right-click &gt; Duplicate) the transformers. Connect the&nbsp;<strong>Updated_BikePaths_L</strong>&nbsp;dataset to&nbsp;<strong>SchemaScanner_2</strong>. Ensure that the&nbsp;<strong>SchemaScanner_2</strong>&nbsp;is connected to the&nbsp;<strong>ListExploder_2</strong>&nbsp;transformer. Your workspace should now look like this:</p>
+<p><img src="images/1724106804539.png" alt="Duplicated transformers" width="553" height="311" /></p>
+<h2 id="8-inspect-output">7. Inspect Output</h2>
+<p>Save and then run the workspace with feature caching enabled to see our output schema. We expect to see a list of the attribute names and their data types. Below is an example of the original dataset&rsquo;s ListExploder output.</p>
+<p><img src="images/1724106856906.png" alt="Exploded schema feature for the original dataset" width="526" height="120" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong style="font-family: inherit; font-size: 1em;">Hint:</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;"fme_feature_type_name" denotes which dataset the schema belongs to. "name" is the name of the dataset's attributes. "fme_data_type" is the associated data type for each attribute.</span></p>
+</blockquote>
+<h2 id="9-detecting-changes-in-the-schema">8. Detecting Changes in the Schema</h2>
+<p>Now that we&rsquo;ve extracted the schemas from our datasets into a set of attributes, we can use the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/changedetector.htm" target="_blank" rel="noopener">ChangeDetector</a>&nbsp;transformer to compare the schemas.</p>
+<p>Add a ChangeDetector transformer to your workspace. Connect the&nbsp;<strong>ListExploder</strong>&nbsp;for the original dataset to the&nbsp;<strong>Original</strong>&nbsp;input port. Connect the&nbsp;<strong>ListExploder_2</strong>&nbsp;for the updated dataset to the&nbsp;<strong>Revised</strong>&nbsp;input port.</p>
+<p><img src="images/1724106945030.png" alt="Added a ChangeDetector transformer" /></p>
+<p>Open the&nbsp;<strong>ChangeDetector</strong>&nbsp;parameters. Under Check Attributes, click the ellipsis next to Selected Attributes and select&nbsp;<strong>name</strong>.</p>
+<p><img src="images/1724107018953.png" alt="ChangeDetector parameters" width="985" height="378" /></p>
+<p>Press&nbsp;<strong>OK</strong>&nbsp;twice to accept the transformer parameters.</p>
+<p>Run the workspace. You should see that the schema has changed. One new attribute has been Inserted, two attributes have been Deleted, and two remain Unchanged.</p>
+<p><img src="images/1724107060698.png" alt="ChangeDetector reports schema drift" width="750" height="303" /></p>
+<p>This workspace can now detect schema drift. In the next exercise, we'll react to this schema drift by producing a report for the user, notifying them that schema drift has been detected.</p>

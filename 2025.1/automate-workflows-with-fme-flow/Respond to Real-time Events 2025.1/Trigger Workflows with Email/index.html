@@ -1,0 +1,158 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Create an Email Trigger.</li>
+<li>Understand the differences between SMTP and IMAP Email triggers.</li>
+<li>Process email attachments to use in a workspace.&nbsp;</li>
+<li>Run a workspace in response to an incoming email.&nbsp;</li>
+</ul>
+<h2><!-- The script tag should live in the head of your page if at all possible --></h2>
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<h2><!-- Put this wherever you would like your player to appear --></h2>
+<h2 id="resources">Resources</h2>
+<ul>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/trigger-workflows-with-email.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\trigger-workflows-with-email.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noopener">BuildingFootprints.zip</a> (.shps with companion files)| <span style="margin: 0px; padding: 0px;">C:\FMEData\Data\Engineering\BuildingFootprints.zip</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject">Starting project</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\automate-workflows-with-fme-flow--starting-project.fsproject</li>
+</ul>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow.&nbsp;</p>
+<ul>
+<ul><!-- BEGIN: Reusable Custom Expandable Section --></ul>
+</ul>
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>1) Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener">starting project</a> and the<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener"> encryption key</a>.</div>
+<div>2) Upload the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener">automate_workflows_with_fme_flow.jceks</a> encryption key to your FME Flow. This must be done by an fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload automate-workflows-with-fme-flow--starting-project.fsproject as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1754602691120.jpg" alt="" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1754602971975.jpg" alt="" /></div>
+<div>6) The next step is to select connections and tokens to import. By default, they are not selected to be imported. <strong>Select the FME Training PostGIS Database Connection to import.</strong> If it isn't imported, the workflows will not run successfully. Click Continue.&nbsp;</div>
+<div><img src="images/1754602868434.jpg" alt="" /></div>
+<div>7) The Resolve Owners step only allows you to reassign the project contents to a different user if the admin user doesn't exist on your FME Flow. Click Continue and then click Import Project from the Additional Options step. The project will import and display its import status from the same page.</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If it still fails, contact us at train@safe.com.&nbsp;</div>
+</details>
+<h2 id="an-introduction-to-email-in-automations">Email Triggers</h2>
+<p>FME Flow Automations has two Email triggers: SMTP (Simple Mail Transfer Protocol) and IMAP (Internet Message Access Protocol). Both trigger an Automation workflow in response to an incoming email, but the triggers differ in how FME Flow receives the message.&nbsp;</p>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-Triggers/Trigger-Email_SMTP.htm">Email - SMTP (received)</a> trigger uses FME Flow's built-in email server to receive incoming emails <em>directly</em> without connection to another email server. The trigger only has two parameters to configure, so it is relatively easy to set up in an Automation. However, your FME Flow hostname and domain must resolve to a publicly accessible IP or DNS for FME Flow to receive the incoming email successfully.&nbsp;</p>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-Triggers/Trigger-Email-IMAP.htm">Email - IMAP (received)</a> trigger&nbsp;<em>indirectly</em> receives emails by connecting to an external email account operating on another server, such as Gmail or Outlook. FME Flow polls the email at an interval, and the IMAP protocol passes a message into FME Flow to process and trigger the Automation.&nbsp;</p>
+<h2 id="creating-an-smtp-trigger">Creating an SMTP Trigger</h2>
+<p>You create an Email&mdash;SMTP trigger like any other Automations trigger. You set the Trigger to Email&mdash;SMTP (received) and fill out the parameters. You must configure an Email User Name and optionally select a location to download any email attachments. If you do not define a file location to download attachments, FME Flow will automatically download them to a temporary file location in the FME Flow Resources.&nbsp;</p>
+<p><img src="images/1753906634352.jpg" alt="" /></p>
+<p>The Email User Name parameter does not need to be an existing user or email. When you add a username, you essentially create the email address in FME Flow's email server using the hostname as the email domain. In the above image, the Email User Name is "training"; you do not need to specify <em>@FMEFlowHostname.com</em> in the parameter. When you send an email, you would enter training@<em>FMEFlowHostname</em>.com or AuthoringCourse@<em>FMEFlowIPAddress</em> as the email you are sending to.&nbsp;</p>
+<h2 id="creating-an-imap-trigger">Creating an IMAP Trigger</h2>
+<p>The Email - IMAP (received) trigger has significantly more parameters to configure than the Email - SMTP trigger. Most of these parameters are for connecting to the IMAP email server and defining the events you would like the Automation to trigger in response to. Unlike the Email - SMTP trigger, which triggers directly when an email is received, the Email - IMAP trigger polls the email account at an interval and then sends messages for either new or unread emails.&nbsp;</p>
+<p><img src="images/1753906862374.jpg" alt="" /></p>
+<p>Again, the Download Attachments To parameter is optional. If you leave it blank, FME Flow temporarily stores the attachments in Resources.&nbsp;</p>
+<div>&nbsp;</div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">Most email servers support IMAP functionality, as do the majority of cloud-based email providers such as Gmail, Outlook.com, Yahoo!, etc.; so it&rsquo;s very easy to have FME Flow scan a Gmail account (for example) for incoming mail, and then act on its contents. The Load Templates option in the trigger details provides the default IMAP connection details for popular email servers.&nbsp;</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p><span style="font-size: 2.3125em;">Exercise</span></p>
+<p><img src="images/1753480249269.png" alt="" width="267" height="283" /></p>
+<p>Sven, a planning analyst, regularly receives emails with building updates from contractors. These emails usually contain spatial data attachments to process. When Sven gets a dataset by email, he immediately downloads and transforms it into GeoJSON to easily and consistently reference the geometry.&nbsp;</p>
+<p>Follow along with Sven's steps as he automates this process, ensuring files are immediately processed, transformed, and stored as soon as they are received. He has already created and published his workspace to FME Flow, trigger-workflows-with-email.fmw in the Planning repository.&nbsp;</p>
+<h3 id="1-create-a-new-automation">1) Create a New Automation</h3>
+<p>Sven creates a new Automation on FME Flow.&nbsp;</p>
+<p>&nbsp;<img src="images/1753477967254.jpg" alt="" width="1240" height="602" /></p>
+<h3 id="2-configure-the-trigger-to-check-for-received-email">2) Configure Email Trigger</h3>
+<p>Sven opens the Trigger Details and selects the <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-Triggers/Trigger-Email_SMTP.htm">Email - SMTP (received)</a> trigger. He sets the Email User Name to&nbsp;<em>planning</em>, which will be the local part of the email address. He clicks Validate to ensure his parameters are valid.&nbsp;</p>
+<p><img src="images/1753907193781.jpg" alt="" /></p>
+<p>Before he closes the trigger details, he clicks the Output Attributes tab and inspects the Event Attributes for the Email - SMTP trigger. He will use the email.attachment attribute to reference the file in the following action.&nbsp;</p>
+<p><img src="images/1753908022084.jpg" alt="" /></p>
+<p>Sven clicks Apply to close the pane.&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<blockquote>
+<p class="media"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p class="media"><span style="font-family: inherit; font-size: 1em;">The SMTP protocol will only work if you use an instance of FME Flow with a proper DNS record (the FME Flow instance is accessible over the internet). If you are using any FME Flow Hosted instance or an </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://youtu.be/Nd-Lm-HEKKk" target="_blank" rel="noreferrer noopener">FME Training machine</a><span style="font-family: inherit; font-size: 1em;">, your FME Flow is configured so the SMTP protocol will work. If you are not using a publicaly accessible FME Flow, you may consider creating an </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-Triggers/Trigger-Email-IMAP.htm">Email - IMAP (received) trigger</a><span style="font-family: inherit; font-size: 1em;"> with your own email account instead. See </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407759987981-Run-a-Workspace-in-Response-to-Incoming-Email">Run a Workspace in Response to Incoming Email</a><span style="font-family: inherit; font-size: 1em;"> for more details.</span></p>
+</blockquote>
+</div>
+</div>
+</div>
+<h3>3) Add Run a Workspace Action</h3>
+<p>Sven connects an internal action to the Email trigger's success port. He opens the Action Details and configures it to run the trigger-workflows-with-email.fmw workspace in the Planning repository.&nbsp;</p>
+<p><img src="images/1753907697000.jpg" alt="" /></p>
+<p>For the Source Esri Shapefile parameter, Sven selects Email Attachment in the Email section using the drop-down menu.&nbsp;</p>
+<p><img src="images/1753907901447.jpg" alt="" /></p>
+<p>For the Destination GeoJSON File, Sven uses the ellipsis to select the Resources &gt; Data &gt; Output folder.&nbsp;</p>
+<p><img src="images/1753908465930.jpg" alt="" /></p>
+<p>Sven clicks Apply to close the action details. His Automation has two nodes - the Email trigger and the Run a Workspace action.&nbsp;</p>
+<p><img src="images/1753908659867.jpg" alt="" /></p>
+<h3>4) Start Automation</h3>
+<p>Sven saves his Automation as Planning Emails and clicks Start to begin running it. When FME Flow receives an email, it triggers the Automation and runs the workspace to process the attachments.&nbsp;</p>
+<p><img src="images/1753909309264.jpg" alt="" /></p>
+<h3>5) Send Email with Building Updates</h3>
+<p>Sven uses his email to test his Automation.&nbsp;<span style="margin: 0px; padding: 0px;">He emails planning@<em>FMEFlowIPAddress</em>&nbsp;with the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noopener">BuildingFootprints.zip</a> (C:\FMEData\Data\Engineering\BuildingFootprints.zip) containing shapefiles as an attachment.</span>&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>To send the email to FME Flow, you will need to use your own email account such as Gmail or Outlook.&nbsp;</p>
+</blockquote>
+<p>He waits a few moments after sending the email and refreshes the Automation. The event count updates to show FME Flow received an email and sent a message to the workspace action to run.&nbsp;</p>
+<p><img src="images/1753910163643.jpg" alt="" /></p>
+<h3>6) Check Jobs and Logs</h3>
+<p>Sven opens the Automations Menu options and selects View Log Files.&nbsp;</p>
+<p><img src="images/1753910436510.jpg" alt="" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">&nbsp;</div>
+</div>
+</div>
+</div>
+<p>FME Flow opens the Automations logs in Resources/Logs/automations/current. Sven scrolls down, finds the trigger_email.log file, and opens it.&nbsp;</p>
+<p><img src="images/1753910743999.jpg" alt="" /></p>
+<p>The log file shows that the trigger processed Sven's email and sent an event to the following action in the Automation.&nbsp;</p>
+<p><img src="images/1753910854813.jpg" alt="" width="1288" height="234" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can optionally view the fme_automations.log file or View Triggered Jobs from the Automations Menu to see the workspace translation, too. You may also navigate to the Resources location with the destination GeoJSON files processed by the workspace.&nbsp;</p>
+</blockquote>
+<p>Sven has now created an Automation that triggers with incoming emails and processes the email attachments with a workspace. This saves Sven time and effort when processing the emails manually and also ensures the GeoJSON files are kept consistent and updated.&nbsp;</p>

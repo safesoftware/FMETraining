@@ -1,0 +1,158 @@
+<p><span style="color: #222222; font-size: 2.3125em;">Learning Objectives</span></p>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Define user attributes.</li>
+<li>Define FME attributes.</li>
+<li>Distinguish between exposed and unexposed attributes.</li>
+<li>Identify why attributes might be renamed.</li>
+<li>Identify which transformer or transformers can be used for a particular attribute-managing task.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/attribute-managing-transformers.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here:&nbsp;C:\FMEData\Workspaces\TransformAttributes\attribute-managing-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/attribute-managing-transformers-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\attribute-managing-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb</a><br />
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2 id="manage-your-attributes">What Are Attributes?</h2>
+<p><span class="mc-variable ProductNames.ProductName-FMEWorkbench variable">FME&nbsp;Workbench</span>&nbsp;supports two types of attributes:</p>
+<p><em>User attributes</em> are attributes that store a specific type of data about a feature, such as a number, date, or piece of text. They might be called <code><span class="Code">parcel_identifier</span></code>,&nbsp;<code><span class="Code">owner_name</span></code>, or <code><span class="Code">date_surveyed</span></code>, for example. User attributes are always part of the feature no matter which format they are stored in and hence persist when translating from one format to another. User attributes may come from a source dataset or may be created as needed within FME. Not all formats accept user attributes, and the ones that do sometimes put restrictions on them. Each user attribute is defined by its name, data type, width, and number of decimal places. FME uses the term user attribute when some relational databases might use the term column or field.</p>
+<p><em>Format attributes</em> are specific to a format's schema. Some examples are&nbsp;<code><span class="Code">autocad_block_name</span></code>&nbsp;and&nbsp;<code><span class="Code">sde30_justification</span></code>. FME does not generically support them and will change or be dropped when translated into a different format. In general, format attributes are designed for translations to and from the same format, although advanced users may find them helpful in writing to other formats when using customized <span class="mc-variable ProductNames.workspace variable">workspace</span>s.</p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p><strong>Warning</strong>: avoid naming user attributes with the prefix <code>fme_</code>. FME may not recognize a user attribute prefixed with fme_ because FME uses this prefix to process many format attributes. Also, avoid naming user attributes with the same names as other format attributes to prevent similar conflicts.</p>
+</blockquote>
+<p>A particular set of format attributes has the prefix&nbsp;<code>fme_</code>. These attributes represent the data as it is perceived by FME and are known as FME attributes. Transformers often use these attributes; you will typically not set their values yourself. One common FME attribute worth knowing about is <code>fme_feature_type</code>, which stores the name of features' feature type.</p>
+<p>User and format attributes are most visible when viewing a dataset in the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/DataInspector/Feature-Information.htm" target="_blank" rel="noopener">Feature Information window</a>.</p>
+<p><img src="images/1713478344354.png" alt="Viewing attributes in the Feature Information Window" width="618" height="508" /></p>
+<h3>Exposed and Unexposed Attributes</h3>
+<p>In the feature type dialog of a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FeatureTypeProperties/feat_type_props_editing.htm" target="_blank" rel="noopener">reader</a>&nbsp;or&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FeatureTypeProperties/writer_feature_type_props_editing.htm" target="_blank" rel="noopener">writer</a>, attributes can be&nbsp;<span class="ParameterName">Exposed</span>&nbsp;or made "visible."</p>
+<p><img src="images/1713478366857.png" alt="Exposed checkbox on reader feature type" width="580" height="441" /></p>
+<p>Exposed attributes from a reader feature type become part of the&nbsp;<span class="mc-variable ProductNames.workspace variable">workspace</span>, which means you can access them in transformers and set them to particular values. By default, user attributes are exposed because, in most cases, you will be primarily interested in working with those attributes in a <span class="mc-variable ProductNames.workspace variable">workspace</span>. Format attributes are usually unexposed; however, for advanced users, exposing format attributes allows a variety of special things to be done with formats, such as setting line thickness, creating entities, and setting particular bits or bytes. For more information, see <a class="MCXref xref" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FeatureTypeProperties/Controlling_Features_Format_Attributes.htm">Controlling Features with Format Attributes</a>.</p>
+<p>In addition to format attributes, unexposed attributes can originate from dynamic workflows or when working with JSON or XML data. For example,&nbsp;<a href="https://community.safe.com/general-10/question-of-the-week-dealing-with-an-unknown-or-dynamic-schema-18145" target="_blank" rel="noopener">this article</a> in the FME Community discusses dealing with attributes unknown to the schema in a dynamic workflow. Some transformers, such as XMLFlattener, have settings to expose attributes.</p>
+<p>When viewing attributes in the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/DataInspector/Feature-Information.htm" target="_blank" rel="noopener">Feature Information</a>&nbsp;window, exposed attributes show their&nbsp;<a class="MCXref xref" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FeatureTypeProperties/FME-Data-Types.htm" target="_blank" rel="noopener">FME Data Types</a>; unexposed attributes do not.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Understanding_Schema.htm" target="_blank" rel="noopener">Learn more</a><span style="font-family: inherit; font-size: 1em;">&nbsp;about how FME handles schema.</span></p>
+</blockquote>
+<h2 id="manage-your-attributes">Manage Your Attributes</h2>
+<p>Many of the top 30 transformers are support transformers for managing attributes. These create new attributes, rename them, set values, and delete them.</p>
+<p>An essential use for these transformers is to rename attributes for schema mapping.</p>
+<p>The main attribute-management tasks and the transformers that can be used are as follows:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Task</th>
+<th scope="col">Transformers</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>Create Attributes</td>
+<td>AttributeCreator, AttributeManager</td>
+</tr>
+<tr>
+<td>Set Attribute Values</td>
+<td>AttributeCreator, AttributeManager</td>
+</tr>
+<tr>
+<td>Remove Attributes</td>
+<td>AttributeKeeper, AttributeManager, AttributeRemover, BulkAttributeRemover</td>
+</tr>
+<tr>
+<td>Rename Attributes</td>
+<td>AttributeManager, AttributeRenamer, BulkAttributeRenamer</td>
+</tr>
+<tr>
+<td>Copy Attributes</td>
+<td>AttributeCopier, AttributeCreator, AttributeManager</td>
+</tr>
+<tr>
+<td>Sort Attributes</td>
+<td>AttributeManager</td>
+</tr>
+<tr>
+<td>Change Attribute Case</td>
+<td>BulkAttributeRenamer</td>
+</tr>
+<tr>
+<td>Add Prefixes/Suffixes</td>
+<td>BulkAttributeRenamer</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Understand the </span><strong style="font-family: inherit; font-size: 1em;">BulkAttributeRenamer</strong><span style="font-family: inherit; font-size: 1em;">. It changes the case - or adds suffixes/prefixes - to the attribute&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">name</strong><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><em style="font-family: inherit; font-size: 1em;">not</em><span style="font-family: inherit; font-size: 1em;">&nbsp;the attribute value.</span></p>
+</blockquote>
+<p>Many of these transformers can carry out similar operations, and you can see that the AttributeManager does so many tasks you can use it almost exclusively.</p>
+<p>However, it's important to note that the AttributeManager is a general-purpose tool. Using transformers with more specific functions, e.g., the AttributeRenamer, can boost performance. The only time AttributeManager tends to be faster than individual function attribute transformers is when you need to undertake many different attribute transformations in a row. Then, the AttributeManager is more performant.</p>
+<p>Using transformers with more specific functions, like the AttributeRenamer instead of an AttributeManager to only do renaming, can also make your workspace easier to understand at a glance.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>See this&nbsp;<a href="https://aurelienchaumet.github.io/articles/fme_performance_attributemanager_en/" target="_blank" rel="noopener">blog post</a> by FME user Aur&eacute;lien Chaumet for more information on attribute transformer performance.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The AttributeManager and AttributeCreator transformers let you manage the data types of your attributes. <a href="https://www.youtube.com/live/_MoalhW8zlA?feature=share&amp;t=458" target="_blank" rel="noopener">Check out this video to learn more</a>.</p>
+</blockquote>
+<h2 id="manage-your-attributes">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>City councilors have voted to amend noise control laws, and residents living in affected areas must be informed of these changes.</p>
+<p>Jennifer has been tasked with finding the affected addresses. There's a tight deadline, and at least three city councilors are watching her work. The pressure is on, and it's up to her to deliver!</p>
+<p>Jennifer knows that the address database for the city is stored in an Esri Geodatabase whose schema matches the Local Government Information Model PostalAddress table.</p>
+<p>However, she was told that the software used to carry out automated bulk mailings requires addresses stored in an Excel spreadsheet using a completely different schema.</p>
+<p>So, her first task is to plan out a workspace that converts addresses from Geodatabase to Excel, mapping the schema at the same time.</p>
+<p>Here are the general schema changes she needs to make:</p>
+<ul>
+<li>Remove several attributes with a predicable pattern
+<ul>
+<li>Any attribute with a name containing the string "PST"</li>
+</ul>
+</li>
+<li>Remove several attributes without a predicable pattern
+<ul>
+<li>Choose specific attributes to remove where the number removed is much fewer than the number kept</li>
+</ul>
+</li>
+<li>Rename one or more attributes without a predicable pattern
+<ul>
+<li>Choose specific attributes to rename</li>
+</ul>
+</li>
+<li>Rename several attributes with a predicable pattern
+<ul>
+<li>Change to lowercase</li>
+</ul>
+</li>
+<li>Create an attribute with a fixed value</li>
+<li>Create an attribute with a constructed value and remove the component attributes afterward</li>
+</ul>
+<h2>1) Open Starting Workspace</h2>
+<p>She opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/attribute-managing-transformers.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\attribute-managing-transformers.fmw) in FME Workbench (2025.0.1 or later).</p>
+<h2>2) Place Transformers</h2>
+<p>She has already planned out some of the workspace. Now she will place the transformers in the Transformer Options bookmark in the workspace based on their functionality.</p>
+<p>If she is unsure what each transformer does, she refers to the FME Help by double-clicking the transformer and then clicking the Help button to read how it works.</p>
+<h2>3) Your Turn</h2>
+<p>Help Jennifer out by dragging the transformers into place. No need to configure them yet; we'll do that in later lessons.</p>
+<p>Note that there are more transformers than you will need, and while you could accomplish some of the steps with multiple transformers, each one has a specific one in mind. If you think you can combine steps using an AttributeManager without changing the order of operations, feel free to do so.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Note that Jennifer is removing attributes first. While it probably doesn't matter in this small workspace, performance will generally be better if you remove unnecessary features and attributes early in the workspace. We discuss this topic more in the <a href="https://academy.safe.com/optimize-workspace-performance" target="_blank" rel="noopener">Optimize Workspace Performance course</a>.</p>
+</blockquote>

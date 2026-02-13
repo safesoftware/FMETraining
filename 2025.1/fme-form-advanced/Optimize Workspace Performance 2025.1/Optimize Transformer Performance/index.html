@@ -1,0 +1,113 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Optimize performance using transformer order and filtering.</li>
+<li>Optimize performance using the Complete Groups parameter.</li>
+<li>Optimize performance using the Features First parameter.</li>
+<li>Optimize performance by removing unneeded attributes and geometry.</li>
+<li>Optimize performance using bulk mode.</li>
+</ul>
+<h2 id="optimizing-transformer-performance">Optimizing Transformer Performance</h2>
+<p>The key to improving transformer performance is reducing the memory used, particularly in group-based transformers. To do this, you can either reduce the amount of data entering a group-based transformer or use parameters that, in the right conditions, can reduce the need to store data in memory.</p>
+<h2>Upgrade Transformers</h2>
+<p>One simple way to potentially get a "free" performance improvement is to upgrade your transformers.&nbsp;</p>
+<p>If your workspace has transformers that can be upgraded, you will see a section labeled "Upgradable Transformers" in the Navigator:</p>
+<p><img class="image image-block image-center" src="images/1725647014613.png" alt="Upgradable transformers" width="371" height="394" /></p>
+<p>You can then expand each transformer and right-click to select Upgrade transformer to upgrade them. A dialog will confirm your wish to proceed and inform you that the new version might introduce breaking changes. You should back up your workspace in case that happens:</p>
+<p><img src="images/1725647088536.png" alt="Upgrade Transformer dialog" /></p>
+<p>A dialog will then open to show the changes in the GUI to the transformer:</p>
+<p><img class="image image-block image-center" src="images/1725649064120.png" alt="Comparing transformer versions" width="749" height="404" /></p>
+<p>You can click the Show Changes button to get a written list of changes:</p>
+<p><img src="images/1725649130002.png" alt="Text change log" width="537" height="275" /></p>
+<p>Upgrading transformers only sometimes makes them operate faster&mdash;some changes are functional or cosmetic&mdash;and might slightly change their results. Therefore, upgrading all transformers is only advisable after checking what the upgrade involves.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>⭐&nbsp;<strong>New in FME 2024.0:&nbsp;</strong>you can now right-click Upgradable Transformers and choose Upgrade All Transformers. We only recommend this only if you are an experienced FME user, as upgrading many transformers at once can make it harder to identify any problems introduced by the upgrade.</p>
+<p>You can also update by selection or transformer type. A confirmation dialog now asks if you'd like to create a backup of your workspace before updating, and you&nbsp;can optionally generate a transformer upgrade report.</p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_With_Transformer_Versions.htm#Upgradin" target="_blank" rel="noopener">Learn more.</a></p>
+</blockquote>
+<h2 id="transformer-order-and-filtering">Transformer Order and Filtering</h2>
+<p>Although the order of transformers can sometimes vary without affecting the result, at other times, it is essential to get the correct order for performance reasons.</p>
+<p>FME will perform better when you minimize the data going into group-based transformers. One scenario is to put feature-based filter transformers <em>before</em> the group-based process, not after it. To show a counter-example, the author below filters data after statistics have been calculated:</p>
+<p><img class="image image-block image-center" src="images/1725649176986.png" alt="Filter before processing" width="565" height="143" /></p>
+<p>Filtering the data before calculating the statistics would be more sensible; otherwise, FME wastes time processing features that are eventually ignored.</p>
+<p>The best way to remember this is:&nbsp;<strong>Filter, Remove, Action!</strong></p>
+<p>In other words, filter first, then remove attributes, then act.</p>
+<h2 id="group-by-mode-parameter">Group By Mode Parameter</h2>
+<p>A standard parameter available in most group-based transformers is called "Complete Groups" and appears under Group Processing:</p>
+<p><img class="image image-block image-center" src="images/1712355017672.png" alt="Group By Mode options" width="499" height="148" /></p>
+<p>When set to When All Features Received, all the features are stored in memory until the transformer finishes processing. Then, groups are formed. The transformer is blocking data from proceeding.</p>
+<p>When the parameter is set to When Group Changes (Advanced), FME processes groups as they become available. That way, less data is stored in memory, and processing is more efficient.</p>
+<p>The condition for applying this parameter is that the groups of features are pre-sorted into their groups.</p>
+<p>For example, in the above screenshot, the user uses the ZoneCategory attribute as a group-by parameter (i.e., zones are dissolved together where they are in the same category). If the incoming data is sorted in order by ZoneCategory, then the user can set the Complete Groups parameter and allow FME to process the data more efficiently.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">When using Input Ordered By Group on a transformer with two (or more) input ports, you need to arrange data to arrive in group order (Port 1, Group A, Port 2, Group A, Port 1, Group B, Port 2, Group B, etc.). It's more than just a case of each data stream being ordered correctly; you need to alternate streams/ports for each group, which is challenging.</span></p>
+</blockquote>
+<h2 id="features-first-parameter">Features First Parameter</h2>
+<p>Besides the Complete Groups parameter, some transformers have unique parameters for performance improvements. Many of these specify one type of feature to arrive "first."</p>
+<p>For example, the PointOnAreaOverlayer transformer expects two sets of data: Points and Areas. By default, FME requires all incoming Points and Areas because it needs to be sure it has ALL of the Areas before processing any Points.</p>
+<p>But, if FME knows the Area features will arrive first (i.e., the first Point feature signifies the end of the Areas), then it doesn&rsquo;t need all Point features. It can process each one immediately because it knows there are no more Areas it could match against.</p>
+<p>The user specifies that this is true using the parameter Areas First:</p>
+<p><img class="image image-block image-center" src="images/1725649323276.png" alt="Areas First parameter" width="347" height="97" /></p>
+<p>But how does a user ensure the Area features arrive first? Well, like writers, you can change the order of readers in the Navigator so that the reader at the top of the list is read first.</p>
+<p>Changing the reader order doesn&rsquo;t improve performance&nbsp;<em>per se</em>, but it does let you apply performance-improving parameters like the above.</p>
+<h2 id="attributes-and-transformation">Attributes and Transformation</h2>
+<p>As mentioned&nbsp;earlier, reducing data helps performance by saving FME from either holding it in memory or caching it to a disk.</p>
+<p>However, reducing the number of features and the size of each feature helps.</p>
+<p>One aspect of this is attributes. Carrying attributes through a translation impacts performance, so if the attributes are not required in the output, it&rsquo;s best to remove them&nbsp;<em>as early as possible</em>&nbsp;in the translation.</p>
+<p>For example, when the reader and writer schemas look like this:</p>
+<p><img class="image image-block image-center" src="images/1725649404341.png" alt="Simplifying schema" width="471" height="327" /></p>
+<p>...it makes sense to remove excess attributes from the translation as soon as possible.</p>
+<p>There are two ways to remove attributes. Some reader formats (but not all) have a setting in the reader feature type to avoid reading excess attributes in the first place:</p>
+<p><img class="image image-block image-center" src="images/1725649460567.png" alt="Manually unexposing reader feature type attributes" width="552" height="377" /></p>
+<p>With that, you can ensure that&nbsp;<em>only</em> exposed attributes are read.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For database formats, FME won't read unexposing attributes on reader feature types, offering a performance improvement.</p>
+<p>For non-database formats, FME still reads the unexposed attributes, but it won't show them anywhere downstream and won't write them out. There is no direct performance benefit on reading, but it saves the performance cost of removing them and can clean up your attribute lists.</p>
+</blockquote>
+<p>The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
+<p><img class="image image-block image-center" src="images/1725649564898.png" alt="Removing unnecessary attributes with an AttributeManager" width="630" height="523" /></p>
+<p>This ensures that the extra attributes don't drain resources when processed by further transformers.</p>
+<h2 id="lists">Lists</h2>
+<p>One specific type of attribute to beware of is a&nbsp;<em>List</em>. In FME, a list can have multiple values, significantly draining resources.</p>
+<p>For example, if you use a DatabaseJoiner to join a feature to 1,000 records, the resulting list for that feature will have 1,000 sets of records. This is bad enough, but if you explode the list and keep all of the original attributes, there will be 1,000 features, each with its own attributes!</p>
+<p>In general, beware of unnecessarily creating lists and keeping them in a workspace beyond the point at which they are still used.</p>
+<h2 id="geometry-and-transformation">Geometry and Transformation</h2>
+<p>Like attributes, geometry can be removed from a feature, in this case, using the GeometryRemover transformer.</p>
+<p>Many FME users create translations that handle tabular &ndash; non-spatial &ndash; data. If you read a spatial dataset and write it in a tabular format, remove the geometry early in the workspace, just as you would an attribute.</p>
+<p>Another particular problem is carrying spatial data around as attributes. Spatial database formats&mdash;for example, Oracle or GeoMedia&mdash;usually store geometry within a field in the database, such as GEOM. When FME reads the data, it converts the GEOM field into FME geometry and drops the field from the data.</p>
+<p>However, if you read a geometry table with a non-geometry reader, the translation could end up with the geometry stored as an FME attribute. A similar thing could happen when a workspace reads only one geometry column when multiple geometry tables exist.</p>
+<p>Geometry will create <em>substantial</em>&nbsp;and complex attributes, which take up a lot of resources. If you don&rsquo;t need them, then it&rsquo;s worth removing them.</p>
+<h2 id="bulk-mode-and-feature-tables">Bulk Mode and Feature Tables</h2>
+<p>FME's engine is gradually being updated to use a methodology we call&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noreferrer noopener">bulk mode</a>&nbsp;(previously known as feature tables).</p>
+<p>It's not a tool designed for user control; instead, bulk mode is a new way to transport features through the workspace. Bulk mode substantially speeds up a workspace, its translations, and its transformations. If you see a log message about bulk mode (or sometimes feature tables), this technology is what it refers to.</p>
+<p>As more transformers support bulk mode, expect performance to improve. However, you must upgrade transformers to benefit from this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes bulk mode support:</p>
+<p><img class="image image-block image-center" src="images/1725649599838.png" alt="Showing Changes on an upgradable transformer" width="371" height="394" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>However, this bulk mode support comes at a price: feature order is now maintained differently.</p>
+<p>For example, let's say we have features numbered 1 to 10 in that order. They enter a Tester. The test clauses are set up so that even numbers pass (emerge from the Passed port) and odd numbers fail (emerge from the Failed port).</p>
+<p>Without bulk mode, the features would emerge in the order 1 (Failed port), 2 (Passed port), 3 (Failed), 4 (Passed), 5 (Failed), and so on. In other words, they emerge in the same order they entered.</p>
+<p>With bulk mode, the output order is less certain. The output of each port will still be in order, but we can't say that each port will occur in order. For example, the output order might be 1 (Failed), 3 (Failed), 5 (Failed), 7 (Failed), 9 (Failed), 2 (Passed), 4 (Passed), 6 (Passed), and so on.</p>
+<p>In other words, with bulk mode, features emerge from each port in the same order, but one port may output all of its features (or a bulk subset of them) before the next port starts.</p>
+<p>If your workspace relies on a certain port order from the Tester, you should use the&nbsp;Advanced &gt; Preserve Feature Order parameter.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noopener">Learn more about bulk mode in the documentation.</a></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For maximum performance, in an Arithmetic editor, use the functions <code>@add()</code>, <code>@multi()</code>, and <code>@div()</code> instead of using the equivalent operators (<code>+</code> <code>*</code> and <code>/</code>). These functions work at a lower, much faster level of processing. Plus, they have the bonus of handling nulls better.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

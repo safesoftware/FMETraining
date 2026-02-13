@@ -1,0 +1,81 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<ul>
+<li>Publish source data to an FME Flow repository with the Publishing Wizard.</li>
+<li>Understand the limitations of publishing data to an FME Flow repository.&nbsp;</li>
+<li>Verify that the source data has been uploaded using a file browser.</li>
+<li>Run a workspace using published data.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-data-to-workspace-repository.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-data-to-workspace-repository.fmw</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a>&nbsp;| C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_self">ElectionVoting.gml</a> | <span class="c0">C:\FMEData\Data\Elections\NewElectionsVoting.gml</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_self"><span class="c0">ElectionVoting.xsd</span></a>&nbsp;|&nbsp;<span class="c0">C:\FMEData\Data\Elections\ElectionVoting.xsd</span></li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="publishing-file-datasets-to-a-repository">Publishing File Datasets to a Repository</h2>
+<p>One of the simplest methods for storing source data for FME Flow workspaces is publishing data to a repository. When the source data for a translation is file-based (rather than a feed or database), you may publish the data to an FME Flow repository along with the workspace. This data upload method is fast and straightforward, but it limits future access to the data for other workflows. It's better practice to publish your data in the Resources folder, separate from the workspace, which you will learn in the next lessons.</p>
+<p>Source file datasets are often stored locally on the computer that hosts FME Workbench. However, another server usually hosts FME Flow, so local file paths to datasets usually fail on FME Flow because the data doesn't exist in that location on the FME Flow server.&nbsp;</p>
+<p>In this workspace, the source dataset is a MapInfo TAB dataset stored on the local computer drive.&nbsp;</p>
+<p><img src="images/1749157068842.jpg" alt="" width="730" height="248" /></p>
+<p>A MapInfo TAB dataset consists of a series of files (.tab, .dat, .id, .map). When you publish this workspace, the publishing wizard can publish the data files alongside it by simply checking the box labeled <em>"Upload data files</em>."</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.010.PublishDataSourceInWiz.png" target="_blank" rel="noreferrer noopener"><img src="images/1749157356861.jpg" alt="" width="531" height="545" /></a></p>
+<p>FME automatically selects the files to upload based on what it thinks is necessary to run the translation. If there are other files you wish to upload, or files FME selects that you don't want to upload, the Select Files button allows you to make changes.</p>
+<p><img src="images/1749221092790.jpg" alt="" width="706" height="447" /></p>
+<p>At the top, it also shows that the selected files will be uploaded to the Repository, the same repository folder as the workspace.&nbsp;</p>
+<p>Once the publishing wizard is complete, FME uploads the files to FME Flow, which makes them accessible along with this workspace.</p>
+<h2 id="using-published-source-data">Using Published Source Data</h2>
+<p>When you run a workspace published with its data on FME Flow, the uploaded data is automatically used as the workspace's source data. The $(FME_MF_DIR) parameter references the repository for the selected workspace.&nbsp;</p>
+<p><img src="images/1749157546804.jpg" alt="" width="749" height="397" /></p>
+<p>To use the uploaded data in the repository, you do not need to change any other settings; the workspace will run to completion using the published data as its source.</p>
+<h2>Data Management Considerations</h2>
+<p>There are some cautions and limitations to consider when you upload data to a workspace repository:</p>
+<ul>
+<li>The data stored with a workspace in a repository is only accessible by the workspace it is stored with (without manual intervention). Therefore, you cannot reuse the data between multiple workspaces. If multiple users publish their workspaces using the same source data, FME Flow stores the data in a separate folder for each workspace. Multiple copies of the data might lead to outdated data and decrease the server storage available.&nbsp;</li>
+<li>Users with only run permissions for workspaces cannot update the source data stored in the repository. However, with a published parameter for the source data, they can upload a different file at runtime, but they need to do so for each run of the workspace.</li>
+</ul>
+<h2>Exercise</h2>
+<p>Sven continues working with his workspace, which clips voting locations to neighborhoods in Vancouver and stores the transformed data in a geodatabase. He is working with the source GML and KML data and is experimenting with finding the best location to store the data when the workspace is run on FME Flow.&nbsp;</p>
+<p>Follow along with Sven as he publishes the workspace and its source data to a repository on FME Flow and then runs the workspace on FME Flow using the published data.</p>
+<h3 id="1-open-and-examine-workspace">1) Open Starting Workspace</h3>
+<p>Sven opens&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-data-to-workspace-repository.fmw" target="_self">his workspace</a> (C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-data-to-workspace-repository.fmw) in FME Workbench.</p>
+<h3>2) Inspect Source Data</h3>
+<p>In FME Workbench, Sven expands the parameters for each reader. The source files are stored locally on his computer. For testing on an FME Flow installed locally on his machine, FME Flow can access these files. However, an organizational FME Flow deployment usually won't have access to local file systems except for the server on which it is installed.</p>
+<p><img src="images/1749226390420.jpg" alt="" width="748" height="272" /></p>
+<h3>3) Publish Workspace</h3>
+<p>Sven clicks publish in the top toolbar to open the publishing wizard.&nbsp;</p>
+<p><img src="images/1749227082941.jpg" alt="" /></p>
+<p>He selects the Training repository, creates it if needed, and leaves the workspace name as the default. He clicks&nbsp;<strong>Upload data files</strong> and notes that FME automatically selects the three files. He clicks Select Files... to inspect them.&nbsp;</p>
+<p><img src="images/1749227506150.jpg" alt="" /></p>
+<p>Although the workspace only has a GML and KML writer, FME also includes the XSD (XML Schema Definition) file to support the GML file. Sven checks that FME will upload the files to the Repository, clicks OK, and then clicks Next to proceed to the next step.&nbsp;</p>
+<p>Sven registers the workspace with the Job Submitter service and clicks Publish.&nbsp;</p>
+<p><img src="images/1749227729631.jpg" alt="" width="540" height="460" /></p>
+<p>Sven checks the translation log to ensure the publishing process reports the files uploaded to FME Flow.&nbsp;</p>
+<p><img src="images/1749227834493.jpg" alt="" width="1027" height="295" /></p>
+<h3 id="2-run-workspace">4) Inspect Published Source Data</h3>
+<p>Sven navigates to FME Flow. He opens Workspaces and clicks the Training repository to open it.&nbsp;</p>
+<p><img src="images/1749228146278.jpg" alt="" width="1157" height="493" /></p>
+<p>Sven sees three files listed in the Files column for his workspace and clicks on them to view them.&nbsp;</p>
+<p><img src="images/1749228515937.jpg" alt="" width="1166" height="366" /></p>
+<p>Workspace Files lists the files published to the repository along with the workspace.&nbsp;</p>
+<p><img src="images/1749228605617.jpg" alt="" width="863" height="479" /></p>
+<h3 id="3-publish-to-server">5) Run Workspace</h3>
+<p>Sven clicks Training in the top path to return to the repository list of workspaces. He then clicks on his workspace to open it on the Run Workspace page.&nbsp;</p>
+<p><img src="images/1749229173085.jpg" alt="" width="1078" height="90" /></p>
+<p>The Run Workspace page already has the workspace details entered. Sven scrolls down to the Published Parameters section.</p>
+<p>By default, FME Flow selects the repository files for each source file. FME Flow indicates this by the ($FME_MF_DIR) parameter.&nbsp;</p>
+<p><img src="images/1749229706321.jpg" alt="" width="740" height="838" /></p>
+<p>Sven doesn't alter any parameters and clicks Run to run the workspace. The workspace reads the source files from the repository location and runs successfully.&nbsp;</p>
+<h3>6) Optional: Examine Files</h3>
+<p>Since Sven has access to the FME Flow computer itself, he opens a file browser and browses to the location where FME Flow stores the repository data. The default location is C:\ProgramData\Safe Software\FMEFlow\repositories\Training, which is consistent with the Safe Software training machines.&nbsp;</p>
+<p><img src="images/1749230051054.jpg" alt="" width="920" height="258" /></p>
+<p>Sven sees that FME Flow saves each workspace to a separate folder. He inspects the contents of the publish-data-to-workspace-repository folder and sees the uploaded datasets within it.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Windows may hide ProgramData and files in the FME Flow folder. Make sure you turn on hidden files and folders if you wish to view them.</span></p>
+</blockquote>
+<p>Sven has successfully published source data to a repository on FME Flow. However, he might use the source file data, especially VancouverNeighborhoods.kml, for many workspaces, so storing it multiple times with individual workspaces doesn't make sense. Next, Sven will learn how to publish data to Resources instead.&nbsp;</p>

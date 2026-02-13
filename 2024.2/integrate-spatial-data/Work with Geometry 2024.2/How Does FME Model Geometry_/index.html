@@ -1,0 +1,118 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand FME&rsquo;s geometry model.</li>
+<li>Explain how aggregates, multi-geometries, and multis work in FME.</li>
+</ul>
+<h2>Understanding FME&rsquo;s Geometry Model</h2>
+<p>FME handles spatial data flexibly through its internal geometry model, ensuring compatibility across the many formats it supports. It decouples geometry from coordinate systems, allowing users to handle spatial attributes and geographic projections independently.</p>
+<p>FME&rsquo;s geometry types encompass standard GIS representations, such as <strong>Points</strong>, <strong>Lines</strong>, <strong>Polygons</strong>, <strong>Aggregates</strong>, and <strong>Multi-Geometries</strong>.</p>
+<p><img src="images/1737153071318.png" alt="FME geometry model" /></p>
+<p>These types act as building blocks for spatial data transformation. For example:</p>
+<ul>
+<li>A <strong>Point</strong> represents a single geographic location.</li>
+<li>A <strong>Line</strong> connects multiple points.</li>
+<li>A <strong>Polygon</strong> represents an enclosed area.</li>
+</ul>
+<p>As discussed below, collections (aggregates, multis, and multiple geometries) allow for more complex and grouped structures.</p>
+<p><strong>Format Geometry Definitions</strong></p>
+<p>Formats have geometry definitions that map onto the FME geometry model. FME automatically handles this mapping for you. You can find details about this relationship in the format reader/writer documentation. For example, <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/filegdb/Geometry-Support-filegdb.htm" target="_blank" rel="noopener">here is the page for supported geometries for the Esri Geodatabase (File Geodb Open API) format</a>, and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/filegdb/Feature_Representation.htm" target="_blank" rel="noopener">here is the page discussing the filegdb_type format attribute that stores the geometry type</a>.</p>
+<h2>Aggregates</h2>
+<p>An aggregate is a collection of geometries of any type that FME treats as a single unit. Aggregates may or may not be homogenous and/or hierarchical.</p>
+<h3>Hierarchical Geometries</h3>
+<p>A hierarchical geometry is a collection of geometries that may, in turn, contain other collections (aggregates or&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Multis.htm">multis</a>) to an arbitrary depth. A typical case of a hierarchical geometry is an aggregate that contains aggregates. This nested behavior allows for the representation of hierarchical relationships between geometries.</p>
+<p>For example, a hierarchical aggregate named&nbsp;<em>House</em>&nbsp;may contain other aggregates named&nbsp;<em>Roof</em>&nbsp;and&nbsp;<em>Walls</em>, where&nbsp;<em>Walls</em>&nbsp;is an aggregate that contains four&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Faces.htm">faces</a>. The data may store properties associated with the house as a whole as <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/General_Concepts.htm#Traits">traits</a> at the top level but store properties that only pertain to a sub-group, such as shingle type, as traits on aggregate <em>Roof</em>.</p>
+<p>Aggregates may have a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Transformation_Matrix.htm">transformation matrix</a>. They may also have front or back <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/appearance.htm">appearances</a> and may be single or double-<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Sidedness.htm">sided</a>.</p>
+<h3>Homogeneous Aggregates</h3>
+<p>A homogeneous aggregate comprises features of the same <code><span class="Code">fme_type</span></code>.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Aggregates that contain other collections (aggregates or multis) do not preclude them from being homogeneous. Only an aggregate's "leaf" nodes must share the same type.</p>
+<p>For example, a collection of only surface geometries within an aggregate would be considered a homogeneous aggregate (<code>fme_type</code> = <code>fme_surface</code>).</p>
+<p>FME may represent some types of homogeneous aggregates as multi geometries. For example, FME could represent a collection of only Points as a MultiPoint Geometry.</p>
+</blockquote>
+<p><strong>Homogeneous Aggregate Attributes</strong></p>
+<ul>
+<li><span class="Bold">fme_geometry</span>&nbsp;=&nbsp;<span class="Bold">fme_aggregate</span></li>
+<li><span class="Bold">fme_type</span>&nbsp;=&nbsp;<span class="Bold">&lt;type of contained geometries&gt;</span></li>
+</ul>
+<h3>Non-Homogeneous Aggregates</h3>
+<p>A non-homogeneous aggregate comprises features of differing geometry types.</p>
+<p><img src="images/non-homog_agg.gif" alt="Non-homogenous aggregates" width="184" height="61" /></p>
+<p>For example, a collection of&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Points.htm">point</a>,&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Lines.htm">line</a>, and&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Polygons.htm">polygon</a> geometries within an aggregate would be considered a non-homogeneous aggregate (<code>fme_type</code>&nbsp;=&nbsp;<code>fme_collection</code>).</p>
+<p><strong>Non-Homogeneous Aggregate Attributes</strong></p>
+<ul>
+<li><span class="Bold">fme_geometry</span>&nbsp;=&nbsp;<span class="Bold">fme_aggregate</span></li>
+<li><span class="Bold">fme_type</span>&nbsp;=&nbsp;<span class="Bold">fme_collection</span></li>
+</ul>
+<h2>Multiple Geometries</h2>
+<p>A multiple geometry is a collection of parts that are interpreted as independent geometries. Each part is treated as its own complete geometry, separate from the others.</p>
+<p><span data-preserver-spaces="true">For example, a multiple geometry may contain two parts: one named&nbsp;</span><em><span data-preserver-spaces="true">Area</span></em><span data-preserver-spaces="true">, which contains an area representation of a feature, and one named&nbsp;</span><em><span data-preserver-spaces="true">Point</span></em><span data-preserver-spaces="true">, which contains a point representation of the same feature.</span></p>
+<p><span data-preserver-spaces="true">Multiple geometries are different from&nbsp;</span><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Multis.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">multi</span></a><span data-preserver-spaces="true"> geometries, such as MultiPoint and others (see below).</span></p>
+<p><span data-preserver-spaces="true">FME and other systems often successfully handle multiple geometries the same way as&nbsp;<a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Aggregates.htm" target="_blank" rel="noopener">aggregate geometries</a>, even though they are conceptually slightly different from aggregates. Several database formats support reading and writing of multiple geometries.</span></p>
+<p><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/multiplegeometrysetter.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">MultipleGeometrySetter</span></a><span data-preserver-spaces="true"> and </span><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/multiplegeometryfilter.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">MultipleGeometryFilter</span></a><span data-preserver-spaces="true"> are two transformers that are helpful for working with multiple geometries in a workspace.&nbsp;</span></p>
+<p><strong>Multiple Geometry Attributes</strong></p>
+<ul>
+<li><span class="Bold">fme_geometry</span>&nbsp;=&nbsp;<span class="Bold">fme_aggregate</span></li>
+<li><span class="Bold">fme_type</span>&nbsp;=&nbsp;<span class="Bold">fme_collection</span></li>
+</ul>
+<h3>Coordinate Systems and Multiple Geometries</h3>
+<p>To preserve the coordinate system of multiple geometry features when writing to a database format, with each geometry in its own column, you must set the Spatial Reference System Identifier (SRID) of the coordinate system as a trait on each of the multiple geometries. Use the following transformers, in order, for each geometry:</p>
+<ol>
+<li value="1">CoordinateSystemExtractor to retrieve the coordinate system name as attribute&nbsp;<span class="Code">Coordsys</span>&nbsp;(change from the default&nbsp;<span class="Code">_coordsys</span>).</li>
+<li value="2">GeometryPropertySetter to set attribute&nbsp;<span class="Code">Coordsys</span>&nbsp;as a trait. (Specify&nbsp;<span class="ParameterName">Property to Set</span>:&nbsp;<span class="ParameterValue">Traits from Attributes</span>&nbsp;and&nbsp;<span class="ParameterName">Source Attributes</span>:&nbsp;<span class="Code">Coordsys</span>.)</li>
+<li value="3">MultipleGeometrySetter to aggregate the geometries.</li>
+</ol>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For detailed instructions on reading and writing multiple geometries, see <a href="https://support.safe.com/hc/en-us/articles/25407434274317-Writing-to-Database-Tables-that-contain-Multiple-Geometry-Columns" target="_blank" rel="noopener">this tutorial</a>.</p>
+</blockquote>
+<h2>Multis</h2>
+<p>A multi is a defined collection of geometries of a single, common type that FME treats as a single unit. Multis cannot be nested or have a hierarchy within them.</p>
+<p>Many multis exist in the FME geometry model:</p>
+<ul>
+<li>MultiPoint
+<ul>
+<li>A multipoint is a defined collection of <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Points.htm">Point</a><span style="font-family: inherit; font-size: 1em;"> geometries.</span></li>
+<li><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_geometry</span><span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_aggregate</span></li>
+<li>fme_type<span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_point</span></li>
+</ul>
+</li>
+<li>MultiText
+<ul>
+<li>A multitext is a defined collection of <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Text.htm">Text</a><span style="font-family: inherit; font-size: 1em;"> geometries.</span></li>
+<li><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_geometry</span><span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_aggregate</span></li>
+<li>fme_type<span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_text</span></li>
+</ul>
+</li>
+<li>MultiCurve
+<ul>
+<li>A multicurve is a defined collection of <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Curves.htm">Curve</a><span style="font-family: inherit; font-size: 1em;"> geometries.</span></li>
+<li><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_geometry</span><span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_aggregate</span></li>
+<li>fme_type<span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_line</span></li>
+</ul>
+</li>
+<li>MultiArea
+<ul>
+<li>A multiarea is a defined collection of <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Areas.htm">Area</a><span style="font-family: inherit; font-size: 1em;"> geometries.</span></li>
+<li><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_geometry</span><span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_aggregate</span></li>
+<li>fme_type<span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_area</span></li>
+</ul>
+</li>
+<li>MultiSurface
+<ul>
+<li>A multisurface is a defined collection of <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/IFMESurfaces.htm">Surface</a><span style="font-family: inherit; font-size: 1em;"> geometries.</span></li>
+<li><span data-preserver-spaces="true">Multisurfaces may have front or back&nbsp;</span><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/appearance.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">appearances</span></a><span data-preserver-spaces="true"> and be single or double-</span><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/Sidedness.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">sided</span></a><span data-preserver-spaces="true">.</span></li>
+<li><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_geometry</span><span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_aggregate</span></li>
+<li>fme_type<span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_surface</span></li>
+</ul>
+</li>
+<li>MultiSolid
+<ul>
+<li>A multisolid is a defined collection of <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/IFMESolids.htm">Solid</a><span style="font-family: inherit; font-size: 1em;"> geometries.</span></li>
+<li><span data-preserver-spaces="true">Optionally, multi solids may be single or double-sided and may have front or back&nbsp;</span><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/appearance.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">appearances</span></a><span data-preserver-spaces="true">.</span></li>
+<li><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_geometry</span><span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_aggregate</span></li>
+<li>fme_type<span style="font-family: inherit; font-size: 1em;">&nbsp;=&nbsp;</span><span class="Bold" style="font-family: inherit; font-size: 1em;">fme_solid</span></li>
+</ul>
+</li>
+</ul>

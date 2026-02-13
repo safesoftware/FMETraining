@@ -1,0 +1,50 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li aria-level="1">Explain the purpose of FME Flow Streams.&nbsp;</li>
+<li aria-level="1">Provide examples of streaming data sources.</li>
+<li aria-level="1">Know the types of transformers used for stream processing.</li>
+<li aria-level="1">Understand the difference between Automations and Streams in FME Flow.&nbsp;</li>
+</ul>
+<h2>What are Streams?</h2>
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Streams.htm">FME Flow Streams</a> allow a workspace to run continuously to process an unbounded data stream. This process is known as stream processing, which groups together the collection, integration, and analysis of unbounded data. Unbounded data does not have a definitive start and end like a file&mdash;it is infinite. Streams generally process small records arriving at extremely high velocity.</p>
+<p>The Internet of Things (IoT) often produces data streams. Examples include: GPS sensors, weather feeds, and Automatic Meter Readings (AMR). These devices typically publish their data to an intermediary application, like a message broker or queue, which you can connect to from an FME workspace.&nbsp;</p>
+<p>FME Flow Streams allow organizations to deliver insights on unbounded data continuously.</p>
+<p><img src="images/1724343050799.png" alt="" /></p>
+<h2>Authoring for FME Flow Streams</h2>
+<p>An FME Flow Stream runs a single FME workspace continuously and indefinitely until you stop it. The workspace should contain a transformer that can run in 'Stream Mode', such as the KafkaConnector, or another connector that will cause the workspace to run indefinitely until you stop it, such as a WebSocket connector.&nbsp;</p>
+<p>Since a data stream is unbounded, a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/timewindower.htm">TimeWindower</a> transformer creates time-based 'Windows', or groups, of data processed downstream in the workspace, as illustrated below.</p>
+<p><img src="images/1724343076698.png" alt="" width="964" height="230" /></p>
+<blockquote>
+<p><img src="images/1724343223539.png" alt="" /></p>
+<p>FME has transformers with Stream Mode to connect to different message queues and brokers, including the KafkaConnector, AzureIoTConnector, MQTTConnector, and many more.&nbsp;</p>
+</blockquote>
+<h2>Creating a Stream on FME Flow</h2>
+<p>Once you author your workspace to process continuous data and publish it to FME Flow, you create a Stream by filling out a form on FME Flow.&nbsp;</p>
+<p><img src="images/1753396273982.jpg" alt="" width="779" height="571" /></p>
+<p>When creating a stream, you must select a single workspace to run continuously and process your data stream. Once you choose a workspace, FME Flow will also display the workspace's Published Parameters for you to configure.</p>
+<p><img src="images/1753461055149.jpg" alt="" /></p>
+<p>After you set a name for your Stream, the workspace to run, and configure the parameters, you click Create to finalize the settings. Your Stream starts immediately; however, FME Flow is not yet processing your data.</p>
+<p><img src="images/1753462143443.jpg" alt="" /></p>
+<p>You must assign an FME Engine to your Stream so the workspace can run continuously. If you scroll down on the Stream Started page, you'll see that your new Stream does not have any assigned engines or jobs. So, although the Stream is started and running, the workspace is not actively running on an FME Engine to process the continuous data. To add an Engine to the Stream, click Manage under Assigned Engines.&nbsp;</p>
+<p><img src="images/1753462460686.jpg" alt="" />1</p>
+<p>From the Manage Engine Rule window, you need to select an Engine to assign to run your Stream workspace continuously. You will likely remove the engine you assigned to the Stream from another job queue so that FME Flow will warn you about the engine reassignment.&nbsp;</p>
+<p><img src="images/1753462711147.jpg" alt="" width="792" height="352" /></p>
+<p>Once you assign an engine to the running Stream, a job will immediately start, and your workspace will be actively running to process the continuous data stream.</p>
+<p><img src="images/1753465286791.jpg" alt="" width="1012" height="644" /></p>
+<p>If you click on the job, FME Flow will open the Jobs page and display the job log. You can also access the continuously running job from the Jobs page on FME Flow.&nbsp;</p>
+<h2>Engine Permissions</h2>
+<p>FME Flow limits Engine permissions to users with fmesuperuser or fmeadmin roles by default. Your FME Flow administrator can enable the Manage Licensing &amp; Engines permission to individual users and a group in a role. While you may have permission to create a Stream on FME Flow, you may not have permission to assign an engine to the Stream to run your workspace and continuously process the data stream. FME Flow will alert you in the Assigned Engines section if you do not have the required permissions. If you encounter this, you can request that your FME Flow administrator grant you the Manage Licensing &amp; Engines permission or assign an engine to your Stream.&nbsp;</p>
+<p><img src="images/1753465427718.jpg" alt="" width="878" height="288" /></p>
+<h2>Automations vs Streams</h2>
+<p>FME Flow Automations provide an excellent way to process real-time events, but <span style="margin: 0px; padding: 0px;">are not well-suited to processing a continuous, unbounded data stream. Data from a stream typically arrives at a very high velocity. Submitting a new translation to an <a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/engines.htm" target="_blank" rel="noopener">FME Flow Engine</a> </span>each time FME Flow receives a message from a data stream would be too much processing for the FME Flow Core. Instead, a Stream continually runs a workspace to handle the high velocity and unbounded stream it requires, which can be thousands of messages per second. The engine actively runs while the Stream runs, even during low incoming data rates, and is not available for other jobs on FME Flow.&nbsp;</p>
+<p>Automations can generally process data up to one feature per second, and an engine will only run if the Automation triggers and submits a workspace to run. If you need to process data with multiple features per second, you should use Streams instead of Automations. Therefore, there is a trade-off between processing capabilities and engine usage with Streams. While you can process multiple features per second with a Stream, you must dedicate an engine to the Stream, and you cannot use it to run other jobs on FME Flow.&nbsp;</p>
+<p><img src="images/1724343436165.png" alt="" width="992" height="490" /></p>
+<h2>Resources</h2>
+<p>Due to the high complexity of FME Flow Streams, this lesson has no exercise. For more information and tutorials on Streams, see these resources:</p>
+<ul>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407472101005-FME-and-Stream-Processing">FME and Stream Processing</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407392899981-Windowing-Data-Streams-in-FME">Windowing Data Streams in FME</a></li>
+<li><a href="https://support.safe.com/hc/en-us/sections/25407374895373-Real-time-Events-and-Systems">Real-time Events and Systems</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Streams.htm">Streams Documentation</a></li>
+</ul>

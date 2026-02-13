@@ -1,0 +1,178 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand and use the AttributeFilter transformer.</li>
+<li>Understand and use the AttributeRangeFilter transformer.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/filtering-transformers.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\filtering-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/filtering-transformers-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\filtering-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a>&nbsp;(MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+</ul>
+<h2 id="attribute-filter">AttributeFilter</h2>
+<p>The AttributeFilter transformer directs features by values in a chosen attribute. It is not a binary test (Yes/No) but a way to separate many values for a single attribute, for example:</p>
+<ul>
+<li>Is that road an Arterial, Collector, NonCity, Other, Private, Residential, or Secondary?</li>
+</ul>
+<p><img class="image" src="images/1714076205151.png" alt="AttributeFilter example" width="795" height="480" /></p>
+<p>To separate this data, you would have to use seven Tester transformers, so using a single AttributeFilter saves space on the workspace canvas.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Use the Import... button to add attributes from existing datasets quickly.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In almost every scenario using multiple Tester transformers, it's possible to use a different filtering transformer to achieve th</span><span style="font-family: inherit; font-size: 1em;">e same result but using much less space on the canvas.</span></p>
+</blockquote>
+<p>The AttributeFilter also works with numeric values; however, its only "operator" is to find equivalency (=), so you will rarely use it for arithmetical tests. In that scenario, the better solution is the AttributeRangeFilter.</p>
+<h2 id="attribute-range-filter">AttributeRangeFilter</h2>
+<p>The AttributeRangeFilter carries out the same operation as the AttributeFilter, except it can handle a range of numeric values instead of just a simple one-to-one match.</p>
+<p>For example, we might want to separate data based on a range of snowfall values, like so:</p>
+<p><img class="image" src="images/1714076195901.png" alt="AttributeRangerFilter example" width="751" height="425" /></p>
+<p>Notice that the AttributeRangeFilter parameters dialog has a Generate... button, which generates ranges automatically from a set of user-defined extents.</p>
+<h2 id="which-transformer-should-i-use">Which Transformer Should I Use?</h2>
+<div>
+<p>If the Tester, TestFilter, and AttributeFilter all filter features based on an attribute condition, then what&rsquo;s the difference? When would I use each?</p>
+You can also refer to this table:</div>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td width="137" height="20">&nbsp;</td>
+<td colspan="2" align="center" width="173">Single Test</td>
+<td colspan="2" align="center" width="173">Multiple Tests</td>
+<td colspan="2" align="center" width="103">Test Type</td>
+<td align="center" width="84">Operators</td>
+<td align="center" width="84">Attributes</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td align="center">Single<br />Clause</td>
+<td align="center">Multi<br />Clause</td>
+<td align="center">Single<br />Clause</td>
+<td align="center">Multi<br />Clause</td>
+<td align="center">String</td>
+<td align="center">Numeric</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>Tester</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">&ndash;</td>
+<td align="center">&ndash;</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">16</td>
+<td align="center">Multiple</td>
+</tr>
+<tr>
+<td>TestFilter</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">16</td>
+<td align="center">Multiple</td>
+</tr>
+<tr>
+<td>AttributeFilter</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">&ndash;</td>
+<td align="center">&ndash;</td>
+<td align="center">Y</td>
+<td align="center">&ndash;</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td>AttributeRangeFilter</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">&ndash;</td>
+<td align="center">&ndash;</td>
+<td align="center">&ndash;</td>
+<td align="center">Y</td>
+<td align="center">6</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<h2>Exercise</h2>
+<p>Sven continues to work on his workspace. He has a few more filtering tasks to do:</p>
+<ol>
+<li>Filter parks by popularity to create a Popularity attribute</li>
+<li>Filter by Neighborhood and only write out parks in the Downtown neighborhood</li>
+</ol>
+<h2>1) Open Workspace</h2>
+<p>Sven opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/filtering-transformers.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\filtering-transformers.fmw) in FME Workbench (2025.0.1 or later).</p>
+<h2>2) Add AttributeRangerFilter</h2>
+<p>He adds an AttributeRangeFilter between the TestFilter and writer feature type:</p>
+<p><img src="images/1745516482980.png" alt="Added AttributeRangeFilter" /></p>
+<p>He double-clicks it to open its parameters.</p>
+<p>He configures it to use a Source Attribute of VisitorCount:</p>
+<p><img src="images/1745516587733.png" alt="Choosing a source attribute" /></p>
+<p>Then he uses the table to configure the ranges, setting Unpopular parks to have between 0 and 15,000 visitors and Popular parks to have between 15,001 and 100,000:</p>
+<p><img src="images/1745516821699.png" alt="Setting ranges" width="349" height="361" /></p>
+<p>He clicks OK.</p>
+<h2>3) Add AttributeCreators and Run Workspace</h2>
+<p>Now Sven has filtered his features into Popular, Not Popular, and Unfiltered parks. He'd like to set the value of a new Popularity attribute based on this filter.</p>
+<p>He adds an AttributeCreator after the AttributeRangeFilter and ensures it is connected to the Popular port.</p>
+<p>He double-clicks it to configure it.</p>
+<p>He has it create a new attribute called Popularity and sets the value to Popular. He also sets the type to <code>varchar(100)</code> to ensure there are enough characters for this new attribute:</p>
+<p><img src="images/1745525063484.png" alt="Setting Popularity" width="402" height="296" /></p>
+<p>He clicks OK.</p>
+<p>Then he copy-and-pastes the AttributeCreator.</p>
+<p>He connects the first copy to the Not Popular port and changes it so it creates and sets Popularity to Not Popular.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>While there are some scenarios where this kind of filter and then set attribute workflow is required, there's actually a more efficient way to do this operation in FME. We'll cover it next in the <a href="https://academy.safe.com/path/fme-form-basic/use-conditional-values" target="_blank" rel="noopener">Use Conditional Values course</a>.</p>
+</blockquote>
+<p>He runs his workspace and confirms his data is being filtered properly and the value of Popularity is being set:</p>
+<p><img src="images/1745524020511.png" alt="Filtering by popularity" width="367" height="276" /></p>
+<h2>4) Add AttributeFilter</h2>
+<p>Next, Sven needs to divide his data by Neighborhood. For now, he'd like to only write data in the Downtown neighborhood. However, he suspects he might need to work with data from other neighborhoods later on, so he doesn't want to simply use a Tester to grab only the Downtown parks. Instead, he'll use an AttributeFilter to split the data into many streams based on the value of the Neighborhood attribute.</p>
+<p>He adds an AttributeFilter before the writer feature type and ensures both AttributeCreators are connected to it:</p>
+<p><img src="images/1745524117412.png" alt="Added AttributeFilter" width="383" height="310" /></p>
+<p>He opens the AttributeFilter to set the parameters.&nbsp;</p>
+<p>He has to enter the possible values have in advance to generate the ports. However, he doesn't have to type each on in manually; instead, he can use the Import button. He clicks it and selects From Feature Cache:</p>
+<p><img src="images/1745524291831.png" alt="Import &gt; From Feature Cache" /></p>
+<p>He chooses to check values in both feature caches and clicks Next:</p>
+<p><img src="images/1745524389647.png" alt="Selecting feature caches" /></p>
+<p>He chooses to pull values from the Neighborhood attribute and clicks Next:</p>
+<p><img src="images/1745524418340.png" alt="Choosing attribute to import from" /></p>
+<p>Finally, he clicks Select All to use all the values and clicks Import:</p>
+<p><img src="images/1745524476469.png" alt="Selecting values" /></p>
+<p>These values are added to the Possible Attribute Values list.</p>
+<p>Sven clicks OK and the transformer ports are updated:</p>
+<p><img src="images/1745524602017.png" alt="Ports added" /></p>
+<p>He connects the Downtown port to the writer feature type:</p>
+<p><img src="images/1745524670374.png" alt="Connected to writer feature type" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Similar to step 3, there might be a more efficient way to do this operation, depending on Sven's exact desired output. If he wanted to split the data up by Neighborhood when writing out, he could use a <a href="https://academy.safe.com/path/fme-form-advanced/read-from-and-write-to-multiple-locations" target="_blank" rel="noopener">fanout</a>. But for now, this procedure works well enough.</p>
+</blockquote>
+<h2>5) Run Workspace and Inspect Output</h2>
+<p>Sven runs his workspace and uses View Written Data to inspect the output.</p>
+<p>He notes that the Popularity attribute exists and has values and the data only contains parks in the Downtown neighborhood:</p>
+<p><img src="images/1745525296497.png" alt="Written parks data" width="1308" height="272" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Take note of the number of Downtown features; you'll need it for the quiz.</p>
+</blockquote>

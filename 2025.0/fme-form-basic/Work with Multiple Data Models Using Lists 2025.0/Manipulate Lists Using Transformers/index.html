@@ -1,0 +1,184 @@
+<p>&nbsp;</p>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Manipulate lists and extract information from them using common list transformers.</li>
+<li>Join features and build a list from shared attributes using the ListBuilder.</li>
+<li>Create features from key-value pairs stored in lists.</li>
+<li>Conduct advanced list manipulation using the PythonCaller.</li>
+<li>Use the List Element Selection dialog to create new attributes using list values.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/manipulate-lists-using-transformers.fmw" target="_self">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\manipulate-lists-using-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/manipulate-lists-using-transformers-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\manipulate-lists-using-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListTransformerExamples.fmwt" target="_blank" rel="noopener">ListTransformerExamples.fmwt</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\ListTransformerExamples.fmwt</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListBuilder.fmwt" target="_blank" rel="noreferrer noopener">ListBuilder.fmwt</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\ListBuilder.fmwt</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/PythonLists.fmwt" target="_blank" rel="noreferrer noopener">PythonLists.fmwt</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\PythonLists.fmwt</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/street-trees.csv" target="_blank" rel="noopener">street-trees.csv</a>
+<ul>
+<li>C:\FMEData\Resources\FormBasic\street-trees.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/parks-polygon-representation.geojson" target="_self">parks-polygon-representation.geojson</a> (Esri GDB)
+<ul>
+<li>C:\FMEData\Resources\FormBasic\parks-polygon-representation.geojson</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>Now that Jennifer has a list of every tree in each park, she'd like to do the following:</p>
+<ol>
+<li>Filter the data to examine parks with trees.</li>
+<li>Find the most common genus among all park trees.</li>
+<li>Store the name of that genus in a new attribute.</li>
+</ol>
+<h2>1) Open Workspace and Run It</h2>
+<p>Jennifer opens the <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/manipulate-lists-using-transformers.fmw" target="_self">starting workspace</a> (<span style="font-family: inherit; font-size: 1em;">C:\FMEData\Workspaces\AdvancedDataTransformation\manipulate-lists-using-transformers.fmw) in FME Workbench (2025.0.1 or later).</span></p>
+<p>She's added a TestFilter to filter park polygons that have trees.</p>
+<p><span style="font-family: inherit; font-size: 1em;">She runs the workspace with feature caching enabled to store caches.</span></p>
+<h2><span style="font-family: inherit; font-size: 1em;">2) Create a Single List Using an Aggregator</span></h2>
+<p>To get the most common genus, Jennifer needs to combine the separate lists on each park feature into one big list. She can do that using an Aggregator transformer.</p>
+<p>She adds one connected to the TestFilter's Trees output port.</p>
+<p>She checks Generate List and adds only <code>trees{}.GENUS_NAME</code> to the list:</p>
+<p><img src="images/1746643404099.png" alt="Aggregator configuration" /></p>
+<p>She clicks OK, runs the workspace, and inspects the Aggregator's single output feature. The Feature Information window shows a new <code>_list</code> attribute with 125 elements. Each element stores the <code>_trees</code> list for each park, recording the genus of each tree:</p>
+<p><img src="images/1746643549774.png" alt="New list attribute" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You could use a ListBuilder here instead, adding just <code>_trees{}.GENUS_NAME</code> to the list. The result would be the same as using the Aggregator.</p>
+</blockquote>
+<h2>3) Count Genus Names Using a ListHistogrammer</h2>
+<p>Jennifer adds a ListHistogrammer connected to the Aggregator's Aggregate port to count the times each genus appears in this new list.</p>
+<p>She configures it to use <code>_list{}.trees{}.GENUS_NAME</code> as the Source List Attribute:</p>
+<p><img src="images/1746643602151.png" alt="ListHistogrammer parameters" /></p>
+<p>This configuration means the transformer will count the values of all <code>GENUS_NAME</code> attributes in the list and store the result in a new list attribute called <code>_histogram</code>.</p>
+<p>She clicks OK, runs the workspace, and inspects the ListHistogrammer's Output cache. The Feature Information Window shows the single feature now has a <code>_histogram</code> list attribute.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Make sure you collapse the large <code>_list</code> attribute still present on the feature; <code>_histogram</code> will be below it in the Feature Information Window.</p>
+</blockquote>
+<p>Expanding that attribute shows the histogram's results. The most common value is stored as element 0 in the list, with the count attribute reflecting the number of times it appears in the list and the attribute value showing the genus name.</p>
+<p><img src="images/1746643788481.png" alt="Histogram of genuses" width="442" height="277" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Take note of the top <code>GENUS_NAME</code>; you will need it for the quiz.</p>
+</blockquote>
+<h2>4) Store the Result Using an AttributeCreator</h2>
+<p>Now that Jennifer has found the most common genus, she'd like to store its name in an attribute.&nbsp;</p>
+<p>She adds an AttributeCreator attached to the ListHistogrammer's Output port to do so.</p>
+<p>She adds a new Output Attribute called <code>TopGenus</code>. She clicks the ellipsis button to open the Text Editor:</p>
+<p><img src="images/1746643863523.png" alt="Setting value for TopGenus" /></p>
+<p>She double-clicks&nbsp;<code>_histogram{}.value</code> on the left under FME Feature Attributes to insert it:</p>
+<p><img src="images/1746643948317.png" alt="Inserting _histogram{}.value" /></p>
+<p>Here, she observes a behavior unique to list attributes. Instead of inserting &nbsp;<code>_histogram{}.value</code> in the Text Editor, the List Element Selection dialog appears:</p>
+<p><img src="images/1746643997850.png" alt="Selecting a list index" /></p>
+<p>She leaves the value of 0 because she wants to extract the value of the first element in the list, which is the most common genus.</p>
+<p>She clicks OK.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>To extract a single value from a list attribute, you must specify the index to use. Referring to all the values in a list in the Text or Arithmetic Editor or a transformer parameter is impossible. You need to use a transformer that accepts list values as input to do that.</p>
+<p>If you don't want to hard-code the element number, use the Text Editor to specify an attribute instead of a number.</p>
+<p>For example, you can use that method to find the least common genus. Use a ListElementCounter to count all the elements in <code>_histogram</code>, then supply the <code>_element_count</code> result as the index to retrieve&nbsp;the last value:</p>
+<p><code>@Value(_histogram{@sub(@Value(_element_count),1)}.value)</code></p>
+<p>Note that you must subtract 1 from <code>_element_count</code> to get the last entry in the list since <code>_element_count</code> starts at 1 and list indexes start at 0.</p>
+</blockquote>
+<p>Jennifer runs the workspace and inspects the AttributeCreator's Output cache. The new attribute stores the name of the genus:</p>
+<p><img src="images/1746644101190.png" alt="Results" /></p>
+<h2>Challenge</h2>
+<p>Find the most and least common genus for trees within parks.</p>
+<p>How do you think the process outlined here will handle ties?</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Is there an easier way to get this answer from the starting data?</p>
+<p>Yes, in this case, you could actually get the answer without using lists!</p>
+<p>Give it a try!</p>
+<p>If you get stuck, here are the steps for a simple way to do it:</p>
+<ol>
+<li>Use a Clipper to filter the trees to only trees within parks.&nbsp;</li>
+<li>Use a StatisticsCalculator grouped by <code>GENUS_NAME</code> to get the Total Count for <code>GENUS_NAME</code> (or any attribute).</li>
+<li>Use a Sorter to sort <code>GENUS_NAME.total_count</code> Numeric Descending.</li>
+<li>The first feature reports the most common genus.</li>
+</ol>
+<p>What's the lesson? Lists are powerful, but they are not always necessary! If you can design it, a non-list-based approach is often simpler.&nbsp;</p>
+</blockquote>
+<h2 id="next-steps">Next Steps</h2>
+<p>Jennifer could further process and analyze her lists using other list transformers. Here are some examples:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Operation</strong></td>
+<td><strong>Transformer</strong></td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Count the number of trees in each park</td>
+<td colspan="1" rowspan="1">ListElementCounter</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Find the maximum tree diameter</td>
+<td colspan="1" rowspan="1">ListSorter &amp; ListIndexer</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Find the count of each species</td>
+<td colspan="1" rowspan="1">ListHistogrammer</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Create a list of species</td>
+<td colspan="1" rowspan="1">ListConcatentaor</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Find which parks have an Oak tree</td>
+<td colspan="1" rowspan="1">ListSearcher</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Create a table of park trees with the park name</td>
+<td colspan="1" rowspan="1">ListExploder</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Find the average tree height in a park</td>
+<td colspan="1" rowspan="1">ListSummer</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Find the minimum/maximum of tree diameters</td>
+<td colspan="1" rowspan="1">ListRangeExtractor</td>
+</tr>
+</tbody>
+</table>
+<p>Refer to the FME documentation and the following example workspaces for more information on these transformers:</p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListTransformerExamples.fmwt" target="_blank" rel="noopener">ListTransformerExamples.fmwt</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\ListTransformerExamples.fmwt</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListBuilder.fmwt" target="_blank" rel="noreferrer noopener">ListBuilder.fmwt</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\ListBuilder.fmwt</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/PythonLists.fmwt" target="_blank" rel="noreferrer noopener">PythonLists.fmwt</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\PythonLists.fmwt</li>
+</ul>
+</li>
+</ul>

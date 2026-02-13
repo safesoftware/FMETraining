@@ -1,0 +1,211 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand when to use an Automations Writer.</li>
+<li>Add an Automations Writer to a workspace.&nbsp;</li>
+<li>Run a workspace with an Automations Writer in an Automation.</li>
+<li>Send an email with an Automations Writer output.&nbsp;</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/use-the-automations-writer.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\use-the-automations-writer.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\automate-workflows-with-fme-flow--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Building Footprints Esri Shapefiles</a>&nbsp;| C:\FMEData\Data\Engineering\BuildingFootprints</li>
+</ul>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow.&nbsp;</p>
+<ul>
+<ul><!-- BEGIN: Reusable Custom Expandable Section --></ul>
+</ul>
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>1) Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener">starting project</a> and the<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener"> encryption key</a>.</div>
+<div>2) Upload the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener">automate_workflows_with_fme_flow.jceks</a> encryption key to your FME Flow. This must be done by an fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload automate-workflows-with-fme-flow--starting-project.fsproject as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1754602691120.jpg" alt="" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1754602971975.jpg" alt="" /></div>
+<div>6) The next step is to select connections and tokens to import. By default, they are not selected to be imported. <strong>Select the FME Training PostGIS Database Connection to import.</strong> If it isn't imported, the workflows will not run successfully. Click Continue.&nbsp;</div>
+<div><img src="images/1754602868434.jpg" alt="" /></div>
+<div>7) The Resolve Owners step only allows you to reassign the project contents to a different user if the admin user doesn't exist on your FME Flow. Click Continue and then click Import Project from the Additional Options step. The project will import and display its import status from the same page.</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If it still fails, contact us at train@safe.com.&nbsp;</div>
+</details>
+<h2><!-- The script tag should live in the head of your page if at all possible --></h2>
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<h2><!-- Put this wherever you would like your player to appear --></h2>
+<h2 id="workspace-action-output-ports">Output Attributes</h2>
+<p>Each FME Flow Automations trigger and action has two output ports: success and failure. When FME Flow sends messages through these ports to downstream actions, it includes key-value pairs that extract information from the JSON message. Each trigger and action type has pre-defined Event Attributes and Custom Attributes that the Automation author may create. You may reference these Output Attributes in other actions downstream in the Automation.&nbsp;</p>
+<p><img src="images/1753893137525.jpg" alt="" /></p>
+<p>For example, you may reference the file.path attribute from the Resource or Network Directory trigger in a source file parameter in a downstream Run a Workspace action.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on Output Attributes and Automation Parameters, please review the <a href="https://academy.safe.com/path/automate-workflows-with-fme-flow/respond-to-real-time-events">Respond to Real-time Events</a> course.&nbsp;</p>
+</blockquote>
+<h2>FME Flow Automations Writer</h2>
+<p>While Output Attributes allow you to pass some basic information about each trigger or action downstream, the Run a Workspace action only sends job success or failure information. The Run a Workspace Event Attributes do not include any information about the data the workspace processes. Custom Attributes also don't contain options to link to that information. However, the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/automations/automations.htm">FME Flow Automations Writer</a> helps overcome this problem and extracts information from within a workspace into an Automation.&nbsp;</p>
+<p>Like any other writer, you add the FME Flow Automations Writer to your workspace.&nbsp;</p>
+<p><img src="images/1754507887264.jpg" alt="" width="465" height="249" /> &nbsp; &nbsp; <img src="images/1754508322022.jpg" alt="" /></p>
+<p>When you add the workspace to a Run a Workspace action in an Automation, an additional output port is created for the Automation Writer.&nbsp;</p>
+<p><img src="images/1754508338937.jpg" alt="" /></p>
+<p>FME Flow outputs a JSON object from the Automations Writer port for each feature that routes to the writer within the workspace. FME Flow creates one output port for each Automations Writer feature type in the workspace.</p>
+<p>Each feature contains values for the attributes added to the action's Output Attributes.&nbsp;</p>
+<p><img src="images/1754508567620.jpg" alt="" /></p>
+<p>To use these attribute values in the Automation, you link to the Automation Writer attributes in downstream actions. By doing so, you can control the flow of your Automation based on the data you are processing within your workspaces.</p>
+<p>The Automations Writer offers flexibility in what information you pass out of a workspace and into the Automation. You can create as many output ports as required to allow advanced filtering or pass multiple messages to numerous downstream actions.&nbsp;</p>
+<p><img src="images/1754508941273.jpg" alt="" /></p>
+<p>For example, the WorkOrders port in this workspace outputs features for work orders in school zones that have not yet been processed. If twenty features are passed through the port, the Contact School workspace will run twenty times to process each work order.&nbsp;</p>
+<p><img src="images/1754509137333.png" alt="" /></p>
+<p>In this example, the workspace processes work orders and filters them based on their type. For each run of the workspace action, multiple features may be sent through each port, which will likely run different workspaces downstream according to their type.&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br />To learn more about the Automations Writer, check out this tutorial on <a href="https://support.safe.com/hc/en-us/articles/25407765367053-Routing-Data-Between-Workspaces-in-Automations">Routing Data Between Workspaces in Automations</a>.&nbsp;</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="introduction">Exercise</h2>
+<p><img src="images/1754345601771.png" alt="" width="266" height="282" /></p>
+<p>Jennifer previously created an Incoming Building Footprints Automation that processes shapefiles of building footprint updates, writes the updates to a geodatabase, and sends an email with the workspace's translation status. She will build off that scenario and send an email with summary information about the updates. To get the summary information about the updates from the workspace to the Email external action in her Automation, Jennifer must use an FME Flow Automations Writer.</p>
+<p>Follow along with Jennifer's steps as she adds an Automations Writer to her workspace and configures her Automation to send out summary information on the building updates.&nbsp;</p>
+<h3>1) Open Starting Workspace</h3>
+<p>Jennifer opens <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/use-the-automations-writer.fmw">her workspace</a> ( C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\use-the-automations-writer.fmw) in FME Workbench. It simply reads a shapefile of updates and writes the updates to a SpatiaLite database.&nbsp;</p>
+<p><img src="images/1754346577387.jpg" alt="" width="997" height="380" /></p>
+<h3>2) Create Summary Information</h3>
+<p>Jennifer adds an Aggregator transformer to the shapefile reader.</p>
+<p><img src="images/1754346787666.jpg" alt="" /></p>
+<p>Jennifer double-clicks the Aggregator to open its parameters. She only makes two changes:</p>
+<ul>
+<li>Accumulation Mode:&nbsp;<strong>Use Attributes from One Feature</strong></li>
+<li>Number of Aggregated Features:&nbsp;<strong>NumberOfUpdates</strong></li>
+</ul>
+<p><img src="images/1736973259855.jpg" alt="" width="573" height="582" /></p>
+<p>She clicks OK to close the Aggregator Parameters.&nbsp;</p>
+<h3>3) Add an Automations Writer</h3>
+<p>Jennifer clicks Writer on the top toolbar to open the Add Writer dialogue. For Format, she selects FME Flow Automations. She ensures the Feature Type Definition is set to Automatic... and clicks OK.&nbsp;</p>
+<p><img src="images/1754347531063.jpg" alt="" width="568" height="303" /></p>
+<p>FME prompts Jennifer to configure the Feature Type. She sets the Feature Type Name to&nbsp;<strong>JobSummary</strong> and clicks OK.&nbsp;</p>
+<p><img src="images/1754347644749.jpg" alt="" width="622" height="295" /></p>
+<p>FME adds the Writer Feature Type to the canvas, and Jennifer connects it to the Aggregator output port.&nbsp;</p>
+<p><img src="images/1754347744781.jpg" alt="" /></p>
+<h3>4) Clean-up Attributes</h3>
+<p>After she connects the writer feature type to the Aggregator, Jennifer notices that all the attributes from the shapefile are included in the writer. She doesn't need all the information in the Automation, so she will remove some attributes. She double-clicks the JobSummary writer feature type and goes to the User Attributes tab. She changes the Attribute Definition to Manual and manually removes all the attributes except for the NumberOfUpdates.&nbsp;</p>
+<p><img src="images/1754348225993.jpg" alt="" width="644" height="404" /></p>
+<p>She clicks OK, then checks the JobSummary attribute drop-down. She only has the&nbsp;<strong>NumberOfUpdates</strong> and&nbsp;<strong>fme_feature_type</strong>.&nbsp;</p>
+<p><img src="images/1754348331769.jpg" alt="" /></p>
+<h3>5) Publish to FME Flow</h3>
+<p>Jennifer clicks Publish in the FME Flow Connection toolbar.&nbsp;</p>
+<p><img src="images/1754402806412.jpg" alt="" /></p>
+<p>Jennifer selects the Training repository. If it doesn't exist, she clicks New... and adds a new repository named Training.&nbsp;</p>
+<p><img src="images/1754403076651.jpg" alt="" width="806" height="559" /></p>
+<p>She doesn't need to upload files since the workspace's source data will be sent from the Automation's trigger. She clicks Next.&nbsp;</p>
+<p><img src="images/1754403191011.jpg" alt="" width="524" height="535" /></p>
+<p>She registers the workspace with the Job Submitter service and clicks Publish.</p>
+<p><img src="images/1754403283207.jpg" alt="" width="546" height="456" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on publishing workspaces to FME Flow and FME Flow's services, see the <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/deploy-workspaces-on-fme-flow-2025-0">Deploy Workspaces on FME Flow</a> course.&nbsp;</p>
+</blockquote>
+<h3>6) Edit Automation</h3>
+<p>Jennifer navigates to FME Flow and opens her Automation (Automations-Writer-Template).&nbsp;</p>
+<p><img src="images/1754403977317.jpg" alt="" width="1100" height="453" /></p>
+<p>Jennifer has already built a Resource or Network Directory trigger that monitors the BuildingUpdates folder on FME Flow and added a Filter action to filter for shapefiles (.shp). The Action and External Action are ready for Jennifer to configure.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you still have your Incoming Building Footprints Automation from Respond to Real-time Events, you may continue editing it. Otherwise, you can import the Automations-Writer-Template Automation with the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener">automate-workflows-with-fme-flow--starting-project.fsproject</a>.&nbsp;&nbsp;</p>
+</blockquote>
+<h3>7) Add Run a Workspace Action</h3>
+<p>Jennifer clicks on the Action icon to open its details. She sets the action to run the use-the-automations-writer.fmw workspace she published to the Training repository.</p>
+<p><img src="images/1754404408079.jpg" alt="" /></p>
+<p>For the Source Esri Shapefile(s) parameter, Jennifer selects the File Path attribute in the Directory expandable section using the drop-down menu.&nbsp;</p>
+<p><img src="images/1754404572967.jpg" alt="" /></p>
+<p>Jennifer leaves the other parameters as their default values and clicks Apply to close the pane.&nbsp;</p>
+<p><img src="images/1754404656659.jpg" alt="" /></p>
+<p>The Run a Workspace action updates and adds a port for the JobSummary Automations Writer in the workspace.&nbsp;</p>
+<p><img src="images/1754404740350.jpg" alt="" /></p>
+<h3 id="8-add-external-action">9) Add an Email External Action</h3>
+<p>Jennifer connects the external action to the JobSummary port and opens the external action details. She selects the Email (send) action.</p>
+<p><img src="images/1754405049036.jpg" alt="" /></p>
+<p>Jennifer will configure the action to use a Gmail account, so she selects Gmail using the Load Template option and pre-populates some of the SMTP parameters.</p>
+<p><img src="images/1754063938269.jpg" alt="" /></p>
+<p>Jennifer enters these values for the SMTP parameters:</p>
+<ul>
+<li>SMTP Account:&nbsp;<strong>training.fmeflow@gmail.com</strong></li>
+<li>SMTP Password:&nbsp;<strong>wjdmzjdkujkzmplw&nbsp;</strong></li>
+<li>Connection Security:&nbsp;<strong>SSL/TLS</strong></li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>This Gmail account password changes regularly. Please only use it for FME training purposes, or configure your SMTP account for the Email action.&nbsp;</p>
+</blockquote>
+<p>Jennifer enters her email for the Email To parameter and uses training.fmeflow@gmail.com for the Email From parameter.&nbsp;</p>
+<p>For the Email Subject, Jennifer types Building Updates Notification. &nbsp;</p>
+<p>For the Email Body, Jennifer uses the drop-down arrow options to select the Text Editor.&nbsp;</p>
+<p><img src="images/1754405420498.jpg" alt="" /></p>
+<p>In the Text Editor, Jennifer enters the following message:&nbsp;</p>
+<div>
+<pre>The Building Footprints database has been updated! {route.JobSummary.NumberOfUpdates} records were updated.</pre>
+</div>
+<p>&nbsp;</p>
+<p>To add the {route.JobSummary.NumberOfUpdates} parameter, Jennifer expands the Workspace and JobSummary tabs and selects NumberOfUpdates.&nbsp;</p>
+<p><img src="images/1754405630048.jpg" alt="" /></p>
+<p>Jennifer clicks Save to close the Text Editor.&nbsp;</p>
+<p>Once Jennifer enters all the required parameters, she clicks Validate to ensure her SMTP email settings are valid.</p>
+<p><img src="images/1754406493065.jpg" alt="" /></p>
+<p>Once Jennifer's parameters are valid, she clicks Apply to close the Email action details.&nbsp;</p>
+<p><img src="images/1754406583164.jpg" alt="" /></p>
+<h3>9) Save and Start Automation</h3>
+<p>Jennifer saves her Automation, then clicks Start to monitor the folder for file changes.</p>
+<p><img src="images/1754406746931.jpg" alt="" /></p>
+<h3 id="9-test-automation">10) Upload Shapefile to Trigger Automation</h3>
+<p>With her Automation running, Jennifer navigates to Resources &gt; Data &gt; BuildingUpdates and uploads all four files of a <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip">shapefile of updates</a> (C:\FMEData\Data\Engineering\BuildingFootprints).&nbsp;</p>
+<p><img src="images/1754408064283.jpg" alt="" /></p>
+<p><img src="images/1754597224684.jpg" alt="" /></p>
+<p><img src="images/1754408512345.jpg" alt="" /></p>
+<p>After a minute, Jennifer returns to her Automation and refreshes it to see the event counts update to reflect the shapefile being processed.&nbsp;</p>
+<p><img src="images/1754408370247.jpg" alt="" /></p>
+<p>She also received the email containing information about the number of updates added to the database from the shapefile.&nbsp;</p>
+<p><img src="images/1754408401801.jpg" alt="" /></p>
+<p>Jennifer has successfully built an Automation to process shapefiles for building updates and update a database. She used an Automations Writer to pass summary information about the number of updates from the workspace to send an email.&nbsp;</p>

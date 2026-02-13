@@ -1,0 +1,172 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Manually create an attribute.</li>
+<li>Set a fixed attribute value.</li>
+<li>Use the Text Editor to construct attributes.</li>
+<li>Use the Arithmetic Editor to construct attributes.</li>
+<li>Understand FME feature functions.</li>
+<li>Know when or when not to replace transformers with feature functions.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/creating-setting-and-constructing-attributes.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\creating-setting-and-constructing-attributes.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/creating-setting-and-constructing-attributes-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\creating-setting-and-constructing-attributes-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb</a><br />
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>Creating attributes and setting a value are the primary attribute functions used within FME. When an attribute is created, its value can be set in several ways.</p>
+<p>The transformers capable of creating an attribute - and setting its value - are:</p>
+<ul>
+<li>AttributeCreator</li>
+<li>AttributeManager</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The AttributeCopier and AttributeRenamer transformers can only set an attribute value where the attribute doesn't&nbsp;exist.</span></p>
+</blockquote>
+<h2 id="the-attribute-manager">The AttributeManager</h2>
+<p>We'll concentrate on the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/attributemanager.htm" target="_blank" rel="noopener">AttributeManager</a> for most operations, so here is a quick overview of that transformer.</p>
+<p>The AttributeManager parameters dialog has several fields: Input Attribute, Output Attribute, Attribute Value, and Action. Uniquely among attribute-handling transformers, it is automatically filled in with the details of the attributes connected to it:</p>
+<p><img src="images/1698964219514.png" alt="AttributeManager dialog" /></p>
+<p>The user can set the action field, but the transformer will also set it automatically if you change the other fields.</p>
+<h2 id="manually-create-an-attribute">Manually Create an Attribute</h2>
+<p>If you enter a new attribute name into the Output Attribute field, FME will create it in the output.</p>
+<p><img src="images/1698964681412.png" alt="Adding a new attribute called City" /></p>
+<p>The text &lt;Add new Attribute&gt; highlights where you can create a new attribute. By default, when the Attribute Value field is empty, a new attribute has no value.</p>
+<h2 id="set-a-fixed-attribute-value">Set a Fixed Attribute Value</h2>
+<p>A fixed (or&nbsp;<em>constant</em>) value for an attribute can be created by simply entering a value into the Attribute Value field:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.025.AttributeManagerSetValues.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1698964762196.png" alt="Set a fixed attribute value in the AttributeManager" width="607" height="397" /></a></p>
+<p>Here, for example, a new attribute called City is given a fixed value of Vancouver. The transformer will set that value for every feature entering the transformer.</p>
+<p><span style="font-family: inherit; font-size: 1em;">The user has also assigned a fixed value to the existing attribute NeighborhoodName. They gave it the value "Kitsilano." Notice how entering a value into that field automatically changes the Action field from "</span><em style="font-family: inherit; font-size: 1em;">Do Nothing</em><span style="font-family: inherit; font-size: 1em;">" to "Set Value."</span></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The AttributeManager, AttributeCreator, and some other attribute transformers that can set values will overwrite existing values. If you are creating attributes and setting values, they will also silently overwrite those attributes. For example, say your data already has an existing attribute called UpdatedDate, and every feature has a value of 1698254789. Then, you create a new attribute called UpdatedDate using an AttributeCreator and set the value to the current date time, e.g., 11-02-2023. FME will overwrite the old attribute with this new value. If you don't see the values you expect for an attribute, please ensure your transformers are correctly configured.</p>
+</blockquote>
+<h2 id="introduction">Constructing Attributes</h2>
+<p>Besides constant attribute values, FME also allows you to construct values using string manipulation and arithmetic calculations. This procedure is achieved by clicking on the arrow in the Attribute Value field and selecting either Open Text Editor or Open Arithmetic Editor:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.026.AttributeManagerSetMenu.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1714066436380.png" alt="Clicking on the arrow in the Attribute Value field" width="643" height="503" /></a></p>
+<p>This method is advantageous because the attribute no longer needs to be a fixed value; it can be constructed from a mix of existing attributes, parameters, and constants.</p>
+<h2 id="text-editor">Text Editor</h2>
+<p>The Text Editor - as you would expect - allows you to construct a text value. It includes all the usual string-handling functionality you need, such as concatenation, trimming, padding, and case-changing.</p>
+<p>The Text Editor looks like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.027.AttributeManagerTextEdit.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1713479889909.png" alt="FME Feature Attributes in the Text Editor" width="641" height="512" /></a></p>
+<p>Here, the user constructs an address string by concatenating various existing attributes with some fixed characters (the commas).</p>
+<p>Notice the menu on the left-hand side. Existing attributes are listed here, and you can add them to the string by double-clicking them. Also, notice the other menu options. Maybe the most important for text are String Functions:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.028.AttributeManagerTextEditStrings.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1698967054041.png" alt="A partial list of string functions" width="179" height="418" /></a></p>
+<p>These functions can be used to manipulate strings. For example, here, the user is making sure the attributes being used are trimmed when used:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.029.AttributeManagerTextTrimFunc.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/Img4.029.AttributeManagerTextTrimFunc.png" alt="An example of string functions trimming attribute values" /></a></p>
+<p>This would turn</p>
+<p><strong>PSTLCITY</strong>: <code>Vancouver</code></p>
+<p><strong>PSTLPROV</strong>:&nbsp;<code>BC &nbsp;</code></p>
+<p><strong>POSTALCODE</strong>: <code>V5V 0A1 &nbsp;&nbsp;</code></p>
+<p>into</p>
+<p><strong>ADDRESS</strong>:&nbsp;<code>Vancouver, BC, V5V 0A1</code></p>
+<p>After processing, FME trimmed the leading and trailing whitespace and concatenated the separate attributes with commas.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Notice the Date/Time functions in the Text Editor, which can be used to manipulate dates, times, and datetime strings, including TimeZone components.</span></p>
+</blockquote>
+<h2 id="arithmetic-editor">Arithmetic Editor</h2>
+<p>The Arithmetic Editor is much the same as the Text Editor, except that FME evaluates whatever is entered into the dialog as an arithmetic expression and returns a numeric result:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.030.AttributeManagerMathEdit.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1713479906817.png" alt="An example of an arithmetic expression in the Arithmetic Editor" width="462" height="334" /></a></p>
+<p>Here, the user calculates the monthly number of visitors to a park by dividing the annual number of visitors by 12 (twelve). As with the Text Editor, existing attributes and arithmetic functions are obtained from the menu on the left-hand side.</p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The contents of the Arithmetic Editor </span><strong style="font-family: inherit; font-size: 1em;">must</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;form an arithmetic expression that can be evaluated mathematically.</span></p>
+</blockquote>
+<h2 id="fme-feature-functions">FME Feature Functions</h2>
+<p>One other item in the menu of both Text and Arithmetic Editors is the FME Feature Functions:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.031.AttributeManagerFMEFunctions.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/Img4.031.AttributeManagerFMEFunctions.png" alt="A list of FME Feature Functions" /></a></p>
+<p>These are functions that use the very heart of FME's functionality. They are the building blocks that transformers are built upon, essential functionality that can return values to the editor.</p>
+<p>For example, the <code>@Area()</code> function returns the area of the current feature (assuming it is a polygon), while <code>@CoordSys()</code> returns the coordinate system. These functions are equivalent to using the AreaCalculator and CoordinateSystemExtractor transformers.</p>
+<p>Some functions return strings; others return numeric values. Therefore, the available functions vary depending on whether you are using the Text or Arithmetic Editor is being used. In the screenshot above, the Text Editor functions are on the left, and the Arithmetic Editor functions on the right. The Text Editor can use either text or numeric values; the Arithmetic Editor can only ever accept numeric values.</p>
+<p>FME Feature Functions are helpful because they allow you to build processing directly into the AttributeManager instead of using a separate transformer.</p>
+<h2 id="replacing-other-transformers">Replacing Other Transformers</h2>
+<p>Integrated Text and Arithmetic Editors provide an excellent benefit for workspace creation. They allow attribute-creating functions to be carried out directly in a single transformer.</p>
+<p>For example, the AttributeManager Text Editor can be used as a direct replacement for the StringConcatenator and ExpressionEvaluator transformers.</p>
+<p>The AttributeManager could also replace the StringPadder and AttributeTrimmer transformers, albeit with less user-friendliness. If FME Feature Functions are used inside the editor, this transformer could also technically replace transformers such as the AreaCalculator, LengthCalculator, DateTimeStamper, and many more.</p>
+<p>This feature is usually a good thing. Workspaces will be more compact and well-defined when as many peripheral operations as possible are directly integrated into a single transformer. However, because an AttributeManager can carry out many operations, it is also critical to use best practices and ensure it has the proper annotation.</p>
+<p>If an AttributeManager is not annotated correctly, it isn't possible to determine what action it carries out from looking at the Workbench canvas!</p>
+<h2>Exercise</h2>
+<p>Jennifer needs to to create and construct some new attributes to match the output schema:</p>
+<ul>
+<li>Move the province attribute below the ownernm2 attribute</li>
+<li>Create an attribute called provider and set it to Safe Software</li>
+<li>Create an attribute called updateddate and set it to the current datetime</li>
+<li>Create a new attribute called owners that concatenates ownernm1 and ownernm2, then remove the original attributes</li>
+</ul>
+<h2>1) Open Workspace</h2>
+<p>Jennifer opens the&nbsp;<a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/creating-setting-and-constructing-attributes.fmw" target="_blank" rel="noopener">starting workspace</a> (<span style="font-family: inherit; font-size: 1em;">C:\FMEData\Workspaces\TransformAttributes\creating-setting-and-constructing-attributes.fmw) </span>in FME Workbench (2025.0.1 or later).</p>
+<p>Jennifer chose to use an AttributeManager for both tasks in this bookmark:</p>
+<p><img src="images/1744840162374.png" alt="AttributeManager in the workspace" /></p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p>She could have used an AttributeCreator here, and that would be completely valid. However, because she'd like to remove some of the attributes used to construct a new attribute, she can accomplish that in a single AttributeManager, rather than an AttributeCreator and then another AttributeRemover.</p>
+</blockquote>
+<h2>2) Change Attribute Order</h2>
+<p>She opens the AttributeManager's parameters.</p>
+<p>First, she wants to move the newly-renamed province attribute down in order, so she clicks its row to select it and then clicks the Move Down button:</p>
+<p><img src="images/1744840772280.png" alt="Move down button" /></p>
+<p>She moves it so it is below ownernm2:</p>
+<p><img src="images/1744840874545.png" alt="New position for province" /></p>
+<h2>3) Set Attribute to a Fixed Value</h2>
+<p>Next, she'd like to create a new attribute, provider, and set it to Safe Software.&nbsp;</p>
+<p>She clicks in the table cell in the Output Attribute column that says &lt;Add new attribute&gt;. Then she types in the new attribute name: provider:</p>
+<p><img src="images/1744841045360.png" alt="Creating a new attribute" /></p>
+<p>Then, she sets the value equal to Safe Software by tying it in the Value column for the provider row:</p>
+<p><img src="images/1744841120280.png" alt="Entering a value" /></p>
+<p>This will set the provider attribute value to Safe Software for every feature that enters this transformer.</p>
+<h2>4) Set Attribute to a Variable Value</h2>
+<p>While setting attributes to a single, fixed value is sometimes required, more often Jennifer finds herself setting an attribute value that will vary by feature.</p>
+<p>She wants to do this for a new attribute called updateddate. She adds this new attribute by clicking on &lt;Add new attribute&gt; again and typing:</p>
+<p><img src="images/1744841542175.png" alt="Adding another attribute" /></p>
+<p>Then she clicks the drop-down arrow in the Value cell for that row and opens the Text Editor:</p>
+<p><img src="images/1744841690125.png" alt="Opening the Text Editor" /></p>
+<p>In the Text Editor, she browses for the feature function she wants. It is located under Date/Time Functions &gt; DateTimeNow. She double-clicks it to insert that function into the Text Editor.</p>
+<p><img src="images/1744841959279.png" alt="Inserting date time using Text Editor" width="409" height="572" /></p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p>You can also manually type these functions, but we recommend adding them using the panel on the left, as it can help you avoid typos.</p>
+</blockquote>
+<h2>5) Construct an Attribute</h2>
+<p>Next, Jennifer would like to create a new attribute constructed using other attributes. After creating it, she'd like to clean up by removing the attributes she used.</p>
+<p>She wants to concatenate ownernm1 and ownernm2 into a new attribute called owners and then remove those attributes afterward.</p>
+<p>In the AttributeManager parameters dialog, she creates a new attribute called owners. In the Attribute Value column for this attribute, she clicks the drop-down arrow and chooses Open Text Editor.</p>
+<p>In the text editor, she opens the FME Feature Attributes section on the left-hand menu. She locates the ownernm1 and ownernm2 attributes and double-clicks them, in turn, to add them to the editor window. In the editor window, she clicks between the two attributes and presses the spacebar to add a space character.</p>
+<p><code>@Value(ownernm1 ) @Value(ownernm2)</code></p>
+<p>She can either ignore the trailing space generated on records without a second owner (it won't affect the output's usefulness) or use a TrimRight function to remove it:</p>
+<p><code>@TrimRight(@Value(ownernm1) @Value(ownernm2))</code></p>
+<p>She clicks OK to close the editor dialog.</p>
+<h2>6) Remove Attributes</h2>
+<p>Now that we have the owners field, she can remove the attributes ownernm1 and ownernm2. However, the order of operations is now essential. The AttributeManager <strong>must </strong>create owners in the parameters dialog <strong>before</strong> removing ownernm1 and ownernm2.</p>
+<p>To do so, she clicks the newly created owners field. Then, she uses the Move Up button on the dialog to move it above ownernm1.</p>
+<p>Then she sets the Action for ownernm1 and ownernm2 to Remove. The dialog will now look like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.210b.Ex2.MoveOwnersField.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1744843104171.png" alt="Removing attributes" width="742" height="558" /></a></p>
+<p>She clicks OK to close the AttributeManager parameters.</p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p>So, to summarize, the order of the rows in AttributeManager reflects&nbsp;<strong>both&nbsp;</strong>the order of any attribute modifications and the order of the attributes on the output features. If you are not able to conduct operations and keep the attribute order you want, you can use another AttributeManager to change the order, or perhaps more efficiently, just set the attribute order on your writer feature types.</p>
+</blockquote>
+<h2>7) View Results</h2>
+<p>She uses Run To This on the PostalAddress writer feature type:</p>
+<p><img src="images/1744843264780.png" alt="Run To This to write out data" /></p>
+<p>She inspects the written data. She confirms the attributes meet her requirements:</p>
+<p><img src="images/1744843368885.png" alt="Output data" /></p>

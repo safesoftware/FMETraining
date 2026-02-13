@@ -1,0 +1,79 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Understand the different automation options with FME Flow.&nbsp;</li>
+<li>Understand how FME Flow can run workflows on schedules, respond to real-time events, and continuously process data.&nbsp;</li>
+<li>Distinguish Automations from Streams and Schedules.&nbsp;</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2>Automate Workflows with FME Flow</h2>
+<p>Now that you understand&nbsp;<em>why</em> automation matters and&nbsp;<em>when</em> it makes sense to automate your workflows, let's investigate <em>how</em> to automate workflows. FME Flow has three powerful tools to automate your workflows:</p>
+<ul>
+<li><strong>Schedules</strong> - for running workspaces at recurring times (e.g., daily, weekly, hourly).&nbsp;</li>
+<li><strong>Automations</strong> - for running workflows based on real-time events or on a schedule.&nbsp;</li>
+<li><strong>Streams</strong> - for handling continuous data flows, especially from IoT devices or messaging systems.&nbsp;</li>
+</ul>
+<p>Each of these tools solves a different kind of automation challenge. Based on your automation goals, you must decide which option works best for your workflow.&nbsp;</p>
+<h2 id="why-automation">Schedules</h2>
+<p><img src="images/1751998220710.png" alt="" width="91" height="91" /></p>
+<p>Schedules let you run a workspace at a specific time in the future or on a recurring schedule on FME Flow. You can configure schedules to run a workspace only once, or you may configure the schedule to run the workspace on a repeating timeline. For example, you can schedule a workspace to run tomorrow at 9 a.m. or set a workspace to run every morning at 7 a.m., every Monday, or even every 15 minutes.&nbsp;</p>
+<p>You create scheduled workflows easily by filling out a form specifying the workspace you'd like to run and how you would like to configure the schedule. With Schedules, you can only run a single workspace per Schedule. To run multiple workspaces on a schedule, you should use Automations.&nbsp;</p>
+<h2 id="what-are-automations">Automations</h2>
+<p><img src="images/1751998236603.png" alt="" /></p>
+<p>Automations let you build workflows that react to events in real-time or run on a recurring schedule. Automations work by sending and receiving messages between three types of components: triggers, internal actions, and external actions. Triggers receive messages that kick off the Automation. Internal actions are processes FME Flow performs internally, like running workspaces, and external actions send messages or information to external applications, such as uploading data to an S3 bucket. The next lesson teaches you more about the different triggers and actions.&nbsp;</p>
+<p>For scheduled workflows, Automations allow the same configuration options as Schedules; however, you can flexibly scale Automations to run multiple workspaces or communicate externally.&nbsp;</p>
+<p>Automations can also respond to real-time events by monitoring for messages like an incoming email, a webhook call, or an uploaded file. For example, imagine you receive new data from the field every time a team of data collectors uploads files. Instead of checking a folder every hour, you can configure FME Flow to watch that folder and automatically process the file as soon as it arrives.&nbsp;</p>
+<p>FME Flow Automations are incredibly flexible. Whether your workflow involves running a single workspace, using filter logic to conditionally run multiple workspaces, or processing incoming data in parallel, you can accomplish it with Automations.&nbsp;</p>
+<h2 id="streams">Streams</h2>
+<h2><img style="font-size: 16px;" src="images/1751998279340.png" alt="" width="90" height="90" /></h2>
+<p>Streams process continuous, high-volume data flows from sources like sensors, IoT devices, and message brokers. For example, Streams are perfect for live vehicle tracking, real-time alerts, or monitoring sensors.&nbsp;&nbsp;</p>
+<p>To process high-frequency data as soon as it arrives with minimal delay, FME Flow Streams continuously run a workspace. Therefore, FME Flow always uses an engine when a Stream is active, making the engine unavailable to process other jobs. Compared to Automations, Streams process data much faster, and you should use Streams if you need to respond to messages at a rate of more than one per second. Otherwise, an Automation is likely sufficient to process your data and will only use an engine while it runs a workspace.&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<blockquote>
+<p class="media"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p class="media">Here are some resources for more information on Streams and Engine Management:</p>
+<ul>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407472101005-FME-and-Stream-Processing" target="_blank" rel="noopener">FME and Stream Processing&nbsp;</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Streams.htm" target="_blank" rel="noopener">Streams documentation</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Engine-Management.htm" target="_blank" rel="noopener">Engine Management documentation</a></li>
+</ul>
+</blockquote>
+<h2>When to Use Schedules, Automations, or Streams</h2>
+<p>As with most aspects of FME, you may often perform the same tasks differently to return the same result. While there are some overlapping scenarios between Schedules, Automations, and Streams on FME Flow, here are some general guidelines and examples of when you should use each function.&nbsp;</p>
+<table style="border-collapse: collapse; width: 99.9876%;" border="1">
+<tbody>
+<tr>
+<td style="width: 24.9884%;">&nbsp;</td>
+<td style="width: 24.9884%;">Number of Workspaces</td>
+<td style="width: 24.9884%;">Data Processing Frequency</td>
+<td style="width: 24.9902%;">Example</td>
+</tr>
+<tr>
+<td style="width: 24.9884%;">Schedules</td>
+<td style="width: 24.9884%;">1</td>
+<td style="width: 24.9884%;">N/A</td>
+<td style="width: 24.9902%;">Running a single workspace weekly</td>
+</tr>
+<tr>
+<td style="width: 24.9884%;">Automations</td>
+<td style="width: 24.9884%;">Unlimited</td>
+<td style="width: 24.9884%;">&lt; 1 feature per second</td>
+<td style="width: 24.9902%;">Running one or more workspaces at a set time or in response to a real-time event</td>
+</tr>
+<tr>
+<td style="width: 24.9884%;">Streams</td>
+<td style="width: 24.9884%;">1</td>
+<td style="width: 24.9884%;">&gt; 1 feature per second</td>
+<td style="width: 24.9902%;">Continuously processing real-time data from a sensor</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>

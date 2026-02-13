@@ -1,0 +1,67 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Query features for additional information.</li>
+<li>View coordinate system information about features.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-information-about-a-specific-feature.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\view-information-about-a-specific-feature.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/building_footprints.sl3" target="_blank" rel="noopener">building_footprints.sl3</a>
+<ul>
+<li>C:\FMEData\Data\Engineering\BuildingFootprints\building_footprints.sl3</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/PointClouds/CoV_4910E_54580N.laz" target="_blank" rel="noopener">CoV_4910E_54580N.laz</a>
+<ul>
+<li>C:\FMEData\Data\PointClouds\CoV_4910E_54580N.laz</li>
+</ul>
+</li>
+</ul>
+<h2 id="inspect-source-data">Inspect Source Data</h2>
+<p><img class="image" src="images/bad-35950-6-e-9-c-4-ec-3-a-5-fd-fcbd-103817-d-8.png" alt="Amar" width="174" height="185" /></p>
+<p>Sven's colleague Amar is starting an FME project to convert 2D building footprints to 3D models by comparing them with a point cloud. He opens his <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-information-about-a-specific-feature.fmw" target="_blank" rel="noreferrer noopener">workspace</a> using FME Workbench (2025.0 or later). This workspace takes 2D building footprints and extrudes them to make 3D buildings. He also wants to compare the resulting extruded 3D buildings to a point cloud to see if the extrusion is roughly correct compared to what is observed in the point cloud.</p>
+<p>Amar has not yet inspected the point cloud dataset and is curious about what units of distance are used in it (feet or meters) and what software was used to generate it&mdash;TopoDOT had been used previously, but Terrascan was used for the most recent point clouds.</p>
+<p>The point cloud format is ASPRS Lidar Data Exchange Format (LAS). The reader is listed in the Navigator window as [LAS]. Amar right-clicks on the LAS reader and selects&nbsp;<strong>View Source Data&hellip;&nbsp;</strong>to inspect the original dataset.</p>
+<p><img src="images/1712779303528.png" alt="View Source Data" width="453" height="285" /></p>
+<p>The Table view in Visual Preview shows no attributes, which indicates that no exposed attributes are present in the dataset. Exposed attributes appear in the&nbsp;Table view and will be written out if connected to a writer feature type and defined on its schema.</p>
+<p><img class="image" src="images/1712779323114.png" alt="No schema" width="249" height="242" /></p>
+<p>However, that does not mean there are no attributes at all. The features will have <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/aboutFeatures/feature-type-attributes-about.htm" target="_blank" rel="noreferrer noopener">format attributes</a>, which are not displayed in the Table view by default. It could also contain other unexposed attributes in some cases.</p>
+<p>&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Check out the <a href="https://academy.safe.com/create-and-modify-attributes" target="_blank" rel="noopener">Create and Modify Attributes course</a> for a more in-depth overview of attributes in FME.</p>
+</blockquote>
+<p>A quick check of the ASPRS LiDAR Data Exchange Format (LAS)&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/las/quick_facts_las.htm" target="_blank" rel="noreferrer noopener">"Quick Facts" in the documentation</a> confirms that this format does not support user-defined, i.e. exposed, attributes. But Amar knows that there are more attributes than just user-defined attributes.</p>
+<p>Amar selects the single feature in Table View and looks in the <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/DataInspector/Feature-Information.htm" target="_blank" rel="noreferrer noopener">Feature Information</a>&nbsp;window.</p>
+<h2 id="feature-information-window">Feature Information Window</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/DataInspector/Feature-Information.htm" target="_blank" rel="noreferrer noopener">Feature Information</a> window displays everything FME knows about the feature selected in the&nbsp;<strong>Table&nbsp;</strong>or&nbsp;<strong>Graphics View</strong>. Here, you can find all the user-defined attributes, format attributes, coordinate system information, and geometry information. It's open by default, but you can also toggle it using this highlighted button on the left of the Visual Preview window:&nbsp;</p>
+<p><img src="images/1712779414497.png" alt="Toggling the Feature Information Window on" width="904" height="362" /></p>
+<p>Amar notes the top-right of <strong>Feature Information </strong>reports the feature type or port name. Below that are <strong>Attributes</strong>, both <strong>Exposed</strong> (shown in Table view and written out to the destination table) and <strong>Unexposed</strong> (used by FME but not shown in Table View or written to the destination table).</p>
+<p><span style="font-family: inherit; font-size: 1em;">Because this feature is spatial, the <strong>Geometry </strong>section below <strong>Attributes </strong>contains information on:</span></p>
+<ul>
+<li>Its coordinate system&nbsp;</li>
+<li>Summary information about its geometry (dimension, number of vertices, and extents)</li>
+</ul>
+<p>The coordinate system catches Amar's eye because it&rsquo;s a link. Clicking on UTM83-10 opens the Properties dialog for the coordinate system. Here, Amar can see that the units for UTM83-10 are meters. This is important for Amar to know, especially if he plans to do any calculations, such as measuring a distance or an area. By default, FME will use the coordinate system&rsquo;s unit as measurement, and the result would look odd if those units were in degrees!</p>
+<p><img class="image" src="images/1712779634954.png" alt="Coordinate System Properties" width="534" height="602" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Using the </span><strong style="font-family: inherit; font-size: 1em;">Feature Information window </strong>and <strong>Coordinate Systems Properties </strong>dialog <span style="font-family: inherit; font-size: 1em;">is one of the fastest ways to determine what units you are working with when calculating areas or distances.</span></p>
+</blockquote>
+<p>Amar closes the&nbsp;<strong>Coordinate System Properties</strong> dialog and checks the items under the <strong>Unexposed Attributes</strong>&nbsp;header in the&nbsp;<strong>Feature Information</strong> window. This section reports the attributes associated with the feature, including user attributes and format attributes (for example, fme_type).&nbsp;</p>
+<p>Amar can see that TerraScan, not TeraDOT, generated this dataset, so this is the more recent point cloud dataset. Amar can also see the creation date of this LAS file (las_file_creation_date (string): 20130425) and the LAS version (las_version (string): 1.2).</p>
+<p>There is even more information available under <strong>FME Attributes</strong>, including the location of the dataset (fme_dataset (string): https://s3.amazonaws.com/FMEData/FMEData/Data/PointClouds/CoV_4910E_54580N.laz).</p>
+<p>Amar then checks the&nbsp;<strong>Geometry&nbsp;</strong>section in the lower part of the&nbsp;<strong>Feature Information&nbsp;</strong>window. This section reports the feature's geometry. It includes the geometry type and a list of the coordinates that make up the feature. Here, Amar can see the extent of the data and the number of points in the point cloud.</p>
+<p><img class="image" src="images/1712779655163.png" alt="Geometry information" width="566" height="421" /></p>
+<p>While the&nbsp;<strong>Table</strong>&nbsp;view typically only shows exposed user-defined attributes, the&nbsp;<strong>Feature Information</strong> window displays FME-generated&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!FeatureTypeProperties/Controlling_Features_Format_Attributes.htm" target="_blank" rel="noreferrer noopener">format</a>&nbsp;and&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!List_Attributes/Understanding-List-Attributes.htm" target="_blank" rel="noreferrer noopener">list attributes</a>.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can expose any user-defined attributes or fme_type attributes visible in <strong>Feature Information </strong>for display in the table, allowing you to use them in your workspace. For more information, see the <a href="https://academy.safe.com/create-and-modify-attributes" target="_blank" rel="noopener">Create and Modify Attributes course</a>.</p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Amar&rsquo;s steps.</p>

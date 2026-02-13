@@ -1,0 +1,198 @@
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>View tabular data using Visual Preview.</li>
+<li>Interact with spatial data using Visual Preview.</li>
+</ul>
+<h2>Terminology</h2>
+<!-- Accordion using details/summary (no JS required) --><details>
+<summary><strong>Vector spatial data</strong></summary>
+<div>Vector spatial data consists of points, lines, and polygons. At its core, it consists of lists of coordinates on a plane and information regarding how they are connected.</div>
+<div>Vector data is good for representing discrete objects, such as the outlines of buildings (polygons).</div>
+</details><details>
+<summary><strong>Raster spatial data</strong></summary>
+<div>
+<p>Raster data comprises pixels, where a pixel's value (or color) represents the value of a phenomenon, e.g., the average annual precipitation. Standard imagery uses the visible spectrum like a regular photograph. However, other kinds of imagery are available. For example, imagery in the near-infrared band can be used to measure the prevalence of vegetation beyond what the human eye can detect.&nbsp;</p>
+<p>Raster data is good for representing continuous data that varies over an entire area, such as elevation.</p>
+</div>
+</details>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/interactively-view-spatial-data.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\interactively-view-spatial-data.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.xlsx" target="_blank" rel="noreferrer noopener">BusinessOwners.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.xlsx</li>
+</ul>
+</li>
+</ul>
+<h2>Spatial Data Overview</h2>
+<p>FME stands out in its robust support for spatial data among data integration tools.</p>
+<p>Spatial data can be stored in vector or raster formats. Vector spatial data consists of points, lines, and polygons. At its core, it consists of lists of coordinates on a plane and information regarding how they are connected.</p>
+<p>Raster data comprises pixels, where a pixel's value (or color) represents the value of a phenomenon, e.g., the average annual precipitation. Standard imagery uses the visible spectrum like a regular photograph. However, other kinds of imagery are available. For example, imagery in the near-infrared band can be used to measure the prevalence of vegetation beyond what the human eye can detect.&nbsp;</p>
+<p>Raster data is better for representing continuous data that varies over an entire area, such as elevation. Vector data is better for representing discrete objects, such as the outlines of buildings (polygons).</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td colspan="1" rowspan="1">Geometry type</td>
+<td colspan="1" rowspan="1">Illustration</td>
+<td colspan="1" rowspan="1">Examples</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Point</td>
+<td colspan="1" rowspan="1"><img class="image image-block image-center" src="images/240-f-57-a-2-93-b-9-482-f-b-3-cf-1020980-f-7559.png" alt="Points" /></td>
+<td colspan="1" rowspan="1">
+<p>Cell towers</p>
+<p>Community centers</p>
+<p>Fire hydrants</p>
+<p>Oil wells</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Line</td>
+<td colspan="1" rowspan="1"><img class="image image-block image-center" src="images/a-5-e-65-dc-8-b-223-4-f-86-add-8-baf-0410-b-7-efa.png" alt="Lines" /></td>
+<td colspan="1" rowspan="1">
+<p>Electricity distribution network</p>
+<p>Pipelines</p>
+<p>Roads</p>
+<p>Trails</p>
+<p>Water distribution network</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Polygon</td>
+<td colspan="1" rowspan="1"><img class="image image-block image-center" src="images/020-a-4-d-52-8-d-3-c-4900-8916-f-6-ab-69-a-77-b-08.png" alt="Polygons" /></td>
+<td colspan="1" rowspan="1">
+<p>Administrative borders</p>
+<p>Building footprints</p>
+<p>Service areas</p>
+<p>Water bodies</p>
+<p>Zoning districts</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">Raster</td>
+<td colspan="1" rowspan="1"><img class="image image-block image-center" src="images/29-f-0-d-431-4-ce-2-4734-9-b-1-f-dfb-6-c-2-cfe-1-f-4.png" alt="Raster" /></td>
+<td colspan="1" rowspan="1">
+<p>Classified land use</p>
+<p>Elevation</p>
+<p>Orthophoto (a satellite or aerial photograph adjusted so the scale is uniform)</p>
+<p>Scanned documents</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><img src="images/safe_note.png" /></p>
+<p>Learn more about FME&rsquo;s geometry model in the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FME_Geometry/FME_Geometry_Model.htm" target="_blank" rel="noopener">documentation</a> or the <a href="https://academy.safe.com/path/integrate-spatial-data/work-with-geometry" target="_blank" rel="noopener">Work with Geometry</a> course.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Spatial data contains geometry data that describes the actual location of the data. It also usually includes attribute data that describes the features. For example, here is a dataset of point locations of community centers that includes attributes such as &ldquo;CentreName&rdquo; and &ldquo;CentreAddress.&rdquo;</p>
+<p><img class="image image-block image-center" src="images/1713817576570.png" alt="Community center points with attribute data" width="994" height="351" /></p>
+<p>Having geometry and attributes in the same dataset lets you query or filter the data. For example, you could filter the dataset of community centers to select the point with a &ldquo;CentreName&rdquo; that equals &ldquo;Mount Pleasant.&rdquo; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p><img class="image image-block image-center" src="images/1713817588286.png" alt="Selecting a point" width="994" height="351" /></p>
+<p>Spatial data can be used to create maps or analyze patterns like clusters. However, it must be integrated with other data sources to gain maximum value. For example, retail businesses combine existing store locations, road networks, and neighborhood demographic data to identify the best places to build new stores.</p>
+<p>Integrating spatial with nonspatial data, such as spreadsheets or database tables, is also possible. This integration is possible if the nonspatial data has an attribute with spatial information. Many nonspatial datasets contain addresses, coordinates, or other identifiers. Combining these with spatial data allows you to unlock new insights. For example, retail businesses combine customer transaction data (containing their zip or postal code) with neighborhood demographic data to understand their customers and market their products or services more effectively.</p>
+<h2 id="explore-visual-preview">Explore Visual Preview</h2>
+<p>Data inspection is an essential step in the data transformation process. Inspecting the output dataset to ensure the process's success is crucial.</p>
+<p>Continuing with&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/interactively-view-spatial-data.fmw" target="_blank" rel="noreferrer noopener">his workspace</a>, Sven uses FME Workbench (2025.0 or later) to open the BusinessOwners written data in <strong>Visual Preview&nbsp;</strong>by selecting it and then clicking&nbsp;<strong>View Written Data</strong>.</p>
+<p><img src="images/1712777053476.png" alt="View Written Data button" width="323" height="78" /></p>
+<p>Now that the BusinessOwners feature class (a geodatabase feature class is the equivalent of an FME feature type) in the Vancouver.gdb geodatabase is loaded into&nbsp;<strong>Visual Preview</strong>, Sven uses the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Visual-Preview.htm" target="_blank" rel="noopener">Visual Preview toolbar</a>&nbsp;to control the display. The&nbsp;<strong>Visual Preview&nbsp;</strong>will display the geometry of features in the&nbsp;<strong>Graphics View</strong>&nbsp;and the attributes in the&nbsp;<strong>Table View.</strong></p>
+<p>By default,&nbsp;<strong>Visual Preview </strong>automatically displays whichever object (feature type or transformer) is selected on the canvas. Suppose Sven selects another object on the canvas; <strong>Visual Preview </strong>displays&nbsp;that data. Sven doesn't want that to happen because he'll lose the view of the BusinessOwners feature type, so he clicks the&nbsp;<strong>Toggle Automatic Inspect on Selection&nbsp;</strong>button on the left side of&nbsp;<strong>Visual Preview&nbsp;</strong>to turn it off.</p>
+<p><img src="images/1712777125506.png" alt="Toggle Automatic Inspect on Selection button" width="367" height="169" /></p>
+<h2 id="change-how-features-are-displayed">Change How Features Are Displayed</h2>
+<p>Sven wants to change the color and size of the points shown in the&nbsp;<strong>Graphics View</strong>&nbsp;to make the points easier to see against the background map. He clicks the&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/DataInspector/Display-Control.htm" target="_blank" rel="noreferrer noopener"><strong>Display Control</strong></a>&nbsp;button to open&nbsp;<strong>Display Control</strong>, which lets him see a list of the layers being inspected.</p>
+<p><img src="images/1712777420529.png" alt="Toggle Display Control button" width="380" /></p>
+<p>Sven could check layers on and off here but leaves them both enabled.</p>
+<p>Clicking on the grid icon next to <strong>BusinessOwners&nbsp;</strong>opens the&nbsp;<strong>Geometry Styles&nbsp;</strong>dialog. Here, Sven can change the display symbology and color of the points. Sven selects red, increases the point size to 8, and then turns the background map back on.</p>
+<p><img src="images/1712777874613.png" alt="Changing symbology" width="603" height="269" />&nbsp;</p>
+<p>Sven toggles off <strong>Display Control</strong> and <strong>Table View</strong> to allow more space for the <strong>Graphics View</strong>.</p>
+<p><img class="image" src="images/1712777985725.gif" alt="Toggling Visual Preview panes on and off" width="904" height="371" /></p>
+<p><em>Map tiles &copy; <a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy; <a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy; <a href="Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<p>Sven clicks on&nbsp;<strong>Zoom to Full Extent </strong>to see all of the data points.<strong><br /></strong></p>
+<p><img class="image" src="images/1712778002382.gif" alt="Zoom Extents" width="904" height="368" /></p>
+<p><em>Map tiles &copy; <a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy; <a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy; <a href="Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<blockquote>
+<p><em><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></em></p>
+<p>If you don't see Zoom to Full Extent button, click the two right-pointing arrows in the top right of the Graphics pane to view hidden toolbar buttons:</p>
+<p><img src="images/1742407370635.png" alt="Arrows to expand Graphics toolbar" /></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong style="font-family: inherit; font-size: 1em;">Visual Preview</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;and the stand-alone application&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/DataInspector/Data_Inspector_Interface.htm" target="_blank" rel="noreferrer noopener"><strong>Data Inspector</strong></a><span style="font-family: inherit; font-size: 1em;">&nbsp;are not a Geographic Information System; they can not be used to create polished cartographic output, conduct interactive spatial analysis, or edit data. The purpose of&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Visual Preview&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">and&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Data Inspector</strong><span style="font-family: inherit; font-size: 1em;"> is to inspect data.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐ New for FME 2024.2:</strong> the Zoom Selected button is now a toggle. When toggled on, the Graphics view will zoom to the feature currently selected in Table View or the Feature Information Window. Changing the selected feature will zoom the Graphics view to the new feature. Additionally, we've changed the zoom amount so Visual Preview shows more context around the feature.</p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p>Use&nbsp;<strong>Pan&nbsp;</strong>and&nbsp;<strong>Zoom&nbsp;</strong>to find the northernmost public art installation. Use&nbsp;<strong>Select&nbsp;</strong>to select it.</p>
+<p>Use the&nbsp;<strong>Table View&nbsp;</strong>or&nbsp;<strong>Feature Information&nbsp;</strong>to note the installation's Title.</p>
+<p><img class="image image-block" src="images/1712778028088.png" alt="Location of the northern-most art installation." width="350" height="266" /></p>
+<p><em>Map tiles &copy; <a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy; <a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy; <a href="Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>

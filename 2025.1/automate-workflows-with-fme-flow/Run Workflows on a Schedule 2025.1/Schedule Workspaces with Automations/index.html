@@ -1,0 +1,150 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand the differences between Schedules and Automations.</li>
+<li>Create an Automation with a Schedule trigger.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject">Starting FME Flow Project</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\automate-workflows-with-fme-flow--starting-project.fsproject</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow.&nbsp;</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>1) Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener">starting project</a> and the<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener"> encryption key</a>.</div>
+<div>2) Upload the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener">automate_workflows_with_fme_flow.jceks</a> encryption key to your FME Flow. This must be done by an fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload automate-workflows-with-fme-flow--starting-project.fsproject as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1754602691120.jpg" alt="" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1754602971975.jpg" alt="" /></div>
+<div>6) The next step is to select connections and tokens to import. By default, they are not selected to be imported. <strong>Select the FME Training PostGIS Database Connection to import.</strong> If it isn't imported, the workflows will not run successfully. Click Continue.&nbsp;</div>
+<div><img src="images/1754602868434.jpg" alt="" /></div>
+<div>7) The Resolve Owners step only allows you to reassign the project contents to a different user if the admin user doesn't exist on your FME Flow. Click Continue and then click Import Project from the Additional Options step. The project will import and display its import status from the same page.</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If it still fails, contact us at train@safe.com.&nbsp;</div>
+</details>
+<h2 id="watch-triggers">Scheduled Automations</h2>
+<p>FME Flow Automations also have scheduling capabilities similar to schedules. The FME Flow Schedule trigger kicks off an Automation on a schedule. Following the FME Flow Schedule trigger, you may run a single workspace, multiple workspaces, or perform any other internal or external actions, which is more adaptable and flexible to different workflows than Schedules.&nbsp;</p>
+<p><img src="images/1752855047428.jpg" alt="" /></p>
+<p>As you learnt in the previous lesson, you configure a Schedule to run a workspace by completing a single form that specifies the schedule and workspace details. In Automations, you must configure both the Schedule trigger and a Run a Workspace action to accomplish the same scenario as a Schedule.&nbsp;</p>
+<h2>Schedule Trigger</h2>
+<p>Each Automation begins with a trigger. To configure the trigger to be a Schedule, open the Trigger details and select FME Flow Schedule (initiated) from the Details panel. From here, you configure the Schedule Type and set up the parameters for when you want the schedule to run and repeat.&nbsp;</p>
+<p><img src="images/1752864172959.jpg" alt="" /></p>
+<p>The FME Flow Schedule (initiated) trigger supports three Schedule Types:</p>
+<ul>
+<li>Basic
+<ul>
+<li>Repeats based on a calendar-friendly selection of intervals derived from a specified&nbsp;<span class="ParameterName">Start&nbsp;</span>time.</li>
+<li>For example, you schedule the workflow to run weekly on Tuesdays. &nbsp;</li>
+</ul>
+</li>
+<li>Run on Interval
+<ul>
+<li>Repeats in intervals from a list of predefined units.</li>
+<li>For example, you set the workflow to run once every 3 hours.&nbsp;</li>
+</ul>
+</li>
+<li>CRON Expression
+<ul>
+<li>Repeats based on your cron expression.</li>
+<li>For example, you use the expression&nbsp;0 0,15 0,8 LW * ? *&nbsp;to trigger the workflow to run at 8:15 am on the last weekday of every month.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p>These are the same Schedule Types as FME Flow offers in Schedules, except for the Occur Only Once option.&nbsp;</p>
+<p>Again, you may also configure a Date Range for FME Flow to trigger the Automation within.&nbsp;</p>
+<p><img src="images/1753721186801.jpg" alt="" /></p>
+<p>Once you've set your schedule details, click Apply to close the trigger details.&nbsp;</p>
+<h2>Run a Workspace Action</h2>
+<p>To run a workspace when the Automation triggers, you must connect a Run a Workspace internal action to the success port of the trigger.&nbsp;</p>
+<p><img src="images/1752866600625.jpg" alt="" width="1090" height="610" /></p>
+<p>In the Action Details pane, you select the workspace you want to run and configure any parameters for the workspace.&nbsp;</p>
+<p><img src="images/1753722032565.jpg" alt="" /></p>
+<p>The same queue, expiry, and debug options are under the Advanced tab in Automations as the Advanced section of Schedules. You'll learn more about Output Attributes in the Job Orchestration in Automations course. Once you click Apply, the internal action on the Automations canvas will update to reflect your workspace name.&nbsp;</p>
+<p><img src="images/1752866990532.jpg" alt="" /></p>
+<p>You may connect and configure additional internal and external actions to the workspace action's success and failure ports.&nbsp;</p>
+<h2>Start Automation</h2>
+<p>Once you add your trigger and actions to your Automation, you must start it to trigger and run on the schedule you created.&nbsp;</p>
+<p><img src="images/1752867248946.jpg" alt="" width="1329" height="559" /></p>
+<p>While the Automation is actively running, it will trigger your workspace to run according to the schedule details you set.&nbsp;</p>
+<p><img src="images/1752867662491.jpg" alt="" /></p>
+<p>Optionally, you may manually trigger the Automation to run by opening the Schedule trigger details and clicking Trigger.&nbsp;</p>
+<p><img src="images/1752870550766.jpg" alt="" width="962" height="605" /></p>
+<h2>Exercise</h2>
+<p><img src="images/1752870097019.png" alt="" width="318" height="337" /></p>
+<p>Jennifer continues with her Parks database update workflow. However, she has now created a summary workspace on the incoming data to the SQLite database. She needs to process this workspace immediately after running the Parks Database Update workspace. She's already published the workspaces to FME Flow and will create an Automation to run her multi-workspace workflow on a schedule.</p>
+<p>Follow along with Jennifer's steps as she creates and runs her Automation.&nbsp;</p>
+<h3>1) Create Automation</h3>
+<p>From the FME Flow menu, Jennifer expands Automations and selects Create Automation.</p>
+<p><img src="images/1752870752205.jpg" alt="" width="225" height="285" /></p>
+<p>The Get Started page opens, and Jennifer clicks the Create tab and then selects Create New...</p>
+<p><img src="images/1752870851408.jpg" alt="" /></p>
+<p>The FME Flow Automations canvas opens with a trigger that is ready to configure.&nbsp;</p>
+<p><img src="images/1752870923224.jpg" alt="" /></p>
+<h3>2) Configure Schedule Trigger</h3>
+<p>Jennifer double-clicks the trigger to open the Trigger Details.&nbsp;</p>
+<p><img src="images/1752871034134.jpg" alt="" width="1090" height="447" /></p>
+<p>Jennifer selects the FME Flow Schedule (initiated) trigger and configures it to repeat at an interval every day. She selects Start Immediately, so the Automation will run for the first time as soon as it's started, and checks Does Not Expire.&nbsp;</p>
+<p><img src="images/1753722139080.jpg" alt="" /></p>
+<p>She clicks Apply to close the details and update the canvas with the schedule trigger.</p>
+<p><img src="images/1752871325737.jpg" alt="" /></p>
+<h3>3) Add a Run a Workspace Action</h3>
+<p>Jennifer clicks the Next Action icon from the trigger success port to open its details.&nbsp;</p>
+<p><img src="images/1752871465295.jpg" alt="" /></p>
+<p>She selects a Run a Workspace action and selects the ParksDatabaseUpdate.fmw workspace in the Parks Data Updates repository.</p>
+<p><img src="images/1752871578992.jpg" alt="" /></p>
+<p>She leaves the parameters as they are with their default values. She does not need to configure any other settings for this workspace action. She clicks Apply to close the details and add the action to the Automation.&nbsp;</p>
+<p><img src="images/1753722251986.jpg" alt="" /></p>
+<p><img src="images/1752871883550.jpg" alt="" /></p>
+<h3>4) Add Second Workspace Action</h3>
+<p>Jennifer configures another Run a Workspace action out of the success port of the Parks Database Update workspace action. This time, she selects the UpdatedParksSummary.fmw workspace in the Parks Data Updates repository. This workspace has no parameters and she does not need to configure any other settings, so she clicks Apply.</p>
+<p><img src="images/1752872824313.jpg" alt="" /></p>
+<p>Jennifer now has the FME Flow Schedule Trigger and two Run a Workspace actions in her Automation.</p>
+<p><img src="images/1752872908266.jpg" alt="" /></p>
+<h3>5) Start Automation</h3>
+<p>Jennifer clicks Save and names her Automation&nbsp;<em>Parks Update and Summary</em>.&nbsp;</p>
+<p><img src="images/1752873024084.jpg" alt="" /></p>
+<p>She clicks Start to start the Automation.&nbsp;</p>
+<p><img src="images/1752873244591.jpg" alt="" /></p>
+<p>Since the schedule trigger was configured to start immediately, FME Flow triggers the Automation to run right away and Jennifer sees the event counts update on the canvas.&nbsp;</p>
+<p><img src="images/1752873466870.jpg" alt="" /></p>
+<h3>6) Check Jobs</h3>
+<p>Jennifer opens the Completed Jobs page on FME Flow and sees that her Automations jobs are complete.&nbsp;</p>
+<p><img src="images/1753722897579.jpg" alt="" width="1432" height="462" /></p>
+<p>Jennifer now runs multiple workspaces daily. She saves time by not running them manually and ensures the data is consistently up-to-date.&nbsp;</p>

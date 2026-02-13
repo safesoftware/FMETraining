@@ -1,0 +1,76 @@
+<h2 id="alternative-dynamic-schema-sources">Alternative Dynamic Schema Sources</h2>
+<p>Generally, the schema for a dynamic translation comes from either the source dataset or a different dataset (such as the database table where FME is writing the data).</p>
+<p>However, there are other scenarios for providing the output schema:</p>
+<ul>
+<li>A schema can come from a lookup table (text file or spreadsheet) that stores definitions</li>
+<li>A schema can come from a schema feature created by a FeatureReader</li>
+<li>A schema can come from a dynamically-defined schema feature created from a list of attributes in a workspace</li>
+</ul>
+<h2 id="table-based-schemas">Table-Based Schemas</h2>
+<p>In this scenario, a text file or spreadsheet stores the output schema. For example:</p>
+<p><img class="image image-block image-center" src="images/1723757830399.png" alt="Storing schema as a table" width="574" height="269" /></p>
+<p>Here, the author lists feature types, attributes, and geometry types that define the output schema. In FME, they would use this schema by adding a Resource Reader. The format of the Resource Reader would be Schema (From Table):</p>
+<p><img class="image image-block image-center" src="images/1723757970839.png" alt="Adding a Schema From Table Reader as a Resource" width="464" height="200" /></p>
+<p>In the parameters dialog for this reader, there are parameters to specify which fields in the table represent which parts of the schema:</p>
+<p><img class="image image-block image-center" src="images/1723758016072.png" alt="Specifying columns" width="559" height="469" /></p>
+<p>The geometry type is optional but used in this example.</p>
+<p>Another optional parameter is Attribute Sequence. It defines a field in the table that records the order in which attributes should appear.</p>
+<p>Then, of course, this reader must be used as the source for the output schema:</p>
+<p><img class="image image-block image-center" src="images/1723758067443.png" alt="Setting Schema Source as schema from table" width="552" height="315" /></p>
+<p>As always, we must map the incoming attributes to the outgoing schema. The best way here is the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/schemamapper.htm" target="_blank" rel="noopener">SchemaMapper transformer</a> since it, too, can use a lookup table to create its mappings.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">A significant advantage of this method is that you don't need to edit the workspace or a dataset to make schema changes. Once you change the output schema in the table, the workspace will automatically use the new schema at runtime.</span></p>
+</blockquote>
+<h2 id="feature-reader-schema-feature">FeatureReader Schema Feature</h2>
+<p>A common source of the schema for dynamic workspaces is the FeatureReader transformer. You might not know what schema you will receive in advance because you can supply initiator features to control what the FeatureReader reads. In those cases, you can use the &lt;Schema&gt; output port to send a schema feature to a dynamic writer feature type. This feature type can then use that feature, which contains a list of attributes and their types, to set the output schema.</p>
+<p>Please take a look at this example. You might be reading or querying an API that returns a list of URLs to attachments stored in CSV format. You then want to read those CSVs and write to a local folder, but you need to know the schema beforehand. You can accomplish this with a FeatureReader. Your workspace might look like this:</p>
+<p><img class="image image-block image-center" src="images/1723758235627.png" alt="Example using schema features with the FeatureReader" width="1187" height="213" /></p>
+<p>There are a few critical settings behind this workspace:</p>
+<ul>
+<li>We set Feature Type Name(s) in the FeatureReader CSV reader parameters to From File Name(s). This setting means the fme_feature_type attribute on the schema and data features will have the file name. We then use that in the writer feature type to fanout the output into three separate CSVs with the correct file names.</li>
+<li>We set the FeatureReader Output Ports parameter to Single Output Port, which means the transformer sends all features to the &lt;Generic&gt; port. They are distinguished from one another by the value of their fme_feature_type attribute.</li>
+<li>The writer feature type has the CSV File Name set to fme_feature_type and the Schema Source set to Schema From Schema Feature. This setting tells the writer feature type to use the schema from the features coming out of the FeatureReader's &lt;Schema&gt; port and to split them into separate CSV files based on the feature type names.</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learn more about working with schema features in the next course in this learning path, </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/construct-schema-dynamically-with-the-schemascanner" target="_blank" rel="noopener">Construct Schema Dynamically with the SchemaScanner</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">See&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407544150029-Dynamic-Workflows-Destination-Schema-Contains-Different-Feature-Type-Names" target="_blank" rel="noopener">this article</a><span style="font-family: inherit; font-size: 1em;"> for more on the specific kind of workflow shown in the example above. You can also view the example here:&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DesktopAdvanced/dynamic-schema-feature-example.fmw" target="_blank" rel="noreferrer noopener">dynamic-schema-feature-example.fmw</a><span style="font-family: inherit; font-size: 1em;">&nbsp;(C:\FMEData\Resources\DesktopAdvanced\dynamic-schema-feature-example.fmw).</span></p>
+</blockquote>
+<h2 id="constructed-attribute-schemas">Constructed Attribute Schemas</h2>
+<p>You can also manually construct schema features using lists in FME. The attributes in the list define the schema. For example:</p>
+<p><img class="image image-block image-center" src="images/1723758527421.png" alt="Constructing a schema feature" width="413" height="220" /></p>
+<p>You can tell the writer to use this schema in preference to any others by selecting it as the Source Schema:</p>
+<p><img class="image image-block image-center" src="images/1723758591693.png" alt="Setting Schema Source to Schema From Schema Feature" width="378" height="210" /></p>
+<h2 id="fme-data-types">FME Data Types</h2>
+<p>The methods covered in this course allow the user to define attribute types in an output schema. There is a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FeatureTypeProperties/FME-Data-Types.htm" target="_blank" rel="noopener">set of valid data types in FME</a>, which include:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">General Field Type</th>
+<th scope="col">Specific Field Types</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>Character Fields</td>
+<td>fme_varchar(width), fme_char(width), fme_char</td>
+</tr>
+<tr>
+<td>Integer Fields</td>
+<td>fme_uint8, fme_int16, fme_uint16, fme_int32, fme_uint32, fme_int64,fme_uint64</td>
+</tr>
+<tr>
+<td>Numeric Fields</td>
+<td>fme_decimal(width,decimal), fme_real32, fme_real64</td>
+</tr>
+<tr>
+<td>Date-Time Fields</td>
+<td>fme_datetime, fme_time, fme_date</td>
+</tr>
+<tr>
+<td>Other Fields</td>
+<td>fme_buffer, fme_boolean</td>
+</tr>
+</tbody>
+</table>

@@ -1,0 +1,77 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Publish a workspace and register it with the Data Download service.&nbsp;</li>
+<li>Alter the folder structure of the Data Download results.</li>
+<li>Run a workspace with the Data Download service and inspect the output.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-a-workspace-to-fme-flow.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-a-workspace-to-fme-flow.fmw</span></li>
+</ul>
+<h2>Data Download Service</h2>
+<p>The Data Download service is one of the common FME Flow transformation services. The service allows you to download a workspace's output data after the workspace finishes running on FME Flow. Instead of writing the data to the location you set in the Writer, FME Flow packages the data into a zipped file and presents it to the user as a URL linking to the download. FME Flow uses a zip file download to include multiple datasets in the output results and accommodate folder-based datasets containing multiple files.&nbsp;</p>
+<p><img src="images/1748624413107.jpg" alt="" /></p>
+<p>When authoring the workspace in FME Workbench, you can specify and control which datasets to include in the results, the format of the data, and which coordinate system the data uses.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>It is not possible to execute a <span class="SearchHighlight SearchHighlight1">data</span>&nbsp;<span class="SearchHighlight SearchHighlight2">download</span>&nbsp;on a&nbsp;<span class="mc-variable ProductNames.workspace variable">workspace</span> whose output destination is a <span class="SearchHighlight SearchHighlight1">data</span>base format. Data download can only be used with workspaces that write single or multiple files.&nbsp;</p>
+</blockquote>
+<h2>Setting Workspace Services&nbsp;</h2>
+<p>The transformation services you register a workspace with can be set and edited directly on FME Flow or when publishing the workspace from FME Workbench.&nbsp;</p>
+<p>You register workspace services when publishing a workspace from FME Workbench to FME Flow. To change a workspace's services, you must complete the entire publishing process again; republishing a workspace does not alter the services from settings used when you first published the workspace.&nbsp;</p>
+<p><img src="images/1746043814970.jpg" alt="" width="601" height="511" /></p>
+<p>For workspaces on FME Flow, modifying the services on FME Flow is easier than going through the entire publishing process again in FME Workbench. However, for the Data Download service, you can edit the folder path structure of the data in the zipped folder when publishing.&nbsp;</p>
+<h2>Data Download Folder Structure&nbsp;</h2>
+<p>By default, the data download folder structure within the zip file separates datasets by writer format into folders. You may alter the Data Download zip file folder structure when publishing from FME Workbench.&nbsp;</p>
+<p><img src="images/1746046757027.jpg" alt="" width="1163" height="756" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>As of FME 2025.0.1, you cannot alter the data download folder structure from FME Flow and it must be done while publishing from FME Workbench.&nbsp;</p>
+</blockquote>
+<h2>Exercise</h2>
+<p>Sven continues with his workspace, which filters Park data by neighborhood in Vancouver and produces KML output of Parks by neighborhood and an HTML summary report of the Parks.&nbsp; Sven recently learnt about the Data Download service on FME Flow and thinks it will benefit his colleagues to access the output Parks data using his workspace.&nbsp;&nbsp;</p>
+<p>Sven continues working in his previous workspace in FME Workbench.&nbsp; Now, he will publish it again and register it with the Data Download service and customize the zip file path for the output.&nbsp;</p>
+<p>Follow along with Sven's steps as he configures his workspace to use the Data Download service with a custom output zip file path.&nbsp;</p>
+<h3>1) Open Starting Workspace</h3>
+<p>Sven returns to his <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-a-workspace-to-fme-flow.fmw" target="_blank" rel="noopener">workspace</a> in FME Workbench (<span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-a-workspace-to-fme-flow.fmw)</span>.&nbsp;</p>
+<p><img src="images/1746123379661.jpg" alt="" width="1326" height="297" /></p>
+<h3>2) Publish Workspace</h3>
+<p>Sven clicks Publish on the top toolbar to open the publishing wizard. He selects the Training repository, ensures the workspace name is deliver-data-on-demand.fmw, and clicks Next.&nbsp;</p>
+<p><img src="images/1748624951983.jpg" alt="" width="527" height="565" /></p>
+<h3>3) Change Zip File Path for Data Download</h3>
+<p>Sven registers the workspace with the Data Download and Job Submitter services. Next to Data Download, Sven clicks the Edit button. To modify the Writers in Download, Sven clicks the ellipses button to open a selection list for the writers. He ensures both the OGCKML and HTML writers are selected and then clicks More.</p>
+<p><img src="images/1746128274440.jpg" alt="" width="799" height="622" /></p>
+<p>He further customizes the output by altering the Path in Zip File for each dataset. For the KML output, Sven configures the KML datasets to be grouped into a folder called ParksByNeighborhood. For the HTML file, Sven would like easy access to it so that it isn't nested in a folder, so he removes the default folder and leaves the file name VancouverParks.html.&nbsp;</p>
+<table style="border-collapse: collapse; width: 33.9729%; height: 33px;" border="1">
+<tbody>
+<tr>
+<td style="width: 50.0282%;">Output [OCGKML]</td>
+<td style="width: 50.0282%;">ParksByNeighborhood</td>
+</tr>
+<tr>
+<td style="width: 50.0282%;">VancouverParks [HTML]</td>
+<td style="width: 50.0282%;">VancouverParks.html</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/1746128950754.jpg" alt="" /></p>
+<p>Sven clicks OK three times to close all the windows and then clicks Publish to finish publishing the workspace to FME Flow.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>If publishing fails, you might receive the following error message in the translation log:</p>
+<p><span style="font-family: 'courier new', courier;">Publish Failed - FME Flow encountered an error and reported the following message. Failed to publish item publish-a-workspace-to-fme-flow.fmw to repository Training. Reason was: The following readers or writers are included in an enabled service, but are not present in the workspace: [GML_1] Request to http://localhost/fmeapiv4/repositories/Training/items/upload?overwrite=true returned status code 422.</span></p>
+<p>This is a known issue and renaming the workspace to a different name, such as deliver-data-on-demand.fmw, while publishing is the current workaround.&nbsp;</p>
+</blockquote>
+<h3>4) Navigate to FME Flow</h3>
+<p>Sven checks the translation log to ensure the workspace was published successfully. Then, he clicks the Direct Link URL to open the FME Flow Run Workspace page directly.&nbsp;</p>
+<p><img src="images/1748625074988.jpg" alt="" width="1013" height="270" /></p>
+<h3>5) Run the Workspace with the Data Download Service</h3>
+<p>Sven selects the Data Download service and clicks Run to submit the job.&nbsp;</p>
+<p><img src="images/1748625142229.jpg" alt="" width="625" height="525" /></p>
+<h3>6) Inspect Data Download Output</h3>
+<p>After completing the job, Sven clicks on the Data Download URL link, and the zip file downloads.&nbsp;</p>
+<p><img src="images/1748625264239.jpg" alt="" width="941" height="308" /></p>
+<p>Sven extracts the zip file and opens the contents.&nbsp;</p>
+<p><img src="images/1746129545476.jpg" alt="" width="845" height="231" /></p>
+<p>Now, Sven can publish his workspaces using the Data Download so that his colleagues can run them and gain easy access to their data faster than ever before.&nbsp;</p>

@@ -1,0 +1,238 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Understand what triggers are and how to use them.</li>
+<li>Know the difference between internal and external actions.</li>
+<li>Understand the variety of protocols available in Automations.&nbsp;</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="how-to-build-an-automation">Build Basic Automations</h2>
+<p>FME Flow Automations are flexible and can tailor automated workflows to your needs. The various triggers and actions that build an Automation primarily support this flexibility. Each trigger or action is a node. You connect nodes on the Automation canvas to control the order of events within your Automation. Nodes communicate by sending JSON messages to each other.&nbsp;</p>
+<p><img src="images/1752182880318.jpg" alt="" /></p>
+<h4>Triggers</h4>
+<p>All Automations begin with a trigger, which waits for an event to occur and kicks off the workflow in response. The event that a trigger waits for and listens to can come from an external client or within FME Flow.&nbsp;</p>
+<p><img src="images/1752182737229.jpg" alt="" /></p>
+<p>Some common Triggers in FME Flow Automations include:</p>
+<ul>
+<li>FME Flow Schedule
+<ul>
+<li>Completes workflow tasks at specific times in the future.</li>
+<li>For example, running a workspace that processes data at a set time interval.</li>
+</ul>
+</li>
+<li>Resource or Network Directory
+<ul>
+<li>Monitors activity on an <span class="mc-variable ProductNames.ProductName-FMEFlow variable">FME&nbsp;Flow</span>&nbsp;<a class="MCXref xref" href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Resources.htm">Resources</a> folder or other file location, and sends JSON messages about that activity, including when additions, changes, and deletions occur to files and folders.</li>
+<li>For example, a file is uploaded to a shared network drive and immediately processed by a workspace.</li>
+</ul>
+</li>
+<li>Webhook&nbsp;
+<ul>
+<li>Receives JSON and other data in the body of an HTTP POST, PUT, or DELETE request message.</li>
+<li>For example, an external application sends a webhook message that FME Flow receives and processes.</li>
+</ul>
+</li>
+</ul>
+<h4>Actions</h4>
+<p>After an Automation triggers, the next event is an action. FME Flow divides actions into two categories: internal and external. Internal actions process messages and perform actions on FME Flow, like running a workspace. External actions send messages to external clients or other FME Flow processes. Usually, an internal action occurs before an external action; however, Automations are flexible. You can use them in any order and have as many actions as you need in a single Automation.&nbsp;</p>
+<p><img src="images/1752182953034.jpg" alt="" /></p>
+<p>Internal actions in FME Flow Automations include:</p>
+<ul>
+<li>Run a Workspace</li>
+<li>Run a Dynamic Workspace</li>
+<li>Log a Message</li>
+<li>Filter Messages</li>
+<li>Merge Messages</li>
+</ul>
+<p><img src="images/1752183000671.jpg" alt="" /></p>
+<p>Some everyday External Actions in Automations include:</p>
+<ul>
+<li>Email
+<ul>
+<li>Delivers emails via the SMTP protocol.</li>
+<li>For example, an email informs users once their data update is complete.</li>
+</ul>
+</li>
+<li>FTP Directory
+<ul>
+<li>Uploads files to specified FTP hosts.</li>
+<li>For instance, FME Flow uploads a file generated from a workspace to an FTP site.</li>
+</ul>
+</li>
+<li>HTTP Request
+<ul>
+<li>Posts HTTP requests to a specified URL.</li>
+<li>For example, FME Flow sends an HTTP message containing workspace results to an external application.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">For a full description of the available triggers and actions, please visit our</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME_Server_Documentation/WebUI/Automations-General/Automations.htm" target="_blank" rel="noreferrer noopener">&nbsp;Automations documentation</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="clients">Clients</h2>
+<p>Let's look at the different components of an Automation in more detail.</p>
+<p><img src="images/1752101446273.jpg" alt="" width="1019" height="456" /></p>
+<p>A client is a user or system that sends or receives a message to/from FME Flow. The client may be a physical person or just a component in a computer system. Either way, a client is usually not a core part of FME Flow but someone or something that interacts with it. Triggers receive the incoming notification from a client. Two triggers are exceptions, Schedules and System Events, whereby FME Flow is the client sending the message.</p>
+<p>For example, a database update might trigger a notification to FME Flow, in which case the database system is the client. However, a client could also be a person who, for example, triggers a notification by sending an email to FME Flow.</p>
+<p>Actions perform functions internally on FME Flow or send outgoing notifications to clients. Again, the exception is an FME Flow Topic, where the receiving client is FME Flow to instigate other workflows, instead of an external client.&nbsp;</p>
+<h2 id="protocols">Protocols</h2>
+<p>A protocol is a data exchange system between FME Flow and a client.</p>
+<p>Automations exchange data between FME Flow and a client. Protocols are how FME Flow and the client send and receive messages. FME Flow defines each Trigger and Action using a particular communication protocol. For example, to trigger an incoming message by email, you create an Automation using an Email - SMTP Trigger. To notify a Java Message Service, you make an Automation containing a JMS Message Action.</p>
+<p>FME Flow has many different protocols; some are available as Triggers, others as Actions, and some are both.</p>
+<p>This table lists the different Trigger and Action protocols. FME Flow pre-defines the protocols; you do not need to define them in the web interface.&nbsp;</p>
+<table class="featureTable sort_table" style="width: 100%;">
+<thead class="thead sorted">
+<tr>
+<th style="width: 18.4943%;" scope="col">Protocol</th>
+<th style="width: 60.7201%;" scope="col">Description</th>
+<th style="width: 10.802%;" scope="col">Trigger</th>
+<th style="width: 10.1473%;" scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td style="width: 18.4943%;">Amazon S3</td>
+<td style="width: 60.7201%;">Monitoring activity in an AWS S3 bucket/Communication to Amazon's Simple Storage Service.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Amazon SNS</td>
+<td style="width: 60.7201%;">Communication with Amazon's Simple Notification Service.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Amazon SQS</td>
+<td style="width: 60.7201%;">Communication with Amazon's Simple Queue Service.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Azure Event Grid</td>
+<td style="width: 60.7201%;">Communication with Microsoft Azure Events.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Dropbox</td>
+<td style="width: 60.7201%;">Monitoring activity in a Dropbox folder/Communicating a notification (file) to the Dropbox web service.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Email (IMAP)</td>
+<td style="width: 60.7201%;">Receive email messages from an IMAP Server.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Email (SMTP)</td>
+<td style="width: 60.7201%;">FME Flow itself receives email messages/Communication via an email server.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Filter</td>
+<td style="width: 60.7201%;">Test incoming messages for the presence of a specified string.</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FME Flow Topic</td>
+<td style="width: 60.7201%;">Receive/send messages to a Topic to initiate workflow processes.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FME Workspace</td>
+<td style="width: 60.7201%;">Run an FME Form Workspace published to FME Flow.</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FME Dynamic Workspace</td>
+<td style="width: 60.7201%;">Run an FME Form Workspace published to FME Flow, with the repository and workspace name coming from output keys in the Automation.</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">FTP Directory</td>
+<td style="width: 60.7201%;">Monitor activity/upload a file to an FTP Site.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">HTTP Request</td>
+<td style="width: 60.7201%;">Post HTTP requests to the specified URL.</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">JMS</td>
+<td style="width: 60.7201%;">Communication with a Java Message Service.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Log</td>
+<td style="width: 60.7201%;">Write Event/Automation details to a log.</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Merge</td>
+<td style="width: 60.7201%;">Combine messages before proceeding downstream in an Automation.</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Resource or Network Directory</td>
+<td style="width: 60.7201%;">Monitor activity in a resource location or network directory.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">SFTP Directory</td>
+<td style="width: 60.7201%;">Communication with an SFTP site.</td>
+<td style="width: 10.802%;">&nbsp;</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Schedule</td>
+<td style="width: 60.7201%;">Complete workflow tasks at specific times in the future.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">System Events</td>
+<td style="width: 60.7201%;">Communication with FME Flow systems.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">UDP</td>
+<td style="width: 60.7201%;">Communication via a User Datagram Protocol port.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">WebSocket</td>
+<td style="width: 60.7201%;">Communication via a WebSocket channel.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">Y</td>
+</tr>
+<tr>
+<td style="width: 18.4943%;">Webhook</td>
+<td style="width: 60.7201%;">Receive messages sent as HTTP Post requests from another application.</td>
+<td style="width: 10.802%;">Y</td>
+<td style="width: 10.1473%;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Each protocol has different parameters to define when you add the trigger or action to the Automation. For example, when you use an Email (SMTP) external action, you must specify the SMTP server and provide credentials to access it. You will learn more about those in the following lesson. For now, focus on when you would use the different protocols to automate workflows.</p>
+<p>&nbsp;</p>
