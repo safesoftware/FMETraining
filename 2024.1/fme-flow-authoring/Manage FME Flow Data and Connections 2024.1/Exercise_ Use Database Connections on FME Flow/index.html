@@ -1,0 +1,70 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Publish a database connection with a workspace to FME Flow</li>
+<li>Manage and use database connections on FME Flow</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-use-database-connections-on-fme-flow.fmw" target="_blank" rel="noopener">Starting workspace</a><span style="font-weight: 400;"> | C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-use-database-connections-on-fme-flow.fmw</span></li>
+</ul>
+<h2>Exercise</h2>
+<p>For this exercise, you&rsquo;re adapting a workspace to read data from a PostGIS database. The workspace reads in Parks points and clips them to a layer of neighborhood polygons to store parks in each neighborhood. You&rsquo;ve built the workspace and are now replacing the Readers to read from the database; the old Readers have already been removed. Then, you must publish the workspace and database connection to FME Flow.&nbsp;</p>
+<h2>1) Open the Starting Workspace</h2>
+<p><span style="font-weight: 400;">Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-use-database-connections-on-fme-flow.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench.</span></p>
+<p>The workspace is supposed to read in Neighborhood polygons and Parks point locations, but these Readers haven&rsquo;t been added yet. For now, there are bookmarks to mark the place of the Readers. The Clipper clips Parks by the Neighborhood boundaries, and the writer feature type writes out a separate layer of schools for each neighborhood. This example workspace uses a NULL writer, which doesn't actually write data.&nbsp;</p>
+<p><img src="images/1734114536023.jpg" alt="" /></p>
+<h2>2) Create Database Connection</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can skip this step while taking a Safe Software-hosted training course. The Database Connection FME Training PostGIS Database should already exist on your training machine.&nbsp;</p>
+</blockquote>
+<p><span style="font-weight: 400;">You can connect to databases using Database Connections. Database connections provide a convenient and secure way to store and reuse these connection parameters. Each time you need to use the same connection in a workspace, you can use the saved connection, rather than re-entering the connection parameters. If the connection parameters change, you can edit them in one place rather than in each workspace that uses the connection.</span></p>
+<p><span style="font-weight: 400;">Database Connections require credentials. In a web browser, visit <a href="http://fme.ly/database" target="_blank" rel="noopener">http://fme.ly/database</a>. This shows the credentials for a PostGIS database running on Amazon RDS.</span></p>
+<p><span style="font-weight: 400;">Select Tools &gt; FME Options from the menu bar.</span></p>
+<p><span style="font-weight: 400;">To create a new connection, click the Database Connections category icon and the [+] button. In the "Add Database Connection" dialog, enter the connection parameters obtained through the web browser.</span></p>
+<p><span style="font-weight: 400;">Give the connection a name (you can call it FME Training PostGIS Database) and click Save.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734114902449.png" alt="" /></span></p>
+<p><span style="font-weight: 400;">Then click OK to close the FME Options dialog.</span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">If you are unable to enter FME Training PostGIS Database for the Name, that means this connection already exists on your machine. You do not need to create it; you can simply select that existing connection in step 3.</span></p>
+</blockquote>
+<h2><span style="font-weight: 400;">3) Add Readers</span></h2>
+<p><span style="font-weight: 400;">Add a PostGIS Reader using the FME Training PostGIS Database connection.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734115188180.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Open the Parameters, expand Public and select the Neighborhoods and Parks tables.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734115705112.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Click OK to select the tables and then again to add the Reader Feature Types to the canvas.</span></p>
+<h2><span style="font-weight: 400;">4) Connect Readers to Clipper</span></h2>
+<p><span style="font-weight: 400;">Place the Readers in their bookmarks and connect them to the Clipper. The Parks reader connects to the Candidate port on the Clipper, and the Neighborhoods reader connects to the Clipper port.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734115812751.jpg" alt="" /></span></p>
+<h2><span style="font-weight: 400;">5) Run Workspace</span></h2>
+<p><span style="font-weight: 400;">Run the workspace and optionally Save the workspace.&nbsp;</span></p>
+<h2><span style="font-weight: 400;">6) Publish Workspace and Database Connection to FME Flow</span></h2>
+<p><span style="font-weight: 400;">Click Publish in the Toolbar or go to File &gt; Publish to FME Flow. Select your web connection to FME Flow. Select the Training repository to store the workspace in.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734116560750.jpg" alt="" /></span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">If you are taking a Safe Software-hosted training course, your connection to FME Flow should already exist on your training machine. If you need to create a new connection to FME Flow or create the Training repository, you can follow the <a href="https://academy.safe.com/path/fme-flow-authoring/publish-workflows-to-the-web" target="_blank" rel="noopener">Publish Workflows to the Web</a> learning path to learn how.&nbsp;</span></p>
+</blockquote>
+<p><span style="font-weight: 400;">Make sure you upload the FME Training PostGIS Database connection. If the database connection is not present on FME Flow, you won&rsquo;t be able to read the data from the PostGIS database when running the workspace. </span></p>
+<p><span style="font-weight: 400;"><img src="images/1734116866552.jpg" alt="" /></span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">If the database connection already exists on FME Flow, you do not need to publish the connection again unless you have updated the connection details and would like to overwrite the existing one on FME Flow. By default, connections that already exist on FME Flow will not be selected.&nbsp;</span></p>
+</blockquote>
+<p><span style="font-weight: 400;">Register the workspace with the Job Submitter service and click Publish.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117006697.jpg" alt="" /></span></p>
+<h2><span style="font-weight: 400;">6) Investigate Database Connection on FME Flow.</span></h2>
+<p><span style="font-weight: 400;">Open FME Flow and navigate to Connections &amp; Parameters &gt; Database Connections. The page should list the database connection we just published with the workspace, any database connections already present on FME Flow, and allow you to create new connections.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117078486.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Clicking on the connection will open the connection details and allow them to be edited if needed.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117132184.jpg" alt="" width="863" height="696" /></span></p>
+<p><span style="font-weight: 400;">We don&rsquo;t need to edit this connection right now, so click OK to close the connection details page.&nbsp;</span></p>
+<h2><span style="font-weight: 400;">8) Run Workspace on FME Flow</span></h2>
+<p><span style="font-weight: 400;">Click Run Workspace on the side menu. Select the workspace that was published in Step 6.&nbsp;</span></p>
+<p><span style="font-weight: 400;">Under Published Parameters, the Connection parameter referencing the database connection is visible. The drop-down allows you to select a different connection if desired. Leave FME Training PostGIS Database as the selected connection for this exercise and click Run.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117637443.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">FME Flow uses the database connection to access the Neighborhoods and Parks tables from the PostGIS database and run the workspace successfully.&nbsp;</span></p>
+<p>You can reuse this database connection to run other workspaces on FME Flow, as well as share the connection with other FME Flow users to use it when running their workspaces. The database connection can easily be updated by overwriting the existing connection on FME Flow when publishing or can be edited directly on FME Flow in the Database Connections store.&nbsp;</p>

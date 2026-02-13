@@ -17,6 +17,11 @@
 <li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\create-points-from-coordinates-complete.fmw</li>
 </ul>
 </li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
 </ul>
 <h2 id="connect-to-a-database">Adding a VertexCreator</h2>
 <p>Jennifer expects this data to have point geometry, but currently, it only exists as tabular data. However, she has Latitude and Longitude attributes, so she knows she can use the <strong>VertexCreator</strong> transformer to generate points.</p>
@@ -36,6 +41,14 @@
 </tbody>
 </table>
 <p>She clicks <strong>OK </strong>to close the dialog.</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p><strong>⭐ New for FME 2024.2: </strong>you can now set feature coordinate systems directly in the VertexCreator. If you are using 2024.1 or later, feel free to set it to LL84 and then skip to the Add Geodatabase Writer step below.</p>
+</blockquote>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>Note that the instructions for the rest of the course assume you used the JSONFragmenter's Attributes To Expose parameter instead of an AttributeExposer. The screenshots might look slightly different, but the workspace will function similarly.</p>
+</blockquote>
 <h2 id="connect-to-a-database">Identifying Coordinate System Problems</h2>
 <p><span style="font-family: inherit; font-size: 1em;">Jennifer clicks the <strong>Run</strong> button to run her workspace.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">The <strong>VertexCreator</strong> transformer runs and creates point geometry for her features.</span></p>
@@ -54,7 +67,7 @@
 <p><img src="images/1712944464451.png" alt="Adding a CoordinateSystemSetter" width="600" /></p>
 <p>She opens its parameters and sets <strong>Coordinate System</strong> to <strong>LL84</strong>, then clicks <strong>OK</strong>.</p>
 <blockquote>
-<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
 <p>FME automatically reads coordinate systems when reading from spatial data. However, since we created the points from attributes, no coordinate system information is available to read. So, we have to manually define the system.&nbsp;</p>
 </blockquote>
 <p>She runs her workspace.</p>
@@ -66,11 +79,11 @@
 <p>She types Esri Geo and Quick Add opens. She notices there are many geodatabase formats available in FME. She chooses the one called <strong>Esri Geodatabase (File Geodb Open API) </strong>under the <strong>Writers </strong>header. This format does not require an Esri licesnse to use.</p>
 <p><img src="images/1712944829194.png" alt="Adding an Esri Geodatabase Open API writer using Quick Add" width="600" /></p>
 <blockquote>
-<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
 <p>Make sure you are selecting &nbsp;Esri Geodatabase (File Geodb Open API) under the <strong>Writers </strong>section. People often accidently select from the Readers section here, which is not what we want.</p>
 </blockquote>
 <p>Once she has selected that format in the Quick Add list, making sure to select the one under&nbsp;<strong>Writers</strong> and not <strong>Readers,</strong> she hits Enter or double-clicks it.</p>
-<p>The <strong>Add Writer </strong>dialog opens. She sets the <strong>Dataset</strong> parameter to C:\FMEData\Output\Training\BusinessOwners.gdb:</p>
+<p>The <strong>Add Writer </strong>dialog opens. She sets the <strong>Dataset</strong> parameter to C:\FMEData\Output\Training\BusinessOwners.gdb. The writer will create this folder if it does not already exist:</p>
 <p><img src="images/1712945243075.png" alt="Add Writer dialog filled out" width="500" /></p>
 <p>She then clicks the&nbsp;<strong>Parameters </strong>button:</p>
 <p><img src="images/1712945345653.png" alt="Parameters button" width="500" /></p>
@@ -78,7 +91,7 @@
 <p><img src="images/1717175382522.png" alt="Enabling Overwrite Existing Geodatabase" width="526" height="283" /></p>
 <p>She clicks&nbsp;<strong>OK</strong> to add the writer.</p>
 <blockquote>
-<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
 <p>We'll leave the <strong>Feature Class or Table Definition </strong>mode as <strong>Automatic</strong>, the default. This setting means the writer feature type will adopt the schema of any features connected to it. We'll discuss schema handling more in the coming lessons.&nbsp;&nbsp;</p>
 </blockquote>
 <p>She sets <strong>Feature Class or Table Name </strong>to BusinessOwners. She sets the <strong>Geometry</strong> to geodb_point:</p>

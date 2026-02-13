@@ -12,7 +12,7 @@
 <p>Parallel processing in FME covers not an entire workspace but just a specific subsection of the workspace. You control where parallel processing occurs through custom transformers, a natural method to subdivide a large translation.</p>
 <p>Parallel processing runs on features grouped by attribute values, similar to Group-Based transformers. Custom transformers using parallel processing assign each group to a separate process.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">You would use multiple engines on FME Flow to process multiple workspaces in parallel.</span></p>
 </blockquote>
 <h2 id="activating-parallel-processing">Activating Parallel Processing</h2>
@@ -89,7 +89,7 @@
 </tbody>
 </table>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">These numbers - we should note - are the maximum number of processes&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">at any one time</strong><span style="font-family: inherit; font-size: 1em;">. It&rsquo;s possible to divide data into more groups and process them separately, but they won&rsquo;t coincide. For example, given a quad-core machine, moderate processing, and 20 groups of features, there will be a total of 20 processes, but only four will run at any one time. When one of the four finishes, a new one is started.</span></p>
 </blockquote>
 <h2 id="parallel-processing-groups">Parallel Processing Groups</h2>
@@ -99,7 +99,7 @@
 <p>Instead, you can publish this parameter (and one for Group By Mode) to make them available as one of the custom transformer parameters:</p>
 <p><img class="image image-block image-center" src="images/1710528566256.png" alt="Publishing this parameter makes parallel processing mode available in custom transformers" width="647" height="277" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Parallel processing is most effective in two specific scenarios. The first scenario is a small number of groups, each with a large amount of processing. Parallel processing is less effective when there are many small groups. A second scenario is many small tasks that the workspace is offloading elsewhere. For example, when the workspace passes features to a web service HTTPCaller transformer, it&rsquo;s most efficient to have FME fire off as many requests as it can as quickly as possible.</span></p>
 </blockquote>
 <h2 id="parallel-processing-and-custom-transformer-design">Parallel Processing and Custom Transformer Design</h2>
@@ -108,16 +108,16 @@
 <p>It&rsquo;s essential to be aware that there can be no relationship between features in different groups because each group is processed independently. If features are related, and their results depend on each other, they must be in the same group.</p>
 <p>The easiest way to think of this is that the custom transformer is a Group-Based transformer. Because it is a wrapper for all the individual FME transformers in the definition, it allows those transformers to operate in groups, even if they are Feature-Based.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Learn more about&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Group_Based_Transformers.htm" target="_blank" rel="noopener">Group-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Feature_Based_Transformers.htm" target="_blank" rel="noopener">Feature-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;transformers.</span></p>
 </blockquote>
 <h2 id="creating-artificial-groups">Creating Artificial Groups</h2>
 <p>Sometimes, none of the incoming data is related to each other and must be split into arbitrary groups for processing. In these cases, where there is no identifier to define groups, one can be created manually by generating attributes with the ModuloCounter or RandomNumberGenerator transformers.</p>
 <p>For example, the author of the workspace below has many address features from which to create labels. To speed up the process, they activate parallel processing:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-for-performance/process-data-in-bulk-with-custom-transformer-parallel-processing/images/1644343823423.png" alt="Using parallel processing to speed use of a custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/1644343823423.png" alt="Using parallel processing to speed use of a custom transformer" /></p>
 <p>They could group by&nbsp;<code>PostalCode</code> but choose not to because all addresses fall inside only one of two postal codes. Therefore, they created an artificial group using&nbsp;ModuloCounter. Note the Group By parameter in the custom transformer is set to the&nbsp;<code>_modulo_count</code>&nbsp;attribute.</p>
 <p>Creating only one group per intended FME process is best in such a scenario. For example, a maximum of eight processes at a time are permitted on a quad-core (four-core) computer with Extreme parallel processing. Therefore - as shown here - the optimum number of groups to use is also eight.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">See&nbsp;</span><strong style="font-family: inherit; font-size: 1em;"><a href="https://engage.safe.com/blog/2016/12/parallel-processing-tips-evangelist159/" target="_blank" rel="noopener">this blog article</a></strong><span style="font-family: inherit; font-size: 1em;">&nbsp;for more information about - and some special techniques for - generating parallel processing groups. It&rsquo;s beneficial for a custom transformer with multiple input ports.</span></p>
 </blockquote>

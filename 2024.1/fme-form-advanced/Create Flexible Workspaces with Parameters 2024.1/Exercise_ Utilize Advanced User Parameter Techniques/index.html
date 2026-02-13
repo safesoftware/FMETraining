@@ -28,6 +28,11 @@
 <li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-utilize-advanced-user-parameter-techniques-complete-advanced.fmw</li>
 </ul>
 </li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_self">Parks.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks.tab</li>
+</ul>
+</li>
 </ul>
 <h2>Introduction</h2>
 <p>In a previous project, you created a workspace to calculate neighborhood parks' size and average size.</p>
@@ -49,7 +54,7 @@
 <h2>2) Add User Parameter</h2>
 <p>If we write the output to a folder specific to the current user, we need to know who that user is.</p>
 <p>So, next, create a Text user parameter to ask for the user's name:</p>
-<p><img src="images/1724348512242.png" alt="Adding a Text user parameter for Username" width="372" height="277" /></p>
+<p><img src="images/1736894296979.png" alt="Adding a Text user parameter for Username" width="372" height="277" /></p>
 <p>Ensure that the Required checkbox is checked; we want users to enter a value here. Also, make sure to check Disable Attribute Assignment, as we don't want them to be able to select an attribute.</p>
 <h2>3) Add User Parameter</h2>
 <p>We can implement the requirements here in various ways; we'll use the version that involves sharing user parameters.</p>
@@ -57,11 +62,11 @@
 <p>Set the Name field to OutputFolder, Items to Select to Folders, and Default Value to C:\FMEData\Output\Training.</p>
 <p><img src="images/1724348518567.png" alt="OutputFolder user parameter" width="465" height="540" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Technically, we could use a Text parameter. But the File/Folder/URL option allows the user (in this case, you, since it's private) to browse to specify a path, which is a nicer experience than copying and pasting a path.</p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you encounter an Invalid Parameter warning, please double-check that your parameter configuration matches the screenshots above.</p>
 <p><img src="images/1723141610326.png" alt="Invalid Parameter warning dialog" width="435" height="141" /></p>
 <p>Note that unpublished parameters must have a default value, while published parameters do not require one. You will get this warning if you try to create an unpublished parameter without a default value.</p>
@@ -69,7 +74,7 @@
 <h2>4) Set Output Location</h2>
 <p>Now, let's use the two parameters we've created.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Ensure you deleted the two existing source/destination user parameters in step 1; otherwise, this step won't work!</p>
 </blockquote>
 <p>Locate the FME parameter for the Training [MITAB] writer's Destination MapInfo Folder parameter in the Navigator window and double-click it to open the editing dialog.</p>
@@ -80,7 +85,7 @@
 <p>You've now concatenated and embedded the two user parameters into the FME parameter.</p>
 <p>When you run the workspace, you will be prompted to enter your name, and then the output data will be written to C:\FMEData\Output\Training\&lt;Username&gt;.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>There are various ways we&nbsp;<strong>could</strong> have done this. We could have linked the OutputFolder parameter to <code>C:\FMEData\Output\Training\$(Username)</code> and then linked it to the FME Destination MapInfo parameter. You'll see in a moment why we didn't do that!</p>
 </blockquote>
 <h2>5) Add User Parameter</h2>
@@ -101,7 +106,7 @@
 <p>So, create a new user parameter of type Attribute Name. This one can be optional, as the user failing to select an attribute is equivalent to saying "no labels required":</p>
 <p><img src="images/1724348588673.png" alt="Creating the Attribute Name parameter" width="372" height="273" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Click the Run button and see what appears in the list of prompts; you should see a parameter with the prompt "Select the label attribute." But look! The parameter shows "No Attributes Available." Why is this?<br /><br />This is because the list of available attributes depends on where the parameter is used. Since we have yet to use the parameter, no attributes are available!<br /><br />What if we used the parameter in a location with attributes A and B and a different location with attributes B and C? In that case, the only attribute available to the parameter is B. A parameter of this type will only show attributes that exist <strong>in all places</strong> used.</p>
 </blockquote>
 <h2>8) Update LabelPointReplacer</h2>
@@ -112,7 +117,7 @@
 <p><img style="font-family: inherit; font-size: 1em;" src="images/1724348595332.png" alt="Using @Value() to get the value of an attribute specified by the user with an Attribute Name user parameter" width="451" height="117" /></p>
 <p>When the workspace runs, you are prompted to select an attribute to label the parks. If you choose no attribute (just point features), the LabelPointReplacer will not create any labels.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Note that we are using the <code>@Value()</code> function to retreive the value the attribute name stored in the user parameter LabelAttribute. If you were to set the Label parameter to the user parameter directly, e.g., <code>$(LabelAttribute)</code> without the <code>@Value()</code> function, the transformer would set the label to the attribute name instead of the value of that attribute.</p>
 </blockquote>
 <h2>9) Add Log Writer</h2>
@@ -154,7 +159,7 @@
 <p><img src="images/1724348638080.png" alt="Linking to destination user parameter" width="714" height="152" /></p>
 <p>When prompted, select the OutputFolder (private) parameter we created earlier.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>You might be wondering what the point of that last part was. Why did we link the parameter when both were already pointing to the same folder?<br /><br />The point is that the MapInfo and CSV writers now share a parameter defining their output folder. If we wish to change where they are being written, we only need to edit the private parameter to fix both writers. That's why we did what we did in step #4.<br /><br />If you don't believe me, try it and find out for yourself!</p>
 </blockquote>
 <h2>12) Set User Attribute</h2>

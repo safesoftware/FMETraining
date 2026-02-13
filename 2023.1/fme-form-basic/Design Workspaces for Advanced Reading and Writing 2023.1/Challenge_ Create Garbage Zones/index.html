@@ -28,46 +28,46 @@
 <p><strong>1) Sample Source Data</strong></p>
 <p>There are more features in the address database than we need for workspace construction and testing, so let's reduce that to a smaller sample.</p>
 <p>Rather than create a test dataset, here we'll use a Sampler transformer. There is a Sampler transformer in the "Transformers" bookmark, so move that transformer into the "Sample Addresses" bookmark and connect the PostalAddress feature type to it:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.203.Ex1.SamplerOnCanvas.png" alt="Adding a Sampler" /></p>
+<p><img class="image image-block image-center" src="images/Img3.203.Ex1.SamplerOnCanvas.png" alt="Adding a Sampler" /></p>
 <p>Inspect the Sampler's parameters. It will sample every 25th feature:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.204.Ex1.SamplerParams.png" alt="Setting Sampler parameters" /></p>
+<p><img class="image image-block image-center" src="images/Img3.204.Ex1.SamplerParams.png" alt="Setting Sampler parameters" /></p>
 <p>Run the workspace to be sure it is sampling the data correctly. Click on the magnifying glass on the Sampler's Sampled output port to view the data in the Visual Preview window. Note how many features come from the Sampler's Sampled port; you will need this number to answer the quiz.</p>
 <p><strong>2) Divide Data into Groups</strong></p>
 <p>Before trying to add the Zoning dataset into the workspace, let's try and create groups from the basic dataset. We can do this with a custom FME Hub transformer called the SpatialSorter.</p>
 <p>So move the SpatialSorter from the "Transformers" bookmark to the "Divide Residents" bookmark:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.205.Ex1.SpatialSorterOnCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.205.Ex1.SpatialSorterOnCanvas.png" alt="Adding a SpatialSorter" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.205.Ex1.SpatialSorterOnCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.205.Ex1.SpatialSorterOnCanvas.png" alt="Adding a SpatialSorter" /></a></p>
 <p>The SpatialSorter sorts data spatially (so features closer geographically become closer in the sorted output) and creates groups.</p>
 <p>Check the parameters for this transformer. Notice that the group parameter asks for group size, not the number of groups. Therefore, we'll need to calculate how many addresses there are when split into five groups.</p>
 <p><strong>3) Calculate Group Sizes</strong></p>
 <p>To calculate the number of addresses per group, we need the number of addresses and then divide that by five. We can do this with a combination of StatisticsCalculator and ExpressionEvaluator.</p>
 <p>So, enlarge the Divide Residents bookmark as required and move the StatisticsCalculator and ExpressionEvaluator transformers from the "Transformers" bookmark. Connect them up to the Sampler's Sampled port like so:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652477405608.png" alt="Connecting the StatisticsCalculator and ExpressionEvaluator" /></p>
+<p><img class="image image-block image-center" src="images/1652477405608.png" alt="Connecting the StatisticsCalculator and ExpressionEvaluator" /></p>
 <p><strong>4) Calculate Group Sizes</strong></p>
 <p>Inspect the parameters for the StatisticsCalculator. This transformer will tell us how many features there are (the Total Count). Pick an attribute for the first row of the Attribute column. Because we only want to count features, not create true statistics, it can be any attribute you like. Here, we are using COUNTRY.</p>
 <p>Check Total Count.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652477496729.png" alt="Setting up the StatisticsCalculator" /></p>
+<p><img class="image image-block image-center" src="images/1652477496729.png" alt="Setting up the StatisticsCalculator" /></p>
 <p>Click OK.</p>
 <p>In the ExpressionEvaluator, enter GroupSize in the New Attribute parameter. In the Arithmetic Expression field, enter the expression:</p>
 <pre><code>@ceil((@Value(COUNTRY.total_count)/5))<br />
 </code></pre>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652480742996.png" alt="Expression to evaluate" /></p>
+<p><img class="image image-block image-center" src="images/1652480742996.png" alt="Expression to evaluate" /></p>
 <p>The simplest way is to double-click the ceil function to add it, then double-click the TotalResidents attribute and manually add the /5 part.</p>
 <p>This expression will divide the number of residents into five groups, rounding up. The rounding up part is essential, and it's what the ceil function does.</p>
 <p>Run the translation and view the ExpressionEvaluator output in the Visual Preview window to ensure this part works. The TotalResidents should be 543, and the GroupSize should be 109 for each feature.</p>
 <p><strong>5) Group Residents</strong></p>
 <p>Now, look over the parameters for the SpatialSorter once more. We will leave Grid Size at 16 for now; this will give us a more coarse result but will run faster while we develop the workspace. Under the Group Size parameter, click the drop-down arrow and select Attribute Value &gt; GroupSize:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.209.Ex1.SpatialSorterParams.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.209.Ex1.SpatialSorterParams.png" alt="Setting SpatialSorter parameters" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.209.Ex1.SpatialSorterParams.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.209.Ex1.SpatialSorterParams.png" alt="Setting SpatialSorter parameters" /></a></p>
 <p>This sets the group size to the attribute just calculated.</p>
 <p>To create groups of addresses, move the Aggregator transformer to the "Group Residents" bookmark and connect it to the SpatialSorter's Sorted output port:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.210.Ex1.AggregatorCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.210.Ex1.AggregatorCanvas.png" alt="Adding an Aggregator" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.210.Ex1.AggregatorCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.210.Ex1.AggregatorCanvas.png" alt="Adding an Aggregator" /></a></p>
 <p>Inspect the parameters for the Aggregator. Set the Group By parameter to the GroupID attribute (in other words, aggregate features together in the groups created by the SpatialSorter):</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-workspace-prototyping/images/1652480833756.png" alt="Setting up Group By on the Aggregator" /></p>
+<p><img class="image image-block image-center" src="images/1652480833756.png" alt="Setting up Group By on the Aggregator" /></p>
 <p>Using an Inspector transformer, we can also set the Group By parameter, resulting in the data being represented with different colors for each group in the Visual Preview window. Connect an Inspector to the Aggregator's Aggregate output port, and then set the Group By to GroupID in the parameters. Run the translation, and you should find there are five sets of point aggregates in the output, each of which has approximately the same number of point features:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.212.Ex1.AggregatedResults.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.212.Ex1.AggregatedResults.png" alt="Viewing data in Visual Preview" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.212.Ex1.AggregatedResults.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.212.Ex1.AggregatedResults.png" alt="Viewing data in Visual Preview" /></a></p>
 <p><strong>Tip</strong></p>
 <p>The Inspector transformer can be used to inspect data, but with Visual Preview and feature caching, there is little reason to use it often. This case, where you want to add a group-by to help visualize your data in groups, is one of the cases where this transformer is useful.</p>
 <p>You can change the color of the groups by clicking on the Toggle Display Control button on the left-hand side of Visual Preview. Then, double-click on the quadrant/four-square icon to open the Geometry Drawing Styles dialog, where you can set the color. When the color is manually set, the quadrant icon will display the color.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.213.Ex1.DisplayControl.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.213.Ex1.DisplayControl.png" alt="Setting color in Visual Preview Display Control" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.213.Ex1.DisplayControl.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.213.Ex1.DisplayControl.png" alt="Setting color in Visual Preview Display Control" /></a></p>
 <p><br /><strong>6) Save Workspace</strong></p>
 <p>Save the workspace, including a date or version number (like GarbageCollection-2022-05-18.fmw).</p>
 <p>In this section, you learned to plan your workspace in sections and work on each section one at a time. The next step in the workspace will be to add in the Zoning data, create a spatial join, and calculate how many residents live in each property based on each address's zoning type.</p>
@@ -90,11 +90,11 @@
 </table>
 <p><img class="image image-block image-center" src="images/1699575697239.png" alt="Configured Add Reader dialog" width="475" height="266" /></p>
 <p>FME adds a reader to the Navigator window and a feature type to the canvas. Move the feature type into the Zoning bookmark:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.217.Ex2.ZoningReaderAdded.png" alt="Zones reader feature type on the canvas" /></p>
+<p><img class="image image-block image-center" src="images/Img3.217.Ex2.ZoningReaderAdded.png" alt="Zones reader feature type on the canvas" /></p>
 <p><strong>8) Create Spatial Join</strong></p>
 <p>To carry out a spatial join, we'll use a PointOnAreaOverlayer transformer, a type of join called Point-in-Polygon.</p>
 <p>So, move the PointOnAreaOverlayer transformer from the "Transformers" bookmark to the "Spatial Join" bookmark. Connect the newly added Zoning data to the Area port and the output from the Sampler to the Point port:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.218.Ex2.POAOCanvas.png" alt="Adding a PointOnAreaOverlayer" /></p>
+<p><img class="image image-block image-center" src="images/Img3.218.Ex2.POAOCanvas.png" alt="Adding a PointOnAreaOverlayer" /></p>
 <p>Inspect the PointOnAreaOverlayer parameters. Expand the Attribute Accumulation section and check Merge Attributes:</p>
 <p><img class="image image-block image-center" src="images/1699575790561.png" alt="Enabling Merge Attributes in the PointOnAreaOverlayer transformer parameters" width="466" height="196" /></p>
 <p>This transformer is the first we've used that has a live &lt;Rejected&gt; port. For now, we'll leave it to stop the translation since, during testing, we want to know about anything that causes a failure of the transformer.</p>
@@ -142,20 +142,20 @@
 <p>For example, zones RS-1, RS-2, and RS-3 are all single-family zones, and we assume two adults per address. This assumption makes it slightly more complicated because we need to match a zone type using a "begins with" string comparison.</p>
 <p>This match can be done using an AttributeManager with&nbsp;<strong>Conditional Values</strong>.</p>
 <p>This step is slightly complex, but luckily, the AttributeManager inside the "Transformers" bookmark is already set up for this purpose. So move the AttributeManager into the "Calculate Residents" bookmark and connect it to the PointOnAreaOverlayer's Point output port:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.220.Ex2.AttrManagerCanvas.png" alt="Adding an AttributeManager" /></p>
+<p><img class="image image-block image-center" src="images/Img3.220.Ex2.AttrManagerCanvas.png" alt="Adding an AttributeManager" /></p>
 <p>To see the Conditional Values, open the parameters dialog for the AttributeManager and click the drop-down arrow in the Attribute Value field for the Persons attribute. Choose Conditional Value:</p>
 <p><img class="image image-block image-center" src="images/1699575861744.png" alt="Viewing Conditional Values in the AttributeManager" width="665" height="510" /></p>
 <p>Doing so opens a Tester-like dialog with multiple conditions that test for each zone type and specify an attribute value to set them to:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.222.Ex2.AttrManagerConditional.png" alt="The Condition Statements in the already-configured AttributeManager" /></p>
+<p><img class="image image-block image-center" src="images/Img3.222.Ex2.AttrManagerConditional.png" alt="The Condition Statements in the already-configured AttributeManager" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If you want to challenge yourself, try adding a blank AttributeManager instead of moving the existing one. Then, create the conditional statements to match the image above.</span></p>
 </blockquote>
 <p><strong>10) Create Residents</strong></p>
 <p>We now know (or have approximated) the number of residents per address. However, we must use that number in a way that will affect the output. The simplest way to do this is to create multiple copies of each address, one for each resident.</p>
 <p>For example, we'll create eight address points for an address with eight residents.</p>
 <p>We can do this very simply with a Cloner transformer. So, move the Cloner transformer from the "Transformers" bookmark to the "Calculate Residents" bookmark. Connect the AttributeManager to the Cloner's input and its output to the StatisticsCalculator:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.223.Ex2.ClonerCanvas.png" alt="Adding a Cloner" /></p>
+<p><img class="image image-block image-center" src="images/Img3.223.Ex2.ClonerCanvas.png" alt="Adding a Cloner" /></p>
 <p>Inspect the Cloner parameters. For the Number of Copies parameter, click the drop-down arrow and choose Attribute Value &gt; Persons:</p>
 <p><img class="image image-block image-center" src="images/1699575931275.png" alt="Setting the Number of Copies parameter to the Persons attribute" width="678" height="422" /></p>
 <p>Doing so will create&nbsp;<em>&lt;Persons&gt;</em>&nbsp;copies of the original addresses (note that the transformer doesn't output the original as well, so the output is&nbsp;<em>&lt;Persons&gt;</em>&nbsp;features, not&nbsp;<em>&lt;Persons&gt;+1</em>).</p>
@@ -177,32 +177,32 @@
 <p><img class="image image-block image-center" src="images/1699575956284.png" alt="Adding a Junction to the Cloner Rejected port" width="403" height="166" /></p>
 <p>This Junction will handle the rejected output but quietly drop it without further fuss.</p>
 <p>Re-run the translation. The output should be five groups of point features again, but in a different pattern than the end of the previous section:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.226.Ex2.ResidentialResults.png" alt="Viewing the five groups of points" /></p>
+<p><img class="image image-block image-center" src="images/Img3.226.Ex2.ResidentialResults.png" alt="Viewing the five groups of points" /></p>
 <p><strong>12) Write the Output</strong></p>
 <p>Now, to write some output. The simplest method is to connect the Aggregator output to the PostalAddress output feature type and re-run the workspace.</p>
 <p>However, it would also be helpful to rename the output feature type and remove all its attributes since they are from the reader dataset and don't apply here. So open the writer feature type parameters dialog. In the Parameters tab, rename the feature type to GarbageZones.&nbsp;</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-use-multiple-readers-and-writers/images/1622238893073.png" alt="Rename feature type" /></p>
+<p><img class="image image-block image-center" src="images/1622238893073.png" alt="Rename feature type" /></p>
 <p>In the User Attributes tab, remove all the attributes being written.&nbsp;</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-use-multiple-readers-and-writers/images/1622238953045.png" alt="Remove all attributes on the User Attributes tab" /></p>
+<p><img class="image image-block image-center" src="images/1622238953045.png" alt="Remove all attributes on the User Attributes tab" /></p>
 <p>Your writer feature type should look something like this:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.227.Ex2.EditedWriterFT.png" alt="Adding the GarabageZones writer feature type" /></p>
+<p><img class="image image-block image-center" src="images/Img3.227.Ex2.EditedWriterFT.png" alt="Adding the GarabageZones writer feature type" /></p>
 <p>Also, we should change the GeoPackage writer parameter Overwrite Database to overwrite the database each time we run the workspace. To do this, find the GarbageZones [GEOPACKAGE] writer in the Navigator, expand the Parameters, double-click Overwrite Database, and then check the box and click OK:</p>
 <p><img class="image image-block image-center" src="images/1699576011256.png" alt="Enabling the Overwrite Database parameter for the Geopackage writer" width="506" height="245" /></p>
 <p>Enabling this parameter means we won't accumulate more and more results in the same dataset.</p>
 <p>Congratulations. Now, you have a dataset of addresses grouped by their new garbage collection zone. The following section will turn these points into non-overlapping polygons designating the zones.</p>
 <p><strong>13) Add a HullReplacer Transformer</strong></p>
 <p>Move the HullReplacer transformer from the "Transformers" bookmark into the "Create Boundaries" bookmark. Connect it between the Aggregator and writer feature type:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.231.Ex3.HullReplacerCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.231.Ex3.HullReplacerCanvas.png" alt="Adding a HullReplacer" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.231.Ex3.HullReplacerCanvas.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.231.Ex3.HullReplacerCanvas.png" alt="Adding a HullReplacer" /></a></p>
 <p>Notice how the HullReplacer has no cache because it is newly placed.</p>
 <p><strong>14) Re-Run the Workspace</strong></p>
 <p>Now, let's re-run the workspace. But rather than re-write the output data, we can run just the new transformer we added. Click on the HullReplacer transformer, and on the icons that pop up, click Run To This:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.232.Ex3.RunToThis.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.232.Ex3.RunToThis.png" alt="Using Run To This on the HullReplacer" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.232.Ex3.RunToThis.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.232.Ex3.RunToThis.png" alt="Using Run To This on the HullReplacer" /></a></p>
 <p>Notice how hovering shows what parts of the workspace will be run. Since we already have features cached to the Aggregator (assuming you haven't closed the workspace since it was last run), only the section between the Aggregator and the HullReplacer will be run.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -215,23 +215,23 @@
 </div>
 </div>
 <p>Click on the cached features on the HullReplacer's Hull output port to confirm the data. The output now includes polygons to prove that the translation has functioned correctly:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.233.Ex3.HullReplacerOutput.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.233.Ex3.HullReplacerOutput.png" alt="Inspecting the output: overlapping polygons" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.233.Ex3.HullReplacerOutput.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img3.233.Ex3.HullReplacerOutput.png" alt="Inspecting the output: overlapping polygons" /></a></p>
 <p>Now, the task is to replace the groups of point features with a polygon boundary.</p>
 <p><strong>15) Add a HullReplacer Transformer</strong></p>
 <p>Move the HullReplacer transformer from the "Transformers" bookmark into the "Create Boundaries" bookmark. Connect it between the Aggregator and writer feature type:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.231.Ex3.HullReplacerCanvas.png" alt="Adding a HullReplacer" /></p>
+<p><img class="image image-block image-center" src="images/Img3.231.Ex3.HullReplacerCanvas.png" alt="Adding a HullReplacer" /></p>
 <p>Notice how the HullReplacer has no cache because it is newly placed.</p>
 <p><strong>16) Re-Run the Workspace</strong></p>
 <p>Now, let's re-run the workspace. But rather than re-write the output data, we can run just the new transformer we added. Click on the HullReplacer transformer, and on the icons that pop up, click Run To This:</p>
 <p><img class="image image-block image-center" src="images/1699655524977.png" alt="Using Run To This on the HullReplacer" width="454" height="277" /></p>
 <p>Notice how hovering shows what parts of the workspace will be run. Since we already have features cached to the Aggregator (assuming you haven't closed the workspace since it was last run), only the section between the Aggregator and the HullReplacer will be run.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Using the Run To This option is an excellent method to check your translation before writing the data out, especially if you are writing to a database or an online source.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">Note that the Run button will default only to run sections of the workspace after valid caches, which would have a similar effect. The only additional step it would take is writing the data again.</span></p>
 </blockquote>
 <p>Click on the cached features on the HullReplacer's Hull output port. The output now includes polygons, proving that the translation has functioned correctly:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.233.Ex3.HullReplacerOutput.png" alt="Inspecting the output: overlapping polygons" /></p>
+<p><img class="image image-block image-center" src="images/Img3.233.Ex3.HullReplacerOutput.png" alt="Inspecting the output: overlapping polygons" /></p>
 <p><strong>17) Clean Up Overlaps</strong></p>
 <p>The problem with the output is the polygons overlap. That needs to be fixed so that there are no overlaps. Moreover, we should check which zone an overlap belongs to by seeing which group contains the most addresses.</p>
 <p>We can accomplish this last step using the transformers in the Clean Up Overlaps bookmark below the Transformers bookmark.&nbsp;</p>
@@ -243,7 +243,7 @@
 <p>We can start on this by using a PointOnAreaOverlayer. This transformer will let us create a list of which addresses an overlap contains.</p>
 <p>So, add a PointOnAreaOverlayer transformer. The area features will be the output from the AreaOnAreaOverlayer.</p>
 <p>The point features should be a copy of the addresses. The simplest way to get these is to make a second connection from the SpatialSorter:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.236.Ex3.POAOCanvas2.png" alt="Adding a PointOnAreaOverlayer" /></p>
+<p><img class="image image-block image-center" src="images/Img3.236.Ex3.POAOCanvas2.png" alt="Adding a PointOnAreaOverlayer" /></p>
 <p>Inspect the parameters. Under Attribute Accumulation, set the following parameters:</p>
 <table class="featureTable sort_table">
 <tbody class="tbody">
@@ -268,39 +268,39 @@
 <p><img class="image image-block image-center" src="images/1699655608045.png" alt="Setting the PointOnAreaOverlayer parameters to merge attributes and generate a list of point GroupIDs on the areas" width="487" height="292" /></p>
 <p>Doing so will create an FME list attribute. A list attribute is an attribute with multiple values. The list will record the point features (and their GroupID values) that fall inside a polygon.</p>
 <p>Confirm this works correctly by running the workspace at the new PointOnAreaOverlayer. Notice how the translation pulls data from two caches: the AreaOnAreaOverlayer and SpatialSorter transformers:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.238.Ex3.POAORun.png" alt="Using Run To This on the PointOnAreaOverlayer" /></p>
+<p><img class="image image-block image-center" src="images/Img3.238.Ex3.POAORun.png" alt="Using Run To This on the PointOnAreaOverlayer" /></p>
 <p>Inspect the PointOnAreaOverlayer's Area output port features. Selecting a feature will show (in the Feature Information window) the list attribute and all of its values:</p>
 <p><img class="image image-block image-center" src="images/1699655630917.png" alt="Inspecting the PointList list attribute in the Feature Information Window" width="1063" height="458" /></p>
 <p><strong>20) Add a ListHistogrammer Transformer</strong></p>
 <p>To count the most frequent GroupID for each list on an overlap, we'll use the ListHistogrammer transformer.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">This is not a commonly used transformer, so don't worry if you weren't aware of it or if you are concerned about the large number of transformers available in FME. You will learn more about these transformers with practice. For now, the ability to use partial runs is much more critical.</span></p>
 </blockquote>
 <p>Place a ListHistogrammer transformer connected to the PointOnAreaOverlayer's Area output port. Inspect the parameters and select PointList{}.GroupID as the source attribute:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.240.Ex3.ListHistogrammerCanvas.png" alt="Adding a ListHistogrammer and setting it to count the unique values of the GroupIDs on the areas" /></p>
+<p><img class="image image-block image-center" src="images/Img3.240.Ex3.ListHistogrammerCanvas.png" alt="Adding a ListHistogrammer and setting it to count the unique values of the GroupIDs on the areas" /></p>
 <p>Re-run the workspace (from the ListHistogrammer) and inspect the results. Notice that a new list attribute is created, a list of the number of different GroupID values with the most frequent GroupID at the top. So, we merely need to use that GroupID to merge areas.</p>
 <p><img class="image image-block image-center" src="images/1699655665357.png" alt="Inspecting the results of the ListHistogrammer" width="612" height="296" /></p>
 <p><strong>21) Add a Dissolver Transformer</strong></p>
 <p>Finally, add a Dissolver transformer to merge the features. Connect the Dissolver to the ListHistogrammer output port:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.242.Ex3.DissolverCanvas.png" alt="Adding a Dissolver transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img3.242.Ex3.DissolverCanvas.png" alt="Adding a Dissolver transformer" /></p>
 <p>Inspect the parameters. Under Group Processing &gt; Group By, select the attribute _histogram.value:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/design-workspaces-for-advanced-reading-and-writing/exercise-use-partial-runs-to-test-your-workspace/images/1652911510879.png" alt="Dissolver Group By" /></p>
+<p><img class="image image-block image-center" src="images/1652911510879.png" alt="Dissolver Group By" /></p>
 <p>You'll be prompted for a value; this is which item we want in the list. We want the first element because it has the most values, so this field should be set to zero (which it will be by default):</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.244.Ex3.DissolverParams2.png" alt="Extracting the most prevalent GroupID" /></p>
+<p><img class="image image-block image-center" src="images/Img3.244.Ex3.DissolverParams2.png" alt="Extracting the most prevalent GroupID" /></p>
 <p>Run the workspace to the Dissolver and inspect the Dissolver's Area output port:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.245.Ex3.DissolverOutput.png" alt="Inspecting the result of dissolving the points into non-overlapping garbage collection zones" /></p>
+<p><img class="image image-block image-center" src="images/Img3.245.Ex3.DissolverOutput.png" alt="Inspecting the result of dissolving the points into non-overlapping garbage collection zones" /></p>
 <p>We now have five polygon features to represent garbage collection areas, each with approximately the same number of residents. Connect the Dissolver's Area port to the writer feature type; this workspace is nearly complete.</p>
 <p><strong>22) Remove the Sampler Transformer</strong></p>
 <p>To complete the project, let's run the workspace on the entire dataset, but first, let's get the workspace ready for production.</p>
 <p>Delete the Sampler transformer, ensuring that PostalAddress and the PointOnAreaOverlayer's Point input port are connected.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Instead of deleting the Sampler, you can disable it. Right-click on the Sampler and choose Disable, then connect the PostalAddress and PointOnAreaOverlayer like the above step. If you need to come back and tweak something, the dataset can be sampled again easily.</span></p>
 </blockquote>
 <p>Before we run the translations, let's disable feature caching as the PostalAddress dataset is large. Click on the dropdown next to the Run button and click Enable Feature Cache to disable it:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.246.Ex3.DisableFeatureCaching.png" alt="Disabling feature caching using the Run menu" /></p>
+<p><img class="image image-block image-center" src="images/Img3.246.Ex3.DisableFeatureCaching.png" alt="Disabling feature caching using the Run menu" /></p>
 <p>Now, with feature caching disabled, the Run button will run the entire workspace:</p>
 <p><img class="image image-block image-center" src="images/1699655802258.png" alt="Running the entire workspace without the Sampler" width="1063" height="521" /></p>
 <p>As expected, the result will look different now that we're using the entire dataset:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic3WorkspaceDesign/Images/Img3.248.Ex3.FinalOutput.png" alt="Inspecting the final results" /></p>
+<p><img class="image image-block image-center" src="images/Img3.248.Ex3.FinalOutput.png" alt="Inspecting the final results" /></p>

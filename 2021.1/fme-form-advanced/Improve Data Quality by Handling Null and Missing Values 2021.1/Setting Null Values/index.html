@@ -7,16 +7,16 @@
 </ul>
 <h2 id="setting-null-values">Setting Null Values</h2>
 <p>The usual way to set an attribute value is with the&nbsp;<strong>AttributeCreator&nbsp;</strong>or&nbsp;<strong>AttributeManager</strong>, and these have an option in their drop-down menu to set a value to null:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.022.SettingNull.png" alt="Setting a null value in the AttributeManager." /></p>
+<p><img class="image image-block image-center" src="images/Img1.022.SettingNull.png" alt="Setting a null value in the AttributeManager." /></p>
 <p>Conditional Attributes functionality also supports setting&nbsp;<code>&lt;null&gt;&nbsp;</code>values:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.023.SettingConditionalNull.png" alt="Setting a null value in the Condition Statement dialog." /></p>
+<p><img class="image image-block image-center" src="images/Img1.023.SettingConditionalNull.png" alt="Setting a null value in the Condition Statement dialog." /></p>
 <h2 id="bulk-null-updates">Bulk Null Updates</h2>
 <p>The way to handle bulk updates of attributes is with the&nbsp;<strong>NullAttributeMapper</strong>&nbsp;transformer.</p>
 <p>The NullAttributeMapper transformer allows the author to check values for any or all attributes on a feature, and convert them in bulk to or from null.</p>
 <p>For example, here the author is checking for attributes that are either missing or empty and converting them to nulls:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.024.NullAttrMapperExample1.png" alt="NullAttributeMapper parameters mapping missing and empty to null" /></p>
+<p><img class="image image-block image-center" src="images/Img1.024.NullAttrMapperExample1.png" alt="NullAttributeMapper parameters mapping missing and empty to null" /></p>
 <p>One reason for this might be that the workspace converts data from a format that does not support nulls, to one that does. It's necessary to explicitly map the values here because empty/missing values may be permitted in the output and FME will not automatically map data from empty to null, just because a format supports it.</p>
 <p>In this second example, the author is checking attributes for existing null values. If the value is set to null then it gets replaced with a zero:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced1Attributes/Images/Img1.025.NullAttrMapperExample2.png" alt="NullAttributeMapper mapping null to a new value" /></p>
+<p><img class="image image-block image-center" src="images/Img1.025.NullAttrMapperExample2.png" alt="NullAttributeMapper mapping null to a new value" /></p>
 <p>Presumably, this must be a numeric field. If it was a text field perhaps the author would set it to an empty string instead. Unlike before, the author wouldn't need to do this when converting from a format that supports null to a format that doesn't, because FME will map the values automatically when the current state isn't supported.</p>
 <p>A better reason for this mapping is that the author wants to carry out a numeric calculation where zero is a valid number but&nbsp;<code>&lt;null&gt;</code>&nbsp;isn't.</p>

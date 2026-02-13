@@ -14,12 +14,12 @@
 </ul>
 <h2 id="bounding-box">Bounding Box</h2>
 <p>Letting the user define a bounding box is simple. Every reader can be restricted to only read features within a Search Envelope. The Minimum and Maximum X and Y parameters and the Search Envelope Coordinate System parameters can be published to give the user the ability to manually define a bounding box:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/a-3965-bad-0-d-0-d-4327-95-e-2-14762-c-2-ab-390.png" alt="Search Envelope parameters" width="499" height="366" /></p>
+<p><img class="image image-block image-center" src="images/a-3965-bad-0-d-0-d-4327-95-e-2-14762-c-2-ab-390.png" alt="Search Envelope parameters" width="499" height="366" /></p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -35,27 +35,27 @@
 <p>You can give your readers the option to choose an existing boundary, like a county or a service area, and download the data within that area. There are several ways to accomplish this with FME, but the most effective is to use a WHERE Clause on the reader feature type combined with either a FeatureReader or a Clipper transformer.</p>
 <p><strong>WHERE Clause</strong></p>
 <p>Many reader feature types have the option to apply an&nbsp;<a href="https://www.w3schools.com/sql/sql_where.asp" target="_blank" rel="noreferrer noopener">SQL WHERE clause</a>&nbsp;to the data before reading it into the workspace. For example, this reader feature type has a WHERE clause that means only garbage zones in the blue zone and the north subzone will be read:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/1658347573846.png" alt="Viewing a WHERE clause on a reader feature type" /></p>
+<p><img class="image image-block image-center" src="images/1658347573846.png" alt="Viewing a WHERE clause on a reader feature type" /></p>
 <p>You can easily publish this WHERE Clause parameter to give users control over what existing boundary is used as the area of interest.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/1658347617410.png" alt="Creating a published parameter for the WHERE clause" /></p>
+<p><img class="image image-block image-center" src="images/1658347617410.png" alt="Creating a published parameter for the WHERE clause" /></p>
 <p>Even better, you could create specific user parameters that are then used within a WHERE clause that is already written. That way the user doesn't need to know how to write a WHERE clause.</p>
 <p>For example, you might create one Choice user parameter called Zone and one called Subzone and then include them in the WHERE Clause parameter through the WHERE Clause Builder:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/1658347642110.png" alt="Combining multiple published parameters in the WHERE clause" /></p>
+<p><img class="image image-block image-center" src="images/1658347642110.png" alt="Combining multiple published parameters in the WHERE clause" /></p>
 <p><strong>FeatureReader</strong></p>
 <p>Once you have set up a WHERE clause to let the user choose which boundaries to use, you then need to ensure they only receive their desired data within those boundaries. You can do this using a FeatureReader.</p>
 <p>The polygon area of interest feature (or features) is routed into the FeatureReader Initiator port.</p>
 <p>Here a single garbage schedule area (blue zone, north subzone) is passed to the FeatureReader for use as a filter. The idea is to return only addresses that fall inside that garbage collection zone. The parameters are set up like this:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/1657131954476.png" alt="Configuring FeatureReader" /></p>
+<p><img class="image image-block image-center" src="images/1657131954476.png" alt="Configuring FeatureReader" /></p>
 <p>Notice that the FeatureReader is set to read from an address geodatabase. The Spatial Filter parameter tells the transformer to only read features (addresses) inside the incoming polygon feature (garbage collection zone).</p>
 <p>These features are output through a port dynamically added to the FeatureReader:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/1658347764080.png" alt="Using the FeatureReader to filter the GarbageSchedule reader feature type" /></p>
+<p><img class="image image-block image-center" src="images/1658347764080.png" alt="Using the FeatureReader to filter the GarbageSchedule reader feature type" /></p>
 <p>The feature counts here show that there are 955 addresses inside that garbage collection zone. The user can pick a zone and subzone and just receive the data from that area.</p>
 <h2 id="ad-hoc-boundary">Ad Hoc Boundary</h2>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -78,14 +78,14 @@
 <li>At this point, the features have quite a few attributes the construction company won't need, so we employ an AttributeKeeper to keep only the necessary attributes.</li>
 <li>Finally, we add an Excel writer feature type to create a spreadsheet that can be used by the construction company to notify affected addresses.</li>
 </ol>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/1658347784738.png" alt="Example workspace using the Geometry published parameter" /></p>
+<p><img class="image image-block image-center" src="images/1658347784738.png" alt="Example workspace using the Geometry published parameter" /></p>
 <p>When this workspace is run on FME Server, the user can select their area of interest using an interactive web map:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/let-users-choose-a-geographic-area-of-interest/images/1657132445398.png" alt="Select Geometry parameter" /></p>
+<p><img class="image image-block image-center" src="images/1657132445398.png" alt="Select Geometry parameter" /></p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>

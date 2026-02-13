@@ -10,11 +10,11 @@
 <h2 id="parameter-input-by-attributes">Parameter Input by Attributes</h2>
 <p>Many transformer parameters can be set up to accept values from attributes.</p>
 <p>Take this custom transformer that creates custom map labels:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.020.CustomTransformerAttrUsedByCT.png" alt="Example custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img5.020.CustomTransformerAttrUsedByCT.png" alt="Example custom transformer" /></p>
 <p>Inside that custom transformer is a LabelPointReplacer transformer. It uses&nbsp;<code>AddressID</code>&nbsp;as the value for the label:</p>
 <p><img class="image image-block image-center" src="images/1708126181614.png" alt="AddressID attribute used for the Label parameter" width="613" height="250" /></p>
 <p>As created, the custom transformer works fine. However, consider if that transformer is used in a context where <code>AddressID</code>&nbsp;does not exist:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.022.TransformerUsedWithInvalidAttr.png" alt="Using the same custom transformer with different data" /></p>
+<p><img class="image image-block image-center" src="images/Img5.022.TransformerUsedWithInvalidAttr.png" alt="Using the same custom transformer with different data" /></p>
 <p>This transformer is flagged as "incomplete". It is used in a scenario where&nbsp;<code>AddressID</code>&nbsp;is not available.</p>
 <h2 id="parameter-input-by-user-parameters">Parameter Input by User Parameters</h2>
 <p>Besides attributes, most FME parameters can be set up to accept values from User Parameters.</p>
@@ -23,7 +23,7 @@
 <p>Here, the issue is not <em>where</em> the custom transformer is used but its duplication. If each instance of the custom transformer uses the same user parameter, they will all get the same input.</p>
 <p>We need a mechanism for the user to enter different values per transformer instance.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">As an analogy, consider a mobile device such as a cell phone. On my phone, I can change the default language from English to (for example) Swedish. The manufacturer implemented this because they cannot tell where the phone might be used, by whom, or what language might be used for input.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">In much the same way, an FME custom transformer could be used outside of its expected area. The author must, therefore, implement the transformer to be adaptable to different inputs. This can be done either automatically or manually...</span></p>
 </blockquote>
@@ -62,12 +62,12 @@
 <p>Besides incoming attributes, there is also the question of what attributes should emerge from the output of a custom transformer.</p>
 <p>Best practice suggests that we should only output attributes that the user expects. We should hide or remove any attributes that are part of a calculation or any attributes that are otherwise generated inside the custom transformer but aren&rsquo;t necessary for the output.</p>
 <p>Here, a custom transformer calculates the average area of several polygon features. It has renamed ports and a specific output port to deal with bad features, but it is outputting more attributes than are helpful:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.031.CustomTransformerAttrOutputBad.png" alt="Outputting excess attributes from a custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img5.031.CustomTransformerAttrOutputBad.png" alt="Outputting excess attributes from a custom transformer" /></p>
 <p>The workspace author should clean up this output. They can do this by visiting the custom transformer definition, viewing the output port object, and they're choosing which attributes are to be output:</p>
 <p><img class="image image-block image-center" src="images/1708127389322.png" alt="Exposing an output attribute in a custom transformer" width="563" height="418" /></p>
 <p>The Attributes to Output setting gives the option of outputting all attributes or only those that have a checkmark next to them, as above.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>⭐<strong>New for FME 2023.0:</strong> we've added <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Controlling-Visibility-Published-Parameters.htm" target="_blank" rel="noopener">conditional visibility</a> to user parameters, allowing you to have parameters selectively appear to the end user based on how they have configured other parameters.</p>
 <p>Combine this feature with the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">Group Box option in the Parameter Manager</a> and you can replicate much of the function of native FME transformers.</p>
 </blockquote>

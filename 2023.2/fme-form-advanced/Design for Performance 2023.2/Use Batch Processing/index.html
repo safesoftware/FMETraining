@@ -8,13 +8,13 @@
 <h2 id="batch-processing">Batch Processing</h2>
 <p>Batch processing involves processing multiple source datasets in the same workspace. By splitting each dataset into a separate process, performance can be improved. This is achieved with the WorkspaceRunner transformer.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>You can also accomplish batch processing using FME Flow. See the <a href="https://academy.safe.com/page/fme-flow-authoring" target="_blank" rel="noopener">FME Flow Authoring course</a> for more information.</p>
 </blockquote>
 <h2 id="batch-processing-using-the-workspace-runner">Batch Processing Using the WorkspaceRunner</h2>
 <p>The WorkspaceRunner is a transformer that runs another FME workspace when used in a translation. One use of it is for chaining multiple workspaces to run one after another. However, it can run multiple workspaces simultaneously through batch processing and is especially effective when used in conjunction with the Directory and File Pathname reader.</p>
 <p>For example, we have a workspace that reads in orthophoto tiles and clips them to neighborhood boundaries, writing them using a combination of tile and neighborhood as the output filename:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.029.BatchProcessingHelperWorkspace.png" alt="A workspace that reads in orthophoto tiles and clips them" /></p>
+<p><img class="image image-block image-center" src="images/Img2.029.BatchProcessingHelperWorkspace.png" alt="A workspace that reads in orthophoto tiles and clips them" /></p>
 <p>Imagine we get new orthophotos each week. Instead of changing the data in the previous workspace each time, we create a workspace to batch process all the new files. This allows FME to start multiple processes simultaneously so that the data is processed faster:</p>
 <p><img class="image image-block image-center" src="images/1710526895698.png" alt="Creating a batch processing workspace with the WorkspaceRunner" width="737" height="297" /></p>
 <p>To set up the WorkspaceRunner in a workspace (the&nbsp;<em>Parent</em>), the FME Workspace parameter is pointed to the workspace to be batch processed (the&nbsp;<em>Worker</em>&nbsp;or&nbsp;<em>Helper</em>). The Source File parameter is set to&nbsp;<em>path_windows</em>, an attribute created by the Directory and File Pathnames Reader:</p>
@@ -27,12 +27,12 @@
 <p>Batch deploy is available under the Run menu in FME Workbench. It supports both instant batch processing and the creation of batch files. This allows you to process a large number of source datasets in the current workspace and produce a separate output for each:</p>
 <p><img class="image image-block image-center" src="images/1710527256179.png" alt="Batch Deploy option in the Run menu" width="315" height="198" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If the Run &gt; Batch Deploy option is disabled, it is because there is currently no source or destination dataset defined in the workspace. &nbsp;</p>
 </blockquote>
 <p>Batch deploy operates in the form of a Wizard. The user specifies the input and output datasets plus any other relevant settings, such as a suffix for the output file names.</p>
 <p>If the process is not carried out right away, FME creates a batch .tcl file containing the batch process settings and a .bat file you can run to start the process later.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Batch Processing (on Form) can also be done using the command line or an FME Command File. These techniques are not covered in this course, but if you want to learn more, you can check out the <a href="https://support.safe.com/s/article/fme-batch-processing-methods-1" target="_blank" rel="noopener">FME Batch Processing Methods Knowledge Base article</a></span><span style="font-family: inherit; font-size: 1em;">.</span></p>
 </blockquote>

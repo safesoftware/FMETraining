@@ -12,13 +12,13 @@
 <h2 id="transformer-order-and-filtering">Transformer Order and Filtering</h2>
 <p>Although the order of transformers can sometimes vary without affecting the result, at other times it is important to get the correct order for performance reasons.</p>
 <p>You&rsquo;ll get better performance when you put the least amount of data into a group-based transformer as possible. One scenario is to put feature-based filter transformers&nbsp;<em>before</em>&nbsp;the group-based process, not after it:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.020.TransformerPerformanceCanvasOrder.png" alt="Filter before processing" /></p>
+<p><img class="image image-block image-center" src="images/Img2.020.TransformerPerformanceCanvasOrder.png" alt="Filter before processing" /></p>
 <p>For example, here the author is filtering data after statistics have been calculated on one set of data. It would be more sensible to filter the data before calculating the statistics, otherwise processing has been carried out on features that were eventually ignored.</p>
 <p>The best way to remember this is:&nbsp;<strong>Filter, Remove, Action!</strong></p>
 <p>In other words, filter first, then remove attributes, then carry out the action.</p>
 <h2 id="group-by-mode-parameter">Group By Mode Parameter</h2>
 <p>A common parameter to most group-based transformers is called "Group By Mode" and appears near the Group By parameter in most transformer dialogs:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/optimize-workspace-performance/optimize-transformer-performance/images/1620425756709.png" alt="Group By Mode options" /></p>
+<p><img class="image image-block image-center" src="images/1620425756709.png" alt="Group By Mode options" /></p>
 <p>When set to Process at End (Blocking) then ALL of the features are stored in memory until they are all available. Then groups are formed. The transformer is literally blocking data from proceeding.</p>
 <p>When the parameter is set to Process When Group Changes (Advanced), then FME processes groups as they become available. That way less data is stored in memory and processing is more efficient.</p>
 <p>The condition for applying this parameter is that the groups of features are pre-sorted into their groups.</p>
@@ -27,7 +27,7 @@
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -44,7 +44,7 @@
 <p>For example, the PointOnAreaOverlayer transformer expects two sets of data: Points and Areas. By default, FME requires all incoming Points and Areas because it needs to be sure it has ALL of the Areas before it can process any Points.</p>
 <p>But, if FME knows the Area features will arrive first (i.e. the first Point feature signifies the end of the Areas) then it doesn&rsquo;t need all Point features. It can process each one immediately because it knows there are no more Areas that it could match against.</p>
 <p>The user specifies that this is true using the parameter Areas First:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.022.TransformerPerformanceNeighborsFirst.png" alt="Areas First parameter" /></p>
+<p><img class="image image-block image-center" src="images/Img2.022.TransformerPerformanceNeighborsFirst.png" alt="Areas First parameter" /></p>
 <p>But how does a user ensure the Area features arrive first? Well, like writers you can change the order of readers in the Navigator so that the reader at the top of the list is read first.</p>
 <p>Changing the reader order doesn&rsquo;t improve performance&nbsp;<em>per se</em>, but it does let you apply performance-improving parameters like the above.</p>
 <h2 id="attributes-and-transformation">Attributes and Transformation</h2>
@@ -52,12 +52,12 @@
 <p>However, this isn&rsquo;t just helped by reducing the number of features; it is also helped by reducing the size of each individual feature.</p>
 <p>One aspect of this is attributes. Carrying attributes through a translation impacts performance, so if the attributes are not required in the output, it&rsquo;s best to remove them&nbsp;<em>as early as possible</em>&nbsp;in the translation.</p>
 <p>For example, when the reader and writer schemas look like this:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.023.TransformerPerformanceAttrsSourceSchema.png" alt="Simplifying schema" /></p>
+<p><img class="image image-block image-center" src="images/Img2.023.TransformerPerformanceAttrsSourceSchema.png" alt="Simplifying schema" /></p>
 <p>...it makes sense to remove excess attributes from the translation, as early as possible.</p>
 <p>There are two ways to remove attributes. Some reader formats (but not all) have a setting in the reader feature type to avoid reading excess attributes in the first place:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.024.TransformerPerformanceReadAttrs.png" alt="Manually unexposing reader feature type attributes" /></p>
+<p><img class="image image-block image-center" src="images/Img2.024.TransformerPerformanceReadAttrs.png" alt="Manually unexposing reader feature type attributes" /></p>
 <p>With that, you can ensure that&nbsp;<em>only</em>&nbsp;attributes exposed are read. The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025.TransformerPerformanceRemovingAttrs.png" alt="Removing unnecessary attributes with an AttributeManager" /></p>
+<p><img class="image image-block image-center" src="images/Img2.025.TransformerPerformanceRemovingAttrs.png" alt="Removing unnecessary attributes with an AttributeManager" /></p>
 <p>This ensures that none of the extra attributes become a drain on resources by being processed by any further transformers.</p>
 <h2 id="lists">Lists</h2>
 <p>One specific type of attribute to beware of is a&nbsp;<em>List</em>. A list in FME is an attribute that can have multiple values. Because of this, it can be a big drain on resources.</p>
@@ -73,7 +73,7 @@
 <p>FME's engine is gradually being updated to use a methodology we call&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noreferrer noopener">bulk mode</a>&nbsp;(previously known as feature tables).</p>
 <p>It's not a tool designed for user control; rather, bulk mode is a new way for features to be transported through the workspace. Bulk mode speeds up a workspace, its translations, and its transformations substantially. If you see a log message about bulk mode (or sometimes feature tables) then this technology is what it refers to.</p>
 <p>As more transformers support bulk mode, expect performance to improve. However, you will need to upgrade transformers to get this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes bulk mode support:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025b.TransformerPerformanceUpgrading.png" alt="Showing Changes on an upgradable transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img2.025b.TransformerPerformanceUpgrading.png" alt="Showing Changes on an upgradable transformer" /></p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">

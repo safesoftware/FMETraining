@@ -7,7 +7,7 @@
 </ul>
 <h2 id="resources">Resources</h2>
 <ul>
-<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noopener">Starting workspace</a>
 <ul>
 <li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values.fmw</li>
 </ul>
@@ -17,24 +17,54 @@
 <li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values-complete.fmw</li>
 </ul>
 </li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateDataWithTheFMEPlatform/revoked_licenses.csv" target="_blank" rel="noopener">revoked_licenses.csv</a><br />
+<ul>
+<li>C:\FMEData\Resources\IntegrateDataWithTheFMEPlatform\revoked_licenses.csv</li>
+</ul>
+</li>
 </ul>
 <h2 id="creating-multiple-streams-of-data">Creating Multiple Streams of Data</h2>
 <p>FME workspaces send data from left to right across the canvas from reader feature types to writer feature types. The simplest workspace only has one &ldquo;stream&rdquo; of data: features are read in, all processed in the same way, and then written out. However, workspaces can have multiple data streams, splitting and merging features as required.&nbsp;</p>
-<p>Did you find the right trasnformer in the last exercise?</p>
-<p>&nbsp;It was the <strong>DatabaseJoiner</strong>, which created multiple streams in Jennifer's workspace when it split the features into <strong>Joined </strong>and <strong>Unjoined </strong>streams:</p>
+<p>Did you find the correct transformer in the last exercise?</p>
+<p>It was the <strong>DatabaseJoiner.</strong> Jennifer used it to join the features to the revoked_licenses table in the database, using the business license number as the key. The join created multiple streams in Jennifer's workspace when it split the features into <strong>Joined </strong>and <strong>Unjoined </strong>streams:</p>
 <p><img src="images/1713292839987.png" alt="DatabaseJoiner" /></p>
-<p>Jennifer connected the <strong>Unjoined</strong> port to the writer feature type, since in this case she wanted to retain features without a revoked business license.</p>
-<p>Now, Jennifer wants to add another filter to her data before FME writes it out. She needs to remove the business license for Arcu Ltd. She can use a <strong>Tester </strong>transformer to do that.</p>
+<p>Jennifer connected the <strong>Unjoined</strong> port to the writer feature type since, in this case, she wanted to retain features <strong>without</strong> a revoked business license.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you didn't guess correctly, try to add the DatabaseJoiner now and see if you can configure it properly. Read the hints in the last exercise and the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasejoiner.htm" target="_blank" rel="noopener">transformer documentation</a> if you need help. Part of learning to use new transformers is trying things out for yourself; hopefully, you can add it successfully. If you get stumped, load the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noopener">starting workspace</a> for this exercise and inspect the DatabaseJoiner's parameters. Ensure you understand how it is configured before proceeding.</p>
+</blockquote>
+<h2 id="filter-your-data-using-a-tester">Multiple Solutions</h2>
+<p>Like most things in FME, this challenge has multiple solutions. The DatabaseJoiner is the most efficient solution, but you might have found a different transformer.</p>
+<p><strong>FeatureMerger or FeatureJoiner</strong></p>
+<p>The best runner-up solution is a PostGIS or PostgreSQL reader and a joining transformer. The FeatureMerger and FeatureJoiner work in this case. You can read the revoked_licenses table, join it to the source data, and use the unjoined ports to get the valid licenses. That's not a wrong solution, but it doesn't meet the goal of doing this all without adding an additional reader.</p>
+<p><strong>AttributeFilter</strong></p>
+<p>You could add an AttributeFilter and manually set it to remove the four revoked license values from the data. However, this approach has two problems:</p>
+<ol>
+<li>If the underlying data changes, you must update the workspace. The filter values in the AttributeFilter are hard-coded. You would have to edit this transformer to update the workspace to filter out new revoked licenses, making the workspace inflexible.</li>
+<li>You must still add a PostGIS or PostgreSQL reader and read the revoked_licenses table. The goal here is not to have to add an additional reader.
+<ol>
+<li>While it's not an issue in this scenario because the revoked_licenses table is small and only contains necessary data, using a reader would negatively affect workspace performance if you read from a larger table. FME would read the entire table and then look for matches in the source data. The DatabaseJoiner reads only the data required to conduct the join, making it a more efficient solution.</li>
+</ol>
+</li>
+</ol>
+<p><strong>Tester or TestFilter</strong></p>
+<p>These filtering transformers have the same issue: if you want to use them alone to filter out the revoked licenses, you must hard-code the revoked license numbers into the test. There are more sustainable long-term solutions.</p>
 <h2 id="filter-your-data-using-a-tester">Filter Your Data Using a Tester</h2>
+<p>For the next step in her workspace, Jennifer wants to add another filter to her data before FME writes it out. She needs to remove Arcu Ltd's business license. She can use a <strong>Tester </strong>transformer to do that.</p>
 <p>Jennifer adds a&nbsp;<strong>Tester&nbsp;</strong>connected to the <strong>DatabaseJoiner's Unjoined </strong>port<strong> </strong>and the <strong>BusinessOwners </strong>writer feature type using<strong> Quick Add:</strong></p>
 <p><img src="images/1713293001000.png" alt="Adding a Tester transformer" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">We are filtering our features into two streams with the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Tester</strong><span style="font-family: inherit; font-size: 1em;">. Other transformers with &ldquo;Filter&rdquo; in their name, such as the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/testfilter.htm" target="_blank" rel="noopener">TestFilter</a>, can route features into multiple streams based on various operations</span><span style="font-family: inherit; font-size: 1em;">.</span></p>
 </blockquote>
 <p>Before opening the&nbsp;<strong>Tester&nbsp;</strong>to configure it, Jennifer knows a trick to save time.</p>
 <p>She clicks the&nbsp;<strong>Run&nbsp;</strong>button.</p>
-<p>FME issues a warning dialog: <strong>Incomplete Transformers</strong>. This dialog appears because the Tester has been added to the Canvas, but it is not configured yet. However, we have a good reason to run, as you will see in a moment. She clicks <strong>OK</strong>.</p>
+<p>FME issues a warning dialog: <strong>Incomplete Transformers</strong>. This dialog appears because the Tester has been added to the Canvas&nbsp;but is not configured yet. However, as you will see in a moment, we have a good reason to run. She clicks <strong>OK</strong>.</p>
 <p>After the workspace runs and FME creates feature caches, she double-clicks the <strong>Tester&nbsp;</strong>to open its&nbsp;<strong>Parameters&nbsp;</strong>dialog. The table here allows her to enter a logical test or series of tests against incoming features. It works a bit like&nbsp;<a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)%23If%25E2%2580%2593then(%25E2%2580%2593else)" target="_blank" rel="noreferrer noopener">an &ldquo;if-then-else&rdquo; statement in programming languages</a>. If the feature meets the test(s) criteria, it comes out of the <strong>Passed&nbsp;</strong>port. If it does not, it comes out of the&nbsp;<strong>Failed</strong>&nbsp;port. The&nbsp;<strong>Tester</strong> filters data and allows for simple branching of your data integration workflow.</p>
 <p>Jennifer sets up her&nbsp;<strong>Tester&nbsp;</strong>as follows:</p>
 <table class="featureTable sort_table">
@@ -53,18 +83,23 @@
 </tr>
 </tbody>
 </table>
-<p>The reason she ran her workspace before configuring the <strong>Tester</strong> becomes apparent when she enters the value for&nbsp;<strong>Right Value</strong>. If the <strong>Tester </strong>has a feature cache available for the features entering the transformer, she can search the Cached Values to help her choose the right one. As she types "arc" into the field, a list of values to choose from shows up:</p>
+<p>The reason she ran her workspace before configuring the <strong>Tester</strong> becomes apparent when she enters the value for&nbsp;<strong>Right Value</strong>. If the <strong>Tester </strong>has a feature cache for the features entering the transformer, she can search the Cached Values to help her choose the right one. As she types "arc" into the field, a list of values to choose from shows up:</p>
 <p><img src="images/1713293574092.png" alt="Selecting from cached values" /></p>
 <p>She can click Arc Ltd to enter it or use the arrow keys and Enter.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p>You can browse a full list of values by clicking the downward pointing arrow and choosing <strong>Cached Values</strong>.</p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can browse a complete list of values by clicking the downward pointing arrow and choosing <strong>Cached Values</strong>.</p>
 <p><img src="images/1713293783258.png" alt="Cached Values" /></p>
 <p>This feature is available in many transformers where you set values or construct tests, e.g., the AttributeManager, AttributeCreator, and TestFilter.</p>
+<p><strong>If you don't see values here,&nbsp;</strong>ensure you have both:</p>
+<ol>
+<li>Connected the DatabaseJoiner's Unjoined port to the Tester's Input port</li>
+<li>Run the workspace to get a feature cache on the DatabaseJoiner</li>
+</ol>
 </blockquote>
 <p>These settings do the following: &ldquo;For each feature being read by the&nbsp;<strong>Tester</strong>, if it does NOT have the value Arcu Ltd for the attribute 'company', it passes. Otherwise, it fails.&rdquo; This test accomplishes our goal of sending that specific license to the <strong>Failed</strong> port.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>We used the NOT Logic operator in this example. You can combine different Logic operators like OR or AND for more complex tests.&nbsp;</p>
 <p><span style="font-family: inherit; font-size: 1em;">See the&nbsp;<a href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/tester.htm" target="_blank" rel="noreferrer noopener">Tester documentation</a> for more information.</span></p>
 </blockquote>
@@ -79,7 +114,7 @@
 <p>Then she clicks the&nbsp;<strong>BusinessOwners&nbsp;</strong>writer feature type to select it and clicks&nbsp;<strong>View Written Data</strong>.&nbsp;</p>
 <p><img src="images/1713297294216.png" alt="View Written Data button" /></p>
 <p>This shows the 95 valid records that were written to this feature class. FME automatically added the required <strong>OBJECTID&nbsp;</strong>column to the data as required by the geodatabase format.</p>
-<p><img class="image image-block image-center" src="images/1713297218047.png" alt="Viewing the new OBJECTID column in Table View" /></p>
+<p><img class="image image-block image-center" src="images/1733529031392.png" alt="Viewing the new OBJECTID column in Table View" width="588" height="214" /></p>
 <p>Jennifer clicks one of the writer feature types and then&nbsp;<strong>Open Containing Folder</strong>, viewing the geodatabase in her file browser. She can open the geodatabase in ArcGIS Pro from there.</p>
 <h2 id="exercise">Exercise</h2>
 <p>Jennifer notices a problem. There is now a <strong>_matched_records</strong> attribute on her features. She doesn't want this to be written to the final data.</p>

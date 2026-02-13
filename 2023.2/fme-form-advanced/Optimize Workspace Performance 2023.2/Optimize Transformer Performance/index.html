@@ -20,7 +20,7 @@
 <h2 id="transformer-order-and-filtering">Transformer Order and Filtering</h2>
 <p>Although the order of transformers can sometimes vary without affecting the result, at other times, it is essential to get the correct order for performance reasons.</p>
 <p>FME will perform better when you minimize the data going into group-based transformers. One scenario is to put feature-based filter transformers <em>before</em>&nbsp;the group-based process, not after it:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.020.TransformerPerformanceCanvasOrder.png" alt="Filter before processing" /></p>
+<p><img class="image image-block image-center" src="images/Img2.020.TransformerPerformanceCanvasOrder.png" alt="Filter before processing" /></p>
 <p>For example, here, the author filters data after statistics have been calculated on one data set. It would be more sensible to filter the data before calculating the statistics; otherwise, FME wastes time processing features that are eventually ignored.</p>
 <p>The best way to remember this is:&nbsp;<strong>Filter, Remove, Action!</strong></p>
 <p>In other words, filter first, then remove attributes, then act.</p>
@@ -32,7 +32,7 @@
 <p>The condition for applying this parameter is that the groups of features are pre-sorted into their groups.</p>
 <p>For example, in the above screenshot, the user uses the ZoneCategory attribute as a group-by parameter (i.e., zones are dissolved together where they are in the same category). If the incoming data is sorted in order by ZoneCategory, then the user can set the Complete Groups parameter and allow FME to process the data more efficiently.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">When using Input Ordered By Group on a transformer with two (or more) input ports, you need to arrange data to arrive in group order (Port 1, Group A, Port 2, Group A, Port 1, Group B, Port 2, Group B, etc.). It's more than just a case of each data stream being ordered correctly; you need to alternate streams/ports for each group, which is challenging.</span></p>
 </blockquote>
 <h2 id="features-first-parameter">Features First Parameter</h2>
@@ -48,12 +48,12 @@
 <p>However, this isn&rsquo;t just helped by reducing the number of features; it is also helped by reducing the size of each feature.</p>
 <p>One aspect of this is attributes. Carrying attributes through a translation impacts performance, so if the attributes are not required in the output, it&rsquo;s best to remove them&nbsp;<em>as early as possible</em>&nbsp;in the translation.</p>
 <p>For example, when the reader and writer schemas look like this:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.023.TransformerPerformanceAttrsSourceSchema.png" alt="Simplifying schema" /></p>
+<p><img class="image image-block image-center" src="images/Img2.023.TransformerPerformanceAttrsSourceSchema.png" alt="Simplifying schema" /></p>
 <p>...it makes sense to remove excess attributes from the translation as soon as possible.</p>
 <p>There are two ways to remove attributes. Some reader formats (but not all) have a setting in the reader feature type to avoid reading excess attributes in the first place:</p>
 <p><img class="image image-block image-center" src="images/1711062193163.png" alt="Manually unexposing reader feature type attributes" width="707" height="281" /></p>
 <p>With that, you can ensure that&nbsp;<em>only</em> exposed attributes are read. The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025.TransformerPerformanceRemovingAttrs.png" alt="Removing unnecessary attributes with an AttributeManager" /></p>
+<p><img class="image image-block image-center" src="images/Img2.025.TransformerPerformanceRemovingAttrs.png" alt="Removing unnecessary attributes with an AttributeManager" /></p>
 <p>This ensures that the extra attributes don't drain resources when processed by further transformers.</p>
 <h2 id="lists">Lists</h2>
 <p>One specific type of attribute to beware of is a&nbsp;<em>List</em>. A list in FME is an attribute that can have multiple values. Because of this, it can be a significant drain on resources.</p>
@@ -69,7 +69,7 @@
 <p>FME's engine is gradually being updated to use a methodology we call&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noreferrer noopener">bulk mode</a>&nbsp;(previously known as feature tables).</p>
 <p>It's not a tool designed for user control; instead, bulk mode is a new way to transport features through the workspace. Bulk mode substantially speeds up a workspace, its translations, and its transformations. If you see a log message about bulk mode (or sometimes feature tables), this technology is what it refers to.</p>
 <p>As more transformers support bulk mode, expect performance to improve. However, you must upgrade transformers to benefit from this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes bulk mode support:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced2WorkspaceDesign/Images/Img2.025b.TransformerPerformanceUpgrading.png" alt="Showing Changes on an upgradable transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img2.025b.TransformerPerformanceUpgrading.png" alt="Showing Changes on an upgradable transformer" /></p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
@@ -83,7 +83,7 @@
 <p>In other words, with bulk mode, features emerge from each port in the same order, but one port may output all of its features (or a bulk subset of them) before the next port starts.</p>
 <p>If your workspace relies on a certain port order from the Tester, you should use the&nbsp;Advanced &gt; Preserve Feature Order parameter.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Improving-Performance-Bulk-Mode.htm%20i" target="_blank" rel="noopener">Learn more about bulk mode in the documentation.</a></p>
 </blockquote>
 </div>

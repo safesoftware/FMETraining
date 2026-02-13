@@ -6,7 +6,7 @@
 <li>Turn a JSON response into features using the JSONFlattener transformer.</li>
 </ul>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Learning content in the FME Academy presents a user's story addressing their data integration challenges with FME. </span><strong style="font-family: inherit; font-size: 1em;">You should follow along with their actions using your installation of FME (2024.0 or later) </strong><span style="font-family: inherit; font-size: 1em;">or request an on-demand virtual machine in the footer link below. Some lessons will require you to follow their steps or take additional steps to answer a quiz question.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">The&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Resources</strong><span style="font-family: inherit; font-size: 1em;"> section will provide links to interactive tutorials and starting workspaces when necessary.</span></p>
 </blockquote>
@@ -14,37 +14,42 @@
 <ul>
 <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces\IntegrateDataWithTheFMEPlatform\read-web-data-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
 <ul>
-<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\read-web-data-complete.fmw</li>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\read-web-data-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
 </ul>
 </li>
 </ul>
 <h2 id="jumpstart-your-data-integration-workflows">Read Web Data</h2>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/transform-data/quickly-create-a-conversion-workflow/images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
 <p>Jennifer is a GIS Specialist working for a local government. She needs to read business license data from an <a href="https://en.wikipedia.org/wiki/API" target="_blank" rel="noopener">API</a> and write it to an Esri geodatabase, a widely used spatial database. The API is used internally, while the geodatabase is used in public-facing applications. Therefore, she wants to edit the attribute names and filter out some features with revoked business licenses in the final geodatabase to have appropriate data for displaying to the public.</p>
 <p>In this section, we'll follow along with Jennifer to learn how to read web data and use transformers to change the content and structure of our data.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Jennifer is working with the same BusinessOwners dataset as Sven from the previous course, but she&rsquo;s reading it from an API instead of an Excel spreadsheet.</span></p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>In previous versions of this training, we taught Generate Workspace in this lesson. Generate Workspace is an alternative way to start building a workspace, where you define a reader and writer, and FME automatically generates a workspace for you. We've changed approaches and won't cover Generate Workspace. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/workspace-dialog-using.htm" target="_blank" rel="noopener">You can refer to the documentation</a> if you'd like to learn how it works.</p>
 </blockquote>
 <p>Jennifer starts FME Workbench (2024.0 or later) and clicks <strong>Blank Workspace </strong>in the Start tab.</p>
 <p><img src="images/1712784338021.png" alt="Blank Workspace button" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">Follow along with Jennifer's steps using your own version of FME.</span></p>
 </blockquote>
 <h2 id="connect-to-a-database">Adding an HTTPCaller</h2>
 <p>So far, we've been using readers to read data.</p>
 <p>However, in some case, you will read data using transformers.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>A <strong>transformer </strong>is an FME Workbench object that carries out feature restructuring. There are hundreds of different transformers that perform different types of restructuring.</p>
 </blockquote>
 <blockquote>
-<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
 <p><span style="font-family: inherit; font-size: 1em;">You can use transformers to change your data without writing code. If you prefer to write SQL or Python, you can use transformers like the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlexecutor.htm" target="_blank" rel="noopener">SQLExecutor</a> or <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pythoncaller.htm" target="_blank" rel="noopener">PythonCaller</a>. </span></p>
 <p><span style="font-family: inherit; font-size: 1em;">⭐&nbsp;<strong>New for FME 2023.1: </strong></span><span style="font-family: inherit; font-size: 1em;">you can now access <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_self">AI Assist</a> in compatible transformers to help you write regular expressions, SQL, or Python.</span></p>
 </blockquote>
@@ -95,26 +100,26 @@
 <h2 id="connect-to-a-database">Configuring the HTTPCaller</h2>
 <p>Now that the <strong>HTTPCaller</strong> has a feature going into Input, it will make one HTTP request. Jennifer double-clicks the <strong>HTTPCaller</strong> to open its parameters and configure them.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>All transformers have parameters you can (or must, depending on the transformer) configure. How each is configured depends on the transformer, as they all do different things. To learn how to configure a transformer, check out the FME Help, accessible via the Help button at the bottom left of all transformer dialogs.</p>
 </blockquote>
 <p>She enters <code>http://fme.ly/businessowners</code>&nbsp;for the <strong>Request URL </strong>and chooses GET for the <strong>HTTP Method</strong>.</p>
 <p><img src="images/1713918931176.png" alt="" /></p>
 <p>&nbsp;</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you are unfamiliar with HTTP requests, you can <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" target="_blank" rel="noopener">learn more here</a>.</p>
 <p>If you are more familiar with making HTTP requests using cURL, you can read about mapping cURL onto the HTTPCaller <a href="https://support.safe.com/hc/en-us/articles/25407588537869-Question-of-the-Week-Web-Services-cURL-and-the-HTTPCaller" target="_self">here</a>.</p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>We are "faking" an API request here for simplicity's sake. Usually, you'd make a request that included authentication and query parameters, all possible with the HTTPCaller. But to simplify this example, we'll GET a JSON payload directly.</p>
 <p>You could also use a JSON reader, which would work fine. However, the HTTPCaller method is generally better when working with real API data.</p>
 <p><a href="https://support.safe.com/s/article/getting-started-with-apis-1" target="_self">Learn more about using APIs with FME.</a></p>
 </blockquote>
 <blockquote>
-<p><strong><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></strong></p>
-<p><strong>⭐New for FME 2024.0</strong><span style="font-family: inherit; font-size: 1em;">: you can now directly import requests using an </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://www.openapis.org/" target="_blank" rel="noopener">OpenAPI</a><span style="font-family: inherit; font-size: 1em;"> specification JSON or YAML file using the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/openapicaller.htm" target="_blank" rel="noopener">OpenAPICaller</a> transformer.</span></p>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p><strong>⭐New for FME 2024.1</strong><span style="font-family: inherit; font-size: 1em;">: you can now directly import requests using an </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://www.openapis.org/" target="_blank" rel="noopener">OpenAPI</a><span style="font-family: inherit; font-size: 1em;"> specification JSON or YAML file using the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/openapicaller.htm" target="_blank" rel="noopener">OpenAPICaller</a> transformer.</span></p>
 </blockquote>
 <p>She clicks <strong>OK </strong>to close the transformer parameters.&nbsp;</p>
 <h2 id="connect-to-a-database">Testing the HTTPCaller</h2>
@@ -128,7 +133,7 @@
 <p>The JSON is stored in the <strong>_response_body </strong>attribute. Because it's quite a lot of text, an ellipsis button <strong>[. . .]</strong> is provided. Clicking that will open the entire text in a separate dialog.</p>
 <p>Additionally, the HTTPCaller added an attribute called <strong>_http_status_code</strong>. This reports the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" target="_blank" rel="noopener">HTTP status code</a>, indicating the success of the call. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200" target="_blank" rel="noopener">A code of 200</a> indicates a successful call.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Attributes created by transformers use an underscore _ prefix to indicate that FME created them.</p>
 </blockquote>
 <p>Jennifer clicks the ellipsis button <strong>[. . .] </strong>in the <strong>_response_body </strong>attribute. A dialog appears showing the full JSON payload.</p>
@@ -139,17 +144,22 @@
 <p>Each object has attribute-value pairs with a predictable schema. It also contains some geometry information.</p>
 <p><code>{</code><br /><code>&nbsp; &nbsp; "json_featuretype": "BusinessOwners",</code><br /><code>&nbsp; &nbsp; "First": "Garth",</code><br /><code>&nbsp; &nbsp; "Last Name": "Garrett",</code><br /><code>&nbsp; &nbsp; "Company": "Hendrerit Consectetuer Cursus Industries",</code><br /><code>&nbsp; &nbsp; "License Number": "8BCB7F",</code><br /><code>&nbsp; &nbsp; "Longitude": -123.1006079306,</code><br /><code>&nbsp; &nbsp; "Latitude": 49.24906160267,</code><br /><code>&nbsp; &nbsp; "json_ogc_wkt_crs": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]",</code><br /><code>&nbsp; &nbsp; "json_geometry": {</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; "type": "Point",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; "coordinates": [</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -123.1006079306,</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 49.2490616027</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; ]</code><br /><code>&nbsp; &nbsp; }</code><br /><code>}</code></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><strong>Schema</strong> (sometimes known as "data model") can be described as the structure of a dataset, or, more accurately, a formal definition of a dataset&rsquo;s structure.</p>
 <p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Understanding_Schema.htm" target="_blank" rel="noopener">Learn more</a></p>
 </blockquote>
 <p>This response matches her expectations. Her goal is to take these JSON attribute-value pairs and create FME features.</p>
 <p>Jennifer closes the dialog.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐New for FME 2024.1: </strong>you can preview URLs, test requests, and view responses directly within the HTTPCaller and OpenAPICaller Parameters dialog. This integrated approach reduces setup time, provides immediate feedback, and simplifies the process of configuring and analyzing HTTP requests. Use the <strong>Send Test Request </strong>button:</p>
+<figure><img src="images/584fc46e-8ce2-4f58-992e-a382c97490a2.png" alt="" /></figure>
+</blockquote>
 <h2 id="connect-to-a-database">Adding a JSONFragmenter</h2>
 <p>Jennifer selects her <strong>HTTPCaller</strong>&nbsp;and then uses Quick Add to add a <strong>JSONFragmenter</strong> transformer.</p>
 <p><img src="images/1712861272031.png" alt="Adding a JSONFragmenter" width="600" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>There are many transformers for manipulating JSON.</p>
 <p><a href="https://support.safe.com/s/article/tutorial-getting-started-with-json" target="_blank" rel="noopener">Learn more on the Knowledge Base.</a></p>
 </blockquote>
@@ -169,13 +179,14 @@
 <p>With these settings, the <strong>JSONFragmenter</strong> will split each entry in the JSON array into an FME feature. Then, it will "flatten" the nested structure of JSON into the columnar structure of FME attributes.</p>
 <p>However, if Jennifer only uses these settings, the resulting attributes will be unexposed; they will not appear in the <strong>Table</strong> view or be accessible within the workspace. This is because FME is designed to work with a fixed schema. It is not known in advance what names these attributes will have. We have to define that in the transformer.</p>
 <p>Exposing attributes can be done with the&nbsp;<strong>Attributes to Expose</strong> parameter, but Jennifer can use the attributes stored in the feature cache if she uses an <strong>AttributeExposer&nbsp;</strong>transformer instead.</p>
+<h2>Adding an AttributeExposer</h2>
 <p>Jennifer clicks&nbsp;<strong>OK&nbsp;</strong>to close the <strong>JSONFragmenter</strong> parameters and then runs the workspace to create the cache on the&nbsp;JSONFragmenter<strong>.&nbsp;</strong>Then Jennifer adds an <strong>AttributeExposer&nbsp;</strong>transformer.</p>
 <p><img src="images/1725984143475.png" alt="" /></p>
 <p>She double-clicks the <strong>AttributeExposer</strong> to open its parameters and then clicks on <strong>Import-&gt;From Feature Cache...</strong></p>
 <p><strong><img src="images/1725984428857.png" alt="" /></strong></p>
 <p>&nbsp;</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>The Import button appears in many FME dialogs. It lets you import values from a dataset and can be helpful when you need to supply a list of:</p>
 <ul>
 <li>attribute names from an existing dataset</li>
@@ -188,16 +199,16 @@
 <p><img src="images/1725984826402.png" alt="" /></p>
 <p>Jennifer clicks&nbsp;<strong>Import&nbsp;</strong>and then <strong>OK</strong> to expose all of the added attributes.</p>
 <p><img src="images/1725984933994.png" alt="" /></p>
-<h2 id="connect-to-a-database">Testing the JSONFragmenter</h2>
-<p>To see if she configured the transformer correctly, she clicks the <strong>Run</strong> button.</p>
+<h2 id="connect-to-a-database">Testing the Transformers</h2>
+<p>To see if she configured the transformers correctly, she clicks the <strong>Run</strong> button.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p>Notice how only the <strong>JSONFragmenter </strong>is highlighted in green when you mouse over the Run button. This highlighting indicates which parts of the workspace will run. When FME has feature caches, it will only run sections of the workspace that don't have caches yet.</p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Notice how only the <strong>AttributeExposer </strong>is highlighted in green when you mouse over the Run button. This highlighting indicates which parts of the workspace will run. When FME has feature caches, it will only run sections of the workspace that don't have caches yet.</p>
 </blockquote>
-<p>The workspace runs, and then <strong>Visual Preview's Table view</strong> shows the results of the <strong>JSONFragmenter</strong> cache. It now has the attributes Jennifer wants:</p>
+<p>The workspace runs, and then <strong>Visual Preview's Table view</strong> shows the results of the <strong>AttributeExposer</strong> cache. It now has the attributes Jennifer wants:</p>
 <p><img src="images/1712864865603.png" alt="Attributes added" width="800" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>You might have to scroll the Table view to the right to see all the new attributes.</p>
 </blockquote>
 <p>Jennifer has successfully read the web data and extracted the attributes.</p>

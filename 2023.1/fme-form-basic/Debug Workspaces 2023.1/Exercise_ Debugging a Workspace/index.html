@@ -71,14 +71,14 @@
 <div>
 <pre><code>@Value(ParkDistance) + @Value(CrimeValue) - @Value(NoiseZoneScore)</code><br /><br /></pre>
 </div>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/exercise-debugging-a-workspace/images/7-a-1947-d-1-2874-485-e-af-88-9703808-d-2-fba.png" alt="ExpressionEvaluator expression" width="598" height="301" /></p>
+<p><img class="image image-block image-center" src="images/7-a-1947-d-1-2874-485-e-af-88-9703808-d-2-fba.png" alt="ExpressionEvaluator expression" width="598" height="301" /></p>
 <p>With this expression, the smaller the result, the more walkable an address.</p>
 <h2 id="4-assess-the-result">3) Assess the Result</h2>
 <p>Let's assess whether the result of the translation is correct.</p>
 <p>Firstly check the log window for errors and warnings. There are no errors, but there are several warnings, which is not a good sign:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/exercise-debugging-a-workspace/images/1652475763878.png" alt="Many warnings" /></p>
+<p><img class="image image-block image-center" src="images/1652475763878.png" alt="Many warnings" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">The number of warnings showed in the Translation Log may be different in your workspace. These numbers can vary based on the Logging Parameters set in FME Options.</span></p>
 </blockquote>
 <p>Click on the warnings button to filter out the warnings. The warnings say:</p>
@@ -88,7 +88,7 @@
 <p>Inspect the output cache on the ExpressionEvaluator (you can click the link next to the warning in the log to focus on it), and some addresses do indeed have a Walkability value of &lt;null&gt;.</p>
 <p>So we know there is a problem, let's try and figure out where the problem is and why it occurs.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">There were no errors, but the output of the workspace is still incorrect. Make sure you always inspect your workspace results to ensure it is configured properly.</span></p>
 </blockquote>
 <h2 id="5-locate-the-problem">4) Locate the Problem</h2>
@@ -134,7 +134,7 @@
 </table>
 </div>
 <p>When prompted, select only the leisure feature type:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/debug-workspaces/exercise-debugging-a-workspace/images/8-d-774-e-66-e-405-49-da-ad-36-668-d-9-fba-78-c-9.png" alt="Selecting the leisure feature type" width="397" height="241" /></p>
+<p><img class="image image-block image-center" src="images/8-d-774-e-66-e-405-49-da-ad-36-668-d-9-fba-78-c-9.png" alt="Selecting the leisure feature type" width="397" height="241" /></p>
 <p>Then move the new leisure reader near the Parks reader and connect it to the NeighborFinder:Candidate input port. Then right-click on the Parks reader and select Disable.</p>
 <h2 id="8-filter-leisure-data">7) Filter Leisure Data</h2>
 <p>If you inspect the leisure data, you'll notice various leisure facilities types, with the type recorded in the leisure attribute.</p>
@@ -153,12 +153,12 @@
 <p>PoolDistance is the source of the problem. There is no related log message to give a clue, and the Feature Count numbers look correct.</p>
 <p>Let's inspect the data. Click on the leisure reader and while holding the shift key, click on the NeighborFinder. This step will open all the selected caches in Visual Preview.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you have Toggle Automatic Inspect on Selection disabled, you'll have to right-click on either object and select Inspect Cached Features after selecting them both.</p>
 </blockquote>
 <p>Right-click in the Graphics view, go to Background Map, and ensure Background map off is selected. Visual Preview shows two specks of data, a long distance apart. This result is typical of a mismatch of coordinate systems.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>We turn the background map off, because otherwise Visual Preview automatically reprojects data with mismatched coordinate systems. Turning the background map off lets us see these are not using the same coordinate system.</p>
 </blockquote>
 <p>Click on some features and select the Feature Information button. In this window, you will see that the primary data has a coordinate system of UTM83-10, while the leisure data from OSM has a coordinate system of LL84.</p>

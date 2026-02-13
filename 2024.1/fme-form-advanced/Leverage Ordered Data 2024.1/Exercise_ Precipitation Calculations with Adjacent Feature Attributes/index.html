@@ -80,7 +80,7 @@
 </table>
 <p>Unfortunately, the numbers are cumulative, and you wanted to map individual figures for each month. Rather than reaching into your desk drawer for a calculator, you decide to use FME to do the calculations!</p>
 <h2 id="1-create-workspace">1) Create Workspace</h2>
-<p>Open FME Workbench (2024.1 or later). Generate a new workspace to translate the data as follows:</p>
+<p>Open FME Workbench (2024.1 or later). Generate a new workspace (File &gt; Generate Workspace)&nbsp;to translate the data as follows:</p>
 <table>
 <tbody>
 <tr>
@@ -120,7 +120,7 @@
 <p>Next, set the parameter <strong>Substitute Missing, Null, and Empty by</strong>&nbsp;to "Default Value" and enter "0" into the&nbsp;<strong>Default Value</strong>&nbsp;field:</p>
 <p><img class="image image-block image-center" src="images/1724694547257.png" alt="Configuring Adjacent Feature Attributes" width="484" height="236" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">The substitution parameter is important because the first feature to be processed can&rsquo;t have a prior feature, and the last feature to be processed can't have a subsequent one. Therefore, you must always be careful about what you set here.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">In this exercise, we calculate a numeric value; therefore, using 0 (zero) as the default replacement makes sense.</span></p>
 </blockquote>
@@ -138,7 +138,7 @@
 <p><code>@Value(Precipitation)-@Value(feature[-1].Precipitation)</code></p>
 <p><img class="image image-block image-center" src="images/1724694587054.png" alt="Constructing the attribute value" width="694" height="555" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you don't see the <code>feature[-1]</code> options under FME Feature Attributes, please ensure you have followed the previous step; then, you can try clicking OK twice to close the AttributeManager and open it again.</p>
 </blockquote>
 <p>Now you can see why it was so important to set the substitution field; it&rsquo;s uncertain what result would occur from the above when <code>feature[-1].Precipitation</code>&nbsp;is missing!</p>
@@ -165,6 +165,6 @@
 <p>Inspect the output. This time, the numbers should be correct:</p>
 <p><img class="image image-block image-center" src="images/1724694832946.png" alt="Results" width="532" height="404" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">If the output values are "273-168", "387-273", etc., then you've used the Text Editor, not the Arithmetic Editor! If the values are all zero, you must ensure the </span><strong style="font-family: inherit; font-size: 1em;">AttributeManager&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">action is set to Do Nothing for the&nbsp;</span><code>Precipitation</code><span style="font-family: inherit; font-size: 1em;"> attribute rather than Set Value.</span></p>
 </blockquote>

@@ -18,12 +18,12 @@
 <p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-use-the-geometry-published-parameter.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>&nbsp;in FME Workbench (2022.0 or later).</p>
 <h2 id="2-inspect-published-parameters">2) Inspect Published Parameters</h2>
 <p>The starting workspace is in progress. It already has a published parameter that lets users choose the output format. You can find them by looking at the Navigator &gt; User Parameters. Right-click FORMAT and choose Manage User Parameters to view its configuration:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-use-the-geometry-published-parameter/images/1629223303848.png" alt="Adding the FORMAT published parameter" /></p>
+<p><img class="image image-block image-center" src="images/1629223303848.png" alt="Adding the FORMAT published parameter" /></p>
 <p>This parameter lets the user choose the output format for the data they receive. The default is Microsoft Excel.</p>
 <p>This parameter gives the user the option of four output formats (GeoJSON, OGC GeoPackage, Esri Shapefile, or Microsoft Excel). Using Choice with Alias like this lets you provide a set of formats or coordinate systems to the user instead of letting them pick from the entire list. This option can be beneficial as it is less overwhelming to the user and can prevent incorrect outcomes. Click Cancel to close the Parameter Manager.</p>
 <h2 id="3-create-a-geometry-published-parameter">3) Create a Geometry Published Parameter</h2>
 <p>Now let's edit this workspace so the user can define the area where construction will be occurring. The first step is to add a Geometry published parameter. In the Navigator, right-click User Parameters and choose Manage User Parameters:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-use-the-geometry-published-parameter/images/1629223435243.png" alt="Manage User Parameters" /></p>
+<p><img class="image image-block image-center" src="images/1629223435243.png" alt="Manage User Parameters" /></p>
 <p>Create a new parameter (using the green plus icon in the top-right) with the following options:</p>
 <table class="featureTable sort_table">
 <tbody class="tbody">
@@ -87,28 +87,28 @@
 </tbody>
 </table>
 <p>The initial bounds will be the area shown in FME Server. Larger bounds will have the map zoomed out, and smaller bounds will have the map zoomed in. Your dialog should look like this:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-use-the-geometry-published-parameter/images/1657132626203.png" alt="Geometry published parameter" /></p>
+<p><img class="image image-block image-center" src="images/1657132626203.png" alt="Geometry published parameter" /></p>
 <p>Click OK to close the Parameter Manager.</p>
 <h2 id="4-create-the-area-of-interest-polygon">4) Create the Area of Interest Polygon</h2>
 <p>Now that we have set up the geometry published parameter, we need to use it within the workflow. Add a GeometryReplacer in a new stream after the Creator transformer.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.218.Ex3.GeometryReplacer.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.218.Ex3.GeometryReplacer.png" alt="Adding a GeometryReplacer to create features from the Geometry published parameter" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.218.Ex3.GeometryReplacer.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.218.Ex3.GeometryReplacer.png" alt="Adding a GeometryReplacer to create features from the Geometry published parameter" /></a></p>
 <p>Open the parameters for the GeometryReplacer. Set the Geometry Encoding to GeoJSON and then set the Geometry Source to the GEOM_COORDS published parameter.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.219.Ex3.GeometryReplacerParameter.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.219.Ex3.GeometryReplacerParameter.png" alt="Setting the GeometryReplacer to use the Geometry published parameter" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.219.Ex3.GeometryReplacerParameter.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.219.Ex3.GeometryReplacerParameter.png" alt="Setting the GeometryReplacer to use the Geometry published parameter" /></a></p>
 <p>Click OK.</p>
 <h2 id="5-reproject-the-area-of-interest">5) Reproject the Area of Interest</h2>
 <p>We want to ensure that FME knows our data is in LL84, as this is what the Geometry published parameter accepts as values. Add a CoordinateSystemSetter transformer after the GeometryReplacer. In the parameters, set the Coordinate System to LL84.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.220.Ex3.CoordinateSystemSetter.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.220.Ex3.CoordinateSystemSetter.png" alt="CoordinateSystemSetter parameters" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.220.Ex3.CoordinateSystemSetter.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.220.Ex3.CoordinateSystemSetter.png" alt="CoordinateSystemSetter parameters" /></a></p>
 <p>Our source address data is in UTM83-10. It is more appropriate to buffer and intersect data in a projected coordinate system, so we will reproject both streams of data to UTM83-10. Add the first Reprojector after the CoordinateSystemSetter. Set the Destination Coordinate System to UTM83-10.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.221.Ex3.Reprojector.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.221.Ex3.Reprojector.png" alt="Reprojector parameters" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.221.Ex3.Reprojector.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.221.Ex3.Reprojector.png" alt="Reprojector parameters" /></a></p>
 <p>Add a second Reprojector between the FeatureReader and the NotifyList writer feature type. We have to make a slight change to the address data coordinate system. Set the Destination Coordinate System to UTM83-10 and click OK.</p>
 <p>Your workspace should look like this:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.222.Ex3.Workspace.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.222.Ex3.Workspace.png" alt="Current workspace state" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.222.Ex3.Workspace.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.222.Ex3.Workspace.png" alt="Current workspace state" /></a></p>
 <h2 id="6-buffer-the-area-of-interest">6) Buffer the Area of Interest</h2>
 <p>We need to add a 100-meter buffer around the area of interest to find which neighboring residents might be affected by construction noise and must be notified. Add a Bufferer transformer connected to the first Reprojector. In the parameters, set the Buffer Distance to 100 and set the Buffer Distance Units to Meters.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.223.Ex3.Bufferer.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.223.Ex3.Bufferer.png" alt="Bufferer parameters" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.223.Ex3.Bufferer.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.223.Ex3.Bufferer.png" alt="Bufferer parameters" /></a></p>
 <h2 id="7-clip-the-addresses-to-the-area-of-interest">7) Clip the Addresses to the Area of Interest</h2>
 <p><strong>Now we need to apply the buffered area of interest to our data</strong>. To do this we will use a Clipper transformer. Add a Clipper transformer to the canvas and connect the Bufferer's Buffered port to the Clipper input port. Then connect the Reprojector_2 to the Clippee input port. In the Clipper parameters, enable Merge Attributes.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.224.Ex3.Clipper.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.224.Ex3.Clipper.png" alt="Adding a Clipper" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.224.Ex3.Clipper.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.224.Ex3.Clipper.png" alt="Adding a Clipper" /></a></p>
 <p>Click OK.</p>
 <h2 id="8-clean-up-attributes">8) Clean up Attributes</h2>
 <p>One final step before we can write out our data is to clean up the attributes. Add an AttributeKeeper to the canvas and connect it to the Inside output port on the Clipper.</p>
@@ -126,14 +126,14 @@
 <p>For the Geometry parameter, we have to supply GeoJSON to test on FME Desktop. On FME Server you can use a web map. Paste the following GeoJSON code in to test:</p>
 <pre><code>{"type":"Polygon","coordinates":[[[-123.131762,49.282752],[-123.132148,49.282465],[-123.131579,49.282087],[-123.131139,49.282332],[-123.131762,49.282752]]]}</code></pre>
 <p>When the translation finishes, click the NotifyList writer feature type once to select it and then click View Written Data. Specify Esri Shapefile for the Format and add NotifyList.shp to the end of the Dataset parameter:</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-use-the-geometry-published-parameter/images/1629224924711.png" alt="Viewing the output shapefile" /></p>
+<p><img class="image image-block image-center" src="images/1629224924711.png" alt="Viewing the output shapefile" /></p>
 <p>Click OK. The addresses to notify, those within 100m of the area of interest, should appear in the Visual Preview window.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.226.Ex3.Results.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.226.Ex3.Results.png" alt="Viewing the resulting addresses in Visual Preview" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.226.Ex3.Results.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.226.Ex3.Results.png" alt="Viewing the resulting addresses in Visual Preview" /></a></p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -151,15 +151,15 @@
 <p>Click the Direct Link to the workspace in the Translation Log (<a href="http://localhost/fmeserver/#/workspaces/run/Training/exercise-use-the-geometry-published-parameter.fmw" target="_blank" rel="noreferrer noopener">http://localhost/fmeserver/#/workspaces/run/Training/exercise-use-the-geometry-published-parameter.fmw</a>) and log in if necessary.</p>
 <p>Select Training as the Repository and set the Service to Data Download.</p>
 <p>For Published Parameters, you should see the Select construction area parameter. Click on the map icon to select the area.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-use-the-geometry-published-parameter/images/1629225645150.png" alt="Viewing the Geometry parameter on the FME Server Run Workspace page" /></p>
+<p><img class="image image-block image-center" src="images/1629225645150.png" alt="Viewing the Geometry parameter on the FME Server Run Workspace page" /></p>
 <p>When you click on the map icon, the Geometry parameter dialog will appear, which will have a map of the area set up in the published parameter, as well as options along the side to determine which geometry type you wish to use for your selection.</p>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-use-the-geometry-published-parameter/images/1657132663070.png" alt="Select construction area geometry parameter" /></p>
+<p><img class="image image-block image-center" src="images/1657132663070.png" alt="Select construction area geometry parameter" /></p>
 <p>Zoom into the area of interest. For this example, we will zoom into downtown Vancouver and use the polygon tool to pick a small area of buildings.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -171,8 +171,8 @@
 </div>
 </div>
 </div>
-<p><img class="image image-block image-center" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/build-versatile-self-serve-workflows/exercise-use-the-geometry-published-parameter/images/1657132714104.png" alt="An area selected with the geometry parameter" /></p>
+<p><img class="image image-block image-center" src="images/1657132714104.png" alt="An area selected with the geometry parameter" /></p>
 <p>Once the area is selected, click Confirm. GeoJSON coordinates will now be available in the Select construction area text box.</p>
 <p>Once the map area has been selected, click Run to run the workspace.</p>
 <p>When the workspace has finished running, click on the download link to get the data. Extract and open the data in Microsoft Excel or FME Data Inspector. This list can then be used to send letters to the residents affected by the construction.</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.231.Ex3.ExcelResults.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.231.Ex3.ExcelResults.png" alt="Viewing the resulting addresses in Microsoft Excel" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring3SelfServe/Images/Img5.231.Ex3.ExcelResults.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.231.Ex3.ExcelResults.png" alt="Viewing the resulting addresses in Microsoft Excel" /></a></p>

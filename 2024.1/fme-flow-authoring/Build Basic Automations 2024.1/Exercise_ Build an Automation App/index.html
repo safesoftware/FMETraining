@@ -1,0 +1,104 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Configure a Manual Trigger in an Automation</li>
+<li>Create an Automation App.</li>
+<li>Trigger an Automation from an App.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-build-an-automation-app.fsproject">Starting FME Flow project</a><br />
+<ul>
+<li>C:\FMEData\Workspaces\AutomateWorkflows\exercise-build-an-automation-app.fsproject</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/CreateDataIntegrationApps/example.geojson" target="_blank" rel="noreferrer noopener">example.geojson</a> (a GeoJSON file of earthquake locations. This file can be used in the unlikely event the USGS Earthquake API goes down)
+<ul>
+<li>C:\FMEData\Resources\CreateDataIntegrationApps\example.geojson</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/FlowApps/Seismograph.jpg" target="_self">Seismograph.jpg</a>&nbsp;
+<ul>
+<li><span style="font-weight: 400;">C:\FMEData\Resources\FlowAuthoring\FlowApps\Seismograph.jpg</span></li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-build-an-automation-app-complete.fsproject" target="_blank" rel="noreferrer noopener">Complete FME Flow project</a>
+<ul>
+<li>C:\FMEData\Workspaces\AutomateWorkflows\exercise-build-an-automation-app-complete.fsproject</li>
+</ul>
+</li>
+</ul>
+<h2>Introduction</h2>
+<p>You have built an automation that runs daily to create 3D visualizations of recent earthquakes. However, you've now realized that it doesn't need to run daily and only needs to be run when someone requests the data. Sometimes the update will need to be done multiple times a day, and other times it doesn't need to be updated for a few weeks at a time. Since not everyone who may request the updated data is familiar with FME Flow Automations, you're going to setup an Automation App to allow them to trigger the automation.&nbsp;</p>
+<h2>1) Open Earthquake Automation</h2>
+<p>Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-build-an-automation-app.fsproject">starting project</a> and import it to your FME Flow. The project contains an Earthquake Automation. Open the automation once you have imported it.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you're continuing from the Build a Basic Automation exercise where you built and saved an Earthquake Automation, this exercise will build off of that automation so you can continue from it by swapping the FME Flow Schedule trigger to a Manual Trigger.</p>
+</blockquote>
+<p><img src="images/1737129101797.jpg" alt="" width="992" height="635" /></p>
+<h2>2) Open the Manual Trigger Details</h2>
+<p>Automation Apps require a Manual Trigger to use the automation. Click on the Manual Trigger icon to open its Details. Under Parameters, disable the Prompt for JSON on Trigger.</p>
+<p><img src="images/1737130569271.jpg" alt="" /></p>
+<h2>3) Create a Manual Parameter</h2>
+<p>Under Output Attributes, you will add a Manual Parameter to receive input from the Automation App. Expand the Success section and click Manage beside Manual Parameters. The Manual Parameters Editor will open.&nbsp;</p>
+<p><img src="images/1736805046406.jpg" alt="" width="443" height="591" /></p>
+<p>In the Manual Parameters Editor, click the + button to add a parameter and select File/URL.</p>
+<p><img src="images/1736805210054.jpg" alt="" /></p>
+<p>Configure the parameter settings to match the image below, leaving the Default Value blank for now.&nbsp;</p>
+<p>&nbsp;<img src="images/1737044359758.jpg" alt="" /></p>
+<p>Click Save to close the Manual Parameters Editor, then click Apply to close the Manual Trigger Details.&nbsp;</p>
+<h2>4) Link the Parameter</h2>
+<p>Open the Workspace Action Details and scroll down to the Source GeoJSON File or URL parameter. Click the arrow, expand Manual Parameters and select the manual.SourceFile parameter.</p>
+<p><img src="images/1737047320551.jpg" alt="" width="719" height="696" /></p>
+<p>Once the parameter is linked, click Apply to close the Action Details.</p>
+<p><img src="images/1737047637664.jpg" alt="" width="452" height="281" /></p>
+<h2>5) Save the Automation</h2>
+<p>Save the Automation from the top toolbar of the Automation canvas.&nbsp;</p>
+<p><img src="images/1737048001959.jpg" alt="" width="58" height="78" /></p>
+<h2>6) Create Automation App</h2>
+<p>Open the Flow Apps menu and select Create Automation App.&nbsp;</p>
+<p><img src="images/1737048068387.jpg" alt="" /></p>
+<p>Give your App a name, title, and description. Select Earthquake Automation as the automation that is triggered by the App.&nbsp;</p>
+<p><img src="images/1737048313031.jpg" alt="" width="848" height="733" /></p>
+<p>When you expand Parameters, you will see the Manual Parameter we created in the Manual Trigger.&nbsp;&nbsp;</p>
+<p><img src="images/1737053090727.jpg" alt="" width="685" height="150" /></p>
+<h2>8) Customize Automation App</h2>
+<p>In the Customize section, Automation Apps can be customized similarly to Workspace Apps. Optionally, download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/FlowApps/Seismograph.jpg" target="_self">Seismograph.jpg</a> and add it as the Heading Banner.</p>
+<p><img src="images/1737048972422.jpg" alt="" width="875" height="586" /></p>
+<p>Click OK to finish creating the App.</p>
+<h2>9) Open the App</h2>
+<p>After you click OK to create and save the Automation App, you'll see the App URL. Click it to open the App, or copy it to share with others.&nbsp;</p>
+<p><img src="images/1737049428257.jpg" alt="" /></p>
+<p>However, once you open your app, you'll see that this app is disabled.&nbsp;</p>
+<p><img src="images/1737049644300.jpg" alt="" width="902" height="476" /></p>
+<p>The app is disabled because the Automation has not been started.</p>
+<h2>10) Return to the Automation</h2>
+<p>Navigate back to your Earthquake Automation on FME Flow. Before you start the automation, add a new Internal Action connected to the earthquakes extrusion success port. The main advantage of Automation Apps over Workspace Apps is the ability to run multiple workspaces and perform additional actions. While you could add an action to send an email or run another workspace, for now, you will log a message containing some information about running the Automation App.</p>
+<p><img src="images/1737049846220.jpg" alt="" width="1250" height="642" /></p>
+<p>Open the Details for the new action. Configure the action to Log a Message. For the Formatted Message, open the Text Editor.&nbsp;</p>
+<p><img src="images/1737050010401.jpg" alt="" width="406" height="526" /></p>
+<p>On the left panel of the Text Editor, you will see parameters from the Automation App added to the list of Automation Parameters.&nbsp; Configure a message using the parameters:</p>
+<p><span style="font-family: 'courier new', courier;">The {automation.name} was triggered from the {app.name} by {app.user}.</span></p>
+<p><img src="images/1737052093228.jpg" alt="" width="1073" height="518" /></p>
+<p>Although this logs a message, you can use the Text Editor and these parameters in other Actions, such as configuring an email body to send the same message.&nbsp;</p>
+<p>Click OK to close the Text Editor and then click Apply to close the Log Details.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you trigger the Automation manually from within the Automation, not using the Automation App, the Automation App parameters will not populate and the message returned will be:&nbsp;<span style="font-family: 'courier new', courier;">The Earthquake Automation was triggered from the {app.name} by {app.user}.</span></p>
+</blockquote>
+<h2>11) Save and Start the Automation</h2>
+<p>Save the updates you just made to the automation and then Start the automation in Production Mode.&nbsp;</p>
+<p><img src="images/1737052683925.jpg" alt="" width="1081" height="512" /></p>
+<h2>12) Open and View the Automation App</h2>
+<p>Return to the list of Automation Apps on your FME Flow and open your Earthquake Automation App.&nbsp;</p>
+<p><img src="images/1737053191572.jpg" alt="" width="1138" height="435" /></p>
+<p>Once you open the App, the Run button will be disabled until a value is provided for the Source file parameter since it was set to be required when you created the Manual Parameter in Step 3.&nbsp;</p>
+<p>For the Source File, paste the USGS Earthquakes API URL: <span style="font-family: 'courier new', courier;">http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson.&nbsp;</span></p>
+<p><img src="images/1737053498826.jpg" alt="" /></p>
+<p>Click Run to trigger the automation.&nbsp;</p>
+<p><img src="images/1737053579645.jpg" alt="" /></p>
+<h2>13) View Log</h2>
+<p>A moment after triggering the automation, navigate to Resources &gt; Logs &gt; Automations &gt; current &gt; action_fmelogaction.log file and see the logged message from the Log a Message action in the automation.&nbsp;</p>
+<p><span style="font-family: 'courier new', courier;">The Earthquake Automation was triggered from the earthquake-automation-app by admin.</span></p>
+<p>You've now successfully configured an Automation to be run using an Automation App. In doing this, you created and linked Manual Parameters and used the expose parameter to send a value from the App to the Automation. Now, anyone can trigger the workflow from the Automation App at any time they wish to have the Earthquake data updated.&nbsp;</p>

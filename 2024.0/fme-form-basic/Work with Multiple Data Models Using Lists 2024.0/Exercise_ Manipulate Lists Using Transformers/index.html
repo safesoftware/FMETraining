@@ -16,9 +16,19 @@
 </li>
 <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/ListBuilder.fmwt" target="_blank" rel="noreferrer noopener">ListBuilder.fmwt</a></li>
 <li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/PythonLists.fmwt" target="_blank" rel="noreferrer noopener">PythonLists.fmwt</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_self">Parks.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip" target="_self">Addresses.zip</a> (Esri GDB)
+<ul>
+<li>C:\FMEData\Data\Addresses.zip</li>
+</ul>
+</li>
 </ul>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>There is no 2023 or 2024 video available for this lesson. You can <a href="https://safesoftware.hubs.vidyard.com/watch/PWviSJ8aET87z8Zbvi5Eaa?" target="_blank" rel="noopener">view the 2022 video instead</a> if you'd like, but remember, it might not match the instructions.</p>
 </blockquote>
 <h2 id="introduction">Introduction</h2>
@@ -30,7 +40,7 @@
 <p>In each section below, we will discuss the transformer's function and provide an example of its use.&nbsp;</p>
 <h2>ListElementCounter</h2>
 <p>The simplest of the list-handling transformers,&nbsp; <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/listelementcounter.htm" target="_blank" rel="noopener">ListElementCounter</a>&nbsp;returns the number of elements in a list. For example, we can use it to count the elements in the<em>&nbsp;</em><code>_trees{}</code><em>&nbsp;</em>list and store&nbsp;that number in the&nbsp;<em>_treeCount</em> attribute.</p>
-<p><img src="images/1714168389673.png" alt="2022-07-13_13-18-08.png" width="347" height="246" /><br /><br />Since the number of elements in the list represents the number of tree points within a particular park, the result tells us how many trees are in each park. For the first feature, the value of _treCount is 22.</p>
+<p><img src="images/1714168389673.png" alt="2022-07-13_13-18-08.png" width="347" height="246" /><br /><br />Since the number of elements in the list represents the number of tree points within a particular park, the result tells us how many trees are in each park. For the first feature, the value of _treeCount is 22.</p>
 <p>You can use this transformer with the ListIndexer to return the value of the elements in the list based on their order:</p>
 <ul>
 <li>First element
@@ -114,14 +124,14 @@
 <h2>ListBuilder</h2>
 <p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/listbuilder.htm" target="_blank" rel="noopener">ListBuilder</a>&nbsp;is a join transformer that&nbsp;merges features based on common attributes. The attributes&nbsp;selected in the&nbsp;<em>Group By</em>&nbsp;parameter become the join key, meaning a feature is output for each combination of values of the specified&nbsp;<em>Group By</em> attributes.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Note&nbsp;the ListBuilder&nbsp;removes the geometry and only preserves attributes listed in the&nbsp;<em>Group By</em>&nbsp;parameter, so if geometry is required, you can&nbsp;recreate it using a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/vertexcreator.htm" target="_blank" rel="noopener">VertexCreator</a> or similar transformer, or use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/aggregator.htm" target="_blank" rel="noopener">Aggregator</a>.</p>
 </blockquote>
 <h3>Example: Grouping Features Based on Attribute Values</h3>
 <p>We have tree species and park names and want to find which parks have a specific genus of tree in them. We can use the ListBuilder to group features by GENUS_NAME:</p>
 <p><img src="images/1714169796558.png" alt="Configuring the ListBuilder" width="534" height="331" /></p>
 <p>We can also set the "Add To List" parameter to <em>Selected Attributes&nbsp;</em>and&nbsp;choose which attributes to include in the resulting list,&nbsp;<code>_genusList{}</code>. When we run the workspace, the original 125 features are merged into 37 features, grouped by their GENUS_NAME.</p>
-<p>When we inspect the resulting list in the Feature Information pane, we can see that features have been grouped by Genus. For example, this list includes fpir different parks that all contain trees of the "THUJA" genus:</p>
+<p>When we inspect the resulting list in the Feature Information pane, we can see that features have been grouped by Genus. For example, this list includes four different parks that all contain trees of the "THUJA" genus:</p>
 <p><img src="images/1714513314667.png" alt="View the results of the ListBuilder" width="517" height="312" /></p>
 <h2>Aggregator</h2>
 <p>An excellent alternative to ListBuilder is the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/aggregator.htm" target="_blank" rel="noopener">Aggregator</a> transformer. The Aggregator offers a broader range of functionality, particularly around geometry handling.</p>
@@ -129,7 +139,7 @@
 <p><img src="images/1714161238540.png" alt="Generate List parameter" /></p>
 <p>The configuration of this parameter group is the same as the ListBuilder.</p>
 <p>The major difference with the Aggregator is that it is designed to create aggregate geometry. The ListBuilder drops geometry when creating its list. By default, the Aggregator will create a single aggregate geometry for all input features:</p>
-<p><img src="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Examples/aggregator.png" /></p>
+<p><img src="images/aggregator.png" /></p>
 <p>However, if you enable Group Processing, you can create aggregate features within groups defined by attribute values. When generating a list in this scenario, each aggregated feature gets its own list with values corresponding to the features in that group.</p>
 <h2>ListDuplicateRemover</h2>
 <p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/listduplicateremover.htm" target="_blank" rel="noopener">ListDuplicateRemover</a><strong>&nbsp;</strong>cleans up a list by removing elements with duplicates of a particular attribute value.</p>
@@ -145,7 +155,7 @@
 <p><img src="images/1714425634758.png" alt="Existing key-value pairs" width="526" height="334" /></p>
 <p>&nbsp;</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>To avoid any confusion, note that we did not use the attribute park_id as our unique ID here, as there are actually multiple park polygons with the same park_id. Instead, we will use a unique attribute called id.</p>
 </blockquote>
 <p>How can we turn these 250 features with lists into 125 features with DIAMETER and HEIGHT as attributes?</p>
@@ -190,11 +200,11 @@
 <p><img src="images/1714516156001.png" alt="PythonCaller results" width="517" height="312" /></p>
 <p>You need to expose the Python result attributes in the PythonCaller if you want to work with them in subsequent transformers using the&nbsp;<em>Attributes to Expose</em> parameter.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">See the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/fmepython/index.html" target="_blank" rel="noopener">Python FME API documentation</a><span style="font-family: inherit; font-size: 1em;"> for more details on these methods.</span></p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">See&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/python-and-fme-basics" target="_blank" rel="noopener">Python and FME Basics</a><span style="font-family: inherit; font-size: 1em;">&nbsp;for a tutorial on working with Python in FME.</span></p>
 </blockquote>
 <h2>List Element Selection Dialog</h2>
@@ -204,4 +214,5 @@
 <p><code>@Value(_treesMaple{@Value(_maple_elements)}.COMMON_NAME)</code></p>
 <p>See the AttributeCreator in the Python example above.</p>
 <h2>Additional Exercise</h2>
-<p>Find the rarest and most widespread Genus by expanding on the example workspace. Write it down; you will need it for the quiz.</p>
+<p>Find the rarest and most widespread Genus for trees within parks by expanding on the example workspace.</p>
+<p>Write it down; you will need it for the quiz.</p>

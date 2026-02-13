@@ -6,25 +6,23 @@
 <li>Upload data files to FME Flow.</li>
 <li>Register a workspace with the FME Flow Job Submitter service.</li>
 </ul>
-<h2>Video</h2>
 <!-- The script tag should live in the head of your page if at all possible -->
 <p>
 <script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
 </p>
 <!-- Put this wherever you would like your player to appear -->
-<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
 <h2 id="fme-workspaces-and-fme-server">FME Workspaces and FME Flow</h2>
 <p>FME Flow has a model-driven architecture because its processes are expressed as models. In FME, these models are better known as <strong>workspaces</strong>.</p>
 <p>Workspaces are created &ndash; we call it &ldquo;authored&rdquo; &ndash; using FME Form. In particular, the <strong>FME Workbench</strong> application is used. FME Workbench is a client of FME Flow, and so they form a client-server pair. However, both share the same core engine and process data in the same way.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><strong style="font-family: inherit; font-size: 1em;">Servers&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">are applications that provide a resource or service.</span></p>
 <p><strong style="font-family: inherit; font-size: 1em;">Clients&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">make requests of servers to access a resource or service.</span></p>
 <p><span style="font-family: inherit; font-size: 1em;">Together, a&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">client-server pair</strong><span style="font-family: inherit; font-size: 1em;"> form a distributed application structure. Usually, the client and server exist on separate hardware and communicate over computer networks, but sometimes both the server and client exist on the same system.</span></p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p><span style="font-family: inherit; font-size: 1em;">Let's make sure you get the terminology right. FME Form is the desktop program that includes the FME Workbench, FME Data Inspector, and FME Quick Translator applications. Workspace authoring occurs in the application called FME &ldquo;Workbench,&rdquo; but the process defined in the canvas window of FME Workbench is called a &ldquo;workspace.&rdquo; The terms are so similar that they are easily confused.</span></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Let's make sure you get the terminology right. FME Form is the desktop program that includes the FME Workbench, FME Data Inspector, and FME Quick Translator applications. Workspace authoring occurs in the application called FME &ldquo;Workbench,&rdquo; but the process defined in the canvas window of FME Workbench is called a &ldquo;workspace.&rdquo;&nbsp;</span></p>
 </blockquote>
 <p>Because FME Workbench is a client of FME Flow, it may be used to transfer authored workspaces to and from FME Flow. We call this transfer <strong>publishing</strong>.</p>
 <p>FME Workbench has the ability to:</p>
@@ -34,18 +32,16 @@
 <li>Republish a workspace (upload a previously published workspace).</li>
 <li>Download a workspace (retrieve it from FME Flow).</li>
 </ul>
-<p>The ability to transfer a workspace back to FME Workbench means workspaces can be downloaded for editing and maintenance and then published back to FME Flow.</p>
 <h2 id="repositories">Repositories</h2>
 <p>Workspaces are stored on FME Flow in devices called <strong>repositories</strong>. Each FME Flow may have multiple repositories, but any workspace can only belong to one of them, without creating a duplicated workspace.</p>
 <p>A repository consists of two parts:</p>
 <p>1) The .fmw files from any workspaces that have been published to FME Flow are stored in the file-based part of the repository.</p>
 <p>2) Metadata related to the workspace is held separately in the FME Flow Database. This metadata includes information about the contents of the workspace; for example, source and destination datasets, workspace feature types, and published parameters.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.003.CoreAndRepositories.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/1710117304561.png" alt="Repositories are managed by the FME Flow Core" width="289" height="425" /></a></p>
-<p>Repositories are managed by the FME Core. They can be accessed (by authors and administrators) through the FME Flow Web Interface.</p>
+<p>Repositories are managed by the FME Flow Core. They can be accessed through the FME Flow Web Interface in the Workspaces tab.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p><span style="font-family: inherit; font-size: 1em;">Security in FME Flow is very important, and never more so than for repositories.</span></p>
-<p><span style="font-family: inherit; font-size: 1em;">You can think of each repository as being like a folder on a file system, with the same ability to grant access rights to individuals and groups. So, for each repository you create, be sure to check the security permissions. If you don&rsquo;t, then end-users may not get access to the repository!</span></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Security in FME Flow is very important, especially controlling access to workspaces and repositories.&nbsp;</span><span style="font-family: inherit; font-size: 1em;">You can think of each repository as being like a folder on a file system, with the same ability to grant access rights to individuals and groups. So, for each repository you create, be sure to check the security permissions. If you don&rsquo;t, then end-users may not get access to the repository and workspaces in it!</span></p>
 </blockquote>
 <h2 id="transferring-workspaces">Transferring Workspaces</h2>
 <p>The functionality for publishing or downloading workspaces is accessed in FME Workbench either through the menubar:</p>
@@ -57,28 +53,27 @@
 <p>Workspaces can also be uploaded and downloaded directly through FME Flow on the Workspaces page:</p>
 <p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/vsd7QJUoPpWUIfTJ8idPW7dReiBto0sPTp4xtf_l1Y7OXR1ngJ9VbPj535s2wk1_NyM9HZC_Q1n-52ySZxSofe3rg1WfXyIofMcWq-PP9DVMfIB19uExAWFriZnQ1GjoMZIYV2i1-NN_GaG0" alt="Download a workspace from FME Flow" width="1402" height="425" /></p>
 <h2 id="connecting-to-fme-server">Connecting to FME Flow</h2>
-<p>The Publish to FME Flow tool in FME Workbench opens a simple wizard interface, the first dialog of which defines a connection to FME Flow.</p>
+<p>The Publish to FME Flow tool in FME Workbench opens the simple wizard interface. The first section of which defines the FME Flow connection to use.</p>
 <p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/Ygkja37csaqCGKzoTB02psfXcbKa-QbO1HxctX8J2FPTbBR12Q8BpLRmzxYrlINdU_zazNoUd7gBqIyUwjwSRSyWnCzXlawNN15HJtphzOXI_bBLixGfTqGX00dntZYLESfVGAGxUCHL1F9M" alt="Publish to FME Flow dialog" width="586" height="719" /></p>
-<p><span style="font-weight: 400;">Selecting <strong>Connect to FME Flow</strong> opens a dialog</span>&nbsp;with fields in which to define connection credentials. These connection details are saved so that they can be reused in the future simply by picking from the drop-down list:</p>
+<p><span style="font-weight: 400;">Selecting <strong>Connect to FME Flow</strong> opens a small window</span> with parameters to define connection credentials. These connection details are saved so that they can be reused in the future simply by picking from the drop-down list:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.008.SelectServerConnect.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh6.googleusercontent.com/5MeERmyc0UDgX2Tz7cq2bp7lSaAtpfgfhzlSS9_OiylDfZ0_H9xuwpQ8-2Bgfl5i8jWIycODUa_byQouABms2DHhgDx0KDjGykS35WWzsoa25D9q-yR5pLzeN0Npc3lp7NeUCKie_98prq4l" alt="Choosing from multiple FME Flow" width="478" height="137" /></a></p>
 <h2 id="repository-selection">Repository Selection</h2>
-<p>The next dialog defines the repository in which to store the workspace:</p>
+<p>The next section defines the repository in which to store the workspace:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.009.PublishToServerRepository.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/fEJbfl7xpIQ_MRJBYNgzTuqY87biODOaHH1uYhxNl9pT_pPPY_eRRbDhDaInlWFy0_Dc9x0SOqf9YAJRhKSBGTAQXldjzUM3FfFwclAJFa6DcXjtG7uXECuxRlAFr93WRi_Zpnc04-9igbB_" alt="Choosing a repository to publish to" width="456" height="122" /></a></p>
-<p>Either an existing repository can be used, or a new one created. The workspace name can also be edited, even making it different to what it is saved as locally.</p>
+<p>Either an existing repository can be used, or a new one can be created. The workspace name can also be edited, even making it different from what it is saved as locally.</p>
 <h2 id="connections-upload">Connections Upload</h2>
-<p>This dialog only appears when there are databases and/or web connections that need to be uploaded with the workspace.</p>
+<p>This publishing step only appears when there are databases and/or web connections used in the workspace that can be uploaded to FME Flow with the workspace.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.010.PublishWizardConnections.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh5.googleusercontent.com/iLr-GSBWLAeBEvqim-v5ujItdzUh7jbgHVRyDS72L2ew51gevOgc27OIAWoCwskcjoLaMcvFEabUNbCC43YdmF1Yb0a--DaPTs83a_brSTEGr9yu4LGCgQiciFy0q4qs69x-Vd9Q9Bva-B6P" alt="Publishing Connections with your workspace" width="504" height="278" /></a></p>
 <p>This workspace contains both a database connection and a web connection that need to be uploaded to function on FME Flow.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p>Web connections require authentication in FME Flow in addition to adding the web service to FME Flow.</p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Web connections require authentication in FME Flow in addition to adding the web service to FME Flow. Database connections require no further authentication, but care must be taken not to accidentally overwrite an existing database connection with the same name that might already be defined on FME Flow.</p>
 </blockquote>
-<p>The database connection requires no further authentication, but care must be taken not to accidentally overwrite an existing database connection with the same name that might already be defined on FME Flow.</p>
 <h2 id="workspace-registration">Workspace Registration</h2>
-<p>The final dialog defines which service(s) the workspace is to be registered against. A workspace may be registered for use with any number of these services.</p>
+<p>The final section of the publishing wizard defines which service(s) the workspace is to be registered with. A workspace may be registered for use with any number of these services.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.011.PublishToServerRegistration.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/cUt6W_dcJd8mgZTu2S4UVp4u1rnzqh-BkjRGuwTWVTDecwvkpl1GMOsiP_Pd750XznK6q4SSG4KNYxsd22zWBNegR91CM_JGZIVFPC-dm4XoYM_JJcKxMZbDEngZhi1145ssWS-CQR5UVoTb" alt="Choosing which services to register your workspace with" width="504" height="400" /></a></p>
-<p>The Job Submitter service allows FME Flow to run a workspace as-is. This is the closest to running a workspace in FME Workbench. All inputs and outputs are defined in the workspace, so data is simply written out and not streamed or delivered in any other manner.</p>
-<p>Job submission is ideal for testing workspaces, writing to databases, and for running large-scale and batch translations that make use of the server process queue.</p>
+<p>The Job Submitter service allows FME Flow to run a workspace as-is. This is the closest to running a workspace in FME Workbench. All inputs and outputs are defined in the workspace, so data is simply written out as specified in the writers and not streamed or delivered in any other manner.</p>
+<p>Job submission is ideal for testing workspaces, writing to databases, and running large-scale and batch translations that make use of the server process queue.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
@@ -86,8 +81,8 @@
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p>You can learn about the other services in the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/FME-Flow-Web-Services.htm" target="_blank" rel="noopener">Documentation</a>&nbsp;or the&nbsp;<strong>Methods for Running a Workflow </strong>course.</p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can learn about the other services in the <a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/transformation_svcs.html" target="_blank" rel="noopener">FME Flow Services documentation&nbsp;</a>or the <a href="https://academy.safe.com/path/fme-flow-authoring/build-basic-self-serve-workflows" target="_blank" rel="noopener">Build Basic Self-Serve Workflows</a> course.</p>
 </blockquote>
 </div>
 </div>
@@ -97,29 +92,28 @@
 </div>
 <h2 id="republishing-a-workspace">Republishing a Workspace</h2>
 <p>Once a workspace has been published, the republish tool becomes active. Further updates to the workspace (within the same FME Workbench session) can then be uploaded with a single click.</p>
-<p>The same parameters are used as before. If changes need to be made to these parameters, then the full publishing wizard should be used.</p>
+<p>The same parameters are used as before. If changes need to be made to these parameters, then the Publish option going through the entire publishing wizard should be used.</p>
 <h2 id="downloading-a-workspace">Downloading a Workspace</h2>
-<p>Workbench can also download a workspace held in an FME Flow repository. This is usually done in order to make edits to the workspace. Note that downloaded workspaces are copies of the original, which remains in the FME Flow repository.</p>
+<p>Workbench can also download a workspace held in an FME Flow repository. This is usually done to make edits to a workspace already published to FME Flow. Downloaded workspaces are copies of the original, which remains in the FME Flow repository, so the workspace should be published back to FME Flow once the edits are made.</p>
 <p>The two parts of the downloading wizard are the FME Flow connection, which is the same as the publishing wizard, and the repository and workspace selection tool:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring1Basics/Images/Img1.012.DownloadFromServerRepository.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/ffgXUiPvk5P5ZkpRDWrCc_nqj3f9mSVRTeW3_fsbv0JHcjfmMzjsmSh1exdQaXNTv3T79566TyVpGQuBV5lmwiNnqQvM5gDLBkX04wqzGcuNFsYBZM3NE0tN-kBpjH5iv_FRjhjw5dF1CJ4o" alt="Downloading a workspace from FME Workbench" width="502" height="571" /></a></p>
 <p>The user is then prompted for a location to save the workspace. The default (on Windows) is &lt;User&gt;\Documents\FME\Workspaces. The workspace and any resources are then downloaded and saved to that location.</p>
 <p>Once downloaded, the workspace is automatically opened within FME Workbench for editing.</p>
 <blockquote>
-<p><img class="img mtm" style="font-family: inherit; font-size: 1em;" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p><span style="font-family: inherit; font-size: 1em;">Besides workspaces, it&rsquo;s also possible to publish/download FME custom transformers and custom formats to and from an FME Flow repository.</span></p>
+<p><img class="img mtm" style="font-family: inherit; font-size: 1em;" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Besides workspaces, it&rsquo;s also possible to publish and download FME custom transformers and custom formats to and from an FME Flow repository.</span></p>
 </blockquote>
-<h2 id="publishing-file-datasets-to-a-repository">Publishing File Datasets to a Repository</h2>
-<p>When the source data for a translation is stored as files (rather than a feed or database), it is possible to publish data to an FME Flow repository along with the workspace.</p>
+<h2 id="publishing-file-datasets-to-a-repository">Publishing Source Data to a Repository</h2>
+<p>When the source data for a translation is stored as files (rather than a live feed or database), it is possible to publish data to an FME Flow repository along with the workspace.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p><span style="font-family: inherit; font-size: 1em;">This data upload method is fast and simple but limits future access to the data. A better practice is to publish your data to the Resources folder separate from the workspace. Learn how to use the Resources folder in&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">the Connect Data to FME Flow course.</strong></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">This data upload method is fast and simple but limits future access to the data. A better practice is to publish your data to the Resources folder separate from the workspace. Learn how to use the Resources folder in&nbsp;the</span><strong style="font-family: inherit; font-size: 1em;"> Connect Data to FME Flow course.</strong></p>
 </blockquote>
-<h2 id="publishing-source-data">Publishing Source Data</h2>
 <p>In this workspace the source dataset is MapInfo TAB:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.009.PublishDataSourceInWB.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh3.googleusercontent.com/hpwJk4UXQyLq_05FRTop8qy0uR0fZ3UvKWyyKzuB94-Y8UbnHOxhkXEZt8P3-OkRO_PjXWOpwe2Byefi3V1G-P146-IS7zUWA7vmucMYRP77KjByjYCmg1iRHmjZqSBNvgMr9MFhLAmitW8c" alt="Viewing the source dataset for a MAPINFO reader in the Workbench Navigator" width="505" height="339" /></a></p>
 <p>A MapInfo TAB dataset is made up of a series of files (.tab, .dat, .id, .map). When this workspace is published the wizard allows us to publish the data files alongside it by simply checking the box labeled&nbsp;<em>Upload data files</em>.</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.010.PublishDataSourceInWiz.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/F-IpUpUHLp4ZTI_WBZme7jrsgMc1FxtHqm5fH2ZOwYJ7YS4rq82rla8zKDmh9Qnf67c2sLlcdKZi24g9htsBHzc4s5pC6jXXjj3mX24WZlKWtqWALpdjQzcjUShR05VWDrcFSs2ebvVzfoYO" alt="Choosing to upload data files with a workspace" width="505" height="453" /></a></p>
 <p>FME automatically selects the files to upload based on what it thinks is necessary to run the translation. If there are other files you wish to upload, or files FME selected that you don't wish to upload, the Select Files button allows you to make changes:</p>
 <p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.011.PublishDataSourceSelectFiles.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh4.googleusercontent.com/nkTXCDkj5caNwIoF2gndc0tu97pz4FYEw9IJnHgwvBouivxbVSrQ3NwmnR5xvMknW_Mpfeez5OxeesOPLBg8KNjyenyc-3rxten23mO0mq6Puv21duJuoHOZ3980V5WEf0xj9thEL-zxjHoH" alt="Selecting files to upload" width="503" height="423" /></a></p>
-<p>This dialog also allows you to change&nbsp;<em>where</em>&nbsp;the files are published, but for now, we'll ignore that setting and go with the default of publishing to the repository.</p>
-<p>Once the publishing wizard is complete, those files are uploaded to FME Flow and tagged for use with this workspace.</p>
+<p>This dialogue also allows you to change <em>where</em> the files are published using Select Location, but for now, we'll ignore that setting and go with the default of publishing to the repository.</p>
+<p>Once the publishing wizard is complete, those files are uploaded to FME Flow in the same repository as the workspace for use when running this workspace.</p>

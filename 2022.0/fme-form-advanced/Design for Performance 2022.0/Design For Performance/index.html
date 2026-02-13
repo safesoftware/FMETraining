@@ -10,21 +10,21 @@
 <p>Performance methodology is weak when a workspace's design causes the workspace to use more system resources (CPU and memory) than necessary. Performance methodology means setting up a workspace to run efficiently, saving you valuable time.</p>
 <h2 id="filtering-input">Filtering Input</h2>
 <p>A common scenario in FME is to read data into a workspace and then filter out features (records) that are not required:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.028.DataFilterTester.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.028.DataFilterTester.png" alt="Filtering data using the Tester" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.028.DataFilterTester.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.028.DataFilterTester.png" alt="Filtering data using the Tester" /></a></p>
 <p>However, when data is read and immediately discarded, the resources used to read that data are a direct loss of performance.</p>
 <p>If data is filtered as it is read - rather than afterward - performance is much better, and many formats have parameters to do just that:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.029.DataFilterSQLWhere.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.029.DataFilterSQLWhere.png" alt="Filtering using a WHERE clause on a reader feature type" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.029.DataFilterSQLWhere.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.029.DataFilterSQLWhere.png" alt="Filtering using a WHERE clause on a reader feature type" /></a></p>
 <p>Here a &lsquo;WHERE Clause&rsquo; parameter applies the required filter directly to the Geodatabase reader. Only data that matches the where clause is read and enters the workspace.</p>
 <h2 id="excess-feature-types">Excess Feature Types</h2>
 <p>The schema of a source dataset is represented on the FME canvas by feature type objects:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.030.ExcessFeatureTypes.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.030.ExcessFeatureTypes.png" alt="Unused reader feature types" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.030.ExcessFeatureTypes.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.030.ExcessFeatureTypes.png" alt="Unused reader feature types" /></a></p>
 <p>Not connecting a feature type to other objects in your workspace is equivalent to reading and discarding data and is likewise detrimental to performance.</p>
 <p>When adding readers, FME prompts the user to select feature types to add to the translation. You should avoid adding feature types you don't need and remove ones that are already added but not connected.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -40,7 +40,7 @@
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -54,16 +54,16 @@
 </div>
 <h2 id="excess-attributes-and-lists">Excess Attributes and Lists</h2>
 <p>Once data has been read into a workspace, it still can be reduced in size to assist performance. For example, attributes not defined in the output schema are not necessary to a workspace and can be removed:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.031.ExcessAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.031.ExcessAttrs.png" alt="Excess attributes" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.031.ExcessAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.031.ExcessAttrs.png" alt="Excess attributes" /></a></p>
 <p>Here a workspace author is calculating the number of addresses in each postcode (CFSAUID) of a city. The address attributes are not required in the output schema but are copied on to the postcode features, along with a list of addresses, and everything carried through to the end of the workspace.</p>
 <p>In this scenario the author should avoid the PointOnAreaOverlayer options for copying attributes and creating lists:</p>
-<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" alt="Turning off parameters to generate attributes" /></a></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img5.032.RemoveExcessAttrs.png" alt="Turning off parameters to generate attributes" /></a></p>
 <p>This step will reduce the amount of memory required to run the translation, with no effect on its output.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <blockquote>
-<div class="media"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" />
+<div class="media"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" />
 <div class="mediaBd">
 <div class="message-media-content">
 <p>Lists are the worst attribute type to keep for no reason since they can have multiple values for each record. Parameters in many join transformers allow the author to generate only the list attributes required:<br /><br /></p>
@@ -85,7 +85,7 @@
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -101,7 +101,7 @@
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -118,7 +118,7 @@
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>

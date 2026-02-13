@@ -1,9 +1,11 @@
 <h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
 <ul>
 <li>Create an Automation.</li>
-<li>Use a Manual Trigger in an Automation.</li>
+<li>Use a Schedule Trigger in an Automation.</li>
 <li>Use the Run Workspace action in an Automation.</li>
 <li>Start an Automation and view its triggered jobs.</li>
+<li>Access Debug Logs and Production Logs for Automations.</li>
 </ul>
 <h2 id="resources">Resources</h2>
 <ul>
@@ -28,68 +30,71 @@
 </ul>
 </li>
 </ul>
-<h2>Video</h2>
 <!-- The script tag should live in the head of your page if at all possible -->
 <p>
 <script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
 </p>
 <!-- Put this wherever you would like your player to appear -->
-<p><img class="vidyard-player-embed" style="width: 100%; margin: auto; display: block;" src="https://play.vidyard.com/bWtCWTj2fsHW3xrrJLvoTM.jpg" data-uuid="bWtCWTj2fsHW3xrrJLvoTM" data-v="4" data-type="inline" /></p>
 <h2 id="introduction">Introduction</h2>
-<p>You have been tasked with creating a system to automatically generate a Google Earth KML file with a 3D visualization of recent earthquakes around the world, using&nbsp;<a href="https://www.usgs.gov/natural-hazards/earthquake-hazards/earthquakes" target="_blank" rel="noreferrer noopener">data from the United States Geological Survey</a>. Eventually, you hope to run this workspace on a schedule and in response to external triggers. But for this first iteration, you just want to test building an Automation that runs using a Manual Trigger.</p>
+<p>You have been tasked with creating a system to automatically generate a Google Earth KML file with a 3D visualization of recent earthquakes around the world, using&nbsp;<a href="https://www.usgs.gov/natural-hazards/earthquake-hazards/earthquakes" target="_blank" rel="noreferrer noopener">data from the United States Geological Survey</a>. You currently run the workspace manually everyday to get the results. Now, to save time, you're going to run it using FME Flow Automations on a schedule that triggers the workspace to run daily.&nbsp;</p>
 <h2 id="1-create-a-new-automation">1) Create a New Automation</h2>
 <p>To create your new Automation, the first step is to log in to FME Flow.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">If you are taking an official Safe Software training course, you can log in with the user name&nbsp;</span><code>admin</code><span style="font-family: inherit; font-size: 1em;">&nbsp;and the password&nbsp;</span><code>FMElearnings</code><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">If you are taking an official Safe Software training course, you can access FME Flow at http://localhost and log in with the user name </span><code>admin</code><span style="font-family: inherit; font-size: 1em;">&nbsp;and the password&nbsp;</span><code>FMElearnings</code><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
 </div>
 </div>
 </div>
 </div>
 <p>After logging in, click Automations &gt; Create Automation on the left-hand navigation menu:</p>
 <p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/_jK08LJJm5uD6bAd69MSAoaOefGWIf-t0zpDbOCSRQAlE2KXC0NkTtCQd8vGuYkWahciUrg4EvwLtQ6nMsC4XPpUDQwJpmQPnP0JosVOPLxe0ILT_-8wJj3OSo61-4DaeOk_yuCxuBcneyyc9zGo-Lg" alt="Automations &gt; Build Automation in FME Server web interface" width="297" height="198" /></p>
-<h2 id="2-add-a-manual-trigger">2) Add a Manual Trigger</h2>
+<h2 id="2-add-a-manual-trigger">2) Add a Schedule Trigger</h2>
 <p>If this is your first time building an Automation on this FME Flow, the Get Started box will appear. You can click Close, as we'll explore these steps ourselves right now.</p>
-<p>You will see a new blank Automation, with a starting Trigger and two possible Next Action objects already added. You can also use the <img src="images/1723515885931.png" alt="Add component" width="30" height="30" /> located on the bottom left of the canvas to open the component menu where you can click and drag components to create an automation.</p>
-<p><img src="images/1723516014424.png" alt="Component menu" width="437" height="396" /></p>
-<p>Let's turn that starting Trigger into a Manual Trigger. Click the lightning bolt icon on the Trigger, then click Select a Trigger Event and choose Manual Trigger (max 1 per Automation):</p>
-<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/WKoEZmEzfwmEOV47zq-azgvg5cTEHJAOCeWSzurhiq-YnqxiXy5xuF-dzlNKrpoMH8Td23OBkUEsPnt0O0l4aBki-NOzGsnE0cjTCaGiL_vS2dRV8NIs3VBBjqM7rHBQelCqQxa2cTFKIB1OVagUXcM" alt="Selecting a Manual Trigger" width="612" height="325" /></p>
-<p>Disable Prompt for JSON on Trigger. This option lets you supply input keys for the Automation, but we don't need that ability for this Automation.&nbsp;</p>
-<p>Click Apply. The Trigger will turn into a Manual Trigger:</p>
-<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/vPORiwMe_zWOLq8fLlSfpICbcB_-7LcIPRgHU6DEVXIWXoKTMKqSa4torfIXzo3F10piCuwDSlCSxS6ZbYkvbW7G4BQLwW5M4eWCxOkSNxCe1vXJnn93HUueVL4Kqs2TwKThWM_4cmWU-qjhP9wIcKA" alt="A Manual Trigger has been added" width="612" height="324" /></p>
+<p>You will see a new blank Automation canvas, with a starting Trigger that has yet to be configured.&nbsp;</p>
+<p><img src="images/1736453543661.jpg" alt="" width="1051" height="586" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Clicking the <img src="images/1723515885931.png" alt="Add component" width="30" height="30" /> button located on the bottom left of the canvas opens the component menu where you can click and drag components to add to your automation. Clicking the Next Action guide will also open an Action details pane on the left where you can select the action you'd like to use. Once you add multiple components to your automation, there will be a lot of Next Action guides so you may turn them off in Menu &gt; Hide Guides.&nbsp;</p>
+</blockquote>
+<p>Click the lightning bolt icon on the Trigger, then click Select a Trigger Event and choose FME Flow Schedule.</p>
+<p><img src="images/1736453737186.jpg" alt="" width="931" height="532" /></p>
+<p>Set the Schedule Type to Repeat On Internal and have it repeat daily.&nbsp;</p>
+<p><img src="images/1736453876811.jpg" alt="" width="443" height="675" /></p>
+<p>Click Apply. Your automation canvas will now have the Schedule trigger added to it.&nbsp;</p>
+<p><img class="image image-block image-center" src="images/1736454129380.jpg" alt="A Manual Trigger has been added" width="612" height="324" /></p>
 <h2 id="3-add-a-run-workspace-action">3) Add a Run Workspace Action</h2>
-<p>Click the circle icon above the top Next Action block. Then click Select an action and then choose Run a Workspace:</p>
-<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/CO2lDz6TtMy8mzqnEUvUUlCuFvywAvNopU_s3ONme3f1fvo8tjru5HyyVmHkmS9sZUhhYIKvTwle-nR50JVTAYh2fhzL_ZB1CdfUjX_r1r8_gIu2h4cNsdvsp9Py8E0_bgEgaLkZHqfKJQGf6Pt4Oy4" alt="Configuring Next Action Details" width="612" height="411" /></p>
-<p>Select the Samples repository and the earthquakesextrusion.fmw workspace. Click Apply.</p>
-<p>&nbsp;</p>
+<p>Click the circle icon above the top Next Action block attached to the Success port of the trigger. Then click Select an action and then choose Run a Workspace:</p>
+<p><img class="image image-block image-center" src="images/1736454246060.jpg" alt="Configuring Next Action Details" width="612" height="411" /></p>
+<p>Select the Samples repository and the earthquakesextrusion.fmw workspace. You don't need to alter any other settings for this action so click Apply.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><br /><br /><span style="font-family: inherit; font-size: 1em;">If you don't have the earthquakesextrusion.fmw workspace on your FME Flow (it should be there by default), you can download it here: </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/earthquakesextrusion.fmw" target="_blank" rel="noreferrer noopener">earthquakesextrusion.fmw</a><span style="font-family: inherit; font-size: 1em;">. If you are using a Safe Software training machine or downloaded FMEData, you can use&nbsp;</span><code>C:\FMEData\Workspaces\CreateDataIntegrationApps\earthquakesextrusion.fmw</code><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><span style="font-family: inherit; font-size: 1em;">If you don't have the earthquakesextrusion.fmw workspace on your FME Flow (it should be there by default), you can download it here: </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/earthquakesextrusion.fmw" target="_blank" rel="noreferrer noopener">earthquakesextrusion.fmw</a><span style="font-family: inherit; font-size: 1em;">. If you are using a Safe Software training machine or downloaded FMEData, you can use&nbsp;</span><code>C:\FMEData\Workspaces\CreateDataIntegrationApps\earthquakesextrusion.fmw</code><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
 </div>
 </div>
 </div>
 </div>
-<p>The earthquakeextrusion.fmw workspace action should now appear on the canvas:</p>
-<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/J01SaAqxHwVyP20L0dGxxKOgAdBA7lad2zX-h3j-R5Q9YDAoCooaPpth4hQARWo2gmrod9YyEV3gqL3CbF7j0dta6Uf_p77zOdRaWdHa1gziAk58tqPuUlGhSYfP911XVgZu-QocDcYZsrDiSZxKVy0" alt="A Workspace Action has been added" width="612" height="351" /></p>
+<p>The earthquakeextrusion.fmw workspace action should now appear on the canvas.&nbsp;</p>
+<p><img class="image image-block image-center" src="images/1736454310506.jpg" alt="A Workspace Action has been added" width="534" height="397" /></p>
 <h2 id="4-save-and-start-the-automation">4) Save and Start the Automation in Debug Mode</h2>
-<p>We now have a basic Automation that will run the earthquakeextrusion.fmw workspace when manually triggered. Before starting it, we need to save it. Click the Save icon:</p>
-<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/QNTb6lmcieE-eqzL5y7luYTdBrjF-RqZ-kbXh_J2zGueWhJJ5Kc8WImnifzJH1GNpT1IxiDc998HDzyRzI8_Mr6YItR2iyaQfFgJoXLwhzhFbzSyA-e0aA6_CGGMRxZdEGSAouhcS46wApQfUTRuT3A" alt="Save button" width="612" height="64" /></p>
-<p>Call your workspace Earthquake Automation and click OK:</p>
-<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/eBNATRwR6BiQZIXEF0h5xyEppkzhjO779YGQRMW6qVK2lYUbjuHONWgCgcizf18zO636aGgYgjAZKZdqFBhq8RE0TxzQOW4UoeoTvg2iTFG5Y0S-7qsOiS1WJ1K0_UuTYZ9DxqJcNrMCDeROQBC6BtI" alt="Save parameters" width="612" height="216" /></p>
-<p>Now that the Automation has been saved, we have to start it. Click Debug to start the Automation in Debug Mode, this will allow you to view the Debug Log:</p>
+<p>We now have a basic Automation that will run the earthquakeextrusion.fmw workspace when manually triggered. Before starting it, we need to save it. Click the Save icon in the top toolbar.</p>
+<p><img class="image image-block image-center" src="images/1736447230263.jpg" alt="Save button" width="612" height="64" /></p>
+<p>Name your workspace Earthquake Automation and click OK:</p>
+<p><img class="image image-block image-center" src="images/1736447305313.jpg" alt="Save parameters" width="612" height="216" /></p>
+<p>Now that the Automation has been saved, we have to start it. Click Debug to start the Automation in Debug Mode and click OK to accept the warning.&nbsp;</p>
 <p><img src="images/1727901869296.png" alt="" /></p>
-<p><img src="images/1727901881175.png" alt="" /></p>
+<p>Your automation should now be running in Debug Mode.&nbsp;</p>
+<p><img src="images/1736454418233.jpg" alt="" width="997" height="432" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
-<p>Debug Mode is not recommended for automations running in a production environment. Logs of automations in Debug Mode are only available until the&nbsp; automation is restarted.&nbsp;</p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Debug Mode is useful creating and testing automations and is not recommended for automations running in a production environment. Logs of automations in Debug Mode are only available until the automation is restarted and logs are not saved with production automation logs in the FME Flow Resources.&nbsp;</p>
 </blockquote>
 <h2 id="5-trigger-the-automation-to-run">6) Trigger the Automation to Run</h2>
-<p>After starting the Automation, you can no longer edit it. However, you can manually trigger the Automation. Click the Trigger button next to Start Automation to manually trigger the Automation:</p>
-<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/jTSz6xrKs2hicqzS_JTvJJSwtlgnMieyRfDQVuWJEi3xw7VgK_3ygVKwAmTxcLGwVNfBtTsq55A-kOhtkkUAlwHPBI7EgLyvYr1nN__GmbD0W8mnuRn08XGE6XWgyyTURRH88PzjUx0CFUpQwYhVBXw" alt="Manually triggering an Automation" width="612" height="224" /></p>
+<p>After starting the Automation, you can no longer edit it. However, you can manually trigger the Automation to test it out rather than waiting until tomorrow for the schedule to trigger. Click the FME Flow Schedule Trigger icon and then click Trigger in the details panel.&nbsp;</p>
+<p><img src="images/1736455177624.jpg" alt="" width="910" height="631" /></p>
 <p>The Automation will run.</p>
 <p>Click on View Debug Log from the Automations menu or from the Debug Mode Banner. You will see the Debug Log, which reports the Automation's activities. You should see a line that looks something like this:&nbsp;</p>
 <div>
@@ -100,39 +105,39 @@
 <pre>2023-05-24T15:08:14-07:00 | 402623 : Job 23: Translation was successful.</pre>
 </div>
 <p>&nbsp;</p>
-<h2 id="4-save-and-start-the-automation">5) Start the Automation in Production Mode</h2>
-<p>Go back to the Automation and click Stop Debug. Click Start to start the Automation in Production Mode and manually trigger the Automation again:</p>
-<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/-GUWvJYb_MDp3uW6Xqx4fZgtOuN9rFRSgnJdDP6THssE9egByYeh9GZOjEPf-i0-gHI08EF0mZ5jP0I0WGHWz09ZYp2CF7vXIHFn2dQrWkd3oSQycYbvTbUadoqlHke1Q7LvigGtprRuG0l0F9eHEE8" alt="Start Automation button" width="612" height="364" /></p>
+<h2 id="4-save-and-start-the-automation">5) Start and Trigger the Automation in Production Mode</h2>
+<p>Go back to the Automation and click Stop Debug. Click Start to start the Automation in Production Mode. Following the same instructions in Step 4, trigger the automation again.&nbsp;</p>
+<p><img class="image image-block image-center" src="images/1736546011904.jpg" alt="Start Automation button" width="612" height="364" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Automation logs are stored as files on FME Flow when run in Production mode, matching the file-based logging of other parts of FME Flow. You can <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-General/Automations.htm#WorkingwithAutomationLogs" target="_blank" rel="noopener">read more in the documentation</a>.</p>
 </blockquote>
 <h2 id="6-view-the-automation-log">6) View the Automation Log</h2>
 <p>You can confirm the Automation was manually triggered by clicking the Menu, then View Log File:</p>
-<p><img class="image image-block image-center" src="https://lh3.googleusercontent.com/HhNFKRfuMyfQOMJq9XuONzkVk0ArIzuwiIej2lVw6zw-jVdOsLvZv8PTUak677PEDFV2Xk92vPP-OzVK8Zm7xV5Sg17mEzNKOGHUlz79ZJMZDlj3rhx150KrFRpCF25oqOfQVcA1ffnyOeSFl6J0S3s" alt="Viewing Automation log file" width="612" height="376" /></p>
+<p><img class="image image-block image-center" src="images/1736547192584.jpg" alt="Viewing Automation log file" width="612" height="376" /></p>
 <p>This will open up the Automations Log folder in the Resources folder. Click on the fmeautomations.log</p>
 <p><img src="images/1727902109127.png" alt="" /></p>
-<p>You will see the Automation Log, which reports the Automation's activities. You should see a line that looks something like this:</p>
+<p>You will see the Automation Log, which reports the Automation's activities. You should see a couple of lines noting that the automation was triggered and the workspace translation was submitted.&nbsp;</p>
 <div>
-<pre>2023-05-24T15:08:13-07:00 | 410160 : (Automations) Automation successfully triggered<br /><br /></pre>
+<pre>10-Jan-2025 02:13:32.824 PM | INFORM | pool-6-thread-1 | Earthquake Automation (a03e1c18-32ab-45a4-a2ec-06fe736a01ff) | no-event | 410160 : (Automations) Automation successfully triggered<br />10-Jan-2025 02:13:33.816 PM | INFORM | requesthandler | Earthquake Automation (a03e1c18-32ab-45a4-a2ec-06fe736a01ff) | event (dfed7b22-5956-402f-bdbc-f7d02c073270) | 404610 : Job 42: Translation submitted<br /><br /></pre>
 </div>
-<p>A few more lines will report on the running job. If your Automation and workspace were configured properly, you should eventually see a line something like this:</p>
+<p>A few more lines will report on the running job. If your Automation and workspace were configured properly, you should eventually see a line stating the status of the translation.</p>
 <div>
-<pre>2023-05-24T15:08:14-07:00 | 402623 : Job 23: Translation was successful.<br /><br /></pre>
+<pre>10-Jan-2025 02:13:36.484 PM | INFORM | engine-localhost-localhost_Engine2 | Earthquake Automation (a03e1c18-32ab-45a4-a2ec-06fe736a01ff) | event (dfed7b22-5956-402f-bdbc-f7d02c073270) | 402623 : Job 42: Translation was successful.<br /><br /></pre>
 </div>
-<p>We've confirmed the Automation's Manual Trigger successfully ran a Job.</p>
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">If you noticed your job failed, the USGS Earthquake API might be unavailable. Instead, you can try replacing the Source GeoJSON File or URL parameter in your Run Workspace Action with this example:&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Resources/CreateDataIntegrationApps/example.geojson" target="_blank" rel="noreferrer noopener">example.geojson</a><span style="font-family: inherit; font-size: 1em;">. If you are using a Safe Software training machine or downloaded FMEData, you can use&nbsp;</span><code>C:\FMEData\Resources\CreateDataIntegrationApps\example.geojson</code><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
+<p>This confirms that the automation was successfully triggered and the workspace completed successfully.&nbsp;</p>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">If you noticed your job failed, the USGS Earthquake API might be unavailable. Instead, you can try replacing the Source GeoJSON File or URL parameter in your Run Workspace Action with this example:&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData/Resources/CreateDataIntegrationApps/example.geojson" target="_blank" rel="noreferrer noopener">example.geojson</a><span style="font-family: inherit; font-size: 1em;">. If you are using a Safe Software training machine or downloaded FMEData, you can use&nbsp;</span><code>C:\FMEData\Resources\CreateDataIntegrationApps\example.geojson</code><span style="font-family: inherit; font-size: 1em;">.</span></blockquote>
 <h2 id="7-view-triggered-jobs">7) View Triggered Jobs</h2>
 <p>You can browse or search through the Automation Log to find all the jobs triggered by an Automation. However, it can often be easier to view the list of triggered jobs directly. To do this, click your browser's back button to return to your Automation. Then click Menu &gt; View Triggered Jobs:</p>
-<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/8-8EeBYIsuUptiN53yF-oeyBnTJDkNLEuQ6AieMsFXxTQE5ymOGJKH_txgSajbxKE_o-Dvr_FOvqGIECzFkQ0KhC2U_FhRb33Q8stRoAyZR3v5cHARTwBvShrhqOGMhDpSzta1ftQTrQklsnGIKfLww" alt="Viewing Triggered Jobs in Automations menu" width="612" height="289" /></p>
+<p><img class="image image-block image-center" src="images/1736548007252.jpg" alt="Viewing Triggered Jobs in Automations menu" width="612" height="289" /></p>
 <p>This will open the Completed Jobs page automatically filtered to only show Jobs triggered by this Automation. You should see the Job you manually triggered:</p>
 <p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/5fFOAK-AcYFiMUZvM67d-JNH1xMNSCKK9FpUyAfNbmCYW8N-bCJuDe-2jcupGtjnzaAutVTCIdveU6ikifmVtS6QwoJ0twLC8xcRKmlCeV8XN9B3nxgWwx5xJqQS_2tyyRiEjeBzzRJ2WM1GU2X8QAI" alt="Viewing Completed jobs" width="612" height="68" /></p>
-<p>Congratulations! You successfully built a simple Automation that can be manually triggered.&nbsp;</p>
+<p>Congratulations! You successfully built a simple Automation that will run on a schedule and can also be manually triggered.&nbsp;</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">You can learn to build more complex Automations in the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Build Versatile Automations</strong><span style="font-family: inherit; font-size: 1em;"> course.</span></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">You can learn to build more complex Automations in the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Build Versatile Automations</strong><span style="font-family: inherit; font-size: 1em;"> course.</span></blockquote>
 </div>
 </div>
 </div>

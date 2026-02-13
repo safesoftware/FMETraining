@@ -27,20 +27,20 @@
 <p>In this part of the project, we&rsquo;ll filter out dog parks from the source data, as these have a different scale of maintenance costs. We'll then inspect our data to ensure the parks were filtered correctly.</p>
 <p><strong>1) Start FME Workbench</strong></p>
 <p>Start FME Workbench (2023.1 or later) and open <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-use-conditional-filtering.fmw" target="_blank" rel="noreferrer noopener">the starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\exercise-use-conditional-filtering.fmw). This workspace reads in parks MapInfo TAB data, slightly edits the schema using the AttributeManager, and then writes it back to MapInfo TAB.</p>
-<p><img class="image image-block" src="https://s3-us-west-2.amazonaws.com/safemytrailhead/modules/filter-data/exercise-use-conditional-filtering/images/1604432114134.png" alt="Starting workspace" /></p>
+<p><img class="image image-block" src="images/1604432114134.png" alt="Starting workspace" /></p>
 <p><strong>2) Add a Tester Transformer</strong></p>
 <p>Now, we should remove dog parks from the data because these have their own set of costs.</p>
 <p>We can do this with a Tester transformer. Click on the connection from the AttributeManager output port to the ParksMaintenanceData feature type on the Writer.</p>
 <p>Start typing the word Tester. When you spot the Tester transformer, double-click on it to add one to the workspace. After tidying up the layout of the canvas, the workspace will now look like this:</p>
-<p><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic2Transformation/Images/Img2.215.Ex2.TesterOnCanvas.png" alt="Adding a Tester" /></p>
+<p><img class="image" src="images/Img2.215.Ex2.TesterOnCanvas.png" alt="Adding a Tester" /></p>
 <p>Notice that the Passed output port is the one connected by default.</p>
 <p><br /><strong>3) Set the Tester Parameters</strong><br />Inspect the parameters for the Tester transformer. Click in the Left Value field, and from there, click the down arrow and choose Attribute Value &gt; DogPark:</p>
-<p><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic2Transformation/Images/Img2.216.Ex2.TesterAttrSelection.png" alt="Selecting DogPark as the Left Value" /></p>
+<p><img class="image" src="images/Img2.216.Ex2.TesterAttrSelection.png" alt="Selecting DogPark as the Left Value" /></p>
 <p>For the Right Value, click into the field and type the value N. The operator field should be filled in automatically as the equals sign (=), which is what we want in this case.</p>
-<p><img class="image" src="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic2Transformation/Images/Img2.217.Ex2.TesterTestClause.png" alt="Completed test clause" /></p>
+<p><img class="image" src="images/Img2.217.Ex2.TesterTestClause.png" alt="Completed test clause" /></p>
 <p>Click OK to accept the values and close the dialog.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">The test is for DogParks = N because we want to keep those features, and it is the Passed port that is connected. If the test were DogParks = Y, then the Failed port would be the one to connect.</span></p>
 </blockquote>
 <p><strong>4) Run Workspace</strong></p>

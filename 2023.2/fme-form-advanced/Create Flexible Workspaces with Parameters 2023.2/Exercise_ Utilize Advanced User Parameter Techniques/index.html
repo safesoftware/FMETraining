@@ -41,7 +41,7 @@
 </ul>
 <h2>1) Start Workbench</h2>
 <p>Start Workbench and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-utilize-advanced-user-parameter-techniques.fmw" target="_blank" rel="noopener">starting workspace</a>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.231.Ex3.InitialWorkspace.png" alt="Starting workspace" width="1063" height="214" /></p>
+<p><img src="images/Img4.231.Ex3.InitialWorkspace.png" alt="Starting workspace" width="1063" height="214" /></p>
 <p>You can see that the workspace reads some MapInfo parks data, filters out dog parks, calculates park area and average area, creates labels, and writes out the data back to MapInfo.</p>
 <p>There are two existing published parameters - one for the source dataset and one for the destination:</p>
 <p><img src="images/1707946695228.png" alt="Starting user parameters" width="575" height="64" /></p>
@@ -57,11 +57,11 @@
 <p>Set the Name field to something like OutputFolder, Items to Select to Folders, and Default Value to C:\FMEData\Output\Training.</p>
 <p><img src="images/1707947418604.png" alt="OutputFolder user parameter" width="465" height="540" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Technically, we could use a Text parameter. But the File/Folder/URL option allows the user (in this case, you, since it's private) to browse to specify a path, which is a nicer experience than having to copy and paste a path.</p>
 </blockquote>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>If you encounter an Invalid Parameter warning dialog, please double-check that your parameter configuration matches the screenshots above.</p>
 <p><img src="images/1723141610326.png" alt="Invalid Parameter warning dialog" width="435" height="141" /></p>
 <p>Note that unpublished parameters must have a default value, while published parameters do not require one. You will get this warning if you try to create an unpublished parameter without a default value.</p>
@@ -69,7 +69,7 @@
 <h2>4) Set Output Location</h2>
 <p>Now, let's use the two parameters we've created.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Ensure you deleted the two existing source/destination user parameters in step 1, or else this step won't work!</p>
 </blockquote>
 <p>Locate the FME parameter for the Destination MapInfo Folder in the Navigator window and double-click it to open the editing dialog.</p>
@@ -80,7 +80,7 @@
 <p>You've now concatenated and embedded the two user parameters into the FME parameter.</p>
 <p>When you run the workspace, you will be prompted to enter your name, and then the output data will be written to C:\FMEData\Output\Training\&lt;Username&gt;.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>There are various ways we&nbsp;<strong>could</strong> have done this. We could have linked the OutputFolder parameter to <code>C:\FMEData\Output\Training\$(Username)</code> and then linked it to the FME Destination MapInfo parameter. You'll see in a moment why we didn't do that!</p>
 </blockquote>
 <h2>5) Add User Parameter</h2>
@@ -92,7 +92,7 @@
 <p>To use the DogParks parameter, you can open up the Tester parameters dialog. Add a second test clause:</p>
 <pre>$(DogParks) = Yes<br />
 </pre>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.237.Ex3.DogParkTesterClause.png" alt="Dog park filtering logic" width="389" height="201" /></p>
+<p><img src="images/Img4.237.Ex3.DogParkTesterClause.png" alt="Dog park filtering logic" width="389" height="201" /></p>
 <p>Ensure the logic column is set to OR. Now, when the workspace runs, if you choose not to keep dog parks, they will be filtered out. This concept - of directing features depending on the value of a user parameter - is beneficial to be aware of.</p>
 <h2>7) Add User Parameter</h2>
 <p>The next task is to allow the user to pick which attribute to use for a label.</p>
@@ -100,7 +100,7 @@
 <p>So, create a new user parameter of type Attribute Name. This one can be optional, as the user failing to select an attribute is equivalent to saying "no labels required":</p>
 <p><img src="images/1707948523085.png" alt="Creating the Attribute Name parameter" width="372" height="273" /></p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>Click the Run button and see what appears in the list of prompts; you should see a parameter with the prompt "Select the label attribute." But look! The parameter shows "No Attributes Available." Why is this?<br /><br />This is because the list of available attributes depends on where the parameter is used. Since we have yet to use the parameter, no attributes are available!<br /><br />What if we used the parameter in a location with attributes A and B and a different location with attributes B and C. In that case, the only attribute available to the parameter is B. A parameter of this type will only show attributes that exist <strong>in all places</strong> used.</p>
 </blockquote>
 <h2>8) Update LabelPointReplacer</h2>
@@ -108,7 +108,7 @@
 <p>Remember (again from the previous section) that we can't just apply this user parameter to the Label FME parameter. That would return the attribute's name; we want the attribute value.</p>
 <p>So, for the Label parameter, open the Text Editor and enter:</p>
 <p><code>@Value($(LabelAttribute))</code></p>
-<p><img style="font-family: inherit; font-size: 1em;" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.239.Ex3.LabelAttributeLabelParameter.png" alt="Using @Value() to get the value of an attribute specified by the user with an Attribute Name user parameter" width="451" height="117" /></p>
+<p><img style="font-family: inherit; font-size: 1em;" src="images/Img4.239.Ex3.LabelAttributeLabelParameter.png" alt="Using @Value() to get the value of an attribute specified by the user with an Attribute Name user parameter" width="451" height="117" /></p>
 <p>When the workspace runs, you are prompted to select an attribute to label the parks. No labels are created if you choose no attribute (just point features).</p>
 <h2>9) Add Log Writer</h2>
 <p>The final task is to create a CSV format translation log. That is pretty easy to do.</p>
@@ -135,21 +135,21 @@
 </table>
 <p>When you click OK, the dialog will open for you to define the table schema.</p>
 <p>On the General tab, set the CSV File Name as <em>TranslationLog</em>:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.240.Ex3.CSVWriterGeneralTab.png" alt="Writer feature type parameters" width="537" height="279" /></p>
+<p><img src="images/Img4.240.Ex3.CSVWriterGeneralTab.png" alt="Writer feature type parameters" width="537" height="279" /></p>
 <p>In the User Attributes tab, define the attributes User and Date:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.241.Ex3.CSVWriterAttributesTab.png" alt="User attributes" width="537" height="253" /></p>
+<p><img src="images/Img4.241.Ex3.CSVWriterAttributesTab.png" alt="User attributes" width="537" height="253" /></p>
 <p>Click OK to close the dialog.</p>
 <h2>10) Connect Feature Type</h2>
 <p>We need a single record to trigger this feature type, but only one feature; otherwise, we will get multiple records.</p>
 <p>Place a Creator transformer down and connect it to the TranslationLog feature type:</p>
-<p><img src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced4Parameters/Images/Img4.242.Ex3.CSVWriterConnected.png" alt="TranslationLog writer feature type" width="356" height="75" /></p>
+<p><img src="images/Img4.242.Ex3.CSVWriterConnected.png" alt="TranslationLog writer feature type" width="356" height="75" /></p>
 <h2>11) Set Output Folder</h2>
 <p>We should set the output location for the log relative to where the user files are being written.</p>
 <p>So, locate the destination dataset parameter for the CSV writer, right-click on it, and choose Link to User Parameter:</p>
 <p><img src="images/1707948905149.png" alt="Linking to destination user parameter" width="714" height="152" /></p>
 <p>When prompted, select the OutputFolder (private) parameter we created earlier.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p>You might be wondering what the point of that last part was. Why did we link the parameter when both were already pointing to the same folder?<br /><br />The point is that the MapInfo and CSV writers now share a parameter defining their output folder. If we wish to change where they are being written to, we only need to edit the private parameter to fix both writers. That's why we did what we did in step #4.<br /><br />If you don't believe me, try it and find out for yourself!</p>
 </blockquote>
 <h2>12) Set User Attribute</h2>

@@ -10,23 +10,23 @@
 <h2 id="parameter-input-by-attributes">Parameter Input by Attributes</h2>
 <p>Many transformer parameters can be set up to accept values from attributes.</p>
 <p>Take this custom transformer that creates custom map labels:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.020.CustomTransformerAttrUsedByCT.png" alt="Example custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img5.020.CustomTransformerAttrUsedByCT.png" alt="Example custom transformer" /></p>
 <p>Inside that custom transformer is a LabelPointReplacer transformer. It uses&nbsp;<code>AddressID</code>&nbsp;as the value for the label:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.021.CustomTransformerAttrUsedInCT.png" alt="AddressID attribute used for the Label parameter" /></p>
+<p><img class="image image-block image-center" src="images/Img5.021.CustomTransformerAttrUsedInCT.png" alt="AddressID attribute used for the Label parameter" /></p>
 <p>As created, the custom transformer works fine. However, consider if that transformer is used elsewhere, where&nbsp;<code>AddressID</code>&nbsp;does not exist:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.022.TransformerUsedWithInvalidAttr.png" alt="Using the same custom transformer with different data" /></p>
+<p><img class="image image-block image-center" src="images/Img5.022.TransformerUsedWithInvalidAttr.png" alt="Using the same custom transformer with different data" /></p>
 <p>This transformer is flagged as "incomplete". It is used in a scenario where&nbsp;<code>AddressID</code>&nbsp;is not available.</p>
 <h2 id="parameter-input-by-user-parameters">Parameter Input by User Parameters</h2>
 <p>Besides attributes, most FME parameters can be set up to accept values from User Parameters.</p>
 <p>In a similar setup to above, here a custom transformer contains a LabelPointReplacer transformer whose label value is selected by user input:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.023.TransformerWithUserParameter.png" alt="Using a user parameter for the Label parameter" /></p>
+<p><img class="image image-block image-center" src="images/Img5.023.TransformerWithUserParameter.png" alt="Using a user parameter for the Label parameter" /></p>
 <p>Here the issue is not&nbsp;<em>where</em>&nbsp;the custom transformer is used, but its duplication. If each instance of the custom transformer uses the same user parameter, then they will all get the same input.</p>
 <p>We need a mechanism for the user to enter different values per transformer instance.</p>
 <div class="box message info">
 <div class="inner">
 <div class="bd">
 <div class="media">
-<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></blockquote>
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></blockquote>
 <div class="mediaBd">
 <div class="message-media-content">
 <blockquote>
@@ -42,19 +42,19 @@
 <p>Let's look at how we can handle the complications that might arise if a custom transformer is reused.</p>
 <h2 id="automatic-handling-of-user-parameters">Automatic Handling of User Parameters</h2>
 <p>To take the handling of user parameters first, when a transformer with a published parameter is incorporated into a custom transformer, the published parameter is automatically moved from the Navigator window of the main canvas to the Navigator window of the custom transformer:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.024.CustomTransformerRePublishedParameter.png" alt="Example of user parameters in a custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img5.024.CustomTransformerRePublishedParameter.png" alt="Example of user parameters in a custom transformer" /></p>
 <p>This means that the user is no longer prompted for these when the workspace is run! But... those parameters instead become available on the Custom Transformer itself:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.025.CustomTransformerParameterInCanvas.png" alt="Custom transformer user attributes become parameters in the main workspace" /></p>
+<p><img class="image image-block image-center" src="images/Img5.025.CustomTransformerParameterInCanvas.png" alt="Custom transformer user attributes become parameters in the main workspace" /></p>
 <p>That way the parameters can be set differently for each instance of the custom transformer. If user input is required at run-time, then these new parameters can be published themselves - and shared if you want them all to have the same value.</p>
 <h2 id="automatic-handling-of-user-attributes">Automatic Handling of User Attributes</h2>
 <p>Now let's look at how attributes are handled. When a custom transformer is created, one of the parameters in the Create Custom Transformer dialog is labeled Attribute References:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.026.CustomTransformerHandleWithOption.png" alt="Setting the Attribute References parameter" /></p>
+<p><img class="image image-block image-center" src="images/Img5.026.CustomTransformerHandleWithOption.png" alt="Setting the Attribute References parameter" /></p>
 <p>"Handle with Published Parameters" is the automatic way of handling attribute references in the custom transformer. It makes sure that every attribute referenced within the custom transformer is supported outside of the transformer definition.</p>
 <p>It does that by creating a new user parameter for each attribute:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.027.CustomTransformerAttributeReferenceParam.png" alt="Creating a user parameter for each attribute" /></p>
+<p><img class="image image-block image-center" src="images/Img5.027.CustomTransformerAttributeReferenceParam.png" alt="Creating a user parameter for each attribute" /></p>
 <p>The transformer inside the custom transformer still references the attribute name, but FME maps the user parameter to that attribute.</p>
 <p>When the custom transformer is used in a place without the required attribute, it is still flagged as "incomplete". However, the user parameter allows the workspace author to select an attribute that&nbsp;<em>is</em>&nbsp;available:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.028.CustomTransformerAttributeReferenceCanvas.png" alt="Changing the attribute supplying a value to AddressID" /></p>
+<p><img class="image image-block image-center" src="images/Img5.028.CustomTransformerAttributeReferenceCanvas.png" alt="Changing the attribute supplying a value to AddressID" /></p>
 <p>So (in the above)&nbsp;<code>AddressID</code>&nbsp;is not available, but the author can select a different attribute instead.</p>
 <p>This illustrates how FME has automatically solved the attribute reference problem using user parameters. To make the custom transformer more generic, the workspace author can change the prompts on these parameters; for example, change the prompt from "AddressID" to "Select an ID Attribute to Process".</p>
 <h2 id="post-creation-parameter-handling">Post-Creation Parameter Handling</h2>
@@ -63,17 +63,17 @@
 <h2 id="handling-incoming-attributes">Handling Incoming Attributes</h2>
 <p>Attributes entering a custom transformer are handled using a setting inside the transformer definition.</p>
 <p>As an example, an author puts a StringConcatenator inside a newly created custom transformer. The author wishes to concatenate&nbsp;<code>AddressID</code>&nbsp;and&nbsp;<code>PostalCode</code>.</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.029.CustomTransformerNewAttributeRequired.png" alt="Attributes from outside the custom transformer are not present unless exposed" /></p>
+<p><img class="image image-block image-center" src="images/Img5.029.CustomTransformerNewAttributeRequired.png" alt="Attributes from outside the custom transformer are not present unless exposed" /></p>
 <p><code>AddressID</code>&nbsp;is available in the custom transformer because it was being used when the custom transformer was created (and Handle With Published Parameters was set).</p>
 <p>However,&nbsp;<code>PostalCode</code>&nbsp;is not available. It was not being used when the custom transformer was created.</p>
 <p>Therefore the author must expose that attribute. They do so by inspecting the parameters for the Input port, where they are able to specify other incoming attributes to expose:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.030.CustomTransformerExposingNewAttribute.png" alt="Exposing an input attribute in a custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img5.030.CustomTransformerExposingNewAttribute.png" alt="Exposing an input attribute in a custom transformer" /></p>
 <p>Now&nbsp;<code>PostalCode</code>&nbsp;becomes available to the StringConcatenator and, additionally, made into a user parameter so that back on the main canvas the custom transformer can accept a different attribute selection should&nbsp;<code>PostalCode</code>&nbsp;not be available.</p>
 <h2 id="handling-outgoing-attributes">Handling Outgoing Attributes</h2>
 <p>Besides incoming attributes, there is also the question of what attributes should emerge from the output of a custom transformer.</p>
 <p>Best practice suggests that we shouldn't output more attributes than are expected by the user. We should hide or remove any attributes that are part of a calculation, or any attributes that are otherwise generated inside the custom transformer but aren&rsquo;t necessary to the output.</p>
 <p>Here a custom transformer is calculating the average area of a number of polygon features. It has renamed ports and a specific output port to deal with bad features, but it is outputting more attributes than are useful:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.031.CustomTransformerAttrOutputBad.png" alt="Outputting excess attributes from a custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img5.031.CustomTransformerAttrOutputBad.png" alt="Outputting excess attributes from a custom transformer" /></p>
 <p>The workspace author should clean up this output. They can do this by visiting the custom transformer definition, viewing the output port object, and there choosing which attributes are to be output:</p>
-<p><img class="image image-block image-center" src="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/Images/Img5.032.CustomTransformerAttrOutputGood.png" alt="Exposing an output attribute in a custom transformer" /></p>
+<p><img class="image image-block image-center" src="images/Img5.032.CustomTransformerAttrOutputGood.png" alt="Exposing an output attribute in a custom transformer" /></p>
 <p>The Attributes to Output setting gives the option of outputting all attributes, or only those that have a checkmark next to them, as above.</p>

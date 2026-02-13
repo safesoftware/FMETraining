@@ -17,13 +17,17 @@
 <li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-handle-null-and-missing-values-complete.fmw</li>
 </ul>
 </li>
-<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
 </ul>
 <h2 id="introduction">Introduction</h2>
 <p>In this workspace, a colleague tries to write a list of parks to a Geodatabase dataset. The parks must be in alphabetical order &ndash; according to their name &ndash; and features with no park names must be written as null and appear last in the dataset.</p>
 <p>However, their workspace needs to be configured correctly. The parks are sorted alphabetically, but unnamed parks always appear first.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">By default, FME will display&nbsp;</span><code>&lt;null&gt;</code><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><code>&lt;missing&gt;</code><span style="font-family: inherit; font-size: 1em;">, and empty values at the top of attribute columns sorted alphabetically or, naturally, ascending. This sorting behavior applies to Visual Preview manual attribute column sorting and the Sorter transformer output. This feature is helpful when working with your data, as you'll be more likely to spot them quickly when inspecting data. However, in cases where you need to ensure they are written last, you must do some attribute handling.</span></p>
 </blockquote>
 <h2 id="1-start-workbench">1) Start Workbench</h2>
@@ -51,7 +55,7 @@
 <h2 id="5-fix-ref-park-id">5) Fix RefParkId</h2>
 <p>Your colleague is now asking you to fix the <code>RefParkId</code> field. You'll have noticed that many of the values are -9999. That's the MapInfo equivalent of "nothing," but it would be better to set these to proper nulls for the&nbsp;Geodatabase.</p>
 <blockquote>
-<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">That's very simple to do. Before you look at the instructions, take a moment to think about how to fix it.</span></p>
 </blockquote>
 <p>To do this, open the parameters dialog for the first NullAttributeMapper. Add <code>RefParkId</code>&nbsp;to the list of attributes for processing. Then add -9999 to the "Or If Attribute Value Is" field:</p>
