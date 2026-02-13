@@ -1,0 +1,127 @@
+<blockquote>
+<p><span style="color: #222222; font-size: 2.3125em;">Learning Objectives</span></p>
+</blockquote>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define a custom transformer.</li>
+<li>Explain when to use a custom transformer.</li>
+<li>Create a custom transformer and set its properties.</li>
+<li>Reuse a custom transformer in multiple places in a workspace.</li>
+</ul>
+<h2 id="what-are-custom-transformers">What Are Custom Transformers?</h2>
+<p>A custom transformer is a sequence of standard transformers condensed into a single transformer. You can turn any existing sequence of transformers into a custom transformer.</p>
+<p><img class="image image-block image-center" src="images/1724694939368.png" alt="Turning many transformers into a custom transformer" width="876" height="371" /></p>
+<p>Users can share custom transformers locally, on a network drive, or via the FME Hub. For example, the workspace above has a MeasureInterpolator custom transformer, which a user shared via the <a href="https://hub.safe.com/transformers/measureinterpolator" target="_blank" rel="noreferrer noopener">FME Hub</a>.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The FME Hub features publisher tiers, allowing custom transformer creators and users to benefit from increased trust and visibility. There are three tiers:</p>
+<ul>
+<li>Safe Official items: Explore and download content provided by the Safe Development team.</li>
+<li>Verified Publisher items: Explore and download high-quality content that external vendors provide.</li>
+<li>Community items: Explore and download content provided by external vendors.</li>
+</ul>
+<p>The publisher tiers are displayed in FME Hub Search and FME Workbench Quick Add.&nbsp;</p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/FME-Hub/Publishers.htm" target="_blank" rel="noopener">Learn more about FME Hub publisher tiers.</a></p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/FME-Hub/What-Is-FME-Hub.htm" target="_blank" rel="noopener">Learn more about the FME Hub</a>.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can use Python with the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/TransformerDesigner/TD-Intro.htm" target="_blank" rel="noopener">Transformer Designer</a> and <a href="https://docs.safe.com/fme/html/fpkg-sdk/" target="_blank" rel="noopener">FME Packages SDK</a> if you want even more control over transformer design.</p>
+</blockquote>
+<h2 id="custom-transformer-purposes">Custom Transformer Purposes</h2>
+<p>Custom transformers let you:</p>
+<ul>
+<li>Reuse Content
+<ul>
+<li>After encapsulating a sequence of transformers in a single object, you can reuse it throughout a workspace and in multiple workspaces.</li>
+<li>This functionality allows you to update the custom transformer in a single place and (optionally) use that new version in all your existing workspaces.</li>
+</ul>
+</li>
+<li>Abstract Complexity<br />
+<ul>
+<li>You can declutter your workspace canvas by condensing chunks of content into custom transformers.</li>
+<li>You can "parameterize" your workflows using user parameters within custom transformers to create flexible interfaces.</li>
+</ul>
+</li>
+<li>Share Workflows
+<ul>
+<li>You can package useful functionality and share it with other FME users.</li>
+<li>This lets you define the best way to do something with FME and use that across your organization.</li>
+</ul>
+</li>
+<li>Employ Advanced Functionality
+<ul>
+<li>You can use a custom transformer to access additional functionality, such as looping and parallel processing.</li>
+</ul>
+</li>
+</ul>
+<p>This course will teach you the basics of creating a custom transformer, controlling its input and output ports, and using parameters to let users control how it works.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can check out <a href="https://academy.safe.com/path/fme-form-advanced/build-a-library-of-custom-transformers" target="_self">Build a Library of Custom Transformers</a> to learn more about sharing custom transformers. </span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you want to learn how to use custom transformers with looping, check out&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/gitbook/Desktop-Advanced-2019/DesktopAdvanced5CustomTransformers/5.11.CustomTransformerLoops.html" target="_blank" rel="noreferrer noopener">Custom Transformers and Loops</a><span style="font-family: inherit; font-size: 1em;">. However, be forewarned that looping is <em>rarely necessary</em> with FME. Instead, you should create one feature per iteration. <a href="https://community.safe.com/general-10/question-of-the-week-to-loop-or-not-to-loop-18238" target="_blank" rel="noopener">Check out this Community post for more information</a>.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you want to learn how to use custom transformers to improve your performance with parallel processing, check out&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/path/fme-form-advanced/design-for-performance" target="_blank" rel="noopener">Design for Performance</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2>When Should I Make a Custom Transformer?</h2>
+<p><span style="font-weight: 400;">Custom transformers offer powerful functionality but add some upfront setup time.</span></p>
+<p><span style="font-weight: 400;">So, when should you create a custom transformer? Use these questions as a guide:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Do I know this functionality will be general purpose, and my organization would likely use it in many workspaces?</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">You should build this functionality as a custom transformer from the start.</span></li>
+</ul>
+</li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Am I repeating myself in my workspaces, and would I benefit from packaging this functionality as a custom transformer?</span>
+<ul>
+<li style="font-weight: 400;" aria-level="2"><span style="font-weight: 400;">Turn those sections into a custom transformer now.</span></li>
+</ul>
+</li>
+</ul>
+<h2 id="creating-a-custom-transformer">Creating a Custom Transformer</h2>
+<p>You can create a custom transformer from scratch &ndash; i.e., start with an empty custom transformer and add content, or create it from an existing sequence of transformers.</p>
+<p>Custom transformers are created by selecting<strong>&nbsp;Create Custom Transformer&nbsp;</strong>from the canvas context (right-click) menu or by selecting<strong> Build </strong>&gt; <strong>Transformers </strong>&gt;&nbsp;<strong>Create Custom Transformer&nbsp;</strong>from the menubar. The shortcut key for this function is Ctrl + T (or Cmd ⌘ + T on a Mac).</p>
+<p><img src="images/1750873737536.png" alt="Build &gt; Transformers &gt; Create Custom Transformer..." /></p>
+<p>If several transformers are selected when you issue the<strong>&nbsp;Create Custom Transformer&nbsp;</strong>command, the new custom transformer will automatically contain them. Otherwise, the new custom transformer will be empty except for an input and output port.</p>
+<p>Here, a user is creating a new custom transformer based on a series of existing ones:</p>
+<p><img class="image image-block image-center" src="images/1724694958997.png" alt="Right-click &gt; Create Custom Transformer" width="464" height="493" /></p>
+<p>The new custom transformer will contain these three transformers.</p>
+<h2 id="naming-a-custom-transformer">Naming a Custom Transformer</h2>
+<p>All custom transformers require a name and (optionally) a category and description. A dialog to define these automatically appears when you create a new custom transformer.</p>
+<p>You can set the category to match any existing FME transformer category or your custom category.</p>
+<p>The<strong>&nbsp;Use Markdown&nbsp;</strong>parameter lets you enter information about the custom transformer, such as requirements for use, development history, and legal terms and conditions, using&nbsp;<a href="https://daringfireball.net/projects/markdown/syntax" target="_blank" rel="noreferrer noopener">Markdown</a>.</p>
+<p><img class="image image-block image-center" src="images/1724694965199.png" alt="Create Custom Transformer dialog" width="586" height="255" /></p>
+<p>These fields are critical when sharing the custom transformer with work colleagues, clients, or the larger FME Community on the <a href="https://hub.safe.com/" target="_blank" rel="noreferrer noopener">FME Hub</a>.</p>
+<h2 id="the-new-custom-transformer">The New Custom Transformer</h2>
+<p>A newly created custom transformer then looks like this:</p>
+<p><img class="image image-block image-center" src="images/1724694971190.png" alt="Editing a custom transformer" /></p>
+<p>It appears under a new tab on the Workbench canvas and consists of the original transformers with additional input and output objects.</p>
+<p>When you click on the Main tab to return to the main canvas view, you will see that Workbench has replaced the original transformers with a custom transformer object:</p>
+<p><img class="image image-block image-center" src="images/1724694987147.png" alt="Custom transformer on the canvas" width="473" height="90" /></p>
+<p>This custom transformer looks and behaves like any standard FME transformer, with input and output ports (that match the input/output objects in the custom transformer tab) plus a parameters dialog.</p>
+<h2 id="editing-a-custom-transformer">Editing a Custom Transformer</h2>
+<p>To edit the contents of a custom transformer, click on the tab for that transformer. This action opens the transformer definition, and you may edit the content as in the main canvas.</p>
+<p>In the Navigator window, where a workspace would have a section labeled Workspace Parameters, a custom transformer has Transformer Parameters:</p>
+<p><img class="image image-block image-center" src="images/1724695050776.png" alt="Custom transformer Navigator" width="256" height="400" /></p>
+<p>In this section, you can edit the information you entered earlier &ndash; name, category, description, etc.</p>
+<h2 id="creating-a-custom-transformer-from-scratch">Creating a Custom Transformer From Scratch</h2>
+<p>If you create a custom transformer from scratch without any original transformers selected, it will start empty and look like this:</p>
+<p><img class="image image-block image-center" src="images/1724695073094.png" alt="Custom transformer from scratch" width="788" height="127" /></p>
+<p><br /><br />Then, you can start building or editing the transformer from scratch. There is little difference between creating content in the main canvas and turning it into a custom transformer, creating an empty custom transformer, and then creating the content there.</p>
+<h2 id="using-custom-transformers">Using Custom Transformers</h2>
+<p>Once you create a custom transformer, it appears on the main canvas and looks like a standard FME transformer, except it is a different color.</p>
+<p>However, the resemblance to a standard transformer is more than just in appearance. In the same way that you can use multiple instances of a transformer in a workspace, you can use a custom transformer any number of times. This feature means custom transformers let you tidy a workspace and reuse content.</p>
+<p>To place extra copies of a custom transformer you use, again like a standard transformer, double-click the transformer in the Transformer Gallery (look under a section labeled &ldquo;Embedded Transformers):</p>
+<p><img class="image image-block image-center" src="images/1724695081572.png" alt="Custom transformer in the Transformer Gallery" width="257" height="229" /></p>
+<p>...or you can use Quick Add:</p>
+<p><img class="image image-block image-center" src="images/1724695088479.png" alt="Adding a custom transformer with Quick Add" width="725" height="491" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The transformer name, category, and description appear in both the Quick Add tool and the help window, so it is worth setting these parameters.</span></p>
+</blockquote>
+<h2 id="editing-a-reused-custom-transformer">Editing a Reused Custom Transformer</h2>
+<p>Multiple instances of a custom transformer use the same core definition. Thus, there may be multiple instances on the Main canvas, but they share a single definition.</p>
+<p>An essential benefit of this approach is that&nbsp;<em>every</em>&nbsp;instance is updated or edited when the custom transformer definition is changed.</p>
+<p>For example, if you change a parameter for the Aggregator inside this custom transformer:</p>
+<p><img class="image image-block image-center" src="images/1724695097925.png" alt="Editing a reused custom transformer" width="715" height="400" /></p>
+<p>...then the parameter automatically changes for&nbsp;<em>all</em> transformer instances in the workspace.</p>
+<p>Editing is more straightforward because changes must only be made once, no matter how often you have used that custom transformer.</p>

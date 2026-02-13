@@ -1,0 +1,144 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p><span style="font-weight: 400;">After completing this lesson, you'll be able to:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Create a Workspace App.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Run a Workspace App with the Job Submitter service.&nbsp;</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create-data-integration-apps--starting-project.fsproject" target="_blank" rel="noopener">Starting FME Flow project</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\create-data-integration-apps--starting-project.fsproject</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow.&nbsp;</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>1) Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create-data-integration-apps--starting-project.fsproject" target="_blank" rel="noopener">starting project</a> and the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create_data_integration_apps.jceks" target="_blank" rel="noopener">encryption key</a>.</div>
+<div>2) Upload the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create_data_integration_apps.jceks" target="_blank" rel="noopener">create_data_integration_apps.jceks </a>encryption key to your FME Flow. This must be done by an fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption. For more information, see our documentation on&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/create-data-integration-apps--starting-project.fsproject" target="_blank" rel="noopener"> create-data-integration-apps--starting-project.fsproject </a>as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1759853954840.jpg" alt="" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1759854242215.jpg" alt="" /></div>
+<div>6) The next step is to select connections and tokens to import. This project doesn't contain any connections, parameters, tokens, or users to import. Click Continue through Step 2 and Step 3. Click Import Project on Step 4. The project will import and display its import status from the same page.&nbsp;</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If the issue persists, please contact us at train@safe.com.&nbsp;</div>
+</details>
+<h2>Creating Workspace Apps</h2>
+<p>FME Flow Workspace Apps provide a simple means of sharing FME workspaces with other users, allowing them to access FME functionality without prior FME experience. To create a Workspace App, you fill out a form that selects the workspace, its transformation service, parameters to take user input, and any customization options.&nbsp;</p>
+<p><img src="images/1758223482442.png" alt="" /></p>
+<p>Once you create a Workspace App, FME Flow generates a URL that opens a web-based form, referred to as an app. You can click the link to open it in your browser, copy it to share, or embed it in another website.&nbsp;</p>
+<p><img src="images/1758223724505.png" alt="" /></p>
+<p>The simple app interface does not require users to have any FME knowledge or even understand what an FME workspace is. You fill out the parameter values, if any, and click Run to run the workspace.&nbsp;</p>
+<p><img src="images/1758223855837.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>Some example parameters include input source files, text or numeric values, choices to filter data, output file information, and more. We will cover more on parameters later in this learning path. To learn more about parameters in FME Flow, see the <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters course</a>.</p>
+</blockquote>
+<p>Once you click Run, FME Flow submits the workspace to an FME Engine to process, just like running a workspace manually on FME Flow. Once the translation completes, FME Flow returns the translation result to you in the app.&nbsp; &nbsp;</p>
+<p><img src="images/1758224076828.png" alt="" width="779" height="341" /> <img src="images/1758224713907.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>You may only run one workspace with a Workspace App. To run multiple workspaces either in sequence or in parallel, you should use an Automation App. We will cover Automation Apps later in this learning path. However, to learn more about Automation Apps, see theTrigger Automations through Apps lesson in the <a href="https://academy.safe.com/path/automate-workflows-with-fme-flow/job-orchestration-in-automations" target="_blank" rel="noopener">Job Orchestration in Automations course</a>.</p>
+</blockquote>
+<h2>Accessing Flow Apps</h2>
+<p>Once you create a Flow App and FME Flow generates a URL to access the app, you use the URL to access the app. You can copy and paste the URL into another browser, send it to a colleague to access the app, or embed it on another website. It's important to remember your intended audience for the app to ensure they have access to it. There are two levels of accessibility permissions you must consider: individual app permissions and FME Flow network access.&nbsp;</p>
+<p>When you create your Workspace App, you have the option to Require Authentication. If you toggle this on, you will need to select users and roles you wish to grant access to your app. These users will need to log into FME Flow to access and run your app. If "Require Authentication" is off, anyone with the link can access and run your app without needing to log in to FME Flow.&nbsp;</p>
+<p><img src="images/1758228656656.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>See our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/User-Management.htm?" target="_blank" rel="noopener">User Management</a> for more information on users, roles, and permissions on FME Flow.&nbsp;</p>
+</blockquote>
+<p>The next level of Flow App accessibility relates to whether your FME Flow administrator has set up your FME Flow on an internal or external network. While you do not need to know the administration tasks to set up FME Flow, it is crucial to know whether your FME Flow is publicly accessible for app access. If your organization restricts FME Flow to an internal network, you will not be able to access FME Flow or Flow Apps outside of that network. If this is the case and you share your app with users outside your organization, or embed it in a publicly facing website, external users will not be able to access and use your app. If your FME Flow is publicly accessible and you turn off 'Require Authentication' for your app, anyone with access to the app link will be able to access and run your app.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>Administration tasks like making FME Flow publicly accessible are outside the scope of this course. For more information, see <a href="https://support.safe.com/hc/en-us/articles/25407742345357-Enabling-FME-Flow-for-Public-Access" target="_blank" rel="noopener">Enabling FME Flow for Public Access</a>.&nbsp;</p>
+</blockquote>
+<h2>Exercise</h2>
+<p><img src="images/1755621887446.png" alt="" width="284" height="301" /></p>
+<p>Jennifer, a GIS specialist, is creating a self-serve data portal. She aims to have her colleagues upload their CAD data and validate it against rules. She will use a Workspace App to share the workflow with her colleagues, allowing them to run the FME workspace without requiring any prior FME experience or knowledge.&nbsp;</p>
+<p>Jennifer's workspace reads CAD water line data, runs validation checks on the features, and generates an HTML report, which varies depending on whether the features successfully pass validation or fail the tests.&nbsp;</p>
+<p><img src="images/1761943624908.jpg" alt="" /></p>
+<p>She has already published her workspace to FME Flow and will now create the Workspace App. Follow along with Jennifer's steps.&nbsp;</p>
+<h3>1) Navigate to and Log In to FME Flow</h3>
+<p>Jennifer opens a web browser and navigates to FME Flow. She logs in to FME Flow with her credentials.&nbsp;</p>
+<p><img src="images/1755623797836.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>How you log into FME Flow will depend on the FME Flow instance you are using.&nbsp;</p>
+<p>If you are taking a Safe Software-hosted training course, you can access FME Flow at&nbsp;<a href="http://localhost/" target="_blank" rel="noreferrer noopener">http://localhost/fmeserver</a>.</p>
+<ul>
+<li>Username:&nbsp;<strong>admin</strong></li>
+<li>Password:&nbsp;<strong>FMElearnings</strong></li>
+</ul>
+<p>If you are not taking a Safe Software-hosted course, have just installed your FME Flow, and haven&rsquo;t logged in yet, you must use the default username/password, admin/admin. <span style="font-family: inherit; font-size: 1em;">After entering the default username/password, FME Flow will prompt you to create a new password for the admin user account. Then log in using the username admin and your new password. Because this is a fresh install, you must also license FME Flow before continuing; see the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/Request_and_Install_a_License-Express-Windows.htm" target="_blank" rel="noopener">FME Flow Licensing Walk-Through</a><span style="font-family: inherit; font-size: 1em;">&nbsp;for instructions.</span></p>
+<p>If you are using FME Flow Hosted, see&nbsp;<a href="https://docs.safe.com/fme-flow-hosted/FME-Flow-Hosted/Content/About_Instances/Connect_to_Web_UI.htm" target="_blank" rel="noopener">these instructions</a>.</p>
+</blockquote>
+<h3>2) Create Workspace App&nbsp;</h3>
+<p>From the FME Flow Dashboard, Jennifer clicks the Create Workspace App shortcut.&nbsp;</p>
+<p><img src="images/1755627146555.png" alt="" /></p>
+<p>The Create Workspace App page opens, and Jennifer starts by giving her app a name and title.&nbsp;</p>
+<p><img src="images/1755628550394.png" alt="" /></p>
+<p>For the Description, Jennifer describes what the workspace does in a sentence.</p>
+<pre class="language-markup"><code>Run this workspace to ensure that the watermain data is line data, with a pipe diameter larger than 0, and passes the OGC Valid test.</code></pre>
+<p>Next, Jennifer selects her workspace. She's stored it in the Data Validation Repository, so she selects it, and then the CAD_Data_Validation.fmw workspace.&nbsp;</p>
+<p><img src="images/1755628800357.png" alt="" /></p>
+<p>Jennifer sets the Service to Job Submitter and leaves the remaining settings at their default values.&nbsp;</p>
+<p><img src="images/1755629333361.png" alt="" /></p>
+<p>Jennifer expands the Parameter Defaults section. The first parameter takes AutoCAD file(s) as input to the workspace, and the second allows the user to define an output location for the HTML report of validation results. Jennifer leaves the parameters set to Use Default and set to Show in App.&nbsp;</p>
+<p><img src="images/1755629477918.png" alt="" width="998" height="598" /></p>
+<p>Jennifer skips the Customize section, scrolls to the bottom of the form, and selects Create.&nbsp;</p>
+<p><img src="images/1755629620753.png" alt="" /></p>
+<h3>3) Open and Run App&nbsp;</h3>
+<p>FME Flow creates the app and displays a URL and additional security information about it to Jennifer. Jennifer clicks the URL to open the app in a new browser tab.&nbsp;</p>
+<p><img src="images/1755630851464.png" alt="" /></p>
+<p>The app opens and shows the two parameters for the user to configure. Jennifer does not change the default values and clicks Run.&nbsp;</p>
+<p><img src="images/1755631977970.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>If you cannot access C:\FMEData on the server hosting your FME Flow, change the Destination HTML file parameter to a file location you can access.&nbsp;</p>
+</blockquote>
+<p>FME Flow submits the workspace to an FME Engine, and the app displays that it is Running as FME Flow processes the workspace.&nbsp;</p>
+<p><img src="images/1755632072496.png" alt="" /></p>
+<p>After the translation, FME Flow displays Completed back to Jennifer in the app.&nbsp;</p>
+<p><img src="images/1755632238137.png" alt="" /></p>
+<h3>4) Inspect Output</h3>
+<p>Jennifer navigates to C:\FMEData\Output\ and opens validation_results.html.&nbsp;</p>
+<p><img src="images/1755633812548.png" alt="" /></p>
+<p>The HTML report displays a map of features that failed validation and a table that records each feature and its reason for failing validation.&nbsp;</p>
+<p><img src="images/1755634050625.png" alt="" /></p>
+<p>Jennifer has created a self-serve data portal where users can upload files and run a workspace to validate CAD data.&nbsp;</p>
+<p>&nbsp;</p>

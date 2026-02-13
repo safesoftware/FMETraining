@@ -1,0 +1,116 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand what different geometry transformers are available.</li>
+<li>Identify which transformer(s) to use for specific tasks.</li>
+<li>Fix invalid geometry in common scenarios.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateSpatialData/ContoursO8.gml" target="_self">ContoursO8.gml</a>
+<ul>
+<li>C:\FMEData\Resources\IntegrateSpatialData\ContoursO8.gml</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/transform-and-fix-geometry-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateSpatialData\transform-and-fix-geometry-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2>Overview of Geometry Transformers</h2>
+<p>FME provides a wide range of geometry transformers. You can group these by their functionality:</p>
+<p><strong>Filtering Transformers</strong></p>
+<ul>
+<li><strong>GeometryFilter</strong>: Isolates features based on geometry type.</li>
+<li><strong>GeometryValidator</strong>: Detects and resolves invalid geometries.</li>
+</ul>
+<p><strong>Coercing or Setting Geometry</strong></p>
+<ul>
+<li><strong>GeometryCoercer</strong>: Converts features to a specific geometry type.</li>
+<li><strong>GeometryExtractor </strong>and <strong>GeometryReplacer</strong>: Extracts a feature's geometry according to the setting of the geometry encoding parameter.&nbsp; The resulting encoded geometry is added to the feature in an attribute. This attribute can later be restored as the feature's geometry via the GeometryReplacer transformer.</li>
+</ul>
+<p><strong>Editing Geometry</strong></p>
+<ul>
+<li><strong>Dissolver</strong>: Merges features based on shared attributes.</li>
+<li><strong>Generalizer</strong>: Simplifies complex geometries to improve performance.</li>
+<li><strong>Snapper</strong>: Adjusts vertices to align with nearby geometries.</li>
+<li><strong>Tiler</strong>: Splits large datasets into smaller, manageable tiles for efficient processing.</li>
+</ul>
+<p><strong>Building and Creating Geometry</strong></p>
+<ul>
+<li><strong>LineBuilder</strong>: Converts points into lines.</li>
+<li><strong>AreaBuilder</strong>: Converts lines into polygons.</li>
+<li><strong>Creator</strong>: Manually define geometry features to create.</li>
+<li><strong>VertexCreator</strong>: Create points from coordinates stored in attributes.</li>
+</ul>
+<p><strong>Extracting Components</strong></p>
+<ul>
+<li><strong>CenterPointReplacer</strong>: Replaces features with their center points.</li>
+<li><strong>BoundingBoxReplacer </strong>or <strong>BoundingBoxAccumulator</strong>: Replaces features with their bounding boxes, or creates bounding boxes from the extents of all features.</li>
+<li><strong><strong>CoordinateExtractor: </strong></strong>Retrieves either specified individual coordinates or all coordinate values from geometry, adding them to the feature as attributes.</li>
+</ul>
+<h2>Exercise</h2>
+<p>Invalid geometry types are where the type of geometry is invalid for the class of feature that it represents; for example a bicycle path is represented by a point geometry, or a river is represented by a polygon geometry (like below):</p>
+<p><img src="images/1740432459834.png" alt="River polygon and lines" width="643" height="323" /></p>
+<p>Whether such a geometry is truly invalid depends on both the user's interpretation of the data and any special circumstances. For example, the scale of the data might be such that both sides of the river bank are captured (as above), therefore a polygon is a perfectly legitimate geometry type.</p>
+<p>Invalid geometry types also covers any special rules that an organization may have, to permit situations that would usually be invalid. For example, a mapping organization may decree that a street lighting column is not stored by a point feature at its core location, but instead is stored as a polygon representing the extent of the acceptable lighting level (like below):</p>
+<p><img src="images/1740432485853.png" alt="Lighting polygon" width="607" height="435" /></p>
+<p>In general FME can identify problem features easily using a&nbsp;<em>GeometryFilter</em>&nbsp;transformer and - in some cases - can fix problems using a&nbsp;<em>GeometryCoercer</em>.&nbsp;</p>
+<h2 id="h_01HW8X9WTEY19TGJVCEAZW2NWE">Source Data</h2>
+<p>The source dataset for this example is a (supposed) set of lines (in a GML dataset) representing contours.</p>
+<p>The dataset looks like this in the FME Data Inspector:</p>
+<p><img src="images/1740432526409.png" alt="Contour lines" width="593" height="360" /></p>
+<p>The scenario here is that we have many contour files and wish to set up checks for bad geometry types using this single file as a prototype. As you can see, contours that form a closed shape were created as polygon features. Additionally, not only are there contours, but also spot height points and who knows what other types of geometry. These features need either filtering or fixing using FME.</p>
+<h2 id="h_01HW8X9WTEW68CDG8AKRMH0YVC">Step-by-Step Instructions</h2>
+<h3 id="h_01HW8X9WTEQB5ZYDA1M2CSMDXC">Part 1: Locating Invalid Geometry Types</h3>
+<p>Follow these steps to learn how to identify contour features that have an invalid geometry type.</p>
+<p><strong>1. Create workspace</strong></p>
+<p>Start FME Workbench (2024.2 or later) and click New to begin with an empty canvas.</p>
+<p>Select Readers &gt; Add Reader from the menubar. In the dialog that opens set the data format to OGC GML (Geography Markup Language).</p>
+<p>Set https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateSpatialData/ContoursO8.gml as the source Dataset.</p>
+<p>Click OK to close the dialog and add the reader.</p>
+<p><strong>2. Add a GeometryFilter transformer</strong></p>
+<p>Connect it to the GML reader feature type.</p>
+<p><img src="images/1740436349092.png" alt="GeometryFilter" width="324" height="82" /></p>
+<p><strong>3. Set GeometryFilter parameters</strong></p>
+<p>Open the GeometryFilter parameters dialog. Here we can define which geometry types to filter under the Output Ports parameter. Click the ellipsis button and then select "Line" because contours are by nature line features. We should also select "Area" because we know area features exist and that they can be fixed.</p>
+<p>Click OK and OK again to close the dialogs. The workspace now looks like this:</p>
+<p><img src="images/1740436458046.png" alt="GeometryFilter configured" width="329" height="113" /></p>
+<p>Any geometry that isn't a Line or Area will be "Unfiltered".</p>
+<p><strong>4. Run the workspace and inspect the output</strong></p>
+<p>With Feature Caching enabled, run the workspace and inspect the output by clicking the GeometryFilter. The non-line features will be filtered, showing how to can now deal with them separately.</p>
+<h2><img src="images/1740436590103.png" alt="Separated geometry" /></h2>
+<h3 id="h_01HW8X9WTE7GJS8PVZCR7S3HB0">Part 2: Counting Invalid Geometry Types</h3>
+<p>Counting the number of bad features is quite easy because we have already filtered them out. For example, even the Workbench feature counts show us there are 40 unfiltered features.</p>
+<p>To create a count stored in an attribute is simple using the StatisticsCalculator transformer.</p>
+<p><strong>5. Add a StatisticsCalculator and connect it to the GeometryFilter:Unfiltered port</strong></p>
+<p>Open the parameters dialog. First select&nbsp;<em>Elevation</em>&nbsp;as the Attribute to Analyze. In truth it doesn't really matter which attribute we select, since we only want a count of features.</p>
+<p>Click under the Total Count column to add a check-box. That will provide a count of the bad features.</p>
+<p><img src="images/1740436707464.png" alt="StatisticsCalculator configured" width="715" height="409" /></p>
+<p>Click OK to close the dialog.</p>
+<p>Re-run the workspace. This time the features in the StatisticsCalculator's Complete port should include an attribute called <em>Elevation.total_count</em> that denotes how many bad features there are: 40.</p>
+<h3 id="h_01HW8X9WTEV5NJF1QRGFAXWBJT">Part 3: Fixing Invalid Geometry Types</h3>
+<p>Geometry types can be changed in FME using the GeometryCoercer. We've filtered out point features (and any other geometry types) because there is no simple way to turn them into a line feature. However, area features can very easily be changed from a polygon to a closed line.</p>
+<p>&nbsp;<strong>6. Add a GeometryCoercer transformer</strong></p>
+<p>Connect it to the GeometryFilter:Area output port.</p>
+<p><strong>7. Set the GeometryCoercer parameters</strong></p>
+<p>Open the GeometryCoercer's parameters dialog. Set the Geometry Type to output to "fme_line".</p>
+<p>Click OK to close the dialog and re-run the workspace. The result is a clean set of contours with no invalid geometry types:</p>
+<p><img src="images/1740436845048.png" alt="Contours" /></p>
+<p><strong>8. Add an Inspector</strong></p>
+<p>Connect the GeometryFilter Line output port to it as well as the GeometryCoercer's Coerced output port. Make sure it is connected as shown. Re-run the workspace and inspect the Inspector output.<br /><img src="images/1740436912707.png" alt="GeometryCoercer and Inspector added" width="730" height="288" /><br />The output should look like this, with the invalid polygons coerced into lines:</p>
+<p><a href="https://support.safe.com/hc/article_attachments/25408150747533" data-fancybox="" data-caption="invalidgeometry-output.png"><img src="images/1740436960408.png" alt="Contours fixed" width="432" height="276" /></a></p>
+<h4 id="h_01HW8X9WTEYS084WK0QD9QF18M">Notes</h4>
+<p>Here are some other techniques for fixing invalid geometry types.</p>
+<p>1. When the geometry is supposed to be an island (or donut) but the 'hole' is filled in (like below):</p>
+<p><a href="https://support.safe.com/hc/article_attachments/25408144253837" data-fancybox="" data-caption="invalidgeometry-notadonut.png"><img src="images/1740432758049.png" alt="Not a donut" width="515" height="386" /></a></p>
+<p>...then the DonutBuilder transformer would be the best solution.</p>
+<p>2: When the geometry is supposed to be lines, but is an area (as in the step-by-step example) and the result is supposed to be a network (like these road features)...</p>
+<p><a href="https://support.safe.com/hc/article_attachments/25408136919693" data-fancybox="" data-caption="invalidgeometry-badnetwork.png"><img src="images/1740432773976.png" alt="Bad network" width="771" height="432" /></a></p>
+<p>...then the GeometryCoercer changes the area to a line, but it won't split it at node points. That would require the addition of an Intersector transformer.</p>
+<p>3. The GeometryCoercer can turn a single closed line into a polygon feature, but it won't build polygons from a set of individual lines. That needs the AreaBuilder transformer.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For more tutorials on validating and fixing spatial data, <a href="https://support.safe.com/hc/en-us/sections/25407344287629-Data-Validation-and-QA" target="_blank" rel="noopener">see the Knowledge Base</a>.</p>
+</blockquote>

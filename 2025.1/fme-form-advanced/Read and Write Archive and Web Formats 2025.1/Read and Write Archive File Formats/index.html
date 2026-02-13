@@ -1,0 +1,57 @@
+<p><span style="color: #222222; font-size: 2.3125em; font-family: inherit;">Learning Objectives</span></p>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Read archive file formats with FME Workbench.</li>
+<li>Write archive file formats with FME Workbench.</li>
+<li>Identify when writing to an archive file format is helpful.</li>
+</ul>
+<h2 id="archive-file-handling">Archive File Handling</h2>
+<p>FME readers and writers can work with compressed, archived files of various formats. As well as a size reduction, these file types are a convenient way to store datasets that need handling as a single unit, for example, a set of multiple dataset files contained within a single zip file.</p>
+<h2 id="archive-file-reading">Archive File Reading</h2>
+<p>FME can read the following archive formats:</p>
+<ul>
+<li>Supported archiving files
+<ul>
+<li>7z</li>
+<li>7zip</li>
+<li>rar (except v5)</li>
+<li>rvz</li>
+<li>tar</li>
+<li>tar.bz2</li>
+<li>tar.gz</li>
+<li>tgz</li>
+<li>zip</li>
+</ul>
+</li>
+<li>Supported compression-only files
+<ul>
+<li>bz2</li>
+<li>gz</li>
+</ul>
+</li>
+</ul>
+<p>The dataset a reader reads is defined by the Source Dataset/Files parameter in the Navigator window:</p>
+<p><img class="image image-block image-center" src="images/1723220585562.png" alt="Reading a zip file" width="588" height="312" /></p>
+<p>This dataset parameter can point to an archived file, as illustrated in the above screenshot. You select the archive file in the source parameter, and FME will extract the data when it reads it.</p>
+<p>This technique works whether the archived dataset is file-based (like a single AutoCAD file) or folder-based (like the set of files that make up a Shapefile dataset).</p>
+<p>Because FME supports reading archived files, you might notice the default file filter includes archive formats when browsing for a reader dataset:</p>
+<p><img src="images/1723220735385.png" alt="File browser includes archive formats" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can include wildcards when reading archive files, like regular files. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/archive_files_reading.htm" target="_blank" rel="noopener">See the documentation for examples</a>.</p>
+</blockquote>
+<h2 id="archive-file-writing">Zip File Writing</h2>
+<p>Writing data as a zip file is particularly useful when the output data needs to be post-processed. For example, if you use a shutdown script to move or copy output data to a new location, handling a single archive file is more convenient than multiple data files.</p>
+<p>The simplest way to create a zipped output is to change the file extension in the output dataset field:</p>
+<p><img class="image image-block image-center" src="images/1723220853622.png" alt="Setting a path with a zip ending" width="411" height="264" /></p>
+<p>You can also specify the filename to be written inside the archive file. A shortcut button does this for you:</p>
+<p><img class="image image-block image-center" src="images/1723220919889.png" alt="Using the zip shortcut button" width="444" height="264" /></p>
+<p>Notice the small icon in the left of the dataset field that indicates the zipped status.</p>
+<p>When the workspace is run, the log file reports the file creation at various points:</p>
+<pre><code>MULTI_WRITER: Output will be zipped </code><br /><code>Zipping contents of temporary dataset </code><br /><code>Finished updating output zip file: `C:\FMEData\Output\Parks.zip'</code><br /><br /></pre>
+<p>...and the output is, indeed, a zip file:</p>
+<p><img class="image image-block image-center" src="images/1723221076890.png" alt="Output Parks.zip" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Some users may want to archive data as a single entity to move or copy it to a different location. You can use a combination of user parameters and TCL or Python shutdown scripts to find the file you just wrote and move/upload it. Alternatively, you can use the FeatureWriter transformer, which provides the dataset's path as an attribute, allowing you to do whatever you want with that path using FME transformers.</p>
+</blockquote>

@@ -1,0 +1,110 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Use an Email Action to send messages in an Automation.</li>
+<li>Configure an Email Action with SMTP account details.&nbsp;</li>
+<li>Understand differences between the Email Action and Emailer transformer.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflows/exercise-process-resource-or-network-directory-messages-complete.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\process-incoming-data.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Building Footprints Esri Shapefiles</a> | C:\FMEData\Data\Engineering\BuildingFootprints</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/buildingfootprints_geodb.zip" target="_blank" rel="noopener">buildingfootprints_geodb.zip</a> | C:\FMEData\Data\Engineering\BuildingFootprints\buildingfootprints.gdb&nbsp;</li>
+</ul>
+<h2>Sending Emails</h2>
+<p>FME Flow Automations have the ability to send email notifications to external clients with the Email (send) external action. The Email action requires you to authenticate and validate a connection to an external SMTP email server. Flow uses this email server to send the outgoing emails.&nbsp;</p>
+<p><img src="images/1754073677527.jpg" alt="" /></p>
+<p>While there are many SMTP connection parameters that you must configure, FME Flow has a Load Template option that makes it a bit easier. You may select email connection templates for Gmail, Outlook, Office 365, or Yahoo. With a template, FME Flow defines the SMTP Server and Port for the email server you are using. You must still fill in your SMTP Account and Password and any other connection parameters.&nbsp;</p>
+<p>In the Email Details, you also set the recipients of our email and configure the subject, body, and an optional email attachment. You may send emails to multiple recipients, and optionally carbon copy or blind carbon copy recipients.&nbsp;</p>
+<p><img src="images/1754074062218.jpg" alt="" /></p>
+<p>Many of the Email parameters also allow you to use Output Attributes and Automation Parameters to further customize and control your outgoing emails with information from previous actions in the Automation. For example, you can set the Email Subject to include the job status of the previous workspace action, include the job log or any file from Resources as an attachment, and customize the email body with more information about the Automation.&nbsp;</p>
+<p><img src="images/1754075095795.jpg" alt="" /></p>
+<p>It's easiest to customize the outputs using the Text Editor, where you can select from all the available Output Attributes.</p>
+<p><img src="images/1754075315197.jpg" alt="" /></p>
+<p>With the previous settings, FME Flow generates an email that looks like this when the Automation triggers and runs.</p>
+<p><img src="images/1754075357768.jpg" alt="" /></p>
+<h2>Emailer and Email Action Comparison</h2>
+<p>You may also be familiar with the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/emailer-pkg.htm">Emailer transformer</a><span style="margin: 0px; padding: 0px;"><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/emailer-pkg.htm" target="_blank" rel="noopener">,</a>&nbsp;which sends emails from within workspaces. The Emailer is similar to the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-External-Actions/Ext-Action-Email.htm?" target="_blank" rel="noopener">Email external action;</a> however,</span>&nbsp;there are some key differences that will guide you to select the most appropriate one for your workflow.&nbsp;</p>
+<p>You configure an Emailer with almost all the same SMTP account parameters; however, you can use a web connection to connect to your SMTP email account.&nbsp;&nbsp;</p>
+<p><img src="images/1754075732192.jpg" alt="" width="430" height="719" /></p>
+<p><img src="images/1754076276390.jpg" alt="" /></p>
+<p>Advantages of using the Emailer include:</p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">The Emailer allows you to send emails from within the workspace and continue processing other transformers in the workspace. The Email action is separate from the Run a Workspace action and sends the email after the workspace translation completes.</span></li>
+<li>You can create presets for your email settings and re-reference them in multiple Emailer transformers. (There's a <a href="https://community.safe.com/ideas/fme-server-automation-templates-30364">community idea</a> for this within the Email action you can vote on in the FME Community.)</li>
+<li>It is also easier to include attribute values from within the workspace in the email with the Emailer. This is also possible with an Email Action following a workspace with an Automation Writer; however, the Emailer is generally easier if your entire workflow is kept in a single workspace.&nbsp;</li>
+<li>The workspace can run on FME Workbench and send an email, not just on FME Flow like the Email action in Automations.&nbsp;</li>
+<li>You can send multiple attachments with the Emailer, while the Email action only allows one file. The workaround for this is to use a zip file for the Email action.&nbsp;</li>
+</ul>
+<p><img src="images/1754076319693.jpg" alt="" /></p>
+<p>Advantages of the Ema<span style="font-family: inherit; font-size: 1em;">il action in Automations include:</span></p>
+<ul>
+<li>Since the Email action sends the email after the workspace is complete, you can include job information in the email, such as the translation status and job log.&nbsp;</li>
+<li>The Email action does not use an FME Engine to process and send the email, freeing up an available engine. The Emailer is part of a running workspace that translates using an FME Engine.&nbsp;</li>
+<li>You do not need to run a workspace to send emails; Email external actions can connect directly to triggers without any internal actions if you wish.&nbsp;</li>
+<li>Editing the automation makes your email credentials easier to maintain and update. To update credentials in the Emailer, you must download and edit the workspace on FME Workbench.&nbsp;</li>
+<li>Using the Email action creates separation within your workflow. If the Email action fails, the workspace will still process to completion, whereas a failed Emailer transformer will likely halt the rest of the workspace from completing successfully.&nbsp;</li>
+</ul>
+<h2>Exercise</h2>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">This exercise continues where the </span><strong>Process Incoming Data</strong>&nbsp;exercise<span style="font-family: inherit; font-size: 1em;"> left off. You should complete the previous exercise then continue with this exercise.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<p><!-- The script tag should live in the head of your page if at all possible --></p>
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<p><!-- Put this wherever you would like your player to appear --></p>
+<p><img src="images/1753381053031.png" alt="" width="202" height="214" /></p>
+<p>Jennifer continues with her Incoming Building Updates Automation. The Automation has a Resource or Network Directory trigger that watches for files added to an FME Flow Resources folder and a Filter action to filter shapefiles. Then, it runs a workspace to process incoming files. It's vital to update the geodatabase with the most recent construction updates, so Jennifer would like to notify herself when the workspace runs with its translation status.&nbsp;</p>
+<p>Follow along with Jennifer's steps as she creates an Email External Action to notify herself after the workspace completes in her Automation.</p>
+<h3>1) Open Automation</h3>
+<p>Jennifer navigates to FME Flow and opens her Incoming Building Updates Automation. If the Automation is running, she stops it to edit it.&nbsp;</p>
+<p><img src="images/1754062424260.jpg" alt="" /></p>
+<h3>2) Add External Action</h3>
+<p>Jennifer adds an external action to the canvas and connects it to the success and failure ports of the process-incoming-data workspace.&nbsp;</p>
+<p><img src="images/1754063554775.jpg" alt="" /></p>
+<p>By connecting the action to both ports, the external action will run whether the workspace translation succeeds or fails.&nbsp;</p>
+<h3>3) Configure Email Action</h3>
+<p>Jennifer opens the External Actions Details and selects the Email (send) action.&nbsp;</p>
+<p><img src="images/1754063778382.jpg" alt="" width="568" height="382" /></p>
+<p>Jennifer will configure the action to use a Gmail account, so she selects Gmail using the Load Template option and pre-populates some of the SMTP parameters.</p>
+<p><img src="images/1754063938269.jpg" alt="" /></p>
+<p>Jennifer enters these values for the SMTP parameters:</p>
+<ul>
+<li>SMTP Account:&nbsp;<strong>training.fmeflow@gmail.com</strong></li>
+<li>SMTP Password: <strong>wjdmzjdkujkzmplw&nbsp;</strong></li>
+<li>Connection Security:&nbsp;<strong>SSL/TLS</strong></li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>This Gmail account password changes regularly. Please only use it for FME training purposes, or configure your SMTP account for the Email action.&nbsp;</p>
+</blockquote>
+<p>Jennifer enters her email for the Email To parameter and uses training.fmeflow@gmail.com for the Email From parameter.&nbsp;</p>
+<p>For the Email Subject, Jennifer uses the drop-down menu to select the Text Editor. She types&nbsp;<em>Building Updates</em> and then uses the Workspace action output attribute Job Status to indicate whether the translation succeeds or fails in the subject.&nbsp;</p>
+<p><img src="images/1754064972092.jpg" alt="" /></p>
+<p>She uses the drop-down menu again for the Email Attachment to select the Job Log for the workspace.&nbsp;</p>
+<p><img src="images/1754065143868.jpg" alt="" /></p>
+<p>Once Jennifer enters all the required parameters, she clicks Validate to ensure her SMTP email settings are valid.</p>
+<p><img src="images/1754068528959.jpg" alt="" /></p>
+<p>Once Jennifer's parameters are valid, she clicks Apply to close the Email action details.&nbsp;</p>
+<p><img src="images/1754066431401.jpg" alt="" /></p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>If you receive an Invalid Parameters error, check that you have provided values for all required parameters. If you still encounter an error, see <a href="https://support.safe.com/hc/en-us/articles/25407557880205-FME-Flow-Troubleshooting-Email">FME Flow Troubleshooting: Email</a>.&nbsp;</p>
+</blockquote>
+<h3>4) Save and Start Automation</h3>
+<p>Jennifer saves the Automation and clicks Start to monitor the Resources location for files again.</p>
+<p><img src="images/1754067782211.jpg" alt="" /></p>
+<h3>5) Upload Shapefiles</h3>
+<p>With her Automation running, Jennifer navigates to Resources &gt; Data &gt; BuildingUpdates. She uploads another <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip">shapefile of building updates</a> (C:\FMEData\Data\Engineering\BuildingFootprints) to the folder.&nbsp;</p>
+<p><img src="images/1754068044427.jpg" alt="" /></p>
+<h3>6) Inspect Email</h3>
+<p>Jennifer waits a few moments for the Automation process to complete and then checks her email. She receives an email with the job status in the subject line and the job log as an attachment.&nbsp;</p>
+<p><img src="images/1754068456896.jpg" alt="" /></p>
+<p>Jennifer has now built an entire workflow with FME Flow Automations. She uses a trigger to watch for new files, filters those files, and runs a workspace if the files meet the condition. Once her workspace completes, an email sends to update Jennifer with the job completion status. She can monitor her Automation from her inbox and otherwise leave it to run and process the incoming shapefiles without any repetitive manual effort.&nbsp;</p>

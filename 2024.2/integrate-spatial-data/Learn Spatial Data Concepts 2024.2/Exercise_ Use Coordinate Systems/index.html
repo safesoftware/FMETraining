@@ -1,0 +1,67 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use coordinate system parameters to reproject spatial data.</li>
+<li>Select features in the Data Inspector to inspect coordinate system information.</li>
+<li>Use the Reprojector transformer to reproject spatial data.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/exercise-use-coordinate-systems.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateSpatialData\exercise-use-coordinate-systems.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>In this exercise, you work as a GIS analyst for a city government. You work with spatial data consisting of the city's parks' boundaries and some attributes. The data is stored in MapInfo TAB format as polygons (vector data).</p>
+<p>The parks team has decided that the output data should be in an Albers Equal Area projection (coordinate system = BCALB-83). They think it will take ages to set this up, but we'll show them differently.</p>
+<h2>1) Start FME Workbench</h2>
+<p>Start FME Workbench 2024.2 and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/exercise-use-coordinate-systems.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>.</p>
+<p>This existing workspace reads in the park data, does some schema editing, filters out dog parks, calculates the park areas and average park areas, and creates a label feature type before writing back to MITAB.</p>
+<h2>2) Edit Source (Reader) Coordinate System</h2>
+<p>In the Navigator window, locate the Parks [MITAB] reader and expand its list of settings.</p>
+<p>Locate the setting labeled &lsquo;Coordinate System.&rsquo; The original value should be &lt;not set&gt;:</p>
+<p><img class="image image-block image-center" src="images/1736280468990.png" alt="Finding an unset coordinate system on a reader" width="454" height="130" /></p>
+<p>Double-click the reader Coordinate System parameter to open an edit dialog.</p>
+<p>In the Coordinate System field, enter the name UTM83-10 or select it from the Coordinate System Gallery by selecting "More Coordinate Systems..." from the bottom of the drop-down list:</p>
+<p><img class="image image-block image-center" src="images/1736280512528.png" alt="Setting a coordinate system" width="410" height="271" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Remember, when a reader&rsquo;s Coordinate System parameter is defined as &lt;not set&gt;, FME will automatically try to determine the correct coordinate system from the dataset.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>When the source dataset is in a format that stores coordinate system information (as in this example), you can safely leave the parameter unset. So this step isn&rsquo;t essential.</p>
+<p>However, you&nbsp;must&nbsp;set this parameter when you wish to reproject source data that does not store coordinate system information; otherwise, an error will occur in the translation.</p>
+<h2><span style="font-family: inherit; font-size: 1em;">3) Edit Destination (Writer) Coordinate System</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">You can find the coordinate system setting for the destination (writer) dataset.</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Again, the current value should be the default of &lt;not set&gt;.</p>
+<p>Double-click the parameter and enter the coordinate system name BCALB-83 or select it from the Coordinate System Gallery by selecting "More Coordinate Systems..." from the bottom of the drop-down list.</p>
+<p>The Navigator window will now look like this:</p>
+<p><img class="image image-block image-center" src="images/1736280583614.png" alt="Viewing set coordinate systems" width="454" height="251" /></p>
+<h2>4) Run the Workspace</h2>
+<p>Save and then run the workspace.</p>
+<p>In the log file, you should be able to find:</p>
+<pre>FME Configuration: Source coordinate system for reader MITAB_1[MITAB] set to `UTM83-10' 
+...
+FME Configuration: Destination coordinate system set to `BCALB-83'</pre>
+<h2>5) Inspect the Output</h2>
+<p>Inspect the newly reprojected dataset and select a feature. The Feature Information window (under the Geometry section) should report that the data is now in BCALB-83. Optionally, click on the coordinate system name in that window; a new dialog will display all the coordinate system parameters.</p>
+<p><img class="image image-block image-center" src="images/1736280684393.png" alt="Viewing coordinate system information in the Feature Information Window" width="330" height="232" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If the background map is activated when a dataset is opened, then the contents of that dataset are automatically reprojected to Spherical Mercator to match the background map. If you wish to see the data as it appears in its coordinate system, click on your background map name in the Visual Preview window and select Background Map Off.</span></p>
+</blockquote>
+<h2>Challenge</h2>
+<p>Instead of using the reader/writer parameters in the Navigator window, why not try this exercise using the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/reprojector.htm" target="_blank" rel="noopener">Reprojector</a>&nbsp;(or&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/csmapreprojector.htm" target="_blank" rel="noopener">CSMapReprojector</a>) transformer? Where should the transformer be placed in the workspace? Why is this important?</p>

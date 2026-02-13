@@ -1,0 +1,77 @@
+<blockquote><span style="color: #222222; font-size: 2.3125em;">Learning Objectives</span></blockquote>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Filter data earlier in your workspace for performance improvements.</li>
+<li>Remove excess feature types for performance improvements.</li>
+<li>Remove excess attributes and lists for performance improvements.</li>
+<li>Use error trapping to identify problems.</li>
+</ul>
+<h2 id="designing-for-performance">Designing for Performance</h2>
+<p>Performance methodology is weak when a workspace's design causes the workspace to use more system resources (CPU and memory) than necessary. Performance methodology means setting up a workspace to run efficiently, saving you valuable time.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can refer to <a href="https://support.safe.com/hc/en-us/articles/25407794017933-Performance-Tuning-FME" target="_blank" rel="noopener">this tutorial series</a> for additional FME performance tips.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐ New for FME 2025.1: </strong>you can ask our new <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_blank" rel="noopener">AI Assist Chat</a> for help identifying and fixing performance issues. It knows the context of the objects on your canvas and can use it to help you identify inefficiencies.</p>
+</blockquote>
+<h2 id="filtering-input">Filtering Input</h2>
+<p>A typical scenario in FME is to read data into a workspace and then filter out features (records) that are not required:</p>
+<p><img class="image image-block image-center" src="images/1724946541584.png" alt="Filtering data using the Tester" width="419" height="261" /></p>
+<p>However, when data is read and immediately discarded, the resources used to read that data are a direct performance loss.</p>
+<p>If data is filtered as it is read, rather than afterward, performance is much better, and many formats have parameters to do just that:</p>
+<p><img class="image image-block image-center" src="images/1724946601323.png" alt="Filtering using a WHERE clause on a reader feature type" width="552" height="334" /></p>
+<p>A &lsquo;WHERE Clause&rsquo; parameter applies the required filter directly to the Geodatabase reader. Only data that matches the where clause is read and enters the workspace.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can also use a FeatureReader or DatabaseQuerier to restrict your data on read, including with custom queries and/or spatial initiators.</p>
+</blockquote>
+<h2 id="excess-feature-types">Excess Feature Types</h2>
+<p>The schema of a source dataset is represented on the FME canvas by feature type objects:</p>
+<p><img class="image image-block image-center" src="images/1724946784044.png" alt="Unused reader feature types" width="359" height="264" /></p>
+<p>Not connecting a feature type to other objects in your workspace is equivalent to reading and discarding data and is detrimental to performance.</p>
+<p>When adding readers, FME prompts the user to select feature types to add to the translation. You should avoid adding feature types you don't need and remove ones already added but not connected.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Excess feature types slow your work, clutter the canvas, and make maintaining a clean and tidy style harder.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Every reader has a parameter (Parameters &gt; Features to Read &gt; Feature Types to Read) that controls which feature types are read when the workspace runs. You can quickly choose which feature types to use with this parameter. Note, however, that if you link this to a user parameter, the end user will decide. In that case, you should ensure that only the feature types are available to select. It is still good practice to find and disable or remove any feature types you don't currently need to use, but this parameter offers a shortcut that can also improve performance.</span></p>
+</blockquote>
+<h2 id="excess-attributes-and-lists">Excess Attributes and Lists</h2>
+<p>Once data has been read into a workspace, you can still reduce its size to assist performance. For example, attributes not defined in the output schema are not necessary for a workspace, so you should remove them:</p>
+<p><img class="image image-block image-center" src="images/1724947486715.png" alt="Excess attributes" width="1090" height="500" /></p>
+<p>Here, a workspace author calculates the number of addresses in each city's postcode (CFSAUID). The address attributes are not required in the output schema but are copied onto the postcode features along with a list of addresses, and everything is carried through to the end of the workspace.</p>
+<p>In this scenario, the author should avoid the PointOnAreaOverlayer options for copying attributes and creating lists:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic5BestPractice/Images/Img5.032.RemoveExcessAttrs.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/1724950858300.png" alt="Turning off parameters to generate attributes" width="550" height="315" /></a></p>
+<p>This step will reduce the memory required to run the translation without affecting its output.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Lists are the worst attribute type to keep for no reason since they can have multiple values for each record. Parameters in many join transformers allow the author to generate only the list attributes required:</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1724950946444.png" alt="Generating lists" width="550" height="315" /></span></p>
+</blockquote>
+<h2 id="error-trapping">Error Trapping</h2>
+<p>Sometimes, scaling up/performance means using more datasets of varying types and quality. If you consider data quality, you can protect future performance.</p>
+<p>One way to design for future capabilities is by using error trapping.</p>
+<p>Error trapping is a way to design a workspace so that unexpected data does not cause the workspace to fail. The author attempts to foresee potential data problems and build methods to handle them.</p>
+<p>Error trapping can be as simple as adding a test or filter transformer to weed out bad features, or it can be more complex and include different ways to process data, depending on the circumstances.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Tester transformer has an operator for testing whether an attribute has a value.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">This is very useful for error trapping, as it tests whether an attribute has a value before using it as the source for a parameter.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/logger.htm" target="_blank" rel="noopener">Logger</a><span style="font-family: inherit; font-size: 1em;"> transformer to issue Information, Warning, and Error messages to the log.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/terminator.htm" target="_blank" rel="noopener">Terminator</a><span style="font-family: inherit; font-size: 1em;"> transformer to issue custom error messages, which is also helpful in building more extreme error-trapping logic into your workspaces or custom transformers. If a specific condition means the workspace should fail with an error, you can use a Terminator to catch those cases.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For advanced use cases, you can use error trapping and attribute validation techniques to build a testing framework for your workspaces. You can learn more about testing frameworks from </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://fme.safe.com/blog/2020/01/fme-hub-highlight-fme-test-framework/" target="_blank" rel="noopener">this guest post on our blog</a><span style="font-family: inherit; font-size: 1em;">&nbsp;or by checking out the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://www.veremes.com/en/products/rtest" target="_blank" rel="noopener">rTest for FME tool</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐ New for FME 2024.2:</strong> we've added a &lt;Rejected&gt; port to the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pythoncaller.htm" target="_blank" rel="noopener">PythonCaller</a>. You can now send features to it in your Python code using the <code>reject_feature()</code> method defined in the <code>FeatureProcessor</code> class. This can help you trap errors or invalid features in your workspace.</p>
+</blockquote>

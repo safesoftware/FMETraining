@@ -1,0 +1,147 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Identify the geometry type of a feature.</li>
+<li>Find geometry traits on a feature.</li>
+<li>Find geometry measures on a feature.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/inspect-geometry-details.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateSpatialData\inspect-geometry-details.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/Coastline.zip" target="_blank" rel="noopener">Coastline.gml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\Coastline.gml</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEUC22/Working%20with%20BIM%20Data/Data/Duplex_A.ifc" target="_self">Duplex_A.ifc</a>
+<ul>
+<li>C:\FMEData\Resources\FMEUC22\Working with BIM Data\Data\Duplex_A.ifc</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Transportation/GeometryMeasures.zip" target="_blank" rel="noopener">GeometryMeasures.zip</a>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>C:\FMEData\Data\Transportation\Geometry Measures\streets_NLE+measure.shp</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_blank" rel="noopener">Addresses.gdb</a>
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+</ul>
+<h3 id="h_01HVMFE6GNMK97E138D23MASJX">Data Attribution</h3>
+<p>In addition to the regular City of Vancouver Open Government License data, this course includes:</p>
+<ul>
+<li>Duplex_A.ifc is originally from BuildingSmart Alliance&rsquo;s Common Building Information Model Files and Tools. The Duplex A model comes from a Revit file in Project 1 Duplex Apartment, under the section Coordination Model View, and it is the dataset 2011-09-14-Duplex-RVT. The link on the National Institute of Building Sciences website is no longer available, but it is now hosted on GitHub <a href="https://github.com/bimdata/BIMData-Research-and-Development/blob/master/pages/IFC_FILES.md" target="_blank" rel="noopener">here</a> as NBU_Duplex.</li>
+<li>streets_NLE+measure.shp is originally from the <a href="https://fme.safe.com/webinars/linear-referencing-lrs-how-fme-measures-up/" target="_blank" rel="noopener">Linear Referencing (LRS): How FME Measures Up webinar.</a></li>
+</ul>
+<h2>Using FME to Inspect Geometry Details</h2>
+<p>Understanding geometries' properties is essential for effective work with them.&nbsp;FME provides several tools for inspecting geometry types, traits, and measures.</p>
+<h2>Visual Preview</h2>
+<p>Use the Visual Preview window or FME Data Inspector to view geometry:</p>
+<p><img src="images/1737414720114.png" alt="Spatial data in Visual Preview" /></p>
+<p><em>Map tiles &copy;&nbsp;<a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy;&nbsp;<a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy;&nbsp;<a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy;&nbsp;<a href="https://academy.safe.com/path/fme-form-basic/connect-to-data/Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>See <a href="https://academy.safe.com/view-data" target="_self">View Data</a> or <a href="https://academy.safe.com/path/fme-form-basic/connect-to-data" target="_self">Connect to Data</a> for more information on visualizing your data with FME.</p>
+</blockquote>
+<h2>The Feature Information Window</h2>
+<p>To drill down and see more information about a single feature's geometry, select it in Visual Preview's Graphics or Table view and then look to the Geometry section in the Feature Information Window:</p>
+<p><img src="images/1737414922775.png" alt="Geometry in the Feature Information Window" width="678" height="788" /></p>
+<p>You can view all the details of geometry in this section, including:</p>
+<ul>
+<li>The coordinate system
+<ul>
+<li>Click the link to display detailed information about the coordinate system.</li>
+</ul>
+</li>
+<li>The local coordinates of the bounding box (or cube in a 3D dataset) of the currently selected feature</li>
+<li>A complete listing of all geometric information for the feature (coordinates for all geometry types, information about measures, transformation matrixes, raster bands, and so on).</li>
+</ul>
+<p>This section can be helpful when undertaking geometry debugging.&nbsp;</p>
+<p>You can click coordinates (the actual numbers in the Value column, not the coordinate number in the Property column) to have them highlighted in Graphics view:</p>
+<p><img src="images/pin_point_locator.png" /></p>
+<p>You can have FME geometry always Mark End Nodes, Coordinates, or Text Insertion Points by right-clicking the feature type in Display Control:</p>
+<p><img src="images/1737492466024.png" alt="Mark End Nodes and Mark Coordinates" /></p>
+<h2>Traits</h2>
+<p>All geometries can have an arbitrary number of traits. These are attributes at the geometry level rather than the feature level. Hierarchical geometries can have separate traits at each node in the geometry hierarchy.</p>
+<p>For example, this aggregate feature depicted in the FME Data Inspector has six traits, which the IFC reader generated:</p>
+<p><img src="images/1737488070748.png" alt="Geometry rraits from an IFC reader" /></p>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/traitmerger.htm" target="_blank" rel="noopener">TraitMerger</a> transformer moves the traits from one geometry to another geometry. It can also move the attributes from a feature onto a geometry as traits, or the traits from a geometry onto a feature as attributes. Several related transformers can modify geometry traits (<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertyextractor.htm" target="_blank" rel="noopener">GeometryPropertyExtractor</a>, <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertyremover.htm" target="_blank" rel="noopener">GeometryPropertyRemover</a>, <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertyrenamer.htm" target="_blank" rel="noopener">GeometryPropertyRenamer</a>, and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertysetter.htm" target="_blank" rel="noopener">GeometryPropertySetter</a>).</p>
+<h2>Measures</h2>
+<p>Some Geometries can have measures associated with them (also known as "linear referencing" or "dynamic segmentation"). These are an arbitrary number of additional dimensions at each vertex location. These dimensions are named and must have a Real64 type value. A "default measure" is optional and does not need to be named.</p>
+<p><img src="images/1737491918333.png" alt="Measures on a feature" /></p>
+<p>There are a few transformers that work with measures:</p>
+<ul>
+<li>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/measureextractor.htm" target="_self">MeasureExtractor</a> transformer extracts data from measures into attributes or list attributes.</li>
+<li><span data-preserver-spaces="true">The </span><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/measuregenerator.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">MeasureGenerator</span></a><span data-preserver-spaces="true"> transformer creates a set of measures attached to the feature's geometry. Each value is the distance from the start of the line up to that vertex, multiplied by the given Multiplier.</span></li>
+<li>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/measureremover.htm" target="_blank" rel="noopener">MeasureRemover</a> transformer removes measures from geometry.</li>
+<li>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/measuresetter.htm" target="_blank" rel="noopener">MeasureSetter</a> transformer lets you add arbitrary data to measures from attributes or list attributes.</li>
+<li>The <a href="https://hub.safe.com/publishers/safe-lab/transformers/measureexpressionevaluator" target="_blank" rel="noopener">MeasureExpressionEvaluator</a> custom transformer lets you apply complex math and conditionals to measure values.</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on linear referencing with FME, check out this webinar: <a href="https://fme.safe.com/webinars/linear-referencing-lrs-how-fme-measures-up/" target="_blank" rel="noopener">Linear Referencing (LRS): How FME Measures Up</a>.</p>
+</blockquote>
+<h2>Exercise</h2>
+<p><img src="images/bad-35950-6-e-9-c-4-ec-3-a-5-fd-fcbd-103817-d-8.png" alt="Amar" width="174" height="185" /></p>
+<p>Amar is working with a new dataset: a GML file representing part of the coastline in the City of Vancouver. He needs to understand its geometry structure. Basic points, lines, and polygons are simple enough, but what is a MultiCurve? He sends the data to Jennifer, a more experienced FME user, and asks her to explain the difference between multi-geometry, multiple geometry, and aggregates.</p>
+<p>She returns a workspace with some transformers and annotations to answer his question and explain more about FME's geometry model.</p>
+<h2>1) Open and Run Starting Workspace</h2>
+<p>Amar opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/inspect-geometry-details.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench (2024.2 or later) and runs it to generate feature caches.</p>
+<h2>2) Use the Feature Information Window to View Geometry</h2>
+<p>First, he inspects the Coastline reader feature type by clicking the green feature cache icon:</p>
+<p><img src="images/1737759758379.png" alt="Coastlines feature cache" /></p>
+<p>Then, he looks at the Feature Information Window and expands the Geometry section. This area reports the data's geometry type: MultiCurve:</p>
+<p><img src="images/1737759871771.png" alt="Expanding Geometry to see MultiCurve" /></p>
+<p>He clicks MultiCurve to expand that section and observes the MultiCurve has 72 parts, which are Lines:</p>
+<p><img src="images/1737759913816.png" alt="Multicurve details with 72 Lines" /></p>
+<p>He expands Part 0 to see the properties of that Line. He also expands the Coordinate section to view all 90 vertexes in the Part 0 Line:</p>
+<p><img src="images/1737759980628.png" alt="Viewing Line coordinates" /></p>
+<p>He clicks the coordinates for vertex 0 (the numbers in the Value column) and sees the point marked in red on the Graphics view map:</p>
+<p><img src="images/1737760048537.png" alt="Marking coordinate locations" /></p>
+<p>Now, he understands how to inspect geometry using the Feature Information Window.</p>
+<h2>3) Inspect Other Geometry Types - Deaggregator</h2>
+<p>Jennifer added some transformers to the workspace to show how FME represents other geometry types. Amar looks at them cache-by-cache to see how different geometry types are displayed.</p>
+<p>First, he clicks the Deaggregator's Deaggregated cache. As the attached annotation explains, this transformer deaggregates multi, multiple geometry, and aggregates into individual geometry features. With this data, that process results in 72 Line features. He confirms these features are Lines with a single part with 90 coordinates by inspecting them in the Feature Information Window:</p>
+<h2><img src="images/1737760314636.png" alt="Each feature is a Line" /></h2>
+<h2>4) Inspect Other Geometry Types - Aggregator</h2>
+<p>The Deaggregator can break geometry apart; which transformer can put them back together? The Aggregator.</p>
+<p>Amar inspects the Aggregator's Aggregate port. Contrary to the name of this port, the resulting geometry here is a MultiCurve again. The transformer created a MultiCurve because the default value of the Aggregate Type parameter is Homogeneous Collection (If Possible). With this approach, if FME can make the output geometry into a homogeneous collection without changing the geometry type of any of its parts, then this option will perform the conversion. Because all the geometry received were Lines, FME created a MultiCurve.</p>
+<p>&nbsp;</p>
+<p><img src="images/1737760444307.png" alt="MultiCurve output by the Aggregator" width="564" height="679" /></p>
+<p>To create an Aggregate from this MultiCurve, Jennifer sent the Aggregator's Aggregate output port features into&nbsp;<em>another&nbsp;</em>Aggregator, Aggregator_2. This transformer creates an Aggregate with one part: the MultiCurve.</p>
+<p><img src="images/1737760703536.png" alt="An Aggregate with one MultiLine child" /></p>
+<p>Jennifer shows how you can continue nesting features by sending the feature into <em>another&nbsp;</em>Aggregator, Aggregator_3. Now, the feature has an Aggregate geometry with one Aggregate child, which has one MultiCurve child.</p>
+<p><img src="images/1738021212685.png" alt="Further nesting of geometry with the Aggregator" /></p>
+<p>Using transformers like this allows you to define parent-child geometry relationships. The Group By and Aggregation Mode parameters in the Aggregator allow greater control over such nesting.</p>
+<h2>5) Inspect Other Geometry Types - Aggregator with Homogenous Collection</h2>
+<p>To immediately create an Aggregate from the deaggregated features, Jennifer shows that you can set the Aggreator's Aggregate Type parameter to Homogenous Collection. The output of Aggregator_4 shows the results of this decision:</p>
+<p><img src="images/1738021288422.png" alt="One Aggregate with many Lines" /></p>
+<h2>6) Inspect Other Geometry Types - Multiple Geometry</h2>
+<p>Next, Amar looks at how Jennifer created a multiple geometry using the MultipleGeometrySetter transformer. This transformer turns the MultiCurve from the source data into a multiple geometry. FME represents the feature as an Aggregate, but the crucial difference can be seen by mousing over the geometry type to view the tooltip, which reports: "IFMEAggregate, Multiple Geometry: 72 Geometries." Now, instead of being an Aggregate with 72 parts (as in the output of the Aggregator_4), the data is an Aggregate composed of 72 distinct geometries:</p>
+<p><img src="images/1738021472583.png" alt="Multiple Geometry: 72 Geometries" /></p>
+<p>Jennifer tells Amar that this distinction is not vital for most FME geometry processing transformers. However, some formats&mdash;particularly databases&mdash;rely on properly setting multiple geometries, so seeing the difference is essential.</p>
+<h2>7) Inspect Geometry Traits</h2>
+<p>Jennifer also sent some examples to help Amar understand geometry traits and measures.</p>
+<p>For traits, she added an <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/ifc/ifc.htm#:~:text=FME%20reads%20and%20writes%20files,maintained%20and%20published%20by%20BuildingSmart." target="_blank" rel="noopener">Industry Foundation Class STEP/XML Files (IFC) reader</a> containing many feature types representing a 3D model of a duplex building. IFC is a complex format that includes nested geometry and traits.</p>
+<p>Amar looks through the IFC data and finds that the IfcWallStandardCase feature type is a good example of traits. He clicks the cache to inspect it and looks in the Geometry section of the Feature Information Window. It reports that each feature in this feature type has six traits under the Aggregate &gt; Geometry Traits section:</p>
+<p><img src="images/1738021634023.png" alt="Geometry traits" /></p>
+<p><span data-preserver-spaces="true">These traits contain information about these wall features, including their GlobalId, ifc_instance_name, and ObjectType. The IFC format uses these traits, which can be modified using the </span><a class="editor-rtfLink" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertysetter.htm" target="_blank" rel="noopener"><span data-preserver-spaces="true">GeometryPropertySetter</span></a><span data-preserver-spaces="true"> and related transformers.</span></p>
+<h2>8) Inspect Geometry Measures</h2>
+<p>Finally, Amar looks at Jennifer's example of geometry measures. She's included an Esri Shapefile of a small street segment in the feature type called streets_NLE+measure. The Line geometry includes a measure representing the distance from the starting point. He could use it to attach speed limit information to the lines from tabular data or locate signs along the line, for example.</p>
+<p>Amar clicks the streets_NLE+measure reader feature type cache to inspect it. He looks at the Geometry section in the Feature Information Window. He sees the Line geometry has a Measures property with the value <code>&lt;default_measure&gt;</code>. This value is the default name used for unnamed measures in FME.</p>
+<p>He can see the values for the measure in the coordinates for each vertex, which are visible just below Measures in the Coordinates section. He expands it and sees the measure value reported inside greater than and lesser than symbols after the x and y coordinates:</p>
+<p><img src="images/1738021851905.png" alt="Geometry measures" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><a href="https://fme.safe.com/webinars/linear-referencing-lrs-how-fme-measures-up/" target="_blank" rel="noopener">Check out this linear referencing webinar</a> to view an example of using this data to set speed limit attributes on lines.</p>
+</blockquote>

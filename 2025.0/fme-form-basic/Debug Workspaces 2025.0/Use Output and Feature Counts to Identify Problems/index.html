@@ -1,0 +1,155 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Know what aspects of your data to inspect when you encounter problems.</li>
+<li>Use feature counts to identify problems.</li>
+<li>Understand what rejected features are and how to use rejected feature attributes to debug a workspace.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-output-and-feature-counts-to-identify-problems.fmw" target="_blank" rel="noopener">Starting workspace</a>&nbsp;
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-output-and-feature-counts-to-identify-problems.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-output-and-feature-counts-to-identify-problems-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-output-and-feature-counts-to-identify-problems-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.zip</a> (OGC / Google KML)
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/street-trees.csv" target="_blank" rel="noopener">street-trees.csv</a>
+<ul>
+<li>C:\FMEData\Resources\FormBasic\street-trees.csv</li>
+</ul>
+</li>
+</ul>
+<h2 id="inspecting-output">Inspecting Output</h2>
+<p>Even if a workspace ran to completion without warnings or errors, it does not follow that the output matches what is expected or required. For whatever reason, the workspace may be producing data incorrectly. We can determine this by inspecting the translation output.</p>
+<p>To inspect your output, view it in Visual Preview or the destination application.</p>
+<p>You can inspect several aspects of data, including:</p>
+<ul>
+<li><strong>Format</strong>: Is the data in the expected format?</li>
+<li><strong>Schema</strong>: Is the data subdivided into the correct layers, categories, or classes?</li>
+<li><strong>Geometry</strong>: Is the geometry in the correct spatial location? Are the geometry types suitable?</li>
+<li><strong>Symbology</strong>: Is each feature's color, size, and style correct?</li>
+<li><strong>Attributes</strong>: Are all the required attributes present? Are all integrity rules being followed?</li>
+<li><strong>Quantity</strong>: Does the data contain the correct number of features?</li>
+<li><strong>Output</strong>: Has the translation process restructured the data as expected?</li>
+</ul>
+<p>When encountering problems, you should inspect your data to see if its components are incorrect.</p>
+<p><span style="font-family: inherit; font-size: 1em;">This stage is solely to determine if there are any problems.</span></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>If there are no problems, we can be satisfied that the translation was a success.</p>
+<p>If there are problems, we should go on to determine where the problem occurred. It's important to avoid jumping to conclusions at this point. The fact that the output needs to be corrected does not tell us where that issue appeared.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="feature-counts">Feature Counts</h2>
+<p>A workspace&nbsp;feature count&nbsp;refers to the numbers shown on each connection once a translation is complete:</p>
+<p><img class="image image-block image-center" src="images/1717091254445.png" alt="Feature counts on connection lines" width="679" height="289" /></p>
+<p>Once you find an error or problem, feature counts help us identify where that problem occurred.</p>
+<p>In the above screenshot, if the Clipper output is incorrect, you should inspect the prior feature counts to see if any counts look wrong. Perhaps you know that there are seven neighborhoods, but the feature count shows only six.</p>
+<h2 id="incorrect-output">Incorrect Output</h2>
+<p>You can check several things when the number of output features is incorrect.</p>
+<p>If you get zero output, and the feature counts show that all features entered a transformer, but none emerged, then you can be reasonably confident that the transformer is the cause of the problem:</p>
+<p><img class="image image-block image-center" src="images/1717091359465.png" alt="Debugging by checking feature counts" width="447" height="289" /></p>
+<p>For example, 80 features enter the Clipper transformer (to be clipped against a single boundary), but none emerge. The Clipper transformer is almost certainly the cause of any incorrect output.</p>
+<p>The transformer does not reject the data; it merely does not pass the test expected. It's possible that Clipper and Clippee don't occupy the same coordinate system; hence, one does not fall inside the other.</p>
+<p>Turning on feature caching helps to confirm this to be the case:</p>
+<p><img class="image image-block image-center" src="images/1717091407508.png" alt="Using feature caching to find output" width="447" height="289" /></p>
+<p>Alternatively &ndash; and this is a common cause of missing features &ndash; the author has connected the wrong output port! For example, this user connected the StatisticsCalculator Summary output port when they wanted the features from the Complete port:</p>
+<p><img class="image image-block image-center" src="images/1717091458891.png" alt="Using feature caching to confirm correct port is connected" width="453" height="125" /></p>
+<p>You can observe feature counts and feature caches to ensure you are getting the expected number of features and they look correct.</p>
+<h2 id="rejected-features">Rejected Features</h2>
+<p>Sometimes, when features go missing, they are rejected by a transformer. Many transformers include a &lt;Rejected&gt; port to output these invalid features:</p>
+<p><img class="image image-block image-center" src="images/1717091580603.png" alt="Observing rejected feature counts" width="390" height="153" /></p>
+<p>Remember, features are automatically counted and stored on a &lt;Rejected&gt; port, even if feature caching is off.</p>
+<p>As an additional benefit, the rejected features will often include a rejection code attribute explaining the problem:</p>
+<p><img class="image image-block image-center" src="images/1717091667409.png" alt="Observing fme_rejection_code in Visual Preview" width="512" height="260" /></p>
+<p>Simply reading a rejection code can often help you identify the problem. Please refer to the transformer documentation for more information if it does not.</p>
+<h2 id="checking-key-stages">Checking Key Stages</h2>
+<p>&nbsp;If the feature counts cannot help pinpoint a problem's location, the next step is inspecting data at crucial translation stages.</p>
+<p>Generally, issues in an output dataset occur when:</p>
+<ul>
+<li>The workspace reads data incorrectly.</li>
+<li>The workspace transforms data incorrectly.</li>
+<li>The workspace writes data incorrectly.</li>
+<li>Another application misinterprets the data.</li>
+</ul>
+<h2>Exercise</h2>
+<p><img class="image image-block image-center" src="images/c-523-def-8-4-eb-4-4-add-acbd-274-c-2-ee-65-f-21.png" alt="Frank" width="256" height="256" /><img class="image" src="images/bad-35950-6-e-9-c-4-ec-3-a-5-fd-fcbd-103817-d-8.png" alt="Amar" width="256" height="272" /></p>
+<p>Word about Frank's debugging skills has spread around the office. Amar is having some problems with his workspace and sends it to Frank for debugging.</p>
+<h2>1) Open Starting Workspace</h2>
+<p>Frank opens the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-output-and-feature-counts-to-identify-problems.fmw" target="_blank" rel="noopener">starting workspace</a>&nbsp;(C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-output-and-feature-counts-to-identify-problems.fmw) in FME Workbench (2025.0.1 or later).</p>
+<p>He runs it to generate caches.</p>
+<h2>2) Find Rejected Feature Code</h2>
+<p>The workspace doesn't run for very long before stopping due to an error. Frank will use the log to determine what caused the problem.</p>
+<p>First, he clicks OK to dismiss the Unexpected Input window.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The Unexpected Input window appears when FME reads data that is not included in the workspace. This can happen with formats like KML, where the entire dataset is read even if only one feature type is present on the Canvas. It can be safely ignored once you confirm you have all the source data you need on the Canvas.</p>
+</blockquote>
+<p>Next, he clicks the button to filter the log to only show errors:</p>
+<p><img src="images/1753393206437.png" alt="Filtering errors" /></p>
+<p>The error message comes from a rejected feature:</p>
+<p><code>The below feature caused the translation to be terminated</code><br /><code>JSONExtractor_&lt;Rejected&gt; (TeeFactory): JSONExtractor_&lt;Rejected&gt;: Termination Message: 'JSONExtractor output a &lt;Rejected&gt; feature. &nbsp;To continue translation when features are rejected, change 'Workspace Parameters' &gt; Translation &gt; 'Rejected Feature Handling' to 'Continue Translation''</code></p>
+<p>This error itself isn't very helpful. We need to find the fme_rejection_code attribute on the rejected feature for more information.</p>
+<p>So, Frank finds the JSONExtractor on the Canvas. He sees the &lt;Rejected&gt; port has one feature, so he clicks the feature cache to inspect it:</p>
+<p><img src="images/1749587778561.png" alt="Inspecting rejected feature" /></p>
+<p>He finds the fme_rejection_code attribute in the far right of Table View and notes its value: NO_RESULT. He also notes that the attribute Geom has a value of &lt;null&gt;.</p>
+<p>He needs to find out why the JSONExtractor did not have a result for this feature. So he opens it to view its parameters.</p>
+<h2>3) Find Cause of Rejected Feature</h2>
+<p>This transformer reads JSON from the Geom attribute and then extracts latitude and longitude coordinates using a JSON Query. That means it uses the value of the Geom attribute:</p>
+<p><img src="images/1749587996990.png" alt="JSONExtractor parameters" /></p>
+<p>Because the rejected feature had a value of &lt;null&gt; for Geom, the transformer was not able to extract coordinates. That is very likely the cause of the rejection.</p>
+<p>To confirm this, Frank inspects the JSONExtractor's Evaluated cache. The transformer did not finish running, but it did successfully evaluate three features before the translation terminated.</p>
+<p><img src="images/1749588188712.png" alt="Successfully processed features have a value for Geom" /></p>
+<p>The successfully processed features have a value for Geom, and therefore values for lat and long.</p>
+<p>This confirms the problem is the features with a &lt;null&gt; value for Geom.</p>
+<h2>4) Fix Rejected Feature</h2>
+<p>To fix this, Frank can simply filter these out using a Tester before they get to the JSONExtractor.</p>
+<p>Frank adds a Tester after the CSV reader feature type and configures it to test for Geom - Attribute Has a Value:</p>
+<p><img src="images/1749589131793.png" alt="Tester configuration" /></p>
+<p>He reruns the workspace and the JSONExtractor no longer outputs rejected features.</p>
+<p><img src="images/1749589370464.png" alt="Rejected features problem fixed" /></p>
+<h2>5) Use Feature Counts to Debug</h2>
+<p>Although the workspace now runs without errors, the output is still incorrect.</p>
+<p>Amar expects the output of the Clipper's Inside port to contain all the trees within the neighborhoods specified in the Neighborhoods dataset, but that port is empty:</p>
+<p><img src="images/1749590124867.png" alt="Missing Inside features" /></p>
+<p>Instead, all of the features are coming out of the Outside port, meaning that the Clipper did not detect any overlap between the tree points and the neighborhood polygon.</p>
+<p>Why might this be?</p>
+<p>The most common problem would be mismatched coordinate systems, so Frank decides to investigate that first.</p>
+<h2>6) Investigate Coordinate Systems</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>At this point in the course, you should be able to debug this step yourself. Try to confirm if coordinate system mismatch is the problem here before proceeding.</p>
+</blockquote>
+<p>Frank clicks the Neighborhoods feature cache and Ctrl+clicks (or Cmd+clicks on Mac) the Reprojector's Reprojected feature cache to inspect them both at the same time.</p>
+<p>He selects a Neighborhoods feature and finds the Coordinate System in the Feature Information Window. It shows the data is in LL84:</p>
+<p><img src="images/1749591214474.png" alt="LL84 coordinate system" /></p>
+<p>Then he selects a Reprojector feature and finds the data is in UTM83-10, confirming there is a coordinate system mismatch:</p>
+<p><img src="images/1749591124406.png" alt="UTM coordinate system" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Pop quiz: should Frank&nbsp;<em>remove&nbsp;</em>the Reprojector entirely so both streams of features are in LL84, or should he duplicate the Reprojector to reproject the Neighborhoods data so it is also in UTM83-10?</p>
+</blockquote>
+<h2>7) Fix Coordinate Systems</h2>
+<p>Frank duplicates the Reprojector transformer (right-click &gt; Duplicate) and adds it to the Neighborhoods stream:</p>
+<p><img src="images/1749591980556.png" alt="Second Reprojector" /></p>
+<p>It's better to conduct spatial analysis using projected coordinate systems, so he chooses to use UTM for both streams. Amar can always reproject back to LL84 at the end if he needs to.</p>
+<p>Frank runs the workspace again to confirm the Clipper's Inside port has features, as expected:</p>
+<p><img src="images/1749592726129.png" alt="Inside port has features" /></p>
+<p>It does. Another successful debugging operation. Frank better be careful, or all his colleagues are going to rely on him for debugging! He decides to hold a workshop on debugging with FME using his new knowledge so he can get some of his own work done.</p>

@@ -1,0 +1,176 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Expose adjacent feature attributes.</li>
+<li>Use adjacent feature attributes.</li>
+<li>Handle missing values in attribute manipulation.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-precipitation-calculations-with-adjacent-feature-attributes-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>If you are taking a Safe Software-hosted training course: C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-precipitation-calculations-with-adjacent-feature-attributes-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/ElevationModel/Precipitation.xlsx" target="_blank" rel="noreferrer noopener">Precipitation.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\ElevationModel\Precipitation.xlsx</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>You're working on a project mapping the city's monthly precipitation (rainfall). You have been given a dataset like this:&nbsp;</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Month</th>
+<th scope="col">Precipitation</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>Jan</td>
+<td>168</td>
+</tr>
+<tr>
+<td>Feb</td>
+<td>273</td>
+</tr>
+<tr>
+<td>Mar</td>
+<td>387</td>
+</tr>
+<tr>
+<td>Apr</td>
+<td>476</td>
+</tr>
+<tr>
+<td>May</td>
+<td>541</td>
+</tr>
+<tr>
+<td>Jun</td>
+<td>595</td>
+</tr>
+<tr>
+<td>Jul</td>
+<td>631</td>
+</tr>
+<tr>
+<td>Aug</td>
+<td>668</td>
+</tr>
+<tr>
+<td>Sep</td>
+<td>719</td>
+</tr>
+<tr>
+<td>Oct</td>
+<td>840</td>
+</tr>
+<tr>
+<td>Nov</td>
+<td>1029</td>
+</tr>
+<tr>
+<td>Dec</td>
+<td>1191</td>
+</tr>
+</tbody>
+</table>
+<p>Unfortunately, the numbers are cumulative, and you wanted to map individual figures for each month. Rather than reaching into your desk drawer for a calculator, you decide to use FME to do the calculations!</p>
+<h2 id="1-create-workspace">1) Create Workspace</h2>
+<p>Open FME Workbench (2025.1 or later) and click New. Add a reader and writer as follows:</p>
+<table>
+<tbody>
+<tr>
+<td>Reader Format</td>
+<td>Microsoft Excel</td>
+</tr>
+<tr>
+<td>Reader Dataset</td>
+<td>https://s3.amazonaws.com/FMEData/FMEData/Data/ElevationModel/Precipitation.xlsx<br />C:\FMEData\Data\ElevationModel\Precipitation.xlsx</td>
+</tr>
+<tr>
+<td>Workflow Options</td>
+<td>Individual Feature Types</td>
+</tr>
+<tr>
+<td>Writer Format</td>
+<td>Microsoft Excel</td>
+</tr>
+<tr>
+<td>Writer Dataset</td>
+<td>C:\FMEData\Output\Training\MonthlyPrecipitation.xlsx</td>
+</tr>
+<tr>
+<td>Writer Parameters &gt; Overwrite Existing File</td>
+<td>Enabled</td>
+</tr>
+<tr>
+<td>Sheet Definition</td>
+<td>Automatic...</td>
+</tr>
+</tbody>
+</table>
+<p>Call the writer feature type Precipitation and connect your two feature types:</p>
+<p><img src="images/1750702491461.png" alt="Connected feature types" /></p>
+<h2 id="2-add-attribute-manager">2) Add AttributeManager</h2>
+<p>To calculate precipitation for any given month, you must subtract the previous month's cumulative total from the current month's cumulative total.</p>
+<p>With FME, you can use the adjacent feature attribute functionality to fetch the number for the previous month.</p>
+<p>So, place an&nbsp;<strong>AttributeManager&nbsp;</strong>transformer between the reader and writer feature types:</p>
+<p><img class="image image-block image-center" src="images/1750702540681.png" alt="Adding an AttributeManager" width="592" height="113" /></p>
+<h2 id="3-set-attribute-manager-parameters-1">3) Set AttributeManager Parameters</h2>
+<p>Inspect the&nbsp;<strong>AttributeManager's&nbsp;</strong>parameters.</p>
+<p>Click the arrow next to&nbsp;<strong>Advanced: Attribute Value Handling&nbsp;</strong>to expand the options.<strong>&nbsp;</strong>Check the box marked<strong>&nbsp;Enable Adjacent Feature Attributes</strong>. In the fields provided, enter "1" for the <strong>Number of Prior Features</strong>&nbsp;to keep.</p>
+<p>Next, set the parameter <strong>Substitute Missing, Null, and Empty by</strong>&nbsp;to "Default Value" and enter "0" into the&nbsp;<strong>Default Value</strong>&nbsp;field:</p>
+<p><img class="image image-block image-center" src="images/1724694547257.png" alt="Configuring Adjacent Feature Attributes" width="484" height="236" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The substitution parameter is important because the first feature to be processed can&rsquo;t have a prior feature, and the last feature to be processed can't have a subsequent one. Therefore, you must always be careful about what you set here.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">In this exercise, we calculate a numeric value; therefore, using 0 (zero) as the default replacement makes sense.</span></p>
+</blockquote>
+<h2 id="4-set-attribute-manager-parameters-2">4) Set AttributeManager Parameters Continued</h2>
+<p>Now, let's calculate the new precipitation value.</p>
+<p>In the&nbsp;<strong>Attribute Value</strong>&nbsp;field for the&nbsp;<code>Precipitation</code> attribute, click the drop-down arrow and click&nbsp;<strong>Open&nbsp;</strong><strong>Arithmetic Editor:</strong></p>
+<p><img class="image image-block image-center" src="images/1724694569653.png" alt="Open Arithmetic Editor" width="650" height="452" /></p>
+<p>In the&nbsp;<strong>Arithmetic Editor, </strong>use the menu on the left to select:</p>
+<ul>
+<li>The FME Feature Attribute&nbsp;<code>Precipitation</code></li>
+<li>The Math Operator &ndash; (minus)</li>
+<li>The FME Feature Attribute&nbsp;<code>Precipitation</code>&nbsp;for&nbsp;<code>feature[-1]</code></li>
+</ul>
+<p>All of which should leave you with an expression looking like this:</p>
+<p><code>@Value(Precipitation)-@Value(feature[-1].Precipitation)</code></p>
+<p><img class="image image-block image-center" src="images/1724694587054.png" alt="Constructing the attribute value" width="694" height="555" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you don't see the <code>feature[-1]</code> options under FME Feature Attributes, please ensure you have followed the previous step; then, you can try clicking OK twice to close the AttributeManager and open it again.</p>
+</blockquote>
+<p>Now you can see why it was so important to set the substitution field; it&rsquo;s uncertain what result would occur from the above when <code>feature[-1].Precipitation</code>&nbsp;is missing!</p>
+<p>Click&nbsp;<strong>OK&nbsp;</strong>to close the&nbsp;<strong>Arithmetic Editor</strong>, and then accept the parameter changes.</p>
+<h2 id="5-save-and-run-workspace">5) Save and Run Workspace</h2>
+<p>Save the workspace and then run it. Inspect the output.</p>
+<p>The numbers start out looking correct but quickly become incorrect. Not even in Vancouver does it rain 623 mm in a single month!</p>
+<p>The problem is this: unlike other occasions in FME, we can&rsquo;t simply overwrite the attribute we are working with here. That&rsquo;s because it skews the following calculation. i.e., the calculation for March needs to operate on February's original number, but instead, it receives the value we've just overwritten it with!</p>
+<p>The only way to solve this is by creating a new attribute.</p>
+<h2 id="6-adjust-workspace">6) Adjust Workspace</h2>
+<p>Double-click the Precipitation writer feature type to edit its parameters.</p>
+<p>Click the User Attributes tab.</p>
+<p>Change the Attribute Definition mode from Automatic to Manual.</p>
+<p>Rename the destination attribute <code>Precipitation</code>&nbsp;to&nbsp;<code>MonthlyPrecipitation</code>:</p>
+<p>Click OK. You should see the new attribute name on the canvas if you have expanded the feature types to show attribute names:</p>
+<p><img class="image image-block image-center" src="images/1724694634747.png" alt="Renaming the destination attribute" width="627" height="128" /></p>
+<p>Now, return to the <strong>AttributeManager&nbsp;</strong>and change it to create an entirely new attribute called&nbsp;<code>MonthlyPrecipitation</code>. You can copy and paste the <strong>Value&nbsp;</strong>formula to save time (copy the cell, not the entire row), just don't forget to clear the calculation from the Precipitation attribute. Change the <strong>Output Attribute</strong> name, and ensure&nbsp;<strong>Action&nbsp;</strong>is set to "Set Value":</p>
+<p><img class="image image-block image-center" src="images/1724694777613.png" alt="Calculating the value" width="720" height="204" /></p>
+<p>It's a pain to do, but I'm sorry for first leading you in the wrong direction. You can't even rename <code>Precipitation</code>&nbsp;to&nbsp;<code>MonthlyPrecipitation</code> since, whatever you call it, it still fetches an incorrect value. You must reset its <strong>Action&nbsp;</strong>field to "Do Nothing" and create a new attribute.</p>
+<h2 id="7-re-run-workspace">7) Re-Run Workspace.</h2>
+<p>Save the workspace.</p>
+<p>Before re-running the workspace, ensure the file you are writing to is not already open in Excel (or any other editor).</p>
+<p>Re-run the workspace.</p>
+<p>Inspect the output. This time, the numbers should be correct:</p>
+<p><img class="image image-block image-center" src="images/1724694832946.png" alt="Results" width="532" height="404" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If the output values are "273-168", "387-273", etc., then you've used the Text Editor, not the Arithmetic Editor! If the values are all zero, you must ensure the </span><strong style="font-family: inherit; font-size: 1em;">AttributeManager&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">action is set to Do Nothing for the&nbsp;</span><code>Precipitation</code><span style="font-family: inherit; font-size: 1em;"> attribute rather than Set Value.</span></p>
+</blockquote>

@@ -1,0 +1,93 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Inspect features at any point in your workflow with&nbsp;feature caching.</li>
+<li>Speed up workspace authoring with partial runs.</li>
+<li>Quickly author and debug your workspaces.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/author-and-debug-workspaces-efficiently.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\author-and-debug-workspaces-efficiently.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/author-and-debug-workspaces-efficiently-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\author-and-debug-workspaces-efficiently-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+</ul>
+<h2 id="view-your-data-at-any-point-in-the-workspace">View Your Data at Any Point in the Workspace</h2>
+<p>Jennifer has edited her data&rsquo;s schema using an&nbsp;<strong>AttributeManager</strong>. She knows the data changed because she can see the green attribute ports showing successful schema mapping. However, Jennifer wants to see the changes to her data in <strong>Visual Preview</strong>.</p>
+<p>Jennifer can do this using feature caching. Feature caching is an authoring mode set on the&nbsp;<strong>Run&nbsp;</strong>menu and enabled by default. When enabled, a local data cache is stored at every output port in the workspace. These caches let you view and compare data anywhere in your workspace.</p>
+<p>Feature caching is useful when you are authoring a workspace. It lets you use <a href="https://en.wikipedia.org/wiki/Iterative_and_incremental_development" target="_blank" rel="noreferrer noopener">iterative and incremental development</a> to add one transformer or feature type at a time, create a cache, and inspect it to confirm the data looks as you expect. It is particularly advantageous when working with web, database, or compressed data. It allows you to download, query, or extract the data once and work with a cache, saving time and effort when reading large datasets or making API calls. However, creating these caches takes time, so it&rsquo;s wise to disable this mode when you want FME to run at peak efficiency.</p>
+<blockquote>
+<p><img class="img mtm" style="font-family: inherit; font-size: 1em;" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>We'll leave feature caching on for now since it can speed up authoring. If you need to disable it, click the drop-down triangle next to <strong>Run&nbsp;</strong>to access the&nbsp;<strong>Run&nbsp;</strong>menu and then deselect <strong>Enable Feature Caching</strong>.</p>
+<p><img src="images/1713212964438.png" alt="Enable Feature Caching in the Run menu" width="314" height="233" /></p>
+</blockquote>
+<h2 id="debug-your-workspace-with-partial-runs">Debug Your Workspace with Partial Runs</h2>
+<p>Jennifer will use another feature, partial runs, to speed up the authoring of workspaces and debug them as she works.</p>
+<p>Partial runs allow you to run specified sections of your workspace instead of the entire thing. This feature works in tandem with feature caches to enable incremental development. When you add a new transformer or feature type, you can run that new object independently and inspect its cache for any problems. Authoring workspaces this way saves time by allowing you to detect and fix problems early.</p>
+<p>Jennifer continues to work on her <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/author-and-debug.fmw" target="_blank" rel="noreferrer noopener">workspace</a> in FME Workbench (2025.0 or later).</p>
+<p>Jennifer wants to run her workspace to ensure the&nbsp;<strong>AttributeManager&nbsp;</strong>worked properly. She could just click&nbsp;<strong>Run</strong>&nbsp;&gt;&nbsp;<strong>Rerun Entire Workspace</strong>. However, as workspaces grow, running only the changed section is better. She does this by clicking the <strong>AttributeManager&nbsp;</strong>to select it, then clicking&nbsp;<strong>Run To This</strong>&nbsp;above the transformer. She can see what part of the workspace will run because it is highlighted in green.</p>
+<p><img src="images/1713213959799.png" alt="Run To This on the AttributeManager" width="649" height="152" /></p>
+<p>The relevant section of the workspace runs.</p>
+<p>She sees caches appear on her <strong>BusinessOwners JSON</strong> bookmark output port and the <strong>AttributeManager</strong> transformer. A green magnifying glass icon indicates a feature cache is available to inspect. She clicks it to open that cache in <strong>Visual Preview</strong>.</p>
+<p><img src="images/1713212946035.png" alt="AttributeManager feature cache" width="203" height="76" /></p>
+<blockquote>
+<p><img class="img mtm" style="font-family: inherit; font-size: 1em;" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">As covered in the Connect to Data course, </span><span style="font-family: inherit; font-size: 1em;">you can also inspect caches by clicking any object with a cache (feature type or transformer) as long as&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Automatic Inspect on Selection&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">is enabled. Note, however, that this inspects&nbsp;all&nbsp;the caches on that object at once. You&rsquo;ll have to use the</span><strong style="font-family: inherit; font-size: 1em;">&nbsp;Display Control</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;window and the drop-down menu in&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Table View&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">to control which cache you are inspecting.</span></p>
+</blockquote>
+<p><strong>Visual Preview</strong> shows the features of the <strong>AttributeManager&nbsp;</strong>output port. Jennifer looks at&nbsp;<strong>Table View</strong> to ensure the schema appears as intended. It does:</p>
+<p><img class="image image-block image-center" src="images/1713212994969.png" alt="Table View" width="482" height="233" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Partial runs will utilize any connected caches &ldquo;upstream&rdquo; (i.e., earlier in the data flow). As few transformers or feature types will run as required to carry out the partial run, saving Jennifer time. For example, if Jennifer had already run the </span><strong style="font-family: inherit; font-size: 1em;">AttributeManager</strong><span style="font-family: inherit; font-size: 1em;">, using&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Run To This</strong><span style="font-family: inherit; font-size: 1em;"> on the writer feature type </span><span style="font-family: inherit; font-size: 1em;">would use the cache from the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">AttributeManager</strong><span style="font-family: inherit; font-size: 1em;">.</span></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>If any changes have been made to the workspace, any &ldquo;downstream&rdquo; (i.e., later in the data flow) caches turn yellow, indicating they are invalid. These are called invalid caches and can be rerun to make them valid again. For example, if you changed the <strong>AttributeManager</strong>, its cache would become invalid, but the upstream reader feature type cache would remain valid:</p>
+<p><img src="images/1742504299314.png" alt="Invalid cache" /></p>
+<p>When you click the Run button, FME will run any object if it doesn't have a cache, has an invalid cache, or if it is a writer feature type. Continuing the example, if you hover over Run after making a change to only the AttributeManager:</p>
+<p><img src="images/1742504358786.png" alt="Green highlight" /></p>
+<p>FME will start from the cache in the Source Data bookmark and will run the AttributeManager and write the data out. The areas that will run are highlighted in green.</p>
+<p>Other options for partial runs exist depending on the object&rsquo;s location on the canvas:</p>
+<ul>
+<li><strong>Run From This</strong>&nbsp;(or&nbsp;<strong>Selected</strong> if multiple objects are selected): All parts of the workspace downstream of a selected object (or objects) run.</li>
+<li><strong>Run Just This</strong>&nbsp;(or&nbsp;<strong>Selected</strong>): Only a selected object (or objects) runs.</li>
+<li><strong>Run To This</strong>&nbsp;(or&nbsp;<strong>Selected</strong>): All workspace parts upstream of a selected object (or objects) run.</li>
+<li><strong>Run Between Selected</strong>: All workspace parts between selected objects run.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Now that she&rsquo;s confirmed the schema is correct, Jennifer wants to write the data, so she hovers over the&nbsp;<strong>Run&nbsp;</strong>button. Notice how the reader feature type is not highlighted in green. FME will use its cache instead of rereading the data.&nbsp; The rest of the workspace runs when she clicks <strong>Run</strong>, and FME writes her data.</p>
+<p><img src="images/1713213841209.png" alt="Partial runs" width="644" height="149" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>These examples are pretty simple since we only have a few objects on the Canvas. But this technique becomes very important as you build bigger workspaces. Use the green highlight to determine which parts of the workspace will run.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐ New for FME 2024.2:</strong> You can now remove selected feature caches by right-clicking them and choosing <strong>Clear Feature Cache</strong>. Clearing the feature cache will also clear the caches of all downstream transformers connected to it.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If Jennifer changed her workspace and wanted to update all the caches, she could choose</span><strong style="font-family: inherit; font-size: 1em;">&nbsp;Rerun Entire Workspace</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;from the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Run&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">menu.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">This workspace uses an HTTPCaller to get its source data, so just rerunning that transformer will get up-to-date data. However, if Jennifer were reading from a file or database and wanted to update the data, she could find the</span><strong style="font-family: inherit; font-size: 1em;"> reader</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;in the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Navigator</strong><span style="font-family: inherit; font-size: 1em;">, right-click it, and select&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Update</strong><span style="font-family: inherit; font-size: 1em;">. Additional features matching the existing reader schema will always be read when the underlying data changes, even without using <strong>Update. </strong>But if the schema changes (e.g., new table, new attributes, renamed attributes, etc.), these changes will only be reflected in the workspace if the reader is updated.</span></p>
+<p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Updating-Readers-Writers.htm" target="_blank" rel="noopener">Learn more about updating readers and writers.</a></p>
+<p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://community.safe.com/s/article/dynamic-workflow-tutorial-introduction" target="_blank" rel="noopener">Learn how to make dynamic workspaces that automatically account for schema changes</a><span style="font-family: inherit; font-size: 1em;">, or see the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/path/advanced-reading-and-writing" target="_self">Advanced Reading and Writing learning path</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you have followed along with Jennifer&rsquo;s steps.</p>

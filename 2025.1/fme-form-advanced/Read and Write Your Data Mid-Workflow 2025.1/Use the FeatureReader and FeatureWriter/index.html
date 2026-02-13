@@ -1,0 +1,81 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Configure a FeatureReader to read data mid-workflow.</li>
+<li>Use the FeatureReader to read data based on an attribute.</li>
+<li>Use the FeatureReader to read data using a spatial filter.</li>
+<li>Configure a FeatureWriter to write data mid-workflow.</li>
+</ul>
+<h2 id="feature-reader-and-feature-writer">FeatureReader and FeatureWriter</h2>
+<p>In addition to being able to read data with a reader and writer, FME has transformers specifically designed to read and write data. These are the FeatureReader and FeatureWriter transformers.</p>
+<p><img class="image image-block image-center" src="images/1726607502777.png" alt="FeatureReader and FeatureWriter" width="364" height="231" /></p>
+<p>The advantage of these transformers is that they have input ports (FeatureReader) and output ports (FeatureWriter). So, where a reader is always the first action in a workspace and a writer is always the last, a FeatureReader and FeatureWriter can read and write data at any point in a translation.</p>
+<h2 id="feature-reader">FeatureReader</h2>
+<p>The FeatureReader is set up with parameters to read a specific dataset:</p>
+<p><img class="image image-block image-center" src="images/1726607554687.png" alt="FeatureReader parameters" width="470" height="362" /></p>
+<p>Any feature that enters the Initiator input port will cause the data to be read, like here, where a Creator supplies a null feature to trigger reading:</p>
+<p><img class="image image-block image-center" src="images/1726607612281.png" alt="Using a Creator with a FeatureReader" width="396" height="157" /></p>
+<p>The Creator creates a single feature that triggers the FeatureReader to read a dataset of park features. If the Creator created ten features for some reason, then the data would be read ten times, resulting in 800 output features!</p>
+<p>The FeatureReader has output ports that correspond to feature types. You can control these ports by expanding the Output &gt; Output Ports section of the parameters.&nbsp;</p>
+<p><img class="image image-block image-center" src="images/1726607648745.png" alt="FeatureReader Output Ports options" width="408" height="191" /></p>
+<p>You have three options:</p>
+<ul>
+<li><em>One per Feature Type</em>: the default. One output port will be created for each feature type.</li>
+<li><em>Single Output Port</em>: this port works like applying a feature type filter on your dataset or choosing the Single Merged Feature Type option under Workflow options when adding a reader. All features will come from the &lt;Generic&gt; port, but you can always check which feature type they belong to using the unexposed attribute fme_feature_type.</li>
+<li><em>Specified</em>: this option lets you choose which ports appear.</li>
+</ul>
+<p>The FeatureReader contains several output ports.&nbsp;</p>
+<ul>
+<li>The &lt;Schema&gt; port outputs a schema feature for each unique feature type. Schema features can be used to set a schema later in the translation, which is helpful for dynamic workspaces.</li>
+<li>After the &lt;Schema&gt; port comes any feature type ports configured in the FeatureReader.</li>
+<li>The &lt;Generic&gt; port outputs any features that don't have a named feature type output port.</li>
+<li>The &lt;Initiator&gt; port outputs the original initiator features with the _matched_record attribute appended, which records the number of features read based on that initiator.</li>
+<li>The &lt;Rejected&gt; port outputs invalid features, for example, if the dataset doesn't exist or a spatial filter is applied to features without geometry.</li>
+</ul>
+<h2 id="dataset-from-an-attribute">Dataset from an Attribute</h2>
+<p>A typical case with the FeatureReader is to supply the dataset to read as an attribute:</p>
+<p><img class="image image-block image-center" src="images/1726608365350.png" alt="Using the Dataset parameter" width="950" height="161" /></p>
+<p>This example includes both reader and FeatureReader. The workspace reads a Shapefile dataset containing an index of orthophotography datasets. Each feature in the Shapefile is a polygon representing the orthophoto boundary with an attribute that points to a GeoTIFF file containing that orthophoto.</p>
+<p>The FeatureReader is set up to use the attribute as the filename to read. The result is that 37 features are read from the Shapefile, and the equivalent 37 GeoTIFF images exit the FeatureReader.</p>
+<p>The source features do not need to be spatial. For example, an Excel spreadsheet with a list of files to read is just as valid.</p>
+<h2 id="spatial-filters">Spatial Filters</h2>
+<p>A key parameter in the FeatureReader sets a spatial filter on the data being read:</p>
+<p><img class="image image-block image-center" src="images/1726608444933.png" alt="Spatial Filter with FeatureReader" width="478" height="301" /></p>
+<p>The Initiator Contains Result filter (for example) means that the FeatureReader reads features if their geometry falls inside the geometry of the initiator feature. For example, here:</p>
+<p><img class="image image-block image-center" src="images/1726608501467.png" alt="FeatureReader filter results" width="463" height="238" /></p>
+<p>A dataset of parks supplies input features that trigger reading from a database address table. The FeatureReader applies a spatial filter to only read addresses inside a park.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐ New for FME 2024.2:</strong> you can now specify to Clip to Initiator in the FeatureReader. This parameter brings behavior from readers to the FeatureReader and can improve performance when reading with Initiator geometry. <a href="https://www.youtube.com/watch?v=9DlSRjDQAiI" target="_blank" rel="noopener">Check out this video to learn more</a>.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐ New for FME 2025.1:</strong> the FeatureReader can now execute queries against databases that support SQL/Cypher. Set Define Read Criteria By to Custom Query and enter a query using SQL or Cypher depending on the format. All features will come out of the &lt;Generic&gt; port. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/featurereader.htm" target="_blank" rel="noopener">Check out the documentation to learn more</a>.</p>
+<p>Also new for 2025.1 is the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasequerier.htm" target="_blank" rel="noopener">DatabaseQuerier</a> transformer, which combines the functionality of the existing <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlexecutor.htm" target="_blank" rel="noopener">SQLExecutor</a> and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlcreator.htm" target="_blank" rel="noopener">SQLCreator</a> transformers. This transformer lets you execute SQL or other query language statements against a database, and it includes an optional Inititator port.</p>
+</blockquote>
+<h2 id="feature-writer">FeatureWriter</h2>
+<p>The FeatureWriter is set up with parameters to write a specific dataset:</p>
+<p><img class="image image-block image-center" src="images/1726608636184.png" alt="FeatureWriter parameters with multiple output feature types" width="779" height="591" /></p>
+<p>The dialog allows the definition of the format and dataset to write, plus the feature types to be written and their attributes. In short, the parameters, settings, and schema definition required for a writer appear in this single dialog.&nbsp;</p>
+<p>You can add more feature types using the plus button. Note that this will not, by default, create more output ports. Instead, like the FeatureReader, you can control the output ports under the Output Ports section at the bottom of the dialog.</p>
+<p>Feature types can be manually defined within the dialog itself or can be added automatically by connecting to the&nbsp;<em>Connect Input</em>&nbsp;input port:</p>
+<p><img class="image image-block image-center" src="images/1726609103455.png" alt="Continuing to use features after writing" width="891" height="297" /></p>
+<p>Notice also that an important part of the FeatureWriter is that its exit ports can be connected to other transformers for further processing. In the above screenshot, parks data is written, and a single summary feature triggers an Emailer transformer. The Emailer sends a copy of the data to a user.</p>
+<p>The data is then input to a FeatureReader, which reads all addresses inside a park and writes the results using a FeatureWriter.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Features from a FeatureWriter contain the attribute _dataset, which stores the file path to the written data. Subsequent transformers can use this path (or paths) to do things with the written files.</span></p>
+</blockquote>
+<h2>Using FeatureWriter with the TempPathnameCreator</h2>
+<p>One common workflow with the FeatureWriter is to write out a dataset temporarily before uploading it to a web service using a Connector transformer or HTTPCaller.</p>
+<p>This process works well, but you should consider using a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/temppathnamecreator.htm" target="_blank" rel="noopener">TempPathnameCreator</a> transformer in conjunction with the FeatureWriter. The TempPathnameCreator lets you create a temporary folder that is deleted after the workspace finishes running. You can write your data there temporarily, upload it, then delete the local version afterwards. This technique lets you avoid temporary data piling up, which is especially important if the workspace runs frequently.</p>
+<p>The setup looks like this:</p>
+<p><img src="images/1752169703823.png" alt="Using TempPathnameCreator with the FeatureWriter" width="735" height="175" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are running the workspace on FME Flow, you can use the FME_SHAREDRESOURCE_TEMP FME Flow parameter to write the data to FME Flow's temporary data store, which is periodically deleted according to the FME Flow configuration. TempPathnameCreator also works on FME Flow.</p>
+</blockquote>
+<h2 id="challenge">Challenge</h2>
+<p>You'll need this image to answer one of the quiz questions below.</p>
+<p><img class="image image-block image-center" src="images/1667414167883.png" alt="Example data for Quiz question" /></p>
+<p>Map tiles by&nbsp;<a href="https://stamen.com/" target="_blank" rel="noreferrer noopener">Stamen Design</a>, under&nbsp;<a href="http://creativecommons.org/licenses/by/3.0" target="_blank" rel="noreferrer noopener">CC BY 3.0</a>. Data by&nbsp;<a href="http://openstreetmap.org/" target="_blank" rel="noreferrer noopener">OpenStreetMap</a>, under&nbsp;<a href="http://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noreferrer noopener">CC BY SA</a>.</p>

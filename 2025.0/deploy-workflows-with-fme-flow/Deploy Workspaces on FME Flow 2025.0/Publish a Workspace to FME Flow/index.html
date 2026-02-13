@@ -1,0 +1,80 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Publish a workspace to FME Flow using the publishing wizard.</li>
+<li>Create a repository on FME Flow.</li>
+<li>Register a workspace with the Job Submitter service.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-a-workspace-to-fme-flow.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-a-workspace-to-fme-flow.fmw</span></li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2>Publishing Wizard</h2>
+<p>In FME Workbench, you complete the publishing process to transfer workspaces to FME Flow using the publishing wizard. Click Publish in the toolbar or from File &gt; Publish to FME Flow on the top menu to open the publishing wizard.&nbsp;</p>
+<p><img src="images/1745851587197.jpg" alt="" /></p>
+<p><img src="images/1745851659168.jpg" alt="" width="297" height="469" /></p>
+<p>The first step of the publishing wizard appears. The settings are:</p>
+<p>1. Select or create your FME Flow Connection.&nbsp;The options here are the same as those in the FME Flow Connection toolbar.&nbsp;</p>
+<p>2. Select the repository to house your workspace. You may create a new one here, too. Repositories are like folders on FME Flow; they hold and organize workspaces and their related data. The Existing Workspace List will update with the workspaces already in your selected repository.&nbsp;</p>
+<p>3. You have the option to change the workspace name. FME Flow will warn you if the workspace name already exists and ask if you'd like to overwrite the existing workspace.&nbsp;</p>
+<p>4. The Existing Workspace List updates to show workspaces already in your chosen repository.&nbsp;</p>
+<p>5. You also have the option to upload data files and select which files to upload. <span style="margin: 0px; padding: 0px;">By default, FME uploads the data to the repository where the workspace resides. You will learn more about managing source data in <a href="https://academy.safe.com/manage-fme-flow-data-and-connections-2025-0" target="_blank" rel="noopener">Manage FME Flow Data and Connections</a></span><em>.&nbsp;</em></p>
+<p><em><img src="images/1749242081420.jpg" alt="" width="579" height="600" /></em></p>
+<p>If your workspace uses a Web or Database Connection, the next step allows you to select which connections to publish to FME Flow. Generally, if your connection is not already on FME Flow, you'll want to include it. You will learn more about managing connections on FME Flow in <a href="https://academy.safe.com/manage-fme-flow-data-and-connections-2025-0" target="_blank" rel="noopener">Manage FME Flow Data and Connections</a><em>.&nbsp;</em></p>
+<p><em><img src="images/1749242132892.jpg" alt="" width="544" height="380" /></em></p>
+<p>The last section prompts you to select the services to register the workspace.&nbsp;</p>
+<p><img src="images/1749242161756.jpg" alt="" width="537" height="556" /></p>
+<h2>Transformation Services</h2>
+<p>The most common services are Data Download, Data Streaming, and Job Submitter, which are <a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/transformation_svcs.html" target="_blank" rel="noopener">transformation services</a>. Transformation services control how the workspace runs and how the written data is output.&nbsp;</p>
+<p><img src="images/1745615117572.jpg" alt="" width="993" height="459" /></p>
+<p>The Job Submitter service allows FME Flow to run a workspace as-is, which is the closest thing to running a workspace in FME Workbench. Data is written out as specified by the workspace's writers and is not streamed or delivered in any other manner. The Data Download and Data Streaming services will be covered in the last two lessons of this course.&nbsp;</p>
+<p>You may register a workspace with multiple services, and you will select which service to use when running the workspace on FME Flow. While publishing a workspace with no services is possible, it cannot run on FME Flow without registering it with a service, so you should always select at least one service. After publishing, you may also change the registered workspace services on FME Flow.&nbsp;</p>
+<h2>Publishing</h2>
+<p>After you've configured all settings using the publishing wizard, clicking Publish transfers the workspace to FME Flow. The translation log in FME Workbench will provide information on whether publishing was successful. The Publish Summary denotes information about the workspace you just published and includes a direct link to open the workspace on FME Flow.&nbsp;</p>
+<p><img src="images/1745621159452.jpg" alt="" width="709" height="370" /></p>
+<h2>Republishing</h2>
+<p>The option to republish a workspace to FME Flow appears after you publish the workspace once.</p>
+<p><img src="images/1745851892209.jpg" alt="" /></p>
+<p>You use republish when you've made minor modifications to the workspace, such as adding a new transformer or changing Reader settings. You must publish those changes to FME Flow without modifying the original publishing settings. Republish uses the publish settings you previously used to publish the workspace to FME Flow without taking you through the publishing wizard. If you need to change any settings in the publishing wizard, such as changing the registered services, republish does not give you those options, and you must go through the entire publishing process.&nbsp;</p>
+<h2 id="exercise">Exercise</h2>
+<p><img src="images/1745616156407.png" alt="" width="235" height="249" /></p>
+<p>Sven, a planning analyst, is an experienced FME Form user starting to set up his workflows on FME Flow to maximize the FME Platform's capabilities.&nbsp;</p>
+<p>He wants to migrate a workspace that he frequently runs to FME Flow. The workspace reads Parks data from a geodatabase and Neighborhoods data as KML. The Parks are clipped to the neighborhoods, styled for KML, and written as a separate file for each neighborhood using a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/fanout_about.htm" target="_self">feature type fanout</a>.&nbsp; Additionally, an HTML summary report is generated for the Parks data. Sven often shares this workspace with other FME users in his department, so having it on FME Flow will be handy, allowing multiple users to access it.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Keyhole Markup Language (KML): a spatial data format stored in XML, as originally defined by Keyhole, Inc, and now used by Google Earth and specified as an international standard of the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://www.ogc.org/" target="_blank" rel="noreferrer noopener">Open Geospatial Consortium</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>For this exercise, follow along with Sven's steps as he publishes the workspace from FME Workbench to FME Flow.&nbsp;</p>
+<h3 id="1-start-fme-workbench">1) Open Starting Workspace</h3>
+<p>Sven opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-a-workspace-to-fme-flow.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-a-workspace-to-fme-flow.fmw) in FME Workbench (2025.0.1 or later).&nbsp;</p>
+<p><img src="images/1747175097937.jpg" alt="" /></p>
+<h3 id="2-run-workspace">2) Run Workspace and Inspect Output</h3>
+<p>Sven runs the workspace by clicking the Run button to confirm it functions as expected.</p>
+<p><img src="images/1745619177616.jpg" alt="" width="505" height="96" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You may receive an Unexpected Input dialog. You can ignore it and click OK; the translation will still complete successfully. For more information about this warning, see <a href="https://fme.safe.com/blog/2011/05/fmeevangelist80/" target="_blank" rel="noopener">this blog post</a>.&nbsp;</span></p>
+</blockquote>
+<p>He checks the translation log to confirm that the data was written and the translation is successful.</p>
+<p><img src="images/1747175258838.jpg" alt="" width="922" height="479" /></p>
+<p>The output KML Parks data is written to C:\FMEData\Output, and he opens the KML files in Google Earth.&nbsp;</p>
+<p><img src="images/1745619513152.jpg" alt="" width="943" height="521" /></p>
+<h3>3) Publish to FME Flow</h3>
+<p>Sven returns to FME Workbench. In the top toolbar, he confirms his FME Flow is connected and clicks Publish to begin the publishing process.&nbsp;</p>
+<p><img src="images/1745619801131.jpg" alt="" /></p>
+<p>The publishing wizard's first part is selecting an FME Flow Connection. Sven's current connection is connected and ready to use, denoted by the green checkmark.&nbsp;</p>
+<p>For the Repository Name, Sven clicks New... and creates a new Training repository to house his workspace.&nbsp;</p>
+<p>Sven leaves the workspace name as the default. He could alter the name if he needed to.&nbsp;</p>
+<p><img src="images/1745620497510.jpg" alt="" width="495" height="514" /></p>
+<p>Sven clicks next and registers the workspace with the Job Submitter service for now. Later, Sven will update the workspace and publish it again with the Data Download and Data Streaming services.&nbsp;</p>
+<p><img src="images/1745620659908.jpg" alt="" width="485" height="502" /></p>
+<p>Sven clicks Publish to complete the publishing process.&nbsp;</p>
+<h2 id="3-publish-to-server-create-connection">3) Check Translation Log</h2>
+<p>Sven checks the translation log for any errors when publishing the workspace to FME Flow. Sven sees that publishing was successful and reviews the Publish Summary information.&nbsp;</p>
+<p><strong><img src="images/1747175632879.jpg" alt="" width="949" height="373" /></strong></p>
+<p>Sven has successfully published his first workspace to FME Flow. Sven and his colleagues can now access and run this workspace on FME Flow, which he will do in the next lesson.</p>

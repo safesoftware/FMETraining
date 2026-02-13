@@ -1,0 +1,40 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Distinguish between coordinates stored as numbers and spatial data stored as geometry.</li>
+<li>Explain the value of creating geometry from coordinates.</li>
+<li>Identify the types of data required to create geometry.</li>
+<li>List the three methods of converting coordinates into geometry with FME.</li>
+</ul>
+<h2 id="what-is-the-difference-between-coordinates-and-geometry">What Is the Difference Between Coordinates and Geometry?</h2>
+<p>There are many ways to store information about objects' locations. One of the simplest is a coordinate: two numbers that represent a location on a two-dimensional plane.</p>
+<div><span class="image image-block image-center"><img class="image image-block image-center" src="images/1615574162920.png" alt="A Cartesian coordinate system" /></span>
+<p><em>A Cartesian coordinate system</em></p>
+<p>For spatial data, coordinates are often stored using a geographic coordinate system, where each number in the pair represents the latitude and longitude of a point on the earth, respectively. For example, (49&deg; 10' 48" N, 122&deg; 50' 24" W) or as decimal degrees, (49.18, -122.84).</p>
+<div><span class="image image-block image-center"><img class="image image-block image-center" src="images/1615574350092.png" alt="Latitude and longitude illustration" /></span>
+<p><em>Latitude and longitude</em></p>
+<p>They can also be stored in a projected coordinate system, where each number represents a location along a two-dimensional axis, similar to the Cartesian plane above.<br /><br />One of the easiest ways to store coordinates is as numbers in a spreadsheet or table. This format makes them easy to enter and edit.</p>
+<div><span class="image image-block image-center"><img class="image image-block image-center" src="images/1615574905607.png" alt="Example of coordinates stored in a table" /></span>
+<p><em>Example of coordinates stored in a table</em></p>
+<p>However, the data cannot be directly displayed on a map as geometry in this format because it lacks the data structure. These simple numbers cannot be displayed as more complex geometry, such as lines (connecting coordinate locations) or polygons (connecting them into a closed object). You need to create geometry data to display coordinates as points, lines, or polygons.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learn more about coordinate systems in the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/path/integrate-spatial-data/learn-spatial-data-concepts" target="_blank" rel="noopener">Learn Spatial Data Concepts</a><span style="font-family: inherit; font-size: 1em;"> course.</span></p>
+</blockquote>
+</div>
+</div>
+<p>Creating geometry is a prerequisite to spatial data integration and analysis. If you want to take advantage of FME's features, you must turn your coordinates into geometry. Thankfully, it's a simple process!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">See the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/path/integrate-data-with-the-fme-platform/why-data-integration" target="_blank" rel="noopener">Why Data Integration</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/path/integrate-spatial-data/analyze-spatial-data" target="_blank" rel="noopener">Analyze Spatial Data</a><span style="font-family: inherit; font-size: 1em;"> courses to l</span><span style="font-family: inherit; font-size: 1em;">earn about the value of spatial data integration and analysis.</span></p>
+</blockquote>
+</div>
+<h2 id="what-methods-are-available">What Methods Are Available?</h2>
+<p>Converting from CSV or Excel (or other non-spatial data) to point, line, or polygon features (also known as vectors) is easy as long as the data contains spatial data, like latitude and longitude information or addresses.&nbsp;</p>
+<p>There are three different methods to create point features using FME:&nbsp;</p>
+<ol>
+<li>Using&nbsp;<strong>reader parameters</strong>. This method works well if you are working with spatial data from the start. As of FME 2020, this method occurs automatically if the attributes are named correctly, such as latitude, longitude, and elevation, or x, y, and z. It is still possible to use this method in older versions of FME, or if your attribute names are different, it just requires a manual step.</li>
+<li>Using the&nbsp;<strong>VertexCreator transformer</strong>. This method is useful when spatial data is added later in the workspace or if you are using a transformer that removes geometry.</li>
+<li>Geocoding addresses using the&nbsp;<strong>Geocoder transformer</strong>. This method is helpful if you do not have coordinates, only addresses. Depending on how many addresses are in your dataset, you may need to run this workspace multiple times over a series of hours/days or pay for a service, as geocoding can be costly.</li>
+</ol>
+<p>You will learn how to use all three methods In this course.</p>

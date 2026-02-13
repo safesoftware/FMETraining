@@ -1,0 +1,79 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Discover the performance liabilities of data caching.</li>
+<li>Analyze the relative performance of different sections of a workspace.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-assess-workspace-performance.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-assess-workspace-performance.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-assess-workspace-performance-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\exercise-assess-workspace-performance-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Culture/PublicArt.xlsx" target="_blank" rel="noopener">PublicArt.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Culture\PublicArt.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noopener">Parks.tab</a>
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip" target="_self">Orthophotos</a>
+<ul>
+<li>C:\FMEData\Data\Orthophotos</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p>The provincial government has given the city a grant to fund new public art in parks.</p>
+<p>A colleague has created a workspace to analyze the amount of art in each city park, and we are carrying out a code review to ensure that the workspace is efficient and well-designed.</p>
+<h2 id="1-open-and-run-workspace">1) Open and Run Workspace</h2>
+<p>Start FME Workbench (2025.1 or later) and open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-assess-workspace-performance.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Reading from the web can introduce variability that makes it difficult to assess workspace performance accurately. Therefore, this workspace uses local paths to C:\FMEData. If you do not have FMEData on your machine, you can download the source data (linked in the Resources section above) and point the workspace to use the local files.</p>
+</blockquote>
+<p>Your colleague ran the workspace with caching turned on and informed you it took about twenty seconds to run. Try running it yourself with data caching enabled and the default parameters. Note the total runtime. It should look something like this:</p>
+<div>
+<pre><code>2025-07-10 15:40:11| &nbsp;15.4| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 9 warning(s) (70 feature(s) output)<br />2025-07-10 15:40:11| &nbsp;15.4| &nbsp;0.0|INFORM|FME Session Duration: 16.4 seconds. (CPU: 11.1s user, 4.3s system)<br />2025-07-10 15:40:11| &nbsp;15.4| &nbsp;0.0|INFORM|END - ProcessID: 35068, peak process memory usage: 574780 kB, current process memory usage: 156892 kB<br /></code><br /><br /></pre>
+</div>
+<p>Now, to test production performance, turn <strong>off</strong> data caching. There are no Inspector or Logger transformers, and no parts are disabled. Re-run the workspace.</p>
+<p>You should find that the workspace runs a lot more quickly this time - perhaps in as little as five seconds:</p>
+<div>
+<pre><code>2025-07-10 15:39:19| &nbsp; 5.1| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 2 warning(s) (70 feature(s) output)<br />2025-07-10 15:39:19| &nbsp; 5.1| &nbsp;0.0|INFORM|FME Session Duration: 5.7 seconds. (CPU: 3.1s user, 2.0s system)<br />2025-07-10 15:39:19| &nbsp; 5.1| &nbsp;0.0|INFORM|END - ProcessID: 68592, peak process memory usage: 444516 kB, current process memory usage: 154644 kB<br /></code><br /><br /></pre>
+</div>
+<p>This clearly shows the performance reduction that caching can cause. In these examples, it runs without caching, resulting in a 54% decrease in total runtime. This is particularly true in a workspace processing large raster datasets. Caching shouldn't be required in a production workspace because the authoring and debugging phases of development should be complete.</p>
+<h2 id="2-assess-relative-performance">2) Assess Relative Performance</h2>
+<p>Although the workspace now runs very quickly, we could assess the relative performance of each section anyway.</p>
+<p>Firstly, disable all components after the readers and run the workspace. Make a note of the time the workspace now takes to run (still without caching):</p>
+<div>
+<pre><code>2025-07-10 15:38:27| &nbsp; 1.7| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 2 warning(s) (0 feature(s) output)<br />2025-07-10 15:38:27| &nbsp; 1.7| &nbsp;0.0|INFORM|FME Session Duration: 1.9 seconds. (CPU: 0.9s user, 0.8s system)<br />2025-07-10 15:38:27| &nbsp; 1.7| &nbsp;0.0|INFORM|END - ProcessID: 7236, peak process memory usage: 141920 kB, current process memory usage: 128364 kB<br /></code><br /><br /></pre>
+</div>
+<p>Now enable all transformers, leaving only the writers disabled. Re-run the workspace and make a note of the performance:</p>
+<div>
+<pre><code>2025-07-10 15:37:28| &nbsp; 1.9| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 2 warning(s) (0 feature(s) output)<br />2025-07-10 15:37:28| &nbsp; 1.9| &nbsp;0.0|INFORM|FME Session Duration: 2.3 seconds. (CPU: 1.1s user, 0.8s system)<br />2025-07-10 15:37:28| &nbsp; 1.9| &nbsp;0.0|INFORM|END - ProcessID: 63704, peak process memory usage: 173540 kB, current process memory usage: 152356 kB<br /></code><br /><br /></pre>
+</div>
+<p>From this, we can calculate the length of each stage of the workspace:</p>
+<ul>
+<li>Reading data (the first partial run)</li>
+<li>Transforming data (the second partial run minus the first partial run)</li>
+<li>Writing data (the overall run minus the second partial run)</li>
+</ul>
+<p>Do these calculations; you'll need the answers for the quiz.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">This course has illustrated basic techniques for designing with performance in mind. To learn more, check out the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/optimize-workspace-performance" target="_blank" rel="noopener">Optimize Workspace Performance</a><span style="font-family: inherit; font-size: 1em;">&nbsp;course.</span></p>
+</blockquote>

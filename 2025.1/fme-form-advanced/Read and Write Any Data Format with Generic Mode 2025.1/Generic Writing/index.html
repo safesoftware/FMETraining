@@ -1,0 +1,36 @@
+<p><span style="font-size: 2.3125em;">The Generic Writer</span></p>
+<p>The Generic writer allows FME to reroute output to any FME writer dynamically at runtime. The Generic writer supplies the actual writer's name as an argument.</p>
+<p>The Generic writer allows translations and transformations to be specified entirely independent of the output format and is very useful for solving problems where you know the schemas and transformations at design time, but you don't know the output format.</p>
+<p>You use the Generic writer the same as any other writer: by specifying the format in the Add Writer (or Generate Workspace) dialog:</p>
+<p><img class="image image-block image-center" src="images/1723242590331.png" alt="Setting a Writer to Generic" width="375" height="264" /></p>
+<p>There, the destination dataset is specified as a folder. FME has yet to determine the format it will write, so it will not know whether it is file-based or folder-based.</p>
+<p>If you'd like to choose a default output format, you can set it when adding the writer.</p>
+<p><img class="image image-block image-center" src="images/1723242558931.png" alt="Setting the default Output Format" width="400" height="233" /></p>
+<p>Alternatively, you can set the output format in the Navigator window after adding the writer, or the end-user can specify it at runtime using an automatically created user parameter:</p>
+<p><img class="image image-block image-center" src="images/1723243017151.png" alt="Setting Output Format in the Translation Parameter Values dialog" width="598" height="302" /></p>
+<p>Using a Generic writer, a single writer can write any data format, with the format optionally chosen by the end-user at runtime.</p>
+<h2 id="tips-for-using-the-generic-writer">Tips for Using the Generic Writer</h2>
+<p><strong>Geometry</strong></p>
+<p>The Generic writer supports the full range of point, line, polyline, arc, ellipse, rectangle, rounded rectangle, region (polygon), text, null, and raster geometric data. Similarly, it supports the full range of attribute types. Individual writers may be unable to support all data types, so the workspace may fail if it encounters unresolvable incompatibilities.</p>
+<p>The Generic writer can write different geometry types using a single output feature type. Suppose the true writer at runtime does not allow this. In that case, FME will create separate output feature types by appending a geometry-name suffix to the base feature type, separating features with different geometries. For example, if you chose the Esri Shapefile format at runtime, and the workspace author created a single feature type called rivers to accommodate multiple geometries, FME would send any linear features to a shapefile named rivers_line.shp. FME would send any point features to rivers_point.shp.</p>
+<p><strong>Feature Type Definitions</strong></p>
+<p>Definitions of the output feature type for the Generic writer are usually explicitly specified. However, the writer also offers a <em>Dynamic Schema</em> setting in which FME bases the output features' definitions on schema information from the workspace's source readers.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For more information on this setting in Workbench, see&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/workspaces_dynamic_about.htm" target="_blank" rel="noopener">About Dynamic Workspaces</a><span style="font-family: inherit; font-size: 1em;">&nbsp;or the courses on this topic later in this Learning Path.</span></p>
+</blockquote>
+<p><strong>Writing to Multiple Formats</strong></p>
+<p>When you use the Generic writer, it is sometimes helpful to pre-configure parameters specific to individual output formats. For example, you must specify a seed file to write a Bentley MicroStation Design file.</p>
+<p>To do this, add a writer to a workspace. This step causes Workbench to think that there is more than one output format and forces Workbench to create a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/multiwriter/multiwriter.htm" target="_blank" rel="noopener">Multiwriter</a> for the workspace. The first writer in the multi-writer will be the Generic writer, and this one should have all the output feature types. The second writer will have no feature types but will be used to communicate any format-specific writer settings to the Generic writer when FME uses that format for the Generic writer.</p>
+<p>Suppose you configure the Generic writer to write to a format requiring a filename as a dataset. In that case, the Generic writer will turn the output folder into a filename by appending a file extension to the last portion of the folder name. When format-specific settings are present, it takes this extension from the dataset specified for the specific format. It ignores the rest of the dataset.</p>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>You can only specify one output format in the Generic writer when you set up a workspace. You can publish the format as a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/published_private_parameters.htm" target="_blank" rel="noopener">Published Parameter</a>&nbsp;and select the output format each time the workspace runs.</li>
+<li>You can also set up one dedicated writer for multiple output formats and use a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/tester.htm" target="_blank" rel="noopener">Tester</a>/<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/testfilter.htm" target="_blank" rel="noopener">TestFilter</a>&nbsp;to route features to the desired writer (for example, based on a published parameter).</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Generic readers and writers are flexible on format but require a feature type merge (reading) or fanout (writing) to be flexible with layers.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Even then, however, each dataset FME reads must have the same attribute schema. Additionally, each dataset FME writes receives an identical attribute schema. This part is not flexible.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you want such flexible attribute schemas, you must use a <a href="https://academy.safe.com/path/fme-form-advanced" target="_blank" rel="noopener">dynamic translation</a>.</span></p>
+</blockquote>

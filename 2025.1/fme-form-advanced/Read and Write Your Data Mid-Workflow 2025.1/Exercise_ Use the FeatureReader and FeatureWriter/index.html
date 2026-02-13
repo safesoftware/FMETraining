@@ -1,0 +1,152 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Add and configure a FeatureReader.</li>
+<li>Use a FeatureReader with multiple initiator features.</li>
+<li>Add and configure a FeatureWriter.</li>
+<li>Use a Connector transformer.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml on Safe Software training machines</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip" target="_blank" rel="noreferrer noopener">Orthophotos.zip</a>
+<ul>
+<li>C:\FMEData\Data\Orthophotos\*.tif<strong><br /></strong></li>
+<li><strong>Note</strong>: you can read files from the URL if you don't have FMEData installed on your C:\ drive, but performance will be very poor. The example workspace uses local paths.</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-use-the-featurereader-and-featurewriter.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-use-the-featurereader-and-featurewriter.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-use-the-featurereader-and-featurewriter-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-use-the-featurereader-and-featurewriter-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>In this exercise, we'll look at common use cases for the FeatureReader and FeatureWriter and use a web data transformer.</p>
+<p>The scenario is that we have a folder full of orthophotos in GeoTIFF format. However, we want to extract the orthophotos as individual rasters covering the area of several downtown neighborhoods.&nbsp;</p>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Open the starting workspace in FME Workbench (2024.1 or later).</p>
+<h2 id="2-explore-the-workspace">2) Explore the Workspace</h2>
+<p>This workspace is already mostly configured, but we must add a FeatureReader and FeatureWriter to accomplish this task. If you examine the workspace, you'll see the following:</p>
+<ol>
+<li>It reads a vector dataset of the neighborhoods in KML format, removes some attributes, and reprojects them.</li>
+<li>We will add the FeatureReader to read the photos based on the areas of the neighborhoods.</li>
+<li>It will mosaic the rasters into one image using the RasterMosaicker.</li>
+<li>Then, it will clip the neighborhood features out to create individual raster features using the Clipper.</li>
+<li>Then, it will process the rasters to set a NoData band so the areas outside the photo are transparent.</li>
+<li>Then, we must configure a FeatureWriter to write out the individual raster files.</li>
+<li>Then, we can use a Connector transformer to upload the files to a web storage location.</li>
+</ol>
+<p><img class="image image-block image-center" src="images/1752100575623.png" alt="Starting workspace" width="1388" height="454" /></p>
+<h2 id="3-add-a-feature-reader">3) Add a FeatureReader</h2>
+<p>Add a FeatureReader to the Orthophotos bookmark above the Dissolver. Connect the Dissolver's Area port to the FeatureReader Initiator port.</p>
+<p><img class="image image-block image-center" src="images/1726527173829.png" alt="Connecting Dissolver to FeatureReader" width="304" height="347" /></p>
+<p>Double-click the&nbsp;<strong>FeatureReader</strong>&nbsp;to open its Parameters dialog. Configure it as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Format</strong></td>
+<td>GeoTIFF (Geo-referenced Tagged Image File Format)</td>
+</tr>
+<tr>
+<td><strong>Dataset</strong></td>
+<td>
+<p>Ideally, use local files: click the ellipsis button [. . .] and browse to C:\FMEData\Data\Orthophotos. Select all the files. Click Open. You should see all the files listed, delimited by a comma. This list instructs the FeatureReader to read all these files.</p>
+<p>Use the web version only as a backup: https://s3.amazonaws.com/FMEData/FMEData/Data/Orthophotos.zip</p>
+</td>
+</tr>
+<tr>
+<td><strong>Spatial Filter</strong></td>
+<td>Initiator OGC-Intersects Result</td>
+</tr>
+</tbody>
+</table>
+<p>With this configuration, the FeatureReader will read the GeoTIFF files that overlap the neighborhoods of interest.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In this case, we want to read each photo intersecting any neighborhood and just read it once. That is why we used a Dissolver to get a single initiator feature. However, you can also use the FeatureReader in scenarios with multiple initiators. If we skipped the Dissolver in this case, we'd read some of the photos multiple times, as we would read intersecting photos for each neighborhood feature separately. Try that out - you'll need the number of features to answer a Quiz question below.</span></p>
+</blockquote>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<p>Use Run to This on the FeatureReader. Inspect the GEOTIFF output port to view the matching orthophotos. Take note of how many there are; you'll need it for the quiz. The results should look like this:</p>
+<p><img class="image image-block image-center" src="images/1726527296624.png" alt="Matching orthophotos" width="646" height="392" /></p>
+<p><em>Map tiles &copy; <a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy; <a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy; <a href="Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<h2 id="4-run-the-workspace">4) Run the Workspace</h2>
+<p>Ensure the FeatureReader is properly configured by connecting its &nbsp;GEOTIFF output port to the RasterMosaicker input port:</p>
+<p><img src="images/1752100686411.png" alt="Connecting the FeatureReader to the RasterMosaiker" width="543" height="278" /></p>
+<p>Run the workspace to update the feature caches. Inspect the RasterBandNoDataSetter Output port. You should see the images from earlier, but now clipped to the neighborhood outlines and with transparent pixels for the NoData values.</p>
+<p><img class="image image-block image-center" src="images/1726527620150.png" alt="Orthophotos clipped to neighborhood boundaries" width="646" height="392" /></p>
+<p><em>Map tiles &copy; <a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy; <a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy; <a href="Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Note that raster images can take several seconds to appear in Visual Preview.</p>
+</blockquote>
+<h2 id="5-add-a-feature-writer">5) Add a FeatureWriter</h2>
+<p>Add a FeatureWriter and connect the RasterBandNoDataSetter Output port to the Connect Input port:</p>
+<p><img class="image image-block image-center" src="images/1726527690565.png" alt="Connecting to a FeatureWriter" width="742" height="204" /></p>
+<p>It will turn into an Output port, the default name of the feature type it creates.</p>
+<p>Double-click the&nbsp;<strong>FeatureWriter</strong>&nbsp;to open its Parameters. Configure them as follows:</p>
+<table class="featureTable sort_table" style="width: 35.1912%; height: 113.25px;">
+<tbody class="tbody">
+<tr style="height: 32.5px;">
+<td style="width: 34.7088%; height: 32.5px;"><strong>Format</strong></td>
+<td style="width: 65.1127%; height: 32.5px;">GeoTIFF (Geo-referenced Tagged Image File Format)</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 34.7088%; height: 32.5px;"><strong>Dataset</strong></td>
+<td style="width: 65.1127%; height: 32.5px;">C:\FMEData\Output\Training\Orthophotos.zip</td>
+</tr>
+<tr style="height: 48.25px;">
+<td style="width: 34.7088%; height: 48.25px;"><strong>Feature Types &gt; General &gt; Raster File Name</strong></td>
+<td style="width: 65.1127%; height: 48.25px;">Click the drop-down, Attribute Value &gt; NeighborhoodName</td>
+</tr>
+</tbody>
+</table>
+<p>With this configuration, the FeatureWriter will use a feature-type fanout to create a separate GeoTIFF file for each neighborhood.</p>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<p>You'll see the port's name change again, this time to @Value(NeighbohoodName), reflecting the feature type fanout setting.</p>
+<p>Run your workspace to write out the images. Click the&nbsp;<strong>FeatureWriter</strong>&nbsp;once to select it and click the&nbsp;<strong>Open Containing Folder button</strong>&nbsp;to see the written images:</p>
+<p><img class="image image-block image-center" src="images/1726527814000.png" alt="Open Containing Folder and output files" width="998" height="150" /></p>
+<h2 id="6-add-a-connector-transformer">6) Add an FTPCaller Transformer</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Alternatively, you can try using a different Connector transformer with a web service you have access to, like a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/googledriveconnector.htm" target="_blank" rel="noopener">GoogleDriveConnector</a> or <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/dropboxconnector.htm" target="_blank" rel="noopener">DropboxConnector</a>.</p>
+</blockquote>
+<p>The FeatureWriter is working correctly to write the data, but now it's time to take advantage of being able to continue a workspace after writing. We can use a Connector or similar transformer to upload these files somewhere.</p>
+<p>Click the&nbsp;<strong>Summary cache</strong> to inspect it. You should see an attribute called _dataset. The FeatureWriter created this attribute, which stores the path to the written data. You can use this path to find the files that FME recently wrote and do something with them; in this case, upload them to an FTP server.</p>
+<p><img class="image image-block image-center" src="images/1749853295382.png" alt="_dataset parameter" width="543" height="289" /></p>
+<p>Add an&nbsp;<strong>FTPCaller</strong>&nbsp;after the FeatureWriter and connect it to the Summary port.</p>
+<p><img class="fr-fic fr-fil fr-dib fr-draggable" src="images/1749853044854.png" width="597" height="241" /></p>
+<p>Once you have a Web Connection configured, double-click the&nbsp;<strong>FTPCaller</strong>&nbsp;to open its parameters. Configure it as follows:</p>
+<table>
+<tbody>
+<tr>
+<td>URL</td>
+<td>ftp://ftp.safe.com/incoming/training/@UUID()-Orthophotos.zip</td>
+</tr>
+<tr>
+<td>Transfer Type</td>
+<td>Upload from a File</td>
+</tr>
+<tr>
+<td>File to Upload</td>
+<td>_dataset</td>
+</tr>
+<tr>
+<td>Authentication Type</td>
+<td>None/Anonymous</td>
+</tr>
+</tbody>
+</table>
+<p>Click&nbsp;<strong>OK</strong>.</p>
+<p>Run your workspace. In the log file, you will find the confirmation that FME uploaded the dataset to the FTP Server:</p>
+<p><img class="fr-fic fr-fil fr-dib fr-draggable" src="images/1749853383428.png" width="932" height="434" /></p>
+<p>Here is the key advantage of the FeatureWriter: your workspace can continue after you write data.</p>

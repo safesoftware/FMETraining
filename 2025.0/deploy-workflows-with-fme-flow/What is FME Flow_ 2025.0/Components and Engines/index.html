@@ -1,0 +1,90 @@
+<h2 id="learning-components">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand and list the key components of FME Flow.</li>
+<li>Identify the purpose of different FME Flow components.</li>
+<li>Understand how workspaces are processed as jobs using engines.</li>
+<li>Understand the different types of engines.</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="fme-server-components">FME Flow Components</h2>
+<p>FME Flow consists of several different components that work together to make it function. While it's unnecessary to have a deep understanding of the full architecture to deploy workflows on FME Flow, you will likely find it easier to maximize FME Flow functionality and troubleshoot workflows with some background knowledge.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are interested, the <a style="background-color: #ffffff;" href="https://support.safe.com/s/article/Getting-Started-with-FME-Server-Administration" target="_blank" rel="noopener">Getting Started with FME Flow Administration</a> tutorial takes a deep dive into architecting FME Flow. You can choose from <a href="https://fme.safe.com/platform/deployments/" target="_blank" rel="noopener">flexible deployment options</a> for your organization&rsquo;s needs, including both on-premise and cloud options.&nbsp;</p>
+</blockquote>
+<p>Each FME Flow instance includes:</p>
+<ul>
+<li><strong>Engines</strong>: run FME workspaces as job requests.</li>
+<li><strong>Core</strong>: manages job requests, scheduling, and repository contents.</li>
+<li><strong>Web Application Server</strong>: runs the web user interface and web services.</li>
+<li><strong>Database and FME Flow System Share</strong>: store all information related to FME Flow.</li>
+</ul>
+<p>All these components are necessary for FME Flow to function; however, deploying the components across different systems or in the cloud is flexible.&nbsp;</p>
+<h2 id="fme-engines">FME Flow Engines</h2>
+<p>FME Engines process and run FME workspaces as job requests. This is the same engine carrying out the same processing as FME Workbench. Each installation of FME Workbench includes one engine for job processing, while an FME Flow installation can possess multiple engines, allowing you to scale your FME Flow to meet all your needs.</p>
+<p><img src="https://lh4.googleusercontent.com/j2W5qkAJZhtzLLloD_wL_kJtNm9HG_lK849HImho7qsPIk9QZyk9O7yZj9c7lTgpx5VigKOTRMNcuckOeotAr2HRD5166q7AEVPEP8giiM5dQjzw1t7lhobq2tuyOQXMai5p_mHk1_W4ghKgUvve9kE" alt="" width="940" height="372" /></p>
+<div>
+<p><span style="font-family: inherit; font-size: 1em;">Each FME Engine processes a single request (job) at a time. The FME Flow Core manages job requests and submits them to the engines to run the workspaces. Suppose an engine is unavailable, meaning all engines are busy running other workspaces. In that case, jobs will enter the queued state and wait for an engine to become available before processing the workspace.&nbsp;</span></p>
+</div>
+<p>You can scale FME Flow job processing by connecting additional FME Engines to the Flow Core. These FME Engines can run on the same machine as the Core, on separate servers within a distributed FME Flow environment, or as <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Remote-Engines-Services.htm" target="_blank" rel="noopener">Remote Engines</a>&nbsp;closer to your data. FME Engines are flexible to deploy wherever your data lives.&nbsp;</p>
+<p>There are two types of engine licenses:</p>
+<ul>
+<li><strong>Standard Engines</strong>: You purchase fixed licenses individually per engine. Each standard engine remains available and active throughout the license period.&nbsp;</li>
+<li><strong>Dynamic Engines (CPU Usage)</strong>: Engines licensed based on actual CPU processing time, measured in credits. Each credit corresponds to one hour of active engine CPU usage when the engine is actively processing jobs, allowing you to scale resources as needed efficiently.</li>
+</ul>
+<p>Dynamic engines complement standard engines and help in scenarios involving:</p>
+<ul>
+<li>Variable or unpredictable workload spikes (busy workloads).</li>
+<li>Managing queued jobs by offloading excess demands from standard engines.</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on Dynamic Engines, read our article on <a href="https://support.safe.com/hc/en-us/articles/25407402226701-Getting-Started-with-CPU-Usage-Dynamic-Engines" target="_self">Getting Started with Dynamic Engines</a>.</p>
+</blockquote>
+<h2 id="server-core">FME Flow Core</h2>
+<p>The FME Flow Core manages job requests, scheduling, and repository contents.&nbsp;</p>
+<p>When submitting jobs to engines to run, the FME Flow core controls how jobs run through transformation services, assigns the job to the correct queue, and communicates job expiry times.&nbsp;</p>
+<p>To do this, the FME Flow Core manages:&nbsp;</p>
+<ul>
+<li>FME workspaces</li>
+<li>Job results</li>
+<li>Schedules</li>
+<li>Notifications</li>
+<li>Automations</li>
+<li>Repository contents (workspaces, custom formats, custom transformers, data)</li>
+<li>WebSocket server</li>
+<li>Licensing</li>
+<li>Engine queue</li>
+</ul>
+<p>The FME Flow Core contains a Software Load Balancer (SLB) that distributes jobs to FME Engines.</p>
+<h2 id="web-services">Web Application Server</h2>
+<p>FME Flow Web Services enable you to run data integration workflows as web-accessible endpoints. These services allow external applications, systems, and users to trigger automated data processing tasks on-demand, seamlessly integrating data transformation capabilities into existing web applications and business processes.&nbsp;</p>
+<p>FME Flow has several web services:</p>
+<ul>
+<li>Data Download</li>
+<li>Data Streaming</li>
+<li>Job Submitter</li>
+<li>KML Network Link</li>
+<li>Notification</li>
+<li>Data Upload</li>
+<li><a href="https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html" target="_blank" rel="noopener">REST API</a></li>
+<li>Token Authentication</li>
+<li>HTTP Basic Authentication</li>
+</ul>
+<p>Some services (for example, Data Download) are &ldquo;transformation&rdquo; services that carry out data transformation, whereas others (for example, Data Upload) are non-transforming "utility" services.</p>
+<h2>FME Flow Database</h2>
+<p>The FME Flow Core uses a database to store all fundamental information related to FME Flow. Some database records stored by FME Flow include jobs, repositories, automation, users, and more. By default, FME Flow uses a PostgreSQL database server. However, you can configure it to use an Oracle or SQL Server database in distributed or fault-tolerant environments.&nbsp;</p>
+<p>The FME Flow database is an internal application database not intended for direct access or storing source or destination data.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Express, fault-tolerant, and distributed deployment options are not covered in this course. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/Choosing-Deployment-Architecture.htm" target="_blank" rel="noopener">Choosing a Deployment Architecture</a> or <a href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/Provide_Database_Server-2-Tier.htm" target="_blank" rel="noopener">Provide a Database Server</a>.&nbsp;</p>
+</blockquote>
+<h2>FME Flow System Share</h2>
+<p>Although it's not a running service, the FME Flow System Share is a file storage location for user-accessible data and resources. The FME Flow System Share stores workspaces, source data, log files, and other essential data relating to FME Flow, like encryption keys and licenses.&nbsp;</p>
+<p><img src="images/1747928308392.jpg" alt="" width="998" height="367" /></p>
+<p>&nbsp;</p>

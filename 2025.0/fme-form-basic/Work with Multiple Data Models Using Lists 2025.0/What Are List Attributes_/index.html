@@ -1,0 +1,175 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define a list attribute.</li>
+<li>Explain the difference between relational and object-oriented data models.</li>
+<li>Inspect a list attribute.</li>
+<li>Explain when you might work with list attributes.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/what-are-list-attributes.fmw" target="_self">Starting workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\AdvancedDataTransformation\what-are-list-attributes.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/what-are-list-attributes-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\what-are-list-attributes-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/fruit.json" target="_blank" rel="noopener">fruit.json</a>
+<ul>
+<li>C:\FMEData\Resources\FormBasic\fruit.json</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/fruit-nested.json" target="_self">fruit-nested.json</a><br />
+<ul>
+<li>C:\FMEData\Resources\FormBasic\fruit-nested.json</li>
+</ul>
+</li>
+</ul>
+<h2 id="what-are-list-attributes-in-fme">What Are List Attributes in FME?</h2>
+<p>List attributes, sometimes called lists, are FME's way of allowing an attribute to store multiple values per feature. For example, rather than creating a text field named <code>FRUITS</code>&nbsp;that stores the value &ldquo;Apple, Orange, Pear&rdquo;, a user can create a list, which is more structured and can be broken down into constituent parts for processing:</p>
+<pre><code>Fruits{0}: Apple 
+Fruits{1}: Orange
+Fruits{2}: Pear</code> <br /><br /></pre>
+<p>In FME, list attributes are denoted using curly brackets after the list name (e.g., this list is called&nbsp;<code>Fruits{}</code>), and a number inside the curly brackets represents the element's index inside the list, e.g., Orange is element 1 in the list. This structure allows list attributes to be reorganized, exploded into individual parts, analyzed statistically, and more.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">As is&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://en.wikipedia.org/wiki/Zero-based_numbering" target="_blank" rel="noreferrer noopener">common practice in computer programming</a><span style="font-family: inherit; font-size: 1em;">, list indexes in FME start at 0, not 1.</span></p>
+</blockquote>
+<h2 id="working-with-multiple-data-models">Working with Multiple Data Models</h2>
+<p>Data can be modeled in a wide variety of ways. Some of the most common methods include:</p>
+<ul>
+<li>Flat</li>
+<li>Relational</li>
+<li>Object-oriented</li>
+<li>Nested</li>
+</ul>
+<p>List attributes in FME can be used to deal with these different data models in a single workspace.</p>
+<h2 id="flat">Flat</h2>
+<p>Flat file databases are composed of tables that do not store relationships with other tables. These databases are intentionally simple and often small. Often, the data is stored as delimited text files, but it can also use binary data.</p>
+<p>Flat file databases are easy to read with FME using readers from formats like&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/csv2/csv2.htm" target="_blank" rel="noopener">CSV</a>&nbsp;or&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/textline/textline.htm" target="_blank" rel="noopener">Text File</a>. In this case, list attributes are not required&nbsp;unless you want to store data about a one-to-many relationship on features (more on that below).</p>
+<h2 id="relational">Relational</h2>
+<p>Relational databases store data in tables that can be linked to each other through defined relationships. FME can process relational data simply without the use of list attributes.&nbsp;</p>
+<p>Here is an example from the&nbsp;<a href="https://www.fhwa.dot.gov/infrastructure/asstmgmt/010394.pdf" target="_blank" rel="noreferrer noopener">United States Department of Transportation</a>. A relational data model stores separate tables defining road maintenance activities and events. These tables can be linked by a shared key, in this case, an Activity Code:</p>
+<p><img class="image image-block image-center" src="images/1639785048801.png" alt="Relational data model" /></p>
+<p>FME would read each table as a feature type, with each row becoming a feature. In this case, list attributes are not required&nbsp;unless you want to store data about a one-to-many relationship on features (more on that below).</p>
+<h2 id="object-oriented">Object-Oriented</h2>
+<p>Object-oriented data models store data on objects, commonly as a key-value pair.</p>
+<p>Consider a similar dataset to the one above. The same data could instead be stored using an object-oriented model, where one object is a Maintenance Report and another is a definition of a Maintenance Activity. Data is stored as instances of these objects and can be linked by the values of specific key-value pairs, in this case, the value of Activity Code:</p>
+<p><img class="image image-block image-center" src="images/1639785036779.png" alt="Object-oriented data model" /></p>
+<p>List attributes let you store object-oriented data in FME's feature-based or table-based framework.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">When incorporating Python or R code into your workspace using the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pythoncaller.htm" target="_blank" rel="noopener">PythonCaller</a><span style="font-family: inherit; font-size: 1em;">&nbsp;or&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/rcaller.htm" target="_blank" rel="noopener">RCaller</a><span style="font-family: inherit; font-size: 1em;">, you can read Python or R lists/arrays as FME list attributes after executing the code.</span></p>
+</blockquote>
+<h2 id="nested">Nested</h2>
+<p>List attributes can also represent a nested data structure within FME's feature-based paradigm.</p>
+<p>For example, you can store the following JSON:</p>
+<div>
+<pre><code>[</code><br /><code>&nbsp; {</code><br /><code>&nbsp; &nbsp; "name": "Apple",</code><br /><code>&nbsp; &nbsp; "scientificName": "Malus domestica"</code><br /><code>&nbsp; },</code><br /><code>&nbsp; {</code><br /><code>&nbsp; &nbsp; "name": "Orange",</code><br /><code>&nbsp; &nbsp; "scientificName": "Citrus X sinensis"</code><br /><code>&nbsp; },</code><br /><code>&nbsp; {</code><br /><code>&nbsp; &nbsp; "name": "Pear",</code><br /><code>&nbsp; &nbsp; "scientificName": "Pyrus"</code><br /><code>&nbsp; }</code><br /><code>]</code><br /><br /></pre>
+</div>
+<p>as an FME list attribute:</p>
+<pre><code>Fruits{0}.name:           Apple
+Fruits{0}.scientificName: Malus domestica
+Fruits{1}.name:           Orange
+Fruits{1}.scientificName: Citrus X sinensis
+Fruits{2}.name:           Pear
+Fruits{2}.scientificName: Pyrus</code><br /><br /></pre>
+<p>Working with JSON and XML in FME requires deciding how to extract the nested structure into a mix of FME features and list attributes.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For more on working with nested data structures, see&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/tutorial-getting-started-with-json" target="_blank" rel="noopener">Getting Started with JSON</a><span style="font-family: inherit; font-size: 1em;">&nbsp;or&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/tutorial-getting-started-with-xml" target="_blank" rel="noopener">Getting Started with XML</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="how-do-i-inspect-list-attributes">How Do I Inspect List Attributes?</h2>
+<p>You can inspect list attributes using the Feature Information Window. Select the feature you want to inspect. You will notice that list attributes are not included as attributes in Table View. Instead, look for the attribute in the Feature Information Window under Exposed or Unexposed Attributes. Each index and value will have its own row in the tree. You can double-click an item to inspect the full value.</p>
+<p><img class="image image-block image-center" src="images/1714157032201.png" alt="Fruits list in the Feature Information Window" width="476" height="359" /></p>
+<p>Because they contain more values than can fit in a single cell of the Table View, list attributes cannot be exposed and will not appear in Table View or, in most cases, in written data. Several transformers are available to help you extract data from list attributes and use it in your workspace or written data (see the next lesson).</p>
+<h2 id="when-do-i-need-list-attributes">When Do I Need List Attributes?</h2>
+<p>List attributes have many use cases within FME because they let a single attribute store multiple values per feature.</p>
+<p><strong>Reading and writing data</strong></p>
+<p>Some data formats commonly use lists when read and written using FME. In addition to nested markup languages like XML and JSON discussed above, you might also encounter lists when reading:</p>
+<ul>
+<li>Raster data
+<ul>
+<li>Band values are often stored as lists</li>
+</ul>
+</li>
+<li>Metadata
+<ul>
+<li>Sometimes read as XML, but sometimes read in as a list</li>
+</ul>
+</li>
+</ul>
+<p><strong>Express relationships</strong></p>
+<p>For example, listing the names of all the stores in a neighborhood in a list called&nbsp;<code>Store_Names{}</code>. FME transformers that conduct spatial analysis, like the Overlayer family of transformers, often generate list attributes like this.</p>
+<p><strong>"Looping" with FME</strong></p>
+<p>Many new FME users ask how to create loops in a workspace. While&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/transformers_custom_looping.htm" target="_blank" rel="noopener">custom transformers do support looping</a>, you can almost always accomplish the desired goal using one of two superior methods:</p>
+<ul>
+<li>Using a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/cloner.htm" target="_blank" rel="noopener">Cloner</a> to generate one feature per "loop iteration," and optionally using a Tester or other filtering transformer to test for the end of the "loop," discarding any remaining features</li>
+<li>List attributes</li>
+</ul>
+<p>List attributes can be used to avoid loops by storing all the relevant values in a list and then using a list transformer like those shown here to explode, search, sort, or otherwise extract values to find the desired information. An advantage is that list attributes process much quicker than loops. Even if you do use looping in a custom transformer, it's easier to apply a custom transformer loop to elements in a list than to a series of features.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For an example of these techniques in action, check out&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://community.safe.com/general-10/question-of-the-week-to-loop-or-not-to-loop-18238" target="_blank" rel="noopener">Question of the Week: To Loop or Not to Loop</a><span style="font-family: inherit; font-size: 1em;">&nbsp;from the FME Community.</span></p>
+</blockquote>
+<h2 id="how-do-i-create-list-attributes">How Do I Create List Attributes?</h2>
+<p>List attributes can be manually built, created automatically by a transformer, read and written by some formats (e.g., XML and JSON), or "exploded" into single-value attributes. FME has 15 transformers for list manipulation (plus more on <a href="https://hub.safe.com/?page=1&amp;page_size=10&amp;order=relevance&amp;query=list" target="_blank" rel="noreferrer noopener">FME Hub</a>; see the next lesson for details), and over 80 transformers can produce list attributes. Transformers often create a list when attributes from different features are grouped into a single feature. Transformers that create list attributes usually have a "Generate List" checkbox under the "Attribute Accumulation" section of their parameters dialog:<br /><img class="image image-block image-center" src="images/1639078045894.png" alt="Generate List checkbox" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Checking "Generate List" can significantly impact workspace performance, as list attributes can drastically increase the size of individual features. It's best practice only to check this box when needed and remove list attributes as soon as possible so they do not unnecessarily slow down your workspace. For more performance tips, check out the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/optimize-workspace-performance" target="_blank" rel="noopener">Optimize Workspace Performance course</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">To learn more, visit </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/!List_Attributes/About-List-Attributes.htm" target="_blank" rel="noopener">About List Attributes</a><span style="font-family: inherit; font-size: 1em;">&nbsp;in the documentation.</span></p>
+</blockquote>
+<h2><span style="font-family: inherit; font-size: 1em;">Exercise</span></h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Jennifer is new to working with list attributes. She has created a workspace to better understand them and experiment with reading JSON, building lists, and exploding lists into FME features.</span></p>
+<h2><span style="font-family: inherit; font-size: 1em;">1) Open and Run the Starting Workspace</span></h2>
+<p>She opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/what-are-list-attributes.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\AdvancedDataTransformation\what-are-list-attributes.fmw) in FME Workbench (2025.0.1 or later).&nbsp;</p>
+<p>This workspace reads JSON and turns the contents into an FME list attribute.</p>
+<p>Jennifer runs the workspace to generate caches.</p>
+<h2>2) Viewing JSON as an Attribute</h2>
+<p><span style="font-family: inherit; font-size: 1em;">Jennifer reviews each section of the workspace in turn to better understand list attributes.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The top section reads the JSON file fruit.json as an attribute using the JSONFormatter transformer. She inspects the JSONFormatter's Output port and double-clicks the sole feature's _formatted attribute in Visual Preview:</span></p>
+<p><img src="images/1746483335492.png" alt="Viewing formatted JSON in attribute" width="859" height="293" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The formatted JSON is displayed:</span></p>
+<p><code><span style="font-family: inherit; font-size: 1em;">[<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; "name": "Apple",<br />&nbsp; &nbsp; &nbsp; &nbsp; "scientificName": "Malus domestica"<br />&nbsp; &nbsp; },<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; "name": "Orange",<br />&nbsp; &nbsp; &nbsp; &nbsp; "scientificName": "Citrus X sinensis"<br />&nbsp; &nbsp; },<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; "name": "Pear",<br />&nbsp; &nbsp; &nbsp; &nbsp; "scientificName": "Pyrus"<br />&nbsp; &nbsp; }<br />]</span></code></p>
+<p><span style="font-family: inherit; font-size: 1em;">Because this JSON doesn't have complex nesting, it's easy to convert to FME features.</span></p>
+<h2><span style="font-family: inherit; font-size: 1em;">3</span>) <span style="font-family: inherit; font-size: 1em;">Reading JSON as FME Features</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">The JSONFeature feature type, below the JSONFormatter, reads the JSON directly as FME features. Each element in the JSON array becomes a feature with attributes name and scientificName.&nbsp;</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Jennifer inspects the JSONFeature feature cache to see how the JSON is represented as FME features:</span></p>
+<p><img src="images/1746562555743.png" alt="JSON as features" width="233" height="96" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The JSON reader takes the top element in the JSON object and turns each element into a feature, with the key-value pairs becoming FME attributes and values.</span></p>
+<h2><span style="font-family: inherit; font-size: 1em;">4</span>) <span style="font-family: inherit; font-size: 1em;">Building a List</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">Next, Jennifer used a ListBuilder to create a list from the FME features. This fruit list contains three elements, each with an attribute-value pair for name and scientificName.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">She inspects the ListBuilder's Output port. Because the new feature only contains a list attribute, no schema is displayed in the Table view, but selecting the single feature lets her view the fruit list in the Feature Information Window:</span></p>
+<p><img src="images/1746564802107.png" alt="Fruit list" /></p>
+<h2><span style="font-family: inherit; font-size: 1em;">5) Exploding a List into FME Features</span></h2>
+<p>Jennifer wanted to move from a list attribute to FME features. She did this using a ListExploder on the fruit list attribute.</p>
+<p>She inspects the ListExploder's Elements cache. FME exploded her list attribute into features, creating attributes from the key-value pairs:</p>
+<p><img src="images/1746562555743.png" alt="JSON as features" width="233" height="96" /></p>
+<h2>6) Viewing Nested JSON as an Attribute</h2>
+<p>Jennifer is curious how FME handles nested data structures. She adds a fields attribute to her JSON that indicates which farm fields the fruit is grown in, using an array of cardinal directions.</p>
+<p>She reads this new fruit-nested.json into an attribute using the JSONFormatter_2. She inspects its cache and sees the nested JSON in the _formatted attribute:</p>
+<p><code>{</code><br /><code>&nbsp; &nbsp;"fruits" : [</code><br /><code>&nbsp; &nbsp; &nbsp; {</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"name" : "Apple",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"scientificName" : "Malus domestica",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"fields" : [ "north", "south" ]</code><br /><code>&nbsp; &nbsp; &nbsp; },</code><br /><code>&nbsp; &nbsp; &nbsp; {</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"name" : "Orange",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"scientificName" : "Citrus X sinensis",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"fields" : [ "north", "east" ]</code><br /><code>&nbsp; &nbsp; &nbsp; },</code><br /><code>&nbsp; &nbsp; &nbsp; {</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"name" : "Pear",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"scientificName" : "Pyrus",</code><br /><code>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"fields" : [ "west", "south" ]</code><br /><code>&nbsp; &nbsp; &nbsp; }</code><br /><code>&nbsp; &nbsp;]</code><br /><code>}</code></p>
+<h2>7) Reading Nested JSON as Features</h2>
+<p>What happens if she reads this nested JSON using a JSON reader?</p>
+<p>She inspects the JSONFeature cache at the bottom of the workspace to find out.</p>
+<p><img src="images/1746557825562.png" alt="Viewing JSON reader cache" /></p>
+<p>It reads fruit-nested.json and creates key-value pairs from the top-most elements in the array. Because this JSON file's top-level object is an array called fruits, FME reads a single feature with no exposed attributes and creates a nested fruits list attribute. Jennifer views this in the Feature Information Window, noting how nested structures are displayed as list attributes containing other list attributes:</p>
+<p><img src="images/1746557916112.png" alt="Fruits list attribute" /></p>
+<h2>8) Exploding a Nested List into FME Features</h2>
+<p>Even with this nested structure, Jennifer can create FME features by exploding the fruits list. She used the ListExploder_2 to do so.</p>
+<p>She inspects its Elements cache and sees that the non-list attributes are properly exploded onto three features:</p>
+<p><img src="images/1746562555743.png" alt="Exploded features" /></p>
+<p>But what happened to the fields list? It's still present on the features as a list attribute, which she can view using the Feature Information Window:</p>
+<p><img src="images/1746562602093.png" alt="Fields list attribute" /></p>
+<h2>9) Challenge: Create More Features</h2>
+<p>Jennifer would like to create more features so there is a feature per fruit, per field. This would result in many features with a schema like this:</p>
+<p><code>Attribute(string: UTF-8) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : `fields' has value `north'</code><br /><code>Attribute(string: UTF-8) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : `name' has value `Apple'</code><br /><code>Attribute(string: UTF-8) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : `scientificName' has value `Malus domestica'</code></p>
+<p>How can she do that? To accomplish this task, help her out by adding a transformer to the Exercise bookmark.&nbsp;</p>

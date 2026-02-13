@@ -1,0 +1,77 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Create conditional parameters in FME.</li>
+<li>Understand how conditional parameters work together in FME.</li>
+<li>Run a Workspace App that displays and populates parameters conditionally.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution-complete.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution-complete.fmw</li>
+</ul>
+<p>The content used in this lesson builds on the previous lesson. To do this exercise, you may continue with your workspace from the exercise in Spatially Query Data, or begin with the TransitDataDistribution-complete.fmw workspace.&nbsp;</p>
+<p><span style="font-size: 2.3125em;">Conditional Visibility of Parameters</span></p>
+<p><span style="font-size: 12pt;">Conditional parameters allow you to control the visibility settings of parameters based on the value of one or more previous parameters. At runtime, parameters may be hidden or disabled based on values input to prior parameters in the list. The value of a previous parameter is used in an If-Then-Else condition to control the visibility of the parameter, given the outcome of the condition.&nbsp;</span></p>
+<p><span style="font-size: 12pt;">For example, you have a workspace that queries data based on countries, states, and provinces, for which you create three choice user parameters. However, if you select Canada as the country, you do not need to prompt the user to choose a state, and vice versa with the United States and provinces. Conditional visibility of the state and province parameters allows you to display them only once a value is input to the first parameter.&nbsp;</span></p>
+<p><span style="font-size: 12pt;"><img src="images/1760719757962.png" alt="" /></span></p>
+<p><span style="font-size: 12pt;">You can extend the conditional visibility of parameters to all other types, including, but not limited to, checking yes or no, uploading files, selecting geometry, and text inputs. Conditional visibility of parameters enables you to maximize and customize your FME workflows, particularly with FME Flow Workspace Apps that utilize user input to workspaces.&nbsp;</span></p>
+<p><span style="font-size: 2.3125em;">Creating Conditional Parameters</span></p>
+<p>You set and control the conditional visibility of user parameters when you create and edit them in FME Workbench. To conditionally control a parameter's visibility, you enable conditional visibility in the parameter's settings. You then have the option to use a Single or Compound Condition for the If-Then-Else condition.&nbsp;</p>
+<p><img src="images/1760722343843.png" alt="" /></p>
+<p>The If statement is structured so that you select a parameter for the first value, then the condition value (Is, Is Not, Contains, Is Empty, etc.), followed by the value to evaluate the condition on. For example, you only want to enable the state parameter if the Country parameter value is the United States.&nbsp;</p>
+<p><img src="images/1760723048571.png" alt="" /></p>
+<p>If the condition value does not require a value to complete the expression, the third value will disappear. For example, you may only want to display a Postal Code text parameter if the Province parameter is enabled.&nbsp;</p>
+<p><img src="images/1760723130334.png" alt="" /></p>
+<p>The Then and Else set the parameter behaviour based on whether the condition is true or not. You may choose whether to enable, disable, or hide the parameter.</p>
+<p><img src="images/1760723434305.png" alt="" /></p>
+<p>For example, if you select the United States for the Country parameter, the State parameter will enable; otherwise, if you choose Canada as the Country, FME will hide the State parameter and disable it.&nbsp;</p>
+<p><img src="images/1760723584475.png" alt="" /></p>
+<p>When you run your workspace, the parameters will appear and be enabled conditionally after you input previous parameter values.&nbsp;</p>
+<p><img src="images/1760725704003.gif" alt="" /></p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="" /></p>
+<p>For more information on creating conditional parameters, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">Creating and Modifying User Parameters</a> and our tutorial on <a href="https://support.safe.com/hc/en-us/articles/25407456235661-Working-With-Conditionally-Visible-Published-User-Parameters-in-FME-Form" target="_blank" rel="noopener">Working With Conditionally Visible Published User Parameters in FME Form</a>.</p>
+</blockquote>
+<p><span style="font-size: 2.3125em;">Using Conditional Parameters on FME Flow</span></p>
+<p><span style="font-size: 12pt;">Conditional parameters behave the same on FME Flow as they do when you run your workspace on FME Workbench. Hidden parameters will not appear on FME Flow until you populate previous parameters and complete the condition for the parameters to display.&nbsp;</span></p>
+<p><img src="images/1761595099796.gif" alt="" width="1020" height="749" /></p>
+<p><span style="font-size: 12pt;">When you create an FME Flow App, the Parameter Defaults section will hide hidden parameters unless the default parameter values meet the condition to enable them. You may not be aware of additional parameters that will display to the user in the app before you create it.&nbsp;</span></p>
+<p><span style="font-size: 12pt;"><img src="images/1760728107643.png" alt="" width="920" height="240" /></span></p>
+<p>Once you set a default value, the conditional parameters may appear or disappear if the default value changes a condition result.&nbsp;</p>
+<p><img src="images/1760728316718.png" alt="" width="903" height="429" /></p>
+<p>When you set parameters in a Workspace App, they will function the same as in FME Workbench and on the Run a Workspace page.&nbsp;</p>
+<p><img src="images/1760729131917.gif" alt="" width="858" height="364" /></p>
+<p><span style="font-size: 2.3125em;">Exercise</span></p>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer continues to work on her Transit Data Distribution app. One of the output format options is a CSV file. Sometimes CSVs store spatial data records as coordinates; however, the CSV output by Jennifer's workspace does not contain any coordinates, only non-spatial records for the data. In Jennifer's workflow, it does not make sense to have users who select CSV as the output format to input coordinate systems, since the data is not stored spatially. The coordinate system parameter is also required, so users must enter a value to run the app.&nbsp;</p>
+<p><img src="images/1760645573458.jpg" alt="" /></p>
+<p>Jennifer will add a conditional clause to the coordinate system parameter so that it is not displayed on the app if the user selects CSV as the output format. Follow along with Jennifer as she creates a conditional parameter for her workspace in her app.</p>
+<h3>1) Return to Workspace</h3>
+<p>Jennifer returns to <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution-complete.fmw" target="_blank" rel="noopener">her workspace</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution-complete.fmw) in FME Workbench.</p>
+<h3>2) Edit Output Coordinate System Parameter</h3>
+<p>Jennifer right-clicks User Parameters in the Navigator and selects Manage User Parameters...</p>
+<p>She selects the Output Coordinate System parameter and toggles on Conditional Visibility.&nbsp;</p>
+<p><img src="images/1760646209448.jpg" alt="" /></p>
+<p>Jennifer sets the single condition so that if a user sets the GENERIC_FORMAT parameter to CSV (Comma-Separated Value), the parameter hides and the user cannot see it. If the format is anything else, the parameter will be enabled.&nbsp;</p>
+<p><img src="images/1760665639949.jpg" alt="" /></p>
+<p>Jennifer clicks OK to close the window.&nbsp;</p>
+<h3>3) Republish to FME Flow</h3>
+<p>Jennifer clicks Republish to update the workspace on FME Flow.&nbsp;</p>
+<p><img src="images/1760647109000.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="" /></p>
+<p>If the Republish button is disabled, click Publish and repeat the publishing process. Ensure you name the workspace TransitDataDistribution.fmw, save it in the Training repository, and select the Job Submitter, Data Download, and Data Streaming services.&nbsp;</p>
+</blockquote>
+<p>Jennifer checks the translation log to confirm her workspace has successfully republished to FME Flow.&nbsp;</p>
+<h3>4) Navigate to the Transit Data Distribution App</h3>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="" /></p>
+<p>If you did not complete the previous exercise in Spatially Query Data, please create a new Workspace App with the workspace you published in Step 3, then open it in you web browser.&nbsp;</p>
+</blockquote>
+<p>Jennifer goes back to her Transit Data Distribution app in her web browser. She refreshes the page to ensure the app uses the updated workspace.&nbsp;</p>
+<p><img src="images/1760647727909.jpg" alt="" /></p>
+<h3>5) Set App Input Parameters</h3>
+<p>Once the app refreshes, Jennifer sets values for the Layers to Download and Area of Interest parameters. For the Output Format, Jennifer selects CSV (Comma Separated Value).&nbsp;</p>
+<p><img src="images/1760665898402.jpg" alt="" /></p>
+<p>As soon as she selects CSV, the app hides and disables the Output Coordinate System parameter, and Jennifer clicks Run without having to choose a coordinate system. The app runs the workspace and returns the CSV to Jennifer in the data download zip file.</p>
+<p>Jennifer has successfully used a conditional parameter in a self-serve Workspace App to disable a parameter when a workspace user sets a previous parameter to a specific value.&nbsp;</p>

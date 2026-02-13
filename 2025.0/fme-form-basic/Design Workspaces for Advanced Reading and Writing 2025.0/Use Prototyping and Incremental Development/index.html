@@ -1,0 +1,255 @@
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>The video above is from an older version of the course. You might find it helpful to watch it as an example of prototyping a workspace, but you don't have to follow along. See the Exercise below for details.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:&nbsp;</p>
+<ul>
+<li>Plan a workspace.</li>
+<li>Restrict source data to a small sample.</li>
+<li>Use incremental development to create a workspace section by section.</li>
+<li>Save a workspace with a date or version number.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-prototyping-and-incremental-development.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>If you are taking a Safe Software-hosted training course, you can the workspace here: C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-prototyping-and-incremental-development.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-prototyping-and-incremental-development-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-prototyping-and-incremental-development-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/road-ahead-upcoming-projects.zip" target="_self">road-ahead-upcoming-projects.zip</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\road-ahead-upcoming-projects.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/business-licences.zip" target="_self">business-licences.zip</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\business-licences.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/food-vendors.csv" target="_self">food-vendors.csv</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\food-vendors.csv</li>
+</ul>
+</li>
+</ul>
+<h2 id="prototyping">Prototyping</h2>
+<p>In the classical sense, prototyping means creating an incomplete application to evaluate a project's feasibility.</p>
+<p>Here, we'll stretch the definition to mean how to build a complex FME project incrementally, starting with an empty workspace and building it piece by piece to deliver a result that matches the final specification.</p>
+<p>We will cover the techniques used for incrementally building a workspace.</p>
+<h2 id="incremental-development">Incremental Development</h2>
+<p>The critical development technique for FME workspaces is <a href="https://en.wikipedia.org/wiki/Incremental_build_model" target="_blank" rel="noreferrer noopener">incremental updates</a>.</p>
+<p>The steps to this technique are:</p>
+<ul>
+<li>Plan your project as a series of small sections, each fitting inside a bookmark in FME.</li>
+<li>Design and implement a section in FME Workbench. It should ideally be between 3 and 10 transformers.</li>
+<li>Test each section immediately after it is completed. That way, you can identify problems early and easily because only a few changes are being made in any increment.</li>
+<li>Repeat the process, saving and testing the workspace whenever you've added a new section.</li>
+</ul>
+<p>Although a range of 3-10 transformers is an arbitrary number, the more transformers you add, the more difficult it will be to identify the source of any problems. Beyond ten transformers is the point at which you should consider chopping that process into smaller sections.</p>
+<p>Here, an author has planned their workspace by laying it out as a set of bookmarks on the canvas:</p>
+<p><img class="image image-block image-center" src="images/1714691891890.png" alt="Bookmarks used to plan workspaces sections" width="896" height="291" /></p>
+<p>Now, the author can complete and test each section simultaneously, keeping the overall goal in mind.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">It can be easy to start developing a workspace and forget to save it! FME keeps a recovery file as soon as the workspace is saved for the first time, but until then, you risk an irretrievable loss. </span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Save early, save often!</span></p>
+</blockquote>
+<h2 id="source-data">Source Data</h2>
+<p>When the FME project is large and complex, the source data will likely be large and complex, too. So, when creating a workspace in small increments and testing each part, it's better to avoid using the entire dataset. It's best to create a small sample of data, extracting it from your source and writing to a neutral format like <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/ffs/ffs.htm" target="_blank" rel="noopener">FFS</a>, FME's internal format, or using feature caches.</p>
+<p>Sampling is beneficial for databases because it also avoids the problems of waiting for network traffic and database responses.</p>
+<p><img class="image image-block image-center" src="images/1714691902904.png" alt="Using sampling with a Tiler" width="893" height="140" /></p>
+<p>Here, the workspace author extracts a sample of source data by reading from a database, splitting it into tiles, and writing just one tile to the FFS format. While prototyping a solution, the author can use this single tile to represent the entire source database table.</p>
+<p>Another transformer to use would be the Sampler, although the features selected by it would not be spatially adjacent.</p>
+<h2 id="version-control">Version Control</h2>
+<p>It's easy to work on a single workspace file when making incremental changes to a workspace. However, there are various problems with this:</p>
+<ul>
+<li>Faults cannot be easily tracked because there is no record of what has changed and when</li>
+<li>It is not easy to create different versions for different platforms</li>
+<li>If the workspace file is lost or corrupted, then the entire project is lost</li>
+</ul>
+<p>Therefore, it is better to keep versioned workspaces, where a different copy is kept for each set of revisions. This precaution can be taken manually within the file system or using a version control system like <a href="https://git-scm.com/" target="_blank" rel="noreferrer noopener">Git</a>.</p>
+<p>It is a good idea to keep and version all materials related to an FME project, including:</p>
+<ul>
+<li>Workspace files</li>
+<li>Python files</li>
+<li>Log files</li>
+<li>Source datasets</li>
+</ul>
+<p>It's better not to store any personal information, including passwords. Also, you don't need to store temporary files.</p>
+<p>You can use a few methods to keep track of version and editing history:</p>
+<ul>
+<li>Use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Compare-Tool-Essentials.htm" target="_blank" rel="noopener">Compare Workspaces</a> tool in FME Workbench&nbsp;</li>
+<li>Use an external version control system like git</li>
+<li>Use <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Version-Control.htm" target="_blank" rel="noopener">the FME Flow version control system</a></li>
+<li>Include the date of the most recent edit in the filename, e.g., digital-plan-submission-2025-11-25.fmw</li>
+<li>Include a version number or name in a bookmark or annotation in the workspace itself</li>
+<li>Use the Overview and History <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/Workbench/workspace_parameters.htm" target="_blank" rel="noreferrer noopener">Workspace Parameters</a>&nbsp;to store workspace metadata</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For additional information on Workspace Comparison, please see the <a href="https://academy.safe.com/compare-workspaces" target="_blank" rel="noopener">Compare Workspaces course</a>.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can <a href="https://github.com/safesoftware/workspace-comparison-configuration" target="_self">integrate Git into your FME Workbench comparison workflow</a>. You can use the command line, TortoiseGit, or Sourcetree to interface directly with the Compare Workspaces tool.</p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p>We're going to do something different for this exercise. <strong>You have an option</strong>:</p>
+<ol>
+<li>If you know you'll be using FME for an upcoming project, you can use this exercise to prototype a workspace. You can start a new, blank workspace in FME Workbench (2025.0.1 or later) and continue to 1) Plan Workspace Actions below. Follow the steps, but prototype your own workspace instead of Sven's example.</li>
+<li>If you don't have an FME project planned, you can create a prototype using the scenario and <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-workspace-prototyping.fmw" target="_blank" rel="noopener">starting workspace</a>&nbsp;presented in the Scenario section below.</li>
+</ol>
+<p><strong>Scenario</strong></p>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>&nbsp;</p>
+<p>You are working as Sven's colleague and need to prototype your own workspace. Your workspace will alert street food vendors in your city when upcoming road construction projects might impact their business.</p>
+<p>You decide to team up and prototype your workspaces together, following the same general steps.</p>
+<p>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-workspace-prototyping.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-prototyping-and-incremental-development.fmw) in FME Workbench (2025.0.1 or later).</p>
+<p>It uses the following datasets:</p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/road-ahead-upcoming-projects.zip" target="_blank" rel="noopener">An Esri Shapefile of upcoming road construction projects</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\road-ahead-upcoming-projects.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/food-vendors.csv" target="_blank" rel="noopener">A CSV of street food vendors, with coordinates</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\food-vendors.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FMEAccelerator/data/business-licences-sqlite.zip" target="_blank" rel="noopener">An SQLite database of business licenses</a>
+<ul>
+<li>C:\FMEData\Resources\FMEAccelerator\data\business-licences-sqlite.zip</li>
+</ul>
+</li>
+</ul>
+<p>You have been asked to create a workspace that:</p>
+<ol>
+<li>Reads these datasets</li>
+<li>Identifies which vendors both:
+<ol>
+<li>Might be affected by road construction (defined as within a 30-foot buffer from the road center line) and</li>
+<li>Hold current (2024 in this example) business licenses</li>
+</ol>
+</li>
+<li>Writes the list of affected vendors to a Microsoft Excel worksheet.</li>
+</ol>
+<p>Let's get to work prototyping your approaches.</p>
+<h2 id="exercise">1) Plan Workspace Actions</h2>
+<p>To develop this workspace, Sven considers what steps might be required. He can then create sections with bookmarks and fill them in as he goes along.</p>
+<p>He asks himself the following questions:</p>
+<ol>
+<li>What data will he start with? What format and schema?</li>
+<li>What data will he end with? What format and schema?</li>
+</ol>
+<p>What steps might he need to take between reading and writing? He might need to:</p>
+<ul>
+<li>Edit the schema</li>
+<li>Map the schema</li>
+<li>Validate attributes</li>
+<li>Validate geometry</li>
+<li>Join data</li>
+<li>Filter data</li>
+<li>Conduct an overlay or intersection</li>
+<li>Etc.</li>
+</ul>
+<p>He comes up with the following list:</p>
+<ol>
+<li>Read/Sample Address Esri geodatabase</li>
+<li>Read MapInfo TAB Zoning data</li>
+<li>Spatially join to get zoning data for each address</li>
+<li>Estimate the resident count for each address based on the zoning district</li>
+<li>Divide residents into five spatial zones with roughly equal population</li>
+<li>Aggregate the addresses into their zone</li>
+<li>Create a boundary shape around each zone</li>
+<li>Write the resulting zone boundary polygons to an OGC GeoPackage</li>
+</ol>
+<p><strong>Write the list of actions your workspace (option #1) or the food vendors workspace (option #2) will carry out in as much detail as possible. You can use annotation to take notes, if you want.</strong></p>
+<h2 id="exercise">2) Add Reader(s) and Writer(s)</h2>
+<p>Sven adds the reader(s) and writer(s) he plans to use and their feature types.</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>If you started with the workspace included in this lesson, the readers and writer have already been added.</p>
+</blockquote>
+<p>It's better to start small and add a single reader and writer feature type; he can continually expand the workspace later.</p>
+<p>He observes his data's schema and notes if any schema changes are required.</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>Choose a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/Tips_Adding_Managing_Writer_Feature_Types.htm" target="_blank" rel="noopener">feature type definition mode</a> when adding your writer that will help you define the destination schema as quickly as possible:</p>
+<ul>
+<li><strong>Automatic</strong>: This adds a new feature type with the attribute definition parameter set to Automatic, which is the default.
+<ul>
+<li>Choose this mode if you'd prefer to read your data in, modify the schema as you go, and then write out whatever you end up with.</li>
+</ul>
+</li>
+<li><strong>Manual</strong>: Adds a new feature type with the attribute definition parameter set to manual.
+<ul>
+<li>Choose this mode if you want to specify the destination schema precisely.</li>
+</ul>
+</li>
+<li><strong>Copy from Reader:</strong> Adds a new feature type with the attribute definition parameter set to manual but predefined to the schema of an existing Reader feature type.
+<ul>
+<li>Choose this mode if the destination schema will be the same or similar to the source schema.</li>
+</ul>
+</li>
+<li>I<strong>mport from Dataset:</strong> Adds a new feature type with the attribute definition parameter set to manual but predefined to the schema of an external dataset (just like using the Import Feature Types tool).
+<ul>
+<li>Choose this mode if you have to meet exact requirements for writing based on an existing schema in another dataset.</li>
+</ul>
+</li>
+<li><strong>Dynamic</strong>: Adds a new feature type with the attribute definition parameter set to dynamic.
+<ul>
+<li>This mode is more advanced; choose it if you need to write out whatever you receive when the workspace runs without knowing the schema.</li>
+</ul>
+</li>
+<li><strong>None</strong>: Does not add any new feature type.
+<ul>
+<li>You shouldn't choose this mode if you want to write out data.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>Add the readers and writers, observe their schemas, and determine if any schema changes are required for your workspace (option #1) or the food vendors workspace (option #2).</strong></p>
+<h2 id="exercise">3) Separate Workspace Actions into Bookmarks</h2>
+<p>Sven begins to plan his workspace by adding bookmarks to the Canvas representing the steps he will take.</p>
+<p>He can't know which sections will be larger in advance, so he makes all bookmarks the same size.</p>
+<p>Here's an example continuing from his list of actions above:</p>
+<p><img class="image image-block image-center" src="images/1715014847264.png" alt="Example workspace with bookmarked sections" width="1194" height="284" /></p>
+<p>Sven considers the transformers he might want to use. He considers each step and adds any transformer he thinks he might need to a Transformers bookmark.</p>
+<p>He comes up with the following transformers he might need for his workspace:</p>
+<p><img class="image image-block image-center" src="images/1715014855387.png" alt="Collection of transformers" width="787" height="248" /></p>
+<p><strong>Create bookmarks and add possible transformers to your workspace (option #1) or the food vendors workspace (option #2).</strong></p>
+<h2 id="exercise">4) Sample Source Data</h2>
+<p>Sven knows his prototyping will be faster if he works with a source data sample.</p>
+<p>He knows many ways to do this, depending on the situation:</p>
+<ul>
+<li>Max Features to Read/Max Features to Read Per Feature Type</li>
+<li>WHERE clause</li>
+<li>Search Envelope</li>
+<li>Sampler transformer</li>
+<li>Tile-based approach for spatial data</li>
+</ul>
+<p>He decides to sample every 25th address while authoring our workspace. He adds a Sampler transformer:</p>
+<p><img class="image image-block image-center" src="images/1715014875400.png" alt="Adding a Sampler" width="469" height="133" /></p>
+<p>And configures it like this:</p>
+<p><img class="image image-block image-center" src="images/1715014882483.png" alt="Setting Sampler parameters" width="476" height="112" /></p>
+<p>He runs the workspace to ensure FME samples the data correctly.</p>
+<p>He inspects the sampled data to ensure it is a small dataset (say, less than 1,000 features, depending on feature size) and has the correct variation in values he might expect from his data.</p>
+<p><strong>Use a method like the Sampler to create a sample of the source data in your workspace (option #1) or the food vendors workspace (option #2).</strong></p>
+<h2 id="exercise">5) Save Workspace</h2>
+<p>Now that he has an outline of his workspace and a sample of the data, he saves his workspace.</p>
+<p>He includes a date or version number (like GarbageCollection-2025-05-18.fmw).</p>
+<p>He commits his workspace to his organization's version control system with a meaningful commit message.</p>
+<h2 id="exercise">6) Continue to Prototype</h2>
+<p>If you have time, you can continue building your workspace section by section. Remember, the goal of this exercise is not to complete the workspace, but to practice prototyping a workspace.&nbsp; Each time you add a transformer, run the workspace to update feature caches, inspect the most recent cache, and determine if you made the correct decision. If so, proceed to add the next transformer. If not, change the parameters or try a different transformer. Read the transformer Help documentation if you get stuck.</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-hosted training course, consider sharing what you learned as you prototyped your workspace in the chat. What problems did you encounter?</p>
+<p>You can also back up your workspace prototype on your virtual machine for further development by emailing it to yourself or uploading it to a file-sharing system.</p>
+</blockquote>

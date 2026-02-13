@@ -1,0 +1,195 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Describe why debugging is an important skill.</li>
+<li>Distinguish between different types of log messages.</li>
+<li>Find the text and spatial log files.</li>
+<li>Explain the difference between errors and warnings.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-the-log-to-identify-problems.fmw" target="_blank" rel="noopener">Starting workspace</a>&nbsp;
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-the-log-to-identify-problems.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-the-log-to-identify-problems-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-the-log-to-identify-problems-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb.zip</a> (File GDB)
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+</ul>
+<h2 id="debugging">Debugging</h2>
+<p>In this course, we&rsquo;ll cover best practices for debugging your workspaces.</p>
+<p>Even skilled FME users seldom produce new workspaces with zero defects. For that reason, all users must be aware of the debugging techniques available in FME.</p>
+<p>Generally, debugging in FME consists of determining whether a problem has occurred and then tracking down the problem's source (for example, where it appears in the workspace). Once you have determined where a problem arises, you can investigate it.</p>
+<p>There are various debugging techniques available in FME, and it's essential to use these in the correct order. For example, you shouldn't waste time randomly changing parameters and re-running the workspace when a simple log message explains the issue!</p>
+<p>A logical order would be:</p>
+<ul>
+<li><strong>Check for any problems</strong>
+<ul>
+<li>Interpret the log for warnings and errors</li>
+<li>Inspect the output datasets</li>
+</ul>
+</li>
+<li><strong>Locate the problem</strong>
+<ul>
+<li>Review connection feature counts</li>
+<li>Inspect the data at key stages of the translation</li>
+</ul>
+</li>
+<li><strong>Determine the problem</strong>
+<ul>
+<li>Check reader, writer, or transformer parameters at the point of failure</li>
+<li>If necessary, run the workspace in feature debug mode</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">In software development, debugging a process after completion is called "post-mortem debugging"! We're trying to find out what caused a fatality.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>If we can't determine the cause by a post-mortem, we'll re-run the process with various tracing options turned on. We can call that "interactive debugging."</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="log-interpretation">Log Interpretation</h2>
+<p>FME logs contain a record of all stages and processes within a translation. The contents are vital for debugging purposes.</p>
+<p><strong>Log Message Types</strong></p>
+<p>Different message types appear in the log window, including:</p>
+<ul>
+<li><strong>Error</strong>
+<ul>
+<li>An error, denoted in the log by red text and the term ERROR, indicates that a problem has caused FME to cease processing. For example, FME cannot write the output dataset because of incorrect user permissions.</li>
+</ul>
+</li>
+<li><strong>Warning</strong>
+<ul>
+<li>A warning, denoted by blue text and the term WARN, indicates a processing problem. The problem is sufficiently minor to allow FME to complete the translation, but you may want to check if the output was adversely affected. For example, FME cannot write features because its geometry is incompatible with the writer format. FME Workbench will drop the features from the translation and issue a warning in the log.</li>
+</ul>
+</li>
+<li><strong>Information</strong>
+<ul>
+<li>Information messages, denoted by the term INFORM, indicate information that may help users determine whether their translation functioned correctly. For example, FME sometimes logs confirmation of a particular dataset parameter, such as the coordinate system.</li>
+</ul>
+</li>
+<li><strong>Statistics</strong>
+<ul>
+<li>Statistics messages, denoted by the term STATS, provide information on various numbers relating to the translation, such as the number of features FME read from a source dataset and the time it took.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Log window is displayed as a table. The Transformer column shows you which transformer an error/information message is coming from. Click the hyperlinked transformer name to navigate to the canvas element producing the message. Using this link to identify where errors are occurring will make your debugging more efficient.</span></p>
+</blockquote>
+<h2 id="spatial-log-file">Spatial Log File</h2>
+<p>Besides writing the log to a text file (&lt;workspace name&gt;.log), FME also writes a spatial log:</p>
+<p><img class="image image-block image-center" src="images/1701285750330.png" alt="Spatial log file" width="828" height="145" /></p>
+<p>The spatial log is a dataset of features (in FME Feature Store format) that the log mentions. FME generates a spatial log from &lt;Rejected&gt; Features when Navigator &gt; Workspace Parameters &gt; Reader/Writer Redirect is enabled or when a Logger has Feature Logging set to "Log and Record." You can open the FFS dataset within FME Data Inspector or the Visual Preview window in FME Workbench to inspect the features and identify any problems that caused FME to reject them.</p>
+<h2 id="interpreting-the-log-window">Interpreting the Log Window</h2>
+<p>The Translation Log window should be the first place you check when a translation finishes. It will tell you if there are any concerning errors or warnings.</p>
+<p><strong>Errors</strong></p>
+<p>If an ERROR occurs, FME will likely stop the translation. There will be red text in the log and some statements such as:</p>
+<div>
+<pre><code>Program Terminating
+Translation FAILED.</code><br /><br /></pre>
+</div>
+<p>There may be several ERROR messages, so scroll back up the log window and identify the first of these, which is the likely cause of the problem. For example, this message:</p>
+<div>
+<pre><code>ERROR |Error connecting to PostgreSQL database(host='postgis.train.safe.com', port='5432', dbname='fmedata', user='fmedata', password='*'): 'FATAL: password authentication failed for user "fmedata" FATAL: password authentication failed for user "fmedata"<br /><br /></code></pre>
+</div>
+<p>...is an obvious problem authenticating a database connection.</p>
+<p><strong>Warnings</strong></p>
+<p>Even when a translation succeeds, it's essential to check the log for the following comment:</p>
+<div>
+<pre><code>Translation was SUCCESSFUL with X warning(s)</code><br /><br /></pre>
+</div>
+<p>If there are any warnings (for example, if X &gt; 0), use the search option to look for the word WARN. Any warning messages might significantly affect the quality of the output data.</p>
+<p><strong>Finding the Error's Source</strong></p>
+<p>Click the log hyperlink to look at the object on the canvas that produced the error.</p>
+<p><img class="image image-block" src="images/1717090530397.gif" alt="Transformer link in log" width="860" height="850" /></p>
+<h2>Exercise</h2>
+<p><img class="image image-block image-center" src="images/c-523-def-8-4-eb-4-4-add-acbd-274-c-2-ee-65-f-21.png" alt="Frank" width="256" height="256" /></p>
+<p>Frank is working on a workspace that extracts address information from a File Geodatabase and writes it to a CSV with a new schema.</p>
+<p>However, he notices that text attribute values using Chinese characters are rendered incorrectly in the output. For example, the written file renders the name "麥毅倫" as "???".</p>
+<p>An encoding problem has occurred, but where? The fact that data appears incorrect in another application does not accurately indicate where the workspace introduced that problem.</p>
+<p>In this scenario, Frank needs to use his debugging skills at critical stages to determine when the data last looked correct.</p>
+<blockquote>
+<p data-start="1641" data-end="1950"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p data-start="1641" data-end="1950">Text encoding is a complex topic. Here is some background context on text encoding in FME.</p>
+<p data-start="1641" data-end="1950">FME uses UTF-8 process encoding as of FME 2022.0. UTF-8 is the modern standard for text encoding because it supports all Unicode characters. Historically, FME on Windows relied on the system's default ANSI encoding, which varied depending on regional settings (e.g., Windows-1252 or Shift-JIS). In contrast, UNIX-based systems have long used UTF-8 by default.</p>
+<p data-start="1955" data-end="2212">As of Windows 10 (version 1903) and Windows Server 2019, FME now uses UTF-8 for encoding, provided the system is configured to do so. This change allows workspaces to be authored and executed across different locales with consistent and correct text output.</p>
+<p data-start="1955" data-end="2212"><a href="https://support.safe.com/hc/en-us/articles/25407545750541-UTF-8-Names-FAQ-Encoding-in-FME" target="_self">Check out our UTF-8 Names FAQ for more details</a>.</p>
+</blockquote>
+<h2>1) Open and Run Starting Workspace</h2>
+<p>Frank opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-the-log-to-identify-problems.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-the-log-to-identify-problems.fmw) in FME Workbench (2025.0.1 or later) and runs it to generate feature caches.</p>
+<h2 id="inspect-the-source-data-before-reading">2) Inspect the Source Data Before Reading</h2>
+<p>It's easy to assume source data is correct without checking it. Frank knows that he should inspect the source data in its native application to confirm its accuracy, if possible:</p>
+<p><img class="image image-block image-center" src="images/1701288349437.png" alt="Viewing encoding in ArcCatalog" width="635" height="284" /></p>
+<p>If the data is incorrect at the source, there is little chance the translation output will be correct. However, his source data displays properly in ArcGIS, so the translation should work.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-hosted training course, we do not have Esri ArcCatalog or ArcGIS Pro installed on the machines, so you won't be able to inspect the data in the source application.</p>
+</blockquote>
+<h2 id="inspect-the-source-data-after-reading">3) Inspect the Source Data After Reading</h2>
+<p>Seeing that the source data is correct in its native application, Frank next inspects it using FME.</p>
+<p>He inspects the source data in Visual Preview, clicking the FeatureReader's PostalAddress cache:</p>
+<p><img src="images/1748902707833.png" alt="Inspecting source data in FME" /></p>
+<p>He knows that one of the owners on a problem feature is Marisa Marmol, so he types "Marmol" into the search bar at the bottom of Visual Preview. The problem feature appears in Table view:</p>
+<p><img class="image image-block image-center" src="images/1717092467117.png" alt="Viewing encoding in Visual Preview" width="618" height="276" /></p>
+<p>Here, read from the source data, the encoding appears correct: OWNERNM2 uses Chinese characters.</p>
+<p>If the data were incorrect at this point, then the process of reading the data with FME is at fault. But the data is correct, so he must continue to diagnose the problem.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you need to find the source of your problem, start by reading. Any issues you create during reading will likely appear throughout the rest of your workspace.</span></p>
+</blockquote>
+<h2 id="inspect-the-data-before-writing">4) Inspect the Data Before Writing</h2>
+<p>Now, he should inspect the data between transformation and writing.</p>
+<p>He inspects the final cache before writing, the AttributeManager's Output cache:</p>
+<p><img src="images/1748904008970.png" alt="Inspecting final cache" /></p>
+<p>Again, the Chinese characters are correctly displayed for the Marisa Marmol feature:</p>
+<p><img class="image image-block image-center" src="images/1753390984240.png" alt="Viewing encoding before writing" width="437" height="118" /></p>
+<p>If Visual Preview showed � characters at this point, Frank could assume that the problem occurs in data transformation before writing. He could use feature caching to inspect each step to narrow down exactly where the problem appears.</p>
+<p>However, the data in our example is still correct when entering the writer, so we should test the output dataset next.</p>
+<h2 id="inspect-the-output-dataset">5) Inspect the Output Dataset</h2>
+<p>If the data is correct before writing, then writing might be the problem.</p>
+<p>Next, Frank inspects the written CSV data by clicking the PostalAddress writer feature type and clicking the View Written Data button:</p>
+<p><img src="images/1748904171341.png" alt="View Written Data button" /></p>
+<p>This step will show the data as FME wrote it (and, of course, read it back). If the data is incorrect here, then the problem will have likely occurred during the writing of the data.</p>
+<p>He searches for Marmol again and finds the problem feature. This time, the Chinese characters in the Owner2 attribute are rendered as unknown characters ???:</p>
+<p><img class="image image-block image-center" src="images/1717092638784.png" alt="Viewing encoding after writing" width="618" height="276" /></p>
+<p>Because Visual Preview shows � characters at this point, FME incorrectly encoded the data during writing.</p>
+<p>Another check to make is to open the data in a text editor. It will not be possible to do this for every dataset (binary files or databases, for example). However, text-based files can provide proof if the data is correct in the destination.&nbsp;</p>
+<p>Frank opens the output in Notepad and sees the ??? characters, indicating an encoding problem on writing:</p>
+<p><img class="image image-block image-center" src="images/1701289102931.png" alt="Viewing encoding in destination application" width="706" height="392" /></p>
+<p>This step confirms that the problem occurs when writing the data. However, this might only sometimes be the case.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Your machine might show an empty string <code>,,</code> instead of <code>,???,</code>.</p>
+</blockquote>
+<h2 id="inspect-the-output-dataset-in-another-application">6) Inspect the Output Dataset in Another Application</h2>
+<p>If FME (and a text editor) can display the output data, and there are still display problems, then the intended application is not interpreting the data correctly.</p>
+<p>That's not the case here, since we've confirmed the issue occurs when FME writes the data. But just to fully check the issue end-to-end, Frank opens the output dataset in the destination application, Microsoft Excel in this case. If FME can read the data correctly, and it looks correct in a text editor, then the problem is more likely to be with how the end application interprets the data:</p>
+<p><img class="image image-block image-center" src="images/1701289128224.png" alt="Viewing data in another application" width="624" height="175" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-sponsored training course, Microsoft Excel is not installed on your machine. You can open the data with Open Office Calc or skip this step.</p>
+</blockquote>
+<p>That would be particularly true if the format were non-native to that application, for example, reading a Geodatabase outside of an Esri product.</p>
+<p>These techniques narrow down where an error might have occurred but don't always specify the cause. For example, incorrect output could mean that FME has a limitation in that writer. The workspace author has set an incorrect parameter, or one application uses a different default encoding than another.</p>
+<p>These steps confirm there is an issue. Next, Frank will dig into the problem using the Translation Log.</p>

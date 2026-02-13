@@ -1,0 +1,142 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create folders and upload datasets to Resources using the Upload button.</li>
+<li>Run a workspace on FME Flow using data uploaded to Resources.</li>
+<li>Use the FME_SHAREDRESOURCE_DATA parameter when authoring to read and write data from Resources.</li>
+<li>Quickly find the path to data on Resources by copying and pasting it from FME Flow.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/upload-and-use-data-in-resources.fmw" target="_blank" rel="noopener">Starting workspace </a>| C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\upload-and-use-data-in-resources.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/NewElectionVoting.gml" target="_blank" rel="noopener">NewElectionVoting.gml</a> | C:\FMEData\Data\Elections\NewElectionVoting.gml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_blank" rel="noreferrer noopener">ElectionVoting.xsd</a> | C:\FMEData\Data\Elections\ElectionVoting.xsd</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a> | C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+<h2><!-- The script tag should live in the head of your page if at all possible --></h2>
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<h2><!-- Put this wherever you would like your player to appear --></h2>
+<h2>Upload Resource Data</h2>
+<p>You do not need to publish a workspace to upload data to the FME Flow Resources. Instead, you can upload data directly to Resources from the FME Flow web interface. It's as simple as navigating to your desired folder, selecting upload for files or a folder, and then selecting your data from the file system.&nbsp;</p>
+<p><img src="images/1749847318763.jpg" alt="" width="1018" height="340" /></p>
+<p>Once FME Flow finishes uploading the file, it will display the count of completed uploads at the top of the page.&nbsp;</p>
+<p><img src="images/1749847457441.jpg" alt="" width="1025" height="391" /></p>
+<p>In general, uploading files to Resources is very flexible. You may drag a file onto the open Resources folder page, and the data will be uploaded. You may also select multiple files to upload at once or a folder containing numerous files. If you have access to the file system on the FME Flow server, you may also upload data directly to the Resources in the FME Flow System Share, located on Windows by default at C:\ProgramData\Safe Software\FMEFlow\resources.&nbsp;</p>
+<p>The data you upload to Resources is available to all workspaces and users with permission to access Resources when running workspaces.&nbsp; For example, you use the VancouverNeighborhoods.kml file as source data for multiple workflows, and you only need to store one copy of the file in Resources for multiple workspaces to use.&nbsp;</p>
+<h2>Resource Connections</h2>
+<p>FME Flow can connect to network-based resource locations and Amazon S3 file systems through Resource Connections. You create Resource Connections directly from the Resources page on FME Flow.&nbsp;</p>
+<p><img src="images/1749848514457.jpg" alt="" width="1070" height="532" /></p>
+<p>The FME Flow Service Account needs full permissions for network-based resource drives to access, read, and write from the network drive location so that FME Flow can connect and use data from the location successfully. Once you grant permissions to the service account, mapping FME Flow to the network shared file location is as easy as entering the UNC path to the location.&nbsp;</p>
+<p><img src="images/1749848807598.jpg" alt="" width="507" height="511" /></p>
+<p>Once you create a Resource Connection, FME Flow displays it on the Resources page.</p>
+<p><img src="images/1749848976672.jpg" alt="" width="817" height="362" /></p>
+<p>You may also access the Resource Connection's properties like any other Resource item. The System Path is especially useful for referencing the Resource Connection location from workspaces as a parameter.&nbsp;</p>
+<p><img src="images/1749849073465.jpg" alt="" width="524" height="231" /></p>
+<p>To create an Amazon S3 Resource Connection, you need to enter the bucket name and valid access and secret keys for the S3 location.&nbsp;</p>
+<p><img src="images/1749849317669.jpg" alt="" /></p>
+<p>Unlike network-based resource systems, using the system path parameter, you cannot access Amazon S3 Resource Connections from workspaces as a data source or destination. You must use an S3-related transformer, connector, or URL to access the data stored in the S3 bucket.&nbsp;</p>
+<h2 id="author-for-the-resources-system">Author for Resources Data</h2>
+<p>Using the FME Flow web interface, selecting data from Resources at run-time is simple with published parameters. However, in some cases, you may want to read data from Resources without the end-user having to select it, or restrict the end-user from selecting alternate source data. You accomplish this using FME Flow parameters, specifically, the FME_SHAREDRESOURCE_DATA parameter to reference the Data folder in Resources.&nbsp;</p>
+<p>When authoring a workspace to read data from Resources without using a published parameter, you must reference FME_SHAREDRESOURCE_DATA directly in the source file parameter.</p>
+<p><img src="images/1749850738199.jpg" alt="" width="1188" height="359" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Remember that the Flow parameter FME_SHAREDRESOURCE_DATA includes the Data folder in its path. </span><span style="font-family: inherit; font-size: 1em;">For example, the source KML file value is <strong>FME_SHAREDRESOURCE_DATA</strong>\Boundaries\VancouverNeighborhoods.kml not <strong>FME_SHAREDRESOURCE_DATA\Data</strong>\Boundaries\VancouverNeighborhoods.kml. The easiest way to find the entire path to a Resources dataset is inspecting it's properties on FME Flow and copying the path into the workspace reader parameter.&nbsp;</span></p>
+</blockquote>
+<p>You must also remove the source file user parameters that FME Workbench creates by default for source data to restrict end-users from altering the source dataset on FME Flow.&nbsp;</p>
+<p><img src="images/1749850507068.jpg" alt="" width="648" height="246" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The $(FME_SHAREDRESOURCE_DATA) parameter will fail on FME Workbench unless you set the parameter value to the file server location of the FME Flow System Share. Oftentimes, FME Workbench and FME Flow are not installed on the same machines so FME Workbench cannot directly access the location.&nbsp;</span></p>
+</blockquote>
+<h2 id="introduction">Exercise</h2>
+<p><img src="images/1749851430385.png" alt="" width="275" height="292" /></p>
+<p>Sven continues with his previous workspace. He understands that the source data files should be stored in FME Flow Resources for storage efficiency and data accessibility across multiple workspaces. However, he just received an updated GML file of voting locations and needs to upload it to Resources. Sven also wants to restrict end-users running this workspace from being able to alter the input source files, so he will link directly to the Resources data in the workspace and remove the source file user parameters.&nbsp;&nbsp;</p>
+<p>Follow along with Sven as he uploads the new data and alters his workspace.&nbsp;</p>
+<h3 id="1-open-fme-server-web-interface">1) Upload New Data&nbsp;</h3>
+<p>Sven navigates to Resouces &gt; Data &gt; Elections. He has an updated GML file of voting locations. Sven clicks Upload and selects Files.&nbsp;</p>
+<p><img src="images/1750095295212.jpg" alt="" width="1001" height="420" /></p>
+<p>Sven uses the file explorer to navigate to the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/NewElectionVoting.gml" target="_blank" rel="noopener">NewElectionVoting.gml</a> file (C:\FMEData\Data\Elections\NewElectionVoting.gml) and selects it for upload to Resources.&nbsp;</p>
+<p><img src="images/1750095583269.jpg" alt="" width="901" height="469" /></p>
+<p>FME Flow adds the NewElectionVoting.gml to the folder, which is ready to use as source data for workspaces.&nbsp;</p>
+<p><img src="images/1750095622224.jpg" alt="" width="838" height="273" /></p>
+<h3 id="2-create-folder">2) Open Starting Workspace</h3>
+<p>Sven returns to <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/upload-and-use-data-in-resources.fmw" target="_blank" rel="noopener">his workspace</a> in FME Workbench (C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\upload-and-use-data-in-resources.fmw).&nbsp;</p>
+<p><img src="images/1750096267634.jpg" alt="" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>This is the same starting workspace as the previous lesson, Publish Data to FME Flow Resources. If you already have the workspace open in FME Workbench, you can continue working with it.&nbsp;</p>
+</blockquote>
+<h3>3) Remove User Parameters</h3>
+<p>The workspace currently has user parameters to take source files as input for the KML and GML readers. Sven doesn't want end-users to be able to alter the workspace's source data anymore, so he removes both user parameters. In the Navigator, Sven expands User Parameters, right-clicks each, and deletes them.&nbsp;</p>
+<p><img src="images/1750096473963.jpg" alt="" width="646" height="391" /></p>
+<p>FME Workbench doesn't link each source file reader parameter to a user parameter.&nbsp;</p>
+<p><img src="images/1750096593518.jpg" alt="" width="707" height="239" /></p>
+<h3>4) Enter $(FME_SHAREDRESOURCE_DATA) File Paths</h3>
+<p>Sven returns to the Elections folder on FME Flow. He selects the VancouverNeighborhoods.kml file, opens the Actions menu, and selects Properties.&nbsp;</p>
+<p><img src="images/1750097088266.jpg" alt="" width="1043" height="380" /></p>
+<p>Sven copies the System Path and clicks Close.&nbsp;</p>
+<p><img src="images/1750097270292.jpg" alt="" /></p>
+<p>Sven returns to FME Workbench and edits the Source Google KML File or URL parameter for the VancouverNeighborhoods reader. He pastes the System Path value for the KML file.</p>
+<p><img src="images/1750097487429.jpg" alt="" width="839" height="326" /></p>
+<p>Sven repeats the same steps to reference the NewElectionsVoting.gml file in Resources. He returns to FME Flow, gets the System path for the NewElectionsVoting.gml file, and adds it to the Source GML File parameter.&nbsp;</p>
+<p><img src="images/1750097641148.jpg" alt="" /></p>
+<p>Both source files link to the files stored in Resources &gt; Data &gt; Elections on FME Flow. The $(FME_SHAREDRESOURCE_DATA) parameter denotes this. Neither source file connects to a user parameter, so the end-user cannot alter the source file values on FME Flow.</p>
+<h3>5) Publish to FME Flow</h3>
+<p>Sven publishes his workspace to FME Flow, adds it to the Training repository, names it upload-and-use-data-in-resources.fmw, and registers it with the Job Submitter service.&nbsp;</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps on Publishing to FME Flow</summary>
+<div>The publishing wizard sets all configurations for publishing workspaces to FME Flow. To open it, click Publish in the top toolbar.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div>The first steps are to confirm your FME Flow connection, select a Repository to house the workspace, and optionally alter the workspace's name. To create a new Repository, click New and enter its details. &nbsp;</div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>Optionally, you may <em>Upload data files</em> to publish the workspace's source data files to FME Flow along with the workspace. You can control which files from the&nbsp;<em>Select Files...</em> option.</div>
+<div>Next, if your workspace has any connections, you may select whether or not they will also be published to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>The last step of publishing is to register services for the workspace to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" width="532" height="453" /></div>
+<div>After publishing, the translation log generates a report on the publishing and provides a direct link to run the workspace on FME Flow.</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow Services and Publishing to FME Flow, see <a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-20250" target="_self">Deploy Workspaces on FME Flow</a>.</div>
+</details><!-- END: Reusable Custom Expandable Section -->
+<h3>6) Run Workspace</h3>
+<p>Sven opens the Run Workspace page and selects the workspace he just published. Since Sven removed the User Parameters, there are no Published Parameters to configure. Sven clicks Run to run the workspace, which uses the source data stored in Resources.</p>
+<p><img src="images/1750098556981.jpg" alt="" width="778" height="702" /></p>
+<pre>&nbsp;</pre>
+<p>&nbsp;</p>

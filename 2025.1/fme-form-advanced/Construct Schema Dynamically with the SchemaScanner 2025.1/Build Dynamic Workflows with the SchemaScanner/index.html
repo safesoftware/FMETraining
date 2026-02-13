@@ -1,0 +1,24 @@
+<h2 id="introduction">Introduction</h2>
+<p>With the SchemaScanner, you can easily extract and manipulate the schema of your datasets, tackling dynamic workspace issues such as schema standardization and&nbsp;<a href="https://fme.safe.com/webinars/database-tips-tricks-strategies-for-detecting-and-handling-schema-drift/" target="_blank" rel="noopener">schema drift</a>. How does it work? The SchemaScanner gives you a list attribute with attribute names and data types. Downstream in your workspace, you can use this list attribute to manipulate your schema and create flexible workflows. Instead of defining a fixed schema on your writers, you can use the schema from the list attribute to flexibly define the schema at runtime. Quality assurance and schema drift handling just got easier!</p>
+<h2 id="what-is-a-schema">What is a Schema?</h2>
+<p>A schema, sometimes referred to as the "data model," can be described as the structure of a dataset or, more accurately, a formal definition of a dataset&rsquo;s structure.</p>
+<p>Each dataset has its unique schema, which includes feature types, permitted geometries, user-defined attributes, and other rules that define or restrict its content. However, for most users, the most critical aspect of schema is attribute names and data types.</p>
+<h2 id="using-the-schema-scanner">Using the SchemaScanner</h2>
+<p>The SchemaScanner processes features and retrieves their schema by scanning for the attribute name and its data type. It will either scan all features or just a specified number of them. There&rsquo;s also the option to exclude attributes using a Regular Expression to ensure a clean schema output.</p>
+<p>The resulting output is a new schema feature output via the &lt;Schema&gt; output port. This new feature is also given the special attribute and value fme_schema_handling = &lsquo;schema_only&rsquo;, which allows the feature to be recognized by a dynamic writer as a schema feature. If you wish to continue using the original input features, these are passed via the Output port.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For more technical information on the SchemaScanner, check out the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/schemascanner.htm" target="_blank" rel="noopener">documentation</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p><strong>Why you might want to use the SchemaScanner in your workspace:</strong></p>
+<ul>
+<li>You want to ensure your&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/workspaces_dynamic_about.htm" target="_blank" rel="noopener">dynamic writer</a>&nbsp;is receiving a valid schema</li>
+<li>You don&rsquo;t know the schema of incoming data and want to make sure it meets specific standards before being used in a dynamic writer</li>
+<li>You want to modify the schema before it reaches the writer</li>
+<li>You want to expose the schema for validation purposes (checking for schema drift)</li>
+</ul>
+<p><strong>Key things to remember:</strong></p>
+<ul>
+<li>When used in a dynamic workspace, schema features should be output from the SchemaScanner using the Output Schema Features Before Data parameter.</li>
+<li>Most schemas contain attributes you don&rsquo;t need in your final output dataset, so use the Ignore Attributes Containing parameter.</li>
+</ul>

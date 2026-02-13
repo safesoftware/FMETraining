@@ -1,0 +1,96 @@
+<blockquote><span style="color: #222222; font-size: 2.3125em;">Learning Objectives</span></blockquote>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Distinguish between workspace authors and users and their use of parameters.</li>
+<li>Define FME parameters and locate them in FME Form and Flow.</li>
+<li>Define user parameters and locate them in FME Form and Flow.</li>
+</ul>
+<h2>What Are Parameters?</h2>
+<p><strong>Parameters</strong> are controls that define how FME operates; for example, how a reader reads data, how a transformer transforms it, and how a writer writes it. Almost every component in FME has parameters of one type or another. You've already run into them while using FME. In this course, we'll look closer at how they work and how you can allow the person running the workspace to control them at run-time.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>This course focuses on the use of parameters in FME Form. However, parameters are also crucial for constructing self-serve workflows in FME Flow. We recommend completing this course first and then checking out <a href="https://academy.safe.com/build-basic-self-serve-workflows" target="_blank" rel="noopener">Build Basic Self-Serve Workflows</a> and <a href="https://academy.safe.com/build-versatile-self-serve-workflows" target="_blank" rel="noopener">Build Versatile Self-Serve Workflows</a> when you are ready to learn about parameters in FME Flow. We cover those courses in the <a href="https://academy.safe.com/path/fme-flow-authoring" target="_blank" rel="noopener">FME Flow Authoring learning path</a>.</p>
+</blockquote>
+<h2 id="types-of-parameter">Types of Parameter</h2>
+<p>When examining the types of parameters, it&rsquo;s helpful to consider the types of people who use FME and their roles in the process.</p>
+<p><strong>Workspace authors</strong> design and create workspaces. They use FME Workbench and set parameters to control how the workspace runs.</p>
+<p><strong>Workspace users</strong> are the people who use a workspace without necessarily having created it first. They might have little knowledge of FME and may never have used FME Workbench, but they may still need to set parameters to control how the workspace runs.</p>
+<p>In light of these two roles, there are two different types of parameters: <strong>FME parameters</strong>&nbsp;(for authors to use) and&nbsp;<strong>user parameters</strong> (for FME users to use).</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The concept of workspace users who have never heard of FME sounds like an oxymoron. However, FME is an enterprise integration platform. People may use FME at that level without having any knowledge of FME. Users on the client side of FME Flow might use a custom web page or application that uses FME to process the data behind the scenes. So, it's possible to set workspace parameters without knowing what a workspace is!</p>
+</blockquote>
+<h2 id="fme-parameters">FME Parameters</h2>
+<p>FME parameters are those built into the FME Workbench interface. They directly control translations, which can be found in various places. FME parameters can be located in:</p>
+<ul>
+<li>Transformer dialogs (transformer parameters)</li>
+<li>Feature type dialogs (feature type parameters)</li>
+<li>The Navigator (reader, writer, FME Flow, and workspace parameters)</li>
+</ul>
+<p>For example, here are some writer parameters shown in the Navigator:</p>
+<p><img src="images/1724190823092.png" alt="Viewing writer parameters" width="344" height="196" /></p>
+<p>Here, for example, are the FME parameters for a text file writer. They include options to overwrite or append to an existing text file and the type of character encoding that should be used.</p>
+<p>These are parameters the&nbsp;<strong>workspace author</strong> will use. The user is not expected to set these because they are not assumed to have enough experience with Workbench to know where to find the parameter or how to set it.</p>
+<p>For example, the author might decide that the byte order mark should not be written in this output.</p>
+<p><img src="images/1724190848897.png" alt="Setting a writer parameter" width="700" height="177" /></p>
+<p>They double-click the parameter to open a dialog in which they can change the parameter value.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>In case you were wondering, the Byte Order Mark (aka BOM) is a special character found in the header of a text file. It denotes whether the text is in a Unicode encoding, which Unicode encoding it is, and its endianness. This helps different applications&nbsp;read the data correctly.</p>
+<p>You want to know what "endianness" means now, don't you?! I bet you wouldn't guess it has <a href="https://en.wikipedia.org/wiki/Endianness" target="_blank" rel="noopener">to do with boiled eggs</a>...</p>
+</blockquote>
+<h3>Parameter Presets</h3>
+<p>If you are a regular FME user, you may often apply the same parameter values to the same transformers, readers, or writers. For example, you may use the same password in a Joiner transformer or the same tolerance in a Snapper transformer. Presets allow you to save your set of parameter values to use them again and override the installed (FME) default values.</p>
+<p>The Presets button at the bottom of a Parameters dialog allows you to create, load, update, and delete presets, or to use the default FME values:</p>
+<p><img src="images/1750803126349.png" alt="Adding or loading preset" /></p>
+<h2 id="user-parameters">User Parameters</h2>
+<p>User parameters are those that an FME author creates <em>for</em>&nbsp;an FME user to use. In other words, they are a way for the end-user of the workspace to provide their input, regardless of where and how the workspace is being used.</p>
+<h3 id="creating-a-user-parameter">Creating a User Parameter</h3>
+<p>User parameters appear in a particular section of the Navigator window labeled User Parameters. Here, for example, two user parameters have been defined:</p>
+<p><img src="images/1724190877500.png" alt="" width="457" height="259" /></p>
+<p>Each of these user parameters allows the end-user of a workspace to enter information into the translation, such as whether to process line features and what color to write them in.</p>
+<p>You can create user parameters in two ways.</p>
+<p><strong>The Navigator</strong></p>
+<p>One is directly in the Navigator by right-clicking on User Parameters and choosing Manage User Parameters:</p>
+<p><img src="images/1724190887888.png" alt="Creating a user parameter" width="482" height="257" /></p>
+<p>The Parameter Manager dialog lets you create or edit user parameters. You can create a new one by clicking the green plus icon: <img src="images/1706565846319.png" alt="Add user parameter" />. You can choose from many types of user parameters, letting you ensure the user enters the correct information, e.g., a number or a file path.</p>
+<p><img src="images/1724190900579.png" alt="User parameter types" width="204" height="500" /></p>
+<p>Once you choose a type, the right side of the Parameter Manager shows the configuration options. Here's an example where the author is creating a parameter in which the user can enter their name:</p>
+<p><img src="images/1724190920381.png" alt="Configuring a user name user parameter" width="381" height="411" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can add conditional logic controlling groups to guide the user when filling out the parameters. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">See the documentation for more details</a>.</p>
+<p><strong>⭐New for FME 2025.0:</strong> you can add more complex conditional logic. <a href="https://youtu.be/M-FeKIf1WNw?feature=shared" target="_self">Check out this video for more information</a>.</p>
+</blockquote>
+<p><strong>Pre-Linked</strong></p>
+<p>The second way of creating a user parameter is pre-linked. You can do this in the Navigator by right-clicking a parameter and choosing Create User Parameter, or in a transformer dialog, you can click the right-pointing arrow and choose User Parameter &gt; Create User Parameter. This method is convenient and fast because it automatically links the newly created user parameter to the FME parameter you started with (more on linking in a later lesson).</p>
+<p>However, it is less flexible than the first method. Workbench will automatically choose a parameter type that matches the FME parameter you started with, but sometimes, you might want to restrict the options more than this method allows. For example, if you use this method to create a user parameter for the format of a Generic writer, the user will be able to pick from any available FME writer format, which is often overwhelming and can lead to errors.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Try using the pre-linked&nbsp;method first. If you need a more flexible solution, you can delete the created user parameter and make a new one from scratch.</p>
+</blockquote>
+<p>You can also copy, paste, and duplicate user parameters. This allows the workspace author to duplicate existing parameters and make changes instead of having to build several near-identical parameters from scratch:</p>
+<p><img src="images/1724190937078.png" alt="Duplicating a user parameter" width="478" height="426" /></p>
+<p>This includes being able to paste a parameter definition into a different workspace from which it was copied.</p>
+<h3 id="entering-information-into-a-user-parameter">Entering Information into a User Parameter</h3>
+<p>Once a user parameter is defined, the workspace can be run in Prompt for Parameters mode, which is set in the Run menu and enabled by default:</p>
+<p><img src="images/1724190951531.png" alt="Prompt for Parameters setting in the Run menu" width="290" height="235" /></p>
+<p>With this mode activated in FME Workbench, the user is prompted to supply values through a simple dialog:</p>
+<p><img src="images/1724190963234.png" alt="Translation Parameter Values dialog" width="447" height="279" /></p>
+<p>In FME Flow, the user is prompted through a web page:</p>
+<p><img src="images/1724190974862.png" alt="" width="678" height="233" /></p>
+<p>User parameter values can also be set using the <a href="https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html" target="_blank" rel="noopener">FME Flow REST API</a>, allowing developers to interact with FME workspaces programmatically.</p>
+<h3 id="using-a-user-parameter">Using a User Parameter</h3>
+<p>Getting input from a user is pointless if not used, so doing something with that input is necessary.</p>
+<p>User parameters can be employed in several places. Firstly, they can be tied to an FME parameter (more information in the next section), but they can also be used to provide values to transformers and attributes in a workspace.</p>
+<p>For example, here, the author is making use of the color and username parameters (in the FeatureColorSetter and AttributeManager transformers):</p>
+<p><img src="images/1724191007543.png" alt="Using user parameters" width="622" height="264" /></p>
+<p>The author set up these transformers to use the parameter as input by selecting it in the transformer like so:</p>
+<p><img src="images/1724191017503.png" alt="Supplying a value to a transformer parameter with a user parameter" width="760" height="469" /></p>
+<p>When the workspace is run, the end user can select the color of features to write, enter their name into a text field, and enter it into the UpdatedBy attribute in the output.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The screenshot above shows a workspace with parameter prompts and feature caching enabled.</p>
+<p>Be aware: FME only provides the prompt if running a workspace section that uses a published parameter. In other words, a partial run that fetches data from caches may prevent a parameter prompt if that parameter is not used in that partial run.</p>
+<p>You can use Run &gt; Rerun Entire Workspace if you are having trouble getting prompted.</p>
+</blockquote>

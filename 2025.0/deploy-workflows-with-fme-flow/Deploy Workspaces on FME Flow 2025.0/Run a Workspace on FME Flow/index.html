@@ -1,0 +1,74 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Run a workspace on FME Flow.</li>
+<li>Understand how jobs and engines interact.</li>
+<li>Understand the advantage of housing workspaces on FME Flow.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-a-workspace-to-fme-flow.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-a-workspace-to-fme-flow.fmw</span></li>
+</ul>
+<h2 id="running-a-workspace">Configuring a Job&nbsp;</h2>
+<p>The easiest way to run a workspace on FME Flow is through the Run Workspace page. We call each submission to run a workspace a "job."</p>
+<p><img src="images/1745857042307.jpg" alt="" width="270" height="460" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can also browse for workspaces from the Workspaces page. Simply select the repository and click on a workspace name to open it to Run Workspace.</span></p>
+</blockquote>
+<p>On the Run Workspace page, you choose the repository, workspace, and service to run as a job.</p>
+<p><img src="images/1745857012268.jpg" alt="" width="1004" height="523" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The Run Workspace page has an Email Results To parameter. To sucessfully send an email containing the job results, you must configure each of the email <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Subscriptions.htm" target="_blank" rel="noopener">subscriptions</a> under Automations &gt; Notifications (Classic) &gt; Subscriptions. It requires you to input your SMTP account details following <a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/EmailSubscriber.htm" target="_blank" rel="noopener">these instructions</a> for each subscription.&nbsp;</p>
+</blockquote>
+<p>If your workspace contains Published Parameters, the next section on the Run Workspace page allows you to configure the parameter values the workspace will run with. The last section is the Advanced options, which is not required for this course but may be helpful for your future FME Flow workflows. Expand the sections below to learn more.&nbsp;&nbsp;</p>
+<details style="margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;">
+<summary style="background-color: #cce5ff; color: #004085; padding: 12px 20px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; outline: none; user-select: none; border-radius: 6px;">Published Parameters</summary>
+<div style="padding: 15px 20px; background-color: white;">
+<p>When you select a workspace containing Published Parameters, you can set those parameters before running the translation.&nbsp;&nbsp;</p>
+<p><img src="images/1745857297474.jpg" alt="" width="685" height="413" /></p>
+<p>Published parameters are created in FME Workbench, and you have many options for the type of parameters.&nbsp; Parameters can be a source file to input to the workspace, text values to configure how the workspace runs, an input location to query data by, and more. We will cover parameters in more detail in <a href="https://academy.safe.com/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters</a>. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">Creating and Modifying User Parameters</a> and <a href="https://academy.safe.com/path/fme-form-advanced/create-flexible-workspaces-with-parameters" target="_blank" rel="noopener">Create Flexible Workspaces with Parameters</a> provide more information for working with parameters in FME Workbench.&nbsp;</p>
+<h3 id="advanced-parameters"></h3>
+</div>
+</details><details style="margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;">
+<summary style="background-color: #cce5ff; color: #004085; padding: 12px 20px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; outline: none; user-select: none; border-radius: 6px;">Advanced Options</summary>
+<div style="padding: 15px 20px; background-color: white;">
+<p>The Run Workspace page in FME Flow also has an additional section under Advanced. Advanced parameters are FME Flow-specific parameters that provide advanced control over how the workspace will be run. You do not need to know this content for this lesson or course; however, it may be helpful to understand in your future FME Flow workflows.&nbsp;</p>
+<p><strong>Job Queue</strong></p>
+<p>Job Queues manage how the core sends FME Flow jobs to specific Engines or to control the priority of job requests. You may select a predefined Queue to which this job should be sent when it is run. Job Queues can be created and edited from the Engine Management page.</p>
+<p><strong>Queued Job Expiry Time</strong></p>
+<p>This sets the maximum time a job can wait in the queue before being assigned to an engine and run. If a job waits longer than this time in the queue, it will be cancelled and not run. This option is helpful for time-sensitive jobs you do not want to run after exceeding the specified time.</p>
+<p><strong>Running Job Expiry Time</strong></p>
+<p>This sets the maximum time a job can be in the Running state. When this time is exceeded, the job will be cancelled automatically.&nbsp;</p>
+<p><strong>Log Debug</strong></p>
+<p>This is an option to provide additional logging for debugging purposes in the job log. It should be used cautiously as it will likely impact job performance and increase the file size of the job log.&nbsp;</p>
+<p><strong>Other Ways to Run this Workspace</strong></p>
+<p>You can follow the links to create an FME Flow<a style="background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Flow-Apps.htm" target="_blank" rel="noopener">&nbsp;Workspace App</a> or a&nbsp;<a href="https://community.safe.com/s/article/webhooks-and-fme-server" target="_blank" rel="noreferrer noopener">webhook</a>&nbsp;to run your workspace.</p>
+<p><strong>Topics to Notify</strong></p>
+<p>This section lists the <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/topics.htm" target="_blank" rel="noopener">FME Flow Topics</a> alerted when the job succeeds or fails.&nbsp;</p>
+<p><strong>Published Parameters</strong></p>
+<p>This section lists the Published Parameters the workspace has and provides the configuration details for each parameter.&nbsp;</p>
+<h2 id="running-a-job"></h2>
+</div>
+</details>
+<p>Once all parameters are configured to run a workspace, click Run to submit the job request.&nbsp;</p>
+<h2>Running a Job</h2>
+<p>Once you click Run, the FME Flow Core sends the job request to the FME Engines. If an engine is available, the job will run immediately. Otherwise, it will queue until an engine finishes another task and becomes free. A process dialog will appear indicating which state the job is in.&nbsp;</p>
+<p><img src="images/1745866243537.jpg" alt="" width="956" height="119" /></p>
+<p>Once the translation finishes, the engine communicates with the core, and the dialog indicates whether the job completed successfully or failed.</p>
+<p><img src="images/1745866327357.jpg" alt="" width="958" height="157" /></p>
+<h2>Exercise</h2>
+<p>In the previous exercise, Sven published his workspace to FME Flow. He must run it on FME Flow to ensure it functions as expected. Once he knows it functions correctly on FME Flow, he can let his colleagues know the workspace is on FME Flow, and they can run it.&nbsp;</p>
+<p>Follow along with Sven and complete his steps to run the workspace on FME Flow.&nbsp;&nbsp;</p>
+<h3>1) Open Run Workspace</h3>
+<p>Sven navigates to FME Flow and clicks the Run Workspace button on the side menu.&nbsp;</p>
+<h3>2) Configure Workspace Parameters</h3>
+<p>Sven selects the Training repository and the publish-a-workspace-to-fme-flow.fmw workspace. Job Submitter is the only service this workspace uses, so he leaves that value as the default.&nbsp;</p>
+<p>Sven's workspace has no published parameters, so that section does not appear for his workspace.&nbsp;</p>
+<p>Sven does not need to alter any settings under the Advanced section.&nbsp;</p>
+<p><img src="images/1745867477165.jpg" alt="" /></p>
+<h3>3) Run the Workspace</h3>
+<p>Sven clicks the Run button to submit the job. FME Flow runs the workspace and displays a completed message, the Job ID, and the number of Features Written.&nbsp;</p>
+<p><img src="images/1750292672291.jpg" alt="" width="990" height="339" /></p>
+<p>Now, Sven knows the workspace is functioning correctly on FME Flow, and his colleagues may also run it. This ensures they are all using the same workspace and removes the need to manually share the workspace file between multiple people.&nbsp;</p>

@@ -1,0 +1,183 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Carry out a data join with a web-based dataset.</li>
+<li>Write data to a compressed output using the FeatureWriter transformer.</li>
+<li>Upload data to an FTP site (or another online service) using a workspace.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Transportation/CompleteRoads.dwg" target="_blank" rel="noreferrer noopener">CompleteRoads.dwg</a>
+<ul>
+<li>C:\FMEData\Data\Transportation\CompleteRoads.dwg</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/Interopolis/Snowfall.xlsx" target="_blank" rel="noreferrer noopener">Snowfall.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Transportation\Snowfall.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-use-web-based-datasets-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-use-web-based-datasets-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>In this exercise, we're joining snowfall data to a set of road features and writing the results to an FTP site for other users to access. We'll create a workspace that joins local data to an online dataset, processes the data, and writes it to a different web destination.</p>
+<h2 id="1-add-reader">1) Add Reader</h2>
+<p>Start FME Workbench (2025.1 or later), and in a blank workspace, add a reader with these parameters:</p>
+<table class="featureTable sort_table" style="width: 45.8846%; height: 282.172px;">
+<tbody class="tbody">
+<tr style="height: 32.5px;">
+<td style="width: 19.0678%; height: 32.5px;"><strong>Reader Format</strong></td>
+<td style="width: 80.7403%; height: 32.5px;">Autodesk AutoCAD DWG/DXF</td>
+</tr>
+<tr style="height: 136.422px;">
+<td style="width: 19.0678%; height: 136.422px;"><strong>Reader Dataset</strong></td>
+<td style="width: 80.7403%; height: 136.422px;">
+<p>https://s3.amazonaws.com/FMEData/FMEData/Data/Transportation/CompleteRoads.dwg</p>
+<p>or&nbsp;</p>
+<p>C:\FMEData\Data\Transportation\CompleteRoads.dwg</p>
+</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 19.0678%; height: 32.5px;"><strong>Parameters</strong></td>
+<td style="width: 80.7403%; height: 32.5px;">Group Entities By: Attribute Schema</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 19.0678%; height: 32.5px;"><strong>Coordinate System</strong></td>
+<td style="width: 80.7403%; height: 32.5px;">UTM84-10N</td>
+</tr>
+<tr style="height: 48.25px;">
+<td style="width: 19.0678%; height: 48.25px;"><strong>Workflow Options</strong></td>
+<td style="width: 80.7403%; height: 48.25px;">Single Merged Feature Type</td>
+</tr>
+</tbody>
+</table>
+<p>The Group Entities parameter is an AutoCAD-specific option. It ensures we have attributes from the AutoCAD source data exposed in Workbench.</p>
+<p>The Merged Feature Type option treats all the road data as a single map layer, which is fine because we don't want to handle multiple layers separately.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">We are just reading a file from a URL here. If you can access a cloud data storage provider such as Google Drive or Dropbox, try copying CompleteRoads.dwg to a folder on that service. Then, use the Select File From Web functionality to authenticate, connect, and read the data.</span></p>
+</blockquote>
+<h2 id="2-locate-snowfall-dataset">2) Locate Snowfall Dataset</h2>
+<p>In a web browser, browse to the City of Interopolis&nbsp;<strong><a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" target="_blank" rel="noreferrer noopener">Open Data Portal</a></strong>&nbsp;(<a href="https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/Interopolis/interopolis.html</a>).</p>
+<p>Locate the dataset for Snowfall Predictions, right-click on where it says&nbsp;<strong>Excel Spreadsheet</strong>, and choose to copy the URL:</p>
+<p><img class="image image-block image-center" src="images/1723226402703.png" alt="Copying a link" width="569" height="353" /></p>
+<p>The exact command will vary by the web browser.</p>
+<h2 id="3-add-database-joiner-transformer">3) Add DatabaseJoiner Transformer</h2>
+<p>Back in FME Workbench, add a DatabaseJoiner transformer and connect it to the roads feature type. Open the DatabaseJoiner parameters.</p>
+<p>Set the parameters as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Reader Format</strong></td>
+<td>Microsoft Excel</td>
+</tr>
+<tr>
+<td><strong>Reader Dataset</strong></td>
+<td>https://s3.amazonaws.com/FMEData/Interopolis/Snowfall.xlsx</td>
+</tr>
+</tbody>
+</table>
+<p>...where you can paste the URL you copied from the web browser.</p>
+<p>Click the Parameters button and check that the data is being read correctly. The Preview table should show records with the correct columns (StreetId, EstimatedSnowfall, etc.).</p>
+<p>Back in the main DatabaseJoiner dialog, select Snowfall as the join table and select StreetId as both the Feature Attribute and Table Field to be joined:</p>
+<p><img class="image image-block image-center" src="images/1723226701885.png" alt="Configured DatabaseJoiner" width="477" height="404" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If no attributes are available under the Feature Attribute field, you failed to use the Group Entities By: Attribute Schema parameter when adding the AutoCAD reader. To resolve this, the simplest method is to delete and re-add the reader, using the correct options this time.</span></p>
+</blockquote>
+<p>The final parameters to set in the DatabaseJoiner are&nbsp;<em>Fields to Add</em>&nbsp;and&nbsp;<em>Cardinality</em>:</p>
+<p><img class="image image-block image-center" src="images/1723226795094.png" alt="Fields to Add" width="538" height="57" /></p>
+<p>Select the following Fields to Add:</p>
+<ul>
+<li>EstimatedSnowfall</li>
+<li>LastTreated</li>
+<li>Temperature</li>
+<li>WeatherStation</li>
+</ul>
+<p>Ensure Cardinality is set to&nbsp;<strong>Match First (1:0...1+)</strong>; each road feature will be joined to the first matching database record FME finds. This option is least likely to lead to error messages in the log.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The project aims to write the data to KML format. As a training exercise, we're only interested in how and where we write the data. However, a realistic requirement would be to set the color and style of the spatial data being written (in spatial terms, we sometimes call this </span><em style="font-family: inherit; font-size: 1em;">symbology</em><span style="font-family: inherit; font-size: 1em;">). Try adding a KMLStyler and setting features' Color using conditional values. For example, make streets with 0 EstimatedSnowfall green, between 0 and 150 yellow, and over 150 red.</span></p>
+</blockquote>
+<h2 id="4-add-feature-writer-transformer">4) Add FeatureWriter Transformer</h2>
+<p>Now, it's time to write the data. Writing data directly to a web service is more complex, so we'll create a zipped, file-based dataset and then upload it to a web service.</p>
+<p>So, add a FeatureWriter transformer and connect it to the KMLStyler transformer (if you added one) or the DatabaseJoiner transformer (if you didn't).</p>
+<p>Open the parameters and set the writer up as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Writer Format</strong></td>
+<td>OGC / Google KML</td>
+</tr>
+<tr>
+<td><strong>Writer Dataset</strong></td>
+<td>C:\FMEData\Output\Training\RoadSnowfall.kml</td>
+</tr>
+</tbody>
+</table>
+<p>Then click on the dropdown arrow to the right of the Dataset parameter, and choose the option to&nbsp;<strong>Zip Output</strong>:</p>
+<p><img class="image image-block image-center" src="images/1723226950369.png" alt="Zip output" width="721" height="442" /></p>
+<p>This configuration instructs the transformer to write data directly to a zipped (compressed/archived) file. You can manually type in a path, including .zip if you prefer.</p>
+<p>As a final step in this transformer, rename the output feature type to SnowfallPredictions:</p>
+<p><img class="image image-block image-center" src="images/1723227056300.png" alt="Renaming to SnowfallPredictions" width="486" height="233" /></p>
+<p>When you run the workspace, FME will write a dataset. The FeatureWriter will create an attribute called&nbsp;<em>_dataset</em> to record the dataset's name and path. The next step is to upload this file to a web service.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can copy the data to any web service you can access; you'll need to use the appropriate connector transformer. For example, use the DropboxConnector to copy data to Dropbox or the GoogleDriveConnector to copy it to Google Drive.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>You can choose any supported web service you use regularly; the general workflow will be the same.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2>5)&nbsp;Add FTPCaller Transformer</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>&nbsp;</p>
+<p>Alternatively, you can try using a different Connector transformer with a web service you have access to, like a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/googledriveconnector.htm" target="_blank" rel="noopener">GoogleDriveConnector</a> or <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/dropboxconnector.htm" target="_blank" rel="noopener">DropboxConnector</a>.</p>
+</blockquote>
+<p>Add an FTPCaller transformer and connect it to the FeatureWriter's Summary output port. The workspace should now look like this&nbsp;<span id="isPasted">(KMLStyler optional)</span>:</p>
+<h2 id="5-add-fme-server-resource-connector-transformer"></h2>
+<p><img class="image image-block image-center" src="images/1749590827713.png" alt="Adding the FTPCaller" width="804" height="164" /></p>
+<p>Open the FTPCaller parameters. For the URL, click on the down-arrow and select&nbsp;<strong>Open Text Editor...</strong>.&nbsp;</p>
+<p>An overview of the FTPCaller parameters can be found&nbsp;<a href="https://www.loom.com/share/93576f05e16d4899918ae0ba330d6771?sid=6fcbcd4e-fb70-4520-b03a-35b8a66af79b" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<p>The <strong>URL</strong> is set to:</p>
+<p><code>ftp://ftp.safe.com/incoming/training/@UUID()RoadSnowfall.zip</code></p>
+<p>The purpose of the @UUID() is to ensure that you are writing to a unique location each time the workspace is run. This is necessary because the FTP server does not allow overwriting.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you want to configure the FTPCaller to dynamically handle the URL based on the value of _dataset from the FeatureWriter, use the following URL:<br /><code>ftp://ftp.safe.com/incoming/training/@UUID()@ReplaceString(@ReplaceString(@ReplaceRegularExpression(@Value(_dataset),\.zip(.*),,caseSensitive=TRUE),C:,,caseSensitive=TRUE),\,/,caseSensitive=TRUE).zip</code></p>
+<p>The @ReplaceRegularExpression removes the&nbsp;<strong>RoadSnowfall.kml</strong>&nbsp;from the&nbsp;<strong>_dataset</strong>&nbsp;attribute. This is required because the actual path to the file is&nbsp;<strong>C:\FMEData\Output\Training\RoadSnowfall.zip,</strong>&nbsp;not&nbsp;<strong>C:\FMEData\Output\Training\RoadSnowfall.zip\RoadSnowfall.kml.</strong></p>
+<p>The rest of the connection string is using two nested @ReplaceString String Functions to convert a file path into a URL path. The inside @ReplaceString replaces the&nbsp;<strong>C:\</strong>&nbsp;in the&nbsp;<strong>_dataset</strong>&nbsp;attribute with a&nbsp;<strong>/</strong>. This is to ensure that the URL is correct. The outer @ReplaceString replaces all the remaining&nbsp;<strong>\&nbsp;</strong>with&nbsp;<strong>/.</strong></p>
+<p>Finally, we append a&nbsp;<strong>.zip</strong>&nbsp;to the end of the parameter to replace the .zip removed by the @ReplaceRegularExpression function.</p>
+</blockquote>
+<div>
+<p>Next, set the&nbsp;<strong>Transfer Type:</strong>&nbsp;to&nbsp;<strong>Upload from a file</strong>.</p>
+<p>Under&nbsp;<strong>Upload from a File | File to</strong> <strong>Upload</strong>, select the RoadSnowfall.zip file from C:\FMEData\Output\Training\.</p>
+<p><img src="images/1749675381900.png" alt="" /></p>
+<p>&nbsp;Click Open, then OK.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Normally, we'd recommend using the _dataset attribute here instead of hardcoding the path. But that is complicated by using a zipped file in this case.</p>
+<p>If you want to configure the FTPCaller to dynamically handle the File to Upload based on the value of _dataset from the FeatureWriter, click on the down arrow beside&nbsp;<strong>File to Upload</strong>, and select&nbsp;<strong>Open Text Editor.</strong>&nbsp;Enter the following into the Text Editor:<br /><code>@ReplaceRegularExpression(@Value(_dataset),\.zip(.*),,caseSensitive=TRUE).zip</code>.</p>
+<p>This is the same function we used for the URL.</p>
+</blockquote>
+</div>
+<h2>6) Run Translation</h2>
+<p>Save the workspace and then run it.</p>
+<p>In the log file, look for the entry for the FTPCaller.</p>
+<p><img class="fr-fic fr-fil fr-dib fr-draggable" src="images/1749675583461.png" width="932" height="390" /></p>
+<p>Above we can see that the FTPCaller uploaded 0.44 MB to the FTP server, and the URL is logged.</p>
+<p>Congratulations! You have successfully read and written data using web data connectors.</p>

@@ -1,0 +1,54 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define spatial analysis.</li>
+<li>Identify which transformers you can use for a particular spatial analysis task.</li>
+</ul>
+<h2 id="what-is-spatial-analysis">What Is Spatial Analysis?</h2>
+<p>As mentioned in <a href="https://academy.safe.com/learn-spatial-data-concepts" target="_blank" rel="noopener">Learn Spatial Data Concepts</a>, spatial analysis tries to describe, explore, and explain patterns and relationships of topology, geography, and geometry. We use spatial analysis techniques to answer questions about relationships between objects by filtering, measuring, and overlaying&nbsp;spatial data.</p>
+<p>We've already looked at filtering and overlaying, but other spatial analysis techniques can be helpful. The methods covered in this lesson let you modify the structure of your spatial data.</p>
+<h2 id="spatial-analysis-transformers">Spatial Analysis Transformers</h2>
+<p>FME includes over <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Categories/spatial_analysis.htm?page=1&amp;perpage=20&amp;sortby=rank&amp;category=spatialanalysis" target="_blank" rel="noopener">40 spatial analysis transformers</a>. Here, we will introduce a few of the most popular ones.</p>
+<h2 id="clipper">Clipper</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/clipper.htm" target="_blank" rel="noopener">Clipper</a> takes two sets of spatial data as inputs. You can think of it as a cookie-cutter. One (the Clipper) is the cutter. The other (the Candidate) is the cookie. The clipper stamps out shapes in the candidate, creating a new dataset that is the candidate cut to the clipper's boundaries.</p>
+<p>This diagram illustrates area-on-line and area-on-area vector clipping results.</p>
+<ul>
+<li>(1) is a single area Clipper (in blue).</li>
+<li>(2) are the Candidates, a red line that crosses the Clipper (1), and a red area that partially overlays the Clipper (1).</li>
+</ul>
+<p>Both the line and area Candidates are split where they cross the Clipper boundary, and the results are output:</p>
+<ul>
+<li>(3) Portions of Candidates that fall Inside the Clipper (red only)</li>
+<li>(4) Portions of Candidates that fall Outside the Clipper (red only)</li>
+</ul>
+<p><img class="image image-block" src="images/1740684640218.png" alt="Clipper explanation diagram" width="639" height="192" /></p>
+<p>In terms of set theory, the Clipper looks at the intersection of two data streams.</p>
+<p>The Clipper helps you change the boundaries of your data. For example, say you had a dataset of point locations of all the fire halls in a state. If you wanted to extract just the fire halls within a particular city, you could use a polygon of the city boundaries as the clipper and the fire halls as the candidates.&nbsp;</p>
+<p>You can also use the Clipper in combination with other spatial analysis transformers. For example, from the example above, say you wanted to know how many schools were within 500 meters of the fire stations. You could use a Bufferer (see below) to create polygons representing all the areas within 500 meters of the fire stations. Then, you could use the Clipper with the buffered area as the Clipper and the schools as the Candidate.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">As is usually the case with FME, there are many ways to conduct spatial analysis. You could accomplish the same procedure using the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/neighborfinder.htm" target="_blank" rel="noopener">NeighborFinder</a><span style="font-family: inherit; font-size: 1em;">, with the schools as the Base and the fire stations as the Candidate. Either way is valid.</span></p>
+</blockquote>
+<h2 id="bufferer">Bufferer</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/bufferer.htm" target="_blank" rel="noopener">Bufferer</a>&nbsp;creates a buffer zone of specified size around or inside input geometry.&nbsp;</p>
+<p>Its uses include:</p>
+<ul>
+<li>Creating fixed-size zones around features, such as rights-of-way or setbacks</li>
+<li>Determining spatial relationships based on proximity</li>
+<li>Creating variable-size zones around features to represent attribute values</li>
+</ul>
+<p>In this example, we buffered arterial roads (shown in blue) to find address points (shown in green) within a fixed distance. Then, we connected the buffered roads and address points to a SpatialFilter, identifying the addresses within the buffers (blue points).</p>
+<p><img class="image" src="images/BuffererExample01.png" alt="Before buffering" />&nbsp;<img class="image" src="images/BuffererExample04.png" alt="After buffering" /></p>
+<h2 id="dissolver">Dissolver</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/dissolver.htm" target="_blank" rel="noopener">Dissolver</a>&nbsp;removes common boundaries to create larger areas. This transformer accepts two-dimensional polygonal features, including donuts, and can optionally accumulate input attributes.&nbsp;</p>
+<p>The Dissolver forms dissolved polygons along shared edges, removing interior boundaries between adjacent polygons. A common use case for this transformer is simplifying many small features into a larger single feature. For example, combining multiple counties creates a single polygon representing the state.</p>
+<p>In terms of set theory, the Dissolver creates a union of multiple streams of features.</p>
+<p>The example below shows areas before and after we used a Dissolver transformer on our data.</p>
+<p><img class="image image-block image-center" src="images/dissolver_450x187.png" alt="Dissolver explanation" /></p>
+<h2 id="aggregator">Aggregator</h2>
+<p>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/aggregator.htm" target="_blank" rel="noopener">Aggregator</a>&nbsp;combines feature geometries into heterogeneous or homogeneous aggregates. Alternatively, it combines feature attributes without any geometry.</p>
+<p>The example below illustrates a geometric feature of diverse attributes on the left and its aggregated output on the right.</p>
+<p><img class="image image-block image-center" src="images/aggregator.png" alt="Aggregator explanation" /></p>
+<p>The Aggregator is commonly used to combine features into an&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FME_Geometry/Aggregates.htm" target="_blank" rel="noopener">aggregate</a>&nbsp;when building a hierarchical geometry model. For example, you might have a 3D CAD drawing of a house, with the House itself being an aggregate. It contains more aggregates, including Roof and Walls. The Walls are also an aggregate containing four&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!FME_Geometry/Faces.htm" target="_blank" rel="noopener">faces</a>. You can use the Aggregator to build these aggregate geometries.</p>
+<p>You might use the Aggregator if you have a dataset with duplicate polygons of a state's counties but want to combine them so you have only a single polygon per county. There are options to control how attributes are combined. The Aggregator is often used with a Group By parameter to control how the transformer aggregates features. In the county example, the Group By would be an attribute storing the county's name or ID.</p>
+<p>You can use the Aggregator on features with or without geometry.</p>

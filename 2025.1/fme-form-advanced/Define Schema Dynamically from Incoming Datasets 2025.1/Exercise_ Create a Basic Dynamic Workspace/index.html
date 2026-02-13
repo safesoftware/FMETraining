@@ -1,0 +1,84 @@
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/exercise-create-a-basic-dynamic-workspace-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\exercise-create-a-basic-dynamic-workspace-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noreferrer noopener">CommunityMap.gdb.zip</a>&nbsp;
+<ul>
+<li>C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip" target="_blank" rel="noreferrer noopener">Addresses.zip</a>
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>You are working on a workspace to let users translate a Geodatabase into a format of their choice.&nbsp;In an earlier exercise, we built the workspace using a generic writer and a user parameter so the end user could choose the format.</p>
+<p>However, that workspace had a limitation: every output dataset included all the source table attributes. It would also be helpful if that workspace could handle any source Geodatabase, not just the community maps dataset.</p>
+<p>So, let's use dynamic reader and writer feature types to make these improvements.</p>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Start FME Workbench (2025.1 or later) and click Build &gt; Generate Workspace. Fill in the dialog as follows:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Reader Format</strong></td>
+<td>Esri Geodatabase (File Geodb Open API)</td>
+</tr>
+<tr>
+<td><strong>Reader Dataset</strong></td>
+<td><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip</a>&nbsp;or C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</td>
+</tr>
+<tr>
+<td><strong>Writer Format</strong></td>
+<td>Generic (Any Format)</td>
+</tr>
+<tr>
+<td><strong>Writer Dataset</strong></td>
+<td>C:\FMEData\Output\Training</td>
+</tr>
+<tr>
+<td><strong>Writer Parameters</strong></td>
+<td><strong>Output Format:</strong>&nbsp;Esri Shapefile</td>
+</tr>
+<tr>
+<td><strong>Workflow Options</strong></td>
+<td>Dynamic Schema</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/1758829800507.png" alt="Generate Workspace dialog configured for a dynamic translation" width="595" height="507" /></p>
+<p>The dynamic schema parameter is essential to handle all aspects of the source schema for input datasets.</p>
+<h2 id="2-inspect-workspace">2) Inspect Workspace</h2>
+<p>Inspect the newly created workspace:</p>
+<p><img class="image image-block image-center" src="images/1723493269682.png" alt="Generated workspace" width="511" height="107" /></p>
+<p>There is one reader feature type and one writer feature type. The reader feature type shows a list of attributes if you expand it (via the right-pointing arrow), but the writer feature type doesn't. It is, however, labeled&nbsp;<strong>&lt;Dynamic&gt;</strong>.</p>
+<p>As in the previous exercise, there are Feature Types to Read and Output Format user parameters.</p>
+<p>If you wish, you can create a more limited version of the output format parameter by following steps 3-5 in the previous exercise, although this isn't necessary for what we're doing here.</p>
+<p>But please don't delete the SourceDataset_FILEGDB user parameter; we'll need that soon.</p>
+<h2 id="3-run-workspace">3) Run Workspace</h2>
+<p>Run the workspace with Prompt for User Parameters enabled.</p>
+<p>When prompted, select some source tables from Feature Types to Read (any will do) and set the output format (again, any will do, though note that some will produce nonsensical output if you haven't limited the options). The workspace will run to completion. Check the output to ensure it is correct - it should be in the specified format and should preserve the original schema.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>When you use the View Written Data button on a dynamic or generic writer feature type, FME will usually show the Select Dataset to View dialog. This dialog appears because FME does not know the dataset format and path in advance. If you run into this issue, simply specify the correct format and dataset to view the data.</p>
+<p><img src="images/1723493577958.png" alt="Filling out Select Dataset to View" /></p>
+</blockquote>
+<h2 id="4-rerun-workspace">4) Rerun Workspace</h2>
+<p>Now, rerun the workspace.</p>
+<p>Be sure to use the option to Rerun Entire Workspace (Shift+F5):</p>
+<p><img class="image image-block image-center" src="images/1758830010254.png" alt="Rerun Entire Workspace option" /></p>
+<p>Otherwise, FME would use cached data instead of the actual source data, which is not what we want.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you use Run Workspace (F5), you will not be prompted to choose the source (File Geodatabase) parameter in the Translation Parameter Values dialog. If the source parameter is missing from the prompts, you likely chose Run Workspace instead of Rerun Entire Workspace.</span></p>
+</blockquote>
+<p>When prompted, enter&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip</a>&nbsp;for the File Geodatabase parameter (or click the browse button and browse to C:\FMEData\Data\Addresses\Addresses.gdb).</p>
+<p>Clear the Feature Types to Read parameter and click Run to rerun the workspace.</p>
+<p>Inspect the output. The workspace wrote the address data instead of the Community Mapping data:</p>
+<p><img src="images/1758830210360.png" alt="Address data" /></p>
+<p>Notice that the output feature types (PostalAddress and PostcodeBoundaries) are all as listed in the original data. Also, notice that the attributes are the same as in the original.</p>
+<p>This result shows that a dynamic workspace can handle any source schema and write it out to a new dataset just as it was in the source data.</p>

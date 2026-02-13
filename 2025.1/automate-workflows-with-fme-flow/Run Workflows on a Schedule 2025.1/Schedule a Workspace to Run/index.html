@@ -1,0 +1,150 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Understand the difference between Schedules and Automations.</li>
+<li>Understand the different types of Schedules on FME Flow.</li>
+<li>Create and trigger a Schedule on FME Flow.&nbsp;</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject">Starting FME Flow Project</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\automate-workflows-with-fme-flow--starting-project.fsproject</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow.&nbsp;</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>1) Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener">starting project</a> and the<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener"> encryption key</a>.</div>
+<div>2) Upload the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/automate_workflows_with_fme_flow.jceks" target="_blank" rel="noopener">automate_workflows_with_fme_flow.jceks</a> encryption key to your FME Flow. This must be done by an fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload automate-workflows-with-fme-flow--starting-project.fsproject as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1754602691120.jpg" alt="" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1754602971975.jpg" alt="" /></div>
+<div>6) The next step is to select connections and tokens to import. By default, they are not selected to be imported. <strong>Select the FME Training PostGIS Database Connection to import.</strong> If it isn't imported, the workflows will not run successfully. Click Continue.&nbsp;</div>
+<div><img src="images/1754602868434.jpg" alt="" /></div>
+<div>7) The Resolve Owners step only allows you to reassign the project contents to a different user if the admin user doesn't exist on your FME Flow. Click Continue and then click Import Project from the Additional Options step. The project will import and display its import status from the same page.</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If it still fails, contact us at train@safe.com.&nbsp;</div>
+</details>
+<h2 id="what-is-scheduling">What are Schedules?</h2>
+<p>Schedules allow you to run a workspace on FME Flow at specific times in the future. You can configure a Schedule to run your workspace once at a particular time or repeatedly on an interval. Once you create and enable a Schedule, the FME Flow Core ensures the workspace submits to run at the correct time in the future. When a scheduled time occurs, the Core sends the workspace to the FME Flow Engines for processing.</p>
+<p>You can run a workspace on a schedule with Automations in FME Flow, which you will learn about in the next lesson. The main advantage of using Automations to create scheduled workflows is using multiple workspaces and external actions. In contrast, Schedules limit you to only running one workspace and give you an additional option to run the workspace only once in the future.&nbsp;</p>
+<h2>Creating Schedules</h2>
+<p>To create a Schedule to run a workspace, expand Schedules on the side menu and select Create Schedule. A form opens for you to fill out to choose your workspace and set your schedule.&nbsp;</p>
+<p><img src="images/1753718899592.jpg" alt="" width="934" height="686" /></p>
+<p>You must name your schedule and optionally give it a description and tags.&nbsp;</p>
+<p>The Enabled option determines whether the Schedule will run actively. If you select Enabled, it will run on the schedule you configure as soon as you finish creating it. If you do not select Enabled, FME Flow creates the Schedule, but FME Flow will not actively monitor and run it.&nbsp;</p>
+<p>Next, you configure the Schedule Type, which sets when and how often your workspace will run in the future.&nbsp;</p>
+<h3>Schedule Types</h3>
+<p>There are four different schedule types that you can set for Schedules:</p>
+<ul>
+<li>Basic
+<ul>
+<li>Repeats based on a calendar-friendly selection of intervals derived from a specified&nbsp;<span class="ParameterName">Start&nbsp;</span>time</li>
+<li>For example, you schedule the workflow to run weekly on Tuesdays. &nbsp;<br /><img src="images/1752773066229.jpg" alt="" /></li>
+</ul>
+</li>
+<li>Repeat on Interval
+<ul>
+<li>Repeats in intervals from a list of predefined units.</li>
+<li>For example, you set the workflow to run once every 3 hours.&nbsp;<br /><img src="images/1752773111729.jpg" alt="" /></li>
+</ul>
+</li>
+<li>CRON Expression
+<ul>
+<li>Repeats based on your cron expression.</li>
+<li>For example, you use the expression <span style="font-family: 'courier new', courier;">0 0,15 0,8 LW * ? *</span> to trigger the workflow to run at 8:15 am on the last weekday of every month.&nbsp;<br /><img src="images/1752773155626.jpg" alt="" /></li>
+</ul>
+</li>
+<li>Occur Only Once
+<ul>
+<li>Runs once only at the specified <span class="ParameterName">Start</span> time.</li>
+<li>For example, you need to run your workspace once at a set time and date in the future, like next Wednesday at 9:15 am.&nbsp;<br /><img src="images/1753718982936.jpg" alt="" /></li>
+</ul>
+</li>
+</ul>
+<h3>Date Range</h3>
+<p>The following section allows you to set a date range for FME Flow to run the schedule for all Schedule Types except Only Occur Once. You enter the date and time for the schedule to start running the workspace, and optionally, enter a date and time when FME Flow will stop running the schedule. You can select Start Immediately to begin running the schedule as soon as you finish creating it. Likewise, you can choose the Does Not Expire option if you want the schedule to continue to run until you manually stop it.&nbsp;</p>
+<p><img src="images/1753719063800.jpg" alt="" /></p>
+<h3>Workspace</h3>
+<p>To set the workspace you want to run on the schedule, select the repository housing the workspace and then the workspace itself. If the workspace has any Published Parameters, a new section will appear for you to configure the parameter values you'd like the workspace to use when running on the schedule. FME Flow automatically selects the Use Default option for the parameters. You may deselect it and configure a different parameter value.&nbsp;</p>
+<p><img src="images/1753719250429.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on Parameters, see <a style="background-color: #ffffff;" href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters</a> and <a href="https://academy.safe.com/path/fme-form-advanced/create-flexible-workspaces-with-parameters" target="_blank" rel="noopener">Create Flexible Workspaces with Parameters</a>.&nbsp;</p>
+</blockquote>
+<p>The last two sections are optional for you to configure. Notifications allow you to select a <a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/Monitoring_FME_Flow_Activity_Using_Notifications.htm#Monitori2" target="_blank" rel="noopener">Topic</a> to which FME Flow sends a message after completing the workspace translation. The <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/schedules.htm#Advanced" target="_blank" rel="noopener">Advanced</a> section includes Job Queue control, expiry times, and an option for Log Debug mode.&nbsp;</p>
+<p>Once you're satisfied with your schedule settings, click Create to finalize and create it. You will see it from the Manage Schedules page.</p>
+<p><img src="images/1752776078347.jpg" alt="" width="1373" height="444" /></p>
+<p>If you need to edit the schedule, you can access it by clicking on it on the Manage Schedules page. You can edit all schedule settings except the name of the schedule.&nbsp;&nbsp;</p>
+<p><img src="images/1752870049113.jpg" alt="" width="843" height="706" /></p>
+<h2>Testing Schedules</h2>
+<p>You may test your schedule before FME Flow triggers it to run, giving you more confidence that the workspace will function on the schedule as you expect. From the Manage Schedules page, click the box to select your schedule, expand the Actions options, and then select Trigger. FME Flow will immediately submit the workspace to run as you configured it in the schedule.&nbsp;</p>
+<p><img src="images/1752776986352.jpg" alt="" /></p>
+<h2>Exercise</h2>
+<p><img src="images/1752868028433.png" alt="" width="331" height="351" /></p>
+<p>Jennifer, a GIS specialist in a city's GIS department, frequently runs a workspace to update Parks data between two databases. Her workspace reads Parks data from a PostGIS database and updates a SQLite database with the data. Jennifer tries to remember to run it daily, but sometimes she forgets. To avoid data inconsistencies and ensure the SQLite database is consistently kept up-to-date, Jennifer will configure this workspace to run on an FME Flow Schedule.&nbsp;</p>
+<p>Follow along with Jennifer's steps as she creates and configures the workspace to run daily on FME Flow.&nbsp;</p>
+<h2>1) Create a Schedule</h2>
+<p>Jennifer has already published her workspace to FME Flow, ParksDatabaseUpdate.fmw, stored in the Parks Data Updates repository.&nbsp;</p>
+<p>On the left-side menu of FME Flow, Jennifer clicks Schedules, then Create Schedule.&nbsp;&nbsp;</p>
+<p><img src="images/1753719889817.jpg" alt="" width="276" height="513" /></p>
+<p>The Create New Schedule form opens.&nbsp;</p>
+<p>Jennifer names the schedule&nbsp;<em>Parks Data Sync Schedule</em> and sets the Schedule Type to&nbsp;<em>Repeat on Interval</em>. She sets the interval to repeat once a day.&nbsp;</p>
+<p><img src="images/1752785742810.jpg" alt="" /></p>
+<p>Under the Date Range, Jennifer opens the calendar and sets the schedule to start tomorrow at 8:00 am.&nbsp;</p>
+<p><img src="images/1753720238665.jpg" alt="" width="408" height="529" /></p>
+<p>She leaves the End date blank and ensures Does Not Expire is selected. Her schedule will start running tomorrow until she or one of her colleagues with access to the schedule manually turns it off.&nbsp;</p>
+<p><img src="images/1753720112891.jpg" alt="" /></p>
+<p>For the workspace to run on the schedule, Jennifer selects the Parks Data Updates repository and the ParksDatabaseUpdate.fmw workspace.</p>
+<p><img src="images/1752849609586.jpg" alt="" /></p>
+<p>This workspace has two published parameters - one for a database connection and one for the SQLite database output location. Jennifer does not need to alter these, so she leaves them with the default values. The workspace writes the&nbsp; SQLite database to the Output folder in FME Flow's Resources Data folder, specified by the $(FME_SHAREDRESOURCE_DATA) parameter.&nbsp;</p>
+<p>Jennifer does not set any settings in the Notifications and Advanced sections, scrolls to the bottom of the page, and clicks Create.&nbsp;</p>
+<p><img src="images/1753720365104.jpg" alt="" /></p>
+<p>Jennifer sees her new schedule on the Schedules page and ensures it is active.&nbsp;</p>
+<p><img src="images/1752850592283.jpg" alt="" width="1281" height="408" /></p>
+<h3>2) Trigger Schedule to Test&nbsp;</h3>
+<p>Jennifer's schedule will run at 8:00 am tomorrow. She wants to check that the workspace runs as she expects and updates the SQLite database in Resources. She selects the Parks Data Sync Schedule, expands the Actions menu, and selects Trigger.&nbsp;</p>
+<p><img src="images/1752850920222.jpg" alt="" width="1431" height="368" /></p>
+<p>FME Flow triggers the schedule and runs the ParksDatabaseUpdate.fmw. Jennifer navigates to Resources &gt; Data &gt; Output and ensures the timestamp of the Parks.sqlite database shows it was recently updated.&nbsp;</p>
+<p><img src="images/1753720472416.jpg" alt="" /></p>
+<p>Jennifer has successfully created a schedule on FME Flow to run a workspace daily. Automatically running the workspace on a schedule decreases the time she spends manually running the workspace each day and ensures data consistency across the databases.&nbsp;</p>

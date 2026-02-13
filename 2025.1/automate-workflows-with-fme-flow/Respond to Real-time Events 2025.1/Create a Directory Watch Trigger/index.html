@@ -1,0 +1,112 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Understand different directory watch trigger options.</span></li>
+<li>Create a new Automation.</li>
+<li>Configure and use the Resource or Network Directory (updated) Trigger.</li>
+<li>Use a Resources or Network Directory (updated) Trigger to poll an FME Flow Resource.</li>
+<li><span style="font-family: inherit; font-size: 1em;">Understand when to use Debug and Production modes in Automations.&nbsp;</span></li>
+</ul>
+<h2><span style="font-family: inherit; font-size: 1em;">Resources</span></h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Building Footprints Esri Shapefiles</a>&nbsp;| C:\FMEData\Data\Engineering\BuildingFootprints</li>
+</ul>
+<h2><span style="font-family: inherit; font-size: 1em;">Directory Watch Triggers</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">FME Flow's event-based triggers watch for events in external applications, or within FME Flow, and trigger an Automation when a specific event occurs. Many of these triggers are directory watch triggers where FME Flow watches a directory for an updated file or dataset. The <strong>Resource or Network Directory (updated)</strong> trigger monitors an FME Flow Resources or network drive (via a UNC path) for file additions, modifications, and deletions. Other common triggers include the&nbsp;<strong>FTP Directory (updated)</strong>,&nbsp;<strong>Amazon S3 Bucket (updated)</strong>, and&nbsp;<strong>Dropbox Directory (updated)</strong>.&nbsp;</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The primary use case for these triggers is to monitor a data storage location for any changes. Once a change occurs, FME Flow triggers the Automation to run and passes the file to a workspace to process.&nbsp;&nbsp;</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1754250599345.jpg" alt="" /></span></p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Some of these trigger protocols have corresponding external action protocols where FME Flow pushes files to the data storage location. For a complete list of trigger and action protocols, see our <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-General/Automations.htm">Automations documentation</a>.&nbsp;</span></p>
+</blockquote>
+<h2><span style="font-family: inherit; font-size: 1em;">Automation Modes and Logs</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">Once you finish building your Automation, you must start it to begin actively watching for file changes. FME Flow Automations has two running modes: Debug and Production. You should use Debug mode when building and testing your Automation, and then you should use Production mode when your Automation is built and ready to deploy and run without intervention.&nbsp;</span></p>
+<h3><span style="font-family: inherit; font-size: 1em;">Debug Mode</span></h3>
+<p><span style="font-family: inherit; font-size: 1em;">While you build and test your Automation, you should use Debug mode. Click the Debug button in the top toolbar to start your Automation in Debug mode.&nbsp;</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1754252750252.jpg" alt="" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">A warning message appears to warn you about running an Automation in Debug mode, and then once you confirm, a message displays in the Automation canvas that it is running in Debug mode. You can access the Automation log file from the message (A) or View Debug Log in the Automations menu (B). While running in Debug mode, FME Flow temporarily stores the Automations log files in the FME Flow database. FME Flow clears the log file each time the Automation restarts and does not store the files permanently.&nbsp;</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1754253778873.jpg" alt="" /></span></p>
+<p>&nbsp;</p>
+<h3><span style="font-family: inherit; font-size: 1em;">Production Mode</span></h3>
+<p><span style="font-family: inherit; font-size: 1em;">Once you've built your Automation, start it in Production mode by clicking the Start button. </span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1754252399256.jpg" alt="" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Again, the Automations canvas displays a running message.&nbsp;</span></p>
+<p><img src="images/1753809837022.jpg" alt="" width="1273" height="214" /></p>
+<p>To access the log files for your Automation running in Production mode, use the Automations Menu and select View Log Files or navigate to the logs through Resources &gt; Logs &gt; automations.&nbsp;</p>
+<p><img src="images/1753809999362.jpg" alt="" width="252" height="509" /></p>
+<div class="box message info">
+<div class="inner">
+<p class="bd">In Production Mode, FME Flow stores the logs for all Automations in Resources &gt; Logs &gt; automations. Additionally, FME Flow combines the logs for all Automations and separates the files by Automation components. For internal and external actions, the log files begin with <code>action_</code> and for triggers, the log files start with <code>trigger_</code>, and the trigger or action type follows each. For an Amazon S3 bucket trigger, the log file is called trigger_s3watch.log. For an Email external action, the log file is called action_email.log. You may have to filter through the logs to find information about your specific Automation, as FME Flow combines information from all Automations with the trigger or action. The fmeautomations.log file is key and contains metadata about assembling, starting and stopping, and running Automations. FME Flow saves the Production logs and only removes them according to System Cleanup settings.&nbsp;</p>
+<div class="bd"><img src="images/1753395507752.jpg" alt="" /></div>
+<p class="bd">The log files significantly differ between Debug and Production modes for FME Flow Automations. It's essential to understand them to avoid any information loss and ensure you are using the appropriate running mode for your Automations. To summarize the differences, here are a few points:</p>
+<ul>
+<li>You should use Debug mode when building and testing your Automation. FME Flow combines log information into a single log file for the Automation and stores it temporarily in the FME Flow database. FME Flow clears the log file each time the Automation restarts.&nbsp;</li>
+<li>You should use Production mode when you finish building your Automation and are ready to leave it to run consistently. FME Flow separates the log files by nodes&mdash;triggers and actions&mdash;and stores them according to their trigger or action type. FME Flow combines logs from all Automations containing the same trigger or action.&nbsp;</li>
+</ul>
+<div class="bd"><span style="font-size: 2.3125em;">Exercise</span></div>
+</div>
+</div>
+<p><img src="images/1753369293290.png" alt="" width="285" height="302" /></p>
+<p>Jennifer, a GIS specialist, is working on a project that updates a geodatabase with new shapefiles of construction updates. She manually checks a Resource directory for new files daily, but knows she will save time and process the updates faster with FME Flow Automation.</p>
+<p>Follow along with Jennifer's steps as she creates an Automation that triggers when someone adds or modifies files in a Resources folder.&nbsp;</p>
+<h3 id="1-create-resources-folder">1) Create Resources Folder</h3>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You may skip this step if the BuildingUpdates folder already exists in Resources &gt; Data.&nbsp;</p>
+</blockquote>
+<p>The first step is to create a Resources folder to upload the data. Jennifer opens the FME Flow web interface and navigates to the Resources page. She opens the Data folder and creates a new folder called BuildingUpdates.&nbsp;</p>
+<p><img src="images/1753385343039.jpg" alt="" width="1789" height="509" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<h3 id="2-create-automation">2) Create Automation</h3>
+<p>Now, Jennifer opens Automations and clicks Create Automation. The Get Started window opens, and Jennifer selects Create New... The Automations canvas begins with a trigger that is ready to configure.&nbsp;</p>
+<p><img src="images/1753370807647.jpg" alt="" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Expand the Menu options and select Hide Guides to remove the Next Action guides.&nbsp;</p>
+</blockquote>
+<h3 id="3-define-trigger-parameters">3) Add Resource or Network Directory Trigger</h3>
+<p>Jennifer clicks the trigger icon to open the Trigger Details pane. From the Trigger options, Jennifer selects Resource or Network Directory (updated).&nbsp;</p>
+<p><img src="images/1753385964914.jpg" alt="" width="801" height="603" /></p>
+<p>For the Directory to Watch parameter, Jennifer clicks the ellipsis button to browse the FME Flow Resources. She selects her newly created BuildingUpdates folder in the Data folder.</p>
+<p><img src="images/1753386089935.jpg" alt="" width="1178" height="477" /></p>
+<p>Jennifer leaves the Watch Subdirectories and Watch Folders parameters set to No since she only needs to monitor files directly in the BuildingUpdates folder. For the Event to Watch parameter, Jennifer deselects Delete to only watch for new files or file updates. She doesn't need to update the database if someone deletes files from this directory. Jennifer changes the Poll Interval to 5 seconds. Jennifer clicks the Validate button to ensure the trigger settings are valid.</p>
+<p><img src="images/1753386207871.jpg" alt="" /></p>
+<p>Once successfully validated, she clicks Apply to close the Resource or Network Directory Details.&nbsp;</p>
+<p><img src="images/1753386275532.jpg" alt="" /></p>
+<h3 id="4-log-message">4) Log Message</h3>
+<p>Before Jennifer configures FME Flow to process the shapefile data with a workspace, she wants to ensure the trigger functions as she expects. Jennifer adds an internal action and connects it to the trigger success port. She opens the Action Details and sets a Log a message action.</p>
+<p><img src="images/1753386417029.jpg" alt="" /></p>
+<p>For Formatted Message, Jennifer clicks the drop-down options, expands Event, and selects Event as JSON. FME Flow will log the JSON message the trigger sends when FME Flow detects an updated or modified file in the BuildingUpdates folder.&nbsp;</p>
+<p><img src="images/1753386510197.jpg" alt="" width="400" height="357" /></p>
+<p>Jennifer clicks Apply to save and close the Log Details.&nbsp;</p>
+<p><img src="images/1753386586230.jpg" alt="" width="419" height="527" /></p>
+<h3 id="5-start-automation">5) Start Automation in Debug Mode</h3>
+<p>Jennifer saves her Automation and names it <em>Incoming Building Footprints</em>.</p>
+<p><img src="images/1753386710874.jpg" alt="" /></p>
+<p>The FME Flow Automation must be running to monitor the BuildingUpdates folder actively for changes. Jennifer clicks Debug to start the Automation in Debug Mode to test whether the trigger functions as she expects.</p>
+<p><img src="images/1753386784323.jpg" alt="" /></p>
+<p>A warning pops up about running the Automation in debug mode; Jennifer clicks Debug to confirm and close the warning. The Automation canvas will update to show it is running in Debug Mode.&nbsp;</p>
+<p><img src="images/1753386835976.jpg" alt="" /></p>
+<h3 id="6-test-automation">6) Test Automation</h3>
+<p>With the Automation running, Jennifer must add shapefiles to the BuildingUpdates folder to trigger the Automation. She navigates to Resources &gt; Data &gt; BuildingUpdates and selects Upload &gt; Files.&nbsp;</p>
+<p><img src="images/1753387067577.jpg" alt="" width="1294" height="348" /></p>
+<p>She uploads all files of the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noopener">update001 shapefile</a> (.dbf, .prj, .shp, .shx) to the folder from C:\FMEData\Data\Engineering\BuildingFootprints.&nbsp;</p>
+<p><img src="images/1753387099259.jpg" alt="" /></p>
+<p>FME Flow uploads the files to the BuildingUpdates folder, triggering the Automation.</p>
+<p><img src="images/1753387208403.jpg" alt="" width="1049" height="400" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are not using a Safe Software training machine, you can <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">download the source shapefile datasets</a>, then upload one shapefile of updates to FME Flow.&nbsp;</p>
+</blockquote>
+<p>Once the files are uploaded, Jennifer returns to the Incoming Building Footprints Automation. She expands the Menu and selects View Debug Log.</p>
+<p><img src="images/1753388534085.jpg" alt="" width="1012" height="595" /></p>
+<p>She checks for any CREATE messages in the log file and refreshes the log if needed. Jennifer sees four CREATE events triggered by the four shapefile files.&nbsp;</p>
+<p><img src="images/1753388658219.jpg" alt="" width="1399" height="458" /></p>
+<p>Now Jennifer knows the Resource or Network Directory Watch Trigger works! In the next exercise, she will process each shapefile with a workspace to update the geodatabase.&nbsp;</p>
+</div>
+</div>
+</div>
+</div>

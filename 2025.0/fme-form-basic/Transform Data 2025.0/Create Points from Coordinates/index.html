@@ -1,0 +1,124 @@
+<h2>Learning Objectives</h2>
+<p>After completing this unit, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use the VertexCreator to create point geometry from coordinate attributes.</li>
+<li>Use Visual Preview to identify when features do not have a coordinate system set.</li>
+<li>Use the Coordinate System parameter in a transformer to set a coordinate system on features.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/create-points-from-coordinates.fmw" target="_blank" rel="noopener">Starting workspace</a><br />
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\create-points-from-coordinates.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/create-points-from-coordinates-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\create-points-from-coordinates-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+</ul>
+<h2 id="connect-to-a-database">Adding a VertexCreator</h2>
+<p>Jennifer expects this data to have point geometry, but currently, it only exists as tabular data. However, she has Latitude and Longitude attributes, so she knows she can use the <strong>VertexCreator</strong> transformer to generate points.</p>
+<p>She opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/create-points-from-coordinates.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench (2025.0 or later).</p>
+<p>She adds one after the <strong>JSONFragmenter</strong> using Quick Add:</p>
+<p><img src="images/1742490901387.png" alt="Added a VertexCreator" width="527" height="91" /></p>
+<p>She double-clicks it to open its parameters and configures them like this:</p>
+<table style="border-collapse: collapse; width: 99.9509%;" border="1">
+<tbody>
+<tr>
+<td style="width: 49.9754%;"><strong>X Value</strong></td>
+<td style="width: 49.9754%;">Longitude</td>
+</tr>
+<tr>
+<td style="width: 49.9754%;"><strong>Y Value</strong></td>
+<td style="width: 49.9754%;">Latitude</td>
+</tr>
+</tbody>
+</table>
+<p>She clicks <strong>OK </strong>to close the dialog.</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>You can set a transformer parameter to use feature attributes by clicking the drop-down arrow next to the parameter and selecting the attribute you'd like to use. This means the transformer will use the value of that attribute for each feature it processes.</p>
+<p><img src="images/1742491188782.png" alt="Using attribute values in a transformer parameter" /></p>
+</blockquote>
+<h2 id="connect-to-a-database">Identifying Coordinate System Problems</h2>
+<p><span style="font-family: inherit; font-size: 1em;">Jennifer clicks the <strong>Run</strong> button to run her workspace.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The <strong>VertexCreator</strong> transformer runs and creates point geometry for her features.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">She inspects the cache using&nbsp;<strong>Visual Preview</strong>.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">However, she can tell her points are not aligned with the background map</span><span style="font-family: inherit; font-size: 1em;">. She expects to see the points located in the area around Vancouver, British Columbia, Canada, but they are not there:</span></p>
+<p><img src="images/1712944068142.png" alt="Missing coordinate system information" width="400" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">That's because they don't have a coordinate system defined. There are clues Jennifer uses to determine this is a coordinate system problem:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">The features do not appear where she expects. She expected to see them near Vancouver, but they are near <a href="https://en.wikipedia.org/wiki/Null_Island" target="_blank" rel="noopener">Null Island</a>.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">The <strong>Graphics</strong> view has a warning ribbon that informs her, "Some features in 'VertexCreator: Output' may not align with the background map."</span></li>
+<li>The <strong>Graphics</strong> view reports the data uses "Unknown Units" at the bottom right.</li>
+<li>The <strong>Feature Information Window </strong>reports that the features' <strong>Geometry &gt; Coordinate System</strong> is Unknown.</li>
+</ul>
+<h2 id="connect-to-a-database">Set Coordinate System</h2>
+<p>To fix this problem, Jennifer opens the VertexCreator again, sets the Coordinate System to LL84, and&nbsp;clicks <strong>OK</strong>.</p>
+<p><img src="images/1742491435543.png" alt="Setting Coordinate System in the VertexCreator" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p><strong>⭐ New for FME 2024.2: </strong>you can now set feature coordinate systems directly in the VertexCreator. Suppose you need to set a coordinate system otherwise. In that case, you can use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/coordinatesystemsetter.htm" target="_blank" rel="noopener">CoordinateSystemSetter</a> transformer if you know the coordinate system but it's not defined or the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/reprojector.htm" target="_blank" rel="noopener">Reprojector</a> transformer if you need to change the coordinate system.</p>
+</blockquote>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>FME automatically reads coordinate systems from spatial data. However, since we created the points from attributes, no coordinate system information is available to read, so we have to define the system manually.&nbsp;</p>
+</blockquote>
+<p>She runs her workspace.</p>
+<p>Then, she inspects the results of the <strong>VertexCreator's Output</strong> port. She sees 100 point features, correctly located in the Vancouver area:</p>
+<p><img src="images/1712865851281.png" alt="Resulting points" width="400" /></p>
+<p><em>Map tiles &copy;&nbsp;<a href="https://www.stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>, &copy;&nbsp;<a href="https://openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a>, &copy;&nbsp;<a href="https://www.openstreetmap.org/about/" target="_blank" rel="noopener">OpenStreetMap contributors</a>, &copy;&nbsp;<a href="https://academy.safe.com/connect-to-data/Stamen%20Design" target="_blank" rel="noopener">Stamen Design</a></em></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>Once your data has geometry in FME, you can use any of the many spatial data transformers (<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Categories/spatial_analysis.htm?TocPath=_____17" target="_self">here's a partial list</a>). Just ensure your data is in the same coordinate system when using these transformers.</p>
+</blockquote>
+<h2 id="run-the-workspace">Add Geodatabase Writer</h2>
+<p>Now that her data has the correct attributes and geometry, it's time to write it to geodatabase.</p>
+<p>She types Esri Geo, and Quick Add opens. She notices there are many geodatabase formats available in FME. She chooses <strong>Esri Geodatabase (File Geodb Open API) </strong>under the <strong>Writers </strong>header. This format does not require an Esri license.</p>
+<p><img src="images/1712944829194.png" alt="Adding an Esri Geodatabase Open API writer using Quick Add" width="600" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>Make sure you select &nbsp;Esri Geodatabase (File Geodb Open API) under the Writers section. People often accidentally&nbsp;select from the Readers section here, which is not what we want.</p>
+</blockquote>
+<p>Once she has selected that format in the Quick Add list, selecting the one under <strong>Writers</strong> and not <strong>Readers,</strong> she hits Enter or double-clicks it.</p>
+<p>The <strong>Add Writer </strong>dialog opens. She sets the <strong>Dataset</strong> parameter to C:\FMEData\Output\Training\BusinessOwners.gdb. The writer will create this folder if it does not already exist:</p>
+<p><img src="images/1712945243075.png" alt="Add Writer dialog filled out" width="500" /></p>
+<p>She then clicks the&nbsp;<strong>Parameters </strong>button:</p>
+<p><img src="images/1712945345653.png" alt="Parameters button" width="500" /></p>
+<p>She enables <strong>Overwrite Existing Geodatabase</strong>:</p>
+<p><img src="images/1717175382522.png" alt="Enabling Overwrite Existing Geodatabase" width="526" height="283" /></p>
+<p>She clicks&nbsp;<strong>OK</strong> to add the writer.</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" width="63" height="64" /></p>
+<p>We'll leave the <strong>Feature Class or Table Definition </strong>mode as <strong>Automatic</strong>, the default. This setting means the writer feature type will adopt the schema of any features connected to it. We'll discuss schema handling more in the coming lessons.&nbsp;&nbsp;</p>
+</blockquote>
+<p>She sets <strong>Feature Class or Table Name </strong>to BusinessOwners. She sets the <strong>Geometry</strong> to geodb_point:</p>
+<p><img src="images/1712945522231.png" alt="Configuring writer feature type parameters" width="600" /></p>
+<p>She clicks <strong>OK </strong>to add the writer feature type.</p>
+<p>She connects the <strong>VertexCreator's Output</strong> port to the new BusinessOwners writer feature type:</p>
+<p><img src="images/1767740974127.png" alt="Writer feature type connected" /></p>
+<h2>Add Bookmarks</h2>
+<p>To tidy up her workspace, Jennifer adds two bookmarks.</p>
+<p>She selects all her transformers by clicking and dragging, then right-clicks one and chooses Insert Bookmark. She renames it Source Data:</p>
+<p><img src="images/1767740783866.png" alt="Adding a bookmark" width="888" height="128" /></p>
+<p>Then she clicks the up-pointing arrow next to <strong>Source Data</strong> to collapse the bookmark, hiding the work required to read her data:</p>
+<p><img src="images/1712946576074.png" alt="Collapsing a bookmark" width="200" /></p>
+<p>She adjusts the width of the bookmark to take up less space on the canvas by clicking and dragging the edge of the bookmark. Then she right-clicks the <strong>CoordinateSystemSetter's Output </strong>port, chooses <strong>Rename</strong>, and calls it BusinessOwners JSON:</p>
+<p><img src="images/1767740922819.png" alt="Renaming collapsed bookmark port" width="668" height="228" /></p>
+<p>She adds a bookmark (right-click &gt; Insert Bookmark or Ctrl/Cmd+B) around her writer feature type and calls it Writer Feature Types:</p>
+<p><img src="images/1712946816112.png" alt="Final workspace" width="500" /></p>
+<h2 id="run-the-workspace">Write the Data</h2>
+<p>Jennifer clicks&nbsp;<strong>Run&nbsp;</strong>to run her workspace and convert her data.</p>
+<p><img src="images/1712865943869.png" alt="Run button" width="219" height="63" /></p>
+<p>After the workspace has run, the&nbsp;<strong>Translation Log</strong> reports that the &ldquo;Translation was Successful.&rdquo; Jennifer selects the writer feature type and clicks<strong>&nbsp;Open Containing Folder&nbsp;</strong>to confirm the geodatabase has been created.</p>
+<p><img src="images/1712947290921.png" alt="Resulting GDB" width="904" height="273" /></p>
+<p>Jennifer is off to a good start. She has created a new geodatabase and loaded the JSON business owner data into it. Next, she has to edit the schema.</p>
+<h2 id="exercise">Exercise</h2>
+<p>Follow along with Jennifer&rsquo;s steps.</p>

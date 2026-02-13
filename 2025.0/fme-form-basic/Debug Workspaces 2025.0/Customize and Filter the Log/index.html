@@ -1,0 +1,119 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Turn on additional log timestamp information.</li>
+<li>Control which messages appear in the log.</li>
+<li>Filter the log to only view particular messages.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/customize-and-filter-the-log.fmw" target="_blank" rel="noopener">Starting workspace</a>&nbsp;
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\customize-and-filter-the-log.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/customize-and-filter-the-log-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\customize-and-filter-the-log-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb.zip</a> (File GDB)
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+</ul>
+<h2 id="log-message-format">Log Message Format</h2>
+<p>The FME log file is your best friend for debugging. It tells you how long a translation took, where the time went, and how well FME used the available system resources.</p>
+<p>The first thing to notice is that each line of the log is (in most cases) a separate message, for example:</p>
+<div>
+<pre><code>Creating writer for format: Esri Shapefile</code><br /><br /></pre>
+</div>
+<p>However, sometimes the message spans several lines, such as:</p>
+<div>
+<pre><code>Feature Caching is ON
+The workspace may run slower because features are being recorded on all output ports.
+Stop At Breakpoints is ON
+The workspace may run slower, even when no breakpoints are present. In particular, Bulk Mode is not supported with this enabled.</code></pre>
+</div>
+<h2 id="optional-log-message-fields">Optional Log Message Fields</h2>
+<p>There are several options to adjust what appears in the log file. To access these, select Tools &gt; FME Options &gt; Translation:</p>
+<p><img class="image image-block image-center" src="images/1748904608355.png" alt="Translation log settings" width="417" height="350" /></p>
+<p>The critical setting is&nbsp;Log Timestamp Information. This option turns on many optional fields in the log messages. These are:</p>
+<ul>
+<li>Absolute Date: The date on which this step took place</li>
+<li>Absolute Time: The time at which this step took place</li>
+<li>Cumulative Time: The amount of time taken to this step in the current translation</li>
+<li>Elapsed Time: The amount of time taken for this step in the current translation</li>
+<li>Message Type: The nature of the message</li>
+</ul>
+<p>For example:</p>
+<div>
+<pre><code>2025-04-01 12:13:55| &nbsp; 0.8| &nbsp;0.0|INFORM|Closing native MapInfo reader</code><br /><br /></pre>
+</div>
+<p>You can use these timestamps to identify slow sections of your workspace.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The log file always contains timestamps, regardless of this setting.</span></p>
+</blockquote>
+<h2 id="filtering-log-messages">Filtering Log Messages</h2>
+<p>A common requirement is to filter log messages so only messages of a specific type are displayed. For example, turning off INFORM and STAT messages can make spotting ERRORs and WARNs easier.</p>
+<p>You can filter the log using the buttons <span style="font-family: inherit; font-size: 1em;">at the top of the Translation Log window:</span></p>
+<p><img class="image image-block image-center" src="images/1717091105195.png" alt="Translation Log filter buttons" width="548" height="124" /></p>
+<p>These buttons can toggle messages on and off in the log window only.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Log Debug option (under FME Options) allows you to turn on debug messages in the log. These are extra log messages that do not appear by default. Debug logging records additional translation information to the job log. &ldquo;Debug mode&rdquo; is best used when an error has already occurred and you seek further information. For example, in the event of a web and database failure, &ldquo;debug mode&rdquo; will often record more detailed information about the request, response, and transaction to the job log. </span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You should turn this off when you are not using it, as it can dramaticly increase the size of your log files. This setting can become an issue on FME Flow in particular, where users might be running a workspace very often.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>Debug messages can help during debugging but are less useful in general FME use. Many messages (labeled "BADNEWS") are alarming &ldquo;errors&rdquo; that FME has trapped and kept to itself (like an end-of-file message). For this reason, you should not turn this option on permanently.</p>
+<p>Also, note that the Log Debug setting persists in the workspace. If you turn that setting on and pass the workspace to another user, it retains the setting and shows debug messages when other users run it!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">&nbsp;If the log window text is too small or not stylish enough, use Tools &gt; FME Options &gt; Appearance &gt; Log Font to change the font size and style.</span></p>
+</blockquote>
+<h2><span style="font-family: inherit; font-size: 1em;">Exercise</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">Having determined that the encoding issue appears to be happening when FME writes the data, Frank decides to dig into the log to see if there are any errors or warnings that indicate what might be happening.</span></p>
+<h2><span style="font-family: inherit; font-size: 1em;">1) Open and Run Starting Workspace</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">He opens the </span><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-the-log-to-identify-problems.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\customize-and-filter-the-log.fmw)&nbsp;<span style="font-family: inherit; font-size: 1em;">using FME Workbench (2025.0.1 or later) and runs it to generate caches.</span></p>
+<h2><span style="font-family: inherit; font-size: 1em;">2) Filter Log</span></h2>
+<p><span style="font-family: inherit; font-size: 1em;">He opens the Translation Log and checks for errors or warnings by examining the buttons at the top. There are zero errors but 17 warnings. He clicks the Warnings button to filter the log to only show warnings:</span></p>
+<p><img src="images/1748988966786.png" alt="Filter warnings" /></p>
+<p>He can safely ignore the first two warning lines, as they are just about feature caching being turned on:</p>
+<p><code>Feature Caching is ON</code><br /><code>The workspace may run slower because features are being output and recorded on all output ports regardless of whether or not there is a connection.</code></p>
+<p>&nbsp;But the lines after that are interesting. There are many that come from the CSV writer and report that FME can't convert the string (text) for some features from UTF-8 encoding to IBM437 encoding. Here's one example line:</p>
+<p><code>CSV writer: The string 'Marisa Marmol,麥毅倫,1001,Lagoon Drive ,Vancouver,British Columbia,V6G4W5,Canada,Safe Software,20250603135542.7336085</code><br /><code>' could not be converted from 'UTF-8' to 'IBM437'. Changing your writer encoding to UTF-8 will avoid a potential loss of data</code></p>
+<p>These messages further confirm there is a writing encoding issue. They also contain a clue: the writer is configured to write to IBM437 encoding, also known as <a href="https://en.wikipedia.org/wiki/Code_page_437" target="_blank" rel="noopener">code page 437</a>. This encoding does not support Chinese characters.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Fun fact: the code pages, or encoding definitions, used by IBM are so named because they <a href="https://en.wikipedia.org/wiki/Code_page" target="_blank" rel="noopener">originally refered to pages in the IBM standard character set manual</a>! With many iterations, they eventually broke that connection, but the terminology remained.</p>
+</blockquote>
+<p>So, now Frank suspects the writer might be set to use the wrong encoding.</p>
+<h2>3) Check Writer Parameters</h2>
+<p>Frank expands the CSV writer in the Navigator and finds the Parameters &gt; Encoding parameter. Sure enough, it's set to IBM437:</p>
+<p><img src="images/1748989675575.png" alt="Writer encoding parameter" /></p>
+<p>He double-clicks it and changes it to Unicode 8-bit (utf-8), a standard encoding that does support Chinese characters:</p>
+<p><img src="images/1749508392329.png" alt="Changing encoding to UFT-8" /></p>
+<h2>4) Check Output</h2>
+<p>Frank reruns his workspace to write the data using the new encoding.</p>
+<p>First, he inspects it by clicking the writer feature type and using Inspect Written Data:</p>
+<p><img src="images/1749508547019.png" alt="Encoding is fixed" /></p>
+<p>Then, he double-checks by opening the data in the destination software, in this case, Microsoft Excel:</p>
+<p><img src="images/1749508651584.png" alt="Encoding fixed in Excel" /></p>
+<p>The encoding is fixed and the Chinese characters appear correctly! Problem solved.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Encoding is a good example here, but it's also an example of where you should check that your computer can view such data. If your computer is in the wrong locale, it might be impossible.</span></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

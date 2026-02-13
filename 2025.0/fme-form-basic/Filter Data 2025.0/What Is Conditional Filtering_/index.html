@@ -1,0 +1,201 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define conditional filtering.</li>
+<li>Distinguish between attribute and spatial filtering.</li>
+<li>Understand and use the Tester transformer.</li>
+<li>Understand and use the TestFilter transformer.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/what-is-conditional-filtering.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\TransformAttributes\what-is-conditional-filtering.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/what-is-conditional-filtering-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\what-is-conditional-filtering-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a>&nbsp;(MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+</ul>
+<h2 id="what-is-filtering">What is Filtering?</h2>
+<p>Transformers that filter don&rsquo;t transform data content, yet they are the most commonly used type of transformer!</p>
+<p>Filtering is the technique of subdividing data as it flows through a workspace. It occurs when a transformer has multiple output connections, each carrying data that needs to be processed differently. Here (for example), the incoming stream of features A is filtered into two new streams, B and C, using a transformer with two output ports:</p>
+<p><img class="image" src="images/1714068501060.png" alt="Filtering diagram" width="640" height="207" /></p>
+<p>A filtering transformer may be any transformer with multiple output ports, such as the GeometryFilter or Sampler transformers, the latter of which creates a sample selection of data and separates it through Sampled and NotSampled output ports:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.047.SamplerTransformers.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/1714068515159.png" alt="Sampler transformer" width="173" height="102" /></a></p>
+<p>However, these are mostly in-built, fixed tests. Conditional filtering is where a user-defined test or condition decides which features are output to which connection. The Tester transformer is the most obvious example of this. It carries out a test with different output ports for features that pass and fail the test.</p>
+<h2 id="attribute-filtering-and-spatial-filtering">Attribute Filtering and Spatial Filtering</h2>
+<p>Transformers in FME allow you to filter features in several ways. A significant distinction is between transformers that filter based on attribute values and those that filter based on spatial data. An example of attribute filtering is filtering features into two streams based on the date value stored in an attribute called LastModified. An example of spatial filtering is filtering retail locations within 750 meters of a transit station.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">This course covers attribute filtering only. Complete the <a href="https://academy.safe.com/analyze-spatial-data" target="_blank" rel="noopener">Analyze Spatial Data course</a> or read <a href="https://support.safe.com/s/article/tutorial-common-gis-operations" target="_blank" rel="noopener">Common GIS Operations</a> to learn about spatial filtering</span><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="transformers-that-filter">Transformers that Filter</h2>
+<p>Many transformers in the Filters and Joins category can carry out tests and redirect data according to the results:</p>
+<p><img class="image" src="images/1714070995077.png" alt="Transformer Gallery Filters and Joins category" width="363" height="455" /></p>
+<p>Although the Tester transformer is the most used in this category, there are many related transformers, such as the TestFilter, GeometryFilter, AttributeFilter, SpatialFilter, and Sampler.</p>
+<h2 id="the-tester">The Tester</h2>
+<p>The Tester and TestFilter are the two critical transformers for conditional filtering. They test the values on attribute values.</p>
+<p>The Tester transformer is generally for single tests that produce a Yes/No result.</p>
+<p>For example, here we wish to decide whether to send out snow plows to a particular road based on whether the value of the Snowfall attribute is greater than 150 mm (approximately 6 inches):</p>
+<p><img class="image" src="images/1714071005603.png" alt="Tester Parameters with example test clause" width="798" height="381" /></p>
+<p>If snowfall exceeds 150 mm, the road feature passes the test, and the workspace will recommend sending snow plows.</p>
+<p><strong>Multiple Clauses</strong></p>
+<p>Each clause in the Tester is an individual test that allows a Passed/Failed result. For example, each of the following criteria might be a separate test:</p>
+<ul>
+<li>Is there more than 100 mm (4 inches) of snowfall?</li>
+<li>Is this a major road?</li>
+<li>Is the temperature less than zero degrees Celsius?</li>
+<li>Was sand last applied more than 24 hours ago?</li>
+</ul>
+<p>However, the Tester allows multiple tests, where a user can combine any number of clauses using an AND and OR statement. So, instead of individual tests, I might ask:</p>
+<ul>
+<li>Is this an Arterial (major) road, AND has there been more than 100 mm of snow?</li>
+</ul>
+<p><img class="image" src="images/1714071014062.png" alt="Tester Parameters with example clauses connected by an AND" width="425" height="372" /></p>
+<p>The Tester also allows mixing AND and OR statements using a Composite Test. For example:</p>
+<ul>
+<li>Is this an Arterial road, AND (has there been more than 100 mm of snow, OR (is the temperature less than zero, AND was the road treated (with sand) more than 24 hours ago))?</li>
+</ul>
+<p><img class="image" src="images/1714071025871.png" alt="Complex Logic example" width="413" height="288" /></p>
+<p>However complex the test becomes, it still results in a single Yes/No (binary) result; features will either pass or fail this set of tests.</p>
+<p>It's also worth remembering that we aren't restricted to simple tests of equality (A=B); in the above, there are also "greater than" and "less than" tests. That's because you can use many different operators in a test clause.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can specify the value of Logic from a dropdown list or type values in directly. That means you aren't limited to single parentheses, as the dropdown field would lead you to believe!</span></p>
+</blockquote>
+<p><span style="font-family: inherit; font-size: 1em;">The overall logic of the conditional clauses is displayed in a text box below the tests.</span></p>
+<p><img src="images/1714071038012.png" alt="Composite Expression" width="413" height="358" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The numbers in the expression refer to the row number in the test clauses table. So "1 AND 2" means the test clauses in row 1 and row 2 (the AND means both clauses have to pass for the overall feature to pass).</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can adjust the test composition by directly editing the composite expression. Click the Edit button and type in a new expression. Experienced users will find this faster than using the Logic column dropdown options.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Logic column and the Composite Expression field are mirror images of each other. Any changes to either are reflected in the other. For example, if I changed AND to OR in the logic column (second row), the composite expression would change to match. Conversely, if I changed the composite expression to 1 AND ( 2 OR 3 ), then the test clauses would change to match, including deleting the now unused 4th row.</span></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If a Tester or TestFilter has a feature cache, you can access a list of cached values to fill in your tests. This "data-aware" transformer dialog is available in the Tester, TestFilter, AttributeManager, and AttributeExposer.</span></p>
+</blockquote>
+<p><strong>Operators</strong></p>
+<p>The list of operators available in the Tester transformer (or in many of the other locations that make use of the Tester dialog) looks like this:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Desktop-Basic-2019/DesktopBasic4Transformers/Images/Img4.052.TesterOperators.png" target="_blank" rel="noreferrer noopener"><img class="image" src="images/Img4.052.TesterOperators.png" alt="Tester operators" /></a></p>
+<p>Besides the usual operators, some are based on a SQL <code>WHERE</code>&nbsp;clause. These include:</p>
+<ul>
+<li>In</li>
+<li>Like</li>
+<li>Contains</li>
+<li>Begins With</li>
+<li>Ends With</li>
+<li>Contains Regex</li>
+</ul>
+<p>...plus there are other tests that check for the existence of attributes and values:</p>
+<ul>
+<li>Attribute has a value</li>
+<li>Attribute is Null</li>
+<li>Attribute is Empty String</li>
+<li>Attribute is Missing</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">"Attribute has a value" is the opposite of the three other tests; for example, this attribute is not Null, AND it is not an empty string, AND it is not missing. Incidentally, "missing" means the attribute does not exist on the tested feature.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">"Contains Regex" means only part of the string needs to match. For example...</span></p>
+<p><code><span style="font-family: inherit; font-size: 1em;">Attribute Value: &nbsp;abcd </span></code></p>
+<p><code><span style="font-family: inherit; font-size: 1em;">Search String: &nbsp; &nbsp;^ab </span></code></p>
+<p><code><span style="font-family: inherit; font-size: 1em;">Contains Regex: &nbsp;Passed</span></code></p>
+<p><span style="font-family: inherit; font-size: 1em;">For example, the entire string doesn't need to match.</span></p>
+</blockquote>
+<h2 id="test-filter">The TestFilter</h2>
+<p>The TestFilter allows multiple conditions, each with multiple test clauses. Each condition is given an output port, with an additional output port for features that fail all test conditions.</p>
+<p>The TestFilter is similar to the CASE or SWITCH command in programming or scripting languages. In Workbench, it looks like this:</p>
+<p><img class="image" src="images/1714071063072.png" alt="TestFilter example with multiple output ports" width="570" height="548" /></p>
+<p>Notice that there are multiple conditions and an output port for each. Each condition/port combination is equivalent to a single Tester transformer; hence, the TestFilter is an excellent way to combine multiple Tester transformers into one.</p>
+<p>The TestFilter output ports can be given custom names rather than Passed/Failed, which is another advantage to this transformer over the Tester.</p>
+<p>The TestFilter has the complete set of operators available with the Tester, such as equals, greater than, less than, and so forth. Each condition is tested in turn.</p>
+<p>Features that pass are output through the matching output port. Features that fail are sent to the following condition in the list. Therefore, it&rsquo;s essential to get the conditions in the correct order.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The TestFilter is very good for filtering a feature by a set of cascading conditions; for example, here are tests to determine whether to send out a snow plow:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Has there been more than 150 mm of snowfall?</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Has there been more than 100 mm of snowfall, AND is this an Arterial road?</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Is the temperature less than zero degrees Celsius, AND was sand last applied more than 24 hours ago?</span></li>
+</ul>
+<p>It&rsquo;s a set of cascading tests because if there has been more than 150 mm of snow, the plows are sent out anyway; you don&rsquo;t need to test any other criteria. So, the test order is significant. If every test fails, then the plows are not sent out. If using the above snowfall example, you could use a single TestFilter instead of three Tester transformers.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Because the TestFilter can carry out a single test (as well as multiple ones), it's possible to use it exclusively instead of the Tester transformer.</span></p>
+<p>While using the TestFilter, you can choose to output all features through the First Passing Port or All Passing Ports using the Test Output dropdown.</p>
+<p><img src="images/1699052192171.png" alt="Test Output dropdown in the TestFilter" /></p>
+</blockquote>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p><strong>⭐ New for FME 2025.1:</strong> the TestFilter now has &nbsp;a new parameter called &ldquo;Output Attribute Name&rdquo; in the Advanced parameters section. You can choose a name for this attribute and it will store the name of the output port as a value. This option lets you filter your results and store the result in an attribute for accessing later, allowing you to avoid the repetitive pattern of using many AttributeCreators after a TestFilter.</p>
+</blockquote>
+<h2>Exercise</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>Sven, a Planning Analyst, has been asked to gather park maintenance data to help understand the impact of a proposed change to park funding in the Downtown neighborhood. He has a MITAB dataset of parks and needs to filter the data to estimate the proposed changes' cost accurately.</p>
+<h2>1) Start FME Workbench</h2>
+<p>Sven starts FME Workbench (2025.0.1 or later) and opens <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/what-is-conditional-filtering.fmw" target="_blank" rel="noopener">the starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\what-is-conditional-filtering.fmw). This workspace reads in the parks MapInfo TAB data, slightly edits the schema using the AttributeManager, and then writes it back to MapInfo TAB.</p>
+<p><img class="image image-block" src="images/1745347150888.png" alt="Starting workspace" width="930" height="295" /></p>
+<h2>2) Add a Tester Transformer</h2>
+<p>Sven should remove dog parks from the data because they have their own costs.</p>
+<p>Sven can do this with a Tester transformer. He clicks on the connection from the AttributeManager output port to the ParksMaintenanceData feature type on the Writer.</p>
+<p>Start typing the word Tester. Double-click on Tester in the list of transformers to add one to the workspace. After tidying up the layout of the canvas, the workspace will now look like this:</p>
+<p><img class="image" src="images/1745347182534.png" alt="Adding a Tester" width="930" height="295" /></p>
+<p>Notice that the Passed output port is the one connected by default.</p>
+<h2>3) Set the Tester Parameters</h2>
+<p>Inspect the parameters for the Tester transformer. Click in the Left Value field, and from there, click the down arrow and choose Attribute Value &gt; DogPark:</p>
+<p><img class="image" src="images/1714076468529.png" alt="Selecting DogPark as the Left Value" width="533" height="512" /></p>
+<p>For the Right Value, click into the field and type the value N. The operator field should be filled in automatically as the equals sign (=), which is what we want in this case.</p>
+<p><img class="image" src="images/1714076479663.png" alt="Completed test clause" width="336" height="179" /></p>
+<p>Click OK to accept the values and close the dialog.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The test is for DogParks = N because we want to keep those features, and the Passed port is connected. If the test were DogParks = Y, then the Failed port would be the one to connect.</span></p>
+</blockquote>
+<h2>4) Run Workspace</h2>
+<p>Save and run the workspace.&nbsp;</p>
+<p>To confirm it ran correctly, you should have 73 features from the Tester's Passed output port and seven from the Tester's Failed output port. You can inspect the failed features by clicking the feature cache icon to confirm that these are, in fact, the dog parks:</p>
+<p><img class="image image-block" src="images/1714076590453.png" alt="Inspecting the Tester:Failed port to confirm that only dog parks are selected" width="1127" height="288" /></p>
+<h2>5) Replace Tester with TestFilter</h2>
+<p>After using the Tester, Sven realizes he'd be better off using a TestFilter here. He would like to separate dog parks, non-dog parks that have a name, and unnamed parks. The TestFilter will let him do that in one transformer instead of using multiple Testers.</p>
+<p>He deletes the Tester and it's connection line and adds a TestFilter to replace it:</p>
+<p><img src="images/1745347318761.png" alt="Replaced Tester with a TestFilter" /></p>
+<h2>6) Configure the TestFilter</h2>
+<p>He double-clicks the TestFilter to edit its parameters.</p>
+<p>He will configure one output port at a time. To create the first test, he double clicks the first cell in the table:</p>
+<p><img src="images/1745347586243.png" alt="Double-clicking first cell to add new test" /></p>
+<p>He configures the first port to output dog parks, using Dog Parks = Y this time. He names the Output Port Dog Parks:</p>
+<p><img src="images/1745347770239.png" alt="First port configuration" /></p>
+<p>He clicks OK to confirm this port's configuration.</p>
+<p>To add tests for the next port, he clicks the first cell in the second row ("Else If"):</p>
+<p><img src="images/1745348080963.png" alt="Adding a port" /></p>
+<p>This test is ParkName Attribute Has a Value, and the Output Port is Named Non-Dog Parks:</p>
+<p><img src="images/1745348214950.png" alt="Second port configuration" /></p>
+<p>He clicks OK.</p>
+<p>Finally, he names the "Else" port Unnamed Parks:</p>
+<p><img src="images/1745348320472.png" alt="Naming final port" /></p>
+<p>Because he expects each park will only qualify for a single port, he leaves the default value for Test Output to First Passing Port.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Port order matters. All dog parks will be caught by the first test, which is why Sven doesn't need to test for DogPark = N in later tests, for example.</p>
+</blockquote>
+<p>Finally, he clicks OK to finish configuring the TestFilter.</p>
+<p>His TestFilter now has three output ports. He adds attached annotation to describe its function, "Filter by park type":</p>
+<p><img src="images/1745348533980.png" alt="Added annotation" /></p>
+<h2>7) Connect Ports and Run the Workspace</h2>
+<p>Sven plans to process the Dog Parks and Unnamed Parks streams later. For now, he just connects Named Non-Dog Parks to his writer feature type:</p>
+<p><img src="images/1745348612041.png" alt="Connected ports" /></p>
+<p>He runs the workspace. He has successfully filtered his features into three streams with the TestFilter.&nbsp;</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Take note of the number of filtered features; you'll need it for the quiz.</p>
+</blockquote>
