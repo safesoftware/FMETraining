@@ -77,7 +77,7 @@
 <p><img src="images/1737488070748.png" alt="Geometry rraits from an IFC reader" /></p>
 <p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/traitmerger.htm" target="_blank" rel="noopener">TraitMerger</a> transformer moves the traits from one geometry to another geometry. It can also move the attributes from a feature onto a geometry as traits, or the traits from a geometry onto a feature as attributes. Several related transformers can modify geometry traits (<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertyextractor.htm" target="_blank" rel="noopener">GeometryPropertyExtractor</a>, <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertyremover.htm" target="_blank" rel="noopener">GeometryPropertyRemover</a>, <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertyrenamer.htm" target="_blank" rel="noopener">GeometryPropertyRenamer</a>, and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/geometrypropertysetter.htm" target="_blank" rel="noopener">GeometryPropertySetter</a>).</p>
 <h2>Measures</h2>
-<p>Some Geometries can have measures associated with them (also known as "linear referencing" or "dynamic segmentation"). These are an arbitrary number of additional dimensions at each vertex location. These dimensions are named and must have a Real64 type value. A "default measure" is optional and does not need to be named.</p>
+<p>Some Geometries can have measures associated with them (also known as "linear referencing" or "dynamic segmentation"). These are an arbitrary number of additional dimensions at each vertex location. These dimensions are named and must have a Real64 type value. The measure name is shown as <code>&lt;default_measure&gt;</code> unless another name is provided.</p>
 <p><img src="images/1737491918333.png" alt="Measures on a feature" /></p>
 <p>There are a few transformers that work with measures:</p>
 <ul>
@@ -96,10 +96,12 @@
 <p>Amar is working with a new dataset: a GML file representing part of the coastline in the City of Vancouver. He needs to understand its geometry structure. Basic points, lines, and polygons are simple enough, but what is a MultiCurve? He sends the data to Jennifer, a more experienced FME user, and asks her to explain the difference between multi-geometry, multiple geometry, and aggregates.</p>
 <p>She returns a workspace with some transformers and annotations to answer his question and explain more about FME's geometry model.</p>
 <h2>1) Open and Run Starting Workspace</h2>
-<p>Amar opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/inspect-geometry-details.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench (2024.2 or later) and runs it to generate feature caches.</p>
+<p>Amar opens the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateSpatialData/inspect-geometry-details.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench (2025.2 or later) and runs it to generate feature caches.</p>
+<p>Before inspecting caches, he confirms the Coastline reader is pointing to <code>C:\FMEData\Data\Boundaries\Coastline.gml</code> so the walkthrough matches the sample data for this lesson.</p>
 <h2>2) Use the Feature Information Window to View Geometry</h2>
 <p>First, he inspects the Coastline reader feature type by clicking the green feature cache icon:</p>
 <p><img src="images/1737759758379.png" alt="Coastlines feature cache" /></p>
+<p><strong>Screenshot update needed (2025.2):</strong> Replace this screenshot if it shows a different dataset (for example, parks). It should show the Coastline reader feature cache from <code>Coastline.gml</code>.</p>
 <p>Then, he looks at the Feature Information Window and expands the Geometry section. This area reports the data's geometry type: MultiCurve:</p>
 <p><img src="images/1737759871771.png" alt="Expanding Geometry to see MultiCurve" /></p>
 <p>He clicks MultiCurve to expand that section and observes the MultiCurve has 72 parts, which are Lines:</p>
@@ -115,16 +117,20 @@
 <h2><img src="images/1737760314636.png" alt="Each feature is a Line" /></h2>
 <h2>4) Inspect Other Geometry Types - Aggregator</h2>
 <p>The Deaggregator can break geometry apart; which transformer can put them back together? The Aggregator.</p>
-<p>Amar inspects the Aggregator's Aggregate port. Contrary to the name of this port, the resulting geometry here is a MultiCurve again. The transformer created a MultiCurve because the default value of the Aggregate Type parameter is Homogeneous Collection (If Possible). With this approach, if FME can make the output geometry into a homogeneous collection without changing the geometry type of any of its parts, then this option will perform the conversion. Because all the geometry received were Lines, FME created a MultiCurve.</p>
-<p>&nbsp;</p>
+<p>Amar inspects the Aggregator's Aggregate port. Even though the port is named Aggregate, the output geometry is a MultiCurve in this step.</p>
+<p>Why? The Aggregator's default Aggregate Type is <strong>Homogeneous Collection (If Possible)</strong>. That setting tells FME to create a Multi* geometry when all input parts are the same base geometry type. Here, all 72 input features are Lines, so the output is a MultiCurve.</p>
+<p>In other words, the port name tells you where to inspect output from the transformer, while the <em>Aggregate Type</em> parameter controls the geometry type that is created.</p>
+<p><strong>Screenshot update needed (2025.2):</strong> Capture the Aggregator parameters dialog with <em>Aggregate Type = Homogeneous Collection (If Possible)</em> and a matching Feature Information Window view showing the output geometry as <em>MultiCurve</em>.</p>
 <p><img src="images/1737760444307.png" alt="MultiCurve output by the Aggregator" width="564" height="679" /></p>
 <p>To create an Aggregate from this MultiCurve, Jennifer sent the Aggregator's Aggregate output port features into&nbsp;<em>another&nbsp;</em>Aggregator, Aggregator_2. This transformer creates an Aggregate with one part: the MultiCurve.</p>
 <p><img src="images/1737760703536.png" alt="An Aggregate with one MultiLine child" /></p>
 <p>Jennifer shows how you can continue nesting features by sending the feature into <em>another&nbsp;</em>Aggregator, Aggregator_3. Now, the feature has an Aggregate geometry with one Aggregate child, which has one MultiCurve child.</p>
 <p><img src="images/1738021212685.png" alt="Further nesting of geometry with the Aggregator" /></p>
 <p>Using transformers like this allows you to define parent-child geometry relationships. The Group By and Aggregation Mode parameters in the Aggregator allow greater control over such nesting.</p>
-<h2>5) Inspect Other Geometry Types - Aggregator with Homogenous Collection</h2>
-<p>To immediately create an Aggregate from the deaggregated features, Jennifer shows that you can set the Aggreator's Aggregate Type parameter to Homogenous Collection. The output of Aggregator_4 shows the results of this decision:</p>
+<h2>5) Inspect Other Geometry Types - Aggregator with Heterogeneous Collection</h2>
+<p>To immediately create an Aggregate from the deaggregated features, Jennifer sets Aggregator_4's <strong>Aggregate Type</strong> to <strong>Heterogeneous Collection</strong>. This forces the output to remain an Aggregate, even when all input parts are Lines.</p>
+<p>This is the key contrast with Step 4: <strong>Homogeneous Collection (If Possible)</strong> produced a MultiCurve, while <strong>Heterogeneous Collection</strong> produces an Aggregate.</p>
+<p><strong>Screenshot update needed (2025.2):</strong> Capture Aggregator_4 parameters with <em>Aggregate Type = Heterogeneous Collection</em>, plus the corresponding Feature Information Window result showing an Aggregate with many Line parts.</p>
 <p><img src="images/1738021288422.png" alt="One Aggregate with many Lines" /></p>
 <h2>6) Inspect Other Geometry Types - Multiple Geometry</h2>
 <p>Next, Amar looks at how Jennifer created a multiple geometry using the MultipleGeometrySetter transformer. This transformer turns the MultiCurve from the source data into a multiple geometry. FME represents the feature as an Aggregate, but the crucial difference can be seen by mousing over the geometry type to view the tooltip, which reports: "IFMEAggregate, Multiple Geometry: 72 Geometries." Now, instead of being an Aggregate with 72 parts (as in the output of the Aggregator_4), the data is an Aggregate composed of 72 distinct geometries:</p>
