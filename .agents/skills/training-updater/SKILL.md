@@ -5,7 +5,7 @@ Use this skill for end-to-end training content updates driven by a change ledger
 ## Workflow
 1. Build/refresh lesson manifest from HTML lessons.
 2. Build docs change ledger (Jira snapshot or changelog input).
-3. Generate update queue from manifest + ledger.
+3. Generate update queue from manifest + ledger + explicit update scope (from/to version + courses).
 4. Execute one lesson at a time: generate update spec first, then apply minimal edits.
 
 ## Commands
@@ -20,7 +20,7 @@ Use this skill for end-to-end training content updates driven by a change ledger
 - Jira snapshot to ledger:
   - `python tools/jira_to_change_ledger.py --in inputs/jira_snapshot.json --out artifacts/docs_change_ledger.jsonl`
 - Queue generation:
-  - `python tools/generate_update_queue.py --manifest artifacts/lesson_manifest.json --ledger artifacts/docs_change_ledger.jsonl --out artifacts/update_queue.json`
+  - `python tools/generate_update_queue.py --manifest artifacts/lesson_manifest.json --ledger artifacts/docs_change_ledger.jsonl --scope-file inputs/update_scope.json --out artifacts/update_queue.json`
 - Apply one lesson update:
   - `python tools/apply_update_queue.py --queue artifacts/update_queue.json --manifest artifacts/lesson_manifest.json --ledger artifacts/docs_change_ledger.jsonl --lesson-id <lesson_id>`
 

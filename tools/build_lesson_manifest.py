@@ -13,6 +13,7 @@ from common import dump_json, load_json, slugify
 
 STEP_HEADING_RE = re.compile(r"^\s*(\d+)[\)\.:\-]\s*(.+)$")
 UI_TOKEN_RE = re.compile(r"\b([A-Z][A-Za-z0-9]*(?:\s+[A-Z][A-Za-z0-9]*){0,3})\b")
+VERSION_RE = re.compile(r"^\d{4}\.\d+$")
 
 
 class LessonHTMLParser(HTMLParser):
@@ -24,8 +25,6 @@ class LessonHTMLParser(HTMLParser):
         self.headings: list[str] = []
         self.paragraphs: list[str] = []
         self.images: list[dict[str, Any]] = []
-        self.current_step_num: int | None = None
-        self.current_step_heading: str | None = None
         self.steps: list[dict[str, Any]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -55,10 +54,8 @@ class LessonHTMLParser(HTMLParser):
                     self.title = txt
                 m = STEP_HEADING_RE.match(txt)
                 if m:
-                    self.current_step_num = int(m.group(1))
-                    self.current_step_heading = m.group(2).strip()
                     self.steps.append(
-                        {"step_number": self.current_step_num, "heading": self.current_step_heading, "text": []}
+                        {"step_number": int(m.group(1)), "heading": m.group(2).strip(), "text": []}
                     )
             self.in_heading = None
             self.current_text = []
@@ -97,10 +94,24 @@ def extract_ui_strings(headings: list[str], paragraphs: list[str]) -> list[str]:
     return sorted(candidates)[:100]
 
 
+def extract_path_metadata(path: Path) -> dict[str, Any]:
+    parts = path.as_posix().split("/")
+    lesson_dir = parts[-2] if len(parts) >= 2 else path.parent.name
+    version = parts[0] if parts and VERSION_RE.match(parts[0]) else None
+    product = parts[1] if len(parts) > 1 else None
+    course = parts[2] if len(parts) > 2 else None
+    return {
+        "version": version,
+        "product": product,
+        "course": course,
+        "lesson": lesson_dir,
+        "course_path": "/".join(parts[:3]) if len(parts) > 2 else None,
+    }
+
+
 def build_manifest_record(path: Path) -> dict[str, Any]:
     parser = LessonHTMLParser()
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    parser.feed(text)
+    parser.feed(path.read_text(encoding="utf-8", errors="ignore"))
     parser.finalize_steps()
 
     image_refs = []
@@ -116,6 +127,7 @@ def build_manifest_record(path: Path) -> dict[str, Any]:
         )
 
     title = parser.title or path.parent.name
+    metadata = extract_path_metadata(path)
     return {
         "lesson_id": slugify(path.parent.as_posix()),
         "lesson_path": path.as_posix(),
@@ -124,7 +136,27 @@ def build_manifest_record(path: Path) -> dict[str, Any]:
         "exercise_steps": parser.steps,
         "ui_strings": extract_ui_strings(parser.headings, parser.paragraphs),
         "image_references": image_refs,
+        "metadata": metadata,
     }
+
+
+def parse_csv_arg(value: str | None) -> list[str]:
+    if not value:
+        return []
+    return [v.strip() for v in value.split(",") if v.strip()]
+
+
+def matches_scope(path: Path, versions: list[str], courses: list[str]) -> bool:
+    p = path.as_posix()
+    if versions:
+        parts = p.split("/")
+        p_version = parts[0] if parts else ""
+        if p_version not in versions:
+            return False
+    if courses:
+        if not any(c in p for c in courses):
+            return False
+    return True
 
 
 def validate_manifest(doc: dict[str, Any]) -> None:
@@ -137,20 +169,40 @@ def main() -> None:
     ap.add_argument("--config", default="tools/config.json")
     ap.add_argument("--out", default="artifacts/lesson_manifest.json")
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--versions", help="Comma-separated versions to include, e.g. 2024.0,2025.0")
+    ap.add_argument("--courses", help="Comma-separated path fragments for course filtering")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     config = load_json(args.config)
     lessons = discover_lessons(config)
+    versions = parse_csv_arg(args.versions)
+    courses = parse_csv_arg(args.courses)
+    if versions or courses:
+        lessons = [p for p in lessons if matches_scope(p, versions, courses)]
     if args.limit:
         lessons = lessons[: args.limit]
 
     records = [build_manifest_record(p) for p in lessons]
-    out_doc = {"schema_version": "1.0", "lesson_count": len(records), "lessons": records}
+    out_doc = {
+        "schema_version": "1.1",
+        "lesson_count": len(records),
+        "scope": {"versions": versions, "courses": courses},
+        "lessons": records,
+    }
     validate_manifest(out_doc)
 
     if args.dry_run:
-        print(json.dumps({"lessons_found": len(lessons), "sample": [r["lesson_path"] for r in records[:3]]}, indent=2))
+        print(
+            json.dumps(
+                {
+                    "lessons_found": len(lessons),
+                    "scope": out_doc["scope"],
+                    "sample": [r["lesson_path"] for r in records[:3]],
+                },
+                indent=2,
+            )
+        )
         return
 
     dump_json(args.out, out_doc)

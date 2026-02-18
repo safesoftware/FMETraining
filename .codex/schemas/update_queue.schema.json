@@ -2,23 +2,92 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Update Queue",
   "type": "object",
-  "required": ["schema_version", "task_count", "tasks"],
+  "required": [
+    "schema_version",
+    "task_count",
+    "tasks"
+  ],
   "properties": {
-    "schema_version": {"type": "string"},
-    "task_count": {"type": "integer", "minimum": 0},
+    "schema_version": {
+      "type": "string"
+    },
+    "task_count": {
+      "type": "integer",
+      "minimum": 0
+    },
     "tasks": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["task_id", "change_id", "lesson_id", "lesson_path", "confidence", "required_update_types"],
+        "required": [
+          "task_id",
+          "change_id",
+          "lesson_id",
+          "lesson_path",
+          "confidence",
+          "required_update_types"
+        ],
         "properties": {
-          "task_id": {"type": "string"},
-          "change_id": {"type": "string"},
-          "lesson_id": {"type": "string"},
-          "lesson_path": {"type": "string"},
-          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
-          "required_update_types": {"type": "array", "items": {"type": "string"}},
-          "likely_stale_screenshots": {"type": "array", "items": {"type": "string"}}
+          "task_id": {
+            "type": "string"
+          },
+          "change_id": {
+            "type": "string"
+          },
+          "lesson_id": {
+            "type": "string"
+          },
+          "lesson_path": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "required_update_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "likely_stale_screenshots": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "from_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "to_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "courses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scoped_lesson_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_manifest_lessons": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     }
