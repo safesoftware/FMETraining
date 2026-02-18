@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Change Ledger Record",
+  "type": "object",
+  "required": [
+    "change_id",
+    "source",
+    "user_visible_summary",
+    "change_type",
+    "ui_text_changes",
+    "evidence",
+    "docs_relevance_score",
+    "docs_relevance_reason"
+  ],
+  "properties": {
+    "change_id": {"type": "string"},
+    "source": {"type": "string"},
+    "release": {"type": ["string", "null"]},
+    "feature_area": {"type": ["string", "null"]},
+    "user_visible_summary": {"type": "string"},
+    "change_type": {
+      "type": "string",
+      "enum": ["label rename", "workflow change", "new field", "navigation change", "permissions", "other"]
+    },
+    "ui_text_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["old_label", "new_label", "context"],
+        "properties": {
+          "old_label": {"type": ["string", "null"]},
+          "new_label": {"type": ["string", "null"]},
+          "context": {"type": "string"}
+        }
+      }
+    },
+    "workflow_before": {"type": ["string", "null"]},
+    "workflow_after": {"type": ["string", "null"]},
+    "evidence": {
+      "type": "object",
+      "required": ["jira_key", "links", "fields_used"],
+      "properties": {
+        "jira_key": {"type": ["string", "null"]},
+        "links": {"type": "array", "items": {"type": "string"}},
+        "fields_used": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "docs_relevance_score": {"type": "number", "minimum": 0, "maximum": 1},
+    "docs_relevance_reason": {"type": "string"}
+  }
+}
