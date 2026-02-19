@@ -6,14 +6,22 @@ This folder documents the repo-local automation pipeline for lesson updates.
 
 To avoid huge cross-version queues, define exactly what this update round should touch:
 
-- `from_version`: archived source context (for operator intent/history)
-- `to_version`: only this version's lessons are eligible for edits
-- `courses`: course name/path patterns to include
+- `from_version`: required source version; must exist in the manifest/repo
+- `to_version`: target version intent (metadata for planning; may not exist yet)
+- `courses`: source course path/name patterns under `from_version` (supports `\` or `/`)
 
 Example:
 
 ```bash
 cp inputs/update_scope.example.json inputs/update_scope.json
+```
+
+Validate scope before queue generation:
+
+```bash
+python tools/validate_update_scope.py \
+  --manifest artifacts/lesson_manifest.json \
+  --scope-file inputs/update_scope.json
 ```
 
 ## 1) Build the lesson manifest
@@ -95,9 +103,16 @@ python tools/generate_update_queue.py \
   --ledger artifacts/docs_change_ledger.jsonl \
   --from-version 2024.0 \
   --to-version 2025.0 \
-  --courses "*Connect Automations with Job Orchestration 2025.0,*Build Versatile Automations 2025.0" \
+  --courses "2024.0/fme-flow-authoring/Connect Automations with Job Orchestration 2024.0,Build Versatile Automations 2024.0" \
   --out artifacts/update_queue.json
 ```
+
+Dry-run prints a source-scope summary:
+
+- `from_version_lesson_count`
+- `matched_source_course_count`
+- `matched_source_lesson_count`
+- `target_to_version_intent`
 
 ## 6) Apply updates one lesson at a time
 
@@ -116,7 +131,8 @@ python tools/ingest_jira_export.py --in inputs/sample_jira_export.csv --out inpu
 python tools/generate_changelog_from_jira.py --in inputs/jira_snapshot.json --out inputs/changelog_generated.md
 python tools/jira_to_change_ledger.py --in inputs/jira_snapshot.json --out artifacts/docs_change_ledger.jsonl
 python tools/build_lesson_manifest.py --versions 2024.1 --courses "Connect Automations with Job Orchestration 2024.1" --out artifacts/lesson_manifest_demo.json
-python tools/generate_update_queue.py --manifest artifacts/lesson_manifest_demo.json --ledger artifacts/docs_change_ledger.jsonl --from-version 2023.0 --to-version 2024.1 --courses "*Connect Automations with Job Orchestration 2024.1" --out artifacts/update_queue.json
+python tools/validate_update_scope.py --manifest artifacts/lesson_manifest_demo.json --scope-file inputs/update_scope.example.json --from-version 2024.1 --to-version 2025.0 --courses "*Connect Automations with Job Orchestration 2024.1"
+python tools/generate_update_queue.py --manifest artifacts/lesson_manifest_demo.json --ledger artifacts/docs_change_ledger.jsonl --from-version 2024.1 --to-version 2025.0 --courses "*Connect Automations with Job Orchestration 2024.1" --out artifacts/update_queue.json
 python tools/apply_update_queue.py --manifest artifacts/lesson_manifest_demo.json --queue artifacts/update_queue.json --ledger artifacts/docs_change_ledger.jsonl --limit 1
 ```
 
