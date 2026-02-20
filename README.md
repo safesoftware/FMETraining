@@ -1,6 +1,8 @@
-# FME Training Content Archive
+# FME Training Automation
 
-This repository contains an archive of Safe Software's training content, including:
+This repository contains tools for automating FME training creation and updates.
+
+It also contains an archive of Safe Software's training content, including:
 
 1. Archived course manuals (2016-2020) 
 2. Content for the original FME Academy online learning platform (2020-2022)
