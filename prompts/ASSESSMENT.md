@@ -28,6 +28,7 @@ A new version of FME is being released. The training lesson below was written fo
 **Screenshots and images in this lesson** (with surrounding context):
 {{IMAGES_LIST}}
 
+{{LESSON_TEXT_SECTION}}
 ---
 
 ## Jira Issue
@@ -58,6 +59,15 @@ Use your knowledge of FME (transformers, readers/writers, UI, workflows) to reas
 4. **Product relevance**: Does the issue affect the FME product (FME Form or FME Flow) that this lesson covers? Issues for FME Flow rarely impact FME Form lessons, and vice versa.
 5. **Screenshot accuracy**: Would the change described cause a screenshot in this lesson to look noticeably different (new dialog fields, renamed buttons, changed layouts, new icons)?
 6. **Behind-the-scenes bugs**: Is this a purely internal fix (performance, crash, data correctness) with no user-visible change that would affect training instructions?
+
+**Excluded programs:** FME Academy training focuses on the FME Workbench program within FME Form and on the FME Flow web interface. Generally, the training does not use these standalone programs: FME Quick Translator, FME Data Inspector, FME Licencing Assistant, and FME Transformer Designer. Issues specific to these programs should be assigned `none`. The Academy uses Visual/Data Preview within FME Workbench, not the standalone Data Inspector.
+
+**Specificity rule:** If the Jira issue names a specific transformer, data format, dialog, or UI element, verify it is explicitly referenced in the lesson content above before rating it as `medium` or `high`. Do not infer relevance from topic proximity. Examples of incorrect reasoning to avoid:
+- A change to `CommonLocalReprojector` should NOT flag a lesson that only uses `Reprojector` — these are distinct transformers.
+- A change to a specific file format (e.g., Landonline) should NOT flag a lesson that reads other spatial formats.
+- A change to a specific reader variant (e.g., Excel embedded-raster behavior) should NOT flag a lesson that uses that reader for a different purpose (e.g., reading tabular data).
+- A change to a Web Services creation dialog should NOT flag a lesson that adds a local file reader.
+If the specific item named in the issue is absent from the lesson content, assign `none` or `low`.
 
 **Update likelihood scale:**
 

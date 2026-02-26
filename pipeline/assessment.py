@@ -12,6 +12,7 @@ Supports incremental mode: skips pairs already present in the output file.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import time
 from datetime import datetime, timezone
@@ -99,13 +100,20 @@ def run_assessment(
     issues = changelog.get("issues", [])
     to_version = str(manifest.get("job", {}).get("to_version", ""))
 
-    # Build all pairs
-    all_pairs = [(lesson, issue) for lesson in lessons for issue in issues]
+    # Build all pairs, filtering by product-project relevance.
+    # Skip (lesson, issue) pairs where the issue's Jira project is known to cover
+    # only products that this lesson does not teach (e.g. FMEFLOW issues vs. fme_form lessons).
+    all_pairs = [
+        (lesson, issue)
+        for lesson in lessons
+        for issue in issues
+        if _is_relevant_pair(lesson, issue)
+    ]
     total_pairs = len(all_pairs)
 
     print(f"  Lessons: {len(lessons)}")
     print(f"  Issues:  {len(issues)}")
-    print(f"  Total pairs: {total_pairs:,}")
+    print(f"  Total pairs: {total_pairs:,} (after product-project filtering)")
 
     # Estimate cost
     approx_input_tokens = total_pairs * 1500
@@ -229,7 +237,12 @@ async def _call_openai(
             raw = response.choices[0].message.content
             parsed = json.loads(raw)
 
+            rec_id = hashlib.md5(
+                f"{lesson['lesson_id']}:{issue['issue_key']}".encode()
+            ).hexdigest()[:8]
+
             return {
+                "rec_id": rec_id,
                 "lesson_id": lesson["lesson_id"],
                 "lesson_name": lesson["lesson_name"],
                 "course_canonical": lesson["course_canonical"],
@@ -307,6 +320,16 @@ def _build_prompt(lesson: dict, issue: dict, template: str, to_version: str) -> 
     if len(description) > 2000:
         description = description[:2000] + "\n[truncated]"
 
+    if config.INCLUDE_FULL_TEXT:
+        lesson_text = lesson.get("lesson_text", "")
+        lesson_text_section = (
+            f"**Full Lesson Text** (use this to verify whether specific items "
+            f"are actually present in the lesson):\n\n{lesson_text}"
+            if lesson_text else ""
+        )
+    else:
+        lesson_text_section = ""
+
     substitutions = {
         "LESSON_NAME": lesson.get("lesson_name", ""),
         "COURSE_CANONICAL": lesson.get("course_canonical", ""),
@@ -318,6 +341,7 @@ def _build_prompt(lesson: dict, issue: dict, template: str, to_version: str) -> 
         "EXERCISE_STEPS_LIST": _fmt_steps(lesson.get("exercise_steps", [])),
         "UI_STRINGS_LIST": _fmt_ui_strings(lesson.get("ui_strings", [])),
         "IMAGES_LIST": _fmt_images(lesson.get("images", [])),
+        "LESSON_TEXT_SECTION": lesson_text_section,
         "ISSUE_KEY": issue.get("issue_key", ""),
         "ISSUE_SUMMARY": issue.get("summary", ""),
         "ISSUE_TYPE": issue.get("issue_type", ""),
@@ -335,6 +359,30 @@ def _build_prompt(lesson: dict, issue: dict, template: str, to_version: str) -> 
 
 # ---------------------------------------------------------------------------
 # Incremental helpers
+# ---------------------------------------------------------------------------
+# Product-project relevance filter
+# ---------------------------------------------------------------------------
+
+def _is_relevant_pair(lesson: dict, issue: dict) -> bool:
+    """
+    Return True if the issue's Jira project is relevant to the lesson's product(s).
+
+    Uses PROJECT_KEY_TO_PRODUCTS from config. If the project key is not in the
+    mapping, it is treated as relevant to all products. If the mapping exists,
+    there must be at least one product in common between the lesson and the issue's
+    project for the pair to be included.
+    """
+    project_key = issue.get("project_key", "").strip().upper()
+    lesson_products = set(lesson.get("product", []))
+
+    project_products = config.PROJECT_KEY_TO_PRODUCTS.get(project_key)
+    if project_products is None:
+        # Unknown project — include by default
+        return True
+
+    return bool(lesson_products & set(project_products))
+
+
 # ---------------------------------------------------------------------------
 
 def _load_existing(out_path: Path) -> tuple[list[dict], set[tuple]]:

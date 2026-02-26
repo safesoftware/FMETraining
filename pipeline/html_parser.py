@@ -33,7 +33,8 @@ def parse_lesson_html(html_path: Path) -> dict:
             "headings": [...],
             "exercise_steps": [...],
             "ui_strings": [...],
-            "images": [...]
+            "images": [...],
+            "lesson_text": str  (visible text, stripped of HTML)
         }
     """
     with open(html_path, encoding="utf-8", errors="replace") as f:
@@ -45,12 +46,14 @@ def parse_lesson_html(html_path: Path) -> dict:
     exercise_steps = _extract_exercise_steps(headings)
     ui_strings = _extract_ui_strings(soup)
     images = _extract_images(soup, headings)
+    lesson_text = _extract_lesson_text(soup)
 
     return {
         "headings": headings,
         "exercise_steps": exercise_steps,
         "ui_strings": ui_strings,
         "images": images,
+        "lesson_text": lesson_text,
     }
 
 
@@ -179,3 +182,17 @@ def _extract_images(soup: BeautifulSoup, headings: list[dict]) -> list[dict]:
             })
 
     return images
+
+
+def _extract_lesson_text(soup: BeautifulSoup) -> str:
+    """
+    Extract all visible text from the lesson as a single string.
+
+    Used when INCLUDE_FULL_TEXT=true to give the LLM full lesson context.
+    Truncated to 15,000 characters to cap token usage.
+    """
+    text = soup.get_text(separator="\n", strip=True)
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    if len(text) > 15000:
+        text = text[:15000] + "\n[truncated]"
+    return text

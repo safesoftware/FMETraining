@@ -178,6 +178,16 @@ def _load_and_filter_csv(
                 if not issue_key or issue_key in seen_keys:
                     continue
 
+                # Skip Bug issue types — they rarely impact training content
+                issue_type = str(row.get("issue_type", "")).strip()
+                if issue_type.lower() == "bug":
+                    continue
+
+                # Skip issues for standalone programs not used in Academy training
+                summary = str(row.get("summary", "")).strip()
+                if any(summary.startswith(p) for p in config.EXCLUDED_SUMMARY_PREFIXES):
+                    continue
+
                 # Collect all affects_versions values (non-empty)
                 affects_raw = [
                     str(row.get(f"affects_versions_{i}", "")).strip()
@@ -185,23 +195,27 @@ def _load_and_filter_csv(
                 ]
                 affects_raw = [v for v in affects_raw if v]
 
-                # Parse to floats
-                affects_parsed = [
-                    parse_version(v) for v in affects_raw
-                ]
-                affects_parsed = [v for v in affects_parsed if v is not None]
-
-                # Check if any affects version is in the update window
-                if not any(version_in_range(v, from_min, to_version) for v in affects_parsed):
-                    continue
-
-                seen_keys.add(issue_key)
-
+                # Collect all fix_versions values (non-empty)
                 fix_raw = [
                     str(row.get(f"fix_versions_{i}", "")).strip()
                     for i in range(len(col_positions["fix_versions"]))
                 ]
                 fix_raw = [v for v in fix_raw if v]
+
+                # Parse affects and fix versions to floats
+                affects_parsed = [v for v in (parse_version(v) for v in affects_raw) if v is not None]
+                fix_parsed = [v for v in (parse_version(v) for v in fix_raw) if v is not None]
+
+                # Include if any affects_version is in range.
+                # Fall back to fix_versions when affects_versions is empty (common for Epics
+                # and feature issues that only have Fix version set, not Affects version).
+                affects_in_range = any(version_in_range(v, from_min, to_version) for v in affects_parsed)
+                fix_in_range = (not affects_raw) and any(version_in_range(v, from_min, to_version) for v in fix_parsed)
+
+                if not affects_in_range and not fix_in_range:
+                    continue
+
+                seen_keys.add(issue_key)
 
                 issue = {
                     "issue_key": issue_key,

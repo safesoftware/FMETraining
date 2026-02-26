@@ -133,6 +133,10 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 .pagination button:disabled {{ opacity: 0.4; cursor: not-allowed; }}
 .pagination button:not(:disabled):hover {{ background: #f0f4ff; }}
 .pagination span {{ font-size: 0.85rem; color: #555; }}
+.rec-id {{ font-family: monospace; font-size: 0.72rem; color: #aaa; margin-left: 8px; cursor: pointer; border-radius: 3px; padding: 1px 4px; transition: background 0.15s, color 0.15s; }}
+.rec-id:hover {{ background: #e0e7ff; color: #4338ca; }}
+.rec-id:hover::after {{ content: " copy"; font-size: 0.65rem; }}
+.rec-id.copied {{ background: #d1fae5; color: #065f46; }}
 #no-results {{ display: none; padding: 40px; text-align: center; color: #888; }}
 .fetch-error {{ background: #fee2e2; color: #991b1b; padding: 20px 24px; margin: 20px 24px; border-radius: 8px; font-size: 0.9rem; line-height: 1.6; }}
 </style>
@@ -157,6 +161,7 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
   <div style="display:flex;gap:8px;align-items:center">
     <label>Learning Path: <select id="lp-filter"><option value="">All</option></select></label>
     <label>Course: <select id="course-filter"><option value="">All</option></select></label>
+    <label>Lesson: <select id="lesson-filter"><option value="">All</option></select></label>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
     <label>Sort: <select id="sort-select">
@@ -175,12 +180,17 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
     To view this report, run: <code>python -m http.server 8080</code> from the <code>artifacts/</code> directory,
     then open <a href="http://localhost:8080/report-{run_id}.html">http://localhost:8080/report-{run_id}.html</a>
   </div>
+  <div class="pagination" id="pagination-top" style="display:none">
+    <button id="prev-btn-top" onclick="prevPage()">← Previous</button>
+    <span id="page-info-top"></span>
+    <button id="next-btn-top" onclick="nextPage()">Next →</button>
+  </div>
   <div id="cards-container"></div>
   <div id="no-results">No assessments match the current filters.</div>
-  <div class="pagination" id="pagination" style="display:none">
-    <button id="prev-btn" onclick="prevPage()">← Previous</button>
-    <span id="page-info"></span>
-    <button id="next-btn" onclick="nextPage()">Next →</button>
+  <div class="pagination" id="pagination-bottom" style="display:none">
+    <button id="prev-btn-bottom" onclick="prevPage()">← Previous</button>
+    <span id="page-info-bottom"></span>
+    <button id="next-btn-bottom" onclick="nextPage()">Next →</button>
   </div>
 </div>
 
@@ -232,10 +242,13 @@ function initFilters() {{
 
   // Bind events
   document.querySelectorAll('.lf-check').forEach(cb => cb.addEventListener('change', applyFilters));
-  document.getElementById('lp-filter').addEventListener('change', () => {{ updateCourseFilter(); applyFilters(); }});
-  document.getElementById('course-filter').addEventListener('change', applyFilters);
+  document.getElementById('lp-filter').addEventListener('change', () => {{ updateCourseFilter(); updateLessonFilter(); applyFilters(); }});
+  document.getElementById('course-filter').addEventListener('change', () => {{ updateLessonFilter(); applyFilters(); }});
+  document.getElementById('lesson-filter').addEventListener('change', applyFilters);
   document.getElementById('sort-select').addEventListener('change', applyFilters);
   document.getElementById('search-box').addEventListener('input', applyFilters);
+  updateCourseFilter();
+  updateLessonFilter();
 }}
 
 function updateCourseFilter() {{
@@ -252,12 +265,30 @@ function updateCourseFilter() {{
   }});
 }}
 
+function updateLessonFilter() {{
+  const lp = document.getElementById('lp-filter').value;
+  const course = document.getElementById('course-filter').value;
+  const lessons = [...new Set(
+    allData
+      .filter(a => (!lp || a.learning_path === lp) && (!course || a.course_canonical === course))
+      .map(a => a.lesson_name)
+  )].sort();
+  const sel = document.getElementById('lesson-filter');
+  sel.innerHTML = '<option value="">All</option>';
+  lessons.forEach(l => {{
+    const o = document.createElement('option');
+    o.value = l; o.textContent = l;
+    sel.appendChild(o);
+  }});
+}}
+
 function applyFilters() {{
   const checkedLikelihoods = new Set(
     [...document.querySelectorAll('.lf-check:checked')].map(cb => cb.value)
   );
   const lp = document.getElementById('lp-filter').value;
   const course = document.getElementById('course-filter').value;
+  const lesson = document.getElementById('lesson-filter').value;
   const search = document.getElementById('search-box').value.toLowerCase().trim();
   const sort = document.getElementById('sort-select').value;
 
@@ -265,6 +296,7 @@ function applyFilters() {{
     if (!checkedLikelihoods.has(a.update_likelihood)) return false;
     if (lp && a.learning_path !== lp) return false;
     if (course && a.course_canonical !== course) return false;
+    if (lesson && a.lesson_name !== lesson) return false;
     if (search) {{
       const hay = [a.lesson_name, a.course_canonical, a.learning_path,
                    a.issue_key, a.issue_summary, a.justification].join(' ').toLowerCase();
@@ -288,12 +320,12 @@ function applyFilters() {{
 function renderPage() {{
   const container = document.getElementById('cards-container');
   const noResults = document.getElementById('no-results');
-  const pagination = document.getElementById('pagination');
 
   if (filteredData.length === 0) {{
     container.innerHTML = '';
     noResults.style.display = 'block';
-    pagination.style.display = 'none';
+    document.getElementById('pagination-top').style.display = 'none';
+    document.getElementById('pagination-bottom').style.display = 'none';
     return;
   }}
 
@@ -304,12 +336,14 @@ function renderPage() {{
 
   container.innerHTML = pageItems.map(renderCard).join('');
 
-  // Pagination
-  pagination.style.display = 'flex';
-  document.getElementById('page-info').textContent =
-    `Page ${{currentPage}} of ${{totalPages}} (${{filteredData.length.toLocaleString()}} results)`;
-  document.getElementById('prev-btn').disabled = currentPage === 1;
-  document.getElementById('next-btn').disabled = currentPage === totalPages;
+  // Sync both pagination bars
+  ['top', 'bottom'].forEach(side => {{
+    document.getElementById('pagination-' + side).style.display = 'flex';
+    document.getElementById('page-info-' + side).textContent =
+      `Page ${{currentPage}} of ${{totalPages}} (${{filteredData.length.toLocaleString()}} results)`;
+    document.getElementById('prev-btn-' + side).disabled = currentPage === 1;
+    document.getElementById('next-btn-' + side).disabled = currentPage === totalPages;
+  }});
 }}
 
 function prevPage() {{ if (currentPage > 1) {{ currentPage--; renderPage(); window.scrollTo(0,0); }} }}
@@ -330,7 +364,7 @@ function renderCard(a) {{
 
   const affectedItems = (a.affected_lesson_elements || []);
   const affectedHtml = affectedItems.length > 0
-    ? `<details class="affected-list">
+    ? `<details class="affected-list" open>
         <summary>${{affectedItems.length}} affected element${{affectedItems.length !== 1 ? 's' : ''}}</summary>
         <ul>${{affectedItems.map(el => `<li>${{escHtml(el)}}</li>`).join('')}}</ul>
       </details>`
@@ -347,6 +381,7 @@ function renderCard(a) {{
       <div class="card-meta">
         ${{escHtml(a.course_canonical || '')}} &nbsp;›&nbsp; ${{escHtml(a.learning_path || '')}}
         &nbsp;|&nbsp; v${{escHtml(a.version || '')}}
+        ${{a.rec_id ? `<span class="rec-id" onclick="copyRecId(this,'${{escHtml(a.rec_id)}}')" title="Click to copy">#${{escHtml(a.rec_id)}}</span>` : ''}}
       </div>
     </div>
     <div class="card-badges">
@@ -373,6 +408,22 @@ function renderCard(a) {{
     </div>
   </div>
 </div>`;
+}}
+
+function copyRecId(el, id) {{
+  navigator.clipboard.writeText(id).then(() => {{
+    el.classList.add('copied');
+    el.textContent = '✓ copied';
+    setTimeout(() => {{
+      el.classList.remove('copied');
+      el.textContent = '#' + id;
+    }}, 1500);
+  }}).catch(() => {{
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  }});
 }}
 
 function escHtml(str) {{

@@ -42,6 +42,9 @@ OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 OPENAI_MAX_CONCURRENT: int = int(os.getenv("OPENAI_MAX_CONCURRENT", "5"))
 OPENAI_RPM: int = int(os.getenv("OPENAI_RPM", "60"))
 
+# Include full stripped lesson text in LLM prompts (~3x input token cost, fewer false positives)
+INCLUDE_FULL_TEXT: bool = os.getenv("INCLUDE_FULL_TEXT", "false").lower() == "true"
+
 _raw_project_keys = os.getenv("JIRA_PROJECT_KEYS", "FOUNDATION,FMEENGINE,FMEFLOW,FMEFORM")
 JIRA_PROJECT_KEYS: list[str] = [k.strip() for k in _raw_project_keys.split(",") if k.strip()]
 
@@ -102,3 +105,29 @@ EXERCISE_STEP_PATTERN: re.Pattern = re.compile(r"^(\d+)[).]")
 
 # Flush assessment results to disk every N completions
 ASSESSMENT_FLUSH_INTERVAL: int = 25
+
+# Maps Jira project keys to the FME products they cover.
+# If a lesson's product list has no intersection with this mapping for a given
+# issue's project key, that (lesson, issue) pair is skipped — avoiding e.g.
+# FMEFLOW issues being assessed against FME Form-only lessons.
+# Project keys NOT listed here are treated as relevant to all products.
+# Issue summary prefixes for standalone FME programs not covered in Academy training.
+# Issues whose summaries start with any of these prefixes are excluded from the changelog
+# before reaching the LLM assessment step.
+EXCLUDED_SUMMARY_PREFIXES: list[str] = [
+    "Quick Translator:",
+    "FME Quick Translator:",
+    "Data Inspector:",
+    "FME Data Inspector:",
+    "Licencing Assistant:",
+    "FME Licencing Assistant:",
+    "Transformer Designer:",
+    "FME Transformer Designer:",
+]
+
+PROJECT_KEY_TO_PRODUCTS: dict[str, list[str]] = {
+    "FMEFORM": ["fme_form"],
+    "FMEFLOW": ["fme_flow"],
+    "FMEENGINE": ["fme_form", "fme_flow"],
+    "FOUNDATION": ["fme_form", "fme_flow"],
+}
