@@ -1,9 +1,14 @@
 # Open
 
-- #80c27790 is a false positive. It refers to Workspace Parameters, a specific section of the Navigator UI. It does not mean "all parameters you can set in the workspace." I realize that is a bit confusing, so I'm not sure we can fix this one. Any ideas welcome.
+- Add a hover effect on the Active, Done, and Incorrect buttons.
 
 # Fixed
 
+- #80c27790 is a false positive. It refers to Workspace Parameters, a specific section of the Navigator UI. It does not mean "all parameters you can set in the workspace." I realize that is a bit confusing, so I'm not sure we can fix this one. Any ideas welcome.
+- Add support for reading Jira issues directly using the Jira API. I have added a Jira API key to .env. The CSV currently in use (`jira_export.csv`) pulls issues from a Jira Filter called Public Changelog. I've added the filter ID in .env as well. The API approach should retreive the issues from that filter. They are the full list of all Jira changes that should be considered for training updates; we've already built in the filtering that accounts for pulling the relevant issues. I'll leave it up to you which approach you want to use; pulling all issues and keeping them in a local file similar to the CSV, or pulling Jira issues only. In either case, I think there should be a CLI option that determines if the user is supplying the issues via a Jira export CSV or wants to use the API. Please let me know what other information you need.
+- Add support for a very basic "checklist" function in the HTML page. The goal here is to allow the user to manually set each recommendation card's status as "done" or "incorrect" on the HTML page. They default to a status of "active." Once checked off, the card disappears from view. Please add filters for "active" "done" and "incorrect" that allow the user to filter the list of cards by their status. 
+- Store recommendaiton status so the HTML page is persistent between sessions. This is so the user can continue to refer to these as they do the updates over multiple working days. I suppose this would include adding status to the recommendation JSON. This status is per-run and per-HTML file; it's expected to always have a default value of "active" on new runs.
+- Add documentation of the CLI tool to README.md, including the existing commands and how to run the full pipeline. Also include instructions to install any prerequisites, including Python and requirements.txt for non-technical users. Also note that the user should provide API keys and other configuration settings in .env.
 - Add behavior to the update recommendation tags #xxxxxx to allow for quick copying and pasting of the ID. So if you hover it animates and suggests Copy, click to copy to clipboard.
 - False positives fixed (full lesson text + specificity rule in prompt + excluded programs pre-filter):
     - #2c92070d #d4220140 #a673fbb7 #045ecab1 = User Parameter Manager issues → `none` (full lesson text showed UPM dialog never referenced)
@@ -23,3 +28,11 @@
 - Most of the major functionality changes that I know will impact this update are not included in the report. That means we have a serious false negative problem. For example, the entire Epic FMEFORM-32764 ("Workbench: Reorganized menus for clearer structure and usability") will impact most FME Form lessons. Investigate why it and its child issues were not detected. Another Epic has the same problem: FMEFORM-34707 ("Workbench: Visualize live feature caches 26.1"). I don't see any of the child issues for these Epics in the None category, suggesting no API call was ever made for these issues. Why not?
 - The "Course" drop-down in the HTML report only shows "All" when the pipeline ran on one course. It should instead show the name of the course.
 - Please add the pagination buttons at the top of the page as well.
+
+# Won't Do
+
+- Ideas for verification. What do you think about making the following changes? Will they improve the speed of execution and reduce API costs? Do you think there will be any quality changes?
+    - Generate MD copies of the HTML.
+    - Then use https://github.com/tobi/qmd?tab=readme-ov to generate embeddings for all training content.
+    - Use the Jira MCP server to fetch issues and use the local embeddings database instead of including lesson text in the API calls. I suppose this would look like one Jira issue at a time compared to whatever embeddings were in the subset of content defined in update-job.json.
+    - REASONING: this path would reduce the LLM API calls, but would likely reduce the quality of the results. I will not pursue it unless cost becomes a concern.

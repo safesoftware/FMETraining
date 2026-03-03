@@ -48,6 +48,13 @@ INCLUDE_FULL_TEXT: bool = os.getenv("INCLUDE_FULL_TEXT", "false").lower() == "tr
 _raw_project_keys = os.getenv("JIRA_PROJECT_KEYS", "FOUNDATION,FMEENGINE,FMEFLOW,FMEFORM")
 JIRA_PROJECT_KEYS: list[str] = [k.strip() for k in _raw_project_keys.split(",") if k.strip()]
 
+# Jira API credentials (for --jira-source api)
+JIRA_BASE_URL: str = os.getenv("JIRA_BASE_URL", "").rstrip("/").replace("http://", "https://")
+JIRA_USER: str = os.getenv("JIRA_USER", "")
+JIRA_API_TOKEN: str = os.getenv("JIRA_API_KEY", "")  # reuse JIRA_API_KEY from .env
+JIRA_FILTER_ID: str = os.getenv("JIRA_FILTER_ID", "")
+JIRA_CACHE_PATH: Path = REPO_ROOT / "inputs" / "jira_api_cache.json"
+
 
 # ---------------------------------------------------------------------------
 # Directory paths

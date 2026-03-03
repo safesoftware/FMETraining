@@ -62,11 +62,17 @@ Use your knowledge of FME (transformers, readers/writers, UI, workflows) to reas
 
 **Excluded programs:** FME Academy training focuses on the FME Workbench program within FME Form and on the FME Flow web interface. Generally, the training does not use these standalone programs: FME Quick Translator, FME Data Inspector, FME Licencing Assistant, and FME Transformer Designer. Issues specific to these programs should be assigned `none`. The Academy uses Visual/Data Preview within FME Workbench, not the standalone Data Inspector.
 
+**FME terminology disambiguation:** Some FME UI element names look like generic phrases but are actually the names of specific panels or dialogs. Do not confuse these with the general concept implied by their words. Key examples:
+- **"Workspace Parameters"** — a specific section of the FME Workbench Navigator panel (accessed via the gear icon), not a general reference to all configurable settings in a workspace. An issue about "Workspace Parameters" is only relevant if the lesson explicitly navigates to or modifies that specific Navigator section.
+- **"Feature Caches"** — a specific caching panel/feature in FME Workbench, not a general reference to data caching.
+- **"Transformer Cache"** — a specific per-transformer debugging feature, not a general caching concept.
+
 **Specificity rule:** If the Jira issue names a specific transformer, data format, dialog, or UI element, verify it is explicitly referenced in the lesson content above before rating it as `medium` or `high`. Do not infer relevance from topic proximity. Examples of incorrect reasoning to avoid:
 - A change to `CommonLocalReprojector` should NOT flag a lesson that only uses `Reprojector` — these are distinct transformers.
 - A change to a specific file format (e.g., Landonline) should NOT flag a lesson that reads other spatial formats.
 - A change to a specific reader variant (e.g., Excel embedded-raster behavior) should NOT flag a lesson that uses that reader for a different purpose (e.g., reading tabular data).
 - A change to a Web Services creation dialog should NOT flag a lesson that adds a local file reader.
+- A change to the "Workspace Parameters" Navigator section should NOT flag a lesson just because it configures workspace settings in general.
 If the specific item named in the issue is absent from the lesson content, assign `none` or `low`.
 
 **Update likelihood scale:**

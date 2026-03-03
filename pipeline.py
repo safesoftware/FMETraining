@@ -9,6 +9,8 @@ Usage:
   python pipeline.py --resume <RUN_ID>       # Resume an interrupted run
   python pipeline.py --report-only <RUN_ID>  # Regenerate HTML report only
   python pipeline.py --job path/to/job.json  # Use a custom job file
+  python pipeline.py --jira-source api       # Fetch issues from Jira API (uses cache)
+  python pipeline.py --jira-source api --refresh-jira  # Force re-fetch from Jira API
 """
 
 from __future__ import annotations
@@ -78,6 +80,19 @@ def main() -> int:
         default=None,
         metavar="PATH",
         help="Override the artifacts output directory (default: ./artifacts)",
+    )
+    parser.add_argument(
+        "--jira-source",
+        choices=["csv", "api"],
+        default="csv",
+        help="Source for Jira issues: 'csv' (default) reads inputs/jira_export.csv; "
+             "'api' fetches from the Jira REST API using credentials in .env",
+    )
+    parser.add_argument(
+        "--refresh-jira",
+        action="store_true",
+        help="When --jira-source api is set, force a fresh fetch from the Jira API "
+             "even if a local cache (inputs/jira_api_cache.json) already exists",
     )
 
     args = parser.parse_args()
@@ -173,7 +188,12 @@ def main() -> int:
     # ---------------------------------------------------------------------------
     if 2 in steps_to_run:
         from pipeline.changelog import build_changelog
-        changelog = build_changelog(run_id, manifest, output_dir, dry_run=args.dry_run)
+        changelog = build_changelog(
+            run_id, manifest, output_dir,
+            dry_run=args.dry_run,
+            jira_source=args.jira_source,
+            refresh_jira=args.refresh_jira,
+        )
         if not args.dry_run:
             mark_step_complete(run_id, 2, output_dir)
     else:

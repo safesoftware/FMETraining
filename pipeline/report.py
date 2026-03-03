@@ -139,6 +139,24 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 .rec-id.copied {{ background: #d1fae5; color: #065f46; }}
 #no-results {{ display: none; padding: 40px; text-align: center; color: #888; }}
 .fetch-error {{ background: #fee2e2; color: #991b1b; padding: 20px 24px; margin: 20px 24px; border-radius: 8px; font-size: 0.9rem; line-height: 1.6; }}
+/* Card status */
+.status-btns {{ display: flex; gap: 4px; flex-shrink: 0; }}
+.status-btn {{ padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.12s; white-space: nowrap; }}
+.status-btn.active  {{ background: #f3f4f6; color: #374151; border-color: #d1d5db; }}
+.status-btn.active:hover  {{ background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }}
+.status-btn.active.sel  {{ background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }}
+.status-btn.done   {{ background: #f3f4f6; color: #374151; border-color: #d1d5db; }}
+.status-btn.done:hover   {{ background: #dcfce7; color: #15803d; border-color: #86efac; }}
+.status-btn.done.sel   {{ background: #dcfce7; color: #15803d; border-color: #86efac; }}
+.status-btn.incorrect {{ background: #f3f4f6; color: #374151; border-color: #d1d5db; }}
+.status-btn.incorrect:hover {{ background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }}
+.status-btn.incorrect.sel {{ background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }}
+.card[data-status="done"] {{ opacity: 0.45; }}
+.card[data-status="done"] .card-title {{ text-decoration: line-through; }}
+.card[data-status="incorrect"] {{ opacity: 0.45; border-left: 3px solid #ef4444; }}
+/* Status filter chips */
+.status-filters {{ display: flex; gap: 8px; align-items: center; }}
+.status-filters label {{ display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 0.85rem; }}
 </style>
 </head>
 <body>
@@ -157,6 +175,12 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
     <label><input type="checkbox" class="lf-check" value="medium" checked> Medium</label>
     <label><input type="checkbox" class="lf-check" value="low" checked> Low</label>
     <label><input type="checkbox" class="lf-check" value="none"> None</label>
+  </div>
+  <div class="status-filters">
+    <label><b>Status:</b></label>
+    <label><input type="checkbox" class="sf-check" value="active" checked> Active</label>
+    <label><input type="checkbox" class="sf-check" value="done"> Done</label>
+    <label><input type="checkbox" class="sf-check" value="incorrect"> Incorrect</label>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
     <label>Learning Path: <select id="lp-filter"><option value="">All</option></select></label>
@@ -198,10 +222,26 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 const JSON_FILE = '{json_filename}';
 const PAGE_SIZE = 25;
 const LIKELIHOOD_ORDER = {{ high: 3, medium: 2, low: 1, none: 0 }};
+const STATUS_KEY = 'fme_report_status_{run_id}';
 
 let allData = [];
 let filteredData = [];
 let currentPage = 1;
+let statusMap = {{}};  // rec_id -> "active" | "done" | "incorrect"
+
+function loadStatusMap() {{
+  try {{ statusMap = JSON.parse(localStorage.getItem(STATUS_KEY) || '{{}}'); }}
+  catch(e) {{ statusMap = {{}}; }}
+}}
+
+function saveStatusMap() {{
+  try {{ localStorage.setItem(STATUS_KEY, JSON.stringify(statusMap)); }}
+  catch(e) {{}}
+}}
+
+function getStatus(rec_id) {{
+  return statusMap[rec_id] || 'active';
+}}
 
 // Load data
 fetch(JSON_FILE)
@@ -211,6 +251,7 @@ fetch(JSON_FILE)
   }})
   .then(data => {{
     allData = data.assessments || [];
+    loadStatusMap();
     initFilters();
     applyFilters();
   }})
@@ -242,6 +283,7 @@ function initFilters() {{
 
   // Bind events
   document.querySelectorAll('.lf-check').forEach(cb => cb.addEventListener('change', applyFilters));
+  document.querySelectorAll('.sf-check').forEach(cb => cb.addEventListener('change', applyFilters));
   document.getElementById('lp-filter').addEventListener('change', () => {{ updateCourseFilter(); updateLessonFilter(); applyFilters(); }});
   document.getElementById('course-filter').addEventListener('change', () => {{ updateLessonFilter(); applyFilters(); }});
   document.getElementById('lesson-filter').addEventListener('change', applyFilters);
@@ -292,8 +334,13 @@ function applyFilters() {{
   const search = document.getElementById('search-box').value.toLowerCase().trim();
   const sort = document.getElementById('sort-select').value;
 
+  const checkedStatuses = new Set(
+    [...document.querySelectorAll('.sf-check:checked')].map(cb => cb.value)
+  );
+
   filteredData = allData.filter(a => {{
     if (!checkedLikelihoods.has(a.update_likelihood)) return false;
+    if (!checkedStatuses.has(getStatus(a.rec_id))) return false;
     if (lp && a.learning_path !== lp) return false;
     if (course && a.course_canonical !== course) return false;
     if (lesson && a.lesson_name !== lesson) return false;
@@ -352,8 +399,24 @@ function nextPage() {{
   if (currentPage < totalPages) {{ currentPage++; renderPage(); window.scrollTo(0,0); }}
 }}
 
+function setStatus(rec_id, status) {{
+  statusMap[rec_id] = status;
+  saveStatusMap();
+  // Update card in-place without full re-render
+  const card = document.querySelector(`.card[data-rec="${{rec_id}}"]`);
+  if (card) {{
+    card.dataset.status = status;
+    card.querySelectorAll('.status-btn').forEach(btn => {{
+      btn.classList.toggle('sel', btn.dataset.status === status);
+    }});
+  }}
+  // Re-apply filters so card disappears if status filter hides it
+  applyFilters();
+}}
+
 function renderCard(a) {{
   const likelihoodClass = a.update_likelihood || 'none';
+  const status = getStatus(a.rec_id);
   const screenshotBadge = a.screenshots_need_retaking
     ? '<span class="badge screenshot">📷 Screenshots needed</span>' : '';
   const productBadges = (a.product || []).map(p => {{
@@ -373,21 +436,28 @@ function renderCard(a) {{
   const screenshotDetailsHtml = a.screenshots_need_retaking && a.screenshot_details
     ? `<div class="screenshot-details">📷 ${{escHtml(a.screenshot_details)}}</div>` : '';
 
+  const rid = escHtml(a.rec_id || '');
+
   return `
-<div class="card">
+<div class="card" data-rec="${{rid}}" data-status="${{status}}">
   <div class="card-header">
     <div>
       <div class="card-title">${{escHtml(a.lesson_name || '')}}</div>
       <div class="card-meta">
         ${{escHtml(a.course_canonical || '')}} &nbsp;›&nbsp; ${{escHtml(a.learning_path || '')}}
         &nbsp;|&nbsp; v${{escHtml(a.version || '')}}
-        ${{a.rec_id ? `<span class="rec-id" onclick="copyRecId(this,'${{escHtml(a.rec_id)}}')" title="Click to copy">#${{escHtml(a.rec_id)}}</span>` : ''}}
+        ${{a.rec_id ? `<span class="rec-id" onclick="copyRecId(this,'${{rid}}')" title="Click to copy">#${{rid}}</span>` : ''}}
       </div>
     </div>
     <div class="card-badges">
       <span class="badge ${{likelihoodClass}}">${{(likelihoodClass).toUpperCase()}}</span>
       ${{screenshotBadge}}
       ${{productBadges}}
+      <div class="status-btns">
+        <button class="status-btn active${{status==='active'?' sel':''}}" data-status="active" onclick="setStatus('${{rid}}','active')" title="Mark as active">Active</button>
+        <button class="status-btn done${{status==='done'?' sel':''}}" data-status="done" onclick="setStatus('${{rid}}','done')" title="Mark as done">Done</button>
+        <button class="status-btn incorrect${{status==='incorrect'?' sel':''}}" data-status="incorrect" onclick="setStatus('${{rid}}','incorrect')" title="Mark as incorrect">Incorrect</button>
+      </div>
     </div>
   </div>
   <div class="card-body">

@@ -1,9 +1,9 @@
 """
 Step 2: Build the Change Log.
 
-Reads data/jira_export.csv, filters to FME-relevant project keys and to issues
-that affect versions within the update window, and writes
-artifacts/changelog-{RUN_ID}.json.
+Reads issues from either the Jira CSV export or the Jira REST API, filters to
+FME-relevant project keys and to issues that affect versions within the update
+window, and writes artifacts/changelog-{RUN_ID}.json.
 """
 
 from __future__ import annotations
@@ -34,21 +34,26 @@ def build_changelog(
     manifest: dict,
     output_dir: Path,
     dry_run: bool = False,
+    jira_source: str = "csv",
+    refresh_jira: bool = False,
 ) -> dict:
     """
-    Filter the Jira CSV to issues relevant to the update window derived from
-    the manifest and write artifacts/changelog-{RUN_ID}.json.
+    Filter Jira issues to those relevant to the update window and write
+    artifacts/changelog-{RUN_ID}.json.
 
     Args:
-        run_id:     Current run ID.
-        manifest:   The manifest dict from Step 1.
-        output_dir: Artifacts directory.
-        dry_run:    If True, compute counts but don't write output.
+        run_id:        Current run ID.
+        manifest:      The manifest dict from Step 1.
+        output_dir:    Artifacts directory.
+        dry_run:       If True, compute counts but don't write output.
+        jira_source:   "csv" (default) or "api" (fetch from Jira REST API).
+        refresh_jira:  When jira_source="api", force re-fetch even if cache exists.
 
     Returns:
         The changelog dict.
     """
-    print("\n[Step 2] Building change log from Jira CSV...")
+    source_label = "Jira API" if jira_source == "api" else "Jira CSV"
+    print(f"\n[Step 2] Building change log from {source_label}...")
 
     job = manifest.get("job", {})
     to_version_str = str(job.get("to_version", ""))
@@ -70,11 +75,15 @@ def build_changelog(
     print(f"  Version range: ({from_min}, {to_version}]")
     print(f"  Project keys: {config.JIRA_PROJECT_KEYS}")
 
-    csv_path = config.JIRA_CSV_PATH
-    if not csv_path.exists():
-        raise FileNotFoundError(f"Jira CSV not found: {csv_path}")
-
-    issues = _load_and_filter_csv(csv_path, from_min, to_version)
+    if jira_source == "api":
+        from pipeline.jira_api import fetch_raw_issues
+        raw_issues = fetch_raw_issues(refresh=refresh_jira)
+        issues = _filter_issues(raw_issues, from_min, to_version)
+    else:
+        csv_path = config.JIRA_CSV_PATH
+        if not csv_path.exists():
+            raise FileNotFoundError(f"Jira CSV not found: {csv_path}")
+        issues = _load_and_filter_csv(csv_path, from_min, to_version)
 
     print(f"  Found {len(issues)} relevant issues.")
 
@@ -101,6 +110,74 @@ def build_changelog(
 
     print(f"  Changelog written: {out_path.name}")
     return changelog
+
+
+# ---------------------------------------------------------------------------
+# Shared filtering logic (used by both CSV and API paths)
+# ---------------------------------------------------------------------------
+
+def _filter_issues(
+    raw_issues: list[dict],
+    from_min: float,
+    to_version: float,
+) -> list[dict]:
+    """
+    Apply pipeline filters to a list of raw issue dicts (from CSV or API).
+
+    Filters applied:
+      - Project key must be in JIRA_PROJECT_KEYS
+      - Issue type must not be "bug"
+      - Summary must not start with an EXCLUDED_SUMMARY_PREFIXES entry
+      - At least one of the following must fall within (from_min, to_version]:
+          changelog_version (customfield_11765 — primary for API-sourced issues)
+          fix_versions (standard Jira field)
+          affects_versions (standard Jira field)
+        All three are checked independently (OR logic).
+
+    Also adds affects_versions_parsed to each issue.
+    Deduplicates by issue_key.
+    """
+    project_keys_set = set(config.JIRA_PROJECT_KEYS)
+    seen_keys: set[str] = set()
+    results: list[dict] = []
+
+    for issue in raw_issues:
+        issue_key = issue.get("issue_key", "").strip()
+        if not issue_key or issue_key in seen_keys:
+            continue
+
+        if issue.get("project_key", "").strip() not in project_keys_set:
+            continue
+
+        if issue.get("issue_type", "").strip().lower() == "bug":
+            continue
+
+        summary = issue.get("summary", "").strip()
+        if any(summary.startswith(p) for p in config.EXCLUDED_SUMMARY_PREFIXES):
+            continue
+
+        affects_raw = issue.get("affects_versions", [])
+        fix_raw = issue.get("fix_versions", [])
+        changelog_version_str = issue.get("changelog_version", "")
+
+        affects_parsed = [v for v in (parse_version(v) for v in affects_raw) if v is not None]
+        fix_parsed = [v for v in (parse_version(v) for v in fix_raw) if v is not None]
+        changelog_parsed = parse_version(changelog_version_str) if changelog_version_str else None
+
+        affects_in_range = any(version_in_range(v, from_min, to_version) for v in affects_parsed)
+        fix_in_range = any(version_in_range(v, from_min, to_version) for v in fix_parsed)
+        changelog_in_range = (
+            changelog_parsed is not None
+            and version_in_range(changelog_parsed, from_min, to_version)
+        )
+
+        if not affects_in_range and not fix_in_range and not changelog_in_range:
+            continue
+
+        seen_keys.add(issue_key)
+        results.append({**issue, "affects_versions_parsed": affects_parsed})
+
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -206,11 +283,10 @@ def _load_and_filter_csv(
                 affects_parsed = [v for v in (parse_version(v) for v in affects_raw) if v is not None]
                 fix_parsed = [v for v in (parse_version(v) for v in fix_raw) if v is not None]
 
-                # Include if any affects_version is in range.
-                # Fall back to fix_versions when affects_versions is empty (common for Epics
-                # and feature issues that only have Fix version set, not Affects version).
+                # Include if any fix_version OR affects_version is in range (OR logic).
+                # Both fields are checked independently; fix_versions is not just a fallback.
                 affects_in_range = any(version_in_range(v, from_min, to_version) for v in affects_parsed)
-                fix_in_range = (not affects_raw) and any(version_in_range(v, from_min, to_version) for v in fix_parsed)
+                fix_in_range = any(version_in_range(v, from_min, to_version) for v in fix_parsed)
 
                 if not affects_in_range and not fix_in_range:
                     continue
