@@ -82,10 +82,19 @@ If the specific item named in the issue is absent from the lesson content, assig
 - `medium`: The issue changes something referenced in this lesson, but the lesson content may still be functionally usable. For example: a dialog has a new optional parameter, a behavior subtly changed but the instructed steps still work, or a UI element was renamed but the old name would still be recognizable.
 - `high`: The issue directly changes a UI element, workflow step, or behavior that this lesson explicitly teaches. A student following the lesson with the new FME version would encounter a visible mismatch, error, or confusing discrepancy.
 
-**For `affected_lesson_elements`:**
-List the specific headings, exercise step titles, or UI strings from the lesson structure above that are affected. Reference their exact text. Leave the array empty if `update_likelihood` is `none` or `low`.
+**For `impacts_exercise`:**
+Set to `true` if the issue affects one or more exercise steps (the numbered steps students follow interactively). Set to `false` if the issue only affects non-exercise (conceptual/reading) content, or if `update_likelihood` is `none`.
 
-**For `screenshot_details`:**
-If `screenshots_need_retaking` is true, describe which image(s) are likely to need retaking (reference the `nearby_heading` or step number from the images list) and briefly explain what will look different. Leave as an empty string if screenshots are not affected.
+**For `affected_headings`:**
+List the specific section headings from the lesson structure above that are affected by this issue. Reference their exact text as shown in the Headings list. Leave the array empty if `update_likelihood` is `none` or `low`.
+
+**For `screenshots_need_retaking`:**
+Set to `true` if any screenshot in this lesson would look visibly different after this change (new dialog fields, renamed buttons, changed layouts, new ports/icons, etc.).
+
+**For `affected_screenshots`:**
+If `screenshots_need_retaking` is true, list each affected screenshot as an object with:
+- `src`: the image filename (from the images list, e.g. `images/1234567890.png`)
+- `explanation`: a specific description of what will look different in that screenshot and what update needs to be made (e.g. "The PointOnRasterValueExtractor dialog now shows a Rejected port — retake showing the new port visible on the transformer")
+Leave the array empty if no screenshots are affected.
 
 Respond only with valid JSON matching the required schema. Do not include any explanation or text outside the JSON.

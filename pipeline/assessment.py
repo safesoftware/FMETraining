@@ -39,9 +39,10 @@ _RESPONSE_SCHEMA = {
             "required": [
                 "update_likelihood",
                 "justification",
-                "affected_lesson_elements",
+                "impacts_exercise",
+                "affected_headings",
                 "screenshots_need_retaking",
-                "screenshot_details",
+                "affected_screenshots",
             ],
             "additionalProperties": False,
             "properties": {
@@ -50,12 +51,24 @@ _RESPONSE_SCHEMA = {
                     "enum": ["none", "low", "medium", "high"],
                 },
                 "justification": {"type": "string"},
-                "affected_lesson_elements": {
+                "impacts_exercise": {"type": "boolean"},
+                "affected_headings": {
                     "type": "array",
                     "items": {"type": "string"},
                 },
                 "screenshots_need_retaking": {"type": "boolean"},
-                "screenshot_details": {"type": "string"},
+                "affected_screenshots": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["src", "explanation"],
+                        "additionalProperties": False,
+                        "properties": {
+                            "src": {"type": "string"},
+                            "explanation": {"type": "string"},
+                        },
+                    },
+                },
             },
         },
     },
@@ -241,9 +254,12 @@ async def _call_openai(
                 f"{lesson['lesson_id']}:{issue['issue_key']}".encode()
             ).hexdigest()[:8]
 
+            lesson_dir = str(Path(lesson["path"]).parent).replace("\\", "/")
+
             return {
                 "rec_id": rec_id,
                 "lesson_id": lesson["lesson_id"],
+                "lesson_dir": lesson_dir,
                 "lesson_name": lesson["lesson_name"],
                 "course_canonical": lesson["course_canonical"],
                 "learning_path": lesson["learning_path"],
@@ -256,9 +272,10 @@ async def _call_openai(
                 "affects_versions": issue.get("affects_versions", []),
                 "update_likelihood": parsed["update_likelihood"],
                 "justification": parsed["justification"],
-                "affected_lesson_elements": parsed["affected_lesson_elements"],
+                "impacts_exercise": parsed["impacts_exercise"],
+                "affected_headings": parsed["affected_headings"],
                 "screenshots_need_retaking": parsed["screenshots_need_retaking"],
-                "screenshot_details": parsed["screenshot_details"],
+                "affected_screenshots": parsed["affected_screenshots"],
                 "assessed_at": datetime.now(tz=timezone.utc).isoformat(),
                 "prompt_tokens": response.usage.prompt_tokens if response.usage else None,
                 "completion_tokens": response.usage.completion_tokens if response.usage else None,

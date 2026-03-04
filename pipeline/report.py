@@ -114,6 +114,7 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 .badge.low {{ background: #ca8a04; color: #fff; }}
 .badge.none {{ background: #6b7280; color: #fff; }}
 .badge.screenshot {{ background: #7c3aed; color: #fff; }}
+.badge.exercise {{ background: #0891b2; color: #fff; }}
 .badge.fme-form {{ background: #0369a1; color: #fff; }}
 .badge.fme-flow {{ background: #065f46; color: #fff; }}
 .badge.issue-type {{ background: #e5e7eb; color: #374151; }}
@@ -122,12 +123,18 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 .card-section p {{ font-size: 0.88rem; line-height: 1.5; }}
 .card-section.full {{ grid-column: 1 / -1; }}
 .justification {{ font-size: 0.88rem; line-height: 1.6; color: #222; }}
-.affected-list summary {{ cursor: pointer; font-size: 0.8rem; color: #555; list-style: none; display: flex; align-items: center; gap: 4px; }}
-.affected-list summary::before {{ content: "▶"; font-size: 0.65rem; }}
-.affected-list[open] summary::before {{ content: "▼"; }}
-.affected-list ul {{ margin-top: 6px; padding-left: 16px; }}
-.affected-list li {{ font-size: 0.82rem; color: #444; margin-bottom: 2px; font-family: monospace; }}
-.screenshot-details {{ font-size: 0.82rem; color: #5b21b6; background: #f5f3ff; padding: 6px 10px; border-radius: 4px; margin-top: 6px; }}
+.assessment-section {{ margin-top: 6px; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; }}
+.assessment-section summary {{ cursor: pointer; font-size: 0.78rem; font-weight: 600; color: #555; padding: 5px 10px; background: #f9fafb; list-style: none; display: flex; align-items: center; gap: 4px; }}
+.assessment-section summary::before {{ content: "▶"; font-size: 0.6rem; }}
+.assessment-section[open] summary::before {{ content: "▼"; }}
+.assessment-section .section-body {{ padding: 8px 10px; }}
+.assessment-section ul {{ padding-left: 16px; margin: 0; }}
+.assessment-section li {{ font-size: 0.82rem; color: #444; margin-bottom: 3px; }}
+.assessment-section li.screenshot-item {{ list-style: none; margin-bottom: 10px; padding: 8px; background: #f5f3ff; border-radius: 4px; }}
+.assessment-section li.screenshot-item .ss-img {{ display: block; margin-bottom: 6px; }}
+.assessment-section li.screenshot-item .ss-img img {{ max-width: 100%; max-height: 512px; border-radius: 4px; border: 1px solid #ddd8fe; cursor: pointer; }}
+.assessment-section li.screenshot-item .ss-src {{ font-family: monospace; font-size: 0.72rem; color: #5b21b6; font-weight: 600; margin-bottom: 3px; }}
+.assessment-section li.screenshot-item .ss-exp {{ font-size: 0.82rem; color: #333; }}
 .pagination {{ display: flex; justify-content: center; align-items: center; gap: 12px; padding: 20px; }}
 .pagination button {{ padding: 8px 18px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.85rem; }}
 .pagination button:disabled {{ opacity: 0.4; cursor: not-allowed; }}
@@ -181,6 +188,10 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
     <label><input type="checkbox" class="sf-check" value="active" checked> Active</label>
     <label><input type="checkbox" class="sf-check" value="done"> Done</label>
     <label><input type="checkbox" class="sf-check" value="incorrect"> Incorrect</label>
+  </div>
+  <div class="status-filters">
+    <label><input type="checkbox" id="exercise-filter"> Impacts Exercise only</label>
+    <label><input type="checkbox" id="screenshot-filter"> Screenshots Needed only</label>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
     <label>Learning Path: <select id="lp-filter"><option value="">All</option></select></label>
@@ -289,6 +300,8 @@ function initFilters() {{
   document.getElementById('lesson-filter').addEventListener('change', applyFilters);
   document.getElementById('sort-select').addEventListener('change', applyFilters);
   document.getElementById('search-box').addEventListener('input', applyFilters);
+  document.getElementById('exercise-filter').addEventListener('change', applyFilters);
+  document.getElementById('screenshot-filter').addEventListener('change', applyFilters);
   updateCourseFilter();
   updateLessonFilter();
 }}
@@ -337,10 +350,14 @@ function applyFilters() {{
   const checkedStatuses = new Set(
     [...document.querySelectorAll('.sf-check:checked')].map(cb => cb.value)
   );
+  const exerciseOnly = document.getElementById('exercise-filter').checked;
+  const screenshotOnly = document.getElementById('screenshot-filter').checked;
 
   filteredData = allData.filter(a => {{
     if (!checkedLikelihoods.has(a.update_likelihood)) return false;
     if (!checkedStatuses.has(getStatus(a.rec_id))) return false;
+    if (exerciseOnly && !a.impacts_exercise) return false;
+    if (screenshotOnly && !a.screenshots_need_retaking) return false;
     if (lp && a.learning_path !== lp) return false;
     if (course && a.course_canonical !== course) return false;
     if (lesson && a.lesson_name !== lesson) return false;
@@ -419,22 +436,41 @@ function renderCard(a) {{
   const status = getStatus(a.rec_id);
   const screenshotBadge = a.screenshots_need_retaking
     ? '<span class="badge screenshot">📷 Screenshots needed</span>' : '';
+  const exerciseBadge = a.impacts_exercise
+    ? '<span class="badge exercise">🏋 Impacts Exercise</span>' : '';
   const productBadges = (a.product || []).map(p => {{
     const cls = p === 'fme_form' ? 'fme-form' : 'fme-flow';
     const label = p === 'fme_form' ? 'FME Form' : 'FME Flow';
     return `<span class="badge ${{cls}}">${{label}}</span>`;
   }}).join('');
 
-  const affectedItems = (a.affected_lesson_elements || []);
-  const affectedHtml = affectedItems.length > 0
-    ? `<details class="affected-list" open>
-        <summary>${{affectedItems.length}} affected element${{affectedItems.length !== 1 ? 's' : ''}}</summary>
-        <ul>${{affectedItems.map(el => `<li>${{escHtml(el)}}</li>`).join('')}}</ul>
+  const headings = a.affected_headings || [];
+  const affectedHtml = headings.length > 0
+    ? `<details class="assessment-section">
+        <summary>${{headings.length}} affected heading${{headings.length !== 1 ? 's' : ''}}</summary>
+        <div class="section-body"><ul>${{headings.map(h => `<li>${{escHtml(h)}}</li>`).join('')}}</ul></div>
       </details>`
     : '';
 
-  const screenshotDetailsHtml = a.screenshots_need_retaking && a.screenshot_details
-    ? `<div class="screenshot-details">📷 ${{escHtml(a.screenshot_details)}}</div>` : '';
+  const screenshots = a.affected_screenshots || [];
+  const lessonDir = a.lesson_dir || '';
+  const screenshotDetailsHtml = screenshots.length > 0
+    ? `<details class="assessment-section">
+        <summary>📷 ${{screenshots.length}} screenshot${{screenshots.length !== 1 ? 's' : ''}} need retaking</summary>
+        <div class="section-body"><ul>
+          ${{screenshots.map(s => {{
+            const imgUrl = lessonDir ? `../${{lessonDir}}/${{escHtml(s.src || '')}}` : escHtml(s.src || '');
+            return `<li class="screenshot-item">
+              <a class="ss-img" href="${{imgUrl}}" target="_blank" title="Open full size">
+                <img src="${{imgUrl}}" alt="${{escHtml(s.src || '')}}" loading="lazy">
+              </a>
+              <div class="ss-src">${{escHtml(s.src || '')}}</div>
+              <div class="ss-exp">${{escHtml(s.explanation || '')}}</div>
+            </li>`;
+          }}).join('')}}
+        </ul></div>
+      </details>`
+    : '';
 
   const rid = escHtml(a.rec_id || '');
 
@@ -451,6 +487,7 @@ function renderCard(a) {{
     </div>
     <div class="card-badges">
       <span class="badge ${{likelihoodClass}}">${{(likelihoodClass).toUpperCase()}}</span>
+      ${{exerciseBadge}}
       ${{screenshotBadge}}
       ${{productBadges}}
       <div class="status-btns">
@@ -472,7 +509,10 @@ function renderCard(a) {{
     </div>
     <div class="card-section">
       <h4>Assessment</h4>
-      <p class="justification">${{escHtml(a.justification || '')}}</p>
+      <details class="assessment-section" open>
+        <summary>Summary</summary>
+        <div class="section-body"><p class="justification">${{escHtml(a.justification || '')}}</p></div>
+      </details>
       ${{affectedHtml}}
       ${{screenshotDetailsHtml}}
     </div>
