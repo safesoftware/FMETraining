@@ -26,7 +26,17 @@ jobs:
         run: |
           git config --global user.name "rjcragg"
           git config --global user.email "ryan.cragg@safe.com"
-          git add .
-          # "|| exit 0" ensures the workflow stays green if no files changed
-          git commit -m "Automated sync from safeskilljar S3" || exit 0
-          git push
+          
+          # Force add everything including hidden files
+          git add -A
+          
+          # Check status in logs so we can see what Git found
+          git status
+          
+          # Commit only if there are changes
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Automated sync from safeskilljar S3"
+            git push
+          else
+            echo "No changes detected between S3 and GitHub."
+          fi
