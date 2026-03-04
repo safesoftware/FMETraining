@@ -149,13 +149,15 @@ python pipeline.py --output-dir path/to/output
 
 ## Viewing the Report
 
-The HTML report (`artifacts/report-{RUN_ID}.html`) fetches its data from a JSON file via `fetch()`. Most browsers block `fetch()` for `file://` URLs, so serve the artifacts directory with Python's built-in HTTP server:
+The HTML report (`artifacts/report-{RUN_ID}.html`) fetches its data from a JSON file via `fetch()`. Most browsers block `fetch()` for `file://` URLs, so serve the **project root** with Python's built-in HTTP server:
 
 ```bash
-cd artifacts
+# Run from the project root (not the artifacts/ subdirectory)
 python -m http.server 8080
-# Then open http://localhost:8080/report-{RUN_ID}.html
+# Then open http://localhost:8080/artifacts/report-{RUN_ID}.html
 ```
+
+> **Note:** The server must run from the project root so that lesson images (e.g. `2024.2/...`) resolve correctly in the report.
 
 The report includes:
 - **Likelihood filters** (High / Medium / Low / None)
