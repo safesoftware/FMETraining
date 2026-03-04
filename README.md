@@ -164,3 +164,7 @@ The report includes:
 - **Free-text search**
 - **Sort** by likelihood, lesson name, or issue key
 - **Recommendation IDs** (click to copy) for referencing specific findings
+
+## Updating Course Content
+
+Run `python sync_content.py` to update the training content from the source FMETraining repository.
