@@ -1,0 +1,31 @@
+name: Sync Entire S3 Bucket to Repo
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch:    # Allows you to click "Run workflow" manually in GitHub
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Sync from S3 (Public/Anonymous)
+        run: |
+          # Syncs safeskilljar to root, but ignores your GitHub-specific files
+          aws s3 sync s3://safeskilljar/ ./ --delete --no-sign-request \
+          --exclude ".git/*" \
+          --exclude ".github/*" \
+          --exclude ".gitignore" \
+          --exclude "README.md" \
+          --exclude "LICENSE.md"
+          
+      - name: Commit and Push
+        run: |
+          git config --global user.name "rjcragg"
+          git config --global user.email "ryan.cragg@safe.com"
+          git add .
+          # "|| exit 0" ensures the workflow stays green if no files changed
+          git commit -m "Automated sync from safeskilljar S3" || exit 0
+          git push
