@@ -1,0 +1,213 @@
+<p>In general, it's easy to author a workspace for FME Flow because what works on FME Form can be published and run on FME Flow with minimal alteration of the source data.</p>
+<p>However, there are additional methods that can be used to take source data management on FME Flow to the next level. These methods include:</p>
+<ul>
+<li>Managing file datasets.
+<ul>
+<li>Publishing file datasets to a repository or Resources.</li>
+<li>Uploading file datasets at run time.</li>
+<li>Storing file datasets on the Resources file system.</li>
+</ul>
+</li>
+<li>Using Database Connections for data stored in databases</li>
+<li>Using Web Connections for data stored on a web service.</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="color: #000000; font-family: inherit; font-size: 1em;">This course will work through the methods of managing source data with FME Flow. However, if you want to learn more about data integration in general, we recommend you browse these learning resources:</span></p>
+<ul>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://academy.safe.com/why-data-integration" target="_self">Why Data Integration?</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://fme.safe.com/platform/" target="_self">What is Data Integration?</a></li>
+<li><a style="background-color: #ffffff;" href="https://fme.safe.com/solutions/integrations/" target="_self">FME Integrations Gallery</a></li>
+</ul>
+</blockquote>
+<h2>Source Data Published Parameters</h2>
+<p>When workspaces are published to FME Flow, the Reader parameter values for source data are maintained. The parameter values are only altered if they are Published Parameters, created as User Parameters in FME Workbench. Published Parameters that take source data as input to a workspace are useful in self-serve workflows that gather user input.&nbsp;</p>
+<p><img src="images/1748978575190.jpg" alt="" width="1312" height="440" /></p>
+<p>If a default value is provided to the user parameter, it will be displayed in the Published Parameters on FME Flow when running the workspace. You can keep the default value or supply a different source dataset.&nbsp;</p>
+<p><img src="images/1749054497828.jpg" alt="" width="1396" height="425" /></p>
+<h2>Input Source Data Files</h2>
+<p>Providing source data files as parameters allows for ultimate flexibility in self-serve workflows. Look through the different options to input source data into your workspace on FME Flow.</p>
+<div>
+<style>
+  .tabs {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tabs input[type="radio"] {
+    display: none;
+  }
+
+  .tab-labels {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tab-labels label {
+    padding: 10px;
+    background: #f3f6fa;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .tab-labels label:hover {
+    background: #dde7f4;
+  }
+
+  .tab-content {
+    display: none;
+    padding: 10px;
+    background: #dde7f4;
+    margin-top: 10px;
+  }
+
+  #tab1:checked ~ .tab-content-container #content1,
+  #tab2:checked ~ .tab-content-container #content2,
+  #tab3:checked ~ .tab-content-container #content3,
+  #tab4:checked ~ .tab-content-container #content4,
+  #tab5:checked ~ .tab-content-container #content5 {
+    display: block;
+  }
+
+  #tab1:checked ~ .tab-labels label[for="tab1"],
+  #tab2:checked ~ .tab-labels label[for="tab2"],
+  #tab3:checked ~ .tab-labels label[for="tab3"],
+  #tab4:checked ~ .tab-labels label[for="tab4"],
+  #tab5:checked ~ .tab-labels label[for="tab5"] {
+    background: #dde7f4;
+  }
+</style>
+<div class="tabs"><input id="tab1" checked="checked" name="tabs" type="radio" /> <input id="tab2" name="tabs" type="radio" /> <input id="tab3" name="tabs" type="radio" /> <input id="tab4" name="tabs" type="radio" /> <input id="tab5" name="tabs" type="radio" />
+<div class="tab-labels"><label for="tab1">Enter URL</label> <label for="tab2">Enter File Path</label> <label for="tab3">Browse Resources</label> <label for="tab4">Browse File System</label> <label for="tab5">Drop Files</label></div>
+<div class="tab-content-container">
+<div id="content1" class="tab-content">
+<p>You can enter URLs for datasets hosted online (e.g., a public dataset, an open data portal, or an internal server). When you enter the URL and run the workspace, FME Flow downloads the data directly from the online source. This saves you from downloading it from the online source and then uploading it to FME Flow, and is especially useful for large files. Data from live links can also be processed by automation to ensure the most up-to-date data is always used for your workflows.&nbsp;</p>
+<p><img src="images/1749062613849.jpg" alt="" /></p>
+</div>
+<div id="content2" class="tab-content">
+<p>You can enter direct file paths to access datasets on the FME Flow server's local file system. You can enter file paths like <span style="font-family: 'courier new', courier;">C:\Data\zoning.shp</span> or network share paths like <span style="font-family: 'courier new', courier;">\\fileserver\gis\roads.tab</span>. This method is useful for server-side file access without uploading anything through the browser. FME Flow will read the data from the path instead of uploading the dataset through the Browse File System option.&nbsp;</p>
+<p><img src="images/1749062798908.jpg" alt="" /></p>
+<blockquote>
+<p><img src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" /></p>
+<p>This option only works if FME Flow has permission to access the file path provided. Unless FME Flow is installed on your computer, it doesn't have access to your C: drive and will access the C: drive on the server it is installed on. For shared network drives, the FME Flow service account must have permission to access the file and it's folder location.&nbsp; See <a href="https://support.safe.com/hc/en-us/articles/25407707413901-Workspace-Fails-on-FME-Flow-When-Using-UNC-Paths" target="_self">Workspace Fails on FME Flow When Using UNC Paths</a> for more information.&nbsp;</p>
+</blockquote>
+</div>
+<div id="content3" class="tab-content">
+<p>You will want to use the Browse Resources option when the source file is already uploaded to FME Flow's Resources, such as in the Data or Temp folders. It's ideal to store data in Resources if the file will be used across multiple jobs or workflows to avoid repeated uploads, ensure consistency, and support shared access.&nbsp;</p>
+<p><img src="images/1749064542964.jpg" alt="" /></p>
+</div>
+<div id="content4" class="tab-content">
+<p>You can also browse your file system to select the file to upload to FME Flow. This option is practical when you prefer to navigate your folders manually instead of drag-and-drop, or if your device does not support drag-and-drop. Uploading a file to FME Flow this way is better than using the Enter File Path option if FME Flow is not hosted on the machine you're using to access FME Flow to ensure access to the file.&nbsp;</p>
+<p><img src="images/1749065459683.jpg" alt="" width="1297" height="473" /></p>
+<p>The selected file will appear as Uploaded for FME Flow to use as source data.&nbsp;</p>
+<p><img src="images/1749065592904.jpg" alt="" /></p>
+</div>
+<div id="content5" class="tab-content">
+<p>The drag-and-drop file method is best if you have a local file ready and want a quick and easy upload. It is also very convenient if you already have the desired file open in the file explorer. Ultimately, this option is best for ad-hoc one-time runs of your workspace where the file is only needed one time.&nbsp;</p>
+<p><img src="images/1749067322402.jpg" alt="" width="930" height="575" /></p>
+<p>Once you drop the file, it will upload and be ready to use as input to your workspace.&nbsp;</p>
+<p><img src="images/1749067707215.jpg" alt="" /></p>
+</div>
+</div>
+</div>
+<h2>Temporary Uploads</h2>
+<p>If you add your source datasets by uploading at runtime, they will be stored in a temporary folder on FME Flow. The folder for a workspace's temporary uploads is found in Resources &gt; System &gt; temp &gt; upload &gt; <em>Repository</em> &gt;&nbsp;<em>Workspace</em> &gt; <em>User</em>. By default, the files are kept in this folder for 24 hours and removed by system clean-up tasks.&nbsp;</p>
+<p>Both the Browse File System and Drop Files input options from above store the data as a temporary upload.&nbsp;</p>
+<p><img src="images/1749143817769.jpg" alt="" width="1043" height="231" /></p>
+<p>Suppose you rerun the workspace before the clean-up tasks remove the temporary data. In that case, you can select previously uploaded files for the workspace by clicking the Browse Resources option in the source file parameter and navigating to the Temporary Uploads tab. You may select the file as the source dataset to run the workspace again.&nbsp;</p>
+<p><img src="images/1749143994749.jpg" alt="" width="1021" height="558" /></p>
+<p>There are some cautions and limitations to consider when data is uploaded for translation by the end-user:</p>
+<ul>
+<li>Giving the user upload ability is risky because their dataset's schema has to match the workspace's schema definition; otherwise, the translation will fail with unexpected input. Alternatively, a dynamic (and maybe generic) translation could be used to avoid such issues.</li>
+<li>Data uploaded by the user is only temporarily available. The System Cleanup page shows us that such files are (by default) deleted when they become more than 24 hours old. User uploads are not a long-term solution.</li>
+<li>In theory, data uploaded by the user is accessible through Resources &gt; System &gt; temp &gt; upload. However, it's not a commonly accessed location where an end-user would be expected to find it. Therefore, temporary data should be considered inaccessible by any other means and unavailable for use by any other workspace.</li>
+</ul>
+<h2>Exercise</h2>
+<p><img src="images/1749068130511.png" alt="" width="290" height="308" /></p>
+<p>Sven, a city government planning analyst, is starting to run his workflows on FME Flow. He created a workspace that clips election voting location data by neighborhood in Vancouver and writes the data in a geodatabase. While the neighborhood boundaries data does not change, the voting location data may change frequently, so that the user can upload new temporary data through a Published Parameter.&nbsp;</p>
+<p>Follow along with Sven as he continues his workflow by publishing the workspace to FME Flow and then running it on FME Flow with temporary data.&nbsp;</p>
+<h3>1) Open Starting Workspace</h3>
+<p>Sven opens <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/input-source-data-at-runtime.fmw" target="_self">his workspace</a> (<span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\input-source-data-at-runtime.fmw</span>) in FME Workbench. It reads in Voting Places (GML) and Neighborhoods (KML) data, clips the voting places to the neighborhoods, and then writes the data to a geodatabase to keep it updated with the most accurate voting information.&nbsp;</p>
+<p><img src="images/1749144956685.jpg" alt="" width="942" height="260" /></p>
+<h3>2) Add Source Data Parameter</h3>
+<p>To take user input for the VotingPlaces data, Sven must use a parameter to accept the data on FME Flow. To do so, Sven expands the ElectionVoting reader settings in the Navigator, right-clicks the Source Geography Markup Language (GML) File(s) parameter, and selects Create User Parameter.&nbsp;</p>
+<p><img src="images/1749145842168.jpg" alt="" width="697" height="260" /></p>
+<p>He does not need to alter any default settings for the parameter, so he clicks OK and then makes sure he sees his new parameter under User Parameters.&nbsp;</p>
+<p><img src="images/1749146380117.jpg" alt="" width="689" height="47" /></p>
+<h3>3) Publish to FME Flow</h3>
+<p>Sven publishes the workspace to FME Flow, saves it in the Training repository, and registers it with the Job Submitter service.&nbsp;</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details" open="open">
+<summary>Expand for Steps on Publishing to FME Flow</summary>
+<div>The publishing wizard sets all configurations for publishing workspaces to FME Flow. To open it, click Publish in the top toolbar.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div>The first steps are to confirm your FME Flow connection, select a Repository to house the workspace, and optionally alter the workspace's name. To create a new Repository, click New and enter its details. &nbsp;</div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>Optionally, you may <em>Upload data files</em> to publish the workspace's source data files to FME Flow along with the workspace. You can control which files from the&nbsp;<em>Select Files...</em> option.</div>
+<div>Next, if your workspace has any connections, you may select whether or not they will also be published to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>The last step of publishing is to register services for the workspace to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" width="532" height="453" /></div>
+<div>After publishing, the translation log generates a report on the publishing and provides a direct link to run the workspace on FME Flow.</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow Services and Publishing to FME Flow, see Deploy Workflows on FME Flow. ** add link **</div>
+</details><!-- END: Reusable Custom Expandable Section -->
+<h3>4) Open Run Workspace on FME Flow</h3>
+<p>Sven navigates to FME Flow and opens the Run Workspace page and configures it to run his recently published workspace.&nbsp;</p>
+<p><img src="images/1749152266637.jpg" alt="" /></p>
+<h3>5) Configure Source Data and Run Workspace</h3>
+<p>Under Published Parameters, Sven removes the default file path value from the Source Geography Markup Language (GML) File(s) parameter.&nbsp;</p>
+<p><img src="images/1749152382749.jpg" alt="" width="774" height="368" /></p>
+<p>Sven knows that GML files need accompanying XSD (XML Schema Definition) files to be correctly interpreted. This means he needs to input the GML file as the source to the workspace and have the supporting XSD file in the same directory. To upload both files at runtime, Sven clicks Browse Resources and goes to the Temporary Uploads tab. He drags both <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_self">ElectionVoting.gml</a> and <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_self">ElectionVoting.xsd</a> (<span class="c0">C:\FMEData\Data\Elections\</span>) files to the Upload Files area. Because he only needs the ElectionVoting.gml file as the source file, he deselects the XSD file in the Selected Items column.&nbsp;</p>
+<p><img src="images/1749153635500.jpg" alt="" width="1089" height="644" /></p>
+<p>Sven clicks OK, confirms that only the GML file is included for the source parameter, and clicks Run.&nbsp;</p>
+<p><img src="images/1749153758193.jpg" alt="" width="830" height="613" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>This method is useful for formats that require&nbsp;<a href="https://en.wikipedia.org/wiki/Sidecar_file" target="_blank" rel="noopener">"sidecar" files</a>, such as Esri Shapefile or MapInfo TAB. If the XSD file was not required, Sven could've simply uploaded the GML file directly on the Run Workspace page.&nbsp;</p>
+<p>If your workspace fails here, make sure that you've uploaded both the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_self">ElectionVoting.gml</a> and <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_self">ElectionVoting.xsd</a> files (<span class="c0">C:\FMEData\Data\Elections\</span>) to Temporary Uploads, but only the ElectionVoting.gml file is selected for the parameter input.&nbsp;</p>
+</blockquote>
+<h3>7) Optional: Re-run Workspace with New Data</h3>
+<p>Sven's workspace completes successfully. However, he wants to update the geodatabase with new voting location data. So, Sven clicks Run Again and returns to the Run Workspace page.&nbsp;</p>
+<p><img src="images/1749154129477.jpg" alt="" width="865" height="259" /></p>
+<p>The NewElectionVoting.gml file uses the same XML Schema Definition as the previous GML data, and it's still present in Temporary Uploads for 24 hours by default. So, Sven drops the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/NewElectionVoting.gml" target="_self">NewElectionVoting.gml</a> file (<span class="c0">C:\FMEData\Data\Elections\NewElectionVoting.gml</span>) in the Upload Files area on the Run Workspace page and removes the ElectionVoting.gml file.&nbsp;</p>
+<p><img src="images/1749154330617.jpg" alt="" width="817" height="445" /></p>
+<p>Sven reruns the workspace to overwrite the geodatabase with the new data.&nbsp;</p>
+<h3>8) Optional: View Temporary Data in Resources</h3>
+<p>To review his temporarily uploaded files, Sven navigates to Resources &gt; System &gt; temp &gt; upload &gt; Training &gt; input-source-data-at-runtime.fmw &gt; admin.&nbsp;</p>
+<p><img src="images/1749154538966.jpg" alt="" width="1121" height="341" /></p>
+</div>
