@@ -80,6 +80,10 @@ UPDATE_JOB_PATH: Path = DATA_DIR / "update-job.json"
 JIRA_CSV_PATH: Path = DATA_DIR / "jira_export.csv"
 PRODUCT_MAPPING_PATH: Path = DATA_DIR / "product-mapping.json"
 ASSESSMENT_PROMPT_PATH: Path = PROMPTS_DIR / "ASSESSMENT.md"
+EDIT_SUGGESTIONS_PROMPT_PATH: Path = PROMPTS_DIR / "EDIT_SUGGESTIONS.md"
+
+# Model for Step 6 edit suggestions (separate from assessment model; gpt-4o recommended)
+EDIT_SUGGESTIONS_MODEL: str = os.getenv("EDIT_SUGGESTIONS_MODEL", "gpt-4o")
 
 
 # ---------------------------------------------------------------------------

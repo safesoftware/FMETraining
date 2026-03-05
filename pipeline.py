@@ -11,6 +11,7 @@ Usage:
   python pipeline.py --job path/to/job.json  # Use a custom job file
   python pipeline.py --jira-source api       # Fetch issues from Jira API (uses cache)
   python pipeline.py --jira-source api --refresh-jira  # Force re-fetch from Jira API
+  python pipeline.py --steps 6 --resume <RUN_ID>       # Generate edit suggestions for an existing run
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ from pathlib import Path
 from pipeline import config
 from pipeline.config import UPDATE_JOB_PATH, get_artifacts_dir
 from pipeline.utils import (
+    edit_plans_path,
     generate_run_id,
     get_completed_steps,
     get_run_job,
@@ -58,7 +60,7 @@ def main() -> int:
         default="1,2,3,4,5",
         metavar="N[,N]",
         help="Comma-separated step numbers to run (default: 1,2,3,4,5). "
-             "Steps 3 and 4 are always run together.",
+             "Steps 3 and 4 are always run together. Step 6 generates edit suggestions.",
     )
     parser.add_argument(
         "--resume",
@@ -108,8 +110,12 @@ def main() -> int:
     # ---------------------------------------------------------------------------
     if args.report_only:
         from pipeline.report import build_report
+        ep = edit_plans_path(args.report_only, output_dir)
         try:
-            build_report(args.report_only, output_dir)
+            build_report(
+                args.report_only, output_dir,
+                edit_plans_path=ep if ep.exists() else None,
+            )
         except FileNotFoundError as e:
             print(f"ERROR: {e}", file=sys.stderr)
             return 1
@@ -228,15 +234,37 @@ def main() -> int:
             recs = None
 
     # ---------------------------------------------------------------------------
+    # Step 6: Edit suggestions (per-lesson LLM edit plans)
+    # ---------------------------------------------------------------------------
+    if 6 in steps_to_run:
+        from pipeline.edit_suggestions import run_edit_suggestions
+        if recs is None:
+            rp = recommendations_path(run_id, output_dir)
+            if not rp.exists():
+                print(f"ERROR: Recommendations not found for run {run_id}: {rp}", file=sys.stderr)
+                print("Run steps 3+4 first.", file=sys.stderr)
+                return 1
+            with open(rp, encoding="utf-8") as f:
+                recs = json.load(f)
+        run_edit_suggestions(run_id, recs, output_dir, dry_run=args.dry_run)
+        if not args.dry_run:
+            mark_step_complete(run_id, 6, output_dir)
+
+    # ---------------------------------------------------------------------------
     # Step 5: Report
     # ---------------------------------------------------------------------------
     if 5 in steps_to_run and not args.dry_run:
         from pipeline.report import build_report
         rp = recommendations_path(run_id, output_dir)
+        ep = edit_plans_path(run_id, output_dir)
         if not rp.exists():
             print("WARNING: No recommendations file found, skipping report generation.")
         else:
-            build_report(run_id, output_dir, recs_path=rp)
+            build_report(
+                run_id, output_dir,
+                recs_path=rp,
+                edit_plans_path=ep if ep.exists() else None,
+            )
             mark_step_complete(run_id, 5, output_dir)
 
     print(f"\nDone. Run ID: {run_id}")
@@ -255,9 +283,9 @@ def _parse_steps(steps_str: str) -> list[int]:
         steps = [int(s.strip()) for s in steps_str.split(",") if s.strip()]
     except ValueError:
         raise ValueError(f"Invalid --steps value: {steps_str!r}. Expected comma-separated integers.")
-    invalid = [s for s in steps if s not in {1, 2, 3, 4, 5}]
+    invalid = [s for s in steps if s not in {1, 2, 3, 4, 5, 6}]
     if invalid:
-        raise ValueError(f"Invalid step number(s): {invalid}. Valid steps are 1-5.")
+        raise ValueError(f"Invalid step number(s): {invalid}. Valid steps are 1-6.")
     return sorted(set(steps))
 
 

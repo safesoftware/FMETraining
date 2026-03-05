@@ -24,14 +24,16 @@ def build_report(
     run_id: str,
     output_dir: Path,
     recs_path: Path | None = None,
+    edit_plans_path: Path | None = None,
 ) -> Path:
     """
     Generate the HTML report for a completed run.
 
     Args:
-        run_id:     The run ID to generate a report for.
-        output_dir: Artifacts directory (for writing the HTML).
-        recs_path:  Override path to the recommendations JSON.
+        run_id:          The run ID to generate a report for.
+        output_dir:      Artifacts directory (for writing the HTML).
+        recs_path:       Override path to the recommendations JSON.
+        edit_plans_path: Optional path to the edit plans JSON (enables Lesson Edits tab).
 
     Returns:
         Path to the written HTML report.
@@ -54,7 +56,12 @@ def build_report(
     completed = recs.get("completed_pairs", 0)
     generated_at = recs.get("generated_at", "")
 
-    html = _build_html(run_id, recs_path.name, model, total, completed, generated_at, config.JIRA_BASE_URL)
+    edit_plans_filename = edit_plans_path.name if edit_plans_path and edit_plans_path.exists() else ""
+
+    html = _build_html(
+        run_id, recs_path.name, model, total, completed, generated_at,
+        config.JIRA_BASE_URL, edit_plans_filename,
+    )
 
     out_path = report_path(run_id, output_dir)
     with open(out_path, "w", encoding="utf-8") as f:
@@ -78,6 +85,7 @@ def _build_html(
     completed_pairs: int,
     generated_at: str,
     jira_base_url: str = "",
+    edit_plans_filename: str = "",
 ) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -166,6 +174,52 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 /* Status filter chips */
 .status-filters {{ display: flex; gap: 8px; align-items: center; }}
 .status-filters label {{ display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 0.85rem; }}
+/* Tabs */
+.tab-bar {{ display: flex; gap: 0; padding: 0 24px; background: #1a3d6b; }}
+.tab-btn {{ padding: 8px 20px; border: none; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.65); background: transparent; transition: background 0.15s, color 0.15s; }}
+.tab-btn.active {{ background: #f5f5f5; color: #1a3d6b; }}
+.tab-pane {{ display: none; }}
+.tab-pane.active {{ display: block; }}
+/* Lesson Edits tab */
+.lesson-edit-controls {{ display: flex; gap: 12px; padding: 12px 24px; background: #fff; border-bottom: 1px solid #ddd; flex-wrap: wrap; align-items: center; }}
+.lesson-edit-controls label {{ font-size: 0.85rem; font-weight: 500; }}
+.lesson-edit-controls select {{ padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; }}
+.lesson-edit-body {{ padding: 16px 24px; max-width: 900px; margin: 0 auto; }}
+.lesson-edit-body h2, .lesson-edit-body h3, .lesson-edit-body h4 {{ margin: 1.2em 0 0.5em; font-family: inherit; }}
+.lesson-edit-body p {{ margin: 0.5em 0; line-height: 1.65; }}
+.lesson-edit-body ul, .lesson-edit-body ol {{ padding-left: 1.5em; margin: 0.5em 0; }}
+.lesson-edit-body img {{ max-width: 100%; border-radius: 4px; border: 1px solid #e5e7eb; display: block; margin: 8px 0; }}
+.lesson-edit-body table {{ border-collapse: collapse; width: 100%; margin: 0.5em 0; }}
+.lesson-edit-body td, .lesson-edit-body th {{ border: 1px solid #ddd; padding: 6px 10px; font-size: 0.88rem; }}
+.lesson-edit-body blockquote {{ border-left: 3px solid #e5e7eb; padding: 8px 12px; margin: 8px 0; background: #fafafa; }}
+.lesson-edit-empty {{ padding: 60px 24px; text-align: center; color: #888; font-size: 0.95rem; }}
+/* Track changes */
+.tc-wrap {{ position: relative; }}
+del.tc-del {{ background: #fee2e2; color: #b91c1c; text-decoration: line-through; padding: 1px 2px; border-radius: 2px; }}
+ins.tc-ins {{ background: #dcfce7; color: #15803d; text-decoration: none; padding: 1px 2px; border-radius: 2px; }}
+ins.tc-add {{ display: block; background: #dcfce7; color: #15803d; padding: 4px 8px; margin: 4px 0; border-radius: 4px; border-left: 3px solid #16a34a; }}
+.tc-change {{ cursor: help; border-bottom: 2px dotted #f59e0b; }}
+.tc-tooltip {{ display: none; position: absolute; z-index: 200; background: #1e293b; color: #fff; font-size: 0.78rem; padding: 8px 10px; border-radius: 6px; max-width: 320px; line-height: 1.5; top: calc(100% + 6px); left: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }}
+.tc-wrap:hover .tc-tooltip {{ display: block; }}
+.tc-issue-links {{ margin-top: 4px; font-size: 0.72rem; opacity: 0.8; }}
+/* Screenshot notes */
+.screenshot-note {{ background: #fef9c3; border-left: 3px solid #f59e0b; padding: 8px 12px; margin: 2px 0 12px; font-size: 0.82rem; line-height: 1.5; border-radius: 0 4px 4px 0; }}
+.screenshot-note strong {{ display: block; margin-bottom: 2px; color: #92400e; }}
+/* Phase 2: accept/reject */
+.tc-wrap {{ position: relative; display: inline; }}
+.tc-actions {{ display: none; position: absolute; z-index: 300; background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 6px; gap: 4px; top: calc(100% + 2px); left: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); white-space: nowrap; }}
+.tc-wrap:hover .tc-actions {{ display: flex; }}
+.tc-accept {{ padding: 3px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; background: #dcfce7; color: #15803d; }}
+.tc-reject {{ padding: 3px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; background: #fee2e2; color: #b91c1c; }}
+.tc-wrap[data-state="accepted"] {{ background: #f0fdf4; border-radius: 2px; }}
+.tc-wrap[data-state="rejected"] {{ background: #f9fafb; border-radius: 2px; }}
+.edit-toolbar {{ display: flex; gap: 8px; align-items: center; padding: 8px 24px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; }}
+.edit-toolbar button {{ padding: 5px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.82rem; }}
+.edit-toolbar button:disabled {{ opacity: 0.4; cursor: not-allowed; }}
+.edit-toolbar .save-btn {{ background: #1a3d6b; color: #fff; border-color: #1a3d6b; font-weight: 600; }}
+.edit-toolbar .save-btn:hover {{ background: #1e4d8c; }}
+.save-banner {{ display: none; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; padding: 10px 16px; margin: 12px 24px; border-radius: 6px; font-size: 0.85rem; }}
+.change-count {{ font-size: 0.82rem; color: #555; margin-left: auto; }}
 </style>
 </head>
 <body>
@@ -174,7 +228,12 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
   <h1>FME Training Update Report</h1>
   <div class="meta">Run: {run_id} &nbsp;|&nbsp; Model: {model} &nbsp;|&nbsp; Generated: {generated_at} &nbsp;|&nbsp; Total pairs: {completed_pairs:,}</div>
 </header>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('recommendations', this)">Recommendations</button>
+  <button class="tab-btn" onclick="switchTab('lesson-edits', this)" id="lesson-edits-tab-btn" style="{'' if edit_plans_filename else 'opacity:0.4;cursor:not-allowed'}" {'disabled' if not edit_plans_filename else ''}>Lesson Edits{' ✦' if edit_plans_filename else ' (run step 6)'}</button>
+</div>
 
+<div id="tab-recommendations" class="tab-pane active">
 <div class="stats" id="stats"></div>
 
 <div class="controls">
@@ -230,9 +289,29 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
     <button id="next-btn-bottom" onclick="nextPage()">Next →</button>
   </div>
 </div>
+</div><!-- end tab-recommendations -->
+
+<div id="tab-lesson-edits" class="tab-pane">
+  <div class="lesson-edit-controls">
+    <label>Learning Path: <select id="le-lp-filter"><option value="">All</option></select></label>
+    <label>Course: <select id="le-course-filter"><option value="">All</option></select></label>
+    <label>Lesson: <select id="le-lesson-filter"><option value="">-- Select a lesson --</option></select></label>
+    <span class="change-count" id="le-change-count"></span>
+  </div>
+  <div class="edit-toolbar" id="le-toolbar" style="display:none">
+    <button onclick="leUndo()" id="le-undo-btn" disabled>← Undo</button>
+    <button onclick="leRedo()" id="le-redo-btn" disabled>Redo →</button>
+    <button class="save-btn" onclick="leSave()">Save as HTML</button>
+  </div>
+  <div class="save-banner" id="le-save-banner"></div>
+  <div id="le-lesson-body" class="lesson-edit-body">
+    <div class="lesson-edit-empty">Select a lesson above to view suggested edits.</div>
+  </div>
+</div><!-- end tab-lesson-edits -->
 
 <script>
 const JSON_FILE = '{json_filename}';
+const EDIT_PLANS_FILE = '{edit_plans_filename}';
 const JIRA_BASE_URL = '{jira_base_url}';
 const PAGE_SIZE = 25;
 const LIKELIHOOD_ORDER = {{ high: 3, medium: 2, low: 1, none: 0 }};
@@ -548,6 +627,250 @@ function escHtml(str) {{
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}}
+
+// ---------------------------------------------------------------------------
+// Tab switching
+// ---------------------------------------------------------------------------
+function switchTab(name, btn) {{
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}}
+
+// ---------------------------------------------------------------------------
+// Lesson Edits tab
+// ---------------------------------------------------------------------------
+let leEditPlans = [];
+let leUndoStack = [];
+let leRedoStack = [];
+
+if (EDIT_PLANS_FILE) {{
+  fetch(EDIT_PLANS_FILE)
+    .then(r => r.json())
+    .then(data => {{
+      leEditPlans = data.lessons || [];
+      lePopulateFilters();
+    }})
+    .catch(() => {{
+      document.getElementById('le-lesson-body').innerHTML =
+        '<div class="lesson-edit-empty" style="color:#b91c1c">Could not load edit plans JSON.</div>';
+    }});
+}}
+
+function lePopulateFilters() {{
+  const lpSel = document.getElementById('le-lp-filter');
+  const courseSel = document.getElementById('le-course-filter');
+  const lessonSel = document.getElementById('le-lesson-filter');
+
+  const lps = [...new Set(leEditPlans.map(l => l.learning_path).filter(Boolean))].sort();
+  lps.forEach(lp => lpSel.appendChild(new Option(lp, lp)));
+
+  lpSel.addEventListener('change', () => leUpdateCourses());
+  courseSel.addEventListener('change', () => leUpdateLessons());
+  lessonSel.addEventListener('change', () => leRenderLesson());
+  leUpdateCourses();
+}}
+
+function leUpdateCourses() {{
+  const lp = document.getElementById('le-lp-filter').value;
+  const courseSel = document.getElementById('le-course-filter');
+  courseSel.innerHTML = '<option value="">All</option>';
+  const courses = [...new Set(
+    leEditPlans.filter(l => !lp || l.learning_path === lp).map(l => l.course_canonical).filter(Boolean)
+  )].sort();
+  courses.forEach(c => courseSel.appendChild(new Option(c, c)));
+  leUpdateLessons();
+}}
+
+function leUpdateLessons() {{
+  const lp = document.getElementById('le-lp-filter').value;
+  const course = document.getElementById('le-course-filter').value;
+  const lessonSel = document.getElementById('le-lesson-filter');
+  lessonSel.innerHTML = '<option value="">-- Select a lesson --</option>';
+  leEditPlans
+    .filter(l => (!lp || l.learning_path === lp) && (!course || l.course_canonical === course))
+    .forEach(l => lessonSel.appendChild(new Option(l.lesson_name, l.lesson_id)));
+  document.getElementById('le-lesson-body').innerHTML =
+    '<div class="lesson-edit-empty">Select a lesson above to view suggested edits.</div>';
+  document.getElementById('le-change-count').textContent = '';
+  document.getElementById('le-toolbar').style.display = 'none';
+}}
+
+function leRenderLesson() {{
+  const lessonId = document.getElementById('le-lesson-filter').value;
+  if (!lessonId) return;
+  const plan = leEditPlans.find(l => l.lesson_id === lessonId);
+  if (!plan) return;
+
+  leUndoStack = [];
+  leRedoStack = [];
+  leUpdateHistoryBtns();
+
+  const changes = plan.changes || [];
+  const screenshots = plan.screenshot_updates || [];
+  const totalChanges = changes.length + screenshots.length;
+
+  document.getElementById('le-change-count').textContent =
+    totalChanges > 0 ? `${{changes.length}} text change${{changes.length !== 1 ? 's' : ''}}, ${{screenshots.length}} screenshot note${{screenshots.length !== 1 ? 's' : ''}}` : 'No changes suggested';
+  document.getElementById('le-toolbar').style.display = totalChanges > 0 ? 'flex' : 'none';
+
+  let html = plan.lesson_html || '<p><em>No lesson HTML available.</em></p>';
+
+  // Apply text changes
+  changes.forEach((ch, idx) => {{
+    const orig = ch.original_text || '';
+    if (!orig) return;
+    const issueLinks = (ch.issue_keys || []).map(k =>
+      JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener" style="color:#93c5fd">${{k}}</a>` : k
+    ).join(', ');
+    const tooltip = `<span class="tc-tooltip">${{escHtml(ch.explanation || '')}}<span class="tc-issue-links">${{issueLinks}}</span></span>`;
+    const actions = `<span class="tc-actions"><button class="tc-accept" onclick="leAccept('${{ch.change_id}}',this)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{ch.change_id}}',this)">✗ Reject</button></span>`;
+
+    let markup;
+    if (ch.type === 'delete') {{
+      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{tooltip}}${{actions}}</span>`;
+    }} else if (ch.type === 'add') {{
+      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-state="pending"><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{tooltip}}${{actions}}</span>`;
+    }} else {{
+      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{tooltip}}${{actions}}</span>`;
+    }}
+
+    html = html.replace(orig, markup);
+  }});
+
+  // Inject screenshot notes
+  screenshots.forEach(su => {{
+    if (!su.src) return;
+    const issueLinks = (su.issue_keys || []).map(k =>
+      JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener">${{k}}</a>` : k
+    ).join(', ');
+    const note = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})</strong>${{escHtml(su.explanation || '')}}</div>`;
+    // Insert after the matching img tag
+    const imgPattern = new RegExp(`(<img[^>]*src="${{su.src.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&')}}"[^>]*>)`, 'i');
+    html = html.replace(imgPattern, '$1' + note);
+  }});
+
+  document.getElementById('le-lesson-body').innerHTML = html;
+  document.getElementById('le-save-banner').style.display = 'none';
+}}
+
+// Phase 2: accept/reject
+function leAccept(changeId, btn) {{
+  const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
+  if (!wrap) return;
+  const prev = wrap.dataset.state;
+  leUndoStack.push({{ changeId, prev }});
+  leRedoStack = [];
+  leApplyState(wrap, 'accepted');
+  leUpdateHistoryBtns();
+}}
+
+function leReject(changeId, btn) {{
+  const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
+  if (!wrap) return;
+  const prev = wrap.dataset.state;
+  leUndoStack.push({{ changeId, prev }});
+  leRedoStack = [];
+  leApplyState(wrap, 'rejected');
+  leUpdateHistoryBtns();
+}}
+
+function leApplyState(wrap, state) {{
+  wrap.dataset.state = state;
+  const type = wrap.dataset.type;
+  const orig = wrap.dataset.orig;
+  const sugg = wrap.dataset.sugg;
+  const tooltip = wrap.querySelector('.tc-tooltip');
+  const actions = wrap.querySelector('.tc-actions');
+
+  // Remove existing del/ins inside this wrap (before re-rendering)
+  [...wrap.querySelectorAll('del.tc-del, ins.tc-ins, ins.tc-add')].forEach(n => n.remove());
+
+  if (state === 'pending') {{
+    if (type === 'delete') wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del>`);
+    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<ins class="tc-add">${{sugg}}</ins>`);
+    else wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del><ins class="tc-ins"> ${{sugg}}</ins>`);
+  }} else if (state === 'accepted') {{
+    if (type === 'delete') {{ /* nothing — text removed */ }}
+    else wrap.insertAdjacentHTML('afterbegin', `<ins class="tc-ins">${{sugg}}</ins>`);
+  }} else {{ // rejected
+    if (type === 'add') {{ /* nothing — addition removed */ }}
+    else wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del>`);
+  }}
+}}
+
+function leUndo() {{
+  if (!leUndoStack.length) return;
+  const entry = leUndoStack.pop();
+  const wrap = document.querySelector(`.tc-wrap[data-id="${{entry.changeId}}"]`);
+  if (wrap) {{
+    leRedoStack.push({{ changeId: entry.changeId, prev: wrap.dataset.state }});
+    leApplyState(wrap, entry.prev);
+  }}
+  leUpdateHistoryBtns();
+}}
+
+function leRedo() {{
+  if (!leRedoStack.length) return;
+  const entry = leRedoStack.pop();
+  const wrap = document.querySelector(`.tc-wrap[data-id="${{entry.changeId}}"]`);
+  if (wrap) {{
+    leUndoStack.push({{ changeId: entry.changeId, prev: wrap.dataset.state }});
+    leApplyState(wrap, entry.prev);
+  }}
+  leUpdateHistoryBtns();
+}}
+
+function leUpdateHistoryBtns() {{
+  document.getElementById('le-undo-btn').disabled = leUndoStack.length === 0;
+  document.getElementById('le-redo-btn').disabled = leRedoStack.length === 0;
+}}
+
+function leSave() {{
+  const lessonId = document.getElementById('le-lesson-filter').value;
+  if (!lessonId) return;
+  const plan = leEditPlans.find(l => l.lesson_id === lessonId);
+  if (!plan) return;
+
+  // Reconstruct clean HTML from current state
+  const body = document.getElementById('le-lesson-body').cloneNode(true);
+
+  // Remove tooltips, action buttons, screenshot notes markup
+  body.querySelectorAll('.tc-tooltip, .tc-actions, .screenshot-note').forEach(n => n.remove());
+
+  // Resolve each tc-wrap to plain text based on state
+  body.querySelectorAll('.tc-wrap').forEach(wrap => {{
+    const state = wrap.dataset.state || 'pending';
+    const type = wrap.dataset.type;
+    const orig = wrap.dataset.orig || '';
+    const sugg = wrap.dataset.sugg || '';
+    let replacement = '';
+    if (state === 'accepted') replacement = (type === 'delete') ? '' : sugg;
+    else if (state === 'rejected') replacement = (type === 'add') ? '' : orig;
+    else replacement = (type === 'add') ? '' : orig; // pending → keep original
+    const text = document.createTextNode(replacement);
+    wrap.replaceWith(text);
+  }});
+
+  const cleanHtml = body.innerHTML;
+
+  // Determine target path
+  const parts = lessonId.split('/');
+  const targetLessonId = parts.slice(1).join('/'); // strip version prefix
+  const banner = document.getElementById('le-save-banner');
+  banner.style.display = 'block';
+  banner.innerHTML = `Saved! Place the downloaded file at: <code>${{escHtml(plan.lesson_dir || lessonId)}}/index.html</code> (updated to target version).`;
+
+  // Download
+  const blob = new Blob([cleanHtml], {{ type: 'text/html;charset=utf-8' }});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'index.html';
+  a.click();
+  URL.revokeObjectURL(url);
 }}
 </script>
 </body>

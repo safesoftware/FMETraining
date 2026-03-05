@@ -169,6 +169,10 @@ def report_path(run_id: str, output_dir: Path) -> Path:
     return output_dir / f"report-{run_id}.html"
 
 
+def edit_plans_path(run_id: str, output_dir: Path) -> Path:
+    return output_dir / f"edit-plans-{run_id}.json"
+
+
 # ---------------------------------------------------------------------------
 # Runs registry
 # ---------------------------------------------------------------------------
@@ -204,6 +208,7 @@ def register_run(run_id: str, job: dict, output_dir: Path) -> None:
             "manifest": f"manifest-{run_id}.json",
             "changelog": f"changelog-{run_id}.json",
             "recommendations": f"update-recommendations-{run_id}.json",
+            "edit_plans": f"edit-plans-{run_id}.json",
             "report": f"report-{run_id}.html",
         },
     }
