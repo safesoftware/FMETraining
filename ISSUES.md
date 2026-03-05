@@ -1,14 +1,5 @@
 # Open
 
-- 23. I'd like more detail in the suggested edits. Let's start by adding the following features:
-    - 23A. Cards should identify if they impact an exercise or not. This should be available as a toggle in the card filter, "Impacts Exercise" It should be shown as a chip on the card like the current "Screenshots needed" chip as well.
-    - 23B. Add the Screenshots Needed chip as a togglable filter on the cards as well.
-    - 23C. The section on the right that reports how the issue might impact the lesson and lists the impacted sections needs to be more detailed. Steps:
-        - Divide the Assessment section up into collapsible/expandable sections.
-        - First section, open by default: Summary. This should be the current paragraph at the top of the Assessment section that summarizes the issue's potential impact on the lesson.
-        - Second section, collapsed by default: Affected Headings. This replaces the current "affected elements" list, but only captures the impacted headings. When clicked, it shows the list of impacted headings. This is the same list as the current method.
-        - Third section, collapsed by default: Affected Screenshots. This section should be expanded and should actually show all potentially impacted screenshots. Each screenshot should have its own explanation as to why it needs to be updated and what update needs to be made.
-- 24. Cards should provide a link to the Jira issue. You can dynamically form those according to the following template: {JIRA_BASE_URL}/browse/{JIRA_ISSUE_KEY}, e.g., https://safesoftware.atlassian.net/browse/FMEFORM-33646. Please use the JIRA_BASE_URL from .env and JIRA_ISSUE_KEY from the returned Jira issues.
 - 25. Each card currently has a section below the Jira issue name that says, "Affects: n/a" I am not sure what this is supposed to capture, but it's n/a for all cards. Please fix it show it actually shows whatever it is you are trying to show. Maybe the changelog version?
 - 26. Let's also start to build a system to actually suggest edits to this content. This system will likely have a significant impact on the current approach, so let's plan it out before choosing an approach. Feel free to make use of existing libraries that have this functionality, if required.
     - Phase one: present suggested edits to a human reviewer on a lesson-by-lesson basis. This will require somehow combining the current suggested edits, because instead of "Jira issue x lesson edit recommendation cards" we are working with "lessons" as our atomic unit. It also requires much more specific edit recommendations than are currently available on the cards, so if you need to change the actual card schema to hold more information, or create a new lesson recommended edit data structure, please do so. 
@@ -25,6 +16,15 @@
 
 # Fixed
 
+- 24. Cards should provide a link to the Jira issue. You can dynamically form those according to the following template: {JIRA_BASE_URL}/browse/{JIRA_ISSUE_KEY}, e.g., https://safesoftware.atlassian.net/browse/FMEFORM-33646. Please use the JIRA_BASE_URL from .env and JIRA_ISSUE_KEY from the returned Jira issues.
+- 23. I'd like more detail in the suggested edits. Let's start by adding the following features:
+    - 23A. Cards should identify if they impact an exercise or not. This should be available as a toggle in the card filter, "Impacts Exercise" It should be shown as a chip on the card like the current "Screenshots needed" chip as well.
+    - 23B. Add the Screenshots Needed chip as a togglable filter on the cards as well.
+    - 23C. The section on the right that reports how the issue might impact the lesson and lists the impacted sections needs to be more detailed. Steps:
+        - Divide the Assessment section up into collapsible/expandable sections.
+        - First section, open by default: Summary. This should be the current paragraph at the top of the Assessment section that summarizes the issue's potential impact on the lesson.
+        - Second section, collapsed by default: Affected Headings. This replaces the current "affected elements" list, but only captures the impacted headings. When clicked, it shows the list of impacted headings. This is the same list as the current method.
+        - Third section, collapsed by default: Affected Screenshots. This section should be expanded and should actually show all potentially impacted screenshots. Each screenshot should have its own explanation as to why it needs to be updated and what update needs to be made.
 - 22. Add a hover effect on the Active, Done, and Incorrect buttons.
 - 21. #80c27790 is a false positive. It refers to Workspace Parameters, a specific section of the Navigator UI. It does not mean "all parameters you can set in the workspace." I realize that is a bit confusing, so I'm not sure we can fix this one. Any ideas welcome.
 - 20, Add support for reading Jira issues directly using the Jira API. I have added a Jira API key to .env. The CSV currently in use (`jira_export.csv`) pulls issues from a Jira Filter called Public Changelog. I've added the filter ID in .env as well. The API approach should retreive the issues from that filter. They are the full list of all Jira changes that should be considered for training updates; we've already built in the filtering that accounts for pulling the relevant issues. I'll leave it up to you which approach you want to use; pulling all issues and keeping them in a local file similar to the CSV, or pulling Jira issues only. In either case, I think there should be a CLI option that determines if the user is supplying the issues via a Jira export CSV or wants to use the API. Please let me know what other information you need.

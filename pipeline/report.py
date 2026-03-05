@@ -5,8 +5,8 @@ Reads artifacts/update-recommendations-{RUN_ID}.json and writes
 artifacts/report-{RUN_ID}.html — a self-contained paginated report
 that loads the JSON via JavaScript fetch().
 
-To view: run `python -m http.server 8080` from the artifacts/ directory,
-then open http://localhost:8080/report-{RUN_ID}.html in your browser.
+To view: run `python -m http.server 8080` from the project root,
+then open http://localhost:8080/artifacts/report-{RUN_ID}.html in your browser.
 (Most browsers block fetch() for file:// URLs.)
 """
 
@@ -16,6 +16,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from pipeline import config
 from pipeline.utils import recommendations_path, report_path
 
 
@@ -53,15 +54,15 @@ def build_report(
     completed = recs.get("completed_pairs", 0)
     generated_at = recs.get("generated_at", "")
 
-    html = _build_html(run_id, recs_path.name, model, total, completed, generated_at)
+    html = _build_html(run_id, recs_path.name, model, total, completed, generated_at, config.JIRA_BASE_URL)
 
     out_path = report_path(run_id, output_dir)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
 
     print(f"  Report written: {out_path.name}")
-    print(f"  To view: cd {output_dir} && python -m http.server 8080")
-    print(f"  Then open: http://localhost:8080/{out_path.name}")
+    print(f"  To view: python -m http.server 8080  (run from project root)")
+    print(f"  Then open: http://localhost:8080/artifacts/{out_path.name}")
     return out_path
 
 
@@ -76,6 +77,7 @@ def _build_html(
     total_pairs: int,
     completed_pairs: int,
     generated_at: str,
+    jira_base_url: str = "",
 ) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -212,8 +214,8 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 <div class="main">
   <div id="fetch-error" class="fetch-error" style="display:none">
     <b>Could not load report data.</b> Most browsers block <code>fetch()</code> for <code>file://</code> URLs.<br>
-    To view this report, run: <code>python -m http.server 8080</code> from the <code>artifacts/</code> directory,
-    then open <a href="http://localhost:8080/report-{run_id}.html">http://localhost:8080/report-{run_id}.html</a>
+    To view this report, run: <code>python -m http.server 8080</code> from the project root,
+    then open <a href="http://localhost:8080/artifacts/report-{run_id}.html">http://localhost:8080/artifacts/report-{run_id}.html</a>
   </div>
   <div class="pagination" id="pagination-top" style="display:none">
     <button id="prev-btn-top" onclick="prevPage()">← Previous</button>
@@ -231,6 +233,7 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 
 <script>
 const JSON_FILE = '{json_filename}';
+const JIRA_BASE_URL = '{jira_base_url}';
 const PAGE_SIZE = 25;
 const LIKELIHOOD_ORDER = {{ high: 3, medium: 2, low: 1, none: 0 }};
 const STATUS_KEY = 'fme_report_status_{run_id}';
@@ -501,7 +504,10 @@ function renderCard(a) {{
     <div class="card-section">
       <h4>Jira Issue</h4>
       <p>
-        <strong>${{escHtml(a.issue_key || '')}}</strong>
+        ${{JIRA_BASE_URL
+          ? `<a href="${{JIRA_BASE_URL}}/browse/${{escHtml(a.issue_key || '')}}" target="_blank" rel="noopener" style="font-weight:700;color:#1a3d6b">${{escHtml(a.issue_key || '')}}</a>`
+          : `<strong>${{escHtml(a.issue_key || '')}}</strong>`
+        }}
         <span class="badge issue-type" style="margin-left:6px">${{escHtml(a.issue_type || '')}}</span>
       </p>
       <p style="margin-top:4px">${{escHtml(a.issue_summary || '')}}</p>
