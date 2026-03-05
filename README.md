@@ -52,3 +52,5 @@ Other branches contain annual release versions of archived training manuals buil
 # Issues/Questions
 
 Any issues or questions can be directed to train@safe.com or by opening a GitHub Issue.
+
+![S3 Sync Status](https://github.com/safesoftware/FMETraining/actions/workflows/sync_s3.yml/badge.svg)
