@@ -12,24 +12,29 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Sync from S3 (Public/Anonymous)
-        run: |
-          # 1. Clean up any 'ghost' files from previous failed runs to prevent Errno 20
-          # This ensures folders can be created freshly.
-          find . -type f -name ".*" -delete
-          
-          # 2. Run the sync without excluding your actual data files
-          aws s3 sync s3://safeskilljar/ ./ --no-sign-request \
-          --exclude "*/.*"  \
-          --exclude ".*" \
-          --exclude "*//" \
-          --exclude ".git/*" \
-          --exclude ".github/*" \
-          --exclude ".gitignore" \
-          --exclude "README.md" \
-          --exclude "LICENSE.md" \
-          --exclude "*instructor%2*" \
-          --exclude "lababuse.html"  \
-          --exclude "202[0-4]*/*"
+              continue-on-error: true
+              run: |
+                # 1. Optimize Git configs
+                git config --global core.longpaths true
+                git config --global core.quotepath false
+                
+                # 2. RECURSIVE CLEAN: Delete every hidden file in every subfolder
+                # This removes .C0b398fc and any other 'ghost' files from failed runs.
+                find . -type f -name ".*" -not -path "./.git/*" -delete
+                
+                # 3. Run the sync
+                aws s3 sync s3://safeskilljar/ ./ --no-sign-request \
+                --exclude "*/.*"  \
+                --exclude ".*" \
+                --exclude "*//" \
+                --exclude ".git/*" \
+                --exclude ".github/*" \
+                --exclude ".gitignore" \
+                --exclude "README.md" \
+                --exclude "LICENSE.md" \
+                --exclude "*instructor%2*" \
+                --exclude "lababuse.html"  \
+                --exclude "202[0-4]*/*"
           
       - name: Commit and Push
         run: |
