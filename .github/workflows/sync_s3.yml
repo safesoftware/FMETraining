@@ -12,42 +12,38 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Sync from S3 (Public/Anonymous)
-              continue-on-error: true
-              run: |
-                # 1. Optimize Git configs
-                git config --global core.longpaths true
-                git config --global core.quotepath false
-                
-                # 2. RECURSIVE CLEAN: Delete every hidden file in every subfolder
-                # This removes .C0b398fc and any other 'ghost' files from failed runs.
-                find . -type f -name ".*" -not -path "./.git/*" -delete
-                
-                # 3. Run the sync
-                aws s3 sync s3://safeskilljar/ ./ --no-sign-request \
-                --exclude "*/.*"  \
-                --exclude ".*" \
-                --exclude "*//" \
-                --exclude ".git/*" \
-                --exclude ".github/*" \
-                --exclude ".gitignore" \
-                --exclude "README.md" \
-                --exclude "LICENSE.md" \
-                --exclude "*instructor%2*" \
-                --exclude "lababuse.html"  \
-                --exclude "202[0-4]*/*"
+        continue-on-error: true
+        run: |
+          # 1. Optimize Git for long paths and special characters
+          git config --global core.longpaths true
+          git config --global core.quotepath false
+          
+          # 2. Deep clean: Delete every hidden file in every subfolder to prevent Errno 20
+          find . -type f -name ".*" -not -path "./.git/*" -delete
+          
+          # 3. Run the sync
+          aws s3 sync s3://safeskilljar/ ./ --no-sign-request \
+          --exclude "*/.*"  \
+          --exclude ".*" \
+          --exclude "*//" \
+          --exclude ".git/*" \
+          --exclude ".github/*" \
+          --exclude ".gitignore" \
+          --exclude "README.md" \
+          --exclude "LICENSE.md" \
+          --exclude "*instructor%2*" \
+          --exclude "lababuse.html"  \
+          --exclude "202[0-4]*/*"
           
       - name: Commit and Push
         run: |
           git config --global user.name "rjcragg"
           git config --global user.email "ryan.cragg@safe.com"
           
-          # Force add everything including hidden files
+          # Force add everything
           git add -A
           
-          # Check status in logs so we can see what Git found
-          git status
-          
-          # Commit only if there are changes
+          # Only commit and push if there are actual changes
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "Automated sync from safeskilljar S3"
             git push
