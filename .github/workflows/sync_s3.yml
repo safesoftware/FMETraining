@@ -13,7 +13,11 @@ jobs:
 
       - name: Sync from S3 (Public/Anonymous)
         run: |
-          # Syncs safeskilljar to root, but ignores your GitHub-specific files
+          # 1. Clean up any 'ghost' files from previous failed runs to prevent Errno 20
+          # This ensures folders can be created freshly.
+          find . -type f -name ".*" -delete
+          
+          # 2. Run the sync without excluding your actual data files
           aws s3 sync s3://safeskilljar/ ./ --delete --no-sign-request \
           --exclude ".*" \
           --exclude "*//" \
@@ -21,14 +25,11 @@ jobs:
           --exclude ".github/*" \
           --exclude ".gitignore" \
           --exclude "README.md" \
+          --exclude "LICENSE.md" \
           --exclude "2021*/*" \
           --exclude "2022*/*" \
           --exclude "2023*/*" \
-          --exclude "2024*/*" \
-          --exclude "*.html" \
-          --exclude "*.ics" \
-          --exclude "*.png" \
-          --exclude "LICENSE.md"
+          --exclude "2024*/*"
           
       - name: Commit and Push
         run: |
