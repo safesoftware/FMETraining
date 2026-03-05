@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from pipeline import config
-from pipeline.utils import recommendations_path, report_path
+from pipeline.utils import get_run_job, recommendations_path, report_path
 
 
 def build_report(
@@ -58,9 +58,13 @@ def build_report(
 
     edit_plans_filename = edit_plans_path.name if edit_plans_path and edit_plans_path.exists() else ""
 
+    # Get to_version from runs.json for use in save functionality
+    job = get_run_job(run_id, output_dir)
+    to_version = job.get("to_version", "") if job else ""
+
     html = _build_html(
         run_id, recs_path.name, model, total, completed, generated_at,
-        config.JIRA_BASE_URL, edit_plans_filename,
+        config.JIRA_BASE_URL, edit_plans_filename, to_version,
     )
 
     out_path = report_path(run_id, output_dir)
@@ -68,7 +72,7 @@ def build_report(
         f.write(html)
 
     print(f"  Report written: {out_path.name}")
-    print(f"  To view: python -m http.server 8080  (run from project root)")
+    print(f"  To view: python serve.py  (run from project root, enables Save feature)")
     print(f"  Then open: http://localhost:8080/artifacts/{out_path.name}")
     return out_path
 
@@ -86,6 +90,7 @@ def _build_html(
     generated_at: str,
     jira_base_url: str = "",
     edit_plans_filename: str = "",
+    to_version: str = "",
 ) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -171,6 +176,9 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 .card[data-status="done"] {{ opacity: 0.45; }}
 .card[data-status="done"] .card-title {{ text-decoration: line-through; }}
 .card[data-status="incorrect"] {{ opacity: 0.45; border-left: 3px solid #ef4444; }}
+/* Card highlight animation (cross-tab jump) */
+@keyframes card-flash {{ 0%,100% {{ background:#fff; }} 50% {{ background:#fef08a; }} }}
+.card-highlight {{ animation: card-flash 1s ease 2; }}
 /* Status filter chips */
 .status-filters {{ display: flex; gap: 8px; align-items: center; }}
 .status-filters label {{ display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 0.85rem; }}
@@ -194,25 +202,28 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 .lesson-edit-body blockquote {{ border-left: 3px solid #e5e7eb; padding: 8px 12px; margin: 8px 0; background: #fafafa; }}
 .lesson-edit-empty {{ padding: 60px 24px; text-align: center; color: #888; font-size: 0.95rem; }}
 /* Track changes */
-.tc-wrap {{ position: relative; }}
+.tc-wrap {{ position: relative; display: inline; }}
 del.tc-del {{ background: #fee2e2; color: #b91c1c; text-decoration: line-through; padding: 1px 2px; border-radius: 2px; }}
 ins.tc-ins {{ background: #dcfce7; color: #15803d; text-decoration: none; padding: 1px 2px; border-radius: 2px; }}
 ins.tc-add {{ display: block; background: #dcfce7; color: #15803d; padding: 4px 8px; margin: 4px 0; border-radius: 4px; border-left: 3px solid #16a34a; }}
+span.tc-orig {{ background: #f3f4f6; color: #374151; padding: 1px 3px; border-radius: 2px; }}
 .tc-change {{ cursor: help; border-bottom: 2px dotted #f59e0b; }}
-.tc-tooltip {{ display: none; position: absolute; z-index: 200; background: #1e293b; color: #fff; font-size: 0.78rem; padding: 8px 10px; border-radius: 6px; max-width: 320px; line-height: 1.5; top: calc(100% + 6px); left: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }}
-.tc-wrap:hover .tc-tooltip {{ display: block; }}
-.tc-issue-links {{ margin-top: 4px; font-size: 0.72rem; opacity: 0.8; }}
+.tc-wrap[data-state="accepted"] {{ background: #f0fdf4; border-radius: 2px; }}
+.tc-wrap[data-state="rejected"] {{ background: #f9fafb; border-radius: 2px; }}
+/* Unified popup (tooltip + accept/reject) — shown/hidden via JS hover with delay */
+.tc-popup {{ display: none; position: absolute; z-index: 300; background: #1e293b; color: #fff; font-size: 0.78rem; padding: 8px 10px; border-radius: 6px; max-width: 340px; line-height: 1.5; top: calc(100% + 4px); left: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.25); white-space: normal; min-width: 200px; }}
+.tc-popup.tc-popup-visible {{ display: block; }}
+.tc-explanation {{ display: block; margin-bottom: 4px; }}
+.tc-issue-links {{ display: block; font-size: 0.72rem; opacity: 0.8; margin-bottom: 6px; }}
+.tc-btns {{ display: flex; gap: 4px; flex-wrap: wrap; }}
+.tc-accept {{ padding: 3px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; background: #dcfce7; color: #15803d; }}
+.tc-reject {{ padding: 3px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; background: #fee2e2; color: #b91c1c; }}
 /* Screenshot notes */
 .screenshot-note {{ background: #fef9c3; border-left: 3px solid #f59e0b; padding: 8px 12px; margin: 2px 0 12px; font-size: 0.82rem; line-height: 1.5; border-radius: 0 4px 4px 0; }}
 .screenshot-note strong {{ display: block; margin-bottom: 2px; color: #92400e; }}
-/* Phase 2: accept/reject */
-.tc-wrap {{ position: relative; display: inline; }}
-.tc-actions {{ display: none; position: absolute; z-index: 300; background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 6px; gap: 4px; top: calc(100% + 2px); left: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15); white-space: nowrap; }}
-.tc-wrap:hover .tc-actions {{ display: flex; }}
-.tc-accept {{ padding: 3px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; background: #dcfce7; color: #15803d; }}
-.tc-reject {{ padding: 3px 8px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; background: #fee2e2; color: #b91c1c; }}
-.tc-wrap[data-state="accepted"] {{ background: #f0fdf4; border-radius: 2px; }}
-.tc-wrap[data-state="rejected"] {{ background: #f9fafb; border-radius: 2px; }}
+.screenshot-note-accepted {{ background: #f0fdf4; border-left-color: #16a34a; }}
+.screenshot-note-accepted strong {{ color: #15803d; }}
+.screenshot-note-rejected {{ background: #f9fafb; border-left-color: #9ca3af; opacity: 0.55; }}
 .edit-toolbar {{ display: flex; gap: 8px; align-items: center; padding: 8px 24px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; }}
 .edit-toolbar button {{ padding: 5px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.82rem; }}
 .edit-toolbar button:disabled {{ opacity: 0.4; cursor: not-allowed; }}
@@ -301,7 +312,7 @@ ins.tc-add {{ display: block; background: #dcfce7; color: #15803d; padding: 4px 
   <div class="edit-toolbar" id="le-toolbar" style="display:none">
     <button onclick="leUndo()" id="le-undo-btn" disabled>← Undo</button>
     <button onclick="leRedo()" id="le-redo-btn" disabled>Redo →</button>
-    <button class="save-btn" onclick="leSave()">Save as HTML</button>
+    <button class="save-btn" onclick="leSave()">Save to Version Folder</button>
   </div>
   <div class="save-banner" id="le-save-banner"></div>
   <div id="le-lesson-body" class="lesson-edit-body">
@@ -313,6 +324,7 @@ ins.tc-add {{ display: block; background: #dcfce7; color: #15803d; padding: 4px 
 const JSON_FILE = '{json_filename}';
 const EDIT_PLANS_FILE = '{edit_plans_filename}';
 const JIRA_BASE_URL = '{jira_base_url}';
+const TO_VERSION = '{to_version}';
 const PAGE_SIZE = 25;
 const LIKELIHOOD_ORDER = {{ high: 3, medium: 2, low: 1, none: 0 }};
 const STATUS_KEY = 'fme_report_status_{run_id}';
@@ -509,6 +521,13 @@ function setStatus(rec_id, status) {{
       btn.classList.toggle('sel', btn.dataset.status === status);
     }});
   }}
+  // Issue 30: if marked Incorrect, auto-reject all corresponding HTML changes
+  if (status === 'incorrect') {{
+    const rec = allData.find(a => a.rec_id === rec_id);
+    if (rec && rec.issue_key) {{
+      leRejectAllForIssueKey(rec.issue_key);
+    }}
+  }}
   // Re-apply filters so card disappears if status filter hides it
   applyFilters();
 }}
@@ -556,6 +575,28 @@ function renderCard(a) {{
 
   const rid = escHtml(a.rec_id || '');
 
+  // Issue 37: build Update Suggestions section from leEditPlans
+  let updateSuggestionsHtml = '';
+  if (leEditPlans.length && a.issue_key) {{
+    const relatedChanges = [];
+    leEditPlans.forEach(plan => {{
+      (plan.changes || []).forEach(ch => {{
+        if ((ch.issue_keys || []).includes(a.issue_key)) {{
+          relatedChanges.push({{ lessonId: plan.lesson_id, lessonName: plan.lesson_name, changeId: ch.change_id, heading: ch.heading }});
+        }}
+      }});
+    }});
+    if (relatedChanges.length) {{
+      const links = relatedChanges.map(c =>
+        `<li><a href="#" onclick="leGoToChange('${{escHtml(c.lessonId)}}','${{escHtml(c.changeId)}}');return false;">${{escHtml(c.lessonName)}} — ${{escHtml(c.heading || 'change')}}</a></li>`
+      ).join('');
+      updateSuggestionsHtml = `<details class="assessment-section">
+        <summary>✏ ${{relatedChanges.length}} edit suggestion${{relatedChanges.length !== 1 ? 's' : ''}}</summary>
+        <div class="section-body"><ul>${{links}}</ul></div>
+      </details>`;
+    }}
+  }}
+
   return `
 <div class="card" data-rec="${{rid}}" data-status="${{status}}">
   <div class="card-header">
@@ -600,6 +641,7 @@ function renderCard(a) {{
       </details>
       ${{affectedHtml}}
       ${{screenshotDetailsHtml}}
+      ${{updateSuggestionsHtml}}
     </div>
   </div>
 </div>`;
@@ -646,6 +688,7 @@ let leEditPlans = [];
 let leUndoStack = [];
 let leRedoStack = [];
 
+// Eager-load edit plans on page load (needed for cross-tab features in issues 37, 30)
 if (EDIT_PLANS_FILE) {{
   fetch(EDIT_PLANS_FILE)
     .then(r => r.json())
@@ -718,46 +761,69 @@ function leRenderLesson() {{
 
   let html = plan.lesson_html || '<p><em>No lesson HTML available.</em></p>';
 
+  // Helper: build unified popup markup for a change
+  function makePopup(changeId, explanation, issueKeys, type) {{
+    const keys = issueKeys || [];
+    const issueLinks = keys.map(k =>
+      JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener" style="color:#93c5fd">${{k}}</a>` : k
+    ).join(', ');
+    // Issue 29: view card link for first issue key
+    const cardLink = keys.length
+      ? `<span style="display:block;font-size:0.7rem;margin-top:2px"><a href="#" onclick="leGoToCard('${{keys[0]}}');return false;" style="color:#93c5fd">↗ View recommendation card (${{keys[0]}})</a></span>`
+      : '';
+    // Issue 28: reject-all button for first issue key (text changes only)
+    const rejectAllBtn = (keys.length && type !== 'screenshot')
+      ? `<button class="tc-reject" style="font-size:0.68rem" onclick="leRejectAllForIssueKey('${{keys[0]}}');setStatus(allData.find(a=>a.issue_key==='${{keys[0]}}')?.rec_id||'','incorrect');event.stopPropagation()">✗✗ Reject all for ${{keys[0]}}</button>`
+      : '';
+    return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{cardLink}}</span><span class="tc-btns"><button class="tc-accept" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span></span>`;
+  }}
+
   // Apply text changes
   changes.forEach((ch, idx) => {{
     const orig = ch.original_text || '';
     if (!orig) return;
-    const issueLinks = (ch.issue_keys || []).map(k =>
-      JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener" style="color:#93c5fd">${{k}}</a>` : k
-    ).join(', ');
-    const tooltip = `<span class="tc-tooltip">${{escHtml(ch.explanation || '')}}<span class="tc-issue-links">${{issueLinks}}</span></span>`;
-    const actions = `<span class="tc-actions"><button class="tc-accept" onclick="leAccept('${{ch.change_id}}',this)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{ch.change_id}}',this)">✗ Reject</button></span>`;
+    const popup = makePopup(ch.change_id, ch.explanation, ch.issue_keys, ch.type);
+    const issueKeysAttr = escHtml((ch.issue_keys || []).join(','));
 
     let markup;
     if (ch.type === 'delete') {{
-      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{tooltip}}${{actions}}</span>`;
+      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{popup}}</span>`;
     }} else if (ch.type === 'add') {{
-      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-state="pending"><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{tooltip}}${{actions}}</span>`;
+      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }} else {{
-      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{tooltip}}${{actions}}</span>`;
+      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }}
 
     html = html.replace(orig, markup);
   }});
 
-  // Inject screenshot notes
-  screenshots.forEach(su => {{
+  // Inject screenshot notes (wrapped in tc-wrap for accept/reject)
+  screenshots.forEach((su, idx) => {{
     if (!su.src) return;
+    const ssId = 'ss-' + idx;
     const issueLinks = (su.issue_keys || []).map(k =>
       JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener">${{k}}</a>` : k
     ).join(', ');
-    const note = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})</strong>${{escHtml(su.explanation || '')}}</div>`;
-    // Insert after the matching img tag
+    const noteInner = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})</strong>${{escHtml(su.explanation || '')}}</div>`;
+    const popup = makePopup(ssId, su.explanation, su.issue_keys, 'screenshot');
+    const wrapped = `<span class="tc-wrap tc-change" data-id="${{ssId}}" data-type="screenshot" data-issue-keys="${{escHtml((su.issue_keys||[]).join(','))}}" data-state="pending">${{noteInner}}${{popup}}</span>`;
     const imgPattern = new RegExp(`(<img[^>]*src="${{su.src.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&')}}"[^>]*>)`, 'i');
-    html = html.replace(imgPattern, '$1' + note);
+    html = html.replace(imgPattern, '$1' + wrapped);
   }});
+
+  // Fix relative image paths: prefix with ../{lesson_dir}/ so images resolve from artifacts/
+  const lessonBase = '../' + (plan.lesson_dir || '').replace(/\\\\/g, '/');
+  html = html.replace(/(<img[^>]+src=["'])(?!https?:\\/\\/|\\/|data:)([^"']+)(["'])/gi,
+    (_, pre, src, post) => pre + lessonBase + '/' + src + post);
 
   document.getElementById('le-lesson-body').innerHTML = html;
   document.getElementById('le-save-banner').style.display = 'none';
+  leBindPopups();
 }}
 
 // Phase 2: accept/reject
-function leAccept(changeId, btn) {{
+function leAccept(changeId, evt) {{
+  if (evt) evt.stopPropagation();
   const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
   if (!wrap) return;
   const prev = wrap.dataset.state;
@@ -765,9 +831,13 @@ function leAccept(changeId, btn) {{
   leRedoStack = [];
   leApplyState(wrap, 'accepted');
   leUpdateHistoryBtns();
+  // Hide popup after action
+  const popup = wrap.querySelector('.tc-popup');
+  if (popup) popup.classList.remove('tc-popup-visible');
 }}
 
-function leReject(changeId, btn) {{
+function leReject(changeId, evt) {{
+  if (evt) evt.stopPropagation();
   const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
   if (!wrap) return;
   const prev = wrap.dataset.state;
@@ -775,18 +845,29 @@ function leReject(changeId, btn) {{
   leRedoStack = [];
   leApplyState(wrap, 'rejected');
   leUpdateHistoryBtns();
+  // Hide popup after action
+  const popup = wrap.querySelector('.tc-popup');
+  if (popup) popup.classList.remove('tc-popup-visible');
 }}
 
 function leApplyState(wrap, state) {{
   wrap.dataset.state = state;
   const type = wrap.dataset.type;
-  const orig = wrap.dataset.orig;
-  const sugg = wrap.dataset.sugg;
-  const tooltip = wrap.querySelector('.tc-tooltip');
-  const actions = wrap.querySelector('.tc-actions');
+  const orig = wrap.dataset.orig || '';
+  const sugg = wrap.dataset.sugg || '';
 
-  // Remove existing del/ins inside this wrap (before re-rendering)
-  [...wrap.querySelectorAll('del.tc-del, ins.tc-ins, ins.tc-add')].forEach(n => n.remove());
+  // Screenshot type: just update the note's CSS class
+  if (type === 'screenshot') {{
+    const note = wrap.querySelector('.screenshot-note');
+    if (note) {{
+      note.className = 'screenshot-note' +
+        (state === 'accepted' ? ' screenshot-note-accepted' : state === 'rejected' ? ' screenshot-note-rejected' : '');
+    }}
+    return;
+  }}
+
+  // Remove existing content nodes (del/ins/orig) — keep popup and itself
+  [...wrap.querySelectorAll('del.tc-del, ins.tc-ins, ins.tc-add, span.tc-orig')].forEach(n => n.remove());
 
   if (state === 'pending') {{
     if (type === 'delete') wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del>`);
@@ -797,8 +878,88 @@ function leApplyState(wrap, state) {{
     else wrap.insertAdjacentHTML('afterbegin', `<ins class="tc-ins">${{sugg}}</ins>`);
   }} else {{ // rejected
     if (type === 'add') {{ /* nothing — addition removed */ }}
-    else wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del>`);
+    else wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig">${{orig}}</span>`);
   }}
+}}
+
+// Issue 28/30: reject all changes for a given issue key (cross-tab)
+function leRejectAllForIssueKey(issueKey) {{
+  document.querySelectorAll('#le-lesson-body .tc-wrap[data-issue-keys]').forEach(wrap => {{
+    const keys = (wrap.dataset.issueKeys || '').split(',').map(s => s.trim());
+    if (keys.includes(issueKey)) {{
+      const prev = wrap.dataset.state;
+      if (prev !== 'rejected') {{
+        leUndoStack.push({{ changeId: wrap.dataset.id, prev }});
+        leApplyState(wrap, 'rejected');
+      }}
+    }}
+  }});
+  leUpdateHistoryBtns();
+}}
+
+// Issue 29: switch to Recommendations tab and scroll to the card for an issue key
+function leGoToCard(issueKey) {{
+  // Find the rec_id for this issue key
+  const rec = allData.find(a => a.issue_key === issueKey);
+  if (!rec) return;
+  const tabBtn = document.querySelector('.tab-btn[onclick*="recommendations"]');
+  if (tabBtn) switchTab('recommendations', tabBtn);
+  // Wait for render then scroll
+  setTimeout(() => {{
+    const card = document.querySelector(`.card[data-rec="${{escHtml(rec.rec_id)}}"]`);
+    if (card) {{
+      card.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+      card.classList.remove('card-highlight');
+      void card.offsetWidth; // force reflow to restart animation
+      card.classList.add('card-highlight');
+      card.addEventListener('animationend', () => card.classList.remove('card-highlight'), {{ once: true }});
+    }}
+  }}, 150);
+}}
+
+// Issue 37: switch to Lesson Edits tab and highlight a specific change
+function leGoToChange(lessonId, changeId) {{
+  // Switch tab
+  const tabBtn = document.querySelector('.tab-btn[onclick*="lesson-edits"]');
+  if (tabBtn && !tabBtn.disabled) switchTab('lesson-edits', tabBtn);
+  // Select lesson in dropdowns and render
+  setTimeout(() => {{
+    const lessonSel = document.getElementById('le-lesson-filter');
+    if (lessonSel) {{
+      lessonSel.value = lessonId;
+      leRenderLesson();
+      // Scroll to the change after render
+      setTimeout(() => {{
+        const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
+        if (wrap) {{
+          wrap.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+          wrap.style.outline = '2px solid #f59e0b';
+          wrap.style.borderRadius = '3px';
+          setTimeout(() => {{ wrap.style.outline = ''; wrap.style.borderRadius = ''; }}, 2000);
+        }}
+      }}, 100);
+    }}
+  }}, 150);
+}}
+
+// JS-driven hover with delay to prevent popup disappearing when moving mouse to it
+function leBindPopups() {{
+  let hideTimer = null;
+  document.querySelectorAll('#le-lesson-body .tc-wrap').forEach(wrap => {{
+    const popup = wrap.querySelector('.tc-popup');
+    if (!popup) return;
+    wrap.addEventListener('mouseenter', () => {{
+      clearTimeout(hideTimer);
+      popup.classList.add('tc-popup-visible');
+    }});
+    wrap.addEventListener('mouseleave', () => {{
+      hideTimer = setTimeout(() => popup.classList.remove('tc-popup-visible'), 150);
+    }});
+    popup.addEventListener('mouseenter', () => {{ clearTimeout(hideTimer); }});
+    popup.addEventListener('mouseleave', () => {{
+      hideTimer = setTimeout(() => popup.classList.remove('tc-popup-visible'), 150);
+    }});
+  }});
 }}
 
 function leUndo() {{
@@ -837,10 +998,12 @@ function leSave() {{
   // Reconstruct clean HTML from current state
   const body = document.getElementById('le-lesson-body').cloneNode(true);
 
-  // Remove tooltips, action buttons, screenshot notes markup
-  body.querySelectorAll('.tc-tooltip, .tc-actions, .screenshot-note').forEach(n => n.remove());
+  // Remove popups and screenshot wraps (editorial markup only)
+  body.querySelectorAll('.tc-popup').forEach(n => n.remove());
+  // Remove screenshot tc-wraps entirely (they are notes, not content)
+  body.querySelectorAll('.tc-wrap[data-type="screenshot"]').forEach(wrap => wrap.remove());
 
-  // Resolve each tc-wrap to plain text based on state
+  // Resolve each text tc-wrap to plain text based on state
   body.querySelectorAll('.tc-wrap').forEach(wrap => {{
     const state = wrap.dataset.state || 'pending';
     const type = wrap.dataset.type;
@@ -850,27 +1013,60 @@ function leSave() {{
     if (state === 'accepted') replacement = (type === 'delete') ? '' : sugg;
     else if (state === 'rejected') replacement = (type === 'add') ? '' : orig;
     else replacement = (type === 'add') ? '' : orig; // pending → keep original
-    const text = document.createTextNode(replacement);
-    wrap.replaceWith(text);
+    wrap.replaceWith(document.createTextNode(replacement));
+  }});
+
+  // Revert prefixed image paths back to relative (strip the ../lesson_dir/ prefix)
+  const lessonBase = '../' + (plan.lesson_dir || '').replace(/\\/g, '/') + '/';
+  body.querySelectorAll('img[src]').forEach(img => {{
+    if (img.src.includes(lessonBase)) {{
+      img.setAttribute('src', img.getAttribute('src').replace(lessonBase, ''));
+    }}
   }});
 
   const cleanHtml = body.innerHTML;
-
-  // Determine target path
-  const parts = lessonId.split('/');
-  const targetLessonId = parts.slice(1).join('/'); // strip version prefix
   const banner = document.getElementById('le-save-banner');
-  banner.style.display = 'block';
-  banner.innerHTML = `Saved! Place the downloaded file at: <code>${{escHtml(plan.lesson_dir || lessonId)}}/index.html</code> (updated to target version).`;
 
-  // Download
-  const blob = new Blob([cleanHtml], {{ type: 'text/html;charset=utf-8' }});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'index.html';
-  a.click();
-  URL.revokeObjectURL(url);
+  // Try server-side save via serve.py /api/save-lesson endpoint
+  fetch('/api/save-lesson', {{
+    method: 'POST',
+    headers: {{ 'Content-Type': 'application/json' }},
+    body: JSON.stringify({{
+      lesson_dir: plan.lesson_dir || '',
+      to_version: TO_VERSION,
+      html_content: cleanHtml,
+    }}),
+  }})
+  .then(async r => {{
+    if (r.status === 409) {{
+      const body = await r.json();
+      if (confirm(`File already exists at:\\n${{body.target_path}}\\n\\nOverwrite?`)) {{
+        return fetch('/api/save-lesson', {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ lesson_dir: plan.lesson_dir || '', to_version: TO_VERSION, html_content: cleanHtml, force: true }}),
+        }}).then(r2 => r2.json());
+      }}
+      return null;
+    }}
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }})
+  .then(result => {{
+    if (!result) return;
+    banner.style.display = 'block';
+    banner.innerHTML = `✓ Saved to: <code>${{escHtml(result.target_path)}}</code>`;
+  }})
+  .catch(() => {{
+    // Fallback: browser download
+    const blob = new Blob([cleanHtml], {{ type: 'text/html;charset=utf-8' }});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'index.html'; a.click();
+    URL.revokeObjectURL(url);
+    banner.style.display = 'block';
+    banner.innerHTML = `Downloaded index.html — place it at: <code>${{escHtml(plan.lesson_dir || lessonId)}}/index.html</code> (updated to target version). For direct saving, use <code>python serve.py</code> instead of <code>python -m http.server</code>.`;
+  }});
 }}
 </script>
 </body>

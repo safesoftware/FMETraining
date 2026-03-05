@@ -66,6 +66,7 @@ Use your knowledge of FME (transformers, readers/writers, UI, workflows) to reas
 - **"Workspace Parameters"** — a specific section of the FME Workbench Navigator panel (accessed via the gear icon), not a general reference to all configurable settings in a workspace. An issue about "Workspace Parameters" is only relevant if the lesson explicitly navigates to or modifies that specific Navigator section.
 - **"Feature Caches"** — a specific caching panel/feature in FME Workbench, not a general reference to data caching.
 - **"Transformer Cache"** — a specific per-transformer debugging feature, not a general caching concept.
+- **"Feature Inspector"** — a specific UI window/panel in FME for inspecting feature data (distinct from any transformer). Do NOT confuse with the **"Inspector"** transformer, which is a specific FME transformer that stops features for interactive inspection. An issue about the "Feature Inspector" window only impacts lessons that explicitly use that window; it does NOT impact lessons that use the Inspector transformer, and vice versa.
 
 **Specificity rule:** If the Jira issue names a specific transformer, data format, dialog, or UI element, verify it is explicitly referenced in the lesson content above before rating it as `medium` or `high`. Do not infer relevance from topic proximity. Examples of incorrect reasoning to avoid:
 - A change to `CommonLocalReprojector` should NOT flag a lesson that only uses `Reprojector` — these are distinct transformers.

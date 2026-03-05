@@ -52,6 +52,7 @@ Each change must include:
 - If the lesson already correctly describes the new behavior, do not suggest a change.
 - If a change is too complex to represent as a simple find-and-replace (e.g., a whole section needs restructuring), use `type: "add"` or `type: "delete"` with a clear explanation.
 - Do not suggest changes to heading text or image `src` attributes.
+- **Before suggesting a `type: "add"` change, verify the `suggested_text` does not already appear in the lesson HTML.** Search the HTML above for the proposed addition. If the content is already present, do not suggest adding it — omit that entry entirely.
 
 ### For screenshot updates (`screenshot_updates` array):
 

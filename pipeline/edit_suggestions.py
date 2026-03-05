@@ -262,8 +262,20 @@ async def _call_openai(
             raw = response.choices[0].message.content
             parsed = json.loads(raw)
 
+            # Post-processing: filter out 'add' changes whose suggested_text
+            # is already present in the lesson HTML (issue 33)
+            lesson_html_lower = first.get("_lesson_html", "").lower()
+            filtered_changes = []
+            for change in parsed.get("changes", []):
+                if change.get("type") == "add":
+                    sugg = (change.get("suggested_text") or "").strip()
+                    if sugg and sugg.lower() in lesson_html_lower:
+                        print(f"\n  [filter] Skipping already-present 'add' in {lesson_id}: {sugg[:60]!r}")
+                        continue
+                filtered_changes.append(change)
+
             # Assign stable change_ids based on lesson+index
-            for i, change in enumerate(parsed.get("changes", [])):
+            for i, change in enumerate(filtered_changes):
                 change["change_id"] = hashlib.md5(
                     f"{lesson_id}:change:{i}".encode()
                 ).hexdigest()[:8]
@@ -278,7 +290,7 @@ async def _call_openai(
                 "product": first.get("product", []),
                 "issues_addressed": [a["issue_key"] for a in group],
                 "lesson_html": first.get("_lesson_html", ""),
-                "changes": parsed.get("changes", []),
+                "changes": filtered_changes,
                 "screenshot_updates": parsed.get("screenshot_updates", []),
                 "generated_at": datetime.now(tz=timezone.utc).isoformat(),
                 "prompt_tokens": response.usage.prompt_tokens if response.usage else None,

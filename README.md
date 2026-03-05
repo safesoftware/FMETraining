@@ -149,15 +149,33 @@ python pipeline.py --output-dir path/to/output
 
 ## Viewing the Report
 
-The HTML report (`artifacts/report-{RUN_ID}.html`) fetches its data from a JSON file via `fetch()`. Most browsers block `fetch()` for `file://` URLs, so serve the **project root** with Python's built-in HTTP server:
+The HTML report (`artifacts/report-{RUN_ID}.html`) fetches its data from a JSON file via `fetch()`. Most browsers block `fetch()` for `file://` URLs, so you need a local HTTP server.
+
+Use `serve.py` (recommended — enables the **Save to Version Folder** feature in the Lesson Edits tab):
 
 ```bash
 # Run from the project root (not the artifacts/ subdirectory)
-python -m http.server 8080
+python serve.py
 # Then open http://localhost:8080/artifacts/report-{RUN_ID}.html
 ```
 
+Alternatively, use Python's built-in server (report viewing only — the Save feature will fall back to a browser download):
+
+```bash
+python -m http.server 8080
+```
+
 > **Note:** The server must run from the project root so that lesson images (e.g. `2024.2/...`) resolve correctly in the report.
+
+### Lesson Edits Tab — Save to Version Folder
+
+After running Step 6 (`--steps 6`), the **Lesson Edits** tab lets you review and accept/reject suggested text changes. When you click **Save to Version Folder**:
+
+- `serve.py` computes the target path by replacing the source version with `to_version` from your `update-job.json` (e.g. `2024.2/...` → `2026.1/...`)
+- The lesson HTML is written to the new path
+- Images are copied from the source lesson's `images/` folder to the target
+
+If the target file already exists, you will be prompted to overwrite it.
 
 The report includes:
 - **Likelihood filters** (High / Medium / Low / None)

@@ -1,24 +1,47 @@
 # Open
 
-- 38. Saving the edited HTML downloads index.html and tells the user to place it in a specific folder. That was not the feature I expected. I would prefer if clicking that button actually created the correct folder structure and saved the file there, along with duplicated images. So, for example, I just edited `2024.2/integrate-spatial-data/Analyze Spatial Data 2024.2/Exercise_ Analyze Spatial Data/index.html`. The target update version according to this run was 2026.1 (`to_version` in `update-job.json`, also saved in `runs.json`). So, when I click the button, it should save the edited file to: `2026.1/integrate-spatial-data/Analyze Spatial Data 2024.2/Exercise_ Analyze Spatial Data/index.html`. If that file already exists, the user should be prompted to overwrite. In order for the new image paths to work, the images for that lesson should be duplicated and saved to that new path as well. Therefore, the image references in the HTML should continue to use relative image paths.
-- 37. Update suggestion cards should have an additional expandable section on the right for Update Suggestions. This should expand to show links to all suggested changes in the HTML lessons. Clicking the link should take the user to the other tab with that suggestion shown.
-- 36. I don't know the update suggestion ID, but the one associated with https://safesoftware.atlassian.net/browse/FMEFORM-33652 has again mistaken one change for another. The "Feature Inspector" window is different from the "Inspector" transformer. This lesson uses the Inspector transformer, not the Feature Inspector window. I realize that's a subtle difference. Can you think of any way to improve the results here? I believe you started listing UI strings or concepts somewhere? We don't make much use of the Feature Inspector in our training, so I suppose we could outright ignore changes to it. But that kind of workflow is dangerous in the long term; what if we decided to start using it. Any ideas?
-- 35. The Accept and Reject buttons in the tooltip appears over top of the explanation text, making it hard to understand the explanation. Ensure the text appears below the buttons in the tooltip.
-- 34. Sometimes the tooltip with Accept Reject cannot be clicked. It appears too far below the highlighted text, so when you move the mouse to click it, the mouse exists the highlighted area and therefore the tooltip disappears. I'm not sure the best way to fix it - I guess you need to better calculate the tooltip position to ensure it is directly connected to the highlighted section? Sometimes there is also a very small gap that makes the tooltip disappear. Maybe the tooltip needs a short fade time where it remains active?
-- 33. I'm not sure how to deal with it, but note that the suggested addition in 8) Add PointOnRasterValueExtractor shows "Add a PointOnRasterValueExtractor to the right side of your canvas" as a pure addition. This part is actually already present, so it should not be highlighted in green. The rest of the new suggestion should be shown in green because it's new.
+## UI/UX Fixes (Lesson Edits tab)
+
+- 35. The Accept and Reject buttons in the tooltip appear over top of the explanation text, making it hard to understand the explanation. Ensure the text appears below the buttons in the tooltip.
+- 34. Sometimes the tooltip with Accept/Reject cannot be clicked. It appears too far below the highlighted text, so when you move the mouse to click it, the mouse exits the highlighted area and the tooltip disappears. Fix by using JS-driven hover with a short delay so the popup stays visible while the mouse moves toward it.
+- 31. If an update suggestion is marked as Rejected, the text should update better. It stays red and strikethrough now. It should show as normal text but with a gray box around it. When moused over, the user can still accept or reject.
+
+## Screenshot Handling
+
 - 32. Screenshot update suggestions should be treated the same as others in terms of accept/reject.
-- 31. If an update suggestion is marked as Rejected, the text should update better. It stays red and strike through now. I think it should show as normal but maybe have a gray box around it or something. When moused over, the behavior is the same, user can accept or reject still.
+
+## Image Preview
+
+- 27. HTML preview images use incorrect path (missing lesson folder structure). See issue 38 for context on paths — the fix should use `../{lesson_dir}/` as the image base when rendering lesson HTML in the report preview.
+
+## Server-Side Save
+
+- 38. Saving the edited HTML downloads index.html and tells the user to place it in a specific folder. That was not the feature I expected. I would prefer if clicking that button actually created the correct folder structure and saved the file there, along with duplicated images. So, for example, I just edited `2024.2/integrate-spatial-data/Analyze Spatial Data 2024.2/Exercise_ Analyze Spatial Data/index.html`. The target update version according to this run was 2026.1 (`to_version` in `update-job.json`, also saved in `runs.json`). So, when I click the button, it should save the edited file to: `2026.1/integrate-spatial-data/Analyze Spatial Data 2026.1/Exercise_ Analyze Spatial Data/index.html`. If that file already exists, the user should be prompted to overwrite. In order for the new image paths to work, the images for that lesson should be duplicated and saved to that new path as well. Therefore, the image references in the HTML should continue to use relative image paths.
+    - Implementation: add a `serve.py` custom HTTP server (replaces `python -m http.server 8080`) with a `/api/save-lesson` POST endpoint. The JS calls this endpoint with `{lesson_dir, to_version, html_content}`. The server computes the target path, writes the file, copies images. Returns `409` if target exists (JS prompts to overwrite).
+
+## Cross-Tab Coordination
+
+- 37. Update suggestion cards should have an additional expandable section on the right for Update Suggestions. This should expand to show links to all suggested changes in the HTML lessons. Clicking the link should take the user to the other tab with that suggestion shown.
 - 30. If an update suggestion card is marked as Incorrect, all corresponding HTML edits should automatically be rejected.
 - 29. Accept/reject tooltip should have a link to the update recommendation card that moves you to it on the other tab.
 - 28. The Accept/Reject workflow is good, but I realized something. If I reject one change because the underlying update suggestion is incorrect, I should have the option to reject ALL changes from that update suggestion. For example, https://safesoftware.atlassian.net/browse/FMEENGINE-80520 doesn't impact training because we don't use that coordinate system. If I reject one change for this reason, the entire update suggestion card should be marked as Incorrect and all related changes rejected. See issue 30 for a related suggestion, the inverse basically.
-- 27. HTML preview images use incorrect path. Example: http://localhost:8080/artifacts/images/1740685882852.png. That is missing all the normal lesson folder structure. However, see issue number 38 before trying to solve this one; we need to think carefully about paths here.
+
+## LLM Quality
+
+- 33. I'm not sure how to deal with it, but note that the suggested addition in 8) Add PointOnRasterValueExtractor shows "Add a PointOnRasterValueExtractor to the right side of your canvas" as a pure addition. This part is actually already present, so it should not be highlighted in green. The rest of the new suggestion should be shown in green because it's new.
+    - Fix: (1) add rule to EDIT_SUGGESTIONS.md prompt to verify text isn't already present before suggesting an addition; (2) add post-processing filter in `edit_suggestions.py` that removes `add` changes where `suggested_text` already appears in `lesson_html`.
+- 36. I don't know the update suggestion ID, but the one associated with https://safesoftware.atlassian.net/browse/FMEFORM-33652 has again mistaken one change for another. The "Feature Inspector" window is different from the "Inspector" transformer. This lesson uses the Inspector transformer, not the Feature Inspector window. I realize that's a subtle difference. Can you think of any way to improve the results here? I believe you started listing UI strings or concepts somewhere? We don't make much use of the Feature Inspector in our training, so I suppose we could outright ignore changes to it. But that kind of workflow is dangerous in the long term; what if we decided to start using it. Any ideas?
+    - Fix: add a "FME Terminology Disambiguation" section to `prompts/ASSESSMENT.md` listing known confusable pairs (e.g., "Feature Inspector" window vs "Inspector" transformer). See issues 39 and 40 for longer-term systemic solutions.
+
+# Fixed
+
 - 26. Build system to suggest edits to lesson content.
     - 26A. New Step 6: edit plan backend.
         - New `pipeline/edit_suggestions.py` module (analogous to `assessment.py`).
         - New `prompts/EDIT_SUGGESTIONS.md` prompt template.
         - Output: `artifacts/edit-plans-{RUN_ID}.json`.
-        - Groups medium+high assessments by lesson; makes one LLM call per lesson (much cheaper than Step 3-4: ~$0.23 at gpt-4o-mini or ~$3.80 at gpt-4o for a full 150-lesson run).
-        - Uses `gpt-4o` by default for higher-quality text edits (separate config setting from `OPENAI_MODEL`).
+        - Groups medium+high assessments by lesson; makes one LLM call per lesson.
+        - Uses `gpt-4o` by default for higher-quality text edits (separate config setting `EDIT_SUGGESTIONS_MODEL`).
         - Schema per lesson: `{ lesson_id, lesson_html, issues_addressed, changes: [{change_id, type, heading, original_text, suggested_text, explanation, issue_keys}], screenshot_updates: [{src, explanation, issue_keys}] }`.
         - Integrated with CLI (`--steps 6`) and `runs.json` artifact registry.
     - 26B. Phase 1: Read-only track changes tab in the existing report.
@@ -31,9 +54,6 @@
         - Hover over any change to show Accept / Reject popup buttons.
         - Undo and redo buttons in the toolbar.
         - Save button generates a downloadable `index.html` with accepted changes applied; a banner shows the correct target version path where the file should be placed.
-
-# Fixed
-
 - 25. Each card currently has a section below the Jira issue name that says, "Affects: n/a" I am not sure what this is supposed to capture, but it's n/a for all cards. Please fix it show it actually shows whatever it is you are trying to show. Maybe the changelog version?
     - Shows fixed version now.
 - 24. Cards should provide a link to the Jira issue. You can dynamically form those according to the following template: {JIRA_BASE_URL}/browse/{JIRA_ISSUE_KEY}, e.g., https://safesoftware.atlassian.net/browse/FMEFORM-33646. Please use the JIRA_BASE_URL from .env and JIRA_ISSUE_KEY from the returned Jira issues.
@@ -47,9 +67,9 @@
         - Third section, collapsed by default: Affected Screenshots. This section should be expanded and should actually show all potentially impacted screenshots. Each screenshot should have its own explanation as to why it needs to be updated and what update needs to be made.
 - 22. Add a hover effect on the Active, Done, and Incorrect buttons.
 - 21. #80c27790 is a false positive. It refers to Workspace Parameters, a specific section of the Navigator UI. It does not mean "all parameters you can set in the workspace." I realize that is a bit confusing, so I'm not sure we can fix this one. Any ideas welcome.
-- 20, Add support for reading Jira issues directly using the Jira API. I have added a Jira API key to .env. The CSV currently in use (`jira_export.csv`) pulls issues from a Jira Filter called Public Changelog. I've added the filter ID in .env as well. The API approach should retreive the issues from that filter. They are the full list of all Jira changes that should be considered for training updates; we've already built in the filtering that accounts for pulling the relevant issues. I'll leave it up to you which approach you want to use; pulling all issues and keeping them in a local file similar to the CSV, or pulling Jira issues only. In either case, I think there should be a CLI option that determines if the user is supplying the issues via a Jira export CSV or wants to use the API. Please let me know what other information you need.
-- 19. Add support for a very basic "checklist" function in the HTML page. The goal here is to allow the user to manually set each recommendation card's status as "done" or "incorrect" on the HTML page. They default to a status of "active." Once checked off, the card disappears from view. Please add filters for "active" "done" and "incorrect" that allow the user to filter the list of cards by their status. 
-- 18. Store recommendaiton status so the HTML page is persistent between sessions. This is so the user can continue to refer to these as they do the updates over multiple working days. I suppose this would include adding status to the recommendation JSON. This status is per-run and per-HTML file; it's expected to always have a default value of "active" on new runs.
+- 20. Add support for reading Jira issues directly using the Jira API. I have added a Jira API key to .env. The CSV currently in use (`jira_export.csv`) pulls issues from a Jira Filter called Public Changelog. I've added the filter ID in .env as well. The API approach should retrieve the issues from that filter. They are the full list of all Jira changes that should be considered for training updates; we've already built in the filtering that accounts for pulling the relevant issues. I'll leave it up to you which approach you want to use; pulling all issues and keeping them in a local file similar to the CSV, or pulling Jira issues only. In either case, I think there should be a CLI option that determines if the user is supplying the issues via a Jira export CSV or wants to use the API. Please let me know what other information you need.
+- 19. Add support for a very basic "checklist" function in the HTML page. The goal here is to allow the user to manually set each recommendation card's status as "done" or "incorrect" on the HTML page. They default to a status of "active." Once checked off, the card disappears from view. Please add filters for "active" "done" and "incorrect" that allow the user to filter the list of cards by their status.
+- 18. Store recommendation status so the HTML page is persistent between sessions. This is so the user can continue to refer to these as they do the updates over multiple working days. I suppose this would include adding status to the recommendation JSON. This status is per-run and per-HTML file; it's expected to always have a default value of "active" on new runs.
 - 16. Add documentation of the CLI tool to README.md, including the existing commands and how to run the full pipeline. Also include instructions to install any prerequisites, including Python and requirements.txt for non-technical users. Also note that the user should provide API keys and other configuration settings in .env.
 - 15. Add behavior to the update recommendation tags #xxxxxx to allow for quick copying and pasting of the ID. So if you hover it animates and suggests Copy, click to copy to clipboard.
 - 14. False positives fixed (full lesson text + specificity rule in prompt + excluded programs pre-filter):
@@ -59,7 +79,7 @@
     - #796fff1e = Oracle Autonomous format → `none` (full lesson text confirmed format not in lesson)
 - 13. Add a dropdown to filter update recommendations by lesson as well.
 - 12. Add an update recommendation ID to all recommendation cards. That way I can refer to a specific issue x lesson intersection when debugging.
-- 11. Update recommendation cards currently mention the specific lesson, but nothing more detailed than that. These updates occur to sometimes a single sentance in the lesson. The identification of where the update needs to occur should be more speciific. Instead of just the lesson name, include the specific heading and screenshots that might be impacted.
+- 11. Update recommendation cards currently mention the specific lesson, but nothing more detailed than that. These updates occur to sometimes a single sentence in the lesson. The identification of where the update needs to occur should be more specific. Instead of just the lesson name, include the specific heading and screenshots that might be impacted.
 - 10. How much more would it cost to include the _entire_ lesson text content in the API calls? I ask because my review indicates some very obvious false positives are being generated. I think if the LLM had access to the entire lesson context, it would not generate these false positives. It sounds like it is guessing what steps are in these lessons instead of actually checking the exact step content. The remaining issues below may be addressed if we provide more context.
 - 9. FMEFORM-34424 should not be flagged for this lesson. The Add Reader dialog is different from the Web Service creation dialog. That should be pretty evident from the context. How can I provide more information so that is more obvious? Let's think of a systematic change we can make to avoid this kind of mistake.
 - 8. For FMEENGINE-67308, the CommonLocalReprojector is a _super_ niche transformer. Why did you think it was relevant for this lesson? We make no mention of this transformer in this lesson. We may mention a Reprojector, but that's a different transformer. Come up with a systematic way to avoid misrecognizing specific changes like this for more general ones, or for incorrectly matching transformers like this.
@@ -78,3 +98,8 @@
     - Then use https://github.com/tobi/qmd?tab=readme-ov to generate embeddings for all training content.
     - Use the Jira MCP server to fetch issues and use the local embeddings database instead of including lesson text in the API calls. I suppose this would look like one Jira issue at a time compared to whatever embeddings were in the subset of content defined in update-job.json.
     - REASONING: this path would reduce the LLM API calls, but would likely reduce the quality of the results. I will not pursue it unless cost becomes a concern.
+
+# Future Work (Out of Scope)
+
+- 39. Use the RDS transformer/format name database to inject a list of relevant transformer and format names into the assessment and edit suggestion prompts, so the LLM can more accurately distinguish specific transformer names from general concepts or UI elements. FME has ~500 transformers and ~1000 formats — this context could significantly reduce false positives like issues 8, 36, etc.
+- 40. Maintain a `data/fme-terminology.json` file of known confusable term pairs (e.g., "Feature Inspector" window vs "Inspector" transformer) that gets injected into prompts dynamically. This would be extensible as new false positives are discovered, and could be populated semi-automatically from the RDS database and manual review.
