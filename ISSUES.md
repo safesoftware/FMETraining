@@ -1,6 +1,5 @@
 # Open
 
-- 25. Each card currently has a section below the Jira issue name that says, "Affects: n/a" I am not sure what this is supposed to capture, but it's n/a for all cards. Please fix it show it actually shows whatever it is you are trying to show. Maybe the changelog version?
 - 26. Let's also start to build a system to actually suggest edits to this content. This system will likely have a significant impact on the current approach, so let's plan it out before choosing an approach. Feel free to make use of existing libraries that have this functionality, if required.
     - Phase one: present suggested edits to a human reviewer on a lesson-by-lesson basis. This will require somehow combining the current suggested edits, because instead of "Jira issue x lesson edit recommendation cards" we are working with "lessons" as our atomic unit. It also requires much more specific edit recommendations than are currently available on the cards, so if you need to change the actual card schema to hold more information, or create a new lesson recommended edit data structure, please do so. 
         - First, design the above data structure and new edit recommendation back end.
@@ -16,6 +15,8 @@
 
 # Fixed
 
+- 25. Each card currently has a section below the Jira issue name that says, "Affects: n/a" I am not sure what this is supposed to capture, but it's n/a for all cards. Please fix it show it actually shows whatever it is you are trying to show. Maybe the changelog version?
+    - Shows fixed version now.
 - 24. Cards should provide a link to the Jira issue. You can dynamically form those according to the following template: {JIRA_BASE_URL}/browse/{JIRA_ISSUE_KEY}, e.g., https://safesoftware.atlassian.net/browse/FMEFORM-33646. Please use the JIRA_BASE_URL from .env and JIRA_ISSUE_KEY from the returned Jira issues.
 - 23. I'd like more detail in the suggested edits. Let's start by adding the following features:
     - 23A. Cards should identify if they impact an exercise or not. This should be available as a toggle in the card filter, "Impacts Exercise" It should be shown as a chip on the card like the current "Screenshots needed" chip as well.

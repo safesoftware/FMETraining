@@ -511,7 +511,7 @@ function renderCard(a) {{
         <span class="badge issue-type" style="margin-left:6px">${{escHtml(a.issue_type || '')}}</span>
       </p>
       <p style="margin-top:4px">${{escHtml(a.issue_summary || '')}}</p>
-      <p style="font-size:0.78rem;color:#888;margin-top:2px">Affects: ${{(a.affects_versions || []).join(', ') || 'n/a'}}</p>
+      ${{(a.fix_versions || []).length ? `<p style="font-size:0.78rem;color:#888;margin-top:2px">Fix version: ${{escHtml((a.fix_versions || []).join(', '))}}</p>` : ''}}
     </div>
     <div class="card-section">
       <h4>Assessment</h4>

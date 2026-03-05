@@ -270,6 +270,7 @@ async def _call_openai(
                 "issue_type": issue.get("issue_type", ""),
                 "issue_status": issue.get("status", ""),
                 "affects_versions": issue.get("affects_versions", []),
+                "fix_versions": issue.get("fix_versions", []),
                 "update_likelihood": parsed["update_likelihood"],
                 "justification": parsed["justification"],
                 "impacts_exercise": parsed["impacts_exercise"],
