@@ -233,6 +233,12 @@ span.tc-orig-context {{ color: inherit; }}
 .edit-toolbar .save-btn:hover {{ background: #1e4d8c; }}
 .save-banner {{ display: none; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; padding: 10px 16px; margin: 12px 24px; border-radius: 6px; font-size: 0.85rem; }}
 .change-count {{ font-size: 0.82rem; color: #555; margin-left: auto; }}
+/* Floating next/prev edit nav (issue 47) */
+.le-nav-float {{ position: fixed; bottom: 24px; right: 24px; z-index: 500; display: none; flex-direction: column; gap: 6px; align-items: stretch; }}
+.le-nav-btn {{ padding: 7px 14px; border-radius: 6px; border: 1px solid #1a3d6b; background: #1a3d6b; color: #fff; cursor: pointer; font-size: 0.82rem; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.25); text-align: center; }}
+.le-nav-btn:disabled {{ opacity: 0.4; cursor: not-allowed; }}
+.le-nav-btn:not(:disabled):hover {{ background: #1e4d8c; }}
+.le-nav-counter {{ text-align: center; font-size: 0.75rem; color: #555; background: rgba(255,255,255,0.92); padding: 3px 8px; border-radius: 10px; border: 1px solid #e5e7eb; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }}
 </style>
 </head>
 <body>
@@ -321,6 +327,13 @@ span.tc-orig-context {{ color: inherit; }}
     <div class="lesson-edit-empty">Select a lesson above to view suggested edits.</div>
   </div>
 </div><!-- end tab-lesson-edits -->
+
+<!-- Floating next/prev edit nav — visible only when Lesson Edits tab is active and a lesson is loaded (issue 47) -->
+<div class="le-nav-float" id="le-nav-float">
+  <div class="le-nav-counter" id="le-nav-counter">0 / 0</div>
+  <button class="le-nav-btn" id="le-prev-edit-btn" onclick="lePrevEdit()" disabled>↑ Prev Edit</button>
+  <button class="le-nav-btn" id="le-next-edit-btn" onclick="leNextEdit()" disabled>↓ Next Edit</button>
+</div>
 
 <script>
 const JSON_FILE = '{json_filename}';
@@ -681,6 +694,12 @@ function switchTab(name, btn) {{
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
+  // Show/hide floating edit nav (issue 47)
+  if (name === 'lesson-edits') {{
+    leUpdateNavFloat();
+  }} else {{
+    document.getElementById('le-nav-float').style.display = 'none';
+  }}
 }}
 
 // ---------------------------------------------------------------------------
@@ -742,6 +761,7 @@ function leUpdateLessons() {{
     '<div class="lesson-edit-empty">Select a lesson above to view suggested edits.</div>';
   document.getElementById('le-change-count').textContent = '';
   document.getElementById('le-toolbar').style.display = 'none';
+  document.getElementById('le-nav-float').style.display = 'none';
 }}
 
 function leRenderLesson() {{
@@ -822,6 +842,7 @@ function leRenderLesson() {{
   document.getElementById('le-lesson-body').innerHTML = html;
   document.getElementById('le-save-banner').style.display = 'none';
   leBindPopups();
+  leUpdateNavFloat();
   // Issue 30: apply any rejections that were triggered from the Recommendations tab
   if (leRejectedIssueKeys.size) {{
     document.querySelectorAll('#le-lesson-body .tc-wrap[data-issue-keys]').forEach(wrap => {{
@@ -954,6 +975,51 @@ function leGoToChange(lessonId, changeId) {{
       }}, 100);
     }}
   }}, 150);
+}}
+
+// Issue 47: floating next/prev edit navigation
+let leCurrentEditIdx = -1;
+let leEditWraps = [];
+
+function leUpdateNavFloat() {{
+  const navFloat = document.getElementById('le-nav-float');
+  const wraps = [...document.querySelectorAll('#le-lesson-body .tc-wrap.tc-change')];
+  leEditWraps = wraps;
+  leCurrentEditIdx = -1;
+  if (wraps.length === 0) {{
+    navFloat.style.display = 'none';
+    return;
+  }}
+  navFloat.style.display = 'flex';
+  document.getElementById('le-nav-counter').textContent = '0 / ' + wraps.length;
+  document.getElementById('le-prev-edit-btn').disabled = true;
+  document.getElementById('le-next-edit-btn').disabled = false;
+}}
+
+function leNextEdit() {{
+  leEditWraps = [...document.querySelectorAll('#le-lesson-body .tc-wrap.tc-change')];
+  if (!leEditWraps.length) return;
+  leCurrentEditIdx = Math.min(leCurrentEditIdx + 1, leEditWraps.length - 1);
+  leScrollToCurrentEdit();
+}}
+
+function lePrevEdit() {{
+  leEditWraps = [...document.querySelectorAll('#le-lesson-body .tc-wrap.tc-change')];
+  if (!leEditWraps.length) return;
+  leCurrentEditIdx = Math.max(leCurrentEditIdx - 1, 0);
+  leScrollToCurrentEdit();
+}}
+
+function leScrollToCurrentEdit() {{
+  if (leCurrentEditIdx < 0 || leCurrentEditIdx >= leEditWraps.length) return;
+  const wrap = leEditWraps[leCurrentEditIdx];
+  wrap.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+  wrap.style.outline = '2px solid #f59e0b';
+  wrap.style.borderRadius = '3px';
+  setTimeout(() => {{ wrap.style.outline = ''; wrap.style.borderRadius = ''; }}, 1500);
+  document.getElementById('le-nav-counter').textContent = (leCurrentEditIdx + 1) + ' / ' + leEditWraps.length;
+  document.getElementById('le-prev-edit-btn').disabled = leCurrentEditIdx === 0;
+  document.getElementById('le-next-edit-btn').disabled = leCurrentEditIdx === leEditWraps.length - 1;
 }}
 
 // JS-driven hover with delay to prevent popup disappearing when moving mouse to it
