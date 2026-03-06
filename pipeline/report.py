@@ -196,7 +196,7 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 .lesson-edit-body h2, .lesson-edit-body h3, .lesson-edit-body h4 {{ margin: 1.2em 0 0.5em; font-family: inherit; }}
 .lesson-edit-body p {{ margin: 0.5em 0; line-height: 1.65; }}
 .lesson-edit-body ul, .lesson-edit-body ol {{ padding-left: 1.5em; margin: 0.5em 0; }}
-.lesson-edit-body img {{ max-width: 100%; border-radius: 4px; border: 1px solid #e5e7eb; display: block; margin: 8px 0; }}
+.lesson-edit-body img {{ max-width: 100%; height: auto; border-radius: 4px; border: 1px solid #e5e7eb; display: block; margin: 8px 0; }}
 .lesson-edit-body table {{ border-collapse: collapse; width: 100%; margin: 0.5em 0; }}
 .lesson-edit-body td, .lesson-edit-body th {{ border: 1px solid #ddd; padding: 6px 10px; font-size: 0.88rem; }}
 .lesson-edit-body blockquote {{ border-left: 3px solid #e5e7eb; padding: 8px 12px; margin: 8px 0; background: #fafafa; }}
@@ -209,9 +209,11 @@ ins.tc-add {{ display: block; background: #dcfce7; color: #15803d; padding: 4px 
 span.tc-orig {{ background: #f3f4f6; color: #374151; padding: 1px 3px; border-radius: 2px; }}
 .tc-change {{ cursor: help; border-bottom: 2px dotted #f59e0b; }}
 .tc-wrap[data-state="accepted"] {{ background: #f0fdf4; border-radius: 2px; }}
-.tc-wrap[data-state="rejected"] {{ background: #f9fafb; border-radius: 2px; }}
+.tc-wrap[data-state="rejected"] {{ background: transparent; border-radius: 2px; border-bottom-color: #9ca3af; cursor: default; }}
+.tc-wrap[data-type="screenshot"] {{ display: block; }}
+span.tc-orig-context {{ color: inherit; }}
 /* Unified popup (tooltip + accept/reject) — shown/hidden via JS hover with delay */
-.tc-popup {{ display: none; position: absolute; z-index: 300; background: #1e293b; color: #fff; font-size: 0.78rem; padding: 8px 10px; border-radius: 6px; max-width: 340px; line-height: 1.5; top: calc(100% + 4px); left: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.25); white-space: normal; min-width: 200px; }}
+.tc-popup {{ display: none; position: absolute; z-index: 300; background: #1e293b; color: #fff; font-size: 0.78rem; padding: 8px 10px; border-radius: 6px; max-width: 340px; line-height: 1.5; top: 100%; left: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.25); white-space: normal; min-width: 200px; }}
 .tc-popup.tc-popup-visible {{ display: block; }}
 .tc-explanation {{ display: block; margin-bottom: 4px; }}
 .tc-issue-links {{ display: block; font-size: 0.72rem; opacity: 0.8; margin-bottom: 6px; }}
@@ -687,6 +689,7 @@ function switchTab(name, btn) {{
 let leEditPlans = [];
 let leUndoStack = [];
 let leRedoStack = [];
+let leRejectedIssueKeys = new Set(); // tracks keys rejected from Recommendations tab (issue 30)
 
 // Eager-load edit plans on page load (needed for cross-tab features in issues 37, 30)
 if (EDIT_PLANS_FILE) {{
@@ -775,7 +778,7 @@ function leRenderLesson() {{
     const rejectAllBtn = (keys.length && type !== 'screenshot')
       ? `<button class="tc-reject" style="font-size:0.68rem" onclick="leRejectAllForIssueKey('${{keys[0]}}');setStatus(allData.find(a=>a.issue_key==='${{keys[0]}}')?.rec_id||'','incorrect');event.stopPropagation()">✗✗ Reject all for ${{keys[0]}}</button>`
       : '';
-    return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{cardLink}}</span><span class="tc-btns"><button class="tc-accept" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span></span>`;
+    return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-btns"><button class="tc-accept" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{cardLink}}</span></span>`;
   }}
 
   // Apply text changes
@@ -789,7 +792,7 @@ function leRenderLesson() {{
     if (ch.type === 'delete') {{
       markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{popup}}</span>`;
     }} else if (ch.type === 'add') {{
-      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
+      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><span class="tc-orig-context">${{escHtml(orig)}}</span><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }} else {{
       markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }}
@@ -811,7 +814,7 @@ function leRenderLesson() {{
     html = html.replace(imgPattern, '$1' + wrapped);
   }});
 
-  // Fix relative image paths: prefix with ../{lesson_dir}/ so images resolve from artifacts/
+  // Fix relative image paths: prefix with ../{{lesson_dir}}/ so images resolve from artifacts/
   const lessonBase = '../' + (plan.lesson_dir || '').replace(/\\\\/g, '/');
   html = html.replace(/(<img[^>]+src=["'])(?!https?:\\/\\/|\\/|data:)([^"']+)(["'])/gi,
     (_, pre, src, post) => pre + lessonBase + '/' + src + post);
@@ -819,6 +822,15 @@ function leRenderLesson() {{
   document.getElementById('le-lesson-body').innerHTML = html;
   document.getElementById('le-save-banner').style.display = 'none';
   leBindPopups();
+  // Issue 30: apply any rejections that were triggered from the Recommendations tab
+  if (leRejectedIssueKeys.size) {{
+    document.querySelectorAll('#le-lesson-body .tc-wrap[data-issue-keys]').forEach(wrap => {{
+      const keys = (wrap.dataset.issueKeys || '').split(',').map(s => s.trim());
+      if (keys.some(k => leRejectedIssueKeys.has(k)) && wrap.dataset.state !== 'rejected') {{
+        leApplyState(wrap, 'rejected');
+      }}
+    }});
+  }}
 }}
 
 // Phase 2: accept/reject
@@ -871,19 +883,21 @@ function leApplyState(wrap, state) {{
 
   if (state === 'pending') {{
     if (type === 'delete') wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del>`);
-    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<ins class="tc-add">${{sugg}}</ins>`);
+    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig-context">${{orig}}</span><ins class="tc-add">${{sugg}}</ins>`);
     else wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del><ins class="tc-ins"> ${{sugg}}</ins>`);
   }} else if (state === 'accepted') {{
     if (type === 'delete') {{ /* nothing — text removed */ }}
+    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig-context">${{orig}}</span><ins class="tc-ins">${{sugg}}</ins>`);
     else wrap.insertAdjacentHTML('afterbegin', `<ins class="tc-ins">${{sugg}}</ins>`);
   }} else {{ // rejected
-    if (type === 'add') {{ /* nothing — addition removed */ }}
-    else wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig">${{orig}}</span>`);
+    wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig">${{orig}}</span>`);
   }}
 }}
 
 // Issue 28/30: reject all changes for a given issue key (cross-tab)
 function leRejectAllForIssueKey(issueKey) {{
+  // Always record the key so auto-rejection applies when any lesson renders (issue 30)
+  leRejectedIssueKeys.add(issueKey);
   document.querySelectorAll('#le-lesson-body .tc-wrap[data-issue-keys]').forEach(wrap => {{
     const keys = (wrap.dataset.issueKeys || '').split(',').map(s => s.trim());
     if (keys.includes(issueKey)) {{
@@ -953,11 +967,11 @@ function leBindPopups() {{
       popup.classList.add('tc-popup-visible');
     }});
     wrap.addEventListener('mouseleave', () => {{
-      hideTimer = setTimeout(() => popup.classList.remove('tc-popup-visible'), 150);
+      hideTimer = setTimeout(() => popup.classList.remove('tc-popup-visible'), 300);
     }});
     popup.addEventListener('mouseenter', () => {{ clearTimeout(hideTimer); }});
     popup.addEventListener('mouseleave', () => {{
-      hideTimer = setTimeout(() => popup.classList.remove('tc-popup-visible'), 150);
+      hideTimer = setTimeout(() => popup.classList.remove('tc-popup-visible'), 300);
     }});
   }});
 }}
@@ -1010,17 +1024,17 @@ function leSave() {{
     const orig = wrap.dataset.orig || '';
     const sugg = wrap.dataset.sugg || '';
     let replacement = '';
-    if (state === 'accepted') replacement = (type === 'delete') ? '' : sugg;
-    else if (state === 'rejected') replacement = (type === 'add') ? '' : orig;
-    else replacement = (type === 'add') ? '' : orig; // pending → keep original
+    if (state === 'accepted') replacement = (type === 'delete') ? '' : (type === 'add') ? orig + sugg : sugg;
+    else replacement = orig; // rejected or pending → keep original text
     wrap.replaceWith(document.createTextNode(replacement));
   }});
 
   // Revert prefixed image paths back to relative (strip the ../lesson_dir/ prefix)
-  const lessonBase = '../' + (plan.lesson_dir || '').replace(/\\/g, '/') + '/';
+  const lessonBase = '../' + (plan.lesson_dir || '').replace(/\\\\/g, '/') + '/';
   body.querySelectorAll('img[src]').forEach(img => {{
-    if (img.src.includes(lessonBase)) {{
-      img.setAttribute('src', img.getAttribute('src').replace(lessonBase, ''));
+    const attrSrc = img.getAttribute('src') || '';
+    if (attrSrc.startsWith(lessonBase)) {{
+      img.setAttribute('src', attrSrc.slice(lessonBase.length));
     }}
   }});
 

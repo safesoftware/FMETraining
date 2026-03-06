@@ -2,39 +2,25 @@
 
 ## UI/UX Fixes (Lesson Edits tab)
 
-- 35. The Accept and Reject buttons in the tooltip appear over top of the explanation text, making it hard to understand the explanation. Ensure the text appears below the buttons in the tooltip.
-- 34. Sometimes the tooltip with Accept/Reject cannot be clicked. It appears too far below the highlighted text, so when you move the mouse to click it, the mouse exits the highlighted area and the tooltip disappears. Fix by using JS-driven hover with a short delay so the popup stays visible while the mouse moves toward it.
-- 31. If an update suggestion is marked as Rejected, the text should update better. It stays red and strikethrough now. It should show as normal text but with a gray box around it. When moused over, the user can still accept or reject.
-
-## Screenshot Handling
-
-- 32. Screenshot update suggestions should be treated the same as others in terms of accept/reject.
-
-## Image Preview
-
-- 27. HTML preview images use incorrect path (missing lesson folder structure). See issue 38 for context on paths — the fix should use `../{lesson_dir}/` as the image base when rendering lesson HTML in the report preview.
-
-## Server-Side Save
-
-- 38. Saving the edited HTML downloads index.html and tells the user to place it in a specific folder. That was not the feature I expected. I would prefer if clicking that button actually created the correct folder structure and saved the file there, along with duplicated images. So, for example, I just edited `2024.2/integrate-spatial-data/Analyze Spatial Data 2024.2/Exercise_ Analyze Spatial Data/index.html`. The target update version according to this run was 2026.1 (`to_version` in `update-job.json`, also saved in `runs.json`). So, when I click the button, it should save the edited file to: `2026.1/integrate-spatial-data/Analyze Spatial Data 2026.1/Exercise_ Analyze Spatial Data/index.html`. If that file already exists, the user should be prompted to overwrite. In order for the new image paths to work, the images for that lesson should be duplicated and saved to that new path as well. Therefore, the image references in the HTML should continue to use relative image paths.
-    - Implementation: add a `serve.py` custom HTTP server (replaces `python -m http.server 8080`) with a `/api/save-lesson` POST endpoint. The JS calls this endpoint with `{lesson_dir, to_version, html_content}`. The server computes the target path, writes the file, copies images. Returns `409` if target exists (JS prompts to overwrite).
-
-## Cross-Tab Coordination
-
-- 37. Update suggestion cards should have an additional expandable section on the right for Update Suggestions. This should expand to show links to all suggested changes in the HTML lessons. Clicking the link should take the user to the other tab with that suggestion shown.
-- 30. If an update suggestion card is marked as Incorrect, all corresponding HTML edits should automatically be rejected.
-- 29. Accept/reject tooltip should have a link to the update recommendation card that moves you to it on the other tab.
-- 28. The Accept/Reject workflow is good, but I realized something. If I reject one change because the underlying update suggestion is incorrect, I should have the option to reject ALL changes from that update suggestion. For example, https://safesoftware.atlassian.net/browse/FMEENGINE-80520 doesn't impact training because we don't use that coordinate system. If I reject one change for this reason, the entire update suggestion card should be marked as Incorrect and all related changes rejected. See issue 30 for a related suggestion, the inverse basically.
-
-## LLM Quality
-
-- 33. I'm not sure how to deal with it, but note that the suggested addition in 8) Add PointOnRasterValueExtractor shows "Add a PointOnRasterValueExtractor to the right side of your canvas" as a pure addition. This part is actually already present, so it should not be highlighted in green. The rest of the new suggestion should be shown in green because it's new.
-    - Fix: (1) add rule to EDIT_SUGGESTIONS.md prompt to verify text isn't already present before suggesting an addition; (2) add post-processing filter in `edit_suggestions.py` that removes `add` changes where `suggested_text` already appears in `lesson_html`.
-- 36. I don't know the update suggestion ID, but the one associated with https://safesoftware.atlassian.net/browse/FMEFORM-33652 has again mistaken one change for another. The "Feature Inspector" window is different from the "Inspector" transformer. This lesson uses the Inspector transformer, not the Feature Inspector window. I realize that's a subtle difference. Can you think of any way to improve the results here? I believe you started listing UI strings or concepts somewhere? We don't make much use of the Feature Inspector in our training, so I suppose we could outright ignore changes to it. But that kind of workflow is dangerous in the long term; what if we decided to start using it. Any ideas?
-    - Fix: add a "FME Terminology Disambiguation" section to `prompts/ASSESSMENT.md` listing known confusable pairs (e.g., "Feature Inspector" window vs "Inspector" transformer). See issues 39 and 40 for longer-term systemic solutions.
 
 # Fixed
 
+- 45. Saved image paths now stripped correctly: was using `img.src` (absolute URL) for comparison against a relative `lessonBase` string — switched to `img.getAttribute('src')` with `startsWith()`.
+- 44. Screenshot accept/reject popup now visible: `tc-wrap[data-type="screenshot"]` was `display:inline`, which broke popup positioning for block-level note content — fixed with `display:block`.
+- 42. Images in Lesson Edits tab now preserve aspect ratio via `height: auto` on `.lesson-edit-body img`.
+- 41. Rejecting an `add`-type change now correctly restores original text. `data-orig` was always `""` for add changes; now stores the anchor text. `leApplyState` and `leSave()` updated to use orig on reject/pending. Accepted add produces `orig + sugg`.
+- 38. Saving edited HTML now calls `serve.py`'s `/api/save-lesson` endpoint, which writes the file to the correct versioned folder and copies images. Falls back to browser download if `serve.py` is not running.
+- 37. Update suggestion cards have an expandable "✏ N edit suggestions" section that links to each suggested change in the Lesson Edits tab.
+- 36. Added "FME Terminology Disambiguation" section to `prompts/ASSESSMENT.md` listing known confusable pairs (e.g., "Feature Inspector" window vs "Inspector" transformer).
+- 35. Popup reordered so Accept/Reject buttons appear at the top, explanation text below.
+- 34. JS-driven hover with 300ms delay; popup gap closed to 0 so mouse can reach it reliably.
+- 33. Post-processing filter in `edit_suggestions.py` removes `add` changes whose `suggested_text` is already present in the lesson HTML.
+- 32. Screenshot update suggestions wrapped in `tc-wrap` with Accept/Reject popup identical to text changes.
+- 31. Rejected wraps now show original text in a gray box; yellow dotted underline replaced with gray, removing the red-strikethrough appearance.
+- 30. Marking a card as Incorrect from the Recommendations tab records the issue key in `leRejectedIssueKeys`; changes for that key are auto-rejected whenever a lesson is rendered in the Lesson Edits tab.
+- 29. Accept/Reject popup includes "↗ View recommendation card" link that switches to the Recommendations tab and scrolls to the card.
+- 28. "✗✗ Reject all for KEY" button in popup rejects all changes for that issue key and marks the card as Incorrect.
+- 27. HTML preview images now use `../{lesson_dir}/` as the base path so images resolve correctly when served from `artifacts/`.
 - 26. Build system to suggest edits to lesson content.
     - 26A. New Step 6: edit plan backend.
         - New `pipeline/edit_suggestions.py` module (analogous to `assessment.py`).
@@ -103,3 +89,4 @@
 
 - 39. Use the RDS transformer/format name database to inject a list of relevant transformer and format names into the assessment and edit suggestion prompts, so the LLM can more accurately distinguish specific transformer names from general concepts or UI elements. FME has ~500 transformers and ~1000 formats — this context could significantly reduce false positives like issues 8, 36, etc.
 - 40. Maintain a `data/fme-terminology.json` file of known confusable term pairs (e.g., "Feature Inspector" window vs "Inspector" transformer) that gets injected into prompts dynamically. This would be extensible as new false positives are discovered, and could be populated semi-automatically from the RDS database and manual review.
+- 43. Build a front-end that allows for the generation of reports in the browser so the user doesn't have to use the command line to use this tool. This means a page that lets the user choose the learning path/lesson/course in a multi-select tree, choose the to version, and generate the update recommendations and edit recommendations. The progress should be shown in the browser. Steps like regenerating the report or running using the Jira cache should be exposed. Basically just build a front end for the existing CLI commands.
