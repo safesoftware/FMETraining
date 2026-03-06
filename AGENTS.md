@@ -1,5 +1,9 @@
 # AGENTS.md — Rules for AI Agents Working in This Repository
 
+## Issue Tracking
+
+Track issues in `ISSUES.md`. Use headers to indicate if issues are **Open**, **In Review**, or **Closed** (currently uses **Fixed**/**Won't Do**/**Future Work**). Number issues sequentially. Keep the file up-to-date when making changes — move issues between sections and add new ones as appropriate. Focus on issues listed under **Open** unless the user specifies otherwise.
+
 ## Critical Rules
 
 1. **You are working in a sensitive environment. Do not attempt to commit files in the /data or /artifacts folder, and always use environment variables for credentials.**

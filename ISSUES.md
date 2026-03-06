@@ -1,12 +1,12 @@
 # Open
 
-## UI/UX Fixes (Lesson Edits tab)
-
+- 47. Add next edit, previous edit buttons to the Edit tab to facilitate quickly jumping between edits. I think it would make sense for these to float in the bottom right of the window at all times.
 
 # Fixed
 
+- 46. Step 6 now automatically regenerates the report after writing edit plans, so `EDIT_PLANS_FILE` is populated in the HTML and the Lesson Edits tab is enabled without needing `--report-only`.
 - 45. Saved image paths now stripped correctly: was using `img.src` (absolute URL) for comparison against a relative `lessonBase` string — switched to `img.getAttribute('src')` with `startsWith()`.
-- 44. Screenshot accept/reject popup now visible: `tc-wrap[data-type="screenshot"]` was `display:inline`, which broke popup positioning for block-level note content — fixed with `display:block`.
+- 44. Screenshot accept/reject popup now triggers on hover: the screenshot `tc-wrap` was a `<span>` containing a `<div class="screenshot-note">`, which is invalid HTML — the browser restructured the DOM, moving the note outside the `<span>` so `leBindPopups()` couldn't find `.tc-popup` inside `.tc-wrap`. Fixed by using `<div>` for the screenshot wrapper.
 - 42. Images in Lesson Edits tab now preserve aspect ratio via `height: auto` on `.lesson-edit-body img`.
 - 41. Rejecting an `add`-type change now correctly restores original text. `data-orig` was always `""` for add changes; now stores the anchor text. `leApplyState` and `leSave()` updated to use orig on reject/pending. Accepted add produces `orig + sugg`.
 - 38. Saving edited HTML now calls `serve.py`'s `/api/save-lesson` endpoint, which writes the file to the correct versioned folder and copies images. Falls back to browser download if `serve.py` is not running.

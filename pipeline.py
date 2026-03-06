@@ -249,6 +249,13 @@ def main() -> int:
         run_edit_suggestions(run_id, recs, output_dir, dry_run=args.dry_run)
         if not args.dry_run:
             mark_step_complete(run_id, 6, output_dir)
+            # Regenerate the report so EDIT_PLANS_FILE is populated in the HTML
+            from pipeline.report import build_report
+            rp = recommendations_path(run_id, output_dir)
+            ep = edit_plans_path(run_id, output_dir)
+            if rp.exists():
+                build_report(run_id, output_dir, recs_path=rp,
+                             edit_plans_path=ep if ep.exists() else None)
 
     # ---------------------------------------------------------------------------
     # Step 5: Report
