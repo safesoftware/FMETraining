@@ -1,13 +1,13 @@
 # Open
 
-- 50. Change the "Gen Edits" button to "Generate Edit Suggestions". "Report" should be "View Report".
-- 49. Even when step 6 is checked in the UI, it is not run. It should run if checked.
-- 48. Dry run still results in a View Report button. Should be disabled because no report is present on dry run. This might also apply to actual runs with report stage disabled. Have button check if report is actually there or disable if it's not.
-- 43. Build a browser-based launcher UI so users don't need the CLI. See [memory/issue-43-plan.md](memory/issue-43-plan.md) for the full implementation plan.
-- 47. Add next edit, previous edit buttons to the Edit tab to facilitate quickly jumping between edits. I think it would make sense for these to float in the bottom right of the window at all times.
 
 # Fixed
 
+- 43. Build a browser-based launcher UI so users don't need the CLI. See [memory/issue-43-plan.md](memory/issue-43-plan.md) for the full implementation plan.
+- 50. "Gen Edits" button renamed to "Generate Edit Suggestions"; history "Report" renamed to "View Report".
+- 49. Step 6 now runs when checked: `getOptions()` always sends an explicit `--steps` string, so step 6 is included when its checkbox is ticked.
+- 48. "View Report" console button now does a HEAD request first and only appears if the report file actually exists (suppresses it on dry runs and runs without step 5).
+- 47. Add next edit, previous edit buttons to the Edit tab to facilitate quickly jumping between edits. I think it would make sense for these to float in the bottom right of the window at all times.
 - 46. Step 6 now automatically regenerates the report after writing edit plans, so `EDIT_PLANS_FILE` is populated in the HTML and the Lesson Edits tab is enabled without needing `--report-only`.
 - 45. Saved image paths now stripped correctly: was using `img.src` (absolute URL) for comparison against a relative `lessonBase` string — switched to `img.getAttribute('src')` with `startsWith()`.
 - 44. Screenshot accept/reject popup now triggers on hover: the screenshot `tc-wrap` was a `<span>` containing a `<div class="screenshot-note">`, which is invalid HTML — the browser restructured the DOM, moving the note outside the `<span>` so `leBindPopups()` couldn't find `.tc-popup` inside `.tc-wrap`. Fixed by using `<div>` for the screenshot wrapper.

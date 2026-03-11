@@ -812,13 +812,13 @@ function updateJiraOptions() {
 
 function getOptions(dryRun) {
   const steps = [...document.querySelectorAll('.step-check:checked')].map(c => c.value);
-  const allSteps = [...document.querySelectorAll('.step-check')].map(c => c.value);
-  const stepsStr = steps.length === allSteps.length ? null : steps.join(',');
+  // Always pass steps explicitly so step 6 is included when checked.
+  // pipeline.py treats "3" as triggering both steps 3+4 together.
   return {
     jira_source: document.querySelector('input[name="jira_source"]:checked').value,
     refresh_jira: document.getElementById('opt-refresh-jira').checked,
     dry_run: dryRun,
-    steps: stepsStr,
+    steps: steps.length > 0 ? steps.join(',') : '1,2,3,5',
     resume: document.getElementById('opt-resume').value || null,
   };
 }
@@ -948,17 +948,22 @@ function setConsoleStatus(s) {
   el.textContent = s.toUpperCase();
 }
 
-function showConsoleActions(key) {
+async function showConsoleActions(key) {
   const c = document.getElementById('console-actions');
   c.innerHTML = '';
-  if (!key.includes(':')) {
-    const a = document.createElement('a');
-    a.href = `artifacts/report-${key}.html`;
-    a.target = '_blank';
-    a.className = 'btn btn-success btn-sm';
-    a.textContent = '↗ View Report';
-    c.appendChild(a);
-  }
+  if (key.includes(':')) return; // action run, not a main pipeline run
+  const reportUrl = `artifacts/report-${key}.html`;
+  try {
+    const r = await fetch(reportUrl, { method: 'HEAD' });
+    if (r.ok) {
+      const a = document.createElement('a');
+      a.href = reportUrl;
+      a.target = '_blank';
+      a.className = 'btn btn-success btn-sm';
+      a.textContent = '↗ View Report';
+      c.appendChild(a);
+    }
+  } catch (_) { /* report not present */ }
 }
 
 // ---------------------------------------------------------------------------
@@ -1012,7 +1017,7 @@ function renderHistory(runs) {
       a.href = `artifacts/report-${run.run_id}.html`;
       a.target = '_blank';
       a.className = 'hist-btn primary';
-      a.textContent = 'Report';
+      a.textContent = 'View Report';
       btns.appendChild(a);
     }
 
@@ -1027,7 +1032,7 @@ function renderHistory(runs) {
     if (hasAssess && !hasEdits) {
       const b = document.createElement('button');
       b.className = 'hist-btn';
-      b.textContent = 'Gen Edits';
+      b.textContent = 'Generate Edit Suggestions';
       b.onclick = () => doRunAction(run.run_id, 'edit-suggestions');
       btns.appendChild(b);
     }
