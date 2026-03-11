@@ -1,5 +1,9 @@
 # Open
 
+- 50. Change the "Gen Edits" button to "Generate Edit Suggestions". "Report" should be "View Report".
+- 49. Even when step 6 is checked in the UI, it is not run. It should run if checked.
+- 48. Dry run still results in a View Report button. Should be disabled because no report is present on dry run. This might also apply to actual runs with report stage disabled. Have button check if report is actually there or disable if it's not.
+- 43. Build a browser-based launcher UI so users don't need the CLI. See [memory/issue-43-plan.md](memory/issue-43-plan.md) for the full implementation plan.
 - 47. Add next edit, previous edit buttons to the Edit tab to facilitate quickly jumping between edits. I think it would make sense for these to float in the bottom right of the window at all times.
 
 # Fixed
@@ -89,4 +93,4 @@
 
 - 39. Use the RDS transformer/format name database to inject a list of relevant transformer and format names into the assessment and edit suggestion prompts, so the LLM can more accurately distinguish specific transformer names from general concepts or UI elements. FME has ~500 transformers and ~1000 formats — this context could significantly reduce false positives like issues 8, 36, etc.
 - 40. Maintain a `data/fme-terminology.json` file of known confusable term pairs (e.g., "Feature Inspector" window vs "Inspector" transformer) that gets injected into prompts dynamically. This would be extensible as new false positives are discovered, and could be populated semi-automatically from the RDS database and manual review.
-- 43. Build a front-end that allows for the generation of reports in the browser so the user doesn't have to use the command line to use this tool. This means a page that lets the user choose the learning path/lesson/course in a multi-select tree, choose the to version, and generate the update recommendations and edit recommendations. The progress should be shown in the browser. Steps like regenerating the report or running using the Jira cache should be exposed. Basically just build a front end for the existing CLI commands.
+- ~~43. Build a front-end that allows for the generation of reports in the browser so the user doesn't have to use the command line to use this tool. This means a page that lets the user choose the learning path/lesson/course in a multi-select tree, choose the to version, and generate the update recommendations and edit recommendations. The progress should be shown in the browser. Steps like regenerating the report or running using the Jira cache should be exposed. Basically just build a front end for the existing CLI commands.~~ → Moved to Open.

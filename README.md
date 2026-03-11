@@ -1,5 +1,25 @@
 # FME Training Automation
 
+## Quick Start
+
+Run the launcher script for your operating system. It will check all prerequisites, install any missing Python packages, and open the tool in your browser automatically.
+
+**Windows**
+```
+launch.bat
+```
+
+**macOS / Linux**
+```bash
+bash launch.sh
+```
+
+The only thing you need to set up manually is a `.env` file with your **OpenAI API key** — the script will create one from the template and prompt you to fill it in if it doesn't exist.
+
+> The rest of this document describes the underlying pipeline in detail. **End-users running the browser UI do not need to read further.**
+
+---
+
 This repositiory extends the FMETraining repository to automate training update tasks using AI.
 
 This repository contains an archive of Safe Software's training content, including:
@@ -34,7 +54,7 @@ The `api-approach` branch contains an AI-powered pipeline that analyzes Jira iss
 
 ## Prerequisites
 
-- **Python 3.10 or newer** — [Download Python](https://www.python.org/downloads/)
+- **Python 3.9 or newer** — [Download Python](https://www.python.org/downloads/)
 - **pip** (bundled with Python)
 - An **OpenAI API key** with access to `gpt-4o-mini` (or `gpt-4o`)
 - A **Jira API token** (optional — only needed for the `--jira-source api` mode)

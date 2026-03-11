@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FME Training Automation</title>
+<style>
+:root {
+  --brand: #1a3d6b;
+  --brand-hover: #2a5298;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #f0a500;
+  --info: #17a2b8;
+  --gray-50: #f8f9fa;
+  --gray-100: #f1f3f5;
+  --gray-200: #e9ecef;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-800: #343a40;
+  --radius: 6px;
+  --shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  background: var(--gray-100);
+  color: var(--gray-800);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Header */
+header {
+  background: var(--brand);
+  color: #fff;
+  padding: 0 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+header h1 { font-size: 17px; font-weight: 600; }
+header .subtitle { opacity: .65; font-size: 12px; }
+
+/* Main layout */
+.layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 12px;
+  padding: 12px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.left-panel, .right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  overflow-y: auto;
+}
+.right-panel { overflow: hidden; }
+
+/* Cards */
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+.card-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--gray-600);
+  margin-bottom: 10px;
+}
+
+/* Form rows */
+.form-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.form-row:last-child { margin-bottom: 0; }
+.form-row label { min-width: 100px; color: var(--gray-600); font-size: 12px; }
+.form-row input[type="text"], .form-row select {
+  flex: 1;
+  height: 28px;
+  border: 1px solid var(--gray-400);
+  border-radius: 4px;
+  padding: 0 8px;
+  font-size: 13px;
+  background: #fff;
+  color: var(--gray-800);
+}
+.form-row input[type="text"]:focus, .form-row select:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+/* Scope section */
+#scope-card { display: flex; flex-direction: column; min-height: 0; flex: 1; overflow: hidden; }
+.scope-controls { flex-shrink: 0; }
+.scope-search-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 6px;
+}
+.scope-search-row input {
+  flex: 1;
+  height: 26px;
+  border: 1px solid var(--gray-400);
+  border-radius: 4px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+.scope-search-row input:focus { outline: none; border-color: var(--brand); }
+.scope-btns { display: flex; gap: 6px; margin-bottom: 8px; }
+.scope-btns button {
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid var(--gray-400);
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  color: var(--gray-600);
+}
+.scope-btns button:hover { background: var(--gray-100); }
+.selection-count { font-size: 11px; color: var(--gray-600); margin-bottom: 6px; }
+
+/* Checkbox tree */
+.tree-container {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--gray-200);
+  border-radius: 4px;
+  background: var(--gray-50);
+  min-height: 120px;
+}
+.tree-node { }
+.tree-row {
+  display: flex;
+  align-items: center;
+  padding: 3px 6px;
+  gap: 4px;
+  cursor: default;
+}
+.tree-row:hover { background: var(--gray-200); }
+.toggle-btn {
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 9px;
+  color: var(--gray-600);
+  padding: 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toggle-btn:hover { color: var(--brand); }
+.tree-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  flex: 1;
+  font-size: 12px;
+  user-select: none;
+}
+.tree-label input[type="checkbox"] { cursor: pointer; flex-shrink: 0; }
+.count-badge {
+  font-size: 10px;
+  color: var(--gray-500);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.lp-row { background: var(--gray-100); font-weight: 600; }
+.lp-row:hover { background: var(--gray-200); }
+.course-row { padding-left: 18px; font-weight: 500; }
+.lesson-row { padding-left: 40px; }
+.tree-children { }
+.empty-msg { padding: 12px; color: var(--gray-500); font-style: italic; font-size: 12px; }
+
+/* Options collapsible */
+.options-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--gray-600);
+}
+.options-header:hover { color: var(--brand); }
+.options-toggle { font-size: 9px; }
+.options-body { margin-top: 10px; }
+.opt-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
+.opt-row label { color: var(--gray-600); }
+.opt-row input[type="radio"], .opt-row input[type="checkbox"] { cursor: pointer; }
+.opt-row select, .opt-row input[type="text"] {
+  height: 26px;
+  border: 1px solid var(--gray-400);
+  border-radius: 4px;
+  padding: 0 6px;
+  font-size: 12px;
+  background: #fff;
+  max-width: 200px;
+}
+.steps-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.step-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-300, #dee2e6);
+  border-radius: 3px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.step-label input { cursor: pointer; }
+
+/* Action buttons */
+.action-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 0 2px;
+}
+.btn {
+  height: 32px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-primary { background: var(--brand); color: #fff; }
+.btn-primary:not(:disabled):hover { background: var(--brand-hover); }
+.btn-secondary { background: var(--gray-200); color: var(--gray-800); border: 1px solid var(--gray-400); }
+.btn-secondary:not(:disabled):hover { background: var(--gray-300, #dee2e6); }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { opacity: .88; }
+.btn-sm { height: 26px; padding: 0 10px; font-size: 12px; }
+
+/* Right panel */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#console-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.console-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+.console-header .card-title { margin-bottom: 0; }
+
+/* Status badge */
+.status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  letter-spacing: .06em;
+}
+.status-idle    { background: var(--gray-200); color: var(--gray-600); }
+.status-running { background: #e3f0ff; color: #1a5fb4; animation: pulse 1.4s infinite; }
+.status-done    { background: #d4f5dc; color: #1a7a34; }
+.status-error   { background: #fde8ea; color: #b52a35; }
+@keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:.55 } }
+
+.log-output {
+  flex: 1;
+  min-height: 0;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: 4px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.console-actions { display: flex; gap: 8px; margin-top: 8px; flex-shrink: 0; flex-wrap: wrap; }
+
+/* History table */
+#history-card { flex-shrink: 0; max-height: 260px; display: flex; flex-direction: column; }
+.history-scroll { overflow-y: auto; flex: 1; min-height: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+  position: sticky;
+  top: 0;
+  background: var(--gray-100);
+  font-weight: 600;
+  text-align: left;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--gray-600);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  z-index: 1;
+}
+td { padding: 5px 8px; border-bottom: 1px solid var(--gray-200); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--gray-50); }
+.empty-cell { color: var(--gray-500); font-style: italic; text-align: center; padding: 16px; }
+.hist-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+.hist-btn {
+  font-size: 11px;
+  padding: 2px 7px;
+  height: 22px;
+  border: 1px solid var(--gray-400);
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  color: var(--gray-800);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.hist-btn:hover { background: var(--gray-100); }
+.hist-btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+.hist-btn.primary:hover { opacity: .88; }
+code { font-family: monospace; font-size: 11px; }
+
+/* Step badges in table */
+.step-chips { display: flex; gap: 2px; flex-wrap: wrap; }
+.step-chip {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--gray-200);
+  color: var(--gray-600);
+}
+.step-chip.done { background: #d4f5dc; color: #1a7a34; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>FME Training Automation</h1>
+  <span class="subtitle">Browser Launcher</span>
+</header>
+
+<div class="layout">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <!-- Version + scope -->
+    <div class="card" id="scope-card">
+      <div class="scope-controls">
+        <div class="card-title">Configure Run</div>
+        <div class="form-row">
+          <label>Update to version</label>
+          <input type="text" id="to-version" placeholder="e.g. 2026.1" list="versions-list" autocomplete="off">
+          <datalist id="versions-list"></datalist>
+        </div>
+        <div class="form-row">
+          <label>Browse lessons from</label>
+          <select id="browse-version"></select>
+        </div>
+        <div class="scope-search-row">
+          <input type="text" id="tree-search" placeholder="Search lessons…" oninput="filterTree(this.value)">
+        </div>
+        <div class="scope-btns">
+          <button onclick="selectAll(true)">Select All</button>
+          <button onclick="selectAll(false)">Deselect All</button>
+        </div>
+        <div class="selection-count" id="selection-count">0 lessons selected</div>
+      </div>
+      <div class="tree-container" id="tree-container">
+        <div class="empty-msg">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Options -->
+    <div class="card">
+      <div class="options-header" onclick="toggleOptions()">
+        <span class="options-toggle" id="options-toggle">▶</span>
+        Options
+      </div>
+      <div class="options-body" id="options-body" style="display:none">
+        <div class="opt-row">
+          <label>Jira source</label>
+          <label><input type="radio" name="jira_source" value="csv" checked onchange="updateJiraOptions()"> CSV cache</label>
+          <label><input type="radio" name="jira_source" value="api" onchange="updateJiraOptions()"> Jira API</label>
+        </div>
+        <div class="opt-row" id="refresh-jira-row" style="display:none">
+          <label></label>
+          <label><input type="checkbox" id="opt-refresh-jira"> Force refresh Jira cache</label>
+        </div>
+        <div class="opt-row">
+          <label>Steps to run</label>
+          <div class="steps-grid" id="steps-grid">
+            <label class="step-label"><input type="checkbox" class="step-check" value="1" checked> 1 Manifest</label>
+            <label class="step-label"><input type="checkbox" class="step-check" value="2" checked> 2 Changelog</label>
+            <label class="step-label"><input type="checkbox" class="step-check" value="3" checked> 3+4 Assessment</label>
+            <label class="step-label"><input type="checkbox" class="step-check" value="5" checked> 5 Report</label>
+            <label class="step-label"><input type="checkbox" class="step-check" value="6"> 6 Edit plans</label>
+          </div>
+        </div>
+        <div class="opt-row">
+          <label>Resume run</label>
+          <select id="opt-resume"><option value="">— new run —</option></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card" style="padding: 10px 16px;">
+      <div class="action-row">
+        <button class="btn btn-primary" id="btn-start" onclick="startRun(false)" disabled>
+          ▶ Start Run
+        </button>
+        <button class="btn btn-secondary" id="btn-dry" onclick="startRun(true)">
+          Dry Run
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- Console -->
+    <div class="card" id="console-card">
+      <div class="console-header">
+        <span class="card-title">Run Console</span>
+        <span class="status-badge status-idle" id="status-badge">IDLE</span>
+        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="clearConsole()">Clear</button>
+      </div>
+      <pre class="log-output" id="log-output">Ready. Configure a run on the left and click Start Run.</pre>
+      <div class="console-actions" id="console-actions"></div>
+    </div>
+
+    <!-- History -->
+    <div class="card" id="history-card">
+      <div class="card-title" style="margin-bottom:8px">Run History</div>
+      <div class="history-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Run ID</th>
+              <th>Started</th>
+              <th>To Version</th>
+              <th>Scope</th>
+              <th>Steps</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr><td colspan="6" class="empty-cell">No runs yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /right -->
+</div><!-- /layout -->
+
+<script>
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+let contentTree = [];
+let selectedPaths = new Set();
+let currentRunKey = null;
+let eventSource = null;
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+async function init() {
+  try {
+    await loadVersions();
+    await loadHistory();
+  } catch (e) {
+    setLog('Could not reach server. Make sure serve.py is running.\n\n' + e);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Versions
+// ---------------------------------------------------------------------------
+async function loadVersions() {
+  const resp = await fetch('/api/versions');
+  const versions = await resp.json();
+
+  const dl = document.getElementById('versions-list');
+  const browseEl = document.getElementById('browse-version');
+  const toEl = document.getElementById('to-version');
+  const resumeEl = document.getElementById('opt-resume');
+
+  dl.innerHTML = '';
+  browseEl.innerHTML = '';
+
+  versions.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = v;
+    dl.appendChild(opt.cloneNode(true));
+    browseEl.appendChild(opt);
+  });
+
+  // Pre-fill to-version with most recent existing version
+  if (versions.length > 0 && !toEl.value) {
+    toEl.value = versions[0];
+  }
+
+  browseEl.onchange = () => loadTree(browseEl.value);
+  if (versions.length > 0) {
+    await loadTree(versions[0]);
+  }
+
+  // Populate resume dropdown
+  const runsResp = await fetch('/api/runs');
+  const runsData = await runsResp.json();
+  (runsData.runs || []).slice().reverse().forEach(run => {
+    const opt = document.createElement('option');
+    opt.value = run.run_id;
+    opt.textContent = `${run.run_id.slice(0, 20)}… (${run.job?.to_version || '?'})`;
+    resumeEl.appendChild(opt);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Content tree
+// ---------------------------------------------------------------------------
+async function loadTree(version) {
+  const container = document.getElementById('tree-container');
+  container.innerHTML = '<div class="empty-msg">Loading…</div>';
+  const resp = await fetch(`/api/content-tree?version=${encodeURIComponent(version)}`);
+  contentTree = await resp.json();
+
+  // Drop selected paths no longer in new tree
+  const allPaths = new Set(
+    contentTree.flatMap(lp => lp.courses.flatMap(c => c.lessons.map(l => l.path)))
+  );
+  selectedPaths = new Set([...selectedPaths].filter(p => allPaths.has(p)));
+
+  renderTree();
+}
+
+function renderTree() {
+  const container = document.getElementById('tree-container');
+  container.innerHTML = '';
+  if (contentTree.length === 0) {
+    container.innerHTML = '<div class="empty-msg">No lessons found for this version.</div>';
+    return;
+  }
+  for (const lp of contentTree) {
+    container.appendChild(makeLPNode(lp));
+  }
+  updateParentStates();
+  updateCountBadges();
+  updateSelectionCount();
+}
+
+function makeLPNode(lp) {
+  const node = document.createElement('div');
+  node.className = 'tree-node lp-node';
+  node.dataset.lpId = lp.id;
+
+  const row = document.createElement('div');
+  row.className = 'tree-row lp-row';
+
+  const toggle = makeToggle();
+  const check = makeCheckbox('lp-check');
+  check.onchange = () => { onGroupCheckChange(check, node); };
+
+  const label = document.createElement('label');
+  label.className = 'tree-label';
+  label.appendChild(check);
+  label.appendChild(document.createTextNode(' ' + lp.label));
+
+  const badge = document.createElement('span');
+  badge.className = 'count-badge';
+
+  row.appendChild(toggle);
+  row.appendChild(label);
+  row.appendChild(badge);
+
+  const children = document.createElement('div');
+  children.className = 'tree-children';
+  for (const course of lp.courses) {
+    children.appendChild(makeCourseNode(lp, course));
+  }
+
+  toggle.onclick = () => toggleChildren(children, toggle);
+  node.appendChild(row);
+  node.appendChild(children);
+  return node;
+}
+
+function makeCourseNode(lp, course) {
+  const node = document.createElement('div');
+  node.className = 'tree-node course-node';
+
+  const row = document.createElement('div');
+  row.className = 'tree-row course-row';
+
+  const toggle = makeToggle();
+  const check = makeCheckbox('course-check');
+  check.onchange = () => { onGroupCheckChange(check, node); };
+
+  const label = document.createElement('label');
+  label.className = 'tree-label';
+  label.appendChild(check);
+  label.appendChild(document.createTextNode(' ' + course.label));
+
+  const badge = document.createElement('span');
+  badge.className = 'count-badge';
+
+  row.appendChild(toggle);
+  row.appendChild(label);
+  row.appendChild(badge);
+
+  const children = document.createElement('div');
+  children.className = 'tree-children';
+  for (const lesson of course.lessons) {
+    children.appendChild(makeLessonRow(lesson));
+  }
+
+  toggle.onclick = () => toggleChildren(children, toggle);
+  node.appendChild(row);
+  node.appendChild(children);
+  return node;
+}
+
+function makeLessonRow(lesson) {
+  const row = document.createElement('div');
+  row.className = 'tree-row lesson-row';
+  row.dataset.path = lesson.path;
+
+  const check = makeCheckbox('lesson-check');
+  check.dataset.path = lesson.path;
+  check.checked = selectedPaths.has(lesson.path);
+  check.onchange = () => {
+    if (check.checked) selectedPaths.add(lesson.path);
+    else selectedPaths.delete(lesson.path);
+    updateParentStates();
+    updateCountBadges();
+    updateSelectionCount();
+    updateStartButton();
+  };
+
+  const label = document.createElement('label');
+  label.className = 'tree-label lesson-label';
+  label.appendChild(check);
+  label.appendChild(document.createTextNode(' ' + lesson.label));
+
+  row.appendChild(label);
+  return row;
+}
+
+function makeToggle() {
+  const btn = document.createElement('button');
+  btn.className = 'toggle-btn';
+  btn.textContent = '▼';
+  btn.setAttribute('aria-expanded', 'true');
+  return btn;
+}
+
+function makeCheckbox(cls) {
+  const c = document.createElement('input');
+  c.type = 'checkbox';
+  c.className = cls;
+  return c;
+}
+
+function toggleChildren(children, toggle) {
+  const expanded = toggle.getAttribute('aria-expanded') === 'true';
+  children.style.display = expanded ? 'none' : '';
+  toggle.textContent = expanded ? '▶' : '▼';
+  toggle.setAttribute('aria-expanded', String(!expanded));
+}
+
+function onGroupCheckChange(check, node) {
+  const lessons = node.querySelectorAll('.lesson-check');
+  lessons.forEach(lc => {
+    lc.checked = check.checked;
+    if (check.checked) selectedPaths.add(lc.dataset.path);
+    else selectedPaths.delete(lc.dataset.path);
+  });
+  check.indeterminate = false;
+  updateParentStates();
+  updateCountBadges();
+  updateSelectionCount();
+  updateStartButton();
+}
+
+function updateParentStates() {
+  document.querySelectorAll('.course-node').forEach(node => {
+    const check = node.querySelector('.course-check');
+    const lessons = node.querySelectorAll('.lesson-check');
+    const n = [...lessons].filter(l => l.checked).length;
+    check.checked = n === lessons.length && lessons.length > 0;
+    check.indeterminate = n > 0 && n < lessons.length;
+  });
+  document.querySelectorAll('.lp-node').forEach(node => {
+    const check = node.querySelector('.lp-check');
+    const lessons = node.querySelectorAll('.lesson-check');
+    const n = [...lessons].filter(l => l.checked).length;
+    check.checked = n === lessons.length && lessons.length > 0;
+    check.indeterminate = n > 0 && n < lessons.length;
+  });
+}
+
+function updateCountBadges() {
+  document.querySelectorAll('.lp-node').forEach(node => {
+    const total = node.querySelectorAll('.lesson-check').length;
+    const checked = node.querySelectorAll('.lesson-check:checked').length;
+    node.querySelector('.lp-row .count-badge').textContent = `${checked}/${total}`;
+  });
+  document.querySelectorAll('.course-node').forEach(node => {
+    const total = node.querySelectorAll('.lesson-check').length;
+    const checked = node.querySelectorAll('.lesson-check:checked').length;
+    node.querySelector('.course-row .count-badge').textContent = `${checked}/${total}`;
+  });
+}
+
+function updateSelectionCount() {
+  document.getElementById('selection-count').textContent =
+    `${selectedPaths.size} lesson${selectedPaths.size === 1 ? '' : 's'} selected`;
+}
+
+function updateStartButton() {
+  document.getElementById('btn-start').disabled = selectedPaths.size === 0;
+}
+
+function selectAll(checked) {
+  document.querySelectorAll('.lesson-check').forEach(lc => {
+    lc.checked = checked;
+    if (checked) selectedPaths.add(lc.dataset.path);
+    else selectedPaths.delete(lc.dataset.path);
+  });
+  updateParentStates();
+  updateCountBadges();
+  updateSelectionCount();
+  updateStartButton();
+}
+
+function filterTree(query) {
+  const q = query.toLowerCase().trim();
+  document.querySelectorAll('.lp-node').forEach(lpNode => {
+    let lpVis = false;
+    lpNode.querySelectorAll('.course-node').forEach(courseNode => {
+      let courseVis = false;
+      courseNode.querySelectorAll('.lesson-row').forEach(row => {
+        const match = !q || row.querySelector('label').textContent.toLowerCase().includes(q);
+        row.style.display = match ? '' : 'none';
+        if (match) courseVis = true;
+      });
+      courseNode.style.display = courseVis ? '' : 'none';
+      if (courseVis) lpVis = true;
+    });
+    lpNode.style.display = lpVis ? '' : 'none';
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Options
+// ---------------------------------------------------------------------------
+function toggleOptions() {
+  const body = document.getElementById('options-body');
+  const toggle = document.getElementById('options-toggle');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : '';
+  toggle.textContent = open ? '▶' : '▼';
+}
+
+function updateJiraOptions() {
+  const src = document.querySelector('input[name="jira_source"]:checked').value;
+  document.getElementById('refresh-jira-row').style.display = src === 'api' ? '' : 'none';
+}
+
+function getOptions(dryRun) {
+  const steps = [...document.querySelectorAll('.step-check:checked')].map(c => c.value);
+  const allSteps = [...document.querySelectorAll('.step-check')].map(c => c.value);
+  const stepsStr = steps.length === allSteps.length ? null : steps.join(',');
+  return {
+    jira_source: document.querySelector('input[name="jira_source"]:checked').value,
+    refresh_jira: document.getElementById('opt-refresh-jira').checked,
+    dry_run: dryRun,
+    steps: stepsStr,
+    resume: document.getElementById('opt-resume').value || null,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Scope builder
+// ---------------------------------------------------------------------------
+function buildScope() {
+  const lessons = [], courses = [], learning_paths = [];
+  for (const lp of contentTree) {
+    const allLpPaths = lp.courses.flatMap(c => c.lessons.map(l => l.path));
+    const selLp = allLpPaths.filter(p => selectedPaths.has(p));
+    if (selLp.length === allLpPaths.length && allLpPaths.length > 0) {
+      learning_paths.push(lp.id);
+    } else {
+      for (const course of lp.courses) {
+        const allCPaths = course.lessons.map(l => l.path);
+        const selC = allCPaths.filter(p => selectedPaths.has(p));
+        if (selC.length === allCPaths.length && allCPaths.length > 0) {
+          courses.push({ learning_path: lp.id, course: course.id });
+        } else {
+          for (const lesson of course.lessons) {
+            if (selectedPaths.has(lesson.path)) lessons.push(lesson.path);
+          }
+        }
+      }
+    }
+  }
+  return { lessons, courses, learning_paths };
+}
+
+// ---------------------------------------------------------------------------
+// Start run
+// ---------------------------------------------------------------------------
+async function startRun(dryRun) {
+  const toVersion = document.getElementById('to-version').value.trim();
+  if (!toVersion) { alert('Please enter a target version (e.g. 2026.1)'); return; }
+  if (selectedPaths.size === 0 && !dryRun) { alert('Please select at least one lesson.'); return; }
+
+  document.getElementById('btn-start').disabled = true;
+  document.getElementById('btn-dry').disabled = true;
+  setConsoleStatus('running');
+  clearConsole();
+  appendLog(`Starting ${dryRun ? 'dry run' : 'run'} → ${toVersion}…`);
+
+  try {
+    const resp = await fetch('/api/start-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to_version: toVersion,
+        scope: buildScope(),
+        options: getOptions(dryRun),
+      }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) {
+      setConsoleStatus('error');
+      appendLog('ERROR: ' + (data.error || 'Unknown error'));
+      if (data.output) appendLog(data.output);
+      return;
+    }
+    currentRunKey = data.run_id;
+    connectSSE(currentRunKey);
+  } catch (e) {
+    setConsoleStatus('error');
+    appendLog('ERROR: ' + e.message);
+  } finally {
+    updateStartButton();
+    document.getElementById('btn-dry').disabled = false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// SSE
+// ---------------------------------------------------------------------------
+function connectSSE(key) {
+  if (eventSource) { eventSource.close(); eventSource = null; }
+  eventSource = new EventSource('/api/run-log?run_id=' + encodeURIComponent(key));
+
+  eventSource.onmessage = e => {
+    appendLog(JSON.parse(e.data));
+  };
+
+  eventSource.addEventListener('done', () => {
+    eventSource.close(); eventSource = null;
+    const txt = document.getElementById('log-output').textContent;
+    const isErr = /error|traceback|exception/i.test(txt);
+    setConsoleStatus(isErr ? 'error' : 'done');
+    showConsoleActions(key);
+    loadHistory();
+    updateStartButton();
+  });
+
+  eventSource.onerror = () => {
+    if (eventSource && eventSource.readyState !== EventSource.CLOSED) {
+      eventSource.close(); eventSource = null;
+      setConsoleStatus('error');
+      appendLog('[Connection lost — server may have stopped]');
+      updateStartButton();
+    }
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Console
+// ---------------------------------------------------------------------------
+function appendLog(line) {
+  const pre = document.getElementById('log-output');
+  pre.textContent += line + '\n';
+  pre.scrollTop = pre.scrollHeight;
+}
+
+function setLog(text) {
+  document.getElementById('log-output').textContent = text;
+}
+
+function clearConsole() {
+  document.getElementById('log-output').textContent = '';
+  document.getElementById('console-actions').innerHTML = '';
+  setConsoleStatus('idle');
+}
+
+function setConsoleStatus(s) {
+  const el = document.getElementById('status-badge');
+  el.className = 'status-badge status-' + s;
+  el.textContent = s.toUpperCase();
+}
+
+function showConsoleActions(key) {
+  const c = document.getElementById('console-actions');
+  c.innerHTML = '';
+  if (!key.includes(':')) {
+    const a = document.createElement('a');
+    a.href = `artifacts/report-${key}.html`;
+    a.target = '_blank';
+    a.className = 'btn btn-success btn-sm';
+    a.textContent = '↗ View Report';
+    c.appendChild(a);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Run history
+// ---------------------------------------------------------------------------
+async function loadHistory() {
+  const resp = await fetch('/api/runs');
+  const data = await resp.json();
+  renderHistory(data.runs || []);
+}
+
+function renderHistory(runs) {
+  const tbody = document.getElementById('history-tbody');
+  tbody.innerHTML = '';
+  if (!runs.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No runs yet.</td></tr>';
+    return;
+  }
+  [...runs].reverse().forEach(run => {
+    const steps = run.steps_completed || [];
+    const hasReport = steps.includes(5);
+    const hasEdits  = steps.includes(6);
+    const hasAssess = steps.includes(3) && steps.includes(4);
+
+    const tr = document.createElement('tr');
+
+    const started = run.started_at
+      ? new Date(run.started_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })
+      : '—';
+
+    // Steps chips
+    const allSteps = [1, 2, 3, 4, 5, 6];
+    const chipsHtml = allSteps.map(s =>
+      `<span class="step-chip ${steps.includes(s) ? 'done' : ''}">${s === 3 ? '3+4' : s}</span>`
+    ).filter((_, i) => i !== 3).join('');  // remove 4 (shown as 3+4)
+
+    tr.innerHTML = `
+      <td><code title="${run.run_id}">${run.run_id.slice(0, 18)}…</code></td>
+      <td>${started}</td>
+      <td>${run.job?.to_version || '—'}</td>
+      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+          title="${scopeTitle(run.job?.scope)}">${scopeDesc(run.job?.scope)}</td>
+      <td><div class="step-chips">${chipsHtml}</div></td>
+      <td><div class="hist-btns" id="hist-btns-${run.run_id}"></div></td>
+    `;
+
+    const btns = tr.querySelector(`#hist-btns-${run.run_id}`);
+
+    if (hasReport) {
+      const a = document.createElement('a');
+      a.href = `artifacts/report-${run.run_id}.html`;
+      a.target = '_blank';
+      a.className = 'hist-btn primary';
+      a.textContent = 'Report';
+      btns.appendChild(a);
+    }
+
+    if (hasAssess) {
+      const b = document.createElement('button');
+      b.className = 'hist-btn';
+      b.textContent = 'Regen Report';
+      b.onclick = () => doRunAction(run.run_id, 'regenerate-report');
+      btns.appendChild(b);
+    }
+
+    if (hasAssess && !hasEdits) {
+      const b = document.createElement('button');
+      b.className = 'hist-btn';
+      b.textContent = 'Gen Edits';
+      b.onclick = () => doRunAction(run.run_id, 'edit-suggestions');
+      btns.appendChild(b);
+    }
+
+    tbody.appendChild(tr);
+  });
+}
+
+function scopeDesc(scope) {
+  if (!scope) return '—';
+  const parts = [];
+  if (scope.learning_paths?.length) parts.push(`${scope.learning_paths.length} LP`);
+  if (scope.courses?.length) parts.push(`${scope.courses.length} course${scope.courses.length > 1 ? 's' : ''}`);
+  if (scope.lessons?.length) parts.push(`${scope.lessons.length} lesson${scope.lessons.length > 1 ? 's' : ''}`);
+  return parts.join(', ') || 'all';
+}
+
+function scopeTitle(scope) {
+  if (!scope) return '';
+  const parts = [];
+  (scope.learning_paths || []).forEach(lp => parts.push('LP: ' + lp));
+  (scope.courses || []).forEach(c => parts.push('Course: ' + c.course));
+  (scope.lessons || []).forEach(l => parts.push(l));
+  return parts.join('\n');
+}
+
+async function doRunAction(runId, action) {
+  setConsoleStatus('running');
+  clearConsole();
+  appendLog(`${action} → ${runId}…`);
+
+  try {
+    const resp = await fetch('/api/run-action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ run_id: runId, action }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) {
+      setConsoleStatus('error');
+      appendLog('ERROR: ' + (data.error || 'Unknown error'));
+      return;
+    }
+    currentRunKey = data.action_key;
+    connectSSE(currentRunKey);
+  } catch (e) {
+    setConsoleStatus('error');
+    appendLog('ERROR: ' + e.message);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Bootstrap
+// ---------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
