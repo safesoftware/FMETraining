@@ -14,7 +14,7 @@ launch.bat
 bash launch.sh
 ```
 
-The only thing you need to set up manually is a `.env` file with your **OpenAI API key** — the script will create one from the template and prompt you to fill it in if it doesn't exist.
+The only thing you need to set up manually is a `.env` file with your **OpenAI API and Jira keys** — the script will create one from the template and prompt you to fill it in if it doesn't exist.
 
 > The rest of this document describes the underlying pipeline in detail. **End-users running the browser UI do not need to read further.**
 
