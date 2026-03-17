@@ -37,6 +37,10 @@ For older FME Academy content, the directory structure contains:
   - `icon.png`: the trail icon
   - `trail.json`: a file describing the trail structure, including filters and module order
 
+# FME Form Learning Path Reorganization 2025 -> 2026
+
+With the 2026.1 updates, we are reorganizing our FME Form learning paths. You can view the details of this reorganization [here](https://docs.google.com/document/d/e/2PACX-1vROD22i8MzGuiJ_c3PzBWK7yb_KlY4cXs0ZF_CVLDRKOkypHDWP-5mvsebQqrAyYTAm6kVSMqHDYRBU/pub).
+
 # Reuse
 
 Partners can adapt and reuse this content according to the [Terms of Use](https://engage.safe.com/legal/terms-and-conditions/fme-training/) and [License](LICENSE.md).
