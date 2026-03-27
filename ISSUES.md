@@ -22,6 +22,8 @@
 
 ## AI Accuracy
 
+- 69. **Optimize model to reduce API costs.** I chose `gpt-4o-mini` in initial testing, but we could do additional benchmarking to look for a cheaper model that meets our needs.
+
 - 59. **LLM suggests version-specific edits inside conceptual sections.** `EDIT_SUGGESTIONS.md` sends the full lesson HTML but gives the LLM no signal about which sections are instructional vs. conceptual. Fix: in `edit_suggestions.py/_build_prompt()`, inject a **Section Classification** block derived from manifest data — listing each h2/h3 heading alongside `has_exercise_steps: true/false`, computed from whether exercise steps fall under that heading in the manifest. Add rule to `EDIT_SUGGESTIONS.md`: *"Sections with no exercise steps and no Resources block are conceptual — they explain general principles. Do not suggest inserting version-specific feature details into them. Place version-specific changes in instructional sections only."*
 
 - 58. **The specificity rule from `ASSESSMENT.md` is absent from `EDIT_SUGGESTIONS.md`.** The rule — *"if a Jira issue names a specific transformer/format/dialog, only act where that item is explicitly referenced"* — was never added to the edit-suggestions prompt. The LLM therefore generates edits for thematically related sections that don't mention the specific item. Fix: add an equivalent rule to `EDIT_SUGGESTIONS.md`: *"If a Jira issue names a specific transformer, data format, dialog, or UI element, only suggest changes to sections of the lesson HTML where that exact item is explicitly mentioned. Do not suggest changes based on topic proximity alone."* This is the single highest-impact accuracy fix.
