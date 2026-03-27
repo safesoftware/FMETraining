@@ -16,6 +16,7 @@ import hashlib
 import json
 import time
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 
 from openai import AsyncOpenAI
@@ -362,12 +363,98 @@ def _build_prompt(
         "LESSON_HTML": lesson_html,
         "ISSUES_LIST": issues_list,
         "EDITORIAL_GUIDELINES": editorial_guidelines,
+        "SECTION_CLASSIFICATION": _build_section_classification(lesson_html),
     }
 
     prompt = template
     for key, value in substitutions.items():
         prompt = prompt.replace(f"{{{{{key}}}}}", value)
     return prompt
+
+
+def _build_section_classification(lesson_html: str) -> str:
+    """
+    Parse lesson HTML headings and classify each as conceptual or instructional.
+
+    Instructional: numbered exercise-step headings (e.g. "1) Start Workbench")
+                   and the Resources heading.
+    Conceptual:    all other headings.
+    """
+
+    class _HeadingParser(HTMLParser):
+        def __init__(self) -> None:
+            super().__init__()
+            self.headings: list[str] = []
+            self._tag: str | None = None
+            self._buf: list[str] = []
+
+        def handle_starttag(self, tag: str, attrs: list) -> None:
+            if tag in ("h2", "h3"):
+                self._tag = tag
+                self._buf = []
+
+        def handle_endtag(self, tag: str) -> None:
+            if tag == self._tag and tag in ("h2", "h3"):
+                self.headings.append("".join(self._buf).strip())
+                self._tag = None
+
+        def handle_data(self, data: str) -> None:
+            if self._tag:
+                self._buf.append(data)
+
+        def handle_entityref(self, name: str) -> None:
+            if self._tag:
+                import html as _html
+                self._buf.append(_html.unescape(f"&{name};"))
+
+        def handle_charref(self, name: str) -> None:
+            if self._tag:
+                import html as _html
+                self._buf.append(_html.unescape(f"&#{name};"))
+
+    parser = _HeadingParser()
+    parser.feed(lesson_html)
+
+    if not parser.headings:
+        return ""
+
+    conceptual: list[str] = []
+    instructional: list[str] = []
+
+    for heading in parser.headings:
+        if (
+            config.EXERCISE_STEP_PATTERN.match(heading)
+            or heading.strip().lower() == "resources"
+        ):
+            instructional.append(heading)
+        else:
+            conceptual.append(heading)
+
+    if not instructional:
+        return (
+            "This lesson has **no exercise steps**. It may explain general concepts, "
+            "FME UI features, or both — read the section bodies to judge. "
+            "Before suggesting any change to any section, verify that the specific "
+            "transformer, dialog, parameter, or UI element named in the Jira issue "
+            "is explicitly mentioned in that section's text. "
+            "Do not suggest changes based on section topic alone."
+        )
+
+    parts: list[str] = []
+    parts.append(
+        "**Exercise steps** (clearly instructional — update if the specific changed "
+        "item is relevant):\n"
+        + "\n".join(f"- {h}" for h in instructional)
+    )
+    parts.append(
+        "**Non-exercise sections** (may be conceptual or UI-focused — read the "
+        "section body before suggesting changes. Only suggest a change if the "
+        "specific transformer, dialog, parameter, or UI element named in the Jira "
+        "issue is explicitly present in that section's text):\n"
+        + "\n".join(f"- {h}" for h in conceptual)
+    )
+
+    return "\n\n".join(parts)
 
 
 def _infer_to_version(group: list[dict]) -> str:

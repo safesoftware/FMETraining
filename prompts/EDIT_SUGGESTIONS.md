@@ -13,6 +13,10 @@ The lesson below was written for FME version **{{FROM_VERSION}}** and must be up
 - **Learning Path**: {{LEARNING_PATH}}
 - **FME Version**: {{FROM_VERSION}} → {{TO_VERSION}}
 
+### Section Classification
+
+{{SECTION_CLASSIFICATION}}
+
 ## Full Lesson HTML
 
 The complete HTML source of the lesson is provided below. Your `original_text` values must be exact substrings of this HTML.
@@ -54,6 +58,8 @@ Each change must include:
 
 **Rules:**
 - Only suggest changes that are directly supported by the Jira issues listed above.
+- **Specificity rule:** If a Jira issue names a specific transformer, data format, dialog, or UI element, only suggest changes to sections of the lesson where that exact item is explicitly mentioned in the text. Do not suggest changes based on topic proximity alone — for example, do not edit a section about coordinate systems simply because the Jira issue involves a coordinate-related parameter if that parameter is not named in that section.
+- **Section classification rule:** Refer to the Section Classification above. For non-exercise sections (or lessons with no exercise steps at all), read the section body before deciding whether to suggest a change. Only suggest a change to a non-exercise section if the specific transformer, dialog, parameter, or UI element named in the Jira issue is explicitly present in that section's text — not merely implied by the section's topic.
 - `original_text` must be findable via a simple string search in the lesson HTML. Prefer full sentences or short paragraphs. Do not use partial words or mid-sentence fragments.
 - If the lesson already correctly describes the new behavior, do not suggest a change.
 - If a change is too complex to represent as a simple find-and-replace (e.g., a whole section needs restructuring), use `type: "add"` or `type: "delete"` with a clear explanation.
