@@ -31,6 +31,12 @@ The following issues have been assessed as medium or high likelihood of requirin
 
 ---
 
+## Editorial Guidelines
+
+{{EDITORIAL_GUIDELINES}}
+
+---
+
 ## Your Task
 
 Produce a list of specific text edits and screenshot update notes for this lesson.
@@ -42,7 +48,7 @@ Each change must include:
 - `type`: one of `"change"`, `"add"`, or `"delete"`
 - `heading`: the exact text of the nearest `<h2>` or `<h3>` heading above this content (copy it verbatim from the HTML)
 - `original_text`: for `"change"` and `"delete"` — an exact substring from the lesson HTML that uniquely identifies the text to be replaced or removed. This must be at least one complete sentence or HTML element. Do NOT paraphrase — copy the text verbatim from the HTML above.
-- `suggested_text`: for `"change"` and `"add"` — the full replacement or new text (as plain text, not HTML). For `"add"`, describe what should be inserted and where.
+- `suggested_text`: for `"change"` — the full replacement text as plain text (no HTML tags). For `"add"` — the complete, ready-to-insert HTML for the new content.
 - `explanation`: a concise explanation of why this change is needed, referencing the specific Jira issue(s)
 - `issue_keys`: array of Jira issue keys that motivated this change
 
@@ -51,6 +57,7 @@ Each change must include:
 - `original_text` must be findable via a simple string search in the lesson HTML. Prefer full sentences or short paragraphs. Do not use partial words or mid-sentence fragments.
 - If the lesson already correctly describes the new behavior, do not suggest a change.
 - If a change is too complex to represent as a simple find-and-replace (e.g., a whole section needs restructuring), use `type: "add"` or `type: "delete"` with a clear explanation.
+- For `type: "add"`, `suggested_text` must be the complete, ready-to-insert HTML — never a description of what to write. If adding a Note or "New for FME X.Y" note, use the exact callout HTML templates from the Editorial Guidelines above.
 - Do not suggest changes to heading text or image `src` attributes.
 - **Before suggesting a `type: "add"` change, verify the `suggested_text` does not already appear in the lesson HTML.** Search the HTML above for the proposed addition. If the content is already present, do not suggest adding it — omit that entry entirely.
 

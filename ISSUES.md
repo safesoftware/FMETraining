@@ -32,9 +32,6 @@
 
 - 56. **Exercise version strings (e.g., "FME Workbench 2024.2") are consistently missed.** Fix with two layers: (1) Add explicit instruction to `EDIT_SUGGESTIONS.md`: *"Search all exercise steps for occurrences of the FROM_VERSION string. If found (e.g., 'Open FME Workbench 2024.2'), always generate a `change` edit to replace it with TO_VERSION. If no exercise step contains the FME version string, note this as a potentially missing instruction."* (2) Add a post-processing pass in `edit_suggestions.py` that scans lesson HTML for the FROM_VERSION string in exercise-step elements and auto-inserts a change if the LLM missed it.
 
-- 55. **No editorial guidance on when to add a callout note vs. edit in place vs. remove outdated content.** `prompts/EDITORIAL_GUIDELINES.md` has been written (via the `/editorial-guidelines` skill interview). Next step: inject it into `EDIT_SUGGESTIONS.md` via a new `{{EDITORIAL_GUIDELINES}}` placeholder, populated in `edit_suggestions.py/_build_prompt()` by reading that file.
-
-- 54. **"Add a note" edit suggestions don't include the actual note text.** Now that `prompts/EDITORIAL_GUIDELINES.md` contains Note and New-note HTML templates, the remaining fix is: add a rule to `EDIT_SUGGESTIONS.md`: *"For `type: 'add'`, `suggested_text` must be the complete, ready-to-insert HTML — never a description of what to write. Use the callout templates in the Editorial Guidelines when inserting a Note or New note."*
 
 - 53. **Generic screenshot alt text makes it impossible for the LLM to identify affected screenshots.** When alt text says "Inspecting points and attributes" instead of naming the window or dialog, the LLM can't connect a UI rename to that screenshot. Short-term fix in `ASSESSMENT.md`: *"Use alt text as the primary description of the image. Only flag a screenshot if its alt text or immediately surrounding text explicitly names the UI element changed by the Jira issue — do not infer from the general section topic."* Long-term: add an optional pipeline step that passes actual images to a multimodal LLM call to generate descriptive alt text for screenshots with generic alt text.
 
@@ -44,6 +41,9 @@
 
 
 # Fixed
+
+- 55. Editorial guidelines documented via the `/editorial-guidelines` skill interview and written to `prompts/EDITORIAL_GUIDELINES.md`. Injected into `EDIT_SUGGESTIONS.md` via `{{EDITORIAL_GUIDELINES}}` placeholder, populated in `edit_suggestions.py/_build_prompt()`.
+- 54. `EDIT_SUGGESTIONS.md` now requires `suggested_text` for `type: "add"` changes to be complete, ready-to-insert HTML using the callout templates from the Editorial Guidelines. Inconsistency in the `suggested_text` field description (previously said "plain text, not HTML" for all types) also corrected.
 
 - 43. Build a browser-based launcher UI so users don't need the CLI. See [memory/issue-43-plan.md](memory/issue-43-plan.md) for the full implementation plan.
 - 50. "Gen Edits" button renamed to "Generate Edit Suggestions"; history "Report" renamed to "View Report".

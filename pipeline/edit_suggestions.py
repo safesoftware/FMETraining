@@ -349,6 +349,10 @@ def _build_prompt(
     if len(lesson_html) > 30_000:
         lesson_html = lesson_html[:30_000] + "\n<!-- [truncated] -->"
 
+    editorial_guidelines = ""
+    if config.EDITORIAL_GUIDELINES_PATH.exists():
+        editorial_guidelines = config.EDITORIAL_GUIDELINES_PATH.read_text(encoding="utf-8")
+
     substitutions = {
         "LESSON_NAME": first.get("lesson_name", ""),
         "COURSE_CANONICAL": first.get("course_canonical", ""),
@@ -357,6 +361,7 @@ def _build_prompt(
         "TO_VERSION": _infer_to_version(group),
         "LESSON_HTML": lesson_html,
         "ISSUES_LIST": issues_list,
+        "EDITORIAL_GUIDELINES": editorial_guidelines,
     }
 
     prompt = template
