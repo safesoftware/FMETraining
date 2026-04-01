@@ -76,6 +76,10 @@ Use your knowledge of FME (transformers, readers/writers, UI, workflows) to reas
 - A change to the "Workspace Parameters" Navigator section should NOT flag a lesson just because it configures workspace settings in general.
 If the specific item named in the issue is absent from the lesson content, assign `none` or `low`.
 
+**Library/registry additions rule:** When a Jira issue adds a new specific item to a library or registry — for example, adding support for a new coordinate system (EPSG:9333, HTRS96/TM), a new file format, or a new transformer variant — this does NOT affect a lesson that teaches the general concept of working with that category. Adding a new coordinate system to FME's CS library does not change the UI or workflow for setting or detecting coordinate systems; a student following a lesson about coordinate systems in general will never encounter that specific EPSG code unless the lesson's exercises or examples explicitly use it. Assign `none` for these cases unless the specific item added is named in the lesson's UI strings, headings, or exercise steps.
+
+**Conceptual-only lesson rule:** If a lesson has no exercise steps (the Exercise Steps field above is empty or "(no exercise steps)"), the bar for `medium` or `high` is higher. A `medium` rating requires the issue to change something explicitly discussed in the lesson's conceptual text — a renamed concept, a changed definition, or a UI element that the lesson describes. Vague relevance ("students might encounter this") is not sufficient. Assign `low` or `none` if the issue changes something not directly taught in the lesson's text.
+
 **Update likelihood scale:**
 
 - `none`: The issue has no relevance to this lesson's product area, content, or UI. No update needed.

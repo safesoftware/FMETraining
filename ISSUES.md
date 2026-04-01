@@ -2,6 +2,8 @@
 
 ## App / UX
 
+- 70. **Improve UX of re-running/continuing pipeline runs.** To continue or re-run a pipeline run, you currently have to select the exact lessons/courses/LPs first, then select the run to continue in Options. It would be better if you could instead re-run runs from the Run History window. Maybe a Re-Run or Continue button that would pre-populate the Configure Run window? Something like that. Please fix that and allow for both continuing and re-running.
+
 - 68. **Anchor-link deep linking between the Lesson Edits and Recommendations tabs.** Clicking "↗ View recommendation card" from an edit tooltip navigates away with no easy way to return. Fix: introduce a URL query-parameter deep-link scheme in `report.html`. Each recommendation card gets `id="card-{REC_ID}"` and each track-changes element gets `id="le-change-{CHANGE_ID}"`. The "view recommendation card" link opens with `?tab=recommendations&card=REC_ID` (or in a new browser tab). On page load, `report.html` reads these params and jumps to the correct tab, page, and element. The reverse direction — card's edit-suggestion list to a specific change — uses `?tab=lesson-edits&lesson=LESSON_ID&change=CHANGE_ID`. Ties into issues 51 and 67.
 
 - 67. **Jumping to a recommendation card from an edit link is broken for cards on page > 1 or hidden by active filters.** `leGoToChange()` in `report.html` calls `scrollToCard()` without ensuring the card is visible. Fix: before scrolling, (1) navigate to the page containing the target card, and (2) reset or update any active filters that would hide it. The query-param scheme from issue 68 can make this robust by encoding the correct page and filter state in the link itself.
