@@ -1,0 +1,87 @@
+<h2 id="learning-components">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Navigate the FME Flow interface.</li>
+<li>Start and trigger an FME Flow Automation.&nbsp;</li>
+<li>Open and use an FME Flow Workspace App.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. If you don't want to import this project on your own FME Flow, you can just read along; however, later exercises in the learning path will require importing projects.&nbsp;</p>
+<!-- BEGIN: Reusable Custom Expandable Section -->
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<details class="custom-details">
+<summary>Expand for Steps to Import the Starting Project</summary>
+<div>1) Download the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-with-fme-flow--starting-project.fsproject" target="_blank" rel="noopener">starting project</a> and the<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy_workflows_with_fme_flow.jceks" target="_blank" rel="noopener"> encryption key</a>.</div>
+<div>2) Upload the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy_workflows_with_fme_flow.jceks" target="_blank" rel="noopener">deploy_workflows_with_fme_flow.jceks</a> encryption key to your FME Flow. This must be done by an fmesuperuser who has permission to System Configuration &gt; Security &gt; System Encryption. For more information, see our documentation on <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Encryption.htm" target="_blank" rel="noopener">System Encryption</a>.</div>
+<div>3) Navigate to your FME Flow and open Projects. Click Import.&nbsp;</div>
+<div><img src="images/1748467877735.jpg" alt="" width="979" height="302" /></div>
+<div>4) Upload deploy-workflows-with-fme-flow--starting-project.fsproject as the Project File and then click Import.&nbsp;</div>
+<div><img src="images/1748468057405.jpg" alt="" width="651" height="467" /></div>
+<div>5) The first step is Preview Content, where you may choose not to overwrite existing items. If all your items are New Items, you don't need to worry about overwriting existing items. Click Continue.</div>
+<div><img src="images/1748468960290.jpg" alt="" width="716" height="469" /></div>
+<div>6) The next step is to select connections and tokens to import. By default, they are not selected to be imported. <strong>Select both the FME Training PostGIS Database Connection and the Workspace App - Data Validation Token to import.</strong> If these aren't imported, the workflows will not run successfully. Click Continue.&nbsp;</div>
+<div><img src="images/1748469141379.jpg" alt="" width="737" height="336" /></div>
+<div>7) The Resolve Owners step only allows you to reassign the project contents to a different user if the admin user doesn't exist on your FME Flow. Click Continue and then click Import Project from the Additional Options step. The project will import and display its import status from the same page.</div>
+<div><img src="images/1748469576862.jpg" alt="" width="294" height="108" /></div>
+<div>If the project import failed, check that you uploaded the encryption key and repeat the process. If it still fails, contact us at train@safe.com.&nbsp;</div>
+</details>
+<h2>Explore FME Flow Apps &amp; Automations</h2>
+<p>In this lesson, you'll explore the power of FME Flow through a guided, hands-on tour. You'll use FME Flow's two most popular features - FME Flow Apps and Automations.</p>
+<p><img src="images/automations.png" width="20" /> &nbsp;<strong>Automations</strong> allow workspaces to run automatically without manual intervention. The automation scenario you will explore performs a nightly database update set to run a workspace.&nbsp;</p>
+<p><img src="images/flow_apps.png" width="20" /> &nbsp;<strong>Flow Apps</strong> turn FME workspaces into user-friendly web apps. You'll explore and use a Flow App that performs validation on a CAD dataset and returns a report of features that passed or failed validation to you.&nbsp;</p>
+<h2>Automate Database Updates</h2>
+<p>For the first part of this tour, you will start and trigger an Automation that runs a workspace to perform a database update. While reading and writing to any of FME's <a href="https://fme.safe.com/fme-in-action/integrations/?_alphabetical_sort=desc&amp;_paged=54" target="_self">many supported formats</a>, this workspace reads Parks data from our FME Training PostGIS database and writes it to a SQLite database on FME Flow. This Automation runs on a schedule every 15 minutes to keep the database up to date with the latest data.&nbsp;</p>
+<p class="" data-start="1700" data-end="1749">From the FME Flow Dashboard, use the side menu to select Automations and then navigate to the <strong>Parks Data Sync</strong> Automation.&nbsp;</p>
+<p><img src="images/1750531250381.gif" alt="" /></p>
+<p class="" data-start="1753" data-end="1784">This Automation has two nodes - a <strong>Schedule Trigger</strong> to instigate the workflow and a <strong>Run a Workspace Action</strong> that performs the database update.&nbsp;</p>
+<p><img src="images/1750531788623.gif" alt="" /></p>
+<p class="" data-start="1788" data-end="1815">The Automation runs on a 15-minute schedule. Click Refresh to see the updated event counts to reflect the workflow runs.&nbsp;</p>
+<p><img src="images/1750532498491.gif" alt="" /></p>
+<p class="" data-start="1819" data-end="1879">Now that the Automation is running, check the timestamp for the SQLite database in Resources &gt; Data &gt; Output to ensure the Automation has updated the data.&nbsp;</p>
+<p><img src="images/1747779975901.gif" alt="" width="1419" height="643" /></p>
+<p>Now you&rsquo;ve inspected a running Automation and seen the updated output in Resources, you&rsquo;ve experienced the value of FME Flow Automations firsthand. With just a few clicks, you ran a fully automated process that keeps data current&mdash;no manual intervention needed. This is the power of FME Flow: it takes repetitive, time-sensitive tasks and turns them into reliable, hands-off workflows that run exactly when and how you need them to. Whether you're managing data updates, syncing systems, or triggering reports, Automations help your organization work smarter, not harder.</p>
+<h2 data-start="1949" data-end="2093">Access No-Code Data Integration Apps</h2>
+<p class="" data-start="2151" data-end="2284">Next, you&rsquo;ll explore an App that lets users upload CAD files and validate their contents. You don't need any FME experience to access FME functionality using Flow Apps.&nbsp;</p>
+<p class="" data-start="2151" data-end="2284">First, use the side menu to navigate to Flow Apps and open the <strong>Data Validation App</strong>. The App opens directly in the web browser.&nbsp;</p>
+<p><img src="images/1747781659869.gif" alt="" width="1406" height="637" /></p>
+<p>This App provides some sample data to download by clicking the link. Then<span style="margin: 0px; padding: 0px;">, upload the&nbsp;<strong>bad_data.dwg</strong> from the file system to the App</span>.&nbsp;</p>
+<p><img src="images/1747850257076.gif" alt="" width="1410" height="620" /></p>
+<p>Now that you have your data input set, <strong>Run</strong> the App.&nbsp;</p>
+<p><img src="images/1747856183033.gif" alt="" width="1415" height="622" /></p>
+<p>Once the workspace processes, the app presents the HTML report to you directly in the web browser. It features a count of failed validation features, an interactive data map, and a table displaying why each failed validation.&nbsp;</p>
+<p><img src="images/1747856904217.gif" alt="" width="1415" height="622" /></p>
+<p>Lastly, you may repeat running the App with the good_data.dwg file to see the resulting HTML report for data that passes validation.&nbsp;</p>
+<p>Now that you&rsquo;ve submitted CAD data through the Flow App and reviewed the validation report in your browser, you&rsquo;ve seen how FME Flow can turn complex data checks into a fast, user-friendly experience. This app runs a workspace behind the scenes to catch geometry issues, missing attributes, and other common CAD errors&mdash;then instantly delivers a clear, easy-to-read report. With FME Flow Apps, anyone can perform the validation processes that once required specialized software and manual effort, anytime from a web page. It&rsquo;s a powerful way to ensure data quality while saving time and reducing back-and-forth.</p>
+<p>&nbsp;</p>
