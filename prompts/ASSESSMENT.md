@@ -101,5 +101,6 @@ If `screenshots_need_retaking` is true, list each affected screenshot as an obje
 - `src`: the image filename (from the images list, e.g. `images/1234567890.png`)
 - `explanation`: a specific description of what will look different in that screenshot and what update needs to be made (e.g. "The PointOnRasterValueExtractor dialog now shows a Rejected port — retake showing the new port visible on the transformer")
 Leave the array empty if no screenshots are affected.
+- **Never include `safe_note.png`** in `affected_screenshots`. This is a decorative callout icon and never depicts interactive FME UI.
 
 Respond only with valid JSON matching the required schema. Do not include any explanation or text outside the JSON.

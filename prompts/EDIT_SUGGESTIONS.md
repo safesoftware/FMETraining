@@ -68,6 +68,7 @@ Each change must include:
 - For `type: "add"`, `suggested_text` must be the complete, ready-to-insert HTML — never a description of what to write. If adding a Note or "New for FME X.Y" note, use the exact callout HTML templates from the Editorial Guidelines above.
 - Do not suggest changes to heading text or image `src` attributes.
 - **Before suggesting a `type: "add"` change, verify the `suggested_text` does not already appear in the lesson HTML.** Search the HTML above for the proposed addition. If the content is already present, do not suggest adding it — omit that entry entirely.
+- **Version string updates:** Search the entire lesson HTML for every occurrence of `{{FROM_VERSION}}` in text content. For each occurrence found, generate a `change` edit replacing `{{FROM_VERSION}}` with `{{TO_VERSION}}`. Do not skip any occurrence — generate one entry per occurrence.
 
 ### For screenshot updates (`screenshot_updates` array):
 
@@ -77,6 +78,7 @@ Each entry must include:
 - `issue_keys`: array of Jira issue keys that require this screenshot to be updated
 
 Only include screenshots that will look visibly different in the new version (changed dialogs, renamed buttons, new ports, new icons, layout changes). Do not include screenshots for behind-the-scenes behavior changes with no visual difference.
+- **Never include `safe_note.png`** in screenshot updates. This is a decorative icon used in callout boxes and never depicts interactive FME UI.
 
 ### If no changes are needed
 

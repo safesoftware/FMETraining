@@ -246,7 +246,8 @@ def main() -> int:
                 return 1
             with open(rp, encoding="utf-8") as f:
                 recs = json.load(f)
-        run_edit_suggestions(run_id, recs, output_dir, dry_run=args.dry_run)
+        run_edit_suggestions(run_id, recs, output_dir, dry_run=args.dry_run,
+                             to_version=job.get("to_version", ""))
         if not args.dry_run:
             mark_step_complete(run_id, 6, output_dir)
             # Regenerate the report so EDIT_PLANS_FILE is populated in the HTML

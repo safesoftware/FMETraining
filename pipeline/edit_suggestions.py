@@ -102,6 +102,7 @@ def run_edit_suggestions(
     recommendations: dict,
     output_dir: Path,
     dry_run: bool = False,
+    to_version: str = "",
 ) -> dict:
     """
     Generate edit plans for all lessons with medium/high assessments.
@@ -111,11 +112,19 @@ def run_edit_suggestions(
         recommendations: Recommendations dict from Step 3-4.
         output_dir:      Artifacts directory.
         dry_run:         If True, print counts but make no API calls.
+        to_version:      The target FME version from the job config (e.g. "2026.1").
+                         Must be provided; the pipeline validates this before calling here.
 
     Returns:
         The edit plans dict.
     """
     print("\n[Step 6] Generating edit suggestions...")
+
+    if not to_version:
+        raise ValueError(
+            "to_version is required for edit suggestions. "
+            "Ensure update-job.json contains 'to_version'."
+        )
 
     if not config.EDIT_SUGGESTIONS_PROMPT_PATH.exists():
         raise FileNotFoundError(
@@ -125,10 +134,6 @@ def run_edit_suggestions(
     template = config.EDIT_SUGGESTIONS_PROMPT_PATH.read_text(encoding="utf-8")
 
     assessments = recommendations.get("assessments", [])
-    to_version = str(recommendations.get("run_id", ""))  # fallback; real value from manifest
-    # Try to get to_version from the first assessment's fix_versions, or just use a placeholder.
-    # The actual to_version comes from the job; we pass it via the manifest.
-    # For the prompt we will extract it from the assessments themselves if needed.
 
     # Filter to medium+high only
     relevant = [
@@ -197,7 +202,7 @@ def run_edit_suggestions(
         print(f"  Resuming: {skipped} lessons already processed, {len(lessons_to_run)} remaining.")
 
     new_plans = asyncio.run(
-        _plan_all(lessons_to_run, template, out_path, existing_plans, issue_descriptions)
+        _plan_all(lessons_to_run, template, out_path, existing_plans, issue_descriptions, to_version)
     )
 
     all_plans = existing_plans + new_plans
@@ -228,6 +233,7 @@ async def _plan_all(
     out_path: Path,
     existing: list[dict],
     issue_descriptions: dict[str, str],
+    to_version: str = "",
 ) -> list[dict]:
     if not lessons:
         return []
@@ -239,7 +245,7 @@ async def _plan_all(
 
     async def plan_one(lesson_id: str, group: list[dict]) -> dict | None:
         async with semaphore:
-            prompt = _build_prompt(lesson_id, group, template, issue_descriptions)
+            prompt = _build_prompt(lesson_id, group, template, issue_descriptions, to_version)
             if prompt is None:
                 return None
             return await _call_openai(client, lesson_id, group, prompt)
@@ -296,6 +302,19 @@ async def _call_openai(
             # Post-processing: propagate rename pairs to all occurrences (issues 51/56)
             filtered_changes = _propagate_renames(filtered_changes, lesson_html, lesson_id)
 
+            # Post-processing: ensure FROM_VERSION → TO_VERSION changes exist (issue 56)
+            from_version = first.get("version", "")
+            to_version = first.get("_to_version", "")
+            filtered_changes = _ensure_version_changes(
+                filtered_changes, lesson_html, lesson_id, from_version, to_version
+            )
+
+            # Post-processing: filter safe_note.png from screenshot updates (issue 57)
+            screenshot_updates = [
+                su for su in parsed.get("screenshot_updates", [])
+                if "safe_note.png" not in (su.get("src") or "")
+            ]
+
             # Assign stable change_ids based on lesson+index
             for i, change in enumerate(filtered_changes):
                 change["change_id"] = hashlib.md5(
@@ -313,7 +332,7 @@ async def _call_openai(
                 "issues_addressed": [a["issue_key"] for a in group],
                 "lesson_html": first.get("_lesson_html", ""),
                 "changes": filtered_changes,
-                "screenshot_updates": parsed.get("screenshot_updates", []),
+                "screenshot_updates": screenshot_updates,
                 "generated_at": datetime.now(tz=timezone.utc).isoformat(),
                 "prompt_tokens": response.usage.prompt_tokens if response.usage else None,
                 "completion_tokens": response.usage.completion_tokens if response.usage else None,
@@ -341,6 +360,7 @@ def _build_prompt(
     group: list[dict],
     template: str,
     issue_descriptions: dict[str, str] | None = None,
+    to_version: str = "",
 ) -> str | None:
     """Build the EDIT_SUGGESTIONS prompt for a lesson group."""
     first = group[0]
@@ -358,8 +378,9 @@ def _build_prompt(
 
     lesson_html = html_path.read_text(encoding="utf-8")
 
-    # Store on the first assessment so _call_openai can embed it in the output
+    # Store on the first assessment so _call_openai can access them
     first["_lesson_html"] = lesson_html
+    first["_to_version"] = to_version
 
     # Build issues list
     issue_descriptions = issue_descriptions or {}
@@ -391,7 +412,7 @@ def _build_prompt(
         "COURSE_CANONICAL": first.get("course_canonical", ""),
         "LEARNING_PATH": first.get("learning_path", ""),
         "FROM_VERSION": first.get("version", ""),
-        "TO_VERSION": _infer_to_version(group),
+        "TO_VERSION": first["_to_version"],
         "LESSON_HTML": lesson_html,
         "ISSUES_LIST": issues_list,
         "EDITORIAL_GUIDELINES": editorial_guidelines,
@@ -488,16 +509,6 @@ def _build_section_classification(lesson_html: str) -> str:
 
     return "\n\n".join(parts)
 
-
-def _infer_to_version(group: list[dict]) -> str:
-    """Best-effort: use the most common fix_version across the group."""
-    versions: list[str] = []
-    for a in group:
-        versions.extend(a.get("fix_versions", []))
-    if not versions:
-        return "the new version"
-    # Return the most frequently mentioned version
-    return max(set(versions), key=versions.count)
 
 
 # ---------------------------------------------------------------------------
@@ -621,6 +632,78 @@ def _propagate_renames(
 
     if new_changes:
         print(f"\n  [rename-propagation] Auto-added {len(new_changes)} change(s) for {lesson_id}")
+
+    return changes + new_changes
+
+
+# ---------------------------------------------------------------------------
+# Version string post-processing (issue 56)
+# ---------------------------------------------------------------------------
+
+def _ensure_version_changes(
+    changes: list[dict],
+    lesson_html: str,
+    lesson_id: str,
+    from_version: str,
+    to_version: str,
+) -> list[dict]:
+    """
+    Scan lesson HTML for any occurrence of from_version in text content that is
+    not already covered by an existing change, and auto-generate a change for it.
+    """
+    import re
+
+    if not from_version or not to_version or from_version == to_version:
+        return changes
+
+    new_changes: list[dict] = []
+
+    # Find positions of from_version in text content (not tag attributes)
+    all_positions: list[int] = []
+    for m in re.finditer(re.escape(from_version), lesson_html):
+        pre = lesson_html[:m.start()]
+        if pre.rfind("<") > pre.rfind(">"):
+            continue  # inside a tag attribute
+        all_positions.append(m.start())
+
+    if not all_positions:
+        return changes
+
+    # Determine which positions are already covered by existing changes
+    # (same sequential-replace logic as _propagate_renames)
+    uncovered = list(all_positions)
+    for c in changes:
+        c_orig = c.get("original_text", "")
+        c_sugg = c.get("suggested_text", "")
+        if from_version not in c_orig or to_version not in c_sugg:
+            continue
+        m = re.search(re.escape(c_orig), lesson_html)
+        if not m:
+            continue
+        for i, pos in enumerate(uncovered):
+            if m.start() <= pos < m.end():
+                uncovered.pop(i)
+                break
+
+    for pos in uncovered:
+        new_change_id = hashlib.md5(
+            f"{lesson_id}:version:{from_version}:{pos}".encode()
+        ).hexdigest()[:8]
+        new_changes.append({
+            "change_id": new_change_id,
+            "type": "change",
+            "heading": "",
+            "original_text": from_version,
+            "suggested_text": to_version,
+            "explanation": (
+                f"Version string \"{from_version}\" should be updated to \"{to_version}\" "
+                f"(auto-detected; not covered by any LLM-generated change)."
+            ),
+            "issue_keys": [],
+        })
+
+    if new_changes:
+        print(f"\n  [version-strings] Auto-added {len(new_changes)} change(s) for {lesson_id}")
 
     return changes + new_changes
 
