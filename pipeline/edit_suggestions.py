@@ -23,7 +23,7 @@ from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm as atqdm
 
 from pipeline import config
-from pipeline.utils import edit_plans_path, recommendations_path
+from pipeline.utils import changelog_path, edit_plans_path, recommendations_path
 
 
 # ---------------------------------------------------------------------------
@@ -167,6 +167,22 @@ def run_edit_suggestions(
             "lessons": [],
         }
 
+    # Load Jira issue descriptions from the changelog for richer prompt context
+    issue_descriptions: dict[str, str] = {}
+    cl_path = changelog_path(run_id, output_dir)
+    if cl_path.exists():
+        try:
+            with open(cl_path, encoding="utf-8") as f:
+                cl_data = json.load(f)
+            for issue in cl_data.get("issues", []):
+                key = issue.get("issue_key") or issue.get("key", "")
+                desc = (issue.get("description") or "").strip()
+                if key and desc:
+                    issue_descriptions[key] = desc
+            print(f"  Loaded descriptions for {len(issue_descriptions)} Jira issues.")
+        except Exception as e:
+            print(f"  WARNING: could not load changelog for descriptions: {e}")
+
     out_path = edit_plans_path(run_id, output_dir)
     existing_plans, skip_set = _load_existing(out_path)
 
@@ -181,7 +197,7 @@ def run_edit_suggestions(
         print(f"  Resuming: {skipped} lessons already processed, {len(lessons_to_run)} remaining.")
 
     new_plans = asyncio.run(
-        _plan_all(lessons_to_run, template, out_path, existing_plans)
+        _plan_all(lessons_to_run, template, out_path, existing_plans, issue_descriptions)
     )
 
     all_plans = existing_plans + new_plans
@@ -211,6 +227,7 @@ async def _plan_all(
     template: str,
     out_path: Path,
     existing: list[dict],
+    issue_descriptions: dict[str, str],
 ) -> list[dict]:
     if not lessons:
         return []
@@ -222,7 +239,7 @@ async def _plan_all(
 
     async def plan_one(lesson_id: str, group: list[dict]) -> dict | None:
         async with semaphore:
-            prompt = _build_prompt(lesson_id, group, template)
+            prompt = _build_prompt(lesson_id, group, template, issue_descriptions)
             if prompt is None:
                 return None
             return await _call_openai(client, lesson_id, group, prompt)
@@ -265,7 +282,8 @@ async def _call_openai(
 
             # Post-processing: filter out 'add' changes whose suggested_text
             # is already present in the lesson HTML (issue 33)
-            lesson_html_lower = first.get("_lesson_html", "").lower()
+            lesson_html = first.get("_lesson_html", "")
+            lesson_html_lower = lesson_html.lower()
             filtered_changes = []
             for change in parsed.get("changes", []):
                 if change.get("type") == "add":
@@ -274,6 +292,9 @@ async def _call_openai(
                         print(f"\n  [filter] Skipping already-present 'add' in {lesson_id}: {sugg[:60]!r}")
                         continue
                 filtered_changes.append(change)
+
+            # Post-processing: propagate rename pairs to all occurrences (issues 51/56)
+            filtered_changes = _propagate_renames(filtered_changes, lesson_html, lesson_id)
 
             # Assign stable change_ids based on lesson+index
             for i, change in enumerate(filtered_changes):
@@ -312,10 +333,14 @@ async def _call_openai(
 # Prompt building
 # ---------------------------------------------------------------------------
 
+_MAX_DESCRIPTION_CHARS = 1200
+
+
 def _build_prompt(
     lesson_id: str,
     group: list[dict],
     template: str,
+    issue_descriptions: dict[str, str] | None = None,
 ) -> str | None:
     """Build the EDIT_SUGGESTIONS prompt for a lesson group."""
     first = group[0]
@@ -337,12 +362,19 @@ def _build_prompt(
     first["_lesson_html"] = lesson_html
 
     # Build issues list
+    issue_descriptions = issue_descriptions or {}
     issues_parts = []
     for a in group:
+        key = a["issue_key"]
+        desc = issue_descriptions.get(key, "")
+        if len(desc) > _MAX_DESCRIPTION_CHARS:
+            desc = desc[:_MAX_DESCRIPTION_CHARS] + "…"
+        desc_block = f"\n- **Jira Description**: {desc}" if desc else ""
         issues_parts.append(
-            f"### {a['issue_key']}: {a.get('issue_summary', '')}\n"
+            f"### {key}: {a.get('issue_summary', '')}\n"
             f"- **Update likelihood**: {a.get('update_likelihood', '')}\n"
             f"- **Assessment**: {a.get('justification', '')}"
+            f"{desc_block}"
         )
     issues_list = "\n\n".join(issues_parts)
 
@@ -466,6 +498,131 @@ def _infer_to_version(group: list[dict]) -> str:
         return "the new version"
     # Return the most frequently mentioned version
     return max(set(versions), key=versions.count)
+
+
+# ---------------------------------------------------------------------------
+# Rename propagation post-processing (issue 56/fix-1)
+# ---------------------------------------------------------------------------
+
+def _extract_rename_pair(plain_orig: str, plain_sugg: str) -> tuple[str, str]:
+    """
+    Find the single diverging substring between two similar strings.
+    Returns (old_term, new_term), or ("", "") if no clean pair is found.
+    """
+    # Common prefix
+    prefix_len = 0
+    for i in range(min(len(plain_orig), len(plain_sugg))):
+        if plain_orig[i] == plain_sugg[i]:
+            prefix_len += 1
+        else:
+            break
+
+    # Common suffix (must not overlap the prefix)
+    suffix_len = 0
+    max_suffix = min(len(plain_orig), len(plain_sugg)) - prefix_len
+    for i in range(1, max_suffix + 1):
+        if plain_orig[-i] == plain_sugg[-i]:
+            suffix_len += 1
+        else:
+            break
+
+    old_term = plain_orig[prefix_len: len(plain_orig) - suffix_len if suffix_len else len(plain_orig)].strip()
+    new_term = plain_sugg[prefix_len: len(plain_sugg) - suffix_len if suffix_len else len(plain_sugg)].strip()
+    return old_term, new_term
+
+
+def _propagate_renames(
+    changes: list[dict],
+    lesson_html: str,
+    lesson_id: str,
+) -> list[dict]:
+    """
+    For each 'change' edit, search the lesson HTML for additional occurrences
+    of the same original_text not already covered by an existing change.
+    Auto-generates changes for any missed occurrences.
+    """
+    import re
+
+    seen_pairs: set[tuple[str, str]] = set()
+    new_changes: list[dict] = []
+
+    for change in changes:
+        if change.get("type") != "change":
+            continue
+
+        orig = change.get("original_text", "")
+        sugg = change.get("suggested_text", "")
+        if not orig or not sugg:
+            continue
+
+        # Strip HTML tags to get the plain search term
+        plain_orig = re.sub(r"<[^>]+>", "", orig).strip()
+        plain_sugg = sugg.strip()
+        if not plain_orig or plain_orig == plain_sugg:
+            continue
+
+        # Skip sentences — long text is unique by nature and won't repeat
+        if len(plain_orig) > 80:
+            continue
+
+        # Only process each (orig, sugg) pair once even if multiple LLM changes
+        # encode the same rename
+        if (plain_orig, plain_sugg) in seen_pairs:
+            continue
+        seen_pairs.add((plain_orig, plain_sugg))
+
+        # Find all occurrences of plain_orig in lesson HTML (not inside tag attributes)
+        all_positions: list[int] = []
+        for m in re.finditer(re.escape(plain_orig), lesson_html):
+            pre = lesson_html[:m.start()]
+            if pre.rfind("<") > pre.rfind(">"):
+                continue  # inside a tag attribute
+            all_positions.append(m.start())
+
+        if not all_positions:
+            continue
+
+        # Determine which positions are already covered by existing changes.
+        # Each covering change removes at most one uncovered occurrence from the list
+        # (matching report.html's sequential string.replace behaviour).
+        uncovered = list(all_positions)
+        for c in changes:
+            c_orig = c.get("original_text", "")
+            c_sugg = c.get("suggested_text", "")
+            if plain_orig not in c_orig or plain_sugg not in c_sugg:
+                continue
+            m = re.search(re.escape(c_orig), lesson_html)
+            if not m:
+                continue
+            # Remove the earliest uncovered position within this change's span
+            for i, pos in enumerate(uncovered):
+                if m.start() <= pos < m.end():
+                    uncovered.pop(i)
+                    break
+
+        for pos in uncovered:
+            new_change_id = hashlib.md5(
+                f"{lesson_id}:rename:{plain_orig}:{pos}".encode()
+            ).hexdigest()[:8]
+
+            new_changes.append({
+                "change_id": new_change_id,
+                "type": "change",
+                "heading": change.get("heading", ""),
+                "original_text": plain_orig,
+                "suggested_text": plain_sugg,
+                "explanation": (
+                    f"Additional occurrence of \"{plain_orig}\" → \"{plain_sugg}\" "
+                    f"(auto-detected; same rename as change {change['change_id']}). "
+                    f"{change.get('explanation', '')}"
+                ),
+                "issue_keys": change.get("issue_keys", []),
+            })
+
+    if new_changes:
+        print(f"\n  [rename-propagation] Auto-added {len(new_changes)} change(s) for {lesson_id}")
+
+    return changes + new_changes
 
 
 # ---------------------------------------------------------------------------

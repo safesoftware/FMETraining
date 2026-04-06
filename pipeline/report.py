@@ -179,6 +179,8 @@ header .meta {{ font-size: 0.8rem; opacity: 0.8; }}
 /* Card highlight animation (cross-tab jump) */
 @keyframes card-flash {{ 0%,100% {{ background:#fff; }} 50% {{ background:#fef08a; }} }}
 .card-highlight {{ animation: card-flash 1s ease 2; }}
+/* Highlight the originating edit suggestion link when jumping from a change popup */
+.from-change-highlight {{ background:#fef3c7; border-radius:3px; padding:1px 4px; font-weight:600; }}
 /* Status filter chips */
 .status-filters {{ display: flex; gap: 8px; align-items: center; }}
 .status-filters label {{ display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 0.85rem; }}
@@ -363,6 +365,12 @@ function getStatus(rec_id) {{
   return statusMap[rec_id] || 'active';
 }}
 
+// Deep-link coordination: wait for both data sources before applying URL params
+let _recsLoaded = false, _plansLoaded = false;
+function leCheckBothLoaded() {{
+  if (_recsLoaded && (_plansLoaded || !EDIT_PLANS_FILE)) leApplyUrlParams();
+}}
+
 // Load data
 fetch(JSON_FILE)
   .then(r => {{
@@ -374,6 +382,8 @@ fetch(JSON_FILE)
     loadStatusMap();
     initFilters();
     applyFilters();
+    _recsLoaded = true;
+    leCheckBothLoaded();
   }})
   .catch(err => {{
     document.getElementById('fetch-error').style.display = 'block';
@@ -603,17 +613,17 @@ function renderCard(a) {{
     }});
     if (relatedChanges.length) {{
       const links = relatedChanges.map(c =>
-        `<li><a href="#" onclick="leGoToChange('${{escHtml(c.lessonId)}}','${{escHtml(c.changeId)}}');return false;">${{escHtml(c.lessonName)}} — ${{escHtml(c.heading || 'change')}}</a></li>`
+        `<li data-change-id="${{escHtml(c.changeId)}}"><a href="?tab=lesson-edits&lesson=${{encodeURIComponent(c.lessonId)}}&change=${{encodeURIComponent(c.changeId)}}" onclick="leNavigateToChange(event,'${{escHtml(c.lessonId)}}','${{escHtml(c.changeId)}}');return false;">${{escHtml(c.lessonName)}} — ${{escHtml(c.heading || 'change')}}</a></li>`
       ).join('');
       updateSuggestionsHtml = `<details class="assessment-section">
         <summary>✏ ${{relatedChanges.length}} edit suggestion${{relatedChanges.length !== 1 ? 's' : ''}}</summary>
-        <div class="section-body"><ul>${{links}}</ul></div>
+        <div class="section-body"><ul class="edit-suggestion-list">${{links}}</ul></div>
       </details>`;
     }}
   }}
 
   return `
-<div class="card" data-rec="${{rid}}" data-status="${{status}}">
+<div class="card" id="card-${{rid}}" data-rec="${{rid}}" data-status="${{status}}">
   <div class="card-header">
     <div>
       <div class="card-title">${{escHtml(a.lesson_name || '')}}</div>
@@ -717,6 +727,8 @@ if (EDIT_PLANS_FILE) {{
     .then(data => {{
       leEditPlans = data.lessons || [];
       lePopulateFilters();
+      _plansLoaded = true;
+      leCheckBothLoaded();
     }})
     .catch(() => {{
       document.getElementById('le-lesson-body').innerHTML =
@@ -785,36 +797,40 @@ function leRenderLesson() {{
   let html = plan.lesson_html || '<p><em>No lesson HTML available.</em></p>';
 
   // Helper: build unified popup markup for a change
-  function makePopup(changeId, explanation, issueKeys, type) {{
+  function makePopup(changeId, explanation, issueKeys, type, lessonId) {{
     const keys = issueKeys || [];
     const issueLinks = keys.map(k =>
       JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener" style="color:#93c5fd">${{k}}</a>` : k
     ).join(', ');
-    // Issue 29: view card link for first issue key
+    // Issues 29/51/68: view card link with pushState navigation
     const cardLink = keys.length
-      ? `<span style="display:block;font-size:0.7rem;margin-top:2px"><a href="#" onclick="leGoToCard('${{keys[0]}}');return false;" style="color:#93c5fd">↗ View recommendation card (${{keys[0]}})</a></span>`
+      ? `<span style="display:block;font-size:0.7rem;margin-top:2px"><a href="?tab=recommendations&card=${{encodeURIComponent(allData.find(a=>a.issue_key===keys[0])?.rec_id||'')}}&from_change=${{encodeURIComponent(changeId)}}" onclick="leNavigateToCard(event,'${{keys[0]}}','${{lessonId||''}}','${{changeId}}');return false;" style="color:#93c5fd">↗ View recommendation card (${{keys[0]}})</a></span>`
+      : '';
+    // Issue 51/66: copy-chip for linking directly to this change
+    const copyChip = (lessonId && type !== 'screenshot')
+      ? `<span class="rec-id" onclick="navigator.clipboard.writeText(location.origin+location.pathname+'?tab=lesson-edits&lesson='+encodeURIComponent('${{lessonId}}')+'&change='+encodeURIComponent('${{changeId}}'))" title="Copy link to this change" style="margin-left:4px">#${{changeId.slice(0,8)}}</span>`
       : '';
     // Issue 28: reject-all button for first issue key (text changes only)
     const rejectAllBtn = (keys.length && type !== 'screenshot')
       ? `<button class="tc-reject" style="font-size:0.68rem" onclick="leRejectAllForIssueKey('${{keys[0]}}');setStatus(allData.find(a=>a.issue_key==='${{keys[0]}}')?.rec_id||'','incorrect');event.stopPropagation()">✗✗ Reject all for ${{keys[0]}}</button>`
       : '';
-    return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-btns"><button class="tc-accept" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{cardLink}}</span></span>`;
+    return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-btns"><button class="tc-accept" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{copyChip}}${{cardLink}}</span></span>`;
   }}
 
   // Apply text changes
   changes.forEach((ch, idx) => {{
     const orig = ch.original_text || '';
     if (!orig) return;
-    const popup = makePopup(ch.change_id, ch.explanation, ch.issue_keys, ch.type);
+    const popup = makePopup(ch.change_id, ch.explanation, ch.issue_keys, ch.type, plan.lesson_id);
     const issueKeysAttr = escHtml((ch.issue_keys || []).join(','));
 
     let markup;
     if (ch.type === 'delete') {{
-      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{popup}}</span>`;
+      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{popup}}</span>`;
     }} else if (ch.type === 'add') {{
-      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><span class="tc-orig-context">${{escHtml(orig)}}</span><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
+      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><span class="tc-orig-context">${{escHtml(orig)}}</span><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }} else {{
-      markup = `<span class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
+      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }}
 
     html = html.replace(orig, markup);
@@ -828,7 +844,7 @@ function leRenderLesson() {{
       JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener">${{k}}</a>` : k
     ).join(', ');
     const noteInner = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})</strong>${{escHtml(su.explanation || '')}}</div>`;
-    const popup = makePopup(ssId, su.explanation, su.issue_keys, 'screenshot');
+    const popup = makePopup(ssId, su.explanation, su.issue_keys, 'screenshot', plan.lesson_id);
     const wrapped = `<div class="tc-wrap tc-change" data-id="${{ssId}}" data-type="screenshot" data-issue-keys="${{escHtml((su.issue_keys||[]).join(','))}}" data-state="pending">${{noteInner}}${{popup}}</div>`;
     const imgPattern = new RegExp(`(<img[^>]*src="${{su.src.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&')}}"[^>]*>)`, 'i');
     html = html.replace(imgPattern, '$1' + wrapped);
@@ -932,40 +948,68 @@ function leRejectAllForIssueKey(issueKey) {{
   leUpdateHistoryBtns();
 }}
 
-// Issue 29: switch to Recommendations tab and scroll to the card for an issue key
-function leGoToCard(issueKey) {{
-  // Find the rec_id for this issue key
-  const rec = allData.find(a => a.issue_key === issueKey);
-  if (!rec) return;
+// Issues 29/67/68: scroll to a card by rec_id, handle pagination, highlight originating change
+function leShowCard(recId, fromChangeId) {{
   const tabBtn = document.querySelector('.tab-btn[onclick*="recommendations"]');
   if (tabBtn) switchTab('recommendations', tabBtn);
-  // Wait for render then scroll
+  // Navigate to the correct page (issue 67)
+  const idx = filteredData.findIndex(a => a.rec_id === recId);
+  if (idx >= 0) {{
+    const targetPage = Math.floor(idx / PAGE_SIZE) + 1;
+    if (currentPage !== targetPage) {{ currentPage = targetPage; renderCards(); }}
+  }}
   setTimeout(() => {{
-    const card = document.querySelector(`.card[data-rec="${{escHtml(rec.rec_id)}}"]`);
-    if (card) {{
-      card.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-      card.classList.remove('card-highlight');
-      void card.offsetWidth; // force reflow to restart animation
-      card.classList.add('card-highlight');
-      card.addEventListener('animationend', () => card.classList.remove('card-highlight'), {{ once: true }});
+    const card = document.getElementById('card-' + recId);
+    if (!card) return;
+    card.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+    card.classList.remove('card-highlight');
+    void card.offsetWidth;
+    card.classList.add('card-highlight');
+    card.addEventListener('animationend', () => card.classList.remove('card-highlight'), {{ once: true }});
+    // Issue 51/68: expand edit suggestions and highlight the originating change entry
+    if (fromChangeId) {{
+      card.querySelectorAll('details.assessment-section').forEach(d => {{
+        if (d.querySelector('summary')?.textContent.includes('edit suggestion')) {{
+          d.open = true;
+          const li = d.querySelector(`li[data-change-id="${{fromChangeId}}"]`);
+          if (li) li.classList.add('from-change-highlight');
+        }}
+      }});
     }}
   }}, 150);
 }}
 
-// Issue 37: switch to Lesson Edits tab and highlight a specific change
-function leGoToChange(lessonId, changeId) {{
-  // Switch tab
+// Issue 68: pushState then show card
+function leNavigateToCard(evt, issueKey, lessonId, changeId) {{
+  evt.preventDefault();
+  const rec = allData.find(a => a.issue_key === issueKey);
+  if (!rec) return;
+  const params = new URLSearchParams();
+  params.set('tab', 'recommendations');
+  params.set('card', rec.rec_id);
+  if (changeId) params.set('from_change', changeId);
+  history.pushState({{ tab: 'recommendations', card: rec.rec_id, fromChange: changeId || null }}, '', '?' + params.toString());
+  leShowCard(rec.rec_id, changeId || null);
+}}
+
+// Issues 37/68: switch to Lesson Edits tab, set dropdowns, render, scroll to change
+function leShowChange(lessonId, changeId) {{
   const tabBtn = document.querySelector('.tab-btn[onclick*="lesson-edits"]');
   if (tabBtn && !tabBtn.disabled) switchTab('lesson-edits', tabBtn);
-  // Select lesson in dropdowns and render
   setTimeout(() => {{
+    const plan = leEditPlans.find(l => l.lesson_id === lessonId);
+    if (!plan) return;
+    const lpSel = document.getElementById('le-lp-filter');
+    if (lpSel && plan.learning_path) {{ lpSel.value = plan.learning_path; leUpdateCourses(); }}
+    const courseSel = document.getElementById('le-course-filter');
+    if (courseSel && plan.course_canonical) {{ courseSel.value = plan.course_canonical; leUpdateLessons(); }}
     const lessonSel = document.getElementById('le-lesson-filter');
-    if (lessonSel) {{
-      lessonSel.value = lessonId;
-      leRenderLesson();
-      // Scroll to the change after render
+    if (!lessonSel) return;
+    lessonSel.value = lessonId;
+    leRenderLesson();
+    if (changeId) {{
       setTimeout(() => {{
-        const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
+        const wrap = document.getElementById('le-change-' + changeId);
         if (wrap) {{
           wrap.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
           wrap.style.outline = '2px solid #f59e0b';
@@ -976,6 +1020,44 @@ function leGoToChange(lessonId, changeId) {{
     }}
   }}, 150);
 }}
+
+// Issue 68: pushState then show change
+function leNavigateToChange(evt, lessonId, changeId) {{
+  evt.preventDefault();
+  const params = new URLSearchParams();
+  params.set('tab', 'lesson-edits');
+  params.set('lesson', lessonId);
+  if (changeId) params.set('change', changeId);
+  history.pushState({{ tab: 'lesson-edits', lesson: lessonId, change: changeId || null }}, '', '?' + params.toString());
+  leShowChange(lessonId, changeId || null);
+}}
+
+// Backward-compat shims
+function leGoToCard(issueKey) {{ leShowCard(allData.find(a => a.issue_key === issueKey)?.rec_id, null); }}
+function leGoToChange(lessonId, changeId) {{ leShowChange(lessonId, changeId); }}
+
+// Issue 68: read URL params on load and navigate to the correct view
+function leApplyUrlParams() {{
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab');
+  const card = params.get('card');
+  const fromChange = params.get('from_change');
+  const lesson = params.get('lesson');
+  const change = params.get('change');
+  if (tab === 'recommendations' && card) {{
+    leShowCard(card, fromChange);
+  }} else if (tab === 'lesson-edits' && lesson && leEditPlans.length) {{
+    leShowChange(lesson, change);
+  }}
+}}
+
+// Issue 68: handle browser back/forward
+window.addEventListener('popstate', function(evt) {{
+  const s = evt.state;
+  if (!s) {{ leApplyUrlParams(); return; }}
+  if (s.tab === 'recommendations') leShowCard(s.card, s.fromChange || null);
+  else if (s.tab === 'lesson-edits') leShowChange(s.lesson, s.change || null);
+}});
 
 // Issue 47: floating next/prev edit navigation
 let leCurrentEditIdx = -1;
