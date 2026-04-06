@@ -2,25 +2,11 @@
 
 ## App / UX
 
-- 70. **Improve UX of re-running/continuing pipeline runs.** To continue or re-run a pipeline run, you currently have to select the exact lessons/courses/LPs first, then select the run to continue in Options. It would be better if you could instead re-run runs from the Run History window. Maybe a Re-Run or Continue button that would pre-populate the Configure Run window? Something like that. Please fix that and allow for both continuing and re-running.
-
-- 65. **Edit suggestions occasionally render with literal HTML tags in the output text.** The LLM outputs `suggested_text` containing markup (e.g. `<p>…</p>`) despite `EDIT_SUGGESTIONS.md` specifying "plain text, not HTML." Fix with two layers: (1) Add explicit rule to `EDIT_SUGGESTIONS.md`: *"`suggested_text` must be plain text only — do not include HTML tags."* (2) Add a post-processing pass in `edit_suggestions.py` that strips HTML tags from `suggested_text` via `html.parser` as a defensive fallback.
-
-- 64. **Edit suggestions incorrectly delete large blocks of text.** The LLM selects overly broad `original_text` for `delete` changes, removing content that should stay. Fix in `EDIT_SUGGESTIONS.md`: (1) *"Only use `type: 'delete'` for content that is factually incorrect in the new version with no corrected replacement — prefer `type: 'change'` with corrected text in almost all cases."* (2) *"For `delete`, `original_text` must be the minimum text needed to identify the specific sentence or phrase to remove — never an entire paragraph or section."*
-
-- 63. **Neighboring edit tooltips can appear simultaneously and overlap.** Low-priority visual issue; no fix needed now. When addressed: in the tc-popup hover JS, dismiss all other visible popups before showing a new one.
-
-- 62. **Screenshot update notes should also recommend alt text corrections.** When a depicted UI element is renamed (e.g., "Feature Information Window" → "Record Information Window"), the alt text likely needs updating too. Fix: add an optional `alt_text` field to the `screenshot_updates` schema in `EDIT_SUGGESTIONS.md` with instruction: *"If the alt text of this screenshot contains a term that has changed, populate `alt_text` with the corrected alt text."* Update `edit_suggestions.py` to store this field and `report.html` to display it in the screenshot update box.
-
-- 61. **Screenshots are missing from the Lesson Edits tab (update box renders but image is broken).** Likely a path-resolution bug: the base-path logic in `report.html` (`../{lesson_dir}/`) may not cover all nested lesson directory structures. Investigate how `lesson_dir` is stored in the edit-plans JSON and how image URLs are constructed for the Lesson Edits tab. The path must be correct relative to `artifacts/` where `report.html` is served. Fix the path-construction logic in `report.html`.
-
 - 60. **Track tool accuracy automatically using accept/reject data.** Per-change accept/reject state is already persisted in localStorage. A future enhancement could aggregate this by Jira project, issue type, and lesson type to surface accuracy trends without manual review. Log as future work; do not implement now.
 
 ## AI Accuracy
 
 - 69. **Optimize model to reduce API costs.** I chose `gpt-4o-mini` in initial testing, but we could do additional benchmarking to look for a cheaper model that meets our needs.
-
-- 57. **Decorative callout/note images are incorrectly flagged for screenshot updates.** Partial fix implemented for the primary offender (`safe_note.png`); full callout-container detection in `manifest.py` not yet done. If other decorative images appear in screenshot updates, revisit with the `is_callout` tagging approach from the original issue description.
 
 - 53. **Generic screenshot alt text makes it impossible for the LLM to identify affected screenshots.** When alt text says "Inspecting points and attributes" instead of naming the window or dialog, the LLM can't connect a UI rename to that screenshot. Short-term fix in `ASSESSMENT.md`: *"Use alt text as the primary description of the image. Only flag a screenshot if its alt text or immediately surrounding text explicitly names the UI element changed by the Jira issue — do not infer from the general section topic."* Long-term: add an optional pipeline step that passes actual images to a multimodal LLM call to generate descriptive alt text for screenshots with generic alt text.
 
@@ -29,6 +15,13 @@
 
 # Fixed
 
+- 70. **Continue** button added to Run History: calls `doRunAction(run_id, 'resume')` for incomplete, non-live runs. **Re-Run** button added: calls `prefillConfigureRun(run)`, which restores `to_version` and re-selects the original scope (by lesson paths, courses, or LPs) in the Configure Run tree, then scrolls to `#scope-card`. Both buttons appear only when the run is not currently live.
+- 65. Two-layer fix: (1) `suggested_text` rule in `EDIT_SUGGESTIONS.md` now explicitly forbids HTML tags for `change` type. (2) Post-processing pass in `edit_suggestions.py/_call_openai()` strips all HTML tags from `suggested_text` of `change`-type entries via `re.sub(r'<[^>]+>', '', ...)`.
+- 64. Two rules added to `EDIT_SUGGESTIONS.md`: (1) Only use `delete` for factually incorrect content with no corrected replacement — prefer `change` with corrected text. (2) `original_text` for `delete` must be the minimum unique text to identify the phrase to remove — never an entire paragraph.
+- 63. `leBindPopups()` in `report.py`: moved `hideTimer` inside the `forEach` (per-popup scope), and added a "dismiss all other `.tc-popup-visible`" step on `mouseenter`, so only one tooltip is ever visible.
+- 62. Optional `alt_text` field added to `screenshot_updates`: schema in `edit_suggestions.py`, instruction in `EDIT_SUGGESTIONS.md`, and display in `report.py`'s screenshot note box (shown as "Suggested alt text: …" when present).
+- 61. Screenshot image paths in the Lesson Edits tab now resolved via DOM after `innerHTML` is set, with each `lesson_dir` segment URL-encoded via `encodeURIComponent`. Replaced the brittle regex string-replacement (which failed for single-quoted src, paths with spaces, etc.). `leSave()` updated to use the same URL-encoded prefix for stripping.
+- 57. **Decorative callout/note images are incorrectly flagged for screenshot updates.** Partial fix implemented for the primary offender (`safe_note.png`); full callout-container detection in `manifest.py` not yet done. But doesn't need to be; this is the only offender identified. If other decorative images appear in screenshot updates, revisit with the `is_callout` tagging approach from the original issue description.
 - 68. Full URL query-parameter deep-link scheme implemented in `report.html`. Cards get `id="card-{rec_id}"`, changes get `id="le-change-{change_id}"`. Links on both sides now use `?tab=...&card=...` / `?tab=lesson-edits&lesson=...&change=...`. `leApplyUrlParams()` runs after both data sources load (coordinated by `leCheckBothLoaded()`). Browser back/forward handled via `popstate`. `pushState` is used on navigation so the URL stays in sync.
 - 67. `leShowCard()` now computes the target card's page in `filteredData` and navigates to it before scrolling, so cards on page > 1 are no longer missed. Also expands the "edit suggestions" details block and highlights the originating change link (`from_change` URL param / `.from-change-highlight` CSS class).
 - 66. Click-to-copy chip (`#xxxxxxxx`) added to each change popup in the Lesson Edits tab, styled with the existing `.rec-id` class. Clicking copies a full deep-link URL (`?tab=lesson-edits&lesson=...&change=...`) to the clipboard via `navigator.clipboard.writeText`.

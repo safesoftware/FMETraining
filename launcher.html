@@ -1037,6 +1037,27 @@ function renderHistory(runs) {
       btns.appendChild(b);
     }
 
+    const isLive = !!run.live_status;
+    const isIncomplete = steps.length > 0 && steps.length < 6;
+
+    if (!isLive && isIncomplete) {
+      const b = document.createElement('button');
+      b.className = 'hist-btn';
+      b.textContent = 'Continue';
+      b.title = 'Resume this run from where it left off';
+      b.onclick = () => doRunAction(run.run_id, 'resume');
+      btns.appendChild(b);
+    }
+
+    if (!isLive && steps.length > 0) {
+      const b = document.createElement('button');
+      b.className = 'hist-btn';
+      b.textContent = 'Re-Run';
+      b.title = "Pre-fill the Configure Run form with this run's scope and version";
+      b.onclick = () => prefillConfigureRun(run);
+      btns.appendChild(b);
+    }
+
     tbody.appendChild(tr);
   });
 }
@@ -1057,6 +1078,34 @@ function scopeTitle(scope) {
   (scope.courses || []).forEach(c => parts.push('Course: ' + c.course));
   (scope.lessons || []).forEach(l => parts.push(l));
   return parts.join('\n');
+}
+
+function prefillConfigureRun(run) {
+  // Set to_version
+  const versionInput = document.getElementById('to-version');
+  if (versionInput && run.job?.to_version) versionInput.value = run.job.to_version;
+
+  // Restore scope selection from the run's stored scope
+  selectedPaths.clear();
+  const scope = run.job?.scope || {};
+
+  (scope.lessons || []).forEach(path => selectedPaths.add(path));
+
+  (scope.courses || []).forEach(c => {
+    for (const lp of contentTree) {
+      if (lp.id !== c.learning_path) continue;
+      const course = lp.courses.find(co => co.id === c.course);
+      if (course) course.lessons.forEach(l => selectedPaths.add(l.path));
+    }
+  });
+
+  (scope.learning_paths || []).forEach(lpId => {
+    const lp = contentTree.find(l => l.id === lpId);
+    if (lp) lp.courses.forEach(c => c.lessons.forEach(l => selectedPaths.add(l.path)));
+  });
+
+  renderTree();
+  document.getElementById('scope-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 async function doRunAction(runId, action) {

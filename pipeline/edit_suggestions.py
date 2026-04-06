@@ -84,6 +84,7 @@ _RESPONSE_SCHEMA = {
                                 "type": "array",
                                 "items": {"type": "string"},
                             },
+                            "alt_text": {"type": "string"},
                         },
                     },
                 },
@@ -298,6 +299,11 @@ async def _call_openai(
                         print(f"\n  [filter] Skipping already-present 'add' in {lesson_id}: {sugg[:60]!r}")
                         continue
                 filtered_changes.append(change)
+
+            # Post-processing: strip HTML tags from suggested_text for 'change' type (issue 65)
+            for ch in filtered_changes:
+                if ch.get("type") == "change" and ch.get("suggested_text"):
+                    ch["suggested_text"] = re.sub(r"<[^>]+>", "", ch["suggested_text"]).strip()
 
             # Post-processing: propagate rename pairs to all occurrences (issues 51/56)
             filtered_changes = _propagate_renames(filtered_changes, lesson_html, lesson_id)

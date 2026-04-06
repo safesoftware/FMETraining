@@ -52,7 +52,7 @@ Each change must include:
 - `type`: one of `"change"`, `"add"`, or `"delete"`
 - `heading`: the exact text of the nearest `<h2>` or `<h3>` heading above this content (copy it verbatim from the HTML)
 - `original_text`: for `"change"` and `"delete"` — an exact substring from the lesson HTML that uniquely identifies the text to be replaced or removed. This must be at least one complete sentence or HTML element. Do NOT paraphrase — copy the text verbatim from the HTML above.
-- `suggested_text`: for `"change"` — the full replacement text as plain text (no HTML tags). For `"add"` — the complete, ready-to-insert HTML for the new content.
+- `suggested_text`: for `"change"` — the replacement text as **plain text only** — absolutely no HTML tags (`<p>`, `<span>`, `<strong>`, `<em>`, `<br>`, or any other tag). The text will be inserted directly into the lesson DOM, so tags will break the structure. For `"add"` — the complete, ready-to-insert HTML for the new content.
 - `explanation`: a concise explanation of why this change is needed, referencing the specific Jira issue(s)
 - `issue_keys`: array of Jira issue keys that motivated this change
 
@@ -63,6 +63,8 @@ Each change must include:
 - `original_text` must be findable via a simple string search in the lesson HTML. Prefer full sentences or short paragraphs. Do not use partial words or mid-sentence fragments.
 - If the lesson already correctly describes the new behavior, do not suggest a change.
 - If a change is too complex to represent as a simple find-and-replace (e.g., a whole section needs restructuring), use `type: "add"` or `type: "delete"` with a clear explanation.
+- **`delete` usage:** Only use `type: "delete"` for content that is factually incorrect in the new version and has no corrected replacement — prefer `type: "change"` with corrected text in almost all cases. If in doubt, use `"change"` instead of `"delete"`.
+- **`delete` scope:** For `type: "delete"`, `original_text` must be the minimum text needed to uniquely identify the specific sentence or phrase to remove — never an entire paragraph, section, or multiple sentences. If a larger block needs removal, break it into multiple focused `delete` entries.
 - **High-rated issue coverage:** After drafting your initial list, review each issue with `update_likelihood: high` in the input. For each high-rated issue, verify that at least one `change` or `screenshot_update` entry references that issue key. High-rated issues must not be silently skipped — if you find you have not addressed one, re-examine the relevant sections of the lesson HTML and add the missing entries before finalising your response.
 - **Exhaustive rename coverage:** When a Jira issue renames a UI element, window, parameter, or term (e.g., "Visual Preview" is renamed to "Data Preview"), search the entire lesson HTML for every occurrence of the old name — not just the first one you find. Generate a `change` entry for each occurrence. A rename that appears in three places requires three separate `change` entries.
 - For `type: "add"`, `suggested_text` must be the complete, ready-to-insert HTML — never a description of what to write. If adding a Note or "New for FME X.Y" note, use the exact callout HTML templates from the Editorial Guidelines above.
@@ -76,6 +78,7 @@ Each entry must include:
 - `src`: the image filename exactly as it appears in the HTML (e.g. `images/1234567890.png`)
 - `explanation`: specific description of what will look visibly different in the screenshot and what needs to be retaken or updated
 - `issue_keys`: array of Jira issue keys that require this screenshot to be updated
+- `alt_text` (optional): if the `alt` attribute of this screenshot contains a term that has changed (e.g. "Feature Information Window" → "Record Information Window"), populate this with the corrected alt text. Omit if the alt text does not need updating.
 
 Only include screenshots that will look visibly different in the new version (changed dialogs, renamed buttons, new ports, new icons, layout changes). Do not include screenshots for behind-the-scenes behavior changes with no visual difference.
 - **Never include `safe_note.png`** in screenshot updates. This is a decorative icon used in callout boxes and never depicts interactive FME UI.

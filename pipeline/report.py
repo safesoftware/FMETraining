@@ -843,19 +843,26 @@ function leRenderLesson() {{
     const issueLinks = (su.issue_keys || []).map(k =>
       JIRA_BASE_URL ? `<a href="${{JIRA_BASE_URL}}/browse/${{k}}" target="_blank" rel="noopener">${{k}}</a>` : k
     ).join(', ');
-    const noteInner = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})</strong>${{escHtml(su.explanation || '')}}</div>`;
+    const altTextLine = su.alt_text
+      ? `<div style="font-size:0.8rem;margin-top:4px"><em>Suggested alt text:</em> ${{escHtml(su.alt_text)}}</div>`
+      : '';
+    const noteInner = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})</strong>${{escHtml(su.explanation || '')}}${{altTextLine}}</div>`;
     const popup = makePopup(ssId, su.explanation, su.issue_keys, 'screenshot', plan.lesson_id);
     const wrapped = `<div class="tc-wrap tc-change" data-id="${{ssId}}" data-type="screenshot" data-issue-keys="${{escHtml((su.issue_keys||[]).join(','))}}" data-state="pending">${{noteInner}}${{popup}}</div>`;
     const imgPattern = new RegExp(`(<img[^>]*src="${{su.src.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&')}}"[^>]*>)`, 'i');
     html = html.replace(imgPattern, '$1' + wrapped);
   }});
 
-  // Fix relative image paths: prefix with ../{{lesson_dir}}/ so images resolve from artifacts/
-  const lessonBase = '../' + (plan.lesson_dir || '').replace(/\\\\/g, '/');
-  html = html.replace(/(<img[^>]+src=["'])(?!https?:\\/\\/|\\/|data:)([^"']+)(["'])/gi,
-    (_, pre, src, post) => pre + lessonBase + '/' + src + post);
-
   document.getElementById('le-lesson-body').innerHTML = html;
+
+  // Fix relative image paths via DOM — more reliable than regex (issue 61)
+  const lessonBase = '../' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
+  document.querySelectorAll('#le-lesson-body img').forEach(img => {{
+    const src = img.getAttribute('src') || '';
+    if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:') && !src.startsWith('blob:') && !src.startsWith('..')) {{
+      img.setAttribute('src', lessonBase + src);
+    }}
+  }});
   document.getElementById('le-save-banner').style.display = 'none';
   leBindPopups();
   leUpdateNavFloat();
@@ -1106,11 +1113,15 @@ function leScrollToCurrentEdit() {{
 
 // JS-driven hover with delay to prevent popup disappearing when moving mouse to it
 function leBindPopups() {{
-  let hideTimer = null;
   document.querySelectorAll('#le-lesson-body .tc-wrap').forEach(wrap => {{
     const popup = wrap.querySelector('.tc-popup');
     if (!popup) return;
+    let hideTimer = null;  // per-popup timer so neighbouring popups don't interfere (issue 63)
     wrap.addEventListener('mouseenter', () => {{
+      // Dismiss all other visible popups (issue 63)
+      document.querySelectorAll('#le-lesson-body .tc-popup-visible').forEach(p => {{
+        if (p !== popup) p.classList.remove('tc-popup-visible');
+      }});
       clearTimeout(hideTimer);
       popup.classList.add('tc-popup-visible');
     }});
@@ -1178,7 +1189,7 @@ function leSave() {{
   }});
 
   // Revert prefixed image paths back to relative (strip the ../lesson_dir/ prefix)
-  const lessonBase = '../' + (plan.lesson_dir || '').replace(/\\\\/g, '/') + '/';
+  const lessonBase = '../' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
   body.querySelectorAll('img[src]').forEach(img => {{
     const attrSrc = img.getAttribute('src') || '';
     if (attrSrc.startsWith(lessonBase)) {{
