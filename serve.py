@@ -128,6 +128,8 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
 
         if path in ("/", "/index.html"):
             self._serve_launcher()
+        elif path == "/api/version":
+            self._api_version()
         elif path == "/api/versions":
             self._api_versions()
         elif path == "/api/content-tree":
@@ -163,6 +165,12 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
         self.wfile.write(content)
+
+    # -- API: app version --------------------------------------------------
+
+    def _api_version(self) -> None:
+        from pipeline.config import APP_VERSION, APP_NAME
+        self._json_response(200, {"version": APP_VERSION, "name": APP_NAME})
 
     # -- API: content discovery --------------------------------------------
 

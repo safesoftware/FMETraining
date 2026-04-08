@@ -15,6 +15,7 @@
 
 # Fixed
 
+- 71. App renamed to "FME Training Update Assistant" in `<title>`, `<h1>`, and `pipeline/config.py` (`APP_NAME`). Subtitle changed from "Browser Launcher" to semantic version (`v0.1.0`), populated dynamically by fetching `/api/version` in `init()`. Version and name served by new `GET /api/version` endpoint in `serve.py`, sourced from `APP_VERSION` / `APP_NAME` constants in `pipeline/config.py`.
 - 70. **Continue** button added to Run History: calls `doRunAction(run_id, 'resume')` for incomplete, non-live runs. **Re-Run** button added: calls `prefillConfigureRun(run)`, which restores `to_version` and re-selects the original scope (by lesson paths, courses, or LPs) in the Configure Run tree, then scrolls to `#scope-card`. Both buttons appear only when the run is not currently live.
 - 65. Two-layer fix: (1) `suggested_text` rule in `EDIT_SUGGESTIONS.md` now explicitly forbids HTML tags for `change` type. (2) Post-processing pass in `edit_suggestions.py/_call_openai()` strips all HTML tags from `suggested_text` of `change`-type entries via `re.sub(r'<[^>]+>', '', ...)`.
 - 64. Two rules added to `EDIT_SUGGESTIONS.md`: (1) Only use `delete` for factually incorrect content with no corrected replacement — prefer `change` with corrected text. (2) `original_text` for `delete` must be the minimum unique text to identify the phrase to remove — never an entire paragraph.

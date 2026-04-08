@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FME Training Automation</title>
+<title>FME Training Update Assistant</title>
 <style>
 :root {
   --brand: #1a3d6b;
@@ -372,8 +372,8 @@ code { font-family: monospace; font-size: 11px; }
 <body>
 
 <header>
-  <h1>FME Training Automation</h1>
-  <span class="subtitle">Browser Launcher</span>
+  <h1>FME Training Update Assistant</h1>
+  <span class="subtitle" id="app-version">v0.1.0</span>
 </header>
 
 <div class="layout">
@@ -508,6 +508,12 @@ let eventSource = null;
 // ---------------------------------------------------------------------------
 async function init() {
   try {
+    const vResp = await fetch('/api/version');
+    if (vResp.ok) {
+      const vData = await vResp.json();
+      const el = document.getElementById('app-version');
+      if (el) el.textContent = 'v' + vData.version;
+    }
     await loadVersions();
     await loadHistory();
   } catch (e) {
