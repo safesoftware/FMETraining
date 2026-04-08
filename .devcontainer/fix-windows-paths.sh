@@ -36,6 +36,7 @@ def fix_value(v):
 targets = set([
     f"{CLAUDE_DIR}/plugins/known_marketplaces.json",
     f"{CLAUDE_DIR}/settings.json",
+    "/home/vscode/.claude.json",
 ] + glob.glob(f"{CLAUDE_DIR}/*.json"))
 
 fixed_count = 0

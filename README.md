@@ -54,24 +54,11 @@ The `api-approach` branch contains an AI-powered pipeline that analyzes Jira iss
 
 ## Dev Container (Optional)
 
-A `.devcontainer/devcontainer.json` is included for use with VS Code Dev Containers. Before opening the container, each developer must set a `CLAUDE_DIR` environment variable pointing to their local `.claude` folder so it can be bind-mounted into the container.
+A `.devcontainer/devcontainer.json` is included for use with VS Code Dev Containers. No manual setup is required — it automatically bind-mounts your `~/.claude` directory using the standard `HOME` environment variable, which is set on macOS, Linux, and Windows.
 
-**macOS / Linux** — add to `~/.bashrc` or `~/.zshrc`:
-```bash
-export CLAUDE_DIR=$HOME/.claude
-```
+Use **Dev Containers: Reopen in Container** in VS Code to open the container.
 
-**Windows, running Claude Code from WSL** — add to your WSL `~/.bashrc`:
-```bash
-export CLAUDE_DIR=$HOME/.claude
-```
-
-**Windows, running Claude Code natively (not from WSL)** — add to your WSL `~/.bashrc`, substituting your Windows username:
-```bash
-export CLAUDE_DIR=/mnt/c/Users/YOUR_WINDOWS_USERNAME/.claude
-```
-
-After adding the line, reload your shell (`source ~/.bashrc`) and verify with `echo $CLAUDE_DIR`. Then use **Dev Containers: Rebuild and Reopen in Container** in VS Code.
+**First-time Claude auth:** if you have not previously authenticated, run `claude` inside the container and log in. Your credentials are written into the bind-mounted `~/.claude/` directory and persist across container rebuilds.
 
 ---
 

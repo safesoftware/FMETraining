@@ -7,9 +7,10 @@
     }
   },
   "mounts": [
-    "source=${localEnv:CLAUDE_DIR},target=/home/vscode/.claude,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached",
+    "source=fme-training-claude-plugins,target=/home/vscode/.claude/plugins,type=volume"
   ],
-  "postCreateCommand": "pip install -r requirements.txt && npm install -g @anthropic-ai/claude-code && sudo chown -R vscode:vscode /home/vscode/.claude",
+  "postCreateCommand": "pip install -r requirements.txt && npm install -g @anthropic-ai/claude-code && ln -sf /home/vscode/.claude/.claude.json /home/vscode/.claude.json",
   "postStartCommand": "bash .devcontainer/fix-windows-paths.sh",
   "forwardPorts": [8080],
   "portsAttributes": {
