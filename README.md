@@ -52,6 +52,29 @@ Any issues or questions can be directed to train@safe.com or by opening a GitHub
 
 The `api-approach` branch contains an AI-powered pipeline that analyzes Jira issues and identifies which training lessons need updating when a new FME version is released.
 
+## Dev Container (Optional)
+
+A `.devcontainer/devcontainer.json` is included for use with VS Code Dev Containers. Before opening the container, each developer must set a `CLAUDE_DIR` environment variable pointing to their local `.claude` folder so it can be bind-mounted into the container.
+
+**macOS / Linux** — add to `~/.bashrc` or `~/.zshrc`:
+```bash
+export CLAUDE_DIR=$HOME/.claude
+```
+
+**Windows, running Claude Code from WSL** — add to your WSL `~/.bashrc`:
+```bash
+export CLAUDE_DIR=$HOME/.claude
+```
+
+**Windows, running Claude Code natively (not from WSL)** — add to your WSL `~/.bashrc`, substituting your Windows username:
+```bash
+export CLAUDE_DIR=/mnt/c/Users/YOUR_WINDOWS_USERNAME/.claude
+```
+
+After adding the line, reload your shell (`source ~/.bashrc`) and verify with `echo $CLAUDE_DIR`. Then use **Dev Containers: Rebuild and Reopen in Container** in VS Code.
+
+---
+
 ## Prerequisites
 
 - **Python 3.9 or newer** — [Download Python](https://www.python.org/downloads/)
