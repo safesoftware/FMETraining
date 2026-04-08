@@ -9,7 +9,8 @@
   "mounts": [
     "source=${localEnv:CLAUDE_DIR},target=/home/vscode/.claude,type=bind,consistency=cached"
   ],
-  "postCreateCommand": "pip install -r requirements.txt && npm install -g @anthropic-ai/claude-code",
+  "postCreateCommand": "pip install -r requirements.txt && npm install -g @anthropic-ai/claude-code && sudo chown -R vscode:vscode /home/vscode/.claude",
+  "postStartCommand": "bash .devcontainer/fix-windows-paths.sh",
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {
