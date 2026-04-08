@@ -54,11 +54,42 @@ The `api-approach` branch contains an AI-powered pipeline that analyzes Jira iss
 
 ## Dev Container (Optional)
 
-A `.devcontainer/devcontainer.json` is included for use with VS Code Dev Containers. No manual setup is required — it automatically bind-mounts your `~/.claude` directory using the standard `HOME` environment variable, which is set on macOS, Linux, and Windows.
+A `.devcontainer/devcontainer.json` is included for use with VS Code Dev Containers. Before opening the container, each developer must set a `CLAUDE_DIR` environment variable pointing to their local `.claude` folder so it can be bind-mounted into the container.
 
-Use **Dev Containers: Reopen in Container** in VS Code to open the container.
+**macOS / Linux** — add to `~/.bashrc` or `~/.zshrc`:
+```bash
+export CLAUDE_DIR=$HOME/.claude
+```
 
-**First-time Claude auth:** if you have not previously authenticated, run `claude` inside the container and log in. Your credentials are written into the bind-mounted `~/.claude/` directory and persist across container rebuilds.
+**Windows, running Claude Code from WSL** — add to your WSL `~/.bashrc`:
+```bash
+export CLAUDE_DIR=$HOME/.claude
+```
+
+**Windows, running Claude Code natively (not from WSL)** — add to your WSL `~/.bashrc`, substituting your Windows username:
+```bash
+export CLAUDE_DIR=/mnt/c/Users/YOUR_WINDOWS_USERNAME/.claude
+```
+
+After adding the line, reload your shell (`source ~/.bashrc`) and verify with `echo $CLAUDE_DIR`.
+
+### One-time auth migration (first time only)
+
+Claude's auth token is stored in `~/.claude.json`. Inside the container it is symlinked from `~/.claude/.claude.json` so it lives inside the bind-mounted directory and persists across rebuilds. Before opening the container for the first time, move the file into the `.claude` folder on your host:
+
+**macOS / Linux / WSL**
+```bash
+mv ~/.claude.json ~/.claude/.claude.json
+```
+
+**Windows native Claude** — run in WSL, substituting your Windows username:
+```bash
+mv /mnt/c/Users/YOUR_WINDOWS_USERNAME/.claude.json /mnt/c/Users/YOUR_WINDOWS_USERNAME/.claude/.claude.json
+```
+
+If `~/.claude.json` does not exist yet (you haven't logged in), skip this step — the symlink will be created automatically and the file will be written there when you first run `claude` inside the container.
+
+Then use **Dev Containers: Rebuild and Reopen in Container** in VS Code.
 
 ---
 
