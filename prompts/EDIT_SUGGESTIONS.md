@@ -45,13 +45,17 @@ The following issues have been assessed as medium or high likelihood of requirin
 
 Produce a list of specific text edits and screenshot update notes for this lesson.
 
+### Rename pairs (`rename_pairs` array)
+
+Before producing text changes, scan the Jira issue descriptions for any explicit renames — UI elements, windows, panels, parameters, or terms that have been given a new name. List each rename pair as `{ "old": "...", "new": "...", "issue_keys": [...] }`. Include every rename mentioned across all issues, even if the old term does not appear in this lesson. Leave the array empty if no renames are found.
+
 ### For text changes (`changes` array):
 
 Each change must include:
 - `change_id`: a short unique identifier (8 hex chars)
 - `type`: one of `"change"`, `"add"`, or `"delete"`
 - `heading`: the exact text of the nearest `<h2>` or `<h3>` heading above this content (copy it verbatim from the HTML)
-- `original_text`: for `"change"` and `"delete"` — an exact substring from the lesson HTML that uniquely identifies the text to be replaced or removed. This must be at least one complete sentence or HTML element. Do NOT paraphrase — copy the text verbatim from the HTML above.
+- `original_text`: for `"change"` and `"delete"` — an exact substring from the lesson HTML that uniquely identifies the text to be replaced or removed. This must be at least one complete sentence or HTML element. **Exception: when changing an `<h2>` or `<h3>` heading, use the heading text alone as `original_text`** (e.g. `"Visual Preview"` or `"The Feature Information Window"`) — short heading text is acceptable. Do NOT paraphrase — copy the text verbatim from the HTML above.
 - `suggested_text`: for `"change"` — the replacement text as **plain text only** — absolutely no HTML tags (`<p>`, `<span>`, `<strong>`, `<em>`, `<br>`, or any other tag). The text will be inserted directly into the lesson DOM, so tags will break the structure. For `"add"` — the complete, ready-to-insert HTML for the new content.
 - `explanation`: a concise explanation of why this change is needed, referencing the specific Jira issue(s)
 - `issue_keys`: array of Jira issue keys that motivated this change
@@ -66,9 +70,9 @@ Each change must include:
 - **`delete` usage:** Only use `type: "delete"` for content that is factually incorrect in the new version and has no corrected replacement — prefer `type: "change"` with corrected text in almost all cases. If in doubt, use `"change"` instead of `"delete"`.
 - **`delete` scope:** For `type: "delete"`, `original_text` must be the minimum text needed to uniquely identify the specific sentence or phrase to remove — never an entire paragraph, section, or multiple sentences. If a larger block needs removal, break it into multiple focused `delete` entries.
 - **High-rated issue coverage:** After drafting your initial list, review each issue with `update_likelihood: high` in the input. For each high-rated issue, verify that at least one `change` or `screenshot_update` entry references that issue key. High-rated issues must not be silently skipped — if you find you have not addressed one, re-examine the relevant sections of the lesson HTML and add the missing entries before finalising your response.
-- **Exhaustive rename coverage:** When a Jira issue renames a UI element, window, parameter, or term (e.g., "Visual Preview" is renamed to "Data Preview"), search the entire lesson HTML for every occurrence of the old name — not just the first one you find. Generate a `change` entry for each occurrence. A rename that appears in three places requires three separate `change` entries.
+- **Exhaustive rename coverage:** When a Jira issue renames a UI element, window, parameter, or term (e.g., "Visual Preview" is renamed to "Data Preview"), search the entire lesson HTML for every occurrence of the old name — not just the first one you find. Generate a `change` entry for each occurrence. A rename that appears in three places requires three separate `change` entries. **This includes heading text**: if the old name appears as the text content of an `<h2>` or `<h3>` element, generate a `change` entry for that heading too, with `original_text` set to the exact heading text as it appears in the HTML (e.g. `"The Feature Information Window"` or `"Visual Preview"`).
 - For `type: "add"`, `suggested_text` must be the complete, ready-to-insert HTML — never a description of what to write. If adding a Note or "New for FME X.Y" note, use the exact callout HTML templates from the Editorial Guidelines above.
-- Do not suggest changes to heading text or image `src` attributes.
+- Do not suggest changes to heading text unless a Jira issue explicitly renames a UI element, window, panel, or term that appears verbatim in that heading. In that case, generate a `change` entry for the heading just as you would for body text. Do not suggest changes to image `src` attributes.
 - **Before suggesting a `type: "add"` change, verify the `suggested_text` does not already appear in the lesson HTML.** Search the HTML above for the proposed addition. If the content is already present, do not suggest adding it — omit that entry entirely.
 - **Version string updates:** Search the entire lesson HTML for every occurrence of `{{FROM_VERSION}}` in text content. For each occurrence found, generate a `change` edit replacing `{{FROM_VERSION}}` with `{{TO_VERSION}}`. Do not skip any occurrence — generate one entry per occurrence.
 

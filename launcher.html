@@ -590,6 +590,7 @@ function renderTree() {
   updateParentStates();
   updateCountBadges();
   updateSelectionCount();
+  updateStartButton();
 }
 
 function makeLPNode(lp) {
@@ -1037,7 +1038,7 @@ function renderHistory(runs) {
       btns.appendChild(b);
     }
 
-    const isLive = !!run.live_status;
+    const isLive = run.live_status === 'running';
     const isIncomplete = steps.length > 0 && steps.length < 6;
 
     if (!isLive && isIncomplete) {
@@ -1080,14 +1081,29 @@ function scopeTitle(scope) {
   return parts.join('\n');
 }
 
-function prefillConfigureRun(run) {
+async function prefillConfigureRun(run) {
   // Set to_version
   const versionInput = document.getElementById('to-version');
   if (versionInput && run.job?.to_version) versionInput.value = run.job.to_version;
 
+  // Ensure this starts as a new run, not a resume of another run
+  const resumeEl = document.getElementById('opt-resume');
+  if (resumeEl) resumeEl.value = '';
+
+  const scope = run.job?.scope || {};
+
+  // Determine the from-version from the first scope lesson path (e.g. "2024.2/...")
+  // and load the matching content tree so lesson paths will resolve correctly.
+  const firstLesson = (scope.lessons || [])[0];
+  const fromVersion = firstLesson?.match(/^(\d+\.\d+)\//)?.[1];
+  const browseEl = document.getElementById('browse-version');
+  if (fromVersion && browseEl && browseEl.value !== fromVersion) {
+    browseEl.value = fromVersion;
+    await loadTree(fromVersion);
+  }
+
   // Restore scope selection from the run's stored scope
   selectedPaths.clear();
-  const scope = run.job?.scope || {};
 
   (scope.lessons || []).forEach(path => selectedPaths.add(path));
 
@@ -1103,6 +1119,19 @@ function prefillConfigureRun(run) {
     const lp = contentTree.find(l => l.id === lpId);
     if (lp) lp.courses.forEach(c => c.lessons.forEach(l => selectedPaths.add(l.path)));
   });
+
+  // Restore jira_source and steps from stored options
+  const opts = run.options || {};
+  if (opts.jira_source) {
+    const radio = document.querySelector(`input[name="jira_source"][value="${opts.jira_source}"]`);
+    if (radio) { radio.checked = true; updateJiraOptions(); }
+  }
+  if (opts.steps) {
+    const stepVals = new Set(opts.steps.split(',').map(s => s.trim()));
+    document.querySelectorAll('.step-check').forEach(cb => {
+      cb.checked = stepVals.has(cb.value);
+    });
+  }
 
   renderTree();
   document.getElementById('scope-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });

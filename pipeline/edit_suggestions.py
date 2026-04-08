@@ -14,6 +14,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import re
 import time
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -37,9 +38,25 @@ _RESPONSE_SCHEMA = {
         "strict": True,
         "schema": {
             "type": "object",
-            "required": ["changes", "screenshot_updates"],
+            "required": ["rename_pairs", "changes", "screenshot_updates"],
             "additionalProperties": False,
             "properties": {
+                "rename_pairs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["old", "new", "issue_keys"],
+                        "additionalProperties": False,
+                        "properties": {
+                            "old": {"type": "string"},
+                            "new": {"type": "string"},
+                            "issue_keys": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                            },
+                        },
+                    },
+                },
                 "changes": {
                     "type": "array",
                     "items": {
@@ -75,7 +92,7 @@ _RESPONSE_SCHEMA = {
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "required": ["src", "explanation", "issue_keys"],
+                        "required": ["src", "explanation", "issue_keys", "alt_text"],
                         "additionalProperties": False,
                         "properties": {
                             "src": {"type": "string"},
@@ -84,7 +101,7 @@ _RESPONSE_SCHEMA = {
                                 "type": "array",
                                 "items": {"type": "string"},
                             },
-                            "alt_text": {"type": "string"},
+                            "alt_text": {"anyOf": [{"type": "string"}, {"type": "null"}]},
                         },
                     },
                 },
@@ -305,6 +322,11 @@ async def _call_openai(
                 if ch.get("type") == "change" and ch.get("suggested_text"):
                     ch["suggested_text"] = re.sub(r"<[^>]+>", "", ch["suggested_text"]).strip()
 
+            # Post-processing: apply explicit rename pairs to every occurrence in the HTML
+            filtered_changes = _apply_rename_pairs(
+                parsed.get("rename_pairs", []), filtered_changes, lesson_html, lesson_id
+            )
+
             # Post-processing: propagate rename pairs to all occurrences (issues 51/56)
             filtered_changes = _propagate_renames(filtered_changes, lesson_html, lesson_id)
 
@@ -337,6 +359,7 @@ async def _call_openai(
                 "product": first.get("product", []),
                 "issues_addressed": [a["issue_key"] for a in group],
                 "lesson_html": first.get("_lesson_html", ""),
+                "rename_pairs": parsed.get("rename_pairs", []),
                 "changes": filtered_changes,
                 "screenshot_updates": screenshot_updates,
                 "generated_at": datetime.now(tz=timezone.utc).isoformat(),
@@ -548,6 +571,86 @@ def _extract_rename_pair(plain_orig: str, plain_sugg: str) -> tuple[str, str]:
     return old_term, new_term
 
 
+def _apply_rename_pairs(
+    rename_pairs: list[dict],
+    changes: list[dict],
+    lesson_html: str,
+    lesson_id: str,
+) -> list[dict]:
+    """
+    For each rename pair extracted by the LLM, find every occurrence of the
+    old term in the lesson HTML and generate a change entry if not already
+    covered by an existing change.
+    """
+    if not rename_pairs:
+        return changes
+
+    new_changes: list[dict] = []
+    existing_covered: set[tuple[str, str]] = set()
+    for c in changes:
+        if c.get("type") == "change":
+            existing_covered.add((c.get("original_text", ""), c.get("suggested_text", "")))
+
+    added_count = 0
+    for pair in rename_pairs:
+        old_term = (pair.get("old") or "").strip()
+        new_term = (pair.get("new") or "").strip()
+        issue_keys = pair.get("issue_keys", [])
+        if not old_term or not new_term or old_term == new_term:
+            continue
+
+        for m in re.finditer(re.escape(old_term), lesson_html):
+            # Skip occurrences inside tag attributes
+            pre = lesson_html[:m.start()]
+            if pre.rfind("<") > pre.rfind(">"):
+                continue
+
+            # Skip if already covered by an existing change containing this exact term
+            already_covered = any(
+                old_term in c.get("original_text", "") and new_term in c.get("suggested_text", "")
+                for c in changes + new_changes
+            )
+            if already_covered:
+                # Only skip once per pair — allow multiple occurrences through
+                # by checking position coverage instead
+                pass
+
+            # Check if this position is covered by any existing change's span
+            covered = False
+            for c in changes + new_changes:
+                c_orig = c.get("original_text", "")
+                if old_term not in c_orig:
+                    continue
+                cm = re.search(re.escape(c_orig), lesson_html)
+                if cm and cm.start() <= m.start() < cm.end():
+                    covered = True
+                    break
+            if covered:
+                continue
+
+            change_id = hashlib.md5(
+                f"{lesson_id}:pair:{old_term}:{m.start()}".encode()
+            ).hexdigest()[:8]
+            new_changes.append({
+                "change_id": change_id,
+                "type": "change",
+                "heading": "",
+                "original_text": old_term,
+                "suggested_text": new_term,
+                "explanation": (
+                    f'"{old_term}" renamed to "{new_term}" '
+                    f"(auto-generated from rename pair in {', '.join(issue_keys) or 'Jira issue'})."
+                ),
+                "issue_keys": issue_keys,
+            })
+            added_count += 1
+
+    if added_count:
+        print(f"\n  [rename-pairs] Auto-added {added_count} change(s) for {lesson_id}")
+
+    return changes + new_changes
+
+
 def _propagate_renames(
     changes: list[dict],
     lesson_html: str,
@@ -560,7 +663,17 @@ def _propagate_renames(
     """
     import re
 
+    # Pre-populate seen_pairs with any short-form term already present as a
+    # standalone original_text (e.g. added by _apply_rename_pairs). These are
+    # already fully expanded — propagation would only create duplicates.
     seen_pairs: set[tuple[str, str]] = set()
+    for c in changes:
+        if c.get("type") == "change":
+            o = re.sub(r"<[^>]+>", "", c.get("original_text", "")).strip()
+            s = c.get("suggested_text", "").strip()
+            if o and s and len(o) <= 80:
+                seen_pairs.add((o, s))
+
     new_changes: list[dict] = []
 
     for change in changes:
@@ -578,9 +691,16 @@ def _propagate_renames(
         if not plain_orig or plain_orig == plain_sugg:
             continue
 
-        # Skip sentences — long text is unique by nature and won't repeat
+        # For sentence-level changes (too long to repeat), try to extract the
+        # core rename pair so it can be propagated to headings and other short
+        # occurrences (e.g. "Visual Preview" → "Data Preview" from a sentence).
         if len(plain_orig) > 80:
-            continue
+            extracted_orig, extracted_sugg = _extract_rename_pair(plain_orig, plain_sugg)
+            if not extracted_orig or not extracted_sugg or extracted_orig == extracted_sugg:
+                continue
+            if len(extracted_orig) > 80:
+                continue
+            plain_orig, plain_sugg = extracted_orig, extracted_sugg
 
         # Only process each (orig, sugg) pair once even if multiple LLM changes
         # encode the same rename

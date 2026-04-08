@@ -312,6 +312,23 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             })
             return
 
+        # Patch runs.json to store the options used (jira_source, steps) so
+        # the launcher can restore them when the user clicks Re-Run.
+        runs_path = REPO_ROOT / "artifacts" / "runs.json"
+        try:
+            with runs_path.open(encoding="utf-8") as f:
+                runs_data = json.load(f)
+            for entry in runs_data.get("runs", []):
+                if entry["run_id"] == run_id:
+                    entry["options"] = {
+                        "jira_source": jira_source,
+                        "steps": steps or "1,2,3,5",
+                    }
+                    break
+            runs_path.write_text(json.dumps(runs_data, indent=2), encoding="utf-8")
+        except Exception:
+            pass  # Non-fatal — Re-Run will just fall back to defaults
+
         with _runs_lock:
             _active_runs[run_id] = {
                 "process": proc,

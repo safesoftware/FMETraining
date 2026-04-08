@@ -817,8 +817,19 @@ function leRenderLesson() {{
     return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-btns"><button class="tc-accept" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{copyChip}}${{cardLink}}</span></span>`;
   }}
 
-  // Apply text changes
-  changes.forEach((ch, idx) => {{
+  // Apply text changes in a single right-to-left pass so that injected markup
+  // (which contains orig in data-orig / <del>) never gets re-matched by a
+  // subsequent change with the same original_text.
+  //
+  // Algorithm:
+  //   1. For each change, find the next unmatched occurrence of orig in html
+  //      (scanning left-to-right, skipping positions already claimed).
+  //   2. Collect all (position, change) pairs.
+  //   3. Replace right-to-left so earlier offsets stay valid.
+  const claimed = [];  // sorted list of [start, end] ranges already assigned
+  const replacements = [];  // {{ pos, origLen, markup }}
+
+  changes.forEach((ch) => {{
     const orig = ch.original_text || '';
     if (!orig) return;
     const popup = makePopup(ch.change_id, ch.explanation, ch.issue_keys, ch.type, plan.lesson_id);
@@ -833,7 +844,26 @@ function leRenderLesson() {{
       markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }}
 
-    html = html.replace(orig, markup);
+    // Find the first occurrence of orig not overlapping an already-claimed range
+    let searchFrom = 0;
+    while (searchFrom <= html.length - orig.length) {{
+      const pos = html.indexOf(orig, searchFrom);
+      if (pos === -1) break;
+      const end = pos + orig.length;
+      const overlaps = claimed.some(([s, e]) => pos < e && end > s);
+      if (!overlaps) {{
+        claimed.push([pos, end]);
+        replacements.push({{ pos, origLen: orig.length, markup }});
+        break;
+      }}
+      searchFrom = pos + 1;
+    }}
+  }});
+
+  // Replace right-to-left so earlier positions remain valid
+  replacements.sort((a, b) => b.pos - a.pos);
+  replacements.forEach({{ pos, origLen, markup }}) => {{
+    html = html.slice(0, pos) + markup + html.slice(pos + origLen);
   }});
 
   // Inject screenshot notes (wrapped in tc-wrap for accept/reject)
