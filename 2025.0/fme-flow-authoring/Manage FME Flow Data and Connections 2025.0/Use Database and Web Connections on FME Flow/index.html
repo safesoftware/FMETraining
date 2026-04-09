@@ -1,0 +1,182 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Publish a database connection with a workspace to FME Flow</li>
+<li>Manage and use database connections on FME Flow</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-use-database-connections-on-fme-flow.fmw" target="_blank" rel="noopener">Starting workspace</a><span style="font-weight: 400;"> | C:\FMEData\Workspaces\CreateDataIntegrationApps\exercise-use-database-connections-on-fme-flow.fmw</span></li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define a database connection and a web connection</li>
+<li>Manage web and database connections in FME Flow</li>
+<li>Upload, edit and use connections in FME Flow</li>
+</ul>
+<h2><!-- The script tag should live in the head of your page if at all possible --></h2>
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<h2><!-- Put this wherever you would like your player to appear --></h2>
+<h2 id="what-is-a-database-connection">What is a Database Connection?</h2>
+<p>When the source data for a dataset is a database, you can optionally store connection parameters in a secure container called a&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!NamedConnections/options_database_connections.htm" target="_blank" rel="noreferrer noopener">database connection</a>. That container can be either published to FME Flow or recreated on it.</p>
+<p>Database connections are containers for a set of database connection parameters. These parameters include the database server, port number, username, password, and other parameters that vary according to the database type. Some database types support optional authentication parameters. For example, when creating a Database Connection on FME Flow for PostgreSQL, there are optional authentication parameters which include: CA Certificate, Client Certificate, Client Private Key and SSL Password.&nbsp;</p>
+<p>The two main advantages of database connections are:</p>
+<ul>
+<li>Connection parameters are no longer embedded in a workspace, meaning less of a security risk.
+<ul>
+<li>For example, your parameters would not be exposed to anyone who downloaded the workspace.</li>
+</ul>
+</li>
+<li>Connection parameters can be reused among multiple workspaces.
+<ul>
+<li>For example, two workspaces that use the same database can use the same connection.</li>
+</ul>
+</li>
+</ul>
+<p>Database connections can be published with a workspace from FME Form, or they can be added directly within FME Flow.</p>
+<h2 id="creating-database-connections">Creating Database Connections</h2>
+<p>Creating a database connection usually starts in FME Form. The connections can be created using Tools &gt; FME Options &gt; Database Connections in the FME Workbench menubar. The defined connection can then be used in a reader, writer, or transformer. Alternatively, when the author adds a Transformer, Reader or Writer to FME Workbench that requires a Database Connection but there is no existing connection for this format, they are prompted with the option to add a Database Connection from within this wizard.</p>
+<p>As an example, this workspace has a connection for a PostGIS database, as seen in Navigator under the reader parameters and in the list of database connections:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.001.DatabaseConnectionInWB.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/1730938021518.png" alt="Navigator showing the use of a Database Connection" width="471" height="356" /></a></p>
+<p>When the workspace is published to FME Flow a new dialog asks the author whether they would also like to publish the database connection:</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.002.DatabaseConnectionInWiz.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/1730938080568.png" alt="Publishing a database connection to FME Flow" width="501" height="237" /></a></p>
+<p>The connection is then added to the connections container on FME Flow.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You don't have to upload the connection with the workspace. If a connection for that database already exists on FME Flow, you can use that. FME Workbench should recognize whether a connection with the same name is already available, if it is, by default the box will not be checked.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you don't upload the connection, and you don't already have one to use on FME Flow, then you will need to use the Database Connections page to create one.</span></p>
+</blockquote>
+<h2 id="managing-database-connections">Managing Database Connections</h2>
+<p>FME Flow has a page for managing database connections accessed through the main menu:</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/c8lZwldEwZCTPIPIHoB6_9k-Ex6wU9NQjLrwSynhqUofHNsXr9sUhF5-M3R95exTlzz9cOiuYgHnI8yZPM5kRdQSyKlxTKFmw7nM4uY09BNrxOI9oQC1kP8H35WLK5n-HIW3cIBW9Rwr-X1iTluiHic" alt="Database Connections menu option" width="243" height="152" /></p>
+<p>This page allows workspace authors - but usually administrators - to create new connections and copy, delete or edit existing connections:</p>
+<p><img class="image image-block image-center" src="images/1733523988482.jpg" alt="Editing database connection" width="644" height="800" /></p>
+<h2 id="using-database-connections">Using Database Connections</h2>
+<p>When a workspace is run, if it has a database reader (for example) the end-user is prompted with a published parameter and can select the database connection to use:</p>
+<p><img class="image image-block image-center" src="https://lh6.googleusercontent.com/TITI9zzSea9aPI9cBAnTBGjlP4K-N4AQrX31TUYFeaiwxe7ng6vxYO99Q2XR9x4akfHZoCOzlep9WaDRe0P5lNMzWJIHa-7nxhaUPUo2Euzt-NHKK2NGOkjyUsTTjIbMBJluAV6OoscMuRLWVHaT4Qs" alt="Setting a Connection parameter" width="759" height="443" /></p>
+<p>The workspace then runs to completion as normal.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Connections, like other objects on FME Flow, have security permissions. Only the owner, someone with whom the connection is shared, or (by default) an administrator, can make use of it. It's not the case that any random user will be provided access to all database connections via the published parameter.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">This fact becomes particularly important when creating FME Flow workflows that require access to the Connection, for example, Flow Apps (see </span><a href="https://academy.safe.com/create-no-code-web-apps" target="_blank" rel="noopener"><span style="font-family: inherit; font-size: 1em;">Create No-Code Web Apps</span></a><span style="font-family: inherit; font-size: 1em;">). Make sure you&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Workspace-Apps.htm" target="_blank" rel="noopener">grant explicit permissions</a><span style="font-family: inherit; font-size: 1em;"> to web and database connections when creating these workflows.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">This also means that a workspace can be tested in FME Form using the author's connection parameters, but then require the end user's connection once published to Flow; all in a way that is both easy and secure.</span></p>
+</blockquote>
+<h2 id="what-is-a-web-connection">What is a Web Connection?</h2>
+<p>Just as for databases, when the source data for a dataset is a web service, FME is capable of storing connection parameters in a secure container called a&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Workbench/!NamedConnections/options_web_service_connections.htm" target="_blank" rel="noreferrer noopener">web connection</a>. That container can be either published to FME Flow or recreated on it.</p>
+<p>Web connections are containers for a set of web service connection parameters. These parameters include the service, username, password (or authenticated connection), and others that vary according to the service type.</p>
+<p>The two main advantages of web connections are:</p>
+<ul>
+<li>Connection parameters are no longer embedded in a workspace, meaning less of a security risk.
+<ul>
+<li>For example, your parameters would not be exposed to anyone who downloaded the workspace.</li>
+</ul>
+</li>
+<li>Connection parameters can be reused among multiple workspaces.
+<ul>
+<li>For example, two workspaces that use the same web service can use the same connection.</li>
+</ul>
+</li>
+</ul>
+<p>Web connections can be published with a workspace from FME Form, or they can be added directly within FME Flow.</p>
+<h2 id="creating-web-connections">Creating Web Connections</h2>
+<p class="c8 c5"><span class="c3">Creating a web connection often starts in FME Form. They can be created using Tools &gt; FME Options &gt; Web Connections in the FME Workbench title bar. </span><span class="c3">FME must be registered to use the web services to which you want to connect. For testing purposes, most common web services that authenticate using the OAuth standard are already registered in FME (Manage Services&gt;</span><span class="c18"><a class="c16" href="https://community.safe.com/s/article/Creating-Web-Service-Connections-OAuth-2-0" target="_self">Web Service Definition Templates</a></span><span class="c0">). The Web Connections page allows you to manage web connections and their associated web services.</span></p>
+<p class="c8 c5"><span class="c3">Note: For production, when using Safe Software&rsquo;s web service definition templates, please be sure to remove the credentials tied to Safe and replace them with your organizational credentials, such as client ID, client secret.</span><span class="c0">&nbsp;</span></p>
+<p><img title="" src="https://lh6.googleusercontent.com/EbxFmZBm28W1a3Wt2dVo60UxLfYw0Z9_WjXe1XXpeAcVWRm_k0DqefGzzvPpkB3qPH_5aXWyPkVGwtgqaVB4jJR5zaIBW2OSXgQBrURtWagrExcnDnDwYZXzZu4bFQZIPhpx26vzLU5Ty1B7y1oHhfk" alt="" /></p>
+<p>Here is an example of Google Drive Definition Template with Safe Software credentials that can be used in testing environments.</p>
+<p><img title="" src="https://lh6.googleusercontent.com/AgPtrdOrHy1_pq-mG8jQGgTT4syZIy-8XNVPvCqgDD7SxruOqeKjxdyrulyptRcOhiMJxropS14zHMdhyB4JChby3nt5S_yiDQWeCAcQZsuwAaKZ1653yCzQOT9jzp6E6gkQY1q1OQkKa_HQe6iAysw" alt="" /></p>
+<p>To create the web connection, click on the plus sign and select the web service of choice and name your connection.</p>
+<p><img title="" src="https://lh3.googleusercontent.com/OPg2dqGcABGd1GclvLUGmORjcAH4yRHHS-Fjp1EHYUEubCPJP7Zvqq935JhU5Lmp6EIlPnvI8cxgR815L6QDa2qRN7QyjPpTbCrikILmkVPBBQdP-X-D_0j1xQ8-FTGOaNOdOgFZbPHiVSRJsI8IH8k" alt="" /></p>
+<p class="c8 c5"><span class="c0">The defined connection can then be used in a reader, writer, or transformer.</span></p>
+<p class="c8 c5"><span class="c0">For example, this workspace reads a CSV dataset using a connection to a Google Drive web service, as seen in the Navigator under both the reader parameters and the list of web connections:</span></p>
+<p><img title="" src="https://lh3.googleusercontent.com/GOaAIisKDlcMyIxmdduEgRJUEVaSsoMGP_3Y0DIEePto36ie7gUScrTZZyQqjdkgR7_Q4My0RCxC1Tf78-ZahCA82mGiL-XC3qPhY1H4S76j89b2HqCWBgF-qba2PkgRcGLq_E9WYe1Ko3IGnKoRnN4" alt="" /></p>
+<p>The connection is then added to the connections container on FME Flow.</p>
+<p><img title="" src="https://lh4.googleusercontent.com/Jvm4xpIpR80bSqBAuS5Alrj16Coh4MG1aBXOlEOHibxm3dW1EtSOs6bUP7K4SXy770cg53hDg_rH5ur7XoGLkeGiqtBqcyEwghMa6c6DkwiSgmEtksUdVWVXH-PHKMEBH5CBQ-GLwFiJt1atRYsBy9Q" alt="" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><strong style="font-family: inherit; font-size: 1em;">WARNING:</strong><span style="font-family: inherit; font-size: 1em;"> While uploading a web service from Form is enough to run the connection, this service definition is provided by Safe Software for </span><strong style="font-family: inherit; font-size: 1em;">demonstration purposes</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;and ease of use. The client id and client secret may become deactivated at any time. For production use, we recommend users obtain their own client id and client secret from the web service provider. Setting up the service definition for OAuth authentication is a task best left to system administrators.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2 id="using-web-connections">Using Web Connections</h2>
+<p>When a workspace is run and has a transformer or reader that references a web service, it will run correctly, just as on an FME Form installation.</p>
+<p>In the published parameters on FME Flow, the web connection can be defined in the source dataset URL when using a URL to select a file from the web.</p>
+<p><img src="images/1731005563987.png" alt="Select file from web" width="769" height="309" /></p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring2DataHandling/Images/Img2.008.UsingAWebConnection.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="https://lh3.googleusercontent.com/I44m0OrrSQfxQoz1SCM-rqZvFKHsj-CE62j3P8800ehfsNydodhIjtrMEx7dd55EaOoaRqU-Q3VYCwhV4M-oi0WGkmjxLVuQXkIuH6XfjywQJQHBGOTL5EEI8qvpJVitUReY-D57WXz0KpJvwbzsaVc" alt="Using a web connection with a URL" width="800" height="146" /></a></p>
+<p>&nbsp;</p>
+<p>Or, it can appear in a dropdown menu item if used as a published parameter in a workspace:</p>
+<p><img class="image image-block image-center" src="https://lh5.googleusercontent.com/DO4KC_efZ4lMQxbDl4wTPClb4t8Fye-d2YLYzF6jXSjEKMWzNz69nZvOYeSDVRftbU7975ZBM-2lDd7aHplTt0zNyb61w-FSARoqXtoum4AoeDuOjJrttaqJQpLYNYaSeqsGoNjR5N6j7lSqNbt3kJQ" alt="Selecting a Web Connection parameter" width="707" height="147" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">As with database connections, this functionality allows a workspace to be tested in FME Form using the author's connection parameters, but then switched to a general account once published to Flow; all in a way that is both easy and secure.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2>Exercise</h2>
+<p>For this exercise, you&rsquo;re adapting a workspace to read data from a PostGIS database. The workspace reads in Parks points and clips them to a layer of neighborhood polygons to store parks in each neighborhood. You&rsquo;ve built the workspace and are now replacing the Readers to read from the database; the old Readers have already been removed. Then, you must publish the workspace and database connection to FME Flow.&nbsp;</p>
+<h2>1) Open the Starting Workspace</h2>
+<p><span style="font-weight: 400;">Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/exercise-use-database-connections-on-fme-flow.fmw" target="_blank" rel="noopener">starting workspace</a> in FME Workbench.</span></p>
+<p>The workspace is supposed to read in Neighborhood polygons and Parks point locations, but these Readers haven&rsquo;t been added yet. For now, there are bookmarks to mark the place of the Readers. The Clipper clips Parks by the Neighborhood boundaries, and the writer feature type writes out a separate layer of schools for each neighborhood. This example workspace uses a NULL writer, which doesn't actually write data.&nbsp;</p>
+<p><img src="images/1734114536023.jpg" alt="" /></p>
+<h2>2) Create Database Connection</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></p>
+<p>You can skip this step while taking a Safe Software-hosted training course. The Database Connection FME Training PostGIS Database should already exist on your training machine.&nbsp;</p>
+</blockquote>
+<p><span style="font-weight: 400;">You can connect to databases using Database Connections. Database connections provide a convenient and secure way to store and reuse these connection parameters. Each time you need to use the same connection in a workspace, you can use the saved connection, rather than re-entering the connection parameters. If the connection parameters change, you can edit them in one place rather than in each workspace that uses the connection.</span></p>
+<p><span style="font-weight: 400;">Database Connections require credentials. In a web browser, visit <a href="http://fme.ly/database" target="_blank" rel="noopener">http://fme.ly/database</a>. This shows the credentials for a PostGIS database running on Amazon RDS.</span></p>
+<p><span style="font-weight: 400;">Select Tools &gt; FME Options from the menu bar.</span></p>
+<p><span style="font-weight: 400;">To create a new connection, click the Database Connections category icon and the [+] button. In the "Add Database Connection" dialog, enter the connection parameters obtained through the web browser.</span></p>
+<p><span style="font-weight: 400;">Give the connection a name (you can call it FME Training PostGIS Database) and click Save.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734114902449.png" alt="" /></span></p>
+<p><span style="font-weight: 400;">Then click OK to close the FME Options dialog.</span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">If you are unable to enter FME Training PostGIS Database for the Name, that means this connection already exists on your machine. You do not need to create it; you can simply select that existing connection in step 3.</span></p>
+</blockquote>
+<h2><span style="font-weight: 400;">3) Add Readers</span></h2>
+<p><span style="font-weight: 400;">Add a PostGIS Reader using the FME Training PostGIS Database connection.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734115188180.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Open the Parameters, expand Public and select the Neighborhoods and Parks tables.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734115705112.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Click OK to select the tables and then again to add the Reader Feature Types to the canvas.</span></p>
+<h2><span style="font-weight: 400;">4) Connect Readers to Clipper</span></h2>
+<p><span style="font-weight: 400;">Place the Readers in their bookmarks and connect them to the Clipper. The Parks reader connects to the Candidate port on the Clipper, and the Neighborhoods reader connects to the Clipper port.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734115812751.jpg" alt="" /></span></p>
+<h2><span style="font-weight: 400;">5) Run Workspace</span></h2>
+<p><span style="font-weight: 400;">Run the workspace and optionally Save the workspace.&nbsp;</span></p>
+<h2><span style="font-weight: 400;">6) Publish Workspace and Database Connection to FME Flow</span></h2>
+<p><span style="font-weight: 400;">Click Publish in the Toolbar or go to File &gt; Publish to FME Flow. Select your web connection to FME Flow. Select the Training repository to store the workspace in.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734116560750.jpg" alt="" /></span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">If you are taking a Safe Software-hosted training course, your connection to FME Flow should already exist on your training machine. If you need to create a new connection to FME Flow or create the Training repository, you can follow the <a href="https://academy.safe.com/path/fme-flow-authoring/publish-workflows-to-the-web" target="_blank" rel="noopener">Publish Workflows to the Web</a> learning path to learn how.&nbsp;</span></p>
+</blockquote>
+<p><span style="font-weight: 400;">Make sure you upload the FME Training PostGIS Database connection. If the database connection is not present on FME Flow, you won&rsquo;t be able to read the data from the PostGIS database when running the workspace. </span></p>
+<p><span style="font-weight: 400;"><img src="images/1734116866552.jpg" alt="" /></span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img class="img mtm" role="presentation" src="https://safemytrailhead.s3.us-west-2.amazonaws.com/images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">If the database connection already exists on FME Flow, you do not need to publish the connection again unless you have updated the connection details and would like to overwrite the existing one on FME Flow. By default, connections that already exist on FME Flow will not be selected.&nbsp;</span></p>
+</blockquote>
+<p><span style="font-weight: 400;">Register the workspace with the Job Submitter service and click Publish.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117006697.jpg" alt="" /></span></p>
+<h2><span style="font-weight: 400;">6) Investigate Database Connection on FME Flow.</span></h2>
+<p><span style="font-weight: 400;">Open FME Flow and navigate to Connections &amp; Parameters &gt; Database Connections. The page should list the database connection we just published with the workspace, any database connections already present on FME Flow, and allow you to create new connections.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117078486.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Clicking on the connection will open the connection details and allow them to be edited if needed.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117132184.jpg" alt="" width="863" height="696" /></span></p>
+<p><span style="font-weight: 400;">We don&rsquo;t need to edit this connection right now, so click OK to close the connection details page.&nbsp;</span></p>
+<h2><span style="font-weight: 400;">8) Run Workspace on FME Flow</span></h2>
+<p><span style="font-weight: 400;">Click Run Workspace on the side menu. Select the workspace that was published in Step 6.&nbsp;</span></p>
+<p><span style="font-weight: 400;">Under Published Parameters, the Connection parameter referencing the database connection is visible. The drop-down allows you to select a different connection if desired. Leave FME Training PostGIS Database as the selected connection for this exercise and click Run.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1734117637443.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">FME Flow uses the database connection to access the Neighborhoods and Parks tables from the PostGIS database and run the workspace successfully.&nbsp;</span></p>
+<p>You can reuse this database connection to run other workspaces on FME Flow, as well as share the connection with other FME Flow users to use it when running their workspaces. The database connection can easily be updated by overwriting the existing connection on FME Flow when publishing or can be edited directly on FME Flow in the Database Connections store.&nbsp;</p>
