@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import html as _html_module
 import json
 import re
 import time
@@ -342,6 +343,16 @@ async def _call_openai(
                 su for su in parsed.get("screenshot_updates", [])
                 if "safe_note.png" not in (su.get("src") or "")
             ]
+
+            # Post-processing: remove changes whose original_text is not in lesson HTML (issue 74)
+            filtered_changes = _filter_stale_original_text(
+                filtered_changes, lesson_html, lesson_id
+            )
+
+            # Post-processing: suppress FMEENGINE-only changes in fully conceptual lessons (issue 72)
+            filtered_changes = _filter_fmeengine_no_ui(
+                filtered_changes, lesson_html, lesson_id
+            )
 
             # Assign stable change_ids based on lesson+index
             for i, change in enumerate(filtered_changes):
@@ -766,6 +777,15 @@ def _propagate_renames(
 # Version string post-processing (issue 56)
 # ---------------------------------------------------------------------------
 
+def _heading_before(html: str, pos: int) -> str:
+    """Return text of the nearest h2/h3 heading before pos in html, or '' if none found."""
+    snippet = html[:pos]
+    matches = list(re.finditer(r"<h[23][^>]*>([^<]+)</h[23]>", snippet, re.IGNORECASE))
+    if matches:
+        return matches[-1].group(1).strip()
+    return ""
+
+
 def _ensure_version_changes(
     changes: list[dict],
     lesson_html: str,
@@ -777,8 +797,6 @@ def _ensure_version_changes(
     Scan lesson HTML for any occurrence of from_version in text content that is
     not already covered by an existing change, and auto-generate a change for it.
     """
-    import re
-
     if not from_version or not to_version or from_version == to_version:
         return changes
 
@@ -818,7 +836,7 @@ def _ensure_version_changes(
         new_changes.append({
             "change_id": new_change_id,
             "type": "change",
-            "heading": "",
+            "heading": _heading_before(lesson_html, pos),
             "original_text": from_version,
             "suggested_text": to_version,
             "explanation": (
@@ -832,6 +850,77 @@ def _ensure_version_changes(
         print(f"\n  [version-strings] Auto-added {len(new_changes)} change(s) for {lesson_id}")
 
     return changes + new_changes
+
+
+# ---------------------------------------------------------------------------
+# Post-processing helpers (issues 74, 72)
+# ---------------------------------------------------------------------------
+
+
+def _normalize_html_text(t: str) -> str:
+    """Decode HTML entities and collapse whitespace for substring matching."""
+    return " ".join(_html_module.unescape(t).split())
+
+
+def _filter_stale_original_text(
+    changes: list[dict],
+    lesson_html: str,
+    lesson_id: str,
+) -> list[dict]:
+    """
+    Remove changes whose original_text cannot be found in the lesson HTML.
+    Applies only to 'change' and 'delete' types — 'add' has no original_text.
+    Issue #74.
+    """
+    norm_html = _normalize_html_text(lesson_html)
+    valid: list[dict] = []
+    for change in changes:
+        orig = change.get("original_text", "")
+        if change.get("type") in ("change", "delete") and orig:
+            if _normalize_html_text(orig) not in norm_html:
+                print(
+                    f"\n  [filter-74] Dropping change {change.get('change_id', '')} "
+                    f"in {lesson_id}: original_text not found: {orig[:60]!r}"
+                )
+                continue
+        valid.append(change)
+    return valid
+
+
+def _filter_fmeengine_no_ui(
+    changes: list[dict],
+    lesson_html: str,
+    lesson_id: str,
+) -> list[dict]:
+    """
+    Narrow fallback filter for FMEENGINE-only changes in fully conceptual lessons.
+
+    A change is removed only when ALL three conditions hold:
+    1. Every key in change['issue_keys'] starts with 'FMEENGINE-'
+    2. The change heading is not an exercise step (not matched by EXERCISE_STEP_PATTERN)
+    3. The lesson has no instructional headings at all (pure conceptual lesson)
+
+    Issue #72. The primary fix is the prompt rule in EDIT_SUGGESTIONS.md; this is
+    a narrow code-level fallback for cases the prompt rule misses.
+    """
+    has_instructional = bool(config.EXERCISE_STEP_PATTERN.search(lesson_html))
+    if has_instructional:
+        return changes  # lesson has exercise steps — don't suppress anything here
+
+    valid: list[dict] = []
+    for change in changes:
+        keys = change.get("issue_keys", [])
+        if keys and all(k.startswith("FMEENGINE-") for k in keys):
+            heading = change.get("heading", "")
+            if not config.EXERCISE_STEP_PATTERN.match(heading):
+                print(
+                    f"\n  [filter-72] Dropping FMEENGINE-only change "
+                    f"{change.get('change_id', '')} in {lesson_id} "
+                    f"(conceptual lesson, no UI context): {heading!r}"
+                )
+                continue
+        valid.append(change)
+    return valid
 
 
 # ---------------------------------------------------------------------------

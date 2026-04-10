@@ -228,6 +228,15 @@ span.tc-orig-context {{ color: inherit; }}
 .screenshot-note-accepted {{ background: #f0fdf4; border-left-color: #16a34a; }}
 .screenshot-note-accepted strong {{ color: #15803d; }}
 .screenshot-note-rejected {{ background: #f9fafb; border-left-color: #9ca3af; opacity: 0.55; }}
+/* Alt text update notes (issue 53) */
+.alt-text-note {{ background: #eff6ff; border-left: 3px solid #3b82f6; padding: 8px 12px; margin: 2px 0 12px; font-size: 0.82rem; line-height: 1.5; border-radius: 0 4px 4px 0; }}
+.alt-text-note strong {{ display: block; margin-bottom: 4px; color: #1d4ed8; }}
+.alt-text-note .alt-row {{ display: flex; gap: 6px; align-items: baseline; margin-top: 2px; }}
+.alt-text-note .alt-label {{ font-weight: 600; min-width: 4.5rem; color: #374151; }}
+.alt-text-note .alt-val {{ color: #1f2937; }}
+.alt-text-note-accepted {{ background: #f0fdf4; border-left-color: #16a34a; }}
+.alt-text-note-accepted strong {{ color: #15803d; }}
+.alt-text-note-rejected {{ background: #f9fafb; border-left-color: #9ca3af; opacity: 0.55; }}
 .edit-toolbar {{ display: flex; gap: 8px; align-items: center; padding: 8px 24px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; }}
 .edit-toolbar button {{ padding: 5px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.82rem; }}
 .edit-toolbar button:disabled {{ opacity: 0.4; cursor: not-allowed; }}
@@ -788,10 +797,14 @@ function leRenderLesson() {{
 
   const changes = plan.changes || [];
   const screenshots = plan.screenshot_updates || [];
-  const totalChanges = changes.length + screenshots.length;
+  const altTextUpdates = plan.alt_text_updates || [];
+  const totalChanges = changes.length + screenshots.length + altTextUpdates.length;
 
-  document.getElementById('le-change-count').textContent =
-    totalChanges > 0 ? `${{changes.length}} text change${{changes.length !== 1 ? 's' : ''}}, ${{screenshots.length}} screenshot note${{screenshots.length !== 1 ? 's' : ''}}` : 'No changes suggested';
+  const parts = [];
+  if (changes.length) parts.push(`${{changes.length}} text change${{changes.length !== 1 ? 's' : ''}}`);
+  if (screenshots.length) parts.push(`${{screenshots.length}} screenshot note${{screenshots.length !== 1 ? 's' : ''}}`);
+  if (altTextUpdates.length) parts.push(`${{altTextUpdates.length}} alt text suggestion${{altTextUpdates.length !== 1 ? 's' : ''}}`);
+  document.getElementById('le-change-count').textContent = parts.length ? parts.join(', ') : 'No changes suggested';
   document.getElementById('le-toolbar').style.display = totalChanges > 0 ? 'flex' : 'none';
 
   let html = plan.lesson_html || '<p><em>No lesson HTML available.</em></p>';
@@ -883,6 +896,21 @@ function leRenderLesson() {{
     html = html.replace(imgPattern, '$1' + wrapped);
   }});
 
+  // Inject alt text update cards after matching <img> tags (issue 53)
+  altTextUpdates.forEach((au, idx) => {{
+    if (!au.src) return;
+    const atId = 'at-' + idx;
+    const noteInner = `<div class="alt-text-note">` +
+      `<strong>🏷 Alt text update suggested</strong>` +
+      `<div class="alt-row"><span class="alt-label">Current:</span><span class="alt-val">${{escHtml(au.original_alt || '(none)')}}</span></div>` +
+      `<div class="alt-row"><span class="alt-label">Suggested:</span><span class="alt-val"><strong>${{escHtml(au.suggested_alt || '')}}</strong></span></div>` +
+      `</div>`;
+    const popup = makePopup(atId, au.explanation, [], 'alt-text', plan.lesson_id);
+    const wrapped = `<div class="tc-wrap tc-change" data-id="${{atId}}" data-type="alt-text" data-src="${{escHtml(au.src)}}" data-orig-alt="${{escHtml(au.original_alt || '')}}" data-sugg-alt="${{escHtml(au.suggested_alt || '')}}" data-state="pending">${{noteInner}}${{popup}}</div>`;
+    const imgPattern = new RegExp(`(<img[^>]*src="${{au.src.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&')}}"[^>]*>)`, 'i');
+    html = html.replace(imgPattern, '$1' + wrapped);
+  }});
+
   document.getElementById('le-lesson-body').innerHTML = html;
 
   // Fix relative image paths via DOM — more reliable than regex (issue 61)
@@ -948,6 +976,16 @@ function leApplyState(wrap, state) {{
     if (note) {{
       note.className = 'screenshot-note' +
         (state === 'accepted' ? ' screenshot-note-accepted' : state === 'rejected' ? ' screenshot-note-rejected' : '');
+    }}
+    return;
+  }}
+
+  // Alt text type: update the note's CSS class
+  if (type === 'alt-text') {{
+    const note = wrap.querySelector('.alt-text-note');
+    if (note) {{
+      note.className = 'alt-text-note' +
+        (state === 'accepted' ? ' alt-text-note-accepted' : state === 'rejected' ? ' alt-text-note-rejected' : '');
     }}
     return;
   }}
@@ -1205,6 +1243,19 @@ function leSave() {{
   body.querySelectorAll('.tc-popup').forEach(n => n.remove());
   // Remove screenshot tc-wraps entirely (they are notes, not content)
   body.querySelectorAll('.tc-wrap[data-type="screenshot"]').forEach(wrap => wrap.remove());
+
+  // Apply accepted alt text updates to matching <img> tags, then remove the wraps
+  body.querySelectorAll('.tc-wrap[data-type="alt-text"]').forEach(wrap => {{
+    if (wrap.dataset.state === 'accepted') {{
+      const src = wrap.dataset.src || '';
+      const suggestedAlt = wrap.dataset.suggAlt || '';
+      if (src && suggestedAlt) {{
+        const img = body.querySelector(`img[src="${{src}}"], img[src$="${{src}}"]`);
+        if (img) img.setAttribute('alt', suggestedAlt);
+      }}
+    }}
+    wrap.remove();
+  }});
 
   // Resolve each text tc-wrap to plain text based on state
   body.querySelectorAll('.tc-wrap').forEach(wrap => {{

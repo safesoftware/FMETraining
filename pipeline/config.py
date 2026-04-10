@@ -89,6 +89,10 @@ EDITORIAL_GUIDELINES_PATH: Path = PROMPTS_DIR / "EDITORIAL_GUIDELINES.md"
 # Model for Step 6 edit suggestions (separate from assessment model; gpt-4o recommended)
 EDIT_SUGGESTIONS_MODEL: str = os.getenv("EDIT_SUGGESTIONS_MODEL", "gpt-4o")
 
+# Model and concurrency for alt text enrichment (issue 53)
+ALT_TEXT_MODEL: str = os.getenv("ALT_TEXT_MODEL", "gpt-4o")
+ALT_TEXT_MAX_CONCURRENT: int = int(os.getenv("ALT_TEXT_MAX_CONCURRENT", "5"))
+
 
 # ---------------------------------------------------------------------------
 # Product mapping

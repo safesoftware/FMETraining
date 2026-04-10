@@ -96,8 +96,24 @@ def main() -> int:
         help="When --jira-source api is set, force a fresh fetch from the Jira API "
              "even if a local cache (inputs/jira_api_cache.json) already exists",
     )
+    parser.add_argument(
+        "--enrich-alt-text",
+        metavar="RUN_ID",
+        default=None,
+        help="Enrich screenshot alt text for an existing run's edit-plans using a "
+             "multimodal LLM. Results appear in the report UI as reviewable alt text "
+             "suggestions. Pass the run ID to merge into its edit-plans JSON.",
+    )
 
     args = parser.parse_args()
+
+    # ---------------------------------------------------------------------------
+    # --enrich-alt-text: standalone alt text enrichment pass and exit
+    # ---------------------------------------------------------------------------
+    if args.enrich_alt_text:
+        from pipeline.enrich_alt_text import main as enrich_main
+        enrich_main(run_id=args.enrich_alt_text, dry_run=args.dry_run)
+        return 0
 
     # Validate mutually exclusive flags
     if args.resume and args.report_only:
