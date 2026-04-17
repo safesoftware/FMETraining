@@ -12,7 +12,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.2.0"
 APP_NAME = "FME Training Update Assistant"
 
 # Locate repo root (parent of the pipeline/ package directory)

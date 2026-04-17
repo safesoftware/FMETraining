@@ -496,6 +496,31 @@ code { font-family: monospace; font-size: 11px; }
 
 <script>
 // ---------------------------------------------------------------------------
+// JS error capture — show in console panel and forward to server terminal
+// ---------------------------------------------------------------------------
+function _reportJsError(message, source, lineno, colno, stack) {
+  const location = source ? ` (${source}:${lineno}:${colno})` : '';
+  appendLog(`[JS ERROR]${location} ${message}`);
+  fetch('/api/client-error', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, source, lineno, colno, stack: stack || '' }),
+  }).catch(() => {});
+}
+
+window.onerror = function(message, source, lineno, colno, error) {
+  _reportJsError(message, source, lineno, colno, error?.stack || '');
+  return false; // don't suppress default browser handling
+};
+
+window.addEventListener('unhandledrejection', function(event) {
+  const err = event.reason;
+  const message = err?.message || String(err);
+  const stack = err?.stack || '';
+  _reportJsError('Unhandled Promise rejection: ' + message, '', '', '', stack);
+});
+
+// ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
 let contentTree = [];

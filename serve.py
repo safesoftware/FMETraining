@@ -12,6 +12,7 @@ Serves static files from the project root and provides API endpoints:
   POST /api/start-run              → write update-job.json + spawn pipeline
   POST /api/run-action             → regenerate-report / edit-suggestions / resume
   POST /api/save-lesson            → write accepted lesson edits to disk
+  POST /api/client-error           → log browser JS errors to the terminal
 
 Usage:
     python serve.py [PORT]          # default port: 8080
@@ -149,6 +150,8 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             self._api_start_run()
         elif path == "/api/run-action":
             self._api_run_action()
+        elif path == "/api/client-error":
+            self._api_client_error()
         else:
             self.send_error(404, "Not Found")
 
@@ -446,6 +449,28 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             shutil.copytree(source_images, target_images, dirs_exist_ok=True)
 
         self._json_response(200, {"target_path": target_path_str})
+
+    # -- Client error logging ----------------------------------------------
+
+    def _api_client_error(self) -> None:
+        length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(length)
+        try:
+            err = json.loads(body)
+        except Exception:
+            err = {"message": body.decode("utf-8", errors="replace")}
+        msg = err.get("message", "unknown error")
+        source = err.get("source", "")
+        lineno = err.get("lineno", "")
+        colno = err.get("colno", "")
+        stack = err.get("stack", "")
+        location = f" ({source}:{lineno}:{colno})" if source else ""
+        print(f"\n[JS ERROR]{location} {msg}", flush=True)
+        if stack:
+            for line in stack.splitlines():
+                print(f"  {line}", flush=True)
+        self.send_response(204)
+        self.end_headers()
 
     # -- Utility -----------------------------------------------------------
 
