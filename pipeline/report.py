@@ -858,13 +858,20 @@ function leRenderLesson() {{
     }}
 
     // Find the first occurrence of orig not overlapping an already-claimed range
+    // and not inside an HTML tag (attribute values must not be injected into).
     let searchFrom = 0;
     while (searchFrom <= html.length - orig.length) {{
       const pos = html.indexOf(orig, searchFrom);
       if (pos === -1) break;
       const end = pos + orig.length;
+      // Skip matches inside HTML tags: scan backward for nearest < or >
+      let insideTag = false;
+      for (let i = pos - 1; i >= 0; i--) {{
+        if (html[i] === '>') break;        // outside a tag — OK
+        if (html[i] === '<') {{ insideTag = true; break; }}  // inside <tag ...>
+      }}
       const overlaps = claimed.some(([s, e]) => pos < e && end > s);
-      if (!overlaps) {{
+      if (!insideTag && !overlaps) {{
         claimed.push([pos, end]);
         replacements.push({{ pos, origLen: orig.length, markup }});
         break;
