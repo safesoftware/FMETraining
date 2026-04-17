@@ -875,7 +875,7 @@ function leRenderLesson() {{
 
   // Replace right-to-left so earlier positions remain valid
   replacements.sort((a, b) => b.pos - a.pos);
-  replacements.forEach({{ pos, origLen, markup }}) => {{
+  replacements.forEach(({{ pos, origLen, markup }}) => {{
     html = html.slice(0, pos) + markup + html.slice(pos + origLen);
   }});
 
@@ -1031,7 +1031,7 @@ function leShowCard(recId, fromChangeId) {{
   const idx = filteredData.findIndex(a => a.rec_id === recId);
   if (idx >= 0) {{
     const targetPage = Math.floor(idx / PAGE_SIZE) + 1;
-    if (currentPage !== targetPage) {{ currentPage = targetPage; renderCards(); }}
+    if (currentPage !== targetPage) {{ currentPage = targetPage; renderPage(); }}
   }}
   setTimeout(() => {{
     const card = document.getElementById('card-' + recId);
