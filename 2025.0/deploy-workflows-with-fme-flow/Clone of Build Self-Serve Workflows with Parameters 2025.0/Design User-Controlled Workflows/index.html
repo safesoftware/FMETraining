@@ -1,0 +1,204 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define different parameters in FME, and which parameters users find most relevant to workflows on FME Flow.&nbsp;</li>
+<li>Understand how user parameters can give end-users control over how workspaces run.</li>
+<li>Create and manage user parameters using the Parameter Manager.</li>
+<li>Distinguish between Published and Unpublished parameters.&nbsp;</li>
+</ul>
+<h2 id="self-serve-and-parameters">What are Parameters?</h2>
+<p><strong>Parameters</strong> are controls that define how FME operates; for example, how a reader reads data, how a transformer transforms it, and how a writer writes it. Almost every component in FME has parameters of one type or another. You've already run into them while using FME.</p>
+<p>This lesson will overview the different types of parameters available within FME and introduce user parameters. User parameters are the key to giving the end-user control over self-serve workspaces.</p>
+<h2 id="what-are-parameters">Types of Parameters</h2>
+<p>Parameters control FME translations and transformations. Some parameters are set solely in FME Workbench to control different translation components:&nbsp;</p>
+<ul>
+<li>FME Parameters&nbsp;
+<ul>
+<li>Reference a specific FME system setting&nbsp;</li>
+<li>For example, FME_WORKSPACE_DIR is the folder name where the workspace resides and may change values as you move the workspace to different locations</li>
+</ul>
+</li>
+<li>Workspace Parameters&nbsp;
+<ul>
+<li>Specific settings that apply to running and storing a workspace</li>
+<li>For example, the file path and name of the workspace log file location</li>
+</ul>
+</li>
+<li>Reader and Writer Parameters
+<ul>
+<li>Distinct parameters that apply to each format and control how data is read or written</li>
+<li>For example, the source or destination file that the reader or writer is using</li>
+</ul>
+</li>
+<li>Transformer Parameters
+<ul>
+<li>Settings that apply and control how transformers function</li>
+<li>For example, the test condition for a Tester to filter features</li>
+</ul>
+</li>
+<li>Feature Type Parameters (a subset of Reader and Writer parameters)
+<ul>
+<li>Control how a single feature type is read or written</li>
+<li>For example, the geometry column name for a table that varies across individual tables&nbsp;</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>This training only focuses on working with parameters alongside FME Flow. For more in-depth training on parameters in FME Form, you can take the FME Form Advanced module <a href="https://academy.safe.com/path/fme-form-advanced/create-flexible-workspaces-with-parameters" target="_blank" rel="noopener">Create Flexible Workspaces with Parameters</a>.&nbsp;</p>
+</blockquote>
+<p>The workspace's author determines the most available parameters, which you cannot alter once you publish them to FME Flow. FME Flow provides access to the following parameters:&nbsp;</p>
+<ul>
+<li>User Parameters&nbsp;<br />
+<ul>
+<li>Exposed parameters that workspace end-users can set to control input values&nbsp;</li>
+<li>For example, a user can set the input file that the reader uses with a user parameter linked to a reader parameter</li>
+</ul>
+</li>
+<li>FME Flow Parameters
+<ul>
+<li>Reference FME Flow system settings when a workspace is run from FME Flow</li>
+<li>For example, the FME_SHAREDRESOURCE_DATA parameter links to the FME Flow Resources' Data folder</li>
+</ul>
+</li>
+<li>Deployment Parameters
+<ul>
+<li>Parameters that adopt values based on their deployment environment to control workflows&nbsp;&nbsp;</li>
+<li>For example, a deployment parameter references a database connection that varies in production and development environments&nbsp;</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>In FME Flow Automations, there's also Automation Parameters and Manual Parameters. You can learn more about them in <a href="https://academy.safe.com/path/fme-flow-authoring/build-basic-automations" target="_blank" rel="noopener">Build Basic Automations</a>.</p>
+</blockquote>
+<h2 id="published-parameters">User Parameters</h2>
+<p>Although workspace authors set&nbsp;<em>most</em> of the parameters, the end-user must be able to set some of them in some cases.</p>
+<p>User parameters are methods for getting input into a workspace, enabling users to set values for their translation. You can present any parameter in FME to the user as a choice when running a workspace. When running the workspace in FME Workbench or FME Flow, the user chooses the value for that parameter, giving the user greater control and customization over the workspace readers, transformers, and writers.</p>
+<p>For self-serve workflows, user parameters are most commonly used to set:</p>
+<ul>
+<li>Coordinate systems to deliver data in</li>
+<li>Which feature types (layers) to deliver</li>
+<li>The geographic area (Bounding Box or Area of Interest) to deliver data for</li>
+<li>Any other Reader, Writer, or Transformer parameters useful to the user</li>
+</ul>
+<p>With FME Flow, the key to successful workspace authoring is flexibility. Workspaces need to be flexible to allow end-users to make choices without seeing all of the complexity of the workspace or the data behind it. One way to accomplish this is by using parameters.&nbsp;</p>
+<p>As a workspace author, you must choose the appropriate user parameter based on the following questions:</p>
+<ul>
+<li>What choice do you want to present to the end-user?</li>
+<li>What data type is required to supply the correct value to an FME parameter?</li>
+</ul>
+<p>You can choose from the following options:</p>
+<table class="featureTable sort_table" style="width: 59.3649%; height: 576.641px;">
+<thead class="thead sorted">
+<tr style="height: 32.5px;">
+<th style="width: 16.4523%; height: 32.5px;" scope="col">Parameter Type</th>
+<th style="width: 83.4352%; height: 32.5px;" scope="col">Creates a Parameter to...</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Choice</td>
+<td style="width: 83.4352%; height: 32.5px;">Choose one or more values.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Color</td>
+<td style="width: 83.4352%; height: 32.5px;">Select a color value.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Datetime</td>
+<td style="width: 83.4352%; height: 32.5px;">Enter a date and time. For information about output formats, see&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/standard_fme_date_time_format.htm" target="_blank" rel="noopener">Standard FME Date/Time Format</a>.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">File/Folder/URL</td>
+<td style="width: 83.4352%; height: 32.5px;">Choose the names and paths of existing files or folders, an output file or folder, or a URL.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Message</td>
+<td style="width: 83.4352%; height: 32.5px;">Display a message at runtime.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Number</td>
+<td style="width: 83.4352%; height: 32.5px;">Enter an integer or floating-point number. The number can be bounded or unbounded based on the specified&nbsp;Configuration.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Password</td>
+<td style="width: 83.4352%; height: 32.5px;">Enter a password.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Text</td>
+<td style="width: 83.4352%; height: 32.5px;">Enter a text string.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Yes/No</td>
+<td style="width: 83.4352%; height: 32.5px;">Select or unselect a checkbox.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Attribute Name</td>
+<td style="width: 83.4352%; height: 32.5px;">Choose feature type attributes or items from a comma-delimited or space-delimited attribute&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!List_Attributes/About-List-Attributes.htm" target="_blank" rel="noopener">list</a>.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Coordinate System</td>
+<td style="width: 83.4352%; height: 32.5px;">Choose a coordinate system.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Database Connection</td>
+<td style="width: 83.4352%; height: 32.5px;">Choose a database connection.</td>
+</tr>
+<tr style="height: 56.6406px;">
+<td style="width: 16.4523%; height: 56.6406px;">Geometry</td>
+<td style="width: 83.4352%; height: 56.6406px;">Enter geometry as spatial coordinates in GeoJSON. When a workspace containing a Geometry published parameter is run from FME Flow, an interface is available to display the specified coordinates on a map and specify the desired geometry.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Reprojection File</td>
+<td style="width: 83.4352%; height: 32.5px;">Choose a grid shift file for reprojecting data.</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 16.4523%; height: 32.5px;">Web Connection</td>
+<td style="width: 83.4352%; height: 32.5px;">Choose a web connection.</td>
+</tr>
+</tbody>
+</table>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote>
+<p><br /><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br />There's also advanced parameter options for <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/scripted_python.htm" target="_blank" rel="noopener">scripted parameters</a>, which<span style="font-family: inherit; font-size: 1em;"> are a way to generate a parameter value using a Python script. These parameters can be useful for generating values in a more complex way, e.g. creating a list of feature types from other parameters, or creating a parameter that depends on the value of other user parameters submitted at runtime.</span></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+<h2>Creating and Managing User Parameters</h2>
+<p>You can create user parameters in several ways, depending on how you author the workspace. The most common ways to create parameters are:</p>
+<p>1) Directly from another parameter in the Navigator window, such as reader, writer, or transformer parameters</p>
+<p><img src="images/1747934934810.jpg" alt="" width="510" height="204" /></p>
+<p>2) From within the reader, writer, or transformer settings</p>
+<p><img src="images/1747941445010.jpg" alt="" width="768" height="331" /></p>
+<p>3) From within the Parameter Manager on FME Workbench, accessed by right-clicking User Parameters in the Navigator and choosing Manage User Parameters...</p>
+<p><img src="images/1747941695914.jpg" alt="" width="1127" height="473" /></p>
+<p>If you create a user parameter from the Parameter Manager, you must link it to the parameter value where you wish to control it.&nbsp;</p>
+<p><img src="images/1747941789495.jpg" alt="" width="755" height="389" /></p>
+<h2>Parameter Manager</h2>
+<p>You add, configure, reorder, and group parameters in the Parameter Manager.&nbsp;</p>
+<p class="c17 c14 c18"><span class="c0">The left-hand side of the Parameter Manager shows all of your created parameters and options to add new ones, group, copy and paste, reorder, and delete.</span></p>
+<p class="c17 c14 c18"><span class="c0">The right-hand side displays the properties for the newly created or selected parameter.</span></p>
+<p><img src="images/1747942387124.jpg" alt="" width="975" height="600" /></p>
+<p class="c17 c14 c18">In the parameter properties, you can customize the requirements and display for each parameter. If a parameter is&nbsp;<strong>required</strong>, you must give it a value for the workspace to run, and FME disables the Run button if the value is empty.&nbsp;</p>
+<h2 id="types-of-published-parameters">Published Parameters</h2>
+<p>When you make a user parameter available to the end-user, it becomes a <strong data-start="152" data-end="175">published parameter</strong>. Published parameters appear when configuring the workspace to run on FME Flow. In self-serve applications, they are essential because they let end-users control how the data is served. If you leave a user parameter <strong data-start="392" data-end="407">unpublished</strong>, end-users won&rsquo;t see or be able to edit it when running the workspace on FME Flow. You may want to use an unpublished parameter to reuse a value multiple times in a workspace without letting the end-user change it.&nbsp;</p>
+<p>FME Workbench uses a lock symbol to denote unpublished parameters. In the image below, the Password parameter is unpublished while the other parameters are published.&nbsp;</p>
+<p><strong><img src="images/1747942821722.jpg" alt="" /></strong></p>
+<p>When running a workspace on FME Flow, only the published parameters are visible. Unpublished parameters will use the default value if they're required. For the parameters above, the Password parameter isn't visible to be altered on FME Flow.&nbsp;</p>
+<p><img src="images/1747942994443.jpg" alt="" width="816" height="470" /></p>
+<p>Now you can use published parameters on FME Flow to design user-controlled workspaces. Published parameters are available everywhere you configure a workspace to run on FME Flow, from Automations to Apps to Streams.&nbsp;</p>
+<h2>Exercise</h2>
+<p><img src="images/1747946810023.png" alt="" width="241" height="256" /></p>
+<p>Jennifer, a GIS Specialist, is developing workspaces for other users to run on FME Flow. An essential part of her work is creating parameters to provide different aspects of flexibility and control to the end-users for the workflows. For the quiz, help Jennifer select the best options to implement user parameters into the workflows for each scenario.&nbsp;</p>
+<h3>Scenario 1: Spatial Filter for Area of Interest</h3>
+<p>Jennifer is creating a tool for users to extract data for specific neighborhoods within a city. She intends to have the user choose the neighborhood, and the workspace will filter the data accordingly and deliver the data in an output format of the user's choice.&nbsp;</p>
+<h3>Scenario 2: Project Data Exporter</h3>
+<p>Jennifer is building a workflow for her organization's planning team to export infrastructure project data from one of two PostgreSQL databases. She has created two database connections&mdash;one for the live production environment and one for the development testing copy. Jennifer wants users to enter the project ID number and select which database to query for the data.&nbsp;</p>
+<h3>Scenario 3: Raster Crop and Highlight Tool</h3>
+<p>Jennifer is creating a tool for an environmental analysis team that frequently works with large aerial imagery (e.g., orthophotos). They want an FME workspace that crops a section of the imagery based on geometry input and highlights certain features or regions by applying a custom colour overlay. Jennifer has built the transformers of the workspace and is now working on the parameters to take user input.&nbsp;</p>

@@ -1,0 +1,154 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use parameters to give users options when using self-serve applications.</li>
+<li>Configure a self-serve service with published parameters on FME Flow.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/create-a-user-controlled-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\create-a-user-controlled-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/create-a-user-controlled-workspace--complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\create-a-user-controlled-workspace--complete.fmw</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="introduction">Published Parameters on FME Flow&nbsp;</h2>
+<p>FME Flow displays published parameters in a sleek, easy-to-use form that you populate before running the workspace. FME Flow shows each parameter with the appropriate control based on its type. Here are examples of how a few common parameter types appear on FME Flow:</p>
+<div>
+<style>
+details {
+  background-color: #f3f6fa;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #dde7f4;
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #07D7FF; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #d3d3d3; /* grey */
+}
+</style>
+</div>
+<!-- Accordion using details/summary (no JS required) --><details>
+<summary><strong>Choice Drop-Down Select One</strong></summary>
+<div>FME Flow presents you with a drop-down list of options. Since only one option may be selected, the menu retracts after you select a choice.&nbsp;</div>
+<div><img src="images/1748024996301.jpg" alt="" width="715" height="418" /></div>
+</details><details>
+<summary><strong>Choice Drop-Down Select Multiple</strong></summary>
+<div>When you select multiple options, the drop-down list displays checkboxes to denote which options you choose.&nbsp;</div>
+<div><img src="images/1748024380457.jpg" alt="" width="708" height="416" /></div>
+</details><details>
+<summary><strong>Choice Tree</strong></summary>
+<div>FME Flow displays a tree of choices using nested expandable options.&nbsp;</div>
+<div><img src="images/1748025998816.jpg" alt="" width="701" height="531" /></div>
+</details><details>
+<summary><strong>Date-Time</strong></summary>
+<div>To input a date parameter, you select a date and, if requested, time from a calendar.&nbsp;</div>
+<div><img src="images/1748026368406.jpg" alt="" width="721" height="521" /></div>
+</details><details>
+<summary><strong>File/Folder/URL<br /></strong></summary>
+<div>The File/Folder/URL parameter provides a region to drag and drop files, browse and select files from the file system or Resources, and an option to enter a URL or file path.&nbsp;</div>
+<div><img src="images/1748023716162.jpg" alt="" width="712" height="426" /></div>
+</details>
+<h2>Exercise</h2>
+<p><img src="images/1748034089619.png" alt="" width="272" height="288" /></p>
+<p>Jennifer is creating a user-controlled self-serve workflow. Jennifer's workspace reads in community features from the CommunityMap file geodatabase and then writes them out using a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/generic/generic.htm" target="_blank" rel="noopener">Generic writer</a>, which allows writing to any FME-supported format. She wants the user to be able to select which feature layers to download and the output format of the data.&nbsp;</p>
+<p>Follow along and complete the same steps as Jennifer to configure the parameters for the self-serve workspace.&nbsp;</p>
+<h3 id="1-open-fme-workbench">1) Open and Inspect the Starting Workspace</h3>
+<p>Jennifer opens the<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/create-a-user-controlled-workspace.fmw" target="_blank" rel="noopener">&nbsp;workspace</a> (C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\create-a-user-controlled-workspace.fmw) in FME Workbench. The workspace reads in community features from the CommunityMap file geodatabase and then writes them out using a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/generic/generic.htm" target="_blank" rel="noopener">Generic writer</a>, which allows writing to any FME-supported format.&nbsp;&nbsp;</p>
+<p><img src="images/1748032641158.jpg" alt="" width="1043" height="505" /></p>
+<p>Jennifer has already created a user parameter to input the data output format, and it is linked to the writer's parameters. However, Jennifer would also like the end-user to select which feature types to include in the output.&nbsp;</p>
+<p><img src="images/1748033407856.jpg" alt="" width="467" height="349" /></p>
+<h3>2) Create Feature Types to Read Parameter</h3>
+<p>In addition to the OUTPUT_FORMAT parameter, Jennifer needs to create a parameter for the user to select which Feature Types to include in the output.&nbsp;</p>
+<p>In the Navigator pane, Jen expands the CommunityMap [FILEGDB] reader and further expands Parameters and Features to Read sections. Jennifer right-clicks the Feature Types to Read parameter and selects Create User Parameter.&nbsp;</p>
+<p><img src="images/1748037124014.jpg" alt="" width="529" height="360" /></p>
+<p>A window shows a list of Feature Types and the user parameter name, prompt, and default value.&nbsp;</p>
+<p><img src="images/1734550875873.jpg" alt="" width="308" height="439" /></p>
+<p>Jennifer doesn't need to alter anything from the default here, so she clicks OK to finalize creating the parameter. This parameter adds user control over which datasets the user wants to include in the output. She can now see both user parameters in Navigator.&nbsp;</p>
+<p><img src="images/1748037287567.jpg" alt="" width="433" height="70" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br />You could also create this user parameter in the Manage User Parameters window. However, this method automatically generates the list of available feature types to select from and link the FEATURE_TYPES parameter to the Feature Types to Read writer parameter, so this method is quicker for this scenario.&nbsp;</p>
+</blockquote>
+<h3>3) Set Default Value for Output Format Parameter</h3>
+<p>Now, Jennifer would like to set a default output format. In the Navigator, Jennifer right-clicks User Parameters and selects Manage User Parameters.&nbsp;</p>
+<p>For the Output Format parameter, Jennifer sets the Default Value to Esri Shapefile. Under Choice Configuration, the format options have already been limited to Esri Shapefile, MapInfo TAB, and OGC GML.&nbsp;</p>
+<p><img src="images/1748037673624.jpg" alt="" width="871" height="515" /></p>
+<h3>4) Re-order Parameters</h3>
+<p>The Feature Types to Read parameter acts on the Reader, and the Output Format parameter links to the Writer in the workspace. The parameters displayed in the order here will also be the order in which they appear on FME Flow. Jennifer reorders the parameters to list the Feature Types to Read parameter first. Jennifer selects the Feature Types to Read parameter and clicks the Move Up button.&nbsp;</p>
+<p><img src="images/1748039041986.jpg" alt="" /></p>
+<p>Click OK to close the User Parameters window.&nbsp;</p>
+<h3>5) Run Workspace&nbsp;</h3>
+<p>Jennifer runs the workspace, ensuring Prompt for Parameters is enabled to test that her user parameters are functioning as expected.&nbsp;</p>
+<p><img src="images/1748039605893.jpg" alt="" /></p>
+<p>This opens the prompt where Jennifer selects the output format from the drop-down and the community map feature types to include.&nbsp;</p>
+<p><img src="images/1748281088892.jpg" alt="" width="994" height="336" /></p>
+<p>After making her selections, Jennifer clicks Run. The workspace will read only the selected feature type(s) from the File Geodatabase and include them in the Esri Shapefile output.&nbsp;</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">Use </span><strong style="font-family: inherit; font-size: 1em;">Run &gt; Rerun Entire Workspace&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">after you change user parameters. FME will only prompt you to choose parameter values for parts of the workspace that run, so it's best to rerun the entire workspace to make sure FME prompts you.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<h3>6) Publish to FME Flow</h3>
+<p>Jennifer has confirmed that her workspace functions as expected on FME Form. Next, she must publish the workspace to FME Flow so her colleagues can access it, too.&nbsp;</p>
+<p>Jennifer publishes the workspace to the Training repository and registers the workspace with the Data Download and Job Submitter services.&nbsp;</p>
+<p><img src="images/1734553498112.jpg" alt="" width="450" height="462" />&nbsp;</p>
+<!-- Accordion using details/summary (no JS required) --><details class="highlighted-details">
+<summary><strong>Expand for Steps on Publishing to FME Flow</strong></summary>
+<div>The publishing wizard sets all configurations for publishing workspaces to FME Flow. To open it, click Publish in the top toolbar.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div>The first steps are to confirm your FME Flow connection, select a Repository to house the workspace, and optionally alter the workspace's name. To create a new Repository, click New and enter its details.&nbsp;</div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>Optionally, you may <em>Upload data files</em> to publish the workspace's source data files to FME Flow along with the workspace. You can control which files from the&nbsp;<em>Select Files...</em> option.</div>
+<div>Next, if your workspace has any connections, you may select whether or not they will also be published to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>The last step of publishing is to register services for the workspace to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>After publishing, the translation log generates a report on the publishing and provides a direct link to run the workspace on FME Flow.</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow Services and Publishing to FME Flow, see <a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</details>
+<h3>7) Run Workspace on FME Flow</h3>
+<p>Jennifer navigates to FME Flow and opens the Run Workspace page. She selects the workspace she just published and the Data Download service.&nbsp;</p>
+<p><img src="images/1748281393211.jpg" alt="" width="714" height="382" /></p>
+<p>Under Published Parameters, Jennifer sees the user parameters she configured in FME Workbench. Jennifer selects a few Feature Types and an Output Format from the drop-down options.&nbsp;&nbsp;</p>
+<p><img src="images/1748282098662.jpg" alt="" width="680" height="403" /></p>
+<p><strong><img src="images/1748282122902.jpg" alt="" width="677" height="215" /></strong></p>
+<p>Once Jennifer selects the parameters, she clicks Run to run the workspace on FME Flow.</p>
+<h3>8) View the Results</h3>
+<p>After the workspace runs, FME Flow presents Jennifer with the finished job status and the Data Download URL. Jennifer clicks the URL to download the data.&nbsp;</p>
+<p><img src="images/1748283311473.jpg" alt="" width="889" height="271" /></p>
+<p>Jennifer extracts the zip file and opens the Output folder to see the data for the feature types she selected.&nbsp;</p>
+<p><img src="images/1748283823787.jpg" alt="" width="690" height="625" /></p>
+<p>Jennifer has successfully adapted a workspace to allow user control of the community feature types and output format. This provides greater flexibility for users to access and receive data from the workspace on FME Flow.&nbsp;</p>
+<div>&nbsp;</div>
