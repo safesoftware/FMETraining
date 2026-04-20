@@ -1,6 +1,14 @@
 # Open
 
+## Workflow
+
+- 79. **Migrate and start using Jira instead of ISSUES.md**. Use Jira MCP. New project or board.
+
 ## App / UX
+
+- 80. **Use embeddings database instead of sending entire lesson text.** Just for lessons I think; Jira is OK.
+
+- 78. **Add semantic version to report header.** Just like on the main front end page.
 
 - 77. **Update default pipeline run options.** Having used the tool for a while, I'd like the front-end to use different default values for a pipeline run. Right now it defaults to using CSV instead of API and to not run step 6. I'd like to default to API and to run step 6.
 

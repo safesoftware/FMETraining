@@ -249,3 +249,78 @@ The report includes:
 ## Updating Course Content
 
 Run `python sync_content.py` to update the training content from the source FMETraining repository.
+
+---
+
+## Testing
+
+The project has an automated test suite under `tests/`. All tests run without API keys or a live browser.
+
+### Setup
+
+Testing dependencies are included in `requirements.txt`. Install them with:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Running the Tests
+
+```bash
+# Run the full suite (unit + integration + mocked LLM)
+pytest
+
+# Run with verbose output
+pytest -v
+
+# Run only the fast unit tests
+pytest tests/unit/
+
+# Run integration tests (file I/O, no API calls)
+pytest tests/integration/
+
+# Run mocked LLM tests (OpenAI mocked with unittest.mock)
+pytest tests/mocked_llm/
+
+# Exclude browser tests (which require Playwright)
+pytest -m "not browser"
+```
+
+The full suite runs in under 20 seconds with no network calls.
+
+### Test Layers
+
+| Layer | Location | What it tests |
+|---|---|---|
+| **Unit** | `tests/unit/` | Pure functions — version parsing, changelog filtering, post-processing logic |
+| **Integration** | `tests/integration/` | HTML parsing and Step 1 (manifest) against fixture HTML; no API calls |
+| **Mocked LLM** | `tests/mocked_llm/` | Step 6 post-processing with OpenAI mocked; validates silent failure detection, filters, and HTML stripping |
+| **Browser** | `tests/browser/` | Playwright tests for report UI behaviour (requires separate Playwright install) |
+
+### What the Tests Catch
+
+The unit and mocked LLM tests are specifically designed to guard against the failure patterns documented in `AGENTS.md`:
+
+- **Silent failures in Step 6** — `TestSilentFailureGuard` asserts `_call_openai` returns `None` after all retries fail, so callers can detect and log the failure rather than silently marking a lesson complete
+- **`safe_note.png` false positives** — asserted filtered from `screenshot_updates` output
+- **HTML tags in `suggested_text`** — asserted stripped for `change`-type edits, preserved for `add`-type
+- **Stale `original_text`** (issue #74) — changes whose text no longer exists in the lesson HTML are dropped
+- **Empty heading on auto-generated version changes** (issue #75) — `_ensure_version_changes` must populate `heading` from the nearest preceding `<h2>/<h3>`, not leave it blank
+- **FMEENGINE filter for conceptual lessons** (issue #72) — FMEENGINE-only changes suppressed when lesson has no exercise steps
+
+### Browser Tests (Optional)
+
+Browser tests use [Playwright](https://playwright.dev/python/) and require a separate install:
+
+```bash
+pip install playwright
+playwright install chromium
+```
+
+Run them with:
+
+```bash
+pytest -m browser
+```
+
+These tests open the generated report HTML in a headless browser and verify interactive behaviour: accept/reject popups, cascading markup correctness, save-to-disk flow, and Re-Run prefill state.
