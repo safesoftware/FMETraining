@@ -699,7 +699,7 @@ def _propagate_renames(
         # Strip HTML tags to get the plain search term
         plain_orig = re.sub(r"<[^>]+>", "", orig).strip()
         plain_sugg = sugg.strip()
-        if not plain_orig or plain_orig == plain_sugg:
+        if not plain_orig or plain_orig == plain_sugg or len(plain_orig) < 3:
             continue
 
         # For sentence-level changes (too long to repeat), try to extract the
@@ -709,7 +709,7 @@ def _propagate_renames(
             extracted_orig, extracted_sugg = _extract_rename_pair(plain_orig, plain_sugg)
             if not extracted_orig or not extracted_sugg or extracted_orig == extracted_sugg:
                 continue
-            if len(extracted_orig) > 80:
+            if not (3 <= len(extracted_orig) <= 80):
                 continue
             plain_orig, plain_sugg = extracted_orig, extracted_sugg
 
