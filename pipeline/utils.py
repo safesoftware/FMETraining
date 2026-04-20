@@ -42,7 +42,7 @@ def parse_version(version_str: str) -> float | None:
       "2025.0"   -> 2025.0
       "2025.1"   -> 2025.1
       "2025.2.1" -> 2025.2  (patch trimmed)
-      "2026.0"   -> 2026.0
+      "2026.1"   -> 2026.1  (FME 2026+ uses quarterly releases: .1–.4, no .0)
       Garbage    -> None
 
     The strategy is: take the first two numeric components separated by '.',

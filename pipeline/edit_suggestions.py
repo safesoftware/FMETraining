@@ -829,6 +829,15 @@ def _ensure_version_changes(
                 uncovered.pop(i)
                 break
 
+    # Note quarterly scheme if applicable (no 2026.0 — releases start at .1)
+    to_major = to_version.split(".")[0] if to_version else ""
+    to_minor = to_version.split(".")[1] if to_version and "." in to_version else ""
+    quarterly_note = (
+        f" Note: FME {to_major} uses a quarterly release model (no {to_major}.0 release)."
+        if to_major.isdigit() and int(to_major) >= 2026 and to_minor != "0"
+        else ""
+    )
+
     for pos in uncovered:
         new_change_id = hashlib.md5(
             f"{lesson_id}:version:{from_version}:{pos}".encode()
@@ -840,8 +849,8 @@ def _ensure_version_changes(
             "original_text": from_version,
             "suggested_text": to_version,
             "explanation": (
-                f"Version string \"{from_version}\" should be updated to \"{to_version}\" "
-                f"(auto-detected; not covered by any LLM-generated change)."
+                f"Version string \"{from_version}\" should be updated to \"{to_version}\""
+                f"{quarterly_note} (auto-detected; not covered by any LLM-generated change)."
             ),
             "issue_keys": [],
         })
