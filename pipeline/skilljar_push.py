@@ -102,7 +102,10 @@ def _upload_asset(file_path: Path, api_key: str) -> str:
     try:
         with urllib.request.urlopen(req) as resp:
             result = json.loads(resp.read().decode("utf-8"))
-            return result["id"]
+            asset_id = result.get("id")
+            if not asset_id:
+                raise RuntimeError(f"POST /assets response missing 'id': {result!r}")
+            return asset_id
     except urllib.error.HTTPError as exc:
         error_body = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"HTTP {exc.code} POST /assets: {error_body}") from exc
