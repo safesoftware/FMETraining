@@ -42,6 +42,16 @@ class TestUploadAsset:
             with pytest.raises(RuntimeError, match="HTTP 400"):
                 _upload_asset(img, "fake-api-key")
 
+    def test_raises_on_url_error(self, tmp_path):
+        import urllib.error
+        img = tmp_path / "test.png"
+        img.write_bytes(b"\x89PNG\r\n")
+
+        url_err = urllib.error.URLError(reason="Name or service not known")
+        with patch("urllib.request.urlopen", side_effect=url_err):
+            with pytest.raises(RuntimeError, match="Network error POST /assets"):
+                _upload_asset(img, "fake-api-key")
+
     def test_multipart_content_type_header(self, tmp_path):
         img = tmp_path / "test.png"
         img.write_bytes(b"\x89PNG\r\n")

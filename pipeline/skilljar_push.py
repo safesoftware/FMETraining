@@ -115,12 +115,13 @@ def _upload_asset(file_path: Path, api_key: str) -> str:
 
 def _wait_for_asset_url(asset_id: str, api_key: str, max_retries: int = 10) -> str | None:
     """Poll GET /assets/{id} until embed_link_url is available. Returns None if exhausted."""
-    for _ in range(max_retries):
+    for attempt in range(max_retries):
         asset = _request("GET", f"/assets/{asset_id}", api_key)
         url = asset.get("embed_link_url") or asset.get("download_url")
         if url:
             return url
-        time.sleep(2)
+        if attempt < max_retries - 1:
+            time.sleep(2)
     return None
 
 
