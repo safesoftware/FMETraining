@@ -6,7 +6,7 @@ Entry points:
       Walk the to_version folder for saved index.html files.
   build_release_plan(scope_lesson_dirs, to_version, mapping, repo_root) → dict
       Group selected lessons by Skilljar course and produce a release plan.
-  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run) → Iterator[str]
+  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run, max_retries) → Iterator[str]
       Generator yielding log lines for the full archive→push→rename→tag→mapping flow.
 """
 
