@@ -109,6 +109,8 @@ def _upload_asset(file_path: Path, api_key: str) -> str:
     except urllib.error.HTTPError as exc:
         error_body = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"HTTP {exc.code} POST /assets: {error_body}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"Network error POST /assets: {exc}") from exc
 
 
 def _wait_for_asset_url(asset_id: str, api_key: str, max_retries: int = 10) -> str | None:
