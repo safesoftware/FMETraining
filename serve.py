@@ -573,7 +573,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             self._json_response(400, {"error": "valid to_version is required"})
             return
 
-        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_DOMAIN, SKILLJAR_MAPPING_PATH, SKILLJAR_IMAGE_UPLOAD_RETRIES
+        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_DOMAIN, SKILLJAR_MAPPING_PATH
         if not SKILLJAR_API_KEY:
             self._json_response(503, {"error": "SKILLJAR_API_KEY not set in .env"})
             return
@@ -593,7 +593,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
                 for line in execute_release(
                     plan, SKILLJAR_API_KEY, SKILLJAR_DOMAIN,
                     mapping, SKILLJAR_MAPPING_PATH, REPO_ROOT,
-                    dry_run=dry_run, max_retries=SKILLJAR_IMAGE_UPLOAD_RETRIES,
+                    dry_run=dry_run,
                 ):
                     with _runs_lock:
                         _active_runs[action_key]["log"].append(line)

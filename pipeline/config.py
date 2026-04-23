@@ -62,7 +62,6 @@ JIRA_CACHE_PATH: Path = REPO_ROOT / "inputs" / "jira_api_cache.json"
 SKILLJAR_API_KEY: str = os.getenv("SKILLJAR_API_KEY", "")
 SKILLJAR_DOMAIN: str = os.getenv("SKILLJAR_DOMAIN", "")
 SKILLJAR_MAPPING_PATH: Path = REPO_ROOT / "data" / "skilljar-mapping.json"
-SKILLJAR_IMAGE_UPLOAD_RETRIES: int = int(os.getenv("SKILLJAR_IMAGE_UPLOAD_RETRIES", "10"))
 
 
 # ---------------------------------------------------------------------------

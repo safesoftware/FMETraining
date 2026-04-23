@@ -6,13 +6,15 @@ Entry points:
       Walk the to_version folder for saved index.html files.
   build_release_plan(scope_lesson_dirs, to_version, mapping, repo_root) → dict
       Group selected lessons by Skilljar course and produce a release plan.
-  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run, max_retries) → Iterator[str]
+  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run) → Iterator[str]
       Generator yielding log lines for the full archive→push→rename→tag→mapping flow.
 """
 
 from __future__ import annotations
 
+import base64
 import json
+import mimetypes
 import re
 from pathlib import Path
 from typing import Iterator
@@ -25,8 +27,6 @@ from pipeline.skilljar_push import (
     _create_course,
     _create_lesson,
     _get_lesson,
-    _upload_asset,
-    _wait_for_asset_url,
 )
 
 
@@ -63,18 +63,16 @@ def _rewrite_images(new_html: str, original_html: str) -> tuple[str, list[str]]:
     return rewritten, unmatched
 
 
-def _upload_and_rewrite_images(
+def _inline_images(
     html: str,
     relative_paths: list[str],
     lesson_dir: str,
     repo_root: Path,
-    api_key: str,
-    max_retries: int,
 ) -> tuple[str, list[str]]:
-    """Upload local images to Skilljar and rewrite their src= paths in html.
+    """Replace relative image src= paths with base64 data URIs embedded in HTML.
 
-    Returns (rewritten_html, failed_paths) where failed_paths are images that
-    could not be uploaded or whose hosted URL could not be obtained.
+    Returns (rewritten_html, failed_paths) where failed_paths are images whose
+    local file could not be found.
     """
     url_map: dict[str, str] = {}
     failed: list[str] = []
@@ -87,23 +85,15 @@ def _upload_and_rewrite_images(
             failed.append(rel_path)
             continue
 
-        try:
-            asset_id = _upload_asset(local_file, api_key)
-            hosted_url = _wait_for_asset_url(asset_id, api_key, max_retries)
-        except RuntimeError:
-            failed.append(rel_path)
-            continue
-
-        if hosted_url:
-            url_map[rel_path] = hosted_url
-        else:
-            failed.append(rel_path)
+        mime_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        b64 = base64.b64encode(local_file.read_bytes()).decode("ascii")
+        url_map[rel_path] = f"data:{mime_type};base64,{b64}"
 
     if url_map:
-        def _replace_uploaded(m: re.Match) -> str:
+        def _replace_inline(m: re.Match) -> str:
             quote_open, path, quote_close = m.group(1), m.group(2), m.group(3)
             return f"{quote_open}{url_map.get(path, path)}{quote_close}"
-        html = _RELATIVE_SRC_RE.sub(_replace_uploaded, html)
+        html = _RELATIVE_SRC_RE.sub(_replace_inline, html)
 
     return html, failed
 
@@ -434,7 +424,6 @@ def execute_release(
     mapping_path: Path,
     repo_root: Path,
     dry_run: bool = False,
-    max_retries: int = 10,
 ) -> Iterator[str]:
     """
     Generator yielding log lines for the full release flow.
@@ -550,11 +539,11 @@ def execute_release(
 
                 html, unresolved = _rewrite_images(html, ref_html)
                 if unresolved:
-                    html, failed_uploads = _upload_and_rewrite_images(
-                        html, unresolved, lesson["lesson_dir"], repo_root, api_key, max_retries,
+                    html, failed_inline = _inline_images(
+                        html, unresolved, lesson["lesson_dir"], repo_root,
                     )
-                    if failed_uploads:
-                        yield f"  WARNING: {len(failed_uploads)} image(s) could not be uploaded to Skilljar: {', '.join(failed_uploads)}"
+                    if failed_inline:
+                        yield f"  WARNING: {len(failed_inline)} image(s) could not be inlined (local file not found): {', '.join(failed_inline)}"
 
             if not dry_run:
                 try:
