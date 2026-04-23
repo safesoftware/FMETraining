@@ -12,6 +12,11 @@ Serves static files from the project root and provides API endpoints:
   POST /api/start-run              → write update-job.json + spawn pipeline
   POST /api/run-action             → regenerate-report / edit-suggestions / resume
   POST /api/save-lesson            → write accepted lesson edits to disk
+  GET  /api/skilljar-push-info      → pre-flight info for push confirmation dialog
+  POST /api/skilljar-push          → push accepted HTML to Skilljar via API
+  GET  /api/release-status         → saved+mapped lesson_dirs for a to_version
+  GET  /api/release-plan           → pre-flight release plan for selected lessons
+  POST /api/release-execute        → spawn background release, returns action_key
   POST /api/client-error           → log browser JS errors to the terminal
 
 Usage:
@@ -24,6 +29,7 @@ import http.server
 import json
 import re
 import shutil
+from bs4 import BeautifulSoup
 import socketserver
 import subprocess
 import sys
@@ -139,6 +145,12 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             self._api_runs()
         elif path == "/api/run-log":
             self._api_run_log(qs)
+        elif path == "/api/skilljar-push-info":
+            self._handle_skilljar_push_info(qs)
+        elif path == "/api/release-status":
+            self._handle_release_status(qs)
+        elif path == "/api/release-plan":
+            self._handle_release_plan(qs)
         else:
             super().do_GET()
 
@@ -146,6 +158,12 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
         path = urllib.parse.urlparse(self.path).path
         if path == "/api/save-lesson":
             self._handle_save_lesson()
+        elif path == "/api/skilljar-push":
+            self._handle_skilljar_push()
+        elif path == "/api/release-execute":
+            self._handle_release_execute()
+        elif path == "/api/link-draft-course":
+            self._handle_link_draft_course()
         elif path == "/api/start-run":
             self._api_start_run()
         elif path == "/api/run-action":
@@ -441,7 +459,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             return
 
         target_file.parent.mkdir(parents=True, exist_ok=True)
-        target_file.write_text(html_content, encoding="utf-8")
+        target_file.write_text(_sanitize_lesson_html(html_content), encoding="utf-8")
 
         source_images = REPO_ROOT / lesson_dir / "images"
         if source_images.is_dir():
@@ -449,6 +467,175 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             shutil.copytree(source_images, target_images, dirs_exist_ok=True)
 
         self._json_response(200, {"target_path": target_path_str})
+
+    # -- Skilljar push info (pre-flight) ------------------------------------
+
+    def _handle_skilljar_push_info(self, qs: dict) -> None:
+        lesson_dir = (qs.get("lesson_dir") or [""])[0].strip()
+        to_version = (qs.get("to_version") or [""])[0].strip()
+        if not lesson_dir or not to_version:
+            self._json_response(400, {"error": "lesson_dir and to_version are required"})
+            return
+        from pipeline.config import SKILLJAR_MAPPING_PATH
+        from pipeline.skilljar_push import get_push_info, load_mapping
+        mapping = load_mapping(SKILLJAR_MAPPING_PATH)
+        info = get_push_info(lesson_dir, to_version, mapping)
+        self._json_response(200, info)
+
+    # -- Skilljar push -----------------------------------------------------
+
+    def _handle_skilljar_push(self) -> None:
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length))
+        except Exception as exc:
+            self._json_response(400, {"error": f"Bad request: {exc}"})
+            return
+
+        lesson_dir = body.get("lesson_dir", "").strip()
+        to_version = body.get("to_version", "").strip()
+        html_content = body.get("html", "")
+
+        if not lesson_dir or not to_version or not html_content:
+            self._json_response(400, {"error": "lesson_dir, to_version and html are required"})
+            return
+
+        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_MAPPING_PATH
+        if not SKILLJAR_API_KEY:
+            self._json_response(503, {"error": "SKILLJAR_API_KEY not set in .env"})
+            return
+
+        from pipeline.skilljar_push import load_mapping, push_with_version_check
+        mapping = load_mapping(SKILLJAR_MAPPING_PATH)
+        result = push_with_version_check(
+            lesson_dir, html_content, to_version,
+            SKILLJAR_API_KEY, mapping, SKILLJAR_MAPPING_PATH, REPO_ROOT,
+        )
+
+        if result["ok"]:
+            self._json_response(200, {
+                "skilljar_lesson_id": result.get("skilljar_lesson_id", ""),
+                "course_created": result.get("course_created", False),
+                "lesson_created": result.get("lesson_created", False),
+                "local_path": result.get("local_path", ""),
+            })
+        else:
+            self._json_response(400, {"error": result["error"]})
+
+    # -- Release: status ---------------------------------------------------
+
+    def _handle_release_status(self, qs: dict) -> None:
+        to_version = (qs.get("to_version") or [""])[0].strip()
+        if not to_version or not _VERSION_RE.match(to_version):
+            self._json_response(400, {"error": "valid to_version parameter required"})
+            return
+        from pipeline.skilljar_push import load_mapping
+        from pipeline.skilljar_release import scan_saved_lessons, is_lesson_mapped
+        from pipeline.config import SKILLJAR_MAPPING_PATH
+        mapping = load_mapping(SKILLJAR_MAPPING_PATH)
+        saved = scan_saved_lessons(to_version, REPO_ROOT)
+        mapped = [d for d in saved if is_lesson_mapped(d, mapping)]
+        # "direct" = lesson_dirs whose mapping key IS the to_version path (draft/linked)
+        direct = [d for d in mapped if d in mapping]
+        self._json_response(200, {"saved": sorted(saved), "mapped": sorted(mapped), "direct": sorted(direct)})
+
+    # -- Release: plan -----------------------------------------------------
+
+    def _handle_release_plan(self, qs: dict) -> None:
+        to_version = (qs.get("to_version") or [""])[0].strip()
+        lessons = qs.get("lessons[]") or qs.get("lessons") or []
+        if not to_version or not _VERSION_RE.match(to_version):
+            self._json_response(400, {"error": "valid to_version parameter required"})
+            return
+        from pipeline.skilljar_push import load_mapping
+        from pipeline.skilljar_release import build_release_plan
+        from pipeline.config import SKILLJAR_MAPPING_PATH
+        mapping = load_mapping(SKILLJAR_MAPPING_PATH)
+        plan = build_release_plan(list(lessons), to_version, mapping, REPO_ROOT)
+        self._json_response(200, plan)
+
+    # -- Release: execute --------------------------------------------------
+
+    def _handle_release_execute(self) -> None:
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length))
+        except Exception as exc:
+            self._json_response(400, {"error": f"Bad request: {exc}"})
+            return
+
+        to_version = body.get("to_version", "").strip()
+        lessons = body.get("lessons", [])
+        dry_run = bool(body.get("dry_run", False))
+
+        if not to_version or not _VERSION_RE.match(to_version):
+            self._json_response(400, {"error": "valid to_version is required"})
+            return
+
+        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_DOMAIN, SKILLJAR_MAPPING_PATH, SKILLJAR_IMAGE_UPLOAD_RETRIES
+        if not SKILLJAR_API_KEY:
+            self._json_response(503, {"error": "SKILLJAR_API_KEY not set in .env"})
+            return
+
+        from pipeline.skilljar_push import load_mapping
+        from pipeline.skilljar_release import build_release_plan, execute_release
+        mapping = load_mapping(SKILLJAR_MAPPING_PATH)
+        plan = build_release_plan(list(lessons), to_version, mapping, REPO_ROOT)
+
+        import time as _time
+        action_key = f"release:{to_version}:{int(_time.time() * 1000)}"
+
+        with _runs_lock:
+            _active_runs[action_key] = {"process": None, "log": [], "status": "running"}
+
+        def _run_release() -> None:
+            try:
+                for line in execute_release(
+                    plan, SKILLJAR_API_KEY, SKILLJAR_DOMAIN,
+                    mapping, SKILLJAR_MAPPING_PATH, REPO_ROOT,
+                    dry_run=dry_run, max_retries=SKILLJAR_IMAGE_UPLOAD_RETRIES,
+                ):
+                    with _runs_lock:
+                        _active_runs[action_key]["log"].append(line)
+                with _runs_lock:
+                    _active_runs[action_key]["status"] = "done"
+            except Exception as exc:
+                with _runs_lock:
+                    _active_runs[action_key]["log"].append(f"[ERROR] {exc}")
+                    _active_runs[action_key]["status"] = "error"
+
+        threading.Thread(target=_run_release, daemon=True).start()
+        self._json_response(200, {"action_key": action_key})
+
+    # -- Link draft course to mapping --------------------------------------
+
+    def _handle_link_draft_course(self) -> None:
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length))
+        except Exception as exc:
+            self._json_response(400, {"error": f"Bad request: {exc}"})
+            return
+        course_prefix = body.get("course_prefix", "").strip()
+        skilljar_course_id = body.get("skilljar_course_id", "").strip()
+        if not course_prefix or not skilljar_course_id:
+            self._json_response(400, {"error": "course_prefix and skilljar_course_id are required"})
+            return
+        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_MAPPING_PATH
+        if not SKILLJAR_API_KEY:
+            self._json_response(503, {"error": "SKILLJAR_API_KEY not set in .env"})
+            return
+        from pipeline.skilljar_push import load_mapping
+        from pipeline.skilljar_release import link_draft_course
+        mapping = load_mapping(SKILLJAR_MAPPING_PATH)
+        try:
+            result = link_draft_course(
+                course_prefix, skilljar_course_id, SKILLJAR_API_KEY,
+                mapping, SKILLJAR_MAPPING_PATH, REPO_ROOT,
+            )
+            self._json_response(200, result)
+        except RuntimeError as exc:
+            self._json_response(400, {"error": str(exc)})
 
     # -- Client error logging ----------------------------------------------
 
@@ -490,6 +677,20 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
 
 # ---------------------------------------------------------------------------
 # Path computation (for save-lesson)
+# ---------------------------------------------------------------------------
+
+def _sanitize_lesson_html(html: str) -> str:
+    """Strip track-changes report markup that should never appear in saved lesson files."""
+    soup = BeautifulSoup(html, "html.parser")
+    for cls in ("tc-popup", "rec-id", "tc-issue-links", "tc-btns", "tc-explanation"):
+        for el in soup.find_all(class_=cls):
+            el.decompose()
+    for a in soup.find_all("a", href=True):
+        if a["href"].startswith("?tab="):
+            a.decompose()
+    return str(soup)
+
+
 # ---------------------------------------------------------------------------
 
 def _compute_target_path(lesson_dir: str, to_version: str) -> Path:
