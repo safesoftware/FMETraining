@@ -434,6 +434,7 @@ def execute_release(
     mapping_path: Path,
     repo_root: Path,
     dry_run: bool = False,
+    max_retries: int = 10,
 ) -> Iterator[str]:
     """
     Generator yielding log lines for the full release flow.
@@ -533,9 +534,6 @@ def execute_release(
                 continue
 
             if not dry_run:
-                # Rewrite relative image paths using absolute URLs from the existing
-                # Skilljar lesson (standard release) or its previous version (draft).
-                # If neither has hosted URLs (e.g. source is MODULAR), push as-is and warn.
                 ref_html = ""
                 if not is_push_only:
                     try:
@@ -550,14 +548,13 @@ def execute_release(
                         except RuntimeError:
                             pass
 
-                if ref_html:
-                    html, unmatched = _rewrite_images(html, ref_html)
-                    if unmatched:
-                        yield f"  WARNING: {len(unmatched)} image(s) could not be resolved and will be broken: {', '.join(unmatched)}"
-                else:
-                    _, relative = _rewrite_images(html, "")
-                    if relative:
-                        yield f"  WARNING: {len(relative)} image(s) have relative paths and will not display in Skilljar (images are not yet hosted)."
+                html, unresolved = _rewrite_images(html, ref_html)
+                if unresolved:
+                    html, failed_uploads = _upload_and_rewrite_images(
+                        html, unresolved, lesson["lesson_dir"], repo_root, api_key, max_retries,
+                    )
+                    if failed_uploads:
+                        yield f"  WARNING: {len(failed_uploads)} image(s) could not be uploaded to Skilljar: {', '.join(failed_uploads)}"
 
             if not dry_run:
                 try:
