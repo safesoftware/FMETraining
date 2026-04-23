@@ -17,6 +17,7 @@ Serves static files from the project root and provides API endpoints:
   GET  /api/release-status         → saved+mapped lesson_dirs for a to_version
   GET  /api/release-plan           → pre-flight release plan for selected lessons
   POST /api/release-execute        → spawn background release, returns action_key
+  POST /api/link-draft-course      → link draft course folder to Skilljar course
   POST /api/client-error           → log browser JS errors to the terminal
 
 Usage:
@@ -582,8 +583,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
         mapping = load_mapping(SKILLJAR_MAPPING_PATH)
         plan = build_release_plan(list(lessons), to_version, mapping, REPO_ROOT)
 
-        import time as _time
-        action_key = f"release:{to_version}:{int(_time.time() * 1000)}"
+        action_key = f"release:{to_version}:{int(time.time() * 1000)}"
 
         with _runs_lock:
             _active_runs[action_key] = {"process": None, "log": [], "status": "running"}
