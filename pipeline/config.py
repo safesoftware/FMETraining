@@ -58,6 +58,12 @@ JIRA_API_TOKEN: str = os.getenv("JIRA_API_KEY", "")  # reuse JIRA_API_KEY from .
 JIRA_FILTER_ID: str = os.getenv("JIRA_FILTER_ID", "")
 JIRA_CACHE_PATH: Path = REPO_ROOT / "inputs" / "jira_api_cache.json"
 
+# Skilljar API credentials (for Push to Skilljar feature)
+SKILLJAR_API_KEY: str = os.getenv("SKILLJAR_API_KEY", "")
+SKILLJAR_DOMAIN: str = os.getenv("SKILLJAR_DOMAIN", "")
+SKILLJAR_MAPPING_PATH: Path = REPO_ROOT / "data" / "skilljar-mapping.json"
+SKILLJAR_IMAGE_UPLOAD_RETRIES: int = int(os.getenv("SKILLJAR_IMAGE_UPLOAD_RETRIES", "10"))
+
 
 # ---------------------------------------------------------------------------
 # Directory paths
@@ -92,6 +98,10 @@ EDIT_SUGGESTIONS_MODEL: str = os.getenv("EDIT_SUGGESTIONS_MODEL", "gpt-4o")
 # Model and concurrency for alt text enrichment (issue 53)
 ALT_TEXT_MODEL: str = os.getenv("ALT_TEXT_MODEL", "gpt-4o")
 ALT_TEXT_MAX_CONCURRENT: int = int(os.getenv("ALT_TEXT_MAX_CONCURRENT", "5"))
+
+# Enable vision-based screenshot verification pass in Step 6 (issue 73)
+# Adds one multimodal API call per non-decorative image per lesson — opt-in only
+ENABLE_VISION_SCREENSHOT_REVIEW: bool = os.getenv("ENABLE_VISION_SCREENSHOT_REVIEW", "false").lower() == "true"
 
 
 # ---------------------------------------------------------------------------
