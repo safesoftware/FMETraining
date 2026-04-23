@@ -6,7 +6,7 @@ Entry points:
       Walk the to_version folder for saved index.html files.
   build_release_plan(scope_lesson_dirs, to_version, mapping, repo_root) → dict
       Group selected lessons by Skilljar course and produce a release plan.
-  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run, session_cookie) → Iterator[str]
+  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run) → Iterator[str]
       Generator yielding log lines for the full archive→push→rename→tag→mapping flow.
 """
 
@@ -26,8 +26,8 @@ from pipeline.skilljar_push import (
     _create_course,
     _create_lesson,
     _get_lesson,
-    _create_skilljar_upload_url,
-    _put_image_to_s3,
+    _upload_asset,
+    _wait_for_asset_url,
 )
 
 
@@ -64,15 +64,17 @@ def _rewrite_images(new_html: str, original_html: str) -> tuple[str, list[str]]:
     return rewritten, unmatched
 
 
+_IMAGE_UPLOAD_RETRIES = 10
+
+
 def _upload_and_rewrite_images(
     html: str,
     relative_paths: list[str],
     lesson_dir: str,
     repo_root: Path,
     api_key: str,
-    session_cookie: str = "",
 ) -> tuple[str, list[tuple[str, str]]]:
-    """Upload local images to Skilljar S3 and rewrite their src= paths in html.
+    """Upload local images via POST /v1/assets and rewrite their src= paths in html.
 
     Returns (rewritten_html, failed) where failed is a list of (rel_path, reason)
     for images that could not be uploaded.
@@ -89,13 +91,16 @@ def _upload_and_rewrite_images(
             continue
 
         try:
-            mime_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
-            signed_url, public_url = _create_skilljar_upload_url(filename, mime_type, api_key, session_cookie)
-            _put_image_to_s3(signed_url, local_file.read_bytes(), mime_type)
-            url_map[rel_path] = public_url
+            asset_id = _upload_asset(local_file, api_key)
+            hosted_url = _wait_for_asset_url(asset_id, api_key, _IMAGE_UPLOAD_RETRIES)
         except RuntimeError as exc:
             failed.append((rel_path, str(exc)))
             continue
+
+        if hosted_url:
+            url_map[rel_path] = hosted_url
+        else:
+            failed.append((rel_path, "timed out waiting for hosted URL"))
 
     if url_map:
         def _replace_uploaded(m: re.Match) -> str:
@@ -432,7 +437,6 @@ def execute_release(
     mapping_path: Path,
     repo_root: Path,
     dry_run: bool = False,
-    session_cookie: str = "",
 ) -> Iterator[str]:
     """
     Generator yielding log lines for the full release flow.
@@ -549,7 +553,7 @@ def execute_release(
                 html, unresolved = _rewrite_images(html, ref_html)
                 if unresolved:
                     html, failed_uploads = _upload_and_rewrite_images(
-                        html, unresolved, lesson["lesson_dir"], repo_root, api_key, session_cookie,
+                        html, unresolved, lesson["lesson_dir"], repo_root, api_key,
                     )
                     for path, reason in failed_uploads:
                         yield f"  WARNING: could not upload {path}: {reason}"
