@@ -7,7 +7,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from pipeline.skilljar_push import _upload_asset, _wait_for_asset_url
+from pipeline.skilljar_push import (
+    _upload_asset,
+    _wait_for_asset_url,
+    _create_skilljar_upload_url,
+    _put_image_to_s3,
+)
 
 
 class TestUploadAsset:
@@ -71,6 +76,85 @@ class TestUploadAsset:
             _upload_asset(img, "fake-api-key")
 
         assert "multipart/form-data" in captured_req["content_type"]
+
+
+class TestCreateSkilljarUploadUrl:
+    def test_returns_signed_and_public_url(self):
+        response_body = json.dumps({
+            "signed_request": "https://s3.example.com/bucket/file.png?sig=abc",
+            "url": "https://cdn.example.com/file.png",
+            "content_path": "org/public/123/file.png",
+        }).encode()
+        mock_resp = MagicMock()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = MagicMock(return_value=False)
+        mock_resp.read.return_value = response_body
+
+        with patch("urllib.request.urlopen", return_value=mock_resp):
+            signed, public = _create_skilljar_upload_url("file.png", "image/png", "fake-key")
+
+        assert signed == "https://s3.example.com/bucket/file.png?sig=abc"
+        assert public == "https://cdn.example.com/file.png"
+
+    def test_raises_on_http_error(self):
+        import urllib.error
+        http_err = urllib.error.HTTPError(
+            url="https://dashboard.skilljar.com/asset/create_upload_url",
+            code=403,
+            msg="Forbidden",
+            hdrs={},
+            fp=MagicMock(read=lambda: b"forbidden"),
+        )
+        with patch("urllib.request.urlopen", side_effect=http_err):
+            with pytest.raises(RuntimeError, match="HTTP 403 GET /asset/create_upload_url"):
+                _create_skilljar_upload_url("file.png", "image/png", "fake-key")
+
+    def test_raises_when_response_missing_fields(self):
+        response_body = json.dumps({"content_path": "org/public/123/file.png"}).encode()
+        mock_resp = MagicMock()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = MagicMock(return_value=False)
+        mock_resp.read.return_value = response_body
+
+        with patch("urllib.request.urlopen", return_value=mock_resp):
+            with pytest.raises(RuntimeError, match="missing fields"):
+                _create_skilljar_upload_url("file.png", "image/png", "fake-key")
+
+
+class TestPutImageToS3:
+    def test_puts_file_data_to_signed_url(self):
+        mock_resp = MagicMock()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = MagicMock(return_value=False)
+        mock_resp.read.return_value = b""
+
+        captured = {}
+
+        def capture(req):
+            captured["method"] = req.get_method()
+            captured["content_type"] = req.get_header("Content-type")
+            captured["acl"] = req.get_header("X-amz-acl")
+            return mock_resp
+
+        with patch("urllib.request.urlopen", side_effect=capture):
+            _put_image_to_s3("https://s3.example.com/signed", b"\x89PNG", "image/png")
+
+        assert captured["method"] == "PUT"
+        assert captured["content_type"] == "image/png"
+        assert captured["acl"] == "public-read"
+
+    def test_raises_on_http_error(self):
+        import urllib.error
+        http_err = urllib.error.HTTPError(
+            url="https://s3.example.com/signed",
+            code=403,
+            msg="Forbidden",
+            hdrs={},
+            fp=MagicMock(read=lambda: b"SignatureMismatch"),
+        )
+        with patch("urllib.request.urlopen", side_effect=http_err):
+            with pytest.raises(RuntimeError, match="HTTP 403 PUT to S3"):
+                _put_image_to_s3("https://s3.example.com/signed", b"\x89PNG", "image/png")
 
 
 class TestWaitForAssetUrl:

@@ -12,7 +12,6 @@ Entry points:
 
 from __future__ import annotations
 
-import base64
 import json
 import mimetypes
 import re
@@ -27,6 +26,8 @@ from pipeline.skilljar_push import (
     _create_course,
     _create_lesson,
     _get_lesson,
+    _create_skilljar_upload_url,
+    _put_image_to_s3,
 )
 
 
@@ -63,37 +64,43 @@ def _rewrite_images(new_html: str, original_html: str) -> tuple[str, list[str]]:
     return rewritten, unmatched
 
 
-def _inline_images(
+def _upload_and_rewrite_images(
     html: str,
     relative_paths: list[str],
     lesson_dir: str,
     repo_root: Path,
-) -> tuple[str, list[str]]:
-    """Replace relative image src= paths with base64 data URIs embedded in HTML.
+    api_key: str,
+) -> tuple[str, list[tuple[str, str]]]:
+    """Upload local images to Skilljar S3 and rewrite their src= paths in html.
 
-    Returns (rewritten_html, failed_paths) where failed_paths are images whose
-    local file could not be found.
+    Returns (rewritten_html, failed) where failed is a list of (rel_path, reason)
+    for images that could not be uploaded.
     """
     url_map: dict[str, str] = {}
-    failed: list[str] = []
+    failed: list[tuple[str, str]] = []
 
     for rel_path in relative_paths:
         filename = Path(rel_path.split("?")[0]).name
         local_file = repo_root / lesson_dir / "images" / filename
 
         if not local_file.exists():
-            failed.append(rel_path)
+            failed.append((rel_path, f"local file not found: {local_file}"))
             continue
 
-        mime_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
-        b64 = base64.b64encode(local_file.read_bytes()).decode("ascii")
-        url_map[rel_path] = f"data:{mime_type};base64,{b64}"
+        try:
+            mime_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+            signed_url, public_url = _create_skilljar_upload_url(filename, mime_type, api_key)
+            _put_image_to_s3(signed_url, local_file.read_bytes(), mime_type)
+            url_map[rel_path] = public_url
+        except RuntimeError as exc:
+            failed.append((rel_path, str(exc)))
+            continue
 
     if url_map:
-        def _replace_inline(m: re.Match) -> str:
+        def _replace_uploaded(m: re.Match) -> str:
             quote_open, path, quote_close = m.group(1), m.group(2), m.group(3)
             return f"{quote_open}{url_map.get(path, path)}{quote_close}"
-        html = _RELATIVE_SRC_RE.sub(_replace_inline, html)
+        html = _RELATIVE_SRC_RE.sub(_replace_uploaded, html)
 
     return html, failed
 
@@ -539,11 +546,11 @@ def execute_release(
 
                 html, unresolved = _rewrite_images(html, ref_html)
                 if unresolved:
-                    html, failed_inline = _inline_images(
-                        html, unresolved, lesson["lesson_dir"], repo_root,
+                    html, failed_uploads = _upload_and_rewrite_images(
+                        html, unresolved, lesson["lesson_dir"], repo_root, api_key,
                     )
-                    if failed_inline:
-                        yield f"  WARNING: {len(failed_inline)} image(s) could not be inlined (local file not found): {', '.join(failed_inline)}"
+                    for path, reason in failed_uploads:
+                        yield f"  WARNING: could not upload {path}: {reason}"
 
             if not dry_run:
                 try:
