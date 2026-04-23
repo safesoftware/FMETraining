@@ -62,6 +62,9 @@ JIRA_CACHE_PATH: Path = REPO_ROOT / "inputs" / "jira_api_cache.json"
 SKILLJAR_API_KEY: str = os.getenv("SKILLJAR_API_KEY", "")
 SKILLJAR_DOMAIN: str = os.getenv("SKILLJAR_DOMAIN", "")
 SKILLJAR_MAPPING_PATH: Path = REPO_ROOT / "data" / "skilljar-mapping.json"
+# Session cookie for dashboard.skilljar.com — required for image upload during Release.
+# In Chrome DevTools: open any dashboard.skilljar.com request → Headers → Cookie → copy full value.
+SKILLJAR_SESSION_COOKIE: str = os.getenv("SKILLJAR_SESSION_COOKIE", "")
 
 
 # ---------------------------------------------------------------------------

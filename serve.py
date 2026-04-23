@@ -573,7 +573,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             self._json_response(400, {"error": "valid to_version is required"})
             return
 
-        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_DOMAIN, SKILLJAR_MAPPING_PATH
+        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_DOMAIN, SKILLJAR_MAPPING_PATH, SKILLJAR_SESSION_COOKIE
         if not SKILLJAR_API_KEY:
             self._json_response(503, {"error": "SKILLJAR_API_KEY not set in .env"})
             return
@@ -593,7 +593,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
                 for line in execute_release(
                     plan, SKILLJAR_API_KEY, SKILLJAR_DOMAIN,
                     mapping, SKILLJAR_MAPPING_PATH, REPO_ROOT,
-                    dry_run=dry_run,
+                    dry_run=dry_run, session_cookie=SKILLJAR_SESSION_COOKIE,
                 ):
                     with _runs_lock:
                         _active_runs[action_key]["log"].append(line)
@@ -688,6 +688,13 @@ def _sanitize_lesson_html(html: str) -> str:
     for a in soup.find_all("a", href=True):
         if a["href"].startswith("?tab="):
             a.decompose()
+        elif "color:#93c5fd" in (a.get("style") or ""):
+            # Popup-injected Jira issue links use this specific colour; never in lesson content
+            a.decompose()
+    # Remove the card-link wrapper span left empty after its <a> was stripped
+    for span in soup.find_all("span", style=True):
+        if "display:block" in span.get("style", "") and not span.get_text(strip=True):
+            span.decompose()
     return str(soup)
 
 

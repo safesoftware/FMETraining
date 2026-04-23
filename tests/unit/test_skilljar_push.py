@@ -109,6 +109,28 @@ class TestCreateSkilljarUploadUrl:
             with pytest.raises(RuntimeError, match="HTTP 403 GET /asset/create_upload_url"):
                 _create_skilljar_upload_url("file.png", "image/png", "fake-key")
 
+    def test_uses_cookie_header_when_session_cookie_provided(self):
+        response_body = json.dumps({
+            "signed_request": "https://s3.example.com/signed",
+            "url": "https://cdn.example.com/file.png",
+        }).encode()
+        mock_resp = MagicMock()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = MagicMock(return_value=False)
+        mock_resp.read.return_value = response_body
+        captured = {}
+
+        def capture(req):
+            captured["cookie"] = req.get_header("Cookie")
+            captured["auth"] = req.get_header("Authorization")
+            return mock_resp
+
+        with patch("urllib.request.urlopen", side_effect=capture):
+            _create_skilljar_upload_url("file.png", "image/png", "fake-key", "sessionid=abc123")
+
+        assert captured["cookie"] == "sessionid=abc123"
+        assert captured["auth"] is None
+
     def test_raises_when_response_missing_fields(self):
         response_body = json.dumps({"content_path": "org/public/123/file.png"}).encode()
         mock_resp = MagicMock()

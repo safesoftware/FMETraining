@@ -6,7 +6,7 @@ Entry points:
       Walk the to_version folder for saved index.html files.
   build_release_plan(scope_lesson_dirs, to_version, mapping, repo_root) → dict
       Group selected lessons by Skilljar course and produce a release plan.
-  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run) → Iterator[str]
+  execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run, session_cookie) → Iterator[str]
       Generator yielding log lines for the full archive→push→rename→tag→mapping flow.
 """
 
@@ -70,6 +70,7 @@ def _upload_and_rewrite_images(
     lesson_dir: str,
     repo_root: Path,
     api_key: str,
+    session_cookie: str = "",
 ) -> tuple[str, list[tuple[str, str]]]:
     """Upload local images to Skilljar S3 and rewrite their src= paths in html.
 
@@ -89,7 +90,7 @@ def _upload_and_rewrite_images(
 
         try:
             mime_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
-            signed_url, public_url = _create_skilljar_upload_url(filename, mime_type, api_key)
+            signed_url, public_url = _create_skilljar_upload_url(filename, mime_type, api_key, session_cookie)
             _put_image_to_s3(signed_url, local_file.read_bytes(), mime_type)
             url_map[rel_path] = public_url
         except RuntimeError as exc:
@@ -431,6 +432,7 @@ def execute_release(
     mapping_path: Path,
     repo_root: Path,
     dry_run: bool = False,
+    session_cookie: str = "",
 ) -> Iterator[str]:
     """
     Generator yielding log lines for the full release flow.
@@ -547,7 +549,7 @@ def execute_release(
                 html, unresolved = _rewrite_images(html, ref_html)
                 if unresolved:
                     html, failed_uploads = _upload_and_rewrite_images(
-                        html, unresolved, lesson["lesson_dir"], repo_root, api_key,
+                        html, unresolved, lesson["lesson_dir"], repo_root, api_key, session_cookie,
                     )
                     for path, reason in failed_uploads:
                         yield f"  WARNING: could not upload {path}: {reason}"

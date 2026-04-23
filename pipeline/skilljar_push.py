@@ -126,10 +126,17 @@ def _wait_for_asset_url(asset_id: str, api_key: str, max_retries: int = 10) -> s
     return None
 
 
-def _create_skilljar_upload_url(filename: str, mime_type: str, api_key: str) -> tuple[str, str]:
+def _create_skilljar_upload_url(
+    filename: str,
+    mime_type: str,
+    api_key: str,
+    session_cookie: str = "",
+) -> tuple[str, str]:
     """Request a pre-signed S3 upload URL from the Skilljar dashboard.
 
     Returns (signed_request_url, public_url).
+    Uses session_cookie if provided (required by dashboard.skilljar.com),
+    otherwise falls back to API key auth.
     """
     params = urllib.parse.urlencode({
         "s3_object_type": mime_type,
@@ -138,10 +145,10 @@ def _create_skilljar_upload_url(filename: str, mime_type: str, api_key: str) -> 
         "public_read": "true",
     })
     url = f"https://dashboard.skilljar.com/asset/create_upload_url?{params}"
-    headers = {
-        "Authorization": _basic_auth_header(api_key),
-        "Accept": "application/json",
-    }
+    if session_cookie:
+        headers = {"Cookie": session_cookie, "Accept": "application/json"}
+    else:
+        headers = {"Authorization": _basic_auth_header(api_key), "Accept": "application/json"}
     req = urllib.request.Request(url, headers=headers, method="GET")
     try:
         with urllib.request.urlopen(req) as resp:
