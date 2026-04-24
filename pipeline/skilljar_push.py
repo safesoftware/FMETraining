@@ -149,7 +149,7 @@ def _s3_sign(
     region: str,
 ) -> tuple[str, dict[str, str]]:
     """Build a signed URL and headers for an S3 request using AWS v4 signatures."""
-    host = f"{bucket.lower()}.s3.{region}.amazonaws.com"
+    host = f"{bucket}.s3.{region}.amazonaws.com"
     now = datetime.datetime.now(datetime.timezone.utc)
     amz_date = now.strftime("%Y%m%dT%H%M%SZ")
     date_stamp = now.strftime("%Y%m%d")
