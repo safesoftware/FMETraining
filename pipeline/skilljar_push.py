@@ -148,8 +148,12 @@ def _s3_sign(
     secret: str,
     region: str,
 ) -> tuple[str, dict[str, str]]:
-    """Build a signed URL and headers for an S3 request using AWS v4 signatures."""
-    host = f"{bucket}.s3.{region}.amazonaws.com"
+    """Build a signed URL and headers for an S3 request using AWS v4 signatures.
+
+    Uses path-style URLs (s3.region.amazonaws.com/bucket/key) so the bucket name
+    appears in the URL path rather than the hostname, preserving its casing.
+    """
+    host = f"s3.{region}.amazonaws.com"
     now = datetime.datetime.now(datetime.timezone.utc)
     amz_date = now.strftime("%Y%m%dT%H%M%SZ")
     date_stamp = now.strftime("%Y%m%d")
@@ -168,8 +172,9 @@ def _s3_sign(
     signed_headers_str = ";".join(sorted_keys)
 
     encoded_key = urllib.parse.quote(s3_key, safe="/")
+    canonical_uri = f"/{bucket}/{encoded_key}"
     canonical_request = "\n".join([
-        method, f"/{encoded_key}", "",
+        method, canonical_uri, "",
         canonical_headers, signed_headers_str, payload_hash,
     ])
 
@@ -194,7 +199,7 @@ def _s3_sign(
         "x-amz-date": amz_date,
     }
     headers.update(extra_headers)
-    return f"https://{host}/{encoded_key}", headers
+    return f"https://{host}/{bucket}/{encoded_key}", headers
 
 
 def _s3_put(file_path: Path, bucket: str, key_id: str, secret: str, region: str) -> tuple[str, str]:

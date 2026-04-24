@@ -107,7 +107,7 @@ def _upload_and_rewrite_images(
         hosted_url: str | None = None
         try:
             _, s3_key = _s3_put(local_file, s3_bucket, s3_key_id, s3_secret, s3_region)
-            s3_url = f"https://{s3_bucket}.s3.{s3_region}.amazonaws.com/{s3_key}"
+            s3_url = f"https://s3.{s3_region}.amazonaws.com/{s3_bucket}/{s3_key}"
             asset_id = _create_asset_from_url(s3_url, api_key)
             hosted_url = _wait_for_asset_url(asset_id, api_key, _IMAGE_UPLOAD_RETRIES)
         except RuntimeError as exc:
