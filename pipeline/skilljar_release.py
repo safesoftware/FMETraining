@@ -13,7 +13,6 @@ Entry points:
 from __future__ import annotations
 
 import json
-import mimetypes
 import re
 from pathlib import Path
 from typing import Iterator
@@ -26,7 +25,9 @@ from pipeline.skilljar_push import (
     _create_course,
     _create_lesson,
     _get_lesson,
-    _upload_asset,
+    _s3_put,
+    _s3_delete,
+    _create_asset_from_url,
     _wait_for_asset_url,
 )
 
@@ -73,12 +74,24 @@ def _upload_and_rewrite_images(
     lesson_dir: str,
     repo_root: Path,
     api_key: str,
+    s3_bucket: str = "",
+    s3_key_id: str = "",
+    s3_secret: str = "",
+    s3_region: str = "us-east-1",
 ) -> tuple[str, list[tuple[str, str]]]:
-    """Upload local images via POST /v1/assets and rewrite their src= paths in html.
+    """Upload local images via S3 → Skilljar asset and rewrite their src= paths in html.
 
-    Returns (rewritten_html, failed) where failed is a list of (rel_path, reason)
-    for images that could not be uploaded.
+    Flow per image: PUT to caller's S3 bucket (public-read) → POST /v1/assets with
+    content_url → poll for Skilljar CDN URL → DELETE from S3.
+
+    Returns (rewritten_html, failed) where failed is a list of (rel_path, reason).
     """
+    if not (s3_bucket and s3_key_id and s3_secret):
+        return html, [
+            (p, "S3 not configured — set AWS_S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY in .env")
+            for p in relative_paths
+        ]
+
     url_map: dict[str, str] = {}
     failed: list[tuple[str, str]] = []
 
@@ -90,17 +103,27 @@ def _upload_and_rewrite_images(
             failed.append((rel_path, f"local file not found: {local_file}"))
             continue
 
+        s3_key: str | None = None
+        hosted_url: str | None = None
         try:
-            asset_id = _upload_asset(local_file, api_key)
+            _, s3_key = _s3_put(local_file, s3_bucket, s3_key_id, s3_secret, s3_region)
+            s3_url = f"https://{s3_bucket.lower()}.s3.{s3_region}.amazonaws.com/{s3_key}"
+            asset_id = _create_asset_from_url(s3_url, api_key)
             hosted_url = _wait_for_asset_url(asset_id, api_key, _IMAGE_UPLOAD_RETRIES)
         except RuntimeError as exc:
             failed.append((rel_path, str(exc)))
             continue
+        finally:
+            if s3_key:
+                try:
+                    _s3_delete(s3_key, s3_bucket, s3_key_id, s3_secret, s3_region)
+                except RuntimeError:
+                    pass
 
         if hosted_url:
             url_map[rel_path] = hosted_url
         else:
-            failed.append((rel_path, "timed out waiting for hosted URL"))
+            failed.append((rel_path, "timed out waiting for Skilljar CDN URL"))
 
     if url_map:
         def _replace_uploaded(m: re.Match) -> str:
@@ -437,6 +460,10 @@ def execute_release(
     mapping_path: Path,
     repo_root: Path,
     dry_run: bool = False,
+    s3_bucket: str = "",
+    s3_key_id: str = "",
+    s3_secret: str = "",
+    s3_region: str = "us-east-1",
 ) -> Iterator[str]:
     """
     Generator yielding log lines for the full release flow.
@@ -554,6 +581,8 @@ def execute_release(
                 if unresolved:
                     html, failed_uploads = _upload_and_rewrite_images(
                         html, unresolved, lesson["lesson_dir"], repo_root, api_key,
+                        s3_bucket=s3_bucket, s3_key_id=s3_key_id,
+                        s3_secret=s3_secret, s3_region=s3_region,
                     )
                     for path, reason in failed_uploads:
                         yield f"  WARNING: could not upload {path}: {reason}"

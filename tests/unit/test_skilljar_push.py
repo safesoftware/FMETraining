@@ -12,6 +12,9 @@ from pipeline.skilljar_push import (
     _wait_for_asset_url,
     _create_skilljar_upload_url,
     _put_image_to_s3,
+    _s3_put,
+    _s3_delete,
+    _create_asset_from_url,
 )
 
 
@@ -177,6 +180,91 @@ class TestPutImageToS3:
         with patch("urllib.request.urlopen", side_effect=http_err):
             with pytest.raises(RuntimeError, match="HTTP 403 PUT to S3"):
                 _put_image_to_s3("https://s3.example.com/signed", b"\x89PNG", "image/png")
+
+
+class TestCreateAssetFromUrl:
+    def test_returns_asset_id_on_success(self):
+        with patch("pipeline.skilljar_push._request",
+                   return_value={"id": "abc123", "name": "PROCESSING"}):
+            asset_id = _create_asset_from_url("https://s3.example.com/img.png", "fake-key")
+        assert asset_id == "abc123"
+
+    def test_raises_when_id_missing(self):
+        with patch("pipeline.skilljar_push._request", return_value={"name": "PROCESSING"}):
+            with pytest.raises(RuntimeError, match="missing 'id'"):
+                _create_asset_from_url("https://s3.example.com/img.png", "fake-key")
+
+
+class TestS3Put:
+    def test_puts_file_with_public_read_acl(self, tmp_path):
+        img = tmp_path / "test.png"
+        img.write_bytes(b"\x89PNG\r\n")
+        captured = {}
+        mock_resp = MagicMock()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = MagicMock(return_value=False)
+        mock_resp.read.return_value = b""
+
+        def capture(req):
+            captured["method"] = req.get_method()
+            captured["acl"] = req.get_header("X-amz-acl")
+            captured["auth"] = req.get_header("Authorization")
+            captured["url"] = req.full_url
+            return mock_resp
+
+        with patch("urllib.request.urlopen", side_effect=capture):
+            url, s3_key = _s3_put(img, "my-bucket", "AKID", "secret", "us-east-1")
+
+        assert captured["method"] == "PUT"
+        assert captured["acl"] == "public-read"
+        assert captured["auth"].startswith("AWS4-HMAC-SHA256")
+        assert "my-bucket" in captured["url"]
+        assert "test.png" in s3_key
+        assert url == captured["url"]
+
+    def test_raises_on_http_error(self, tmp_path):
+        import urllib.error
+        img = tmp_path / "test.png"
+        img.write_bytes(b"\x89PNG")
+        http_err = urllib.error.HTTPError(
+            url="https://my-bucket.s3.us-east-1.amazonaws.com/key",
+            code=403, msg="Forbidden", hdrs={},
+            fp=MagicMock(read=lambda: b"AccessDenied"),
+        )
+        with patch("urllib.request.urlopen", side_effect=http_err):
+            with pytest.raises(RuntimeError, match="HTTP 403 PUT s3://"):
+                _s3_put(img, "my-bucket", "AKID", "secret", "us-east-1")
+
+
+class TestS3Delete:
+    def test_sends_delete_request(self):
+        captured = {}
+        mock_resp = MagicMock()
+        mock_resp.__enter__ = lambda s: s
+        mock_resp.__exit__ = MagicMock(return_value=False)
+        mock_resp.read.return_value = b""
+
+        def capture(req):
+            captured["method"] = req.get_method()
+            captured["auth"] = req.get_header("Authorization")
+            return mock_resp
+
+        with patch("urllib.request.urlopen", side_effect=capture):
+            _s3_delete("skilljar-uploads/img.png", "my-bucket", "AKID", "secret", "us-east-1")
+
+        assert captured["method"] == "DELETE"
+        assert captured["auth"].startswith("AWS4-HMAC-SHA256")
+
+    def test_raises_on_http_error(self):
+        import urllib.error
+        http_err = urllib.error.HTTPError(
+            url="https://my-bucket.s3.us-east-1.amazonaws.com/key",
+            code=404, msg="Not Found", hdrs={},
+            fp=MagicMock(read=lambda: b"NoSuchKey"),
+        )
+        with patch("urllib.request.urlopen", side_effect=http_err):
+            with pytest.raises(RuntimeError, match="HTTP 404 DELETE s3://"):
+                _s3_delete("skilljar-uploads/img.png", "my-bucket", "AKID", "secret", "us-east-1")
 
 
 class TestWaitForAssetUrl:

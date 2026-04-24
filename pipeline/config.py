@@ -63,6 +63,12 @@ SKILLJAR_API_KEY: str = os.getenv("SKILLJAR_API_KEY", "")
 SKILLJAR_DOMAIN: str = os.getenv("SKILLJAR_DOMAIN", "")
 SKILLJAR_MAPPING_PATH: Path = REPO_ROOT / "data" / "skilljar-mapping.json"
 
+# AWS S3 credentials (for image upload during Release)
+AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID", "")
+AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+AWS_S3_BUCKET: str = os.getenv("AWS_S3_BUCKET", "")
+AWS_S3_REGION: str = os.getenv("AWS_S3_REGION", "us-east-1")
+
 
 # ---------------------------------------------------------------------------
 # Directory paths

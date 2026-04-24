@@ -10,6 +10,9 @@ Two entry points:
 from __future__ import annotations
 
 import base64
+import datetime
+import hashlib
+import hmac
 import json
 import mimetypes
 import re
@@ -124,6 +127,109 @@ def _wait_for_asset_url(asset_id: str, api_key: str, max_retries: int = 10) -> s
         if attempt < max_retries - 1:
             time.sleep(2)
     return None
+
+
+def _create_asset_from_url(url: str, api_key: str) -> str:
+    """Create a Skilljar asset by providing a public URL. Returns the asset_id."""
+    result = _request("POST", "/assets", api_key, {"content_url": url})
+    asset_id = result.get("id")
+    if not asset_id:
+        raise RuntimeError(f"POST /assets response missing 'id': {result!r}")
+    return asset_id
+
+
+def _s3_sign(
+    method: str,
+    bucket: str,
+    s3_key: str,
+    file_data: bytes,
+    extra_headers: dict[str, str],
+    key_id: str,
+    secret: str,
+    region: str,
+) -> tuple[str, dict[str, str]]:
+    """Build a signed URL and headers for an S3 request using AWS v4 signatures."""
+    host = f"{bucket.lower()}.s3.{region}.amazonaws.com"
+    now = datetime.datetime.now(datetime.timezone.utc)
+    amz_date = now.strftime("%Y%m%dT%H%M%SZ")
+    date_stamp = now.strftime("%Y%m%d")
+    payload_hash = hashlib.sha256(file_data).hexdigest()
+
+    to_sign: dict[str, str] = {
+        "host": host,
+        "x-amz-content-sha256": payload_hash,
+        "x-amz-date": amz_date,
+    }
+    for k, v in extra_headers.items():
+        to_sign[k.lower()] = v
+
+    sorted_keys = sorted(to_sign)
+    canonical_headers = "".join(f"{k}:{to_sign[k]}\n" for k in sorted_keys)
+    signed_headers_str = ";".join(sorted_keys)
+
+    encoded_key = urllib.parse.quote(s3_key, safe="/")
+    canonical_request = "\n".join([
+        method, f"/{encoded_key}", "",
+        canonical_headers, signed_headers_str, payload_hash,
+    ])
+
+    credential_scope = f"{date_stamp}/{region}/s3/aws4_request"
+    string_to_sign = "\n".join([
+        "AWS4-HMAC-SHA256", amz_date, credential_scope,
+        hashlib.sha256(canonical_request.encode()).hexdigest(),
+    ])
+
+    k_bytes = ("AWS4" + secret).encode()
+    for part in (date_stamp.encode(), region.encode(), b"s3", b"aws4_request"):
+        k_bytes = hmac.new(k_bytes, part, hashlib.sha256).digest()
+    sig = hmac.new(k_bytes, string_to_sign.encode(), hashlib.sha256).hexdigest()
+
+    auth = (
+        f"AWS4-HMAC-SHA256 Credential={key_id}/{credential_scope}, "
+        f"SignedHeaders={signed_headers_str}, Signature={sig}"
+    )
+    headers: dict[str, str] = {
+        "Authorization": auth,
+        "x-amz-content-sha256": payload_hash,
+        "x-amz-date": amz_date,
+    }
+    headers.update(extra_headers)
+    return f"https://{host}/{encoded_key}", headers
+
+
+def _s3_put(file_path: Path, bucket: str, key_id: str, secret: str, region: str) -> tuple[str, str]:
+    """Upload a local file to S3 with public-read ACL. Returns (public_url, s3_key)."""
+    filename = file_path.name
+    s3_key = f"skilljar-uploads/{uuid.uuid4().hex[:8]}-{filename}"
+    mime = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+    data = file_path.read_bytes()
+    url, headers = _s3_sign("PUT", bucket, s3_key, data,
+                            {"Content-Type": mime, "x-amz-acl": "public-read"},
+                            key_id, secret, region)
+    req = urllib.request.Request(url, data=data, method="PUT", headers=headers)
+    try:
+        with urllib.request.urlopen(req) as resp:
+            resp.read()
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} PUT s3://{bucket}/{s3_key}: {body}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"Network error PUT s3://{bucket}/{s3_key}: {exc}") from exc
+    return url, s3_key
+
+
+def _s3_delete(s3_key: str, bucket: str, key_id: str, secret: str, region: str) -> None:
+    """Delete an object from S3."""
+    url, headers = _s3_sign("DELETE", bucket, s3_key, b"", {}, key_id, secret, region)
+    req = urllib.request.Request(url, method="DELETE", headers=headers)
+    try:
+        with urllib.request.urlopen(req) as resp:
+            resp.read()
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} DELETE s3://{bucket}/{s3_key}: {body}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"Network error DELETE s3://{bucket}/{s3_key}: {exc}") from exc
 
 
 def _create_skilljar_upload_url(

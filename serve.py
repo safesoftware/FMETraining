@@ -573,7 +573,10 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             self._json_response(400, {"error": "valid to_version is required"})
             return
 
-        from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_DOMAIN, SKILLJAR_MAPPING_PATH
+        from pipeline.config import (
+            SKILLJAR_API_KEY, SKILLJAR_DOMAIN, SKILLJAR_MAPPING_PATH,
+            AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET, AWS_S3_REGION,
+        )
         if not SKILLJAR_API_KEY:
             self._json_response(503, {"error": "SKILLJAR_API_KEY not set in .env"})
             return
@@ -594,6 +597,8 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
                     plan, SKILLJAR_API_KEY, SKILLJAR_DOMAIN,
                     mapping, SKILLJAR_MAPPING_PATH, REPO_ROOT,
                     dry_run=dry_run,
+                    s3_bucket=AWS_S3_BUCKET, s3_key_id=AWS_ACCESS_KEY_ID,
+                    s3_secret=AWS_SECRET_ACCESS_KEY, s3_region=AWS_S3_REGION,
                 ):
                     with _runs_lock:
                         _active_runs[action_key]["log"].append(line)
