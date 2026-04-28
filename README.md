@@ -137,6 +137,19 @@ OPENAI_RPM=60
 
 # Optional — include full lesson text in prompts (fewer false positives, ~3× cost)
 INCLUDE_FULL_TEXT=true
+
+# Optional — Skilljar integration (required for Push to Skilljar and Release tabs)
+SKILLJAR_API_KEY=sk-live-...
+SKILLJAR_DOMAIN=academy.safe.com   # only needed for Release tag updates
+
+# Optional — AWS S3 (required if you push lessons that contain images)
+# Images get uploaded here with public-read ACL and embedded directly in the
+# lesson HTML — Skilljar's /v1/assets endpoint is not used because it returns
+# 1-hour-signed URLs that expire mid-lesson. See "Image Upload Workflow" below.
+AWS_S3_BUCKET=YourBucketName
+AWS_ACCESS_KEY_ID=AKIA...
+AWS_SECRET_ACCESS_KEY=...
+AWS_S3_REGION=us-east-1
 ```
 
 ## Defining a Run (update-job.json)
@@ -233,10 +246,39 @@ python -m http.server 8080
 After running Step 6 (`--steps 6`), the **Lesson Edits** tab lets you review and accept/reject suggested text changes. When you click **Save to Version Folder**:
 
 - `serve.py` computes the target path by replacing the source version with `to_version` from your `update-job.json` (e.g. `2024.2/...` → `2026.1/...`)
+- Any pasted images embedded as `data:image/...;base64,...` URIs are uploaded to S3 first and the `<img>` tags are rewritten to point at the permanent S3 URL (see [Image Upload Workflow](#image-upload-workflow))
+- Track-changes report markup and empty `<p></p>` separators left behind by contenteditable paste are stripped
 - The lesson HTML is written to the new path
 - Images are copied from the source lesson's `images/` folder to the target
 
 If the target file already exists, you will be prompted to overwrite it.
+
+### Push to Skilljar
+
+Once a lesson is saved to the version folder, **Push to Skilljar** sends the accepted HTML to the live Skilljar lesson via `PATCH /v1/lessons/{id}`. The pre-flight dialog confirms one of three actions:
+
+- **Update lesson** — the target lesson is already mapped in `data/skilljar-mapping.json`; only the HTML is patched
+- **Create lesson** — the target course exists in Skilljar but the lesson does not; a new lesson is created and patched
+- **Create course and lesson** — neither exists; both are created from the source course's metadata
+
+Push requires `SKILLJAR_API_KEY` in `.env`. If the lesson contains pasted data URIs, they are uploaded to S3 the same way as Save to Version Folder.
+
+### Image Upload Workflow
+
+When pushed lessons reference images, those images need a publicly fetchable URL or Skilljar's renderer can't load them. Two cases:
+
+**Pasted images (data: URIs).** When you paste an image — or HTML containing `<img src="data:image/…;base64,…">` from Word, Slack, or a webpage — the data URI lands in the contenteditable WYSIWYG. On Save to Version Folder or Push to Skilljar, the backend:
+
+1. Walks the HTML for `<img src="data:image/…">` matches.
+2. Decodes each unique base64 payload (deduped by content hash).
+3. Uploads to your `AWS_S3_BUCKET` via `_s3_put` with `public-read` ACL — keys are `skilljar-uploads/<random>-pasted-<hash>.<ext>`.
+4. Rewrites the `<img>` `src` to the permanent `https://s3.{region}.amazonaws.com/{bucket}/{key}` URL.
+
+**Lesson `images/` folder (Release pipeline).** During release (`/api/release-execute`), every relative `<img src="images/foo.png">` that can't be resolved against the previous version's lesson HTML is uploaded to your S3 bucket the same way and rewritten in place.
+
+Both paths bypass Skilljar's `POST /v1/assets` endpoint on purpose: per the Skilljar API spec (`docs/skilljar-api-04-20-2026.yaml`), `GET /v1/assets/{id}` returns "a signed download URL valid for 1 hour" — fine for API-side downloads, useless for embedding in `content_html`. Hosting on your own bucket gives URLs that don't expire.
+
+Implementation: `pipeline/data_uri_upload.py` (paste path) and `pipeline/skilljar_release.py:_upload_and_rewrite_images` (release path). Both reuse `_s3_put` / `_s3_sign` from `pipeline/skilljar_push.py`.
 
 The report includes:
 - **Likelihood filters** (High / Medium / Low / None)

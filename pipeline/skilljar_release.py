@@ -26,9 +26,6 @@ from pipeline.skilljar_push import (
     _create_lesson,
     _get_lesson,
     _s3_put,
-    _s3_delete,
-    _create_asset_from_url,
-    _wait_for_asset_url,
 )
 
 
@@ -65,9 +62,6 @@ def _rewrite_images(new_html: str, original_html: str) -> tuple[str, list[str]]:
     return rewritten, unmatched
 
 
-_IMAGE_UPLOAD_RETRIES = 10
-
-
 def _upload_and_rewrite_images(
     html: str,
     relative_paths: list[str],
@@ -79,13 +73,20 @@ def _upload_and_rewrite_images(
     s3_secret: str = "",
     s3_region: str = "us-east-1",
 ) -> tuple[str, list[tuple[str, str]]]:
-    """Upload local images via S3 → Skilljar asset and rewrite their src= paths in html.
+    """Upload local images to our public-read S3 bucket and rewrite their src= paths in html.
 
-    Flow per image: PUT to caller's S3 bucket (public-read) → POST /v1/assets with
-    content_url → poll for Skilljar CDN URL → DELETE from S3.
+    Per image: PUT to S3 with public-read ACL → use the resulting permanent
+    https://s3.{region}.amazonaws.com/{bucket}/{key} URL directly in the HTML.
+    Skilljar's /v1/assets endpoint is intentionally not used here: per the API
+    spec it only returns 1-hour-signed download URLs, which would expire in the
+    rendered lesson. Hosting on our own bucket gives permanent URLs.
+
+    `api_key` is unused; it remains in the signature for backwards compatibility
+    with existing callers.
 
     Returns (rewritten_html, failed) where failed is a list of (rel_path, reason).
     """
+    del api_key
     if not (s3_bucket and s3_key_id and s3_secret):
         return html, [
             (p, "S3 not configured — set AWS_S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY in .env")
@@ -103,27 +104,13 @@ def _upload_and_rewrite_images(
             failed.append((rel_path, f"local file not found: {local_file}"))
             continue
 
-        s3_key: str | None = None
-        hosted_url: str | None = None
         try:
-            _, s3_key = _s3_put(local_file, s3_bucket, s3_key_id, s3_secret, s3_region)
-            s3_url = f"https://s3.{s3_region}.amazonaws.com/{s3_bucket}/{s3_key}"
-            asset_id = _create_asset_from_url(s3_url, api_key)
-            hosted_url = _wait_for_asset_url(asset_id, api_key, _IMAGE_UPLOAD_RETRIES)
+            public_url, _s3_key = _s3_put(local_file, s3_bucket, s3_key_id, s3_secret, s3_region)
         except RuntimeError as exc:
             failed.append((rel_path, str(exc)))
             continue
-        finally:
-            if s3_key:
-                try:
-                    _s3_delete(s3_key, s3_bucket, s3_key_id, s3_secret, s3_region)
-                except RuntimeError:
-                    pass
 
-        if hosted_url:
-            url_map[rel_path] = hosted_url
-        else:
-            failed.append((rel_path, "timed out waiting for Skilljar CDN URL"))
+        url_map[rel_path] = public_url
 
     if url_map:
         def _replace_uploaded(m: re.Match) -> str:

@@ -459,6 +459,12 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             })
             return
 
+        try:
+            html_content = _upload_pasted_data_uris(html_content)
+        except RuntimeError as exc:
+            self._json_response(500, {"error": str(exc)})
+            return
+
         target_file.parent.mkdir(parents=True, exist_ok=True)
         target_file.write_text(_sanitize_lesson_html(html_content), encoding="utf-8")
 
@@ -504,6 +510,12 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
         from pipeline.config import SKILLJAR_API_KEY, SKILLJAR_MAPPING_PATH
         if not SKILLJAR_API_KEY:
             self._json_response(503, {"error": "SKILLJAR_API_KEY not set in .env"})
+            return
+
+        try:
+            html_content = _upload_pasted_data_uris(html_content)
+        except RuntimeError as exc:
+            self._json_response(500, {"error": str(exc)})
             return
 
         from pipeline.skilljar_push import load_mapping, push_with_version_check
@@ -684,6 +696,32 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
 # Path computation (for save-lesson)
 # ---------------------------------------------------------------------------
 
+def _upload_pasted_data_uris(html: str) -> str:
+    """Replace <img src='data:image/...;base64,...'> tags with permanent S3 URLs.
+
+    No-op when the HTML contains no data URIs. Raises RuntimeError if uploads
+    are needed but credentials are missing or any upload fails — the caller
+    surfaces this as a 500 to the editor.
+    """
+    if "data:image/" not in html:
+        return html
+    from pipeline.config import (
+        AWS_ACCESS_KEY_ID,
+        AWS_S3_BUCKET,
+        AWS_S3_REGION,
+        AWS_SECRET_ACCESS_KEY,
+    )
+    from pipeline.data_uri_upload import extract_and_upload_data_uris
+    rewritten, _log = extract_and_upload_data_uris(
+        html,
+        s3_bucket=AWS_S3_BUCKET,
+        s3_key_id=AWS_ACCESS_KEY_ID,
+        s3_secret=AWS_SECRET_ACCESS_KEY,
+        s3_region=AWS_S3_REGION,
+    )
+    return rewritten
+
+
 def _sanitize_lesson_html(html: str) -> str:
     """Strip track-changes report markup that should never appear in saved lesson files."""
     soup = BeautifulSoup(html, "html.parser")
@@ -700,6 +738,13 @@ def _sanitize_lesson_html(html: str) -> str:
     for span in soup.find_all("span", style=True):
         if "display:block" in span.get("style", "") and not span.get_text(strip=True):
             span.decompose()
+    # Strip empty <p></p> separators left behind by contenteditable when pasting.
+    # Browsers wrap pasted images in <p>...</p> and append an empty <p></p> after,
+    # which Skilljar renders as an extra blank line. Only remove paragraphs with
+    # no element children and no text — keeps intentional <p><br></p> spacing.
+    for p in soup.find_all("p"):
+        if not p.find() and not p.get_text(strip=True):
+            p.decompose()
     return str(soup)
 
 

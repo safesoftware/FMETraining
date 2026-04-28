@@ -2,7 +2,15 @@
 
 ## Issue Tracking
 
-Track issues in `ISSUES.md`. Use headers to indicate if issues are **Open**, **In Review**, or **Closed** (currently uses **Fixed**/**Won't Do**/**Future Work**). Number issues sequentially. Keep the file up-to-date when making changes — move issues between sections and add new ones as appropriate. Focus on issues listed under **Open** unless the user specifies otherwise.
+Issues are tracked in **Jira project KNOW** (https://safesoftware.atlassian.net/jira/software/projects/KNOW/boards). Do not add new items to `ISSUES.md` — it is a historical archive only.
+
+When filing a new Jira issue use these standard fields:
+- **Type:** Task
+- **Assignee:** sam.walker@safe.com (account ID `5a6103bb9d0ea46a7a5b6cde`)
+- **Component:** Development
+- **Class of Service:** Standard (`customfield_10253`: `{"value": "Standard"}`)
+
+Use the Jira MCP (`mcp__claude_ai_Atlassian__createJiraIssue`, cloud ID `646a4867-d35f-4b64-958d-eb9a1def6740`). See `memory/jira_config.md` for full field config and workflow transition IDs.
 
 ## Critical Rules
 

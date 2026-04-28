@@ -367,16 +367,72 @@ code { font-family: monospace; font-size: 11px; }
   color: var(--gray-600);
 }
 .step-chip.done { background: #d4f5dc; color: #1a7a34; }
+
+/* Main tab bar */
+.main-tabs-bar {
+  background: var(--brand);
+  display: flex;
+  flex-shrink: 0;
+  padding: 0 12px;
+  gap: 2px;
+  border-top: 1px solid rgba(255,255,255,.15);
+}
+.main-tab {
+  padding: 7px 18px;
+  border: none;
+  background: none;
+  color: rgba(255,255,255,.65);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: color .15s;
+}
+.main-tab:hover { color: rgba(255,255,255,.9); }
+.main-tab.active { color: #fff; border-bottom-color: rgba(255,255,255,.9); }
+
+/* Release scope card (mirrors #scope-card) */
+#release-scope-card { display: flex; flex-direction: column; min-height: 0; flex: 1; overflow: hidden; }
+
+/* Release console card */
+#release-console-card { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+/* Release tree status chips */
+.chip {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+.chip-ready     { background: #d4f5dc; color: #1a7a34; }
+.chip-nomapping { background: #fde8ea; color: #b52a35; }
+.chip-draft     { background: #e3f0ff; color: #1a5fb4; }
+
+/* Release plan list */
+.release-plan-course { margin-bottom: 12px; }
+.release-plan-course-title { font-weight: 600; font-size: 12px; margin-bottom: 4px; }
+.release-plan-course ul { margin: 0; padding-left: 18px; color: var(--gray-600); font-size: 12px; line-height: 1.7; }
+.release-plan-warn { color: #856404; background: #fff3cd; border-radius: 4px; padding: 2px 8px; font-size: 11px; margin-top: 4px; }
+.release-plan-err  { color: var(--danger); font-size: 12px; padding: 4px 0; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>FME Training Update Assistant</h1>
-  <span class="subtitle" id="app-version">v0.1.0</span>
+  <span class="subtitle" id="app-version">v0.3.0</span>
 </header>
 
-<div class="layout">
+<div class="main-tabs-bar">
+  <button class="main-tab active" data-tab="pipeline" onclick="switchMainTab('pipeline')">Pipeline</button>
+  <button class="main-tab" data-tab="release" onclick="switchMainTab('release')">Release</button>
+</div>
+
+<div id="pipeline-layout" class="layout">
 
   <!-- LEFT PANEL -->
   <div class="left-panel">
@@ -417,10 +473,10 @@ code { font-family: monospace; font-size: 11px; }
       <div class="options-body" id="options-body" style="display:none">
         <div class="opt-row">
           <label>Jira source</label>
-          <label><input type="radio" name="jira_source" value="csv" checked onchange="updateJiraOptions()"> CSV cache</label>
-          <label><input type="radio" name="jira_source" value="api" onchange="updateJiraOptions()"> Jira API</label>
+          <label><input type="radio" name="jira_source" value="csv" onchange="updateJiraOptions()"> CSV cache</label>
+          <label><input type="radio" name="jira_source" value="api" checked onchange="updateJiraOptions()"> Jira API</label>
         </div>
-        <div class="opt-row" id="refresh-jira-row" style="display:none">
+        <div class="opt-row" id="refresh-jira-row">
           <label></label>
           <label><input type="checkbox" id="opt-refresh-jira"> Force refresh Jira cache</label>
         </div>
@@ -431,7 +487,7 @@ code { font-family: monospace; font-size: 11px; }
             <label class="step-label"><input type="checkbox" class="step-check" value="2" checked> 2 Changelog</label>
             <label class="step-label"><input type="checkbox" class="step-check" value="3" checked> 3+4 Assessment</label>
             <label class="step-label"><input type="checkbox" class="step-check" value="5" checked> 5 Report</label>
-            <label class="step-label"><input type="checkbox" class="step-check" value="6"> 6 Edit plans</label>
+            <label class="step-label"><input type="checkbox" class="step-check" value="6" checked> 6 Edit plans</label>
           </div>
         </div>
         <div class="opt-row">
@@ -492,7 +548,87 @@ code { font-family: monospace; font-size: 11px; }
     </div>
 
   </div><!-- /right -->
-</div><!-- /layout -->
+</div><!-- /pipeline-layout -->
+
+<!-- RELEASE LAYOUT -->
+<div id="release-layout" class="layout" style="display:none">
+
+  <!-- Release LEFT: version + tree -->
+  <div class="left-panel">
+    <div class="card" id="release-scope-card">
+      <div class="scope-controls">
+        <div class="card-title">Select Content to Release</div>
+        <div class="form-row">
+          <label>Target version</label>
+          <select id="release-version" onchange="releaseLoadTree(this.value)"></select>
+        </div>
+        <div class="scope-btns">
+          <button onclick="releaseSelectAll(true)">Select All</button>
+          <button onclick="releaseSelectAll(false)">Deselect All</button>
+        </div>
+        <div class="selection-count" id="release-selection-count">0 lessons selected</div>
+      </div>
+      <div class="tree-container" id="release-tree-container">
+        <div class="empty-msg">Loading…</div>
+      </div>
+    </div>
+  </div><!-- /release-left -->
+
+  <!-- Release RIGHT: plan + execute + log -->
+  <div class="right-panel">
+
+    <!-- Release plan summary -->
+    <div class="card" id="release-plan-card" style="flex-shrink:0;max-height:280px;overflow-y:auto;">
+      <div class="card-title">Release Plan</div>
+      <div id="release-plan-content">
+        <div class="empty-msg">Select lessons to see the release plan.</div>
+      </div>
+    </div>
+
+    <!-- Link Draft Course -->
+    <div class="card" id="release-link-card" style="flex-shrink:0;">
+      <div class="options-header" onclick="toggleLinkDraft()">
+        <span class="options-toggle" id="link-draft-toggle">▶</span>
+        Link Draft Course to Mapping
+      </div>
+      <div id="link-draft-body" style="display:none;margin-top:10px;">
+        <div style="font-size:12px;color:var(--gray-600);margin-bottom:8px;">
+          Link an existing Skilljar draft to locally-saved lessons. Content will be pushed
+          to the draft instead of the live course (no archive step).
+        </div>
+        <div class="form-row">
+          <label>Course</label>
+          <select id="link-draft-course-sel" style="flex:1;height:28px;border:1px solid var(--gray-400);border-radius:4px;padding:0 8px;font-size:12px;background:#fff;"></select>
+        </div>
+        <div class="form-row">
+          <label>Skilljar URL or ID</label>
+          <input type="text" id="link-draft-course-id" placeholder="dashboard.skilljar.com/course/{id}/… or just the ID">
+        </div>
+        <div class="action-row" style="padding:6px 0 0;">
+          <button class="btn btn-secondary btn-sm" onclick="linkDraftCourse()">Link Course</button>
+        </div>
+        <div id="link-draft-result" style="margin-top:8px;font-size:12px;line-height:1.5;"></div>
+      </div>
+    </div>
+
+    <!-- Execute + log -->
+    <div class="card" id="release-console-card">
+      <div class="console-header">
+        <span class="card-title">Release Log</span>
+        <span class="status-badge status-idle" id="release-status-badge">IDLE</span>
+        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="clearReleaseConsole()">Clear</button>
+      </div>
+      <div class="action-row" style="flex-shrink:0;padding:8px 0 6px;">
+        <button class="btn btn-primary" id="btn-release" onclick="releaseExecute()" disabled>Execute Release</button>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+          <input type="checkbox" id="release-dry-run"> Dry run
+        </label>
+      </div>
+      <pre class="log-output" id="release-log-output" style="flex:1;min-height:80px">Configure a release on the left and click Execute Release.</pre>
+    </div>
+
+  </div><!-- /release-right -->
+</div><!-- /release-layout -->
 
 <script>
 // ---------------------------------------------------------------------------
@@ -758,14 +894,15 @@ function onGroupCheckChange(check, node) {
 }
 
 function updateParentStates() {
-  document.querySelectorAll('.course-node').forEach(node => {
+  const root = document.getElementById('tree-container');
+  root.querySelectorAll('.course-node').forEach(node => {
     const check = node.querySelector('.course-check');
     const lessons = node.querySelectorAll('.lesson-check');
     const n = [...lessons].filter(l => l.checked).length;
     check.checked = n === lessons.length && lessons.length > 0;
     check.indeterminate = n > 0 && n < lessons.length;
   });
-  document.querySelectorAll('.lp-node').forEach(node => {
+  root.querySelectorAll('.lp-node').forEach(node => {
     const check = node.querySelector('.lp-check');
     const lessons = node.querySelectorAll('.lesson-check');
     const n = [...lessons].filter(l => l.checked).length;
@@ -775,12 +912,13 @@ function updateParentStates() {
 }
 
 function updateCountBadges() {
-  document.querySelectorAll('.lp-node').forEach(node => {
+  const root = document.getElementById('tree-container');
+  root.querySelectorAll('.lp-node').forEach(node => {
     const total = node.querySelectorAll('.lesson-check').length;
     const checked = node.querySelectorAll('.lesson-check:checked').length;
     node.querySelector('.lp-row .count-badge').textContent = `${checked}/${total}`;
   });
-  document.querySelectorAll('.course-node').forEach(node => {
+  root.querySelectorAll('.course-node').forEach(node => {
     const total = node.querySelectorAll('.lesson-check').length;
     const checked = node.querySelectorAll('.lesson-check:checked').length;
     node.querySelector('.course-row .count-badge').textContent = `${checked}/${total}`;
@@ -797,7 +935,7 @@ function updateStartButton() {
 }
 
 function selectAll(checked) {
-  document.querySelectorAll('.lesson-check').forEach(lc => {
+  document.querySelectorAll('#tree-container .lesson-check').forEach(lc => {
     lc.checked = checked;
     if (checked) selectedPaths.add(lc.dataset.path);
     else selectedPaths.delete(lc.dataset.path);
@@ -810,7 +948,7 @@ function selectAll(checked) {
 
 function filterTree(query) {
   const q = query.toLowerCase().trim();
-  document.querySelectorAll('.lp-node').forEach(lpNode => {
+  document.querySelectorAll('#tree-container .lp-node').forEach(lpNode => {
     let lpVis = false;
     lpNode.querySelectorAll('.course-node').forEach(courseNode => {
       let courseVis = false;
@@ -938,7 +1076,7 @@ function connectSSE(key) {
   eventSource.addEventListener('done', () => {
     eventSource.close(); eventSource = null;
     const txt = document.getElementById('log-output').textContent;
-    const isErr = /error|traceback|exception/i.test(txt);
+    const isErr = /\[ERROR\]|Traceback \(most recent call last\)/m.test(txt);
     setConsoleStatus(isErr ? 'error' : 'done');
     showConsoleActions(key);
     loadHistory();
@@ -1190,6 +1328,478 @@ async function doRunAction(runId, action) {
   } catch (e) {
     setConsoleStatus('error');
     appendLog('ERROR: ' + e.message);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tab switching
+// ---------------------------------------------------------------------------
+function switchMainTab(name) {
+  document.getElementById('pipeline-layout').style.display = name === 'pipeline' ? '' : 'none';
+  document.getElementById('release-layout').style.display  = name === 'release'  ? '' : 'none';
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  if (name === 'release' && !_releaseInited) {
+    _releaseInited = true;
+    releaseInit().catch(e => console.error(e));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Release tab — state
+// ---------------------------------------------------------------------------
+let _releaseInited = false;
+let releaseTree = [];
+let releaseSelectedDirs = new Set();
+let releaseMappedDirs = new Set();
+let releaseDirectDirs = new Set();   // lesson_dirs whose mapping key IS the to_version path (drafts)
+let _releasePlanTimer = null;
+let releaseEventSource = null;
+
+// ---------------------------------------------------------------------------
+// Release tab — init + tree loading
+// ---------------------------------------------------------------------------
+async function releaseInit() {
+  const resp = await fetch('/api/versions');
+  const versions = await resp.json();
+  const sel = document.getElementById('release-version');
+  sel.innerHTML = '';
+  versions.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    sel.appendChild(opt);
+  });
+  if (versions.length > 0) await releaseLoadTree(versions[0]);
+  else document.getElementById('release-tree-container').innerHTML = '<div class="empty-msg">No version folders found.</div>';
+}
+
+async function releaseLoadTree(version) {
+  const container = document.getElementById('release-tree-container');
+  container.innerHTML = '<div class="empty-msg">Loading…</div>';
+  releaseSelectedDirs.clear();
+  releaseMappedDirs.clear();
+  releaseDirectDirs.clear();
+  try {
+    const [treeResp, statusResp] = await Promise.all([
+      fetch(`/api/content-tree?version=${encodeURIComponent(version)}`),
+      fetch(`/api/release-status?to_version=${encodeURIComponent(version)}`),
+    ]);
+    releaseTree = await treeResp.json();
+    const status = await statusResp.json();
+    (status.mapped || []).forEach(d => { releaseMappedDirs.add(d); releaseSelectedDirs.add(d); });
+    (status.direct || []).forEach(d => releaseDirectDirs.add(d));
+    releaseRenderTree();
+    releaseSchedulePlanUpdate();
+  } catch (e) {
+    container.innerHTML = `<div class="empty-msg">Error loading: ${e.message}</div>`;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Release tab — tree rendering
+// ---------------------------------------------------------------------------
+function releaseRenderTree() {
+  const container = document.getElementById('release-tree-container');
+  container.innerHTML = '';
+  if (!releaseTree || releaseTree.length === 0) {
+    container.innerHTML = '<div class="empty-msg">No saved lessons found. Save lessons via the Pipeline tab first.</div>';
+    document.getElementById('release-plan-content').innerHTML = '<div class="empty-msg">No lessons to release.</div>';
+    return;
+  }
+  releaseTree.forEach(lp => container.appendChild(releaseRenderLPNode(lp)));
+  releaseUpdateParentStates();
+  releaseUpdateCountBadges();
+  releaseUpdateSelectionCount();
+  releaseUpdateExecuteButton();
+}
+
+function releaseRenderLPNode(lp) {
+  const node = document.createElement('div');
+  node.className = 'tree-node lp-node';
+  const row = document.createElement('div');
+  row.className = 'tree-row lp-row';
+  const toggle = makeToggle();
+  const check = makeCheckbox('lp-check');
+  check.onchange = () => releaseOnGroupCheckChange(check, node);
+  const label = document.createElement('label');
+  label.className = 'tree-label';
+  label.appendChild(check);
+  label.appendChild(document.createTextNode(' ' + lp.label));
+  const badge = document.createElement('span');
+  badge.className = 'count-badge';
+  row.appendChild(toggle); row.appendChild(label); row.appendChild(badge);
+  const children = document.createElement('div');
+  children.className = 'tree-children';
+  lp.courses.forEach(c => children.appendChild(releaseRenderCourseNode(c)));
+  toggle.onclick = () => toggleChildren(children, toggle);
+  node.appendChild(row); node.appendChild(children);
+  return node;
+}
+
+function releaseRenderCourseNode(course) {
+  const node = document.createElement('div');
+  node.className = 'tree-node course-node';
+  const row = document.createElement('div');
+  row.className = 'tree-row course-row';
+  const toggle = makeToggle();
+  const check = makeCheckbox('course-check');
+  check.onchange = () => releaseOnGroupCheckChange(check, node);
+  const label = document.createElement('label');
+  label.className = 'tree-label';
+  label.appendChild(check);
+  label.appendChild(document.createTextNode(' ' + course.label));
+  const badge = document.createElement('span');
+  badge.className = 'count-badge';
+  row.appendChild(toggle); row.appendChild(label); row.appendChild(badge);
+  const children = document.createElement('div');
+  children.className = 'tree-children';
+  course.lessons.forEach(l => children.appendChild(releaseRenderLessonRow(l)));
+  toggle.onclick = () => toggleChildren(children, toggle);
+  node.appendChild(row); node.appendChild(children);
+  return node;
+}
+
+function releaseRenderLessonRow(lesson) {
+  const lessonDir = lesson.path.replace(/\/index\.html$/, '');
+  const row = document.createElement('div');
+  row.className = 'tree-row lesson-row';
+  const check = makeCheckbox('lesson-check');
+  check.dataset.dir = lessonDir;
+  check.checked = releaseSelectedDirs.has(lessonDir);
+  check.onchange = () => {
+    if (check.checked) releaseSelectedDirs.add(lessonDir);
+    else releaseSelectedDirs.delete(lessonDir);
+    releaseUpdateParentStates();
+    releaseUpdateCountBadges();
+    releaseUpdateSelectionCount();
+    releaseUpdateExecuteButton();
+    releaseSchedulePlanUpdate();
+  };
+  const label = document.createElement('label');
+  label.className = 'tree-label lesson-label';
+  label.appendChild(check);
+  label.appendChild(document.createTextNode(' ' + lesson.label));
+  const isMapped = releaseMappedDirs.has(lessonDir);
+  const isDraft  = releaseDirectDirs.has(lessonDir);
+  const chip = document.createElement('span');
+  chip.className = 'chip ' + (isMapped ? 'chip-ready' : 'chip-nomapping');
+  chip.textContent = isMapped ? 'Ready' : 'Not mapped';
+  row.appendChild(label);
+  row.appendChild(chip);
+  if (isDraft) {
+    const draftChip = document.createElement('span');
+    draftChip.className = 'chip chip-draft';
+    draftChip.textContent = 'Draft';
+    row.appendChild(draftChip);
+  }
+  return row;
+}
+
+// ---------------------------------------------------------------------------
+// Release tab — tree state helpers
+// ---------------------------------------------------------------------------
+function releaseOnGroupCheckChange(check, node) {
+  node.querySelectorAll('.lesson-check').forEach(lc => {
+    lc.checked = check.checked;
+    const dir = lc.dataset.dir;
+    if (check.checked) releaseSelectedDirs.add(dir);
+    else releaseSelectedDirs.delete(dir);
+  });
+  check.indeterminate = false;
+  releaseUpdateParentStates();
+  releaseUpdateCountBadges();
+  releaseUpdateSelectionCount();
+  releaseUpdateExecuteButton();
+  releaseSchedulePlanUpdate();
+}
+
+function releaseUpdateParentStates() {
+  const root = document.getElementById('release-tree-container');
+  root.querySelectorAll('.course-node').forEach(node => {
+    const check = node.querySelector('.course-check');
+    const lessons = node.querySelectorAll('.lesson-check');
+    const n = [...lessons].filter(l => l.checked).length;
+    check.checked = n === lessons.length && lessons.length > 0;
+    check.indeterminate = n > 0 && n < lessons.length;
+  });
+  root.querySelectorAll('.lp-node').forEach(node => {
+    const check = node.querySelector('.lp-check');
+    const lessons = node.querySelectorAll('.lesson-check');
+    const n = [...lessons].filter(l => l.checked).length;
+    check.checked = n === lessons.length && lessons.length > 0;
+    check.indeterminate = n > 0 && n < lessons.length;
+  });
+}
+
+function releaseUpdateCountBadges() {
+  const root = document.getElementById('release-tree-container');
+  root.querySelectorAll('.lp-node').forEach(node => {
+    const total   = node.querySelectorAll('.lesson-check').length;
+    const checked = node.querySelectorAll('.lesson-check:checked').length;
+    node.querySelector('.lp-row .count-badge').textContent = `${checked}/${total}`;
+  });
+  root.querySelectorAll('.course-node').forEach(node => {
+    const total   = node.querySelectorAll('.lesson-check').length;
+    const checked = node.querySelectorAll('.lesson-check:checked').length;
+    node.querySelector('.course-row .count-badge').textContent = `${checked}/${total}`;
+  });
+}
+
+function releaseUpdateSelectionCount() {
+  document.getElementById('release-selection-count').textContent =
+    `${releaseSelectedDirs.size} lesson${releaseSelectedDirs.size === 1 ? '' : 's'} selected`;
+}
+
+function releaseUpdateExecuteButton() {
+  document.getElementById('btn-release').disabled = releaseSelectedDirs.size === 0;
+}
+
+function releaseSelectAll(checked) {
+  document.querySelectorAll('#release-tree-container .lesson-check').forEach(lc => {
+    lc.checked = checked;
+    const dir = lc.dataset.dir;
+    if (checked) releaseSelectedDirs.add(dir);
+    else releaseSelectedDirs.delete(dir);
+  });
+  releaseUpdateParentStates();
+  releaseUpdateCountBadges();
+  releaseUpdateSelectionCount();
+  releaseUpdateExecuteButton();
+  releaseSchedulePlanUpdate();
+}
+
+// ---------------------------------------------------------------------------
+// Release tab — plan fetch + render
+// ---------------------------------------------------------------------------
+function releaseSchedulePlanUpdate() {
+  if (_releasePlanTimer) clearTimeout(_releasePlanTimer);
+  _releasePlanTimer = setTimeout(releaseUpdatePlan, 400);
+}
+
+async function releaseUpdatePlan() {
+  const dirs = [...releaseSelectedDirs];
+  const container = document.getElementById('release-plan-content');
+  if (dirs.length === 0) {
+    container.innerHTML = '<div class="empty-msg">Select lessons to see the release plan.</div>';
+    return;
+  }
+  const toVersion = document.getElementById('release-version').value;
+  const params = new URLSearchParams({ to_version: toVersion });
+  dirs.forEach(d => params.append('lessons[]', d));
+  try {
+    const resp = await fetch('/api/release-plan?' + params.toString());
+    const plan = await resp.json();
+    releaseRenderPlan(plan);
+  } catch (e) {
+    container.textContent = 'Error loading plan: ' + e.message;
+  }
+}
+
+function releaseRenderPlan(plan) {
+  const container = document.getElementById('release-plan-content');
+  if (!plan.courses || plan.courses.length === 0) {
+    container.innerHTML = '<div class="empty-msg">No courses in selection.</div>';
+    return;
+  }
+  let html = '';
+  for (const course of plan.courses) {
+    const draftBadge = course.is_draft ? ' <span class="chip chip-draft" style="vertical-align:middle">Draft</span>' : '';
+    html += '<div class="release-plan-course">';
+    html += `<div class="release-plan-course-title">${_esc(course.new_title)}${draftBadge}</div>`;
+    if (course.action === 'no_mapping') {
+      html += `<div class="release-plan-err">&#10007; No Skilljar mapping found — cannot release</div>`;
+    } else {
+      const ready = course.lessons.filter(l => l.mapped && l.has_local_file).length;
+      const total = course.lessons.length;
+      const old = course.source_course_title || '';
+      const oldVerM = old.match(/\s(\d{4}\.\d+)$/);
+      const oldVer = oldVerM ? oldVerM[1] : '(current version)';
+      html += '<ul>';
+      if (course.action === 'push_only') {
+        html += `<li><em>No archive</em> — pushing to existing draft/linked course</li>`;
+      } else {
+        html += `<li>Archive current course <em>${_esc(course.archive_title)}</em></li>`;
+      }
+      html += `<li>Push ${ready} of ${total} lesson(s) with ${_esc(plan.to_version)} content</li>`;
+      if (course.action !== 'push_only') {
+        html += `<li>Rename course &#8594; <em>${_esc(course.new_title)}</em></li>`;
+        html += `<li>Update labels: remove <em>${_esc(oldVer)}</em>, add <em>${_esc(plan.to_version)}</em></li>`;
+        html += `<li>Update published-course tags on domain</li>`;
+      }
+      html += '</ul>';
+      const unmapped = course.lessons.filter(l => !l.mapped);
+      const nofile   = course.lessons.filter(l => l.mapped && !l.has_local_file);
+      if (unmapped.length > 0)
+        html += `<div class="release-plan-warn">&#9888; ${unmapped.length} lesson(s) not in Skilljar mapping (will skip)</div>`;
+      if (nofile.length > 0)
+        html += `<div class="release-plan-warn">&#9888; ${nofile.length} lesson(s) have no saved file (will skip)</div>`;
+    }
+    html += '</div>';
+  }
+  if (plan.warnings && plan.warnings.length > 0) {
+    html += '<hr style="border:none;border-top:1px solid var(--gray-200);margin:6px 0">';
+    plan.warnings.forEach(w => {
+      html += `<div class="release-plan-warn">&#9888; ${_esc(w)}</div>`;
+    });
+  }
+  container.innerHTML = html;
+}
+
+function _esc(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ---------------------------------------------------------------------------
+// Release tab — execute + SSE
+// ---------------------------------------------------------------------------
+async function releaseExecute() {
+  const toVersion = document.getElementById('release-version').value;
+  const dryRun    = document.getElementById('release-dry-run').checked;
+  const dirs      = [...releaseSelectedDirs];
+  if (dirs.length === 0) { alert('Please select at least one lesson to release.'); return; }
+
+  document.getElementById('btn-release').disabled = true;
+  setReleaseStatus('running');
+  document.getElementById('release-log-output').textContent = '';
+  _releaseLogCourseId = '';
+  releaseAppendLog(`Starting release → ${toVersion}${dryRun ? ' (dry run)' : ''}…`);
+
+  try {
+    const resp = await fetch('/api/release-execute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to_version: toVersion, lessons: dirs, dry_run: dryRun }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) {
+      setReleaseStatus('error');
+      releaseAppendLog('ERROR: ' + (data.error || 'Unknown error'));
+      document.getElementById('btn-release').disabled = false;
+      return;
+    }
+    releaseConnectSSE(data.action_key);
+  } catch (e) {
+    setReleaseStatus('error');
+    releaseAppendLog('ERROR: ' + e.message);
+    document.getElementById('btn-release').disabled = false;
+  }
+}
+
+function releaseConnectSSE(key) {
+  if (releaseEventSource) { releaseEventSource.close(); releaseEventSource = null; }
+  releaseEventSource = new EventSource('/api/run-log?run_id=' + encodeURIComponent(key));
+  releaseEventSource.onmessage = e => releaseAppendLog(JSON.parse(e.data));
+  releaseEventSource.addEventListener('done', () => {
+    releaseEventSource.close(); releaseEventSource = null;
+    const txt = document.getElementById('release-log-output').textContent;
+    const isErr = /\[ERROR\]|Traceback \(most recent call last\)/m.test(txt);
+    setReleaseStatus(isErr ? 'error' : 'done');
+    document.getElementById('btn-release').disabled = false;
+  });
+  releaseEventSource.onerror = () => {
+    if (releaseEventSource && releaseEventSource.readyState !== EventSource.CLOSED) {
+      releaseEventSource.close(); releaseEventSource = null;
+      setReleaseStatus('error');
+      releaseAppendLog('[Connection lost]');
+      document.getElementById('btn-release').disabled = false;
+    }
+  };
+}
+
+let _releaseLogCourseId = '';
+function releaseAppendLog(line) {
+  const pre = document.getElementById('release-log-output');
+  // Track current course id from header lines: "=== Course: … (id=XXX) ==="
+  const courseIdM = line.match(/\(id=([^)]+)\)/);
+  if (courseIdM) _releaseLogCourseId = courseIdM[1];
+  // Render line as HTML, turning lesson_id=XXX into a clickable dashboard link
+  let html = _esc(line).replace(
+    /\(lesson_id=([^)]+)\)/g,
+    (_, lid) => {
+      const url = _releaseLogCourseId
+        ? `https://dashboard.skilljar.com/course/${_releaseLogCourseId}/${lid}`
+        : `https://dashboard.skilljar.com/`;
+      return `(<a href="${url}" target="_blank" rel="noopener" style="color:inherit">lesson_id=${_esc(lid)}</a>)`;
+    }
+  );
+  pre.insertAdjacentHTML('beforeend', html + '\n');
+  pre.scrollTop = pre.scrollHeight;
+}
+
+function setReleaseStatus(s) {
+  const el = document.getElementById('release-status-badge');
+  el.className = 'status-badge status-' + s;
+  el.textContent = s.toUpperCase();
+}
+
+function clearReleaseConsole() {
+  document.getElementById('release-log-output').textContent = '';
+  _releaseLogCourseId = '';
+  setReleaseStatus('idle');
+}
+
+// ---------------------------------------------------------------------------
+// Release tab — Link Draft Course
+// ---------------------------------------------------------------------------
+function parseCourseId(input) {
+  const m = input.match(/\/course\/([a-z0-9]+)/i);
+  return m ? m[1] : input.trim();
+}
+
+function toggleLinkDraft() {
+  const body   = document.getElementById('link-draft-body');
+  const toggle = document.getElementById('link-draft-toggle');
+  const open   = body.style.display !== 'none';
+  body.style.display = open ? 'none' : '';
+  toggle.textContent = open ? '▶' : '▼';
+  if (!open) populateLinkDraftCourseSelector();
+}
+
+function populateLinkDraftCourseSelector() {
+  const sel = document.getElementById('link-draft-course-sel');
+  sel.innerHTML = '';
+  for (const lp of releaseTree) {
+    for (const course of lp.courses) {
+      if (course.lessons.length === 0) continue;
+      const parts = course.lessons[0].path.split('/');
+      const coursePrefix = parts.slice(0, 3).join('/');  // version/lp/course_folder
+      const opt = document.createElement('option');
+      opt.value = coursePrefix;
+      opt.textContent = course.label;
+      sel.appendChild(opt);
+    }
+  }
+}
+
+async function linkDraftCourse() {
+  const coursePrefix    = document.getElementById('link-draft-course-sel').value;
+  const rawId           = document.getElementById('link-draft-course-id').value.trim();
+  const skilljarCourseId = parseCourseId(rawId);
+  const resultEl        = document.getElementById('link-draft-result');
+
+  if (!coursePrefix || !skilljarCourseId) {
+    resultEl.textContent = 'Please select a course and enter a Skilljar URL or ID.';
+    return;
+  }
+  resultEl.textContent = 'Linking…';
+  try {
+    const resp = await fetch('/api/link-draft-course', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ course_prefix: coursePrefix, skilljar_course_id: skilljarCourseId }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) { resultEl.textContent = 'Error: ' + (data.error || 'Unknown'); return; }
+    const m  = data.matched || [];
+    const ul = data.unmatched_local || [];
+    const us = data.unmatched_skilljar || [];
+    resultEl.innerHTML =
+      `<b>${m.length} lesson(s) linked.</b>` +
+      (ul.length ? `<br>&#9888; ${ul.length} local folder(s) not matched: ${ul.map(_esc).join(', ')}` : '') +
+      (us.length ? `<br>&#9888; ${us.length} Skilljar lesson(s) not matched: ${us.map(_esc).join(', ')}` : '');
+    // Refresh tree + plan to show new Draft chips and push_only plan
+    await releaseLoadTree(document.getElementById('release-version').value);
+  } catch (e) {
+    resultEl.textContent = 'Error: ' + e.message;
   }
 }
 

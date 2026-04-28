@@ -237,11 +237,17 @@ span.tc-orig-context {{ color: inherit; }}
 .alt-text-note-accepted {{ background: #f0fdf4; border-left-color: #16a34a; }}
 .alt-text-note-accepted strong {{ color: #15803d; }}
 .alt-text-note-rejected {{ background: #f9fafb; border-left-color: #9ca3af; opacity: 0.55; }}
-.edit-toolbar {{ display: flex; gap: 8px; align-items: center; padding: 8px 24px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; }}
+.edit-toolbar {{ display: flex; gap: 8px; align-items: center; padding: 8px 24px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }}
 .edit-toolbar button {{ padding: 5px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.82rem; }}
 .edit-toolbar button:disabled {{ opacity: 0.4; cursor: not-allowed; }}
 .edit-toolbar .save-btn {{ background: #1a3d6b; color: #fff; border-color: #1a3d6b; font-weight: 600; }}
-.edit-toolbar .save-btn:hover {{ background: #1e4d8c; }}
+.edit-toolbar .save-btn:hover:not(:disabled) {{ background: #1e4d8c; }}
+
+#le-lesson-body[contenteditable="true"]:focus {{ outline: 2px solid #6366f1; border-radius: 6px; }}
+.fmt-toolbar {{ display: none; gap: 4px; align-items: center; padding: 6px 24px; background: #eef2ff; border-bottom: 1px solid #c7d2fe; flex-wrap: wrap; }}
+.fmt-toolbar button {{ padding: 4px 10px; border: 1px solid #a5b4fc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.82rem; min-width: 2rem; }}
+.fmt-toolbar button:hover {{ background: #e0e7ff; border-color: #6366f1; }}
+.fmt-toolbar .fmt-sep {{ width: 1px; height: 1.4em; background: #c7d2fe; margin: 0 4px; }}
 .save-banner {{ display: none; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; padding: 10px 16px; margin: 12px 24px; border-radius: 6px; font-size: 0.85rem; }}
 .change-count {{ font-size: 0.82rem; color: #555; margin-left: auto; }}
 /* Floating next/prev edit nav (issue 47) */
@@ -301,6 +307,11 @@ span.tc-orig-context {{ color: inherit; }}
 </div>
 
 <div class="main">
+  <div id="report-js-error" class="fetch-error" style="display:none">
+    <b>JavaScript error — report may not display correctly.</b><br>
+    <span class="rje-msg" style="font-family:monospace;font-size:0.85rem"></span><br>
+    Check the terminal running <code>serve.py</code> for the full stack trace.
+  </div>
   <div id="fetch-error" class="fetch-error" style="display:none">
     <b>Could not load report data.</b> Most browsers block <code>fetch()</code> for <code>file://</code> URLs.<br>
     To view this report, run: <code>python -m http.server 8080</code> from the project root,
@@ -331,7 +342,19 @@ span.tc-orig-context {{ color: inherit; }}
   <div class="edit-toolbar" id="le-toolbar" style="display:none">
     <button onclick="leUndo()" id="le-undo-btn" disabled>← Undo</button>
     <button onclick="leRedo()" id="le-redo-btn" disabled>Redo →</button>
-    <button class="save-btn" onclick="leSave()">Save to Version Folder</button>
+    <button class="save-btn" onclick="leSave()" id="le-save-btn">Save to Version Folder</button>
+
+  </div>
+  <div class="fmt-toolbar" id="le-fmt-toolbar">
+    <button onclick="leFormat('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+    <button onclick="leFormat('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+    <span class="fmt-sep"></span>
+    <button onclick="leFormatBlock('h1')" title="Heading 1">H1</button>
+    <button onclick="leFormatBlock('h2')" title="Heading 2">H2</button>
+    <button onclick="leFormatBlock('h3')" title="Heading 3">H3</button>
+    <button onclick="leFormatBlock('h4')" title="Heading 4">H4</button>
+    <span class="fmt-sep"></span>
+    <button onclick="leInsertLink()" title="Insert / edit link">Link</button>
   </div>
   <div class="save-banner" id="le-save-banner"></div>
   <div id="le-lesson-body" class="lesson-edit-body">
@@ -346,6 +369,31 @@ span.tc-orig-context {{ color: inherit; }}
   <button class="le-nav-btn" id="le-next-edit-btn" onclick="leNextEdit()" disabled>↓ Next Edit</button>
 </div>
 
+<script>
+// Early error handler — separate block so it survives syntax errors in the main script
+window.onerror = function(message, source, lineno, colno, error) {{
+  const stack = (error && error.stack) ? error.stack : '';
+  const loc = source ? ' (' + source + ':' + lineno + ':' + colno + ')' : '';
+  const banner = document.getElementById('report-js-error');
+  if (banner) {{ banner.style.display = 'block'; banner.querySelector('.rje-msg').textContent = message + loc; }}
+  fetch('/api/client-error', {{
+    method: 'POST',
+    headers: {{'Content-Type': 'application/json'}},
+    body: JSON.stringify({{message: message, source: source, lineno: lineno, colno: colno, stack: stack}}),
+  }}).catch(function() {{}});
+}};
+window.addEventListener('unhandledrejection', function(e) {{
+  const msg = (e.reason && e.reason.message) ? e.reason.message : String(e.reason);
+  const stack = (e.reason && e.reason.stack) ? e.reason.stack : '';
+  const banner = document.getElementById('report-js-error');
+  if (banner) {{ banner.style.display = 'block'; banner.querySelector('.rje-msg').textContent = 'Unhandled error: ' + msg; }}
+  fetch('/api/client-error', {{
+    method: 'POST',
+    headers: {{'Content-Type': 'application/json'}},
+    body: JSON.stringify({{message: 'Unhandled rejection: ' + msg, source: '', lineno: '', colno: '', stack: stack}}),
+  }}).catch(function() {{}});
+}});
+</script>
 <script>
 const JSON_FILE = '{json_filename}';
 const EDIT_PLANS_FILE = '{edit_plans_filename}';
@@ -778,8 +826,10 @@ function leUpdateLessons() {{
   leEditPlans
     .filter(l => (!lp || l.learning_path === lp) && (!course || l.course_canonical === course))
     .forEach(l => lessonSel.appendChild(new Option(l.lesson_name, l.lesson_id)));
-  document.getElementById('le-lesson-body').innerHTML =
-    '<div class="lesson-edit-empty">Select a lesson above to view suggested edits.</div>';
+  const _emptyBodyEl = document.getElementById('le-lesson-body');
+  _emptyBodyEl.innerHTML = '<div class="lesson-edit-empty">Select a lesson above to view suggested edits.</div>';
+  _emptyBodyEl.contentEditable = 'false';
+  document.getElementById('le-fmt-toolbar').style.display = 'none';
   document.getElementById('le-change-count').textContent = '';
   document.getElementById('le-toolbar').style.display = 'none';
   document.getElementById('le-nav-float').style.display = 'none';
@@ -827,7 +877,7 @@ function leRenderLesson() {{
     const rejectAllBtn = (keys.length && type !== 'screenshot')
       ? `<button class="tc-reject" style="font-size:0.68rem" onclick="leRejectAllForIssueKey('${{keys[0]}}');setStatus(allData.find(a=>a.issue_key==='${{keys[0]}}')?.rec_id||'','incorrect');event.stopPropagation()">✗✗ Reject all for ${{keys[0]}}</button>`
       : '';
-    return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-btns"><button class="tc-accept" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{copyChip}}${{cardLink}}</span></span>`;
+    return `<span class="tc-popup" data-popup="${{changeId}}"><span class="tc-btns"><button class="tc-accept" onmousedown="event.stopPropagation();event.preventDefault();" onclick="leAccept('${{changeId}}',event)">✓ Accept</button><button class="tc-reject" onmousedown="event.stopPropagation();event.preventDefault();" onclick="leReject('${{changeId}}',event)">✗ Reject</button>${{rejectAllBtn}}</span><span class="tc-explanation">${{escHtml(explanation || '')}}</span><span class="tc-issue-links">${{issueLinks}}${{copyChip}}${{cardLink}}</span></span>`;
   }}
 
   // Apply text changes in a single right-to-left pass so that injected markup
@@ -850,11 +900,11 @@ function leRenderLesson() {{
 
     let markup;
     if (ch.type === 'delete') {{
-      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{popup}}</span>`;
+      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{popup}}</span>`;
     }} else if (ch.type === 'add') {{
-      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><span class="tc-orig-context">${{escHtml(orig)}}</span><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
+      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><span class="tc-orig-context">${{escHtml(orig)}}</span><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }} else {{
-      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
+      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
     }}
 
     // Find the first occurrence of orig not overlapping an already-claimed range
@@ -896,9 +946,12 @@ function leRenderLesson() {{
     const altTextLine = su.alt_text
       ? `<div style="font-size:0.8rem;margin-top:4px"><em>Suggested alt text:</em> ${{escHtml(su.alt_text)}}</div>`
       : '';
-    const noteInner = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})</strong>${{escHtml(su.explanation || '')}}${{altTextLine}}</div>`;
+    const sourceBadge = su.source === 'vision'
+      ? '<span style="font-size:0.68rem;background:#dbeafe;color:#1e40af;border-radius:3px;padding:1px 5px;margin-left:5px;font-weight:normal">👁 vision</span>'
+      : '';
+    const noteInner = `<div class="screenshot-note"><strong>📷 Screenshot update needed (${{issueLinks}})${{sourceBadge}}</strong>${{escHtml(su.explanation || '')}}${{altTextLine}}</div>`;
     const popup = makePopup(ssId, su.explanation, su.issue_keys, 'screenshot', plan.lesson_id);
-    const wrapped = `<div class="tc-wrap tc-change" data-id="${{ssId}}" data-type="screenshot" data-issue-keys="${{escHtml((su.issue_keys||[]).join(','))}}" data-state="pending">${{noteInner}}${{popup}}</div>`;
+    const wrapped = `<div class="tc-wrap tc-change" contenteditable="false" data-id="${{ssId}}" data-type="screenshot" data-issue-keys="${{escHtml((su.issue_keys||[]).join(','))}}" data-state="pending">${{noteInner}}${{popup}}</div>`;
     const imgPattern = new RegExp(`(<img[^>]*src="${{su.src.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&')}}"[^>]*>)`, 'i');
     html = html.replace(imgPattern, '$1' + wrapped);
   }});
@@ -913,7 +966,7 @@ function leRenderLesson() {{
       `<div class="alt-row"><span class="alt-label">Suggested:</span><span class="alt-val"><strong>${{escHtml(au.suggested_alt || '')}}</strong></span></div>` +
       `</div>`;
     const popup = makePopup(atId, au.explanation, [], 'alt-text', plan.lesson_id);
-    const wrapped = `<div class="tc-wrap tc-change" data-id="${{atId}}" data-type="alt-text" data-src="${{escHtml(au.src)}}" data-orig-alt="${{escHtml(au.original_alt || '')}}" data-sugg-alt="${{escHtml(au.suggested_alt || '')}}" data-state="pending">${{noteInner}}${{popup}}</div>`;
+    const wrapped = `<div class="tc-wrap tc-change" contenteditable="false" data-id="${{atId}}" data-type="alt-text" data-src="${{escHtml(au.src)}}" data-orig-alt="${{escHtml(au.original_alt || '')}}" data-sugg-alt="${{escHtml(au.suggested_alt || '')}}" data-state="pending">${{noteInner}}${{popup}}</div>`;
     const imgPattern = new RegExp(`(<img[^>]*src="${{au.src.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&')}}"[^>]*>)`, 'i');
     html = html.replace(imgPattern, '$1' + wrapped);
   }});
@@ -930,6 +983,10 @@ function leRenderLesson() {{
   }});
   document.getElementById('le-save-banner').style.display = 'none';
   leBindPopups();
+  const _lessonBodyEl = document.getElementById('le-lesson-body');
+  _lessonBodyEl.contentEditable = 'true';
+  _lessonBodyEl.spellcheck = false;
+  document.getElementById('le-fmt-toolbar').style.display = 'flex';
   leUpdateNavFloat();
   // Issue 30: apply any rejections that were triggered from the Recommendations tab
   if (leRejectedIssueKeys.size) {{
@@ -944,7 +1001,7 @@ function leRenderLesson() {{
 
 // Phase 2: accept/reject
 function leAccept(changeId, evt) {{
-  if (evt) evt.stopPropagation();
+  if (evt) {{ evt.stopPropagation(); evt.preventDefault(); }}
   const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
   if (!wrap) return;
   const prev = wrap.dataset.state;
@@ -958,7 +1015,7 @@ function leAccept(changeId, evt) {{
 }}
 
 function leReject(changeId, evt) {{
-  if (evt) evt.stopPropagation();
+  if (evt) {{ evt.stopPropagation(); evt.preventDefault(); }}
   const wrap = document.querySelector(`.tc-wrap[data-id="${{changeId}}"]`);
   if (!wrap) return;
   const prev = wrap.dataset.state;
@@ -1237,18 +1294,22 @@ function leUpdateHistoryBtns() {{
   document.getElementById('le-redo-btn').disabled = leRedoStack.length === 0;
 }}
 
-function leSave() {{
+// Extract clean lesson HTML from current tc-wrap state.
+// Returns {{ html, plan }} or null if no lesson is selected.
+function leGetCleanHtml() {{
   const lessonId = document.getElementById('le-lesson-filter').value;
-  if (!lessonId) return;
+  if (!lessonId) return null;
   const plan = leEditPlans.find(l => l.lesson_id === lessonId);
-  if (!plan) return;
+  if (!plan) return null;
 
-  // Reconstruct clean HTML from current state
   const body = document.getElementById('le-lesson-body').cloneNode(true);
 
   // Remove popups and screenshot wraps (editorial markup only)
   body.querySelectorAll('.tc-popup').forEach(n => n.remove());
-  // Remove screenshot tc-wraps entirely (they are notes, not content)
+  // Defensive: also remove known popup sub-elements that can survive as orphaned nodes
+  body.querySelectorAll('.rec-id').forEach(n => n.remove());
+  body.querySelectorAll('.tc-issue-links').forEach(n => n.remove());
+  body.querySelectorAll('a[href^="?tab=recommendations"]').forEach(n => n.remove());
   body.querySelectorAll('.tc-wrap[data-type="screenshot"]').forEach(wrap => wrap.remove());
 
   // Apply accepted alt text updates to matching <img> tags, then remove the wraps
@@ -1264,7 +1325,7 @@ function leSave() {{
     wrap.remove();
   }});
 
-  // Resolve each text tc-wrap to plain text based on state
+  // Resolve each text tc-wrap based on state (pending = keep original)
   body.querySelectorAll('.tc-wrap').forEach(wrap => {{
     const state = wrap.dataset.state || 'pending';
     const type = wrap.dataset.type;
@@ -1272,36 +1333,43 @@ function leSave() {{
     const sugg = wrap.dataset.sugg || '';
     let replacement = '';
     if (state === 'accepted') replacement = (type === 'delete') ? '' : (type === 'add') ? orig + sugg : sugg;
-    else replacement = orig; // rejected or pending → keep original text
+    else replacement = orig;
     wrap.replaceWith(document.createTextNode(replacement));
   }});
 
-  // Revert prefixed image paths back to relative (strip the ../lesson_dir/ prefix)
+  // Strip the ../lesson_dir/ image prefix added by leRenderLesson
   const lessonBase = '../' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
   body.querySelectorAll('img[src]').forEach(img => {{
     const attrSrc = img.getAttribute('src') || '';
-    if (attrSrc.startsWith(lessonBase)) {{
-      img.setAttribute('src', attrSrc.slice(lessonBase.length));
-    }}
+    if (attrSrc.startsWith(lessonBase)) img.setAttribute('src', attrSrc.slice(lessonBase.length));
   }});
 
-  const cleanHtml = body.innerHTML;
-  const banner = document.getElementById('le-save-banner');
+  return {{ html: body.innerHTML, plan }};
+}}
 
-  // Try server-side save via serve.py /api/save-lesson endpoint
+function leSave() {{
+  const result = leGetCleanHtml();
+  if (!result) return;
+  const {{ html: cleanHtml, plan }} = result;
+  const banner = document.getElementById('le-save-banner');
+  const hasDataUris = /<img[^>]+src=["']data:/i.test(cleanHtml);
+
+  banner.style.display = 'block';
+  banner.style.background = '';
+  banner.style.borderColor = '';
+  banner.innerHTML = hasDataUris
+    ? 'Saving — uploading pasted images, this can take a few seconds…'
+    : 'Saving…';
+
   fetch('/api/save-lesson', {{
     method: 'POST',
     headers: {{ 'Content-Type': 'application/json' }},
-    body: JSON.stringify({{
-      lesson_dir: plan.lesson_dir || '',
-      to_version: TO_VERSION,
-      html_content: cleanHtml,
-    }}),
+    body: JSON.stringify({{ lesson_dir: plan.lesson_dir || '', to_version: TO_VERSION, html_content: cleanHtml }}),
   }})
   .then(async r => {{
     if (r.status === 409) {{
-      const body = await r.json();
-      if (confirm(`File already exists at:\\n${{body.target_path}}\\n\\nOverwrite?`)) {{
+      const data = await r.json();
+      if (confirm(`File already exists at:\\n${{data.target_path}}\\n\\nOverwrite?`)) {{
         return fetch('/api/save-lesson', {{
           method: 'POST',
           headers: {{ 'Content-Type': 'application/json' }},
@@ -1310,7 +1378,13 @@ function leSave() {{
       }}
       return null;
     }}
-    if (!r.ok) throw new Error('HTTP ' + r.status);
+    if (!r.ok) {{
+      let serverMsg = 'HTTP ' + r.status;
+      try {{ const data = await r.json(); if (data && data.error) serverMsg = data.error; }} catch (_) {{}}
+      const err = new Error(serverMsg);
+      err.serverError = true;
+      throw err;
+    }}
     return r.json();
   }})
   .then(result => {{
@@ -1318,17 +1392,70 @@ function leSave() {{
     banner.style.display = 'block';
     banner.innerHTML = `✓ Saved to: <code>${{escHtml(result.target_path)}}</code>`;
   }})
-  .catch(() => {{
-    // Fallback: browser download
+  .catch(err => {{
+    if (err && err.serverError) {{
+      banner.style.display = 'block';
+      banner.style.background = '#fef2f2';
+      banner.style.borderColor = '#fca5a5';
+      banner.innerHTML = '⚠ Save failed: ' + escHtml(err.message);
+      return;
+    }}
     const blob = new Blob([cleanHtml], {{ type: 'text/html;charset=utf-8' }});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = 'index.html'; a.click();
     URL.revokeObjectURL(url);
     banner.style.display = 'block';
-    banner.innerHTML = `Downloaded index.html — place it at: <code>${{escHtml(plan.lesson_dir || lessonId)}}/index.html</code> (updated to target version). For direct saving, use <code>python serve.py</code> instead of <code>python -m http.server</code>.`;
+    banner.innerHTML = `Downloaded index.html — place it at: <code>${{escHtml(plan.lesson_dir || '')}}/index.html</code>. For direct saving, use <code>python serve.py</code>.`;
   }});
 }}
+
+
+// WYSIWYG formatting helpers
+function leFormat(cmd) {{
+  document.getElementById('le-lesson-body').focus();
+  document.execCommand(cmd, false, null);
+}}
+
+function leFormatBlock(tag) {{
+  const editor = document.getElementById('le-lesson-body');
+  editor.focus();
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  // Find the block-level ancestor inside the editor
+  let node = range.commonAncestorContainer;
+  if (node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+  while (node && node !== editor && !['P','DIV','H1','H2','H3','H4','H5','H6','LI'].includes(node.tagName)) {{
+    node = node.parentElement;
+  }}
+  if (node && node !== editor && node.tagName.toLowerCase() === tag) {{
+    // Toggle off: replace heading with a plain paragraph
+    const p = document.createElement('p');
+    p.innerHTML = node.innerHTML;
+    node.replaceWith(p);
+  }} else {{
+    document.execCommand('formatBlock', false, tag);
+  }}
+}}
+
+function leInsertLink() {{
+  const editor = document.getElementById('le-lesson-body');
+  editor.focus();
+  const sel = window.getSelection();
+  const selectedText = sel.toString();
+  const url = prompt('Enter URL:', 'https://');
+  if (!url) return;
+  if (selectedText) {{
+    document.execCommand('createLink', false, url);
+  }} else {{
+    const text = prompt('Enter link text:', url);
+    if (text === null) return;
+    const a = `<a href="${{url}}">${{text || url}}</a>`;
+    document.execCommand('insertHTML', false, a);
+  }}
+}}
+
 </script>
 </body>
 </html>"""

@@ -12,6 +12,7 @@ Supports incremental mode: skips lessons already present in the output file.
 from __future__ import annotations
 
 import asyncio
+import base64
 import hashlib
 import html as _html_module
 import json
@@ -110,6 +111,199 @@ _RESPONSE_SCHEMA = {
         },
     },
 }
+
+# Images that are decorative and must never be sent to the vision model
+_DECORATIVE_IMAGES = {"safe_note.png", "safe_tip.png", "safe_warning.png"}
+
+# Structured output schema for per-image vision screenshot review (issue 73)
+_VISION_RESPONSE_SCHEMA = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "screenshot_vision_review",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "required": ["needs_update", "relevant_issue_keys", "explanation"],
+            "additionalProperties": False,
+            "properties": {
+                "needs_update": {"type": "boolean"},
+                "relevant_issue_keys": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                },
+                "explanation": {"type": "string"},
+            },
+        },
+    },
+}
+
+
+# ---------------------------------------------------------------------------
+# Vision screenshot verification helpers (issue 73)
+# ---------------------------------------------------------------------------
+
+def _extract_lesson_images(lesson_html: str) -> list[dict]:
+    """Return [{src, alt}] for all non-decorative local images in the lesson HTML."""
+    results: list[dict] = []
+    seen: set[str] = set()
+    for m in re.finditer(r"<img[^>]+>", lesson_html):
+        tag = m.group()
+        src_m = re.search(r'src=["\']([^"\']+)["\']', tag)
+        alt_m = re.search(r'alt=["\']([^"\']*)["\']', tag)
+        if not src_m:
+            continue
+        src = src_m.group(1)
+        if not src.startswith("images/"):
+            continue
+        if Path(src).name in _DECORATIVE_IMAGES:
+            continue
+        if src in seen:
+            continue
+        seen.add(src)
+        results.append({"src": src, "alt": alt_m.group(1) if alt_m else ""})
+    return results
+
+
+async def _vision_verify_one(
+    client: AsyncOpenAI,
+    sem: asyncio.Semaphore,
+    img_path: Path,
+    src: str,
+    issues: list[dict],
+    existing_updates: list[dict],
+) -> dict:
+    """Ask the vision model whether a single screenshot is affected by any Jira issue.
+
+    Returns {"src", "needs_update", "relevant_issue_keys", "explanation"}.
+    On error returns needs_update=False so the image is not incorrectly promoted.
+    """
+    async with sem:
+        try:
+            img_bytes = img_path.read_bytes()
+        except OSError as exc:
+            print(f"\n  [vision] Cannot read {img_path.name}: {exc}")
+            return {"src": src, "needs_update": False, "relevant_issue_keys": [], "explanation": ""}
+
+        img_data = base64.standard_b64encode(img_bytes).decode()
+        ext = img_path.suffix.lstrip(".")
+
+        issues_text = "\n".join(
+            f"- {i.get('issue_key', '')}: {i.get('issue_summary', '')[:200]}"
+            for i in issues
+        )
+        existing_flag = next((u for u in existing_updates if u.get("src") == src), None)
+        flag_note = (
+            f"Text analysis already flagged this image: {existing_flag['explanation']}"
+            if existing_flag
+            else "Text analysis did NOT flag this image."
+        )
+
+        prompt_text = (
+            "You are reviewing an FME training screenshot to determine if it needs to be retaken "
+            "due to recent UI changes.\n\n"
+            f"Recent FME UI changes (Jira issues):\n{issues_text}\n\n"
+            f"{flag_note}\n\n"
+            "Does this screenshot show any UI element that would look visibly different after "
+            "these changes? Name the specific UI element if so. Be conservative — only flag "
+            "images where the change is clearly visible in this screenshot."
+        )
+
+        try:
+            response = await client.chat.completions.create(
+                model=config.EDIT_SUGGESTIONS_MODEL,
+                messages=[{
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt_text},
+                        {"type": "image_url", "image_url": {
+                            "url": f"data:image/{ext};base64,{img_data}",
+                            "detail": "low",
+                        }},
+                    ],
+                }],
+                response_format=_VISION_RESPONSE_SCHEMA,
+                temperature=0.1,
+                max_tokens=200,
+            )
+            result = json.loads(response.choices[0].message.content)
+            return {
+                "src": src,
+                "needs_update": result.get("needs_update", False),
+                "relevant_issue_keys": result.get("relevant_issue_keys", []),
+                "explanation": result.get("explanation", ""),
+            }
+        except Exception as exc:
+            print(f"\n  [vision] API call failed for {img_path.name}: {exc}")
+            return {"src": src, "needs_update": False, "relevant_issue_keys": [], "explanation": ""}
+
+
+async def _vision_verify_screenshots(
+    client: AsyncOpenAI,
+    lesson_dir: str,
+    lesson_html: str,
+    screenshot_updates: list[dict],
+    group: list[dict],
+    lesson_id: str,
+) -> list[dict]:
+    """Vision-verify screenshot flags for a lesson (issue 73).
+
+    For each non-decorative image found on disk:
+    - If vision confirms a text flag → keep it (source stays "text")
+    - If vision finds a new flag → add it with source="vision"
+    - If vision disputes a text flag → remove it (false positive)
+    Text-flagged images that can't be found on disk are kept unchanged.
+    """
+    images = _extract_lesson_images(lesson_html)
+    if not images:
+        return screenshot_updates
+
+    lesson_path = config.REPO_ROOT / lesson_dir
+    sem = asyncio.Semaphore(config.ALT_TEXT_MAX_CONCURRENT)
+
+    # Separate images we can verify (exist on disk) from those we cannot
+    verifiable = [(img, lesson_path / img["src"]) for img in images if (lesson_path / img["src"]).exists()]
+    unverifiable_srcs = {img["src"] for img in images if not (lesson_path / img["src"]).exists()}
+
+    if not verifiable:
+        return screenshot_updates
+
+    # Run vision check for all verifiable images concurrently
+    vision_results = await asyncio.gather(*[
+        _vision_verify_one(client, sem, img_path, img["src"], group, screenshot_updates)
+        for img, img_path in verifiable
+    ])
+
+    text_by_src = {u["src"]: u for u in screenshot_updates}
+    merged: list[dict] = []
+    confirmed = removed = added = 0
+
+    for vr in vision_results:
+        src = vr["src"]
+        if vr["needs_update"]:
+            if src in text_by_src:
+                merged.append(text_by_src[src])  # source="text" already set
+                confirmed += 1
+            else:
+                merged.append({
+                    "src": src,
+                    "explanation": vr["explanation"],
+                    "issue_keys": vr["relevant_issue_keys"],
+                    "alt_text": None,
+                    "source": "vision",
+                })
+                added += 1
+        elif src in text_by_src:
+            removed += 1
+
+    # Preserve text flags for images we couldn't verify
+    for su in screenshot_updates:
+        if su.get("src") in unverifiable_srcs:
+            merged.append(su)
+
+    if confirmed or removed or added:
+        print(f"\n  [vision] {lesson_id}: {confirmed} confirmed, {removed} removed, {added} added")
+
+    return merged
 
 
 # ---------------------------------------------------------------------------
@@ -343,6 +537,17 @@ async def _call_openai(
                 su for su in parsed.get("screenshot_updates", [])
                 if "safe_note.png" not in (su.get("src") or "")
             ]
+            # Tag text-based suggestions with their source (issue 73)
+            for su in screenshot_updates:
+                su["source"] = "text"
+
+            # Optional vision-verification pass: confirm/remove/add screenshot flags (issue 73)
+            if config.ENABLE_VISION_SCREENSHOT_REVIEW:
+                lesson_dir = first.get("lesson_dir", "")
+                if lesson_dir:
+                    screenshot_updates = await _vision_verify_screenshots(
+                        client, lesson_dir, lesson_html, screenshot_updates, group, lesson_id
+                    )
 
             # Post-processing: remove changes whose original_text is not in lesson HTML (issue 74)
             filtered_changes = _filter_stale_original_text(
