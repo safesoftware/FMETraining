@@ -312,3 +312,94 @@ class TestEnsureVersionChanges:
             assert "quarterly" in change["explanation"].lower(), (
                 "Explanation should mention quarterly release model for 2026+ targets"
             )
+
+    # ----- KNOW-2254: skip "New for FME X.Y" historical markers ---------
+
+    def test_new_for_fme_note_skipped(self):
+        html = '<p><strong>⭐ New for FME 2024.2:</strong> Cool feature.</p>'
+        result = _ensure_version_changes(
+            changes=[], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert result == [], (
+            "'New for FME 2024.2' is a historical marker; auto-pass must not bump it"
+        )
+
+    def test_mixed_new_for_and_regular_version_only_regular_changed(self):
+        html = (
+            '<p><strong>⭐ New for FME 2024.2:</strong> Historical marker.</p>'
+            '<p>This lesson covers FME 2024.2 features.</p>'
+        )
+        result = _ensure_version_changes(
+            changes=[], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert len(result) == 1, f"Expected 1 auto-change (only the regular mention), got {len(result)}"
+        change = result[0]
+        # The regular mention is at "covers FME 2024.2" — heading should be empty
+        # (no preceding h2/h3) but the change should target the right occurrence.
+        assert change["original_text"] == "2024.2"
+        assert change["suggested_text"] == "2026.1"
+
+    @pytest.mark.parametrize("html", [
+        '<p><strong>⭐ New for FME 2024.2:</strong> x</p>',
+        '<p>New for FME <strong>2024.2</strong></p>',
+        '<p>New for <strong>FME </strong>2024.2</p>',
+        '<p><strong>New for FME </strong>2024.2</p>',
+        '<p>New For FME 2024.2: case-insensitive</p>',
+        '<p>new for fme 2024.2: lowercase</p>',
+    ])
+    def test_new_for_markup_variations_all_skipped(self, html):
+        result = _ensure_version_changes(
+            changes=[], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert result == [], f"Markup variant should have been skipped: {html!r}"
+
+    def test_llm_change_targeting_new_for_note_dropped(self):
+        # The LLM generated a single-version-bump change for a "New for FME"
+        # occurrence. The position-coverage check would let this slip through,
+        # so the defensive filter must drop it.
+        html = '<p><strong>⭐ New for FME 2024.2:</strong> x</p>'
+        bad_change = {
+            "change_id": "bad1", "type": "change",
+            "heading": "Some heading",
+            "original_text": "2024.2", "suggested_text": "2026.1",
+            "explanation": "LLM thinks this needs bumping",
+            "issue_keys": [],
+        }
+        result = _ensure_version_changes(
+            changes=[bad_change], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert bad_change not in result, "LLM change targeting 'New for FME' note must be dropped"
+        # And no auto-change either, since the only occurrence is in the marker.
+        assert result == []
+
+    def test_llm_change_unrelated_to_new_for_note_kept(self):
+        # If the LLM generated a single-version-bump for a regular occurrence
+        # (not in a "New for FME" note), the filter must NOT drop it.
+        html = '<p>This lesson covers FME Form 2024.2.</p>'
+        good_change = {
+            "change_id": "good1", "type": "change",
+            "heading": "Intro",
+            "original_text": "2024.2", "suggested_text": "2026.1",
+            "explanation": "Bump version",
+            "issue_keys": [],
+        }
+        result = _ensure_version_changes(
+            changes=[good_change], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert good_change in result, "Regular version-bump change should not be dropped"
+
+    def test_unrelated_phrase_starting_with_new_does_not_trigger_skip(self):
+        # Regression: "The new feature in 2024.2" must still produce a change.
+        # The trailing context before "2024.2" is "feature in", not "new for fme".
+        html = '<h2>Section</h2><p>The new feature in 2024.2 is great.</p>'
+        result = _ensure_version_changes(
+            changes=[], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert len(result) == 1, "A normal '2024.2' mention must still get an auto-change"
+        assert result[0]["original_text"] == "2024.2"

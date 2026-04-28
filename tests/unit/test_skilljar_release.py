@@ -1,10 +1,10 @@
-"""Unit tests for _upload_and_rewrite_images in skilljar_release.py."""
+"""Unit tests for _upload_and_rewrite_images and _rewrite_images in skilljar_release.py."""
 
 from __future__ import annotations
 
 from unittest.mock import patch
 
-from pipeline.skilljar_release import _upload_and_rewrite_images
+from pipeline.skilljar_release import _rewrite_images, _upload_and_rewrite_images
 
 _S3_ARGS = dict(s3_bucket="test-bucket", s3_key_id="fake-id", s3_secret="fake-secret")
 _S3_KEY = "skilljar-uploads/abc12345-photo.png"
@@ -101,3 +101,38 @@ class TestUploadAndRewriteImages:
         # so we just assert _s3_put was called and no S3 delete happened (the file
         # stays in the bucket as a permanent host).
         mock_put.assert_called_once()
+
+
+class TestRewriteImagesSkipsExpiring:
+    """Regression for KNOW-2253: _rewrite_images must NOT propagate expiring
+    pre-signed URLs from the previous version's HTML — those URLs render fine
+    for an hour and then 403, breaking the new release."""
+
+    def test_skips_everpath_url_from_original(self):
+        original = (
+            '<img src="https://everpath-course-content.s3.amazonaws.com/'
+            'instructor/x/assets/1/foo.png?AWSAccessKeyId=K&Signature=s&Expires=1">'
+        )
+        new = '<img src="images/foo.png">'
+        rewritten, unmatched = _rewrite_images(new, original)
+        # The expiring URL must NOT be substituted in
+        assert "everpath-course-content" not in rewritten
+        assert "Expires=" not in rewritten
+        # The relative path stays untouched, ready for _upload_and_rewrite_images
+        assert 'src="images/foo.png"' in rewritten
+        assert unmatched == ["images/foo.png"]
+
+    def test_skips_url_with_expires_query_param_from_any_host(self):
+        original = '<img src="https://example.com/foo.png?Expires=999&Signature=x">'
+        new = '<img src="images/foo.png">'
+        rewritten, unmatched = _rewrite_images(new, original)
+        assert "Expires=" not in rewritten
+        assert unmatched == ["images/foo.png"]
+
+    def test_propagates_permanent_url(self):
+        permanent = "https://s3.us-east-1.amazonaws.com/FMETraining/keep/foo.png"
+        original = f'<img src="{permanent}">'
+        new = '<img src="images/foo.png">'
+        rewritten, unmatched = _rewrite_images(new, original)
+        assert permanent in rewritten
+        assert unmatched == []

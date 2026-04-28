@@ -460,7 +460,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             return
 
         try:
-            html_content = _upload_pasted_data_uris(html_content)
+            html_content = _upload_lesson_images(html_content, lesson_dir)
         except RuntimeError as exc:
             self._json_response(500, {"error": str(exc)})
             return
@@ -513,7 +513,7 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
             return
 
         try:
-            html_content = _upload_pasted_data_uris(html_content)
+            html_content = _upload_lesson_images(html_content, lesson_dir)
         except RuntimeError as exc:
             self._json_response(500, {"error": str(exc)})
             return
@@ -696,14 +696,27 @@ class _Handler(http.server.SimpleHTTPRequestHandler):
 # Path computation (for save-lesson)
 # ---------------------------------------------------------------------------
 
-def _upload_pasted_data_uris(html: str) -> str:
-    """Replace <img src='data:image/...;base64,...'> tags with permanent S3 URLs.
+_NEEDS_IMAGE_UPLOAD_RE = re.compile(
+    r'<img\b[^>]*?\bsrc=["\'](?!https?://[^"\']*(?<!\?Expires=))[^"\']+["\']',
+    re.IGNORECASE,
+)
 
-    No-op when the HTML contains no data URIs. Raises RuntimeError if uploads
-    are needed but credentials are missing or any upload fails — the caller
-    surfaces this as a 500 to the editor.
+
+def _upload_lesson_images(html: str, lesson_dir: str) -> str:
+    """Re-host every <img src> in `html` that is not already a permanent URL on
+    our S3 bucket: data: URIs, relative paths, and expiring pre-signed URLs.
+
+    No-op when the HTML contains nothing that needs uploading. Raises
+    RuntimeError if uploads are needed but credentials are missing, the local
+    file is missing, or any upload fails — the caller surfaces this as a 500.
     """
-    if "data:image/" not in html:
+    needs_upload = (
+        "data:image/" in html
+        or "everpath-course-content" in html
+        or "Expires=" in html
+        or _NEEDS_IMAGE_UPLOAD_RE.search(html) is not None
+    )
+    if not needs_upload:
         return html
     from pipeline.config import (
         AWS_ACCESS_KEY_ID,
@@ -711,9 +724,11 @@ def _upload_pasted_data_uris(html: str) -> str:
         AWS_S3_REGION,
         AWS_SECRET_ACCESS_KEY,
     )
-    from pipeline.data_uri_upload import extract_and_upload_data_uris
-    rewritten, _log = extract_and_upload_data_uris(
+    from pipeline.lesson_image_upload import upload_lesson_images
+    rewritten, _log = upload_lesson_images(
         html,
+        lesson_dir=lesson_dir,
+        repo_root=REPO_ROOT,
         s3_bucket=AWS_S3_BUCKET,
         s3_key_id=AWS_ACCESS_KEY_ID,
         s3_secret=AWS_SECRET_ACCESS_KEY,
@@ -725,7 +740,14 @@ def _upload_pasted_data_uris(html: str) -> str:
 def _sanitize_lesson_html(html: str) -> str:
     """Strip track-changes report markup that should never appear in saved lesson files."""
     soup = BeautifulSoup(html, "html.parser")
-    for cls in ("tc-popup", "rec-id", "tc-issue-links", "tc-btns", "tc-explanation"):
+    # Cover both the nested-popup case and the orphan case (KNOW-2255), where
+    # a wrap rendered inside an <a> caused the parser to re-parent buttons /
+    # inner links out of .tc-popup. Also strip the buttons by their own class
+    # in case .tc-btns was decomposed before reaching them.
+    for cls in (
+        "tc-popup", "tc-btns", "tc-explanation", "tc-issue-links",
+        "tc-accept", "tc-reject", "card-link", "card-link-wrap", "rec-id",
+    ):
         for el in soup.find_all(class_=cls):
             el.decompose()
     for a in soup.find_all("a", href=True):

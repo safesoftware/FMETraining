@@ -991,6 +991,26 @@ def _heading_before(html: str, pos: int) -> str:
     return ""
 
 
+_NEW_FOR_FME_TAIL_RE = re.compile(r"new for fme\s*$", re.IGNORECASE)
+
+
+def _is_in_new_for_fme_note(html: str, pos: int) -> bool:
+    """True if html[pos:] is the version number inside a 'New for FME X.Y' marker.
+
+    "New for FME X.Y" notes are historical markers that record when a feature
+    was introduced — they must not be retroactively bumped on every training
+    refresh. This walks back from `pos`, strips tags from a short window, and
+    checks whether the trailing text reads 'new for fme ' (case-insensitive).
+    Tag stripping handles the editorial template's bold/star markup variations,
+    e.g. <strong>⭐ New for FME 2025.0:</strong>.
+    """
+    window_start = max(0, pos - 80)
+    window = html[window_start:pos]
+    text_before = re.sub(r"<[^>]+>", " ", window)
+    text_before = re.sub(r"\s+", " ", text_before).rstrip()
+    return _NEW_FOR_FME_TAIL_RE.search(text_before) is not None
+
+
 def _ensure_version_changes(
     changes: list[dict],
     lesson_html: str,
@@ -1001,27 +1021,57 @@ def _ensure_version_changes(
     """
     Scan lesson HTML for any occurrence of from_version in text content that is
     not already covered by an existing change, and auto-generate a change for it.
+    Skips occurrences inside "New for FME X.Y" historical markers, and drops any
+    LLM-generated single-version-bump change targeting such a marker.
     """
     if not from_version or not to_version or from_version == to_version:
         return changes
 
+    # Defensive: drop any LLM-generated change whose original_text equals
+    # from_version and whose match in the lesson HTML sits inside a
+    # "New for FME" note. Such a change slips past the position-coverage
+    # check below because it looks like a legitimate single-version bump.
+    def _targets_new_for_fme_note(c: dict) -> bool:
+        if c.get("type") != "change":
+            return False
+        if c.get("original_text") != from_version or c.get("suggested_text") != to_version:
+            return False
+        for match in re.finditer(re.escape(from_version), lesson_html):
+            pre = lesson_html[:match.start()]
+            if pre.rfind("<") > pre.rfind(">"):
+                continue
+            if _is_in_new_for_fme_note(lesson_html, match.start()):
+                return True
+        return False
+
+    filtered_existing = [c for c in changes if not _targets_new_for_fme_note(c)]
+    dropped = len(changes) - len(filtered_existing)
+    if dropped:
+        print(
+            f"  [version-strings] Dropped {dropped} LLM change(s) targeting "
+            f"'New for FME' note(s) for {lesson_id}"
+        )
+
     new_changes: list[dict] = []
 
-    # Find positions of from_version in text content (not tag attributes)
+    # Find positions of from_version in text content (not tag attributes,
+    # and not inside a "New for FME X.Y" historical marker).
     all_positions: list[int] = []
     for m in re.finditer(re.escape(from_version), lesson_html):
         pre = lesson_html[:m.start()]
         if pre.rfind("<") > pre.rfind(">"):
             continue  # inside a tag attribute
+        if _is_in_new_for_fme_note(lesson_html, m.start()):
+            continue  # historical marker — never retroactively bump
         all_positions.append(m.start())
 
     if not all_positions:
-        return changes
+        return filtered_existing
 
     # Determine which positions are already covered by existing changes
     # (same sequential-replace logic as _propagate_renames)
     uncovered = list(all_positions)
-    for c in changes:
+    for c in filtered_existing:
         c_orig = c.get("original_text", "")
         c_sugg = c.get("suggested_text", "")
         if from_version not in c_orig or to_version not in c_sugg:
@@ -1063,7 +1113,7 @@ def _ensure_version_changes(
     if new_changes:
         print(f"\n  [version-strings] Auto-added {len(new_changes)} change(s) for {lesson_id}")
 
-    return changes + new_changes
+    return filtered_existing + new_changes
 
 
 # ---------------------------------------------------------------------------

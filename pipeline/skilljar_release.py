@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+import urllib.parse
 from pathlib import Path
 from typing import Iterator
 
@@ -37,15 +38,33 @@ _RELATIVE_SRC_RE = re.compile(r'(src=["\'])(?!https?://|data:)([^"\']+)(["\'])',
 _SRC_RE = re.compile(r'src=["\']([^"\']+)["\']', re.IGNORECASE)
 
 
+_EXPIRING_HOST = "everpath-course-content.s3.amazonaws.com"
+
+
+def _is_expiring_url(src: str) -> bool:
+    """True for any S3 pre-signed URL we should NOT propagate to a new release."""
+    parsed = urllib.parse.urlparse(src)
+    if parsed.netloc == _EXPIRING_HOST:
+        return True
+    qs = urllib.parse.parse_qs(parsed.query)
+    return "Expires" in qs or "X-Amz-Expires" in qs
+
+
 def _rewrite_images(new_html: str, original_html: str) -> tuple[str, list[str]]:
     """
     Replace relative src= paths in new_html with absolute URLs extracted from original_html,
     matched by filename. Returns (rewritten_html, list_of_unmatched_relative_paths).
+
+    Skips expiring pre-signed URLs from `original_html` so they don't propagate
+    forward into the new release — the next pass (_upload_and_rewrite_images)
+    will re-host them as permanent URLs instead.
     """
     # Build filename → absolute URL map from original HTML
     original_urls: dict[str, str] = {}
     for src in _SRC_RE.findall(original_html):
-        if src.startswith(("http://", "https://", "data:")):
+        if src.startswith("data:"):
+            original_urls[Path(src.split("?")[0]).name] = src
+        elif src.startswith(("http://", "https://")) and not _is_expiring_url(src):
             original_urls[Path(src.split("?")[0]).name] = src
 
     unmatched: list[str] = []

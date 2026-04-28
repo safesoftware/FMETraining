@@ -1,10 +1,11 @@
 """
-Integration tests for serve.py data-URI upload wiring.
+Integration tests for serve.py image-upload wiring.
 
 Spins up a real _ThreadedHTTPServer in a background thread, posts to
-/api/save-lesson and /api/skilljar-push with data:image base64 payloads,
-and asserts that the upload helpers are invoked and the rewritten HTML
-flows through to disk and to push_with_version_check.
+/api/save-lesson and /api/skilljar-push with HTML containing data: URIs,
+relative paths, and expiring pre-signed URLs, and asserts that the upload
+helpers are invoked and the rewritten HTML flows through to disk and to
+push_with_version_check.
 """
 
 from __future__ import annotations
@@ -84,7 +85,7 @@ class TestSaveLessonWithDataUri:
         html_with_uri = f'<p>diagram: <img src="{_PNG_DATA_URI}" alt="d"></p>'
 
         with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
-             patch("pipeline.data_uri_upload._s3_put",
+             patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(public_url, "skilljar-uploads/x.png")):
             status, body = _post_json(
                 f"{http_server}/api/save-lesson",
@@ -104,7 +105,7 @@ class TestSaveLessonWithDataUri:
 
     def test_no_data_uris_no_upload_called(self, http_server, isolated_repo):
         html = '<p>plain text, no images</p>'
-        with patch("pipeline.data_uri_upload._s3_put") as mock_put:
+        with patch("pipeline.lesson_image_upload._s3_put") as mock_put:
             status, body = _post_json(
                 f"{http_server}/api/save-lesson",
                 {
@@ -126,7 +127,7 @@ class TestSaveLessonWithDataUri:
             f'<p>after</p>'
         )
         with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
-             patch("pipeline.data_uri_upload._s3_put",
+             patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(public_url, "skilljar-uploads/x.png")):
             status, body = _post_json(
                 f"{http_server}/api/save-lesson",
@@ -145,7 +146,7 @@ class TestSaveLessonWithDataUri:
         html_with_uri = f'<p><img src="{_PNG_DATA_URI}"></p>'
 
         with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
-             patch("pipeline.data_uri_upload._s3_put",
+             patch("pipeline.lesson_image_upload._s3_put",
                    side_effect=RuntimeError("HTTP 403: Forbidden")):
             status, body = _post_json(
                 f"{http_server}/api/save-lesson",
@@ -161,6 +162,85 @@ class TestSaveLessonWithDataUri:
         # File should NOT have been written when upload failed.
         target = isolated_repo / "2026.1" / "fme-form-basic" / "Connect To Data 2026.1" / "My Lesson" / "index.html"
         assert not target.exists()
+
+
+class TestSaveLessonWithRelativePaths:
+    def test_relative_image_uploaded_to_s3_on_save(self, http_server, isolated_repo):
+        src_images = isolated_repo / "2025.0" / "fme-form-basic" / "Connect To Data 2025.0" / "My Lesson" / "images"
+        src_images.mkdir(parents=True, exist_ok=True)
+        (src_images / "diagram.png").write_bytes(b"\x89PNG fake")
+
+        public_url = "https://s3.us-east-1.amazonaws.com/test-bucket/skilljar-uploads/abc-diagram.png"
+        html = '<p><img src="images/diagram.png" alt="d"></p>'
+
+        with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
+             patch("pipeline.skilljar_release._s3_put",
+                   return_value=(public_url, "skilljar-uploads/abc-diagram.png")) as mock_put:
+            status, body = _post_json(
+                f"{http_server}/api/save-lesson",
+                {
+                    "lesson_dir": "2025.0/fme-form-basic/Connect To Data 2025.0/My Lesson",
+                    "to_version": "2026.1",
+                    "html_content": html,
+                },
+            )
+
+        assert status == 200, body
+        saved = (isolated_repo / body["target_path"]).read_text(encoding="utf-8")
+        assert public_url in saved
+        assert 'src="images/diagram.png"' not in saved
+        mock_put.assert_called_once()
+
+
+class TestSaveLessonWithExpiringUrls:
+    def test_expiring_url_rehosted_via_local_file(self, http_server, isolated_repo):
+        src_images = isolated_repo / "2025.0" / "fme-form-basic" / "Connect To Data 2025.0" / "My Lesson" / "images"
+        src_images.mkdir(parents=True, exist_ok=True)
+        (src_images / "abc-foo.png").write_bytes(b"\x89PNG fake")
+
+        expiring = (
+            "https://everpath-course-content.s3.amazonaws.com/instructor/x/assets/123/"
+            "abc-foo.png?AWSAccessKeyId=K&Signature=s%3D&Expires=1777324413"
+        )
+        public_url = "https://s3.us-east-1.amazonaws.com/test-bucket/skilljar-uploads/abc-foo.png"
+        html = f'<p><img src="{expiring}"></p>'
+
+        with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
+             patch("pipeline.lesson_image_upload._s3_put",
+                   return_value=(public_url, "skilljar-uploads/abc-foo.png")):
+            status, body = _post_json(
+                f"{http_server}/api/save-lesson",
+                {
+                    "lesson_dir": "2025.0/fme-form-basic/Connect To Data 2025.0/My Lesson",
+                    "to_version": "2026.1",
+                    "html_content": html,
+                },
+            )
+
+        assert status == 200, body
+        saved = (isolated_repo / body["target_path"]).read_text(encoding="utf-8")
+        assert "everpath-course-content" not in saved
+        assert public_url in saved
+
+    def test_expiring_url_no_local_match_returns_500(self, http_server, isolated_repo):
+        expiring = (
+            "https://everpath-course-content.s3.amazonaws.com/instructor/x/assets/123/"
+            "missing-image.png?AWSAccessKeyId=K&Signature=s%3D&Expires=1"
+        )
+        html = f'<p><img src="{expiring}"></p>'
+
+        with patch.multiple("pipeline.config", **_CONFIG_PATCHES):
+            status, body = _post_json(
+                f"{http_server}/api/save-lesson",
+                {
+                    "lesson_dir": "2025.0/fme-form-basic/Connect To Data 2025.0/My Lesson",
+                    "to_version": "2026.1",
+                    "html_content": html,
+                },
+            )
+
+        assert status == 500
+        assert "missing-image.png" in body.get("error", "")
 
 
 class TestSkilljarPushWithDataUri:
@@ -182,7 +262,7 @@ class TestSkilljarPushWithDataUri:
             }
 
         with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
-             patch("pipeline.data_uri_upload._s3_put",
+             patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(public_url, "skilljar-uploads/x.png")), \
              patch("pipeline.skilljar_push.push_with_version_check", side_effect=fake_push), \
              patch("pipeline.skilljar_push.load_mapping", return_value={}):
@@ -203,7 +283,7 @@ class TestSkilljarPushWithDataUri:
         html_with_uri = f'<p><img src="{_PNG_DATA_URI}"></p>'
 
         with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
-             patch("pipeline.data_uri_upload._s3_put",
+             patch("pipeline.lesson_image_upload._s3_put",
                    side_effect=RuntimeError("Network error PUT s3://...")), \
              patch("pipeline.skilljar_push.push_with_version_check") as mock_push, \
              patch("pipeline.skilljar_push.load_mapping", return_value={}):

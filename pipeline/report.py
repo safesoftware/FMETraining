@@ -867,7 +867,7 @@ function leRenderLesson() {{
     ).join(', ');
     // Issues 29/51/68: view card link with pushState navigation
     const cardLink = keys.length
-      ? `<span style="display:block;font-size:0.7rem;margin-top:2px"><a href="?tab=recommendations&card=${{encodeURIComponent(allData.find(a=>a.issue_key===keys[0])?.rec_id||'')}}&from_change=${{encodeURIComponent(changeId)}}" onclick="leNavigateToCard(event,'${{keys[0]}}','${{lessonId||''}}','${{changeId}}');return false;" style="color:#93c5fd">↗ View recommendation card (${{keys[0]}})</a></span>`
+      ? `<span class="card-link-wrap" style="display:block;font-size:0.7rem;margin-top:2px"><a class="card-link" href="?tab=recommendations&card=${{encodeURIComponent(allData.find(a=>a.issue_key===keys[0])?.rec_id||'')}}&from_change=${{encodeURIComponent(changeId)}}" onclick="leNavigateToCard(event,'${{keys[0]}}','${{lessonId||''}}','${{changeId}}');return false;" style="color:#93c5fd">↗ View recommendation card (${{keys[0]}})</a></span>`
       : '';
     // Issue 51/66: copy-chip for linking directly to this change
     const copyChip = (lessonId && type !== 'screenshot')
@@ -887,43 +887,108 @@ function leRenderLesson() {{
   // Algorithm:
   //   1. For each change, find the next unmatched occurrence of orig in html
   //      (scanning left-to-right, skipping positions already claimed).
-  //   2. Collect all (position, change) pairs.
-  //   3. Replace right-to-left so earlier offsets stay valid.
+  //   2. If the position is inside an <a> element's content, expand the range
+  //      to enclose the whole <a> — the wrap (with its popup containing
+  //      buttons / links) cannot legally nest inside <a> per HTML5 rules
+  //      (KNOW-2255), so it must surround the <a> instead.
+  //   3. Collect all (position, change) pairs.
+  //   4. Replace right-to-left so earlier offsets stay valid.
+
+  // Walk back from `pos` to determine whether it sits inside the content of
+  // an open <a> element. Returns [start, end] of the enclosing <a> if so.
+  function findEnclosingAnchor(html, pos) {{
+    let depth = 0;
+    let i = pos - 1;
+    while (i >= 0) {{
+      const close = html.lastIndexOf('</a>', i);
+      const open  = html.lastIndexOf('<a', i);
+      if (open < 0 && close < 0) return null;
+      if (close > open) {{
+        depth -= 1;
+        i = close - 1;
+      }} else {{
+        // confirm <a> tag (next char is whitespace, > or attribute-start)
+        const after = html[open + 2];
+        const isAnchor = after === ' ' || after === '>' || after === '\\t' || after === '\\n' || after === '\\r';
+        if (isAnchor) {{
+          if (depth === 0) {{
+            const endOfOpenTag = html.indexOf('>', open);
+            if (endOfOpenTag < 0) return null;
+            const closeTag = html.indexOf('</a>', endOfOpenTag + 1);
+            if (closeTag < 0) return null;
+            return [open, closeTag + 4];
+          }}
+          depth += 1;
+        }}
+        i = open - 1;
+      }}
+    }}
+    return null;
+  }}
+
+  function makeMarkup(ch, origHtml, origText) {{
+    const popup = makePopup(ch.change_id, ch.explanation, ch.issue_keys, ch.type, plan.lesson_id);
+    const issueKeysAttr = escHtml((ch.issue_keys || []).join(','));
+    const dataOrig = escHtml(origHtml);
+    const visibleOrig = escHtml(origText);
+    const dataSugg = escHtml(ch.suggested_text || '');
+    if (ch.type === 'delete') {{
+      return `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{dataOrig}}" data-orig-text="${{visibleOrig}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{visibleOrig}}</del>${{popup}}</span>`;
+    }} else if (ch.type === 'add') {{
+      return `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{dataOrig}}" data-orig-text="${{visibleOrig}}" data-sugg="${{dataSugg}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><span class="tc-orig-context">${{visibleOrig}}</span><ins class="tc-add">${{dataSugg}}</ins>${{popup}}</span>`;
+    }}
+    return `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{dataOrig}}" data-orig-text="${{visibleOrig}}" data-sugg="${{dataSugg}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{visibleOrig}}</del><ins class="tc-ins"> ${{dataSugg}}</ins>${{popup}}</span>`;
+  }}
+
   const claimed = [];  // sorted list of [start, end] ranges already assigned
   const replacements = [];  // {{ pos, origLen, markup }}
 
   changes.forEach((ch) => {{
     const orig = ch.original_text || '';
     if (!orig) return;
-    const popup = makePopup(ch.change_id, ch.explanation, ch.issue_keys, ch.type, plan.lesson_id);
-    const issueKeysAttr = escHtml((ch.issue_keys || []).join(','));
-
-    let markup;
-    if (ch.type === 'delete') {{
-      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="" data-type="delete" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del>${{popup}}</span>`;
-    }} else if (ch.type === 'add') {{
-      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="add" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><span class="tc-orig-context">${{escHtml(orig)}}</span><ins class="tc-add">${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
-    }} else {{
-      markup = `<span id="le-change-${{ch.change_id}}" class="tc-wrap tc-change" contenteditable="false" data-id="${{ch.change_id}}" data-orig="${{escHtml(orig)}}" data-sugg="${{escHtml(ch.suggested_text || '')}}" data-type="change" data-issue-keys="${{issueKeysAttr}}" data-state="pending"><del class="tc-del">${{escHtml(orig)}}</del><ins class="tc-ins"> ${{escHtml(ch.suggested_text || '')}}</ins>${{popup}}</span>`;
-    }}
 
     // Find the first occurrence of orig not overlapping an already-claimed range
-    // and not inside an HTML tag (attribute values must not be injected into).
+    // and not inside an HTML tag's attributes. If the match sits inside the
+    // content of an <a>, expand the chosen range to enclose the whole <a>.
     let searchFrom = 0;
     while (searchFrom <= html.length - orig.length) {{
       const pos = html.indexOf(orig, searchFrom);
       if (pos === -1) break;
       const end = pos + orig.length;
-      // Skip matches inside HTML tags: scan backward for nearest < or >
+      // Skip matches inside HTML tag attributes: scan backward for nearest < or >
       let insideTag = false;
       for (let i = pos - 1; i >= 0; i--) {{
-        if (html[i] === '>') break;        // outside a tag — OK
-        if (html[i] === '<') {{ insideTag = true; break; }}  // inside <tag ...>
+        if (html[i] === '>') break;
+        if (html[i] === '<') {{ insideTag = true; break; }}
       }}
-      const overlaps = claimed.some(([s, e]) => pos < e && end > s);
-      if (!insideTag && !overlaps) {{
-        claimed.push([pos, end]);
-        replacements.push({{ pos, origLen: orig.length, markup }});
+      if (insideTag) {{ searchFrom = pos + 1; continue; }}
+
+      // Default: wrap exactly the matched substring
+      let chosenStart = pos;
+      let chosenEnd   = end;
+      let chosenOrigHtml = orig;
+      let chosenOrigText = orig;
+
+      // If we're inside an <a>, expand to cover the whole <a>...</a>
+      const enclosing = findEnclosingAnchor(html, pos);
+      if (enclosing) {{
+        const [aStart, aEnd] = enclosing;
+        chosenStart = aStart;
+        chosenEnd   = aEnd;
+        chosenOrigHtml = html.slice(aStart, aEnd);
+        chosenOrigText = chosenOrigHtml
+          .replace(/^<a\\b[^>]*>/i, '')
+          .replace(/<\\/a>\\s*$/i, '');
+      }}
+
+      const overlaps = claimed.some(([s, e]) => chosenStart < e && chosenEnd > s);
+      if (!overlaps) {{
+        claimed.push([chosenStart, chosenEnd]);
+        replacements.push({{
+          pos: chosenStart,
+          origLen: chosenEnd - chosenStart,
+          markup: makeMarkup(ch, chosenOrigHtml, chosenOrigText),
+        }});
         break;
       }}
       searchFrom = pos + 1;
@@ -1031,8 +1096,11 @@ function leReject(changeId, evt) {{
 function leApplyState(wrap, state) {{
   wrap.dataset.state = state;
   const type = wrap.dataset.type;
-  const orig = wrap.dataset.orig || '';
-  const sugg = wrap.dataset.sugg || '';
+  // data-orig is the FULL HTML to restore on reject (may include an <a>);
+  // data-orig-text is the plain inner text used for visible <del>/<span class=tc-orig>.
+  const orig     = wrap.dataset.orig || '';
+  const origText = wrap.dataset.origText || orig;
+  const sugg     = wrap.dataset.sugg || '';
 
   // Screenshot type: just update the note's CSS class
   if (type === 'screenshot') {{
@@ -1055,17 +1123,18 @@ function leApplyState(wrap, state) {{
   }}
 
   // Remove existing content nodes (del/ins/orig) — keep popup and itself
-  [...wrap.querySelectorAll('del.tc-del, ins.tc-ins, ins.tc-add, span.tc-orig')].forEach(n => n.remove());
+  [...wrap.querySelectorAll('del.tc-del, ins.tc-ins, ins.tc-add, span.tc-orig, span.tc-orig-context')].forEach(n => n.remove());
 
   if (state === 'pending') {{
-    if (type === 'delete') wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del>`);
-    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig-context">${{orig}}</span><ins class="tc-add">${{sugg}}</ins>`);
-    else wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{orig}}</del><ins class="tc-ins"> ${{sugg}}</ins>`);
+    if (type === 'delete') wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{origText}}</del>`);
+    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig-context">${{origText}}</span><ins class="tc-add">${{sugg}}</ins>`);
+    else wrap.insertAdjacentHTML('afterbegin', `<del class="tc-del">${{origText}}</del><ins class="tc-ins"> ${{sugg}}</ins>`);
   }} else if (state === 'accepted') {{
     if (type === 'delete') {{ /* nothing — text removed */ }}
-    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig-context">${{orig}}</span><ins class="tc-ins">${{sugg}}</ins>`);
+    else if (type === 'add') wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig-context">${{origText}}</span><ins class="tc-ins">${{sugg}}</ins>`);
     else wrap.insertAdjacentHTML('afterbegin', `<ins class="tc-ins">${{sugg}}</ins>`);
   }} else {{ // rejected
+    // Restore the full original HTML (may include an <a>) so links survive a reject.
     wrap.insertAdjacentHTML('afterbegin', `<span class="tc-orig">${{orig}}</span>`);
   }}
 }}
@@ -1304,11 +1373,14 @@ function leGetCleanHtml() {{
 
   const body = document.getElementById('le-lesson-body').cloneNode(true);
 
-  // Remove popups and screenshot wraps (editorial markup only)
-  body.querySelectorAll('.tc-popup').forEach(n => n.remove());
-  // Defensive: also remove known popup sub-elements that can survive as orphaned nodes
-  body.querySelectorAll('.rec-id').forEach(n => n.remove());
-  body.querySelectorAll('.tc-issue-links').forEach(n => n.remove());
+  // Remove popups and any orphaned popup descendants (KNOW-2255: when a wrap
+  // was rendered inside an <a>, the HTML parser re-parents the popup's
+  // <button>s and inner <a>s out of .tc-popup, so a single .tc-popup selector
+  // misses them).
+  body.querySelectorAll(
+    '.tc-popup, .tc-btns, .tc-explanation, .tc-issue-links, ' +
+    '.tc-accept, .tc-reject, .card-link, .card-link-wrap, .rec-id'
+  ).forEach(n => n.remove());
   body.querySelectorAll('a[href^="?tab=recommendations"]').forEach(n => n.remove());
   body.querySelectorAll('.tc-wrap[data-type="screenshot"]').forEach(wrap => wrap.remove());
 
@@ -1325,7 +1397,9 @@ function leGetCleanHtml() {{
     wrap.remove();
   }});
 
-  // Resolve each text tc-wrap based on state (pending = keep original)
+  // Resolve each text tc-wrap based on state (pending = keep original).
+  // data-orig is the full original HTML (may include <a>) so a rejected
+  // wrap can restore its link verbatim. Insert as HTML, not as a text node.
   body.querySelectorAll('.tc-wrap').forEach(wrap => {{
     const state = wrap.dataset.state || 'pending';
     const type = wrap.dataset.type;
@@ -1334,7 +1408,8 @@ function leGetCleanHtml() {{
     let replacement = '';
     if (state === 'accepted') replacement = (type === 'delete') ? '' : (type === 'add') ? orig + sugg : sugg;
     else replacement = orig;
-    wrap.replaceWith(document.createTextNode(replacement));
+    wrap.insertAdjacentHTML('beforebegin', replacement);
+    wrap.remove();
   }});
 
   // Strip the ../lesson_dir/ image prefix added by leRenderLesson
