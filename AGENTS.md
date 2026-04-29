@@ -1,16 +1,72 @@
 # AGENTS.md — Rules for AI Agents Working in This Repository
 
+## Git Workflow
+
+These rules apply to **all work**, not just specific projects.
+
+1. **Never commit directly to `main` or `master`.** Always work on a feature branch (e.g. `feature/<topic>`, `fix/<topic>`). Branch off the latest `main`.
+2. **Commit messages must be descriptive.** Subject line in imperative mood, ≤72 characters. Body explains the *why* (motivation, trade-offs, links to Jira issue), not the *what* (the diff already shows that). Reference the Jira key (e.g. `KNOW-1234`) in the subject or body so commits link back to issues.
+3. **Make small, focused commits.** Prefer many small commits with clear scope over one giant commit. Each commit should leave the tree in a buildable state.
+4. **Push regularly.** Don't sit on local-only commits — push to the remote feature branch so work is visible and recoverable.
+5. **Merge to `main` only via pull request.** Open the PR with `gh pr create` (see process at the bottom of this file). Do not fast-forward locally.
+6. **Never commit secrets.** API keys, OAuth client secrets, session signing keys, AWS credentials, OpenAI / Jira / Skilljar tokens, database passwords — none of these go in git. They live in `.env` (local, gitignored) or AWS Secrets Manager (production). Add a `.env.example` with placeholder values instead.
+7. **Before staging files, sanity-check the diff for accidental secret patterns** (`AKIA[0-9A-Z]{16}`, `sk-[A-Za-z0-9]{20,}`, `xoxb-`, `ghp_`, etc.). If you spot anything that looks like a credential, stop and ask.
+8. **Never bypass hooks** (`--no-verify`, `--no-gpg-sign`) without explicit user permission. If a hook fails, fix the underlying problem.
+
 ## Issue Tracking
 
 Issues are tracked in **Jira project KNOW** (https://safesoftware.atlassian.net/jira/software/projects/KNOW/boards). Do not add new items to `ISSUES.md` — it is a historical archive only.
 
-When filing a new Jira issue use these standard fields:
+### When to file an issue
+
+File a Jira issue for **every meaningful unit of work** — features, bug fixes, refactors, infrastructure changes, doc updates that take more than a few minutes. Don't wait for someone to file it for you. Multi-step plans get a parent story plus child tasks.
+
+When filing, use these standard fields:
 - **Type:** Task
 - **Assignee:** sam.walker@safe.com (account ID `5a6103bb9d0ea46a7a5b6cde`)
 - **Component:** Development
 - **Class of Service:** Standard (`customfield_10253`: `{"value": "Standard"}`)
 
-Use the Jira MCP (`mcp__claude_ai_Atlassian__createJiraIssue`, cloud ID `646a4867-d35f-4b64-958d-eb9a1def6740`). See `memory/jira_config.md` for full field config and workflow transition IDs.
+Use the Jira MCP (`mcp__claude_ai_Atlassian__createJiraIssue`, cloud ID `646a4867-d35f-4b64-958d-eb9a1def6740`). See `memory/jira_config.md` for the full field config and workflow transition IDs.
+
+### Workflow — agents move issues through states themselves
+
+| State | When to move here | Transition |
+|---|---|---|
+| **In Backlog** | Default on creation. Use for anything not yet ready to start. | (create) |
+| **Ready for Work** | Scope is clear, dependencies satisfied, ready to pick up. | `241` |
+| **In Progress** | An agent is actively working on it. | `211` |
+| **Ready for QA** | Implementation done, awaiting human review/testing. | `31` |
+| **Closed** | Verified done. | `301` |
+| **Closed (Won't Do)** | Decided not to pursue. | `201` |
+
+Agents are responsible for moving their own issues. Don't leave an issue in **In Progress** when you've stopped working on it — either move it forward to **Ready for QA** with a verification comment, or back to **Ready for Work** / **In Backlog** with a note explaining what blocked you.
+
+### Comments — leave a trail
+
+After every meaningful chunk of progress, comment on the issue with:
+- What was implemented (one or two sentences).
+- Commit SHAs and/or PR link.
+- Any decisions worth recording.
+
+### Moving to "Ready for QA" — required comment format
+
+Whenever you transition an issue to **Ready for QA** — whether the work is complete and awaiting human verification, or you've hit a question that blocks progress — the **same** transition comment must include:
+
+1. **Status summary** — one or two sentences on where things stand.
+2. **Verification steps** — numbered, copy-pasteable commands or click-paths a human can run, with expected output. Be specific. Bad: "test the new endpoint." Good: "1. `curl -i http://localhost:8000/api/runs` → expect 401 with body `{\"detail\":\"Not authenticated\"}`."
+3. **Open questions** — bulleted list, or "None" if there are none.
+4. **`@mention`** — tag `sam.walker@safe.com` so the user gets notified.
+
+This rule is non-negotiable. A "Ready for QA" issue without these four elements is incomplete and will be sent back.
+
+### MCP tool reference
+
+- `mcp__claude_ai_Atlassian__createJiraIssue` — file a new issue.
+- `mcp__claude_ai_Atlassian__transitionJiraIssue` — move through workflow states (use the IDs above).
+- `mcp__claude_ai_Atlassian__addCommentToJiraIssue` — leave progress comments.
+- `mcp__claude_ai_Atlassian__editJiraIssue` — update summary, description, fields.
+- `mcp__claude_ai_Atlassian__searchJiraIssuesUsingJql` — find existing issues before filing duplicates.
 
 ## Critical Rules
 
@@ -96,3 +152,22 @@ python serve.py 8080          # start server
 ```
 
 Port forwarding must be active in VS Code (Ports tab). If the port times out, kill and restart `serve.py` and re-forward the port.
+
+---
+
+## Pull Requests
+
+Use `gh pr create` to open PRs to `main`. Required structure:
+
+- **Title:** short and concrete (≤70 chars). Reference the Jira key when applicable: `KNOW-1234: short description`.
+- **Body:**
+  - **Summary** — 1–3 bullets on what changed and why.
+  - **Jira link** — full URL to the parent issue.
+  - **Test plan** — bulleted checklist of how to verify (commands to run, click-paths for UI, what to look for).
+  - **Notes for reviewer** — anything non-obvious: decisions made, alternatives considered, follow-ups deferred.
+
+Open PRs as soon as the work is meaningfully reviewable, even if not 100% done — mark them as draft (`gh pr create --draft`) until ready for merge. Don't sit on a long-lived branch.
+
+Never force-push to a branch someone else might be reviewing. If you need to rewrite history on your own feature branch (e.g., to clean up commits before merge), warn in a PR comment first.
+
+When the PR is approved and CI is green, merge with **squash-and-merge** by default unless the commit history is intentionally meaningful. Delete the branch after merge.
