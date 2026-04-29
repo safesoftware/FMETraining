@@ -1,6 +1,8 @@
 # Plan — Multi-User Web App for FME Training Automation
 
-> **Status:** Complete. All sections filled in based on the design Q&A. Pending IT review of Section "IT / Security / Privacy Review" before implementation begins.
+> **Status:** Revised 2026-04-29 to treat **Skilljar as the canonical source of training content** instead of FMETraining. Drafts now live in S3, not in a git clone. Removes the EFS volume + service-account FMETraining git-push that an earlier draft assumed. The FME backup workflow (Skilljar → FMETraining) is unchanged and runs independently of this app.
+>
+> Pending IT review of the "IT / Security / Privacy Review" section before implementation begins.
 
 ---
 
@@ -36,35 +38,84 @@
 | Cache retention | Never auto-evict; S3 lifecycle archives to Glacier Deep Archive after 365 days |
 | Hash-mismatch handling | Block + require two-click override + log to `release_history.conflict_warning_json` |
 | Phasing | Phase 0 → Phase 1 (cache) → Phase 2 (Release redesign) → optional Phase 3 (polish) |
+| Content source of truth | **Skilljar** (read via REST API, cached in S3 + RDS). FMETraining is no longer in the app's hot path; the existing FME backup workflow continues to mirror Skilljar → FMETraining independently. |
+| Drafts storage | S3 private bucket, `s3://fme-train-prod/drafts/{to_version}/{path}/index.html`. Replaces the local `2026.1/...` folder writes done today by `_handle_save_lesson` in `serve.py:428-476`. |
+| Content organization | App rebuilds Version → Learning Path → Course → Lesson taxonomy from Skilljar (course tags/labels for version, published-paths API for learning paths). One-time chance to reorganize differently if desired in v2. |
 
 ---
 
 ## 1. System Architecture
 
 ```
-                       Browser (Chrome) — Google SSO, signed cookie
-                                   │ HTTPS
-                       ┌───────────▼────────────┐
-                       │ AWS App Runner         │  FastAPI + HTMX/Alpine
-                       │ web + JSON API         │  Jinja2 SSR templates
-                       └─┬──────┬──────┬────────┘
-              ECS RunTask│      │SSE   │boto3
-                         │      │tail  │
-                  ┌──────▼─┐ ┌──▼─────┐ ┌▼────────────────┐
-                  │Fargate │ │RDS      │ │S3 (private)     │
-                  │run     │ │Postgres │ │artifacts/       │
-                  │worker  │ │         │ │images/ (CDN)    │
-                  └───┬────┘ └─────────┘ │cache/           │
-                      │                  └─────────────────┘
-                      ▼ OpenAI · Jira · Skilljar · S3
+                  Browser (Chrome) — Google SSO, signed cookie
+                              │ HTTPS
+                  ┌───────────▼────────────┐
+                  │ AWS App Runner         │  FastAPI + HTMX/Alpine
+                  │ web + JSON API         │  Jinja2 SSR templates
+                  └─┬──────┬──────┬────────┘
+       ECS RunTask  │      │SSE   │boto3
+                    │      │tail  │
+             ┌──────▼─┐ ┌──▼─────┐ ┌▼─────────────────────┐
+             │Fargate │ │RDS      │ │ S3 (private, KMS)    │
+             │run     │ │Postgres │ │ artifacts/           │
+             │worker  │ │         │ │ drafts/{to_ver}/...  │
+             │        │ │         │ │ skilljar-content/    │
+             └───┬────┘ └─────────┘ │ images/ (CDN)        │
+                 │                  │ cache/               │
+                 │                  └──────────────────────┘
+                 ▼ OpenAI · Jira · Skilljar · S3
+                       │
+                       └─ Skilljar = canonical content
+                          source. FME backup workflow
+                          (Skilljar → FMETraining repo)
+                          is unchanged and out of scope.
 ```
 
 - **App Runner** serves UI + JSON API. Always-on, auto-HTTPS, no VPC/ALB management. ~$25/mo idle.
 - **Fargate task per run.** API calls `boto3.client("ecs").run_task()` to launch an isolated worker. The worker is the existing `pipeline.py` adapted to read inputs from RDS/S3 and write outputs back. Pay only while running.
-- **RDS Postgres** (`db.t4g.micro`, ~$15/mo). Durable state: users, runs, locks, release history, cache index, Skilljar inventory snapshot, mapping.
-- **S3 (private, KMS-encrypted)** for artifacts + cache blobs + uploaded images. Pre-signed URLs for download. One small public-via-CloudFront prefix for lesson images that Skilljar embeds.
-- **Lesson content tree** (`2025.0/`, `2026.1/`, …) is baked into the Fargate container image. Updating the corpus = new image + redeploy.
+- **RDS Postgres** (`db.t4g.micro`, ~$15/mo). Durable state: users, runs, locks, release history, cache index, Skilljar inventory + taxonomy, lesson draft index.
+- **S3 (private, KMS-encrypted)** for artifacts, drafts, cached Skilljar content, OpenAI cache blobs, and uploaded images. Pre-signed URLs for download. One small public-via-CloudFront prefix for lesson images that Skilljar embeds.
+- **Skilljar is the canonical source of training content.** The app reads existing lesson HTML from the Skilljar REST API (cached in `s3://…/skilljar-content/{lesson_id}/{fetched_at}.html` + the `skilljar_inventory` table) rather than from a local `2025.0/` / `2026.1/` filesystem tree. There is **no EFS volume**, no git clone of FMETraining, and no service-account git push. The FME backup workflow that mirrors Skilljar → FMETraining continues to run on its own and is **out of this app's scope**.
+- **Drafts (work-in-progress next-version lessons) live in S3** under `s3://…/drafts/{to_version}/{learning_path}/{course}/{lesson_slug}/index.html`. This replaces today's `_handle_save_lesson` writing to local `2026.1/...` folders (`serve.py:428-476`). Drafts are promoted to canonical via the existing Skilljar-push flow on the Release tab.
+- **`LessonContentSource` abstraction** (new). Pipeline modules consume content via this interface, with two implementations: `SkilljarContentSource` (production: API + S3 cache) and `LocalFolderSource` (dev/legacy fallback that reads `REPO_ROOT / version / ...`). Lets us run integration tests against synthetic content without hitting Skilljar.
 - **Live log streaming.** The Fargate worker appends rows to a `run_logs` table; the API streams to the browser via SSE by tailing the table. Survives App Runner restarts; no Kinesis/CloudWatch parsing required.
+
+### Content lifecycle (read + draft + publish)
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│ Skilljar (canonical, published content)                              │
+│                                                                       │
+│   ▲ Push to Skilljar (Release tab; the only "publish" gesture)       │
+│   │                                                                   │
+│ ┌─┴─────────────────────────────────────────────────────────┐        │
+│ │ App                                                        │        │
+│ │                                                            │        │
+│ │   Read source content ◄── SkilljarContentSource ──► S3     │        │
+│ │   (for AI pipeline)        (cached, refreshable)           │        │
+│ │                                                            │        │
+│ │   Save draft ─► s3://…/drafts/{to_version}/.../index.html  │        │
+│ │   (Save to Version Folder UX, but lands in S3 not /repo)   │        │
+│ │                                                            │        │
+│ │   Push to Skilljar ─► PATCH /lessons/{id}.content_html     │        │
+│ │   (existing skilljar_release.py flow, source = drafts S3)  │        │
+│ └────────────────────────────────────────────────────────────┘        │
+│                                                                       │
+│   ▼ FME backup workflow (Skilljar API → FMETraining repo)             │
+│   independent process, not modified by this project.                  │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### Building the content taxonomy from Skilljar
+
+FMETraining's filesystem layout (`{version}/{learning_path}/{course}/{lesson}/`) doesn't map 1:1 to Skilljar's data model:
+- Version comes from a course **tag/label** (e.g., `version:2026.1`), not a directory.
+- Learning paths live under `/v1/published-paths/...`, not as attributes on courses.
+- Course titles sometimes embed the version suffix (`Connect To Data 2025.0`); this is convention, not contract.
+
+The app rebuilds the taxonomy by syncing Skilljar metadata into our DB (a new `skilljar_taxonomy` view backed by `skilljar_courses`, `skilljar_lessons`, `skilljar_published_paths`) and surfacing it in the Pipeline tab as Version → Learning Path → Course → Lesson. Run scope identifiers become `(skilljar_lesson_id, source_version, target_version)` rather than file paths.
+
+If we want to **reorganize the canonical taxonomy** (e.g., introduce a first-class "version" field on Skilljar courses instead of relying on labels), that's a separate decision and can be deferred to v2 — v1 just mirrors what's there today.
 
 ---
 
@@ -94,14 +145,39 @@ run_logs(id PK, run_id, ts, level, message)        -- append-only
 -- Job state (replaces data/update-job.json)
 jobs(id, owner FK→users, to_version, scope_json, updated_at)
 
--- Skilljar coordination
-skilljar_mapping(local_path PK, skilljar_lesson_id, skilljar_course_id,
-                 last_synced_at, _meta_json)
-skilljar_inventory(skilljar_lesson_id PK, course_id, title,
-                   content_html_hash, last_modified_remote, fetched_at)
-release_locks(skilljar_lesson_id PK, locked_by FK→users, locked_at,
-              expires_at, run_id, intent)           -- TTL ~10 min
-release_history(id PK, skilljar_lesson_id, run_id, user_id, started_at,
+-- Skilljar canonical content (synced from Skilljar API)
+skilljar_courses(skilljar_course_id PK, title, slug, version_label,
+                 raw_meta_json, fetched_at)
+skilljar_lessons(skilljar_lesson_id PK, course_id FK→skilljar_courses,
+                 title, slug, content_s3_key, content_html_hash,
+                 last_modified_remote, fetched_at)
+skilljar_published_paths(skilljar_path_id PK, title, slug,
+                         course_ids_json, fetched_at)
+                       -- learning paths; courses can appear in multiple paths
+
+-- App-level taxonomy view (built from the three tables above)
+-- Surfaces: Version → Learning Path → Course → Lesson tree
+-- Implemented as a Postgres VIEW or materialized view, refreshed on sync.
+
+-- Lesson draft store (replaces local 2026.1/.../index.html writes)
+lesson_drafts(id PK,
+              to_version,                       -- e.g. "2026.1"
+              source_skilljar_lesson_id NULLABLE,  -- null for net-new
+              path,                             -- "lp/course/lesson"
+              s3_key,                           -- s3://…/drafts/{to_version}/{path}/index.html
+              created_by FK→users,
+              updated_by FK→users,
+              created_at, updated_at,
+              run_id NULLABLE,                  -- the run that last wrote this draft
+              status)                           -- "draft" | "promoted" | "archived"
+
+-- Locks + history (key on skilljar_lesson_id for published lessons,
+-- on lesson_drafts.id for net-new lessons being authored for the first time)
+release_locks(target_id PK,                     -- composite: "lesson:<id>" or "draft:<id>"
+              locked_by FK→users, locked_at,
+              expires_at, run_id, intent)      -- TTL ~10 min
+release_history(id PK, target_id, skilljar_lesson_id NULLABLE,
+                draft_id NULLABLE, run_id, user_id, started_at,
                 finished_at, before_hash, after_hash, status,
                 conflict_warning_json NULLABLE)
 
@@ -122,19 +198,23 @@ jira_cache(filter_id PK, fetched_at, payload_s3_key, issue_count)
 s3://fme-train-prod/
   artifacts/{run_id}/{manifest|changelog|recommendations|edit-plans}.json
   reports/{run_id}.html
+  drafts/{to_version}/{learning_path}/{course}/{lesson}/index.html
+  drafts/{to_version}/{learning_path}/{course}/{lesson}/images/...
+  skilljar-content/{lesson_id}/{fetched_at}.html       -- canonical content cache
   cache/assessment_pair/{fingerprint}.json
   cache/edit_plan_lesson/{fingerprint}.json
   cache/jira_filter/{filter_id}/{fetched_at}.json
   images/{sha256}/{filename}            -- public via CloudFront, embedded in Skilljar
-  lesson-content-uploads/{run_id}/...   -- transient
 ```
 
 ### Migration of existing data
 - `artifacts/runs.json` → seed `runs` + `run_steps` (one-shot script).
 - `artifacts/*.json` and `report-*.html` → upload to `s3://…/artifacts/{run_id}/…`, write keys back to `run_steps.artifact_keys_json`.
-- `data/skilljar-mapping.json` → bulk insert into `skilljar_mapping`.
 - `inputs/jira_api_cache.json` → upload to S3, insert `jira_cache` row.
 - `data/update-job.json` → starter `jobs` row owned by `sam.walker@safe.com`.
+- **Local `2026.1/` drafts** (anything in this repo's working tree under a `20XX.X/` directory that isn't already in Skilljar): scan + upload to `s3://…/drafts/{to_version}/{path}/index.html`, insert `lesson_drafts` rows. This captures Sam's in-flight `Read Web Data` work and any other unpublished local copies.
+- **Skilljar inventory bootstrap:** initial sync of `skilljar_courses` / `skilljar_lessons` / `skilljar_published_paths` from the Skilljar API on first deploy.
+- `data/skilljar-mapping.json`: **deprecated.** It mapped local file paths → Skilljar lesson IDs to compensate for FMETraining's structure differing from Skilljar's. With Skilljar as canonical we don't need that mapping; the new `skilljar_taxonomy` view is built directly from Skilljar metadata.
 
 ---
 
@@ -194,7 +274,7 @@ fingerprint = sha256(
 |---|---|---|---|
 | `pipeline/assessment.py` | inner `_assess_pair()` call | `assessment_pair` | ~$0.0002 (gpt-4o-mini) |
 | `pipeline/edit_suggestions.py` | per-lesson OpenAI call | `edit_plan_lesson` | ~$0.03 (gpt-4o) |
-| `pipeline/manifest.py` | per-lesson HTML parse | `manifest_lesson` | trivial $$, big speed |
+| `pipeline/manifest.py` | per-lesson HTML parse (input via `LessonContentSource`) | `manifest_lesson` | trivial $$, big speed |
 | `pipeline/jira_api.py` | filter fetch (already cached locally) | `changelog_filter` | API quota |
 | `pipeline/skilljar_release.py:127` (`_s3_put`) | image upload | `s3_image_cache` (separate table) | S3 PUT + dedup |
 
@@ -207,7 +287,7 @@ fingerprint = sha256(
 **Cross-run reuse rules:**
 1. User A runs scope = {L1, L2, L3} against Jira filter F. Worker computes fingerprints, populates cache for all (lesson, issue) pairs and per-lesson edit plans.
 2. User B later runs scope = {L2, L3, L4} against same filter F. L2/L3 hit cache (zero OpenAI cost for those). L4 is a miss; worker calls OpenAI, populates cache. Total OpenAI spend ≈ ⅓ of user A's run.
-3. Lesson HTML changes (rebuilt container image with new `2026.1/.../index.html`) → input_payload_sha changes → automatic miss, fresh compute.
+3. Lesson HTML changes (Skilljar source content updated, or a new draft saved) → `input_payload_sha` changes → automatic miss, fresh compute. The cache key is content-derived, not path-derived, so moving content from FMETraining-style folders to Skilljar-fetched content doesn't churn the cache.
 
 ---
 
@@ -221,46 +301,57 @@ fingerprint = sha256(
 │  [Sync from Skilljar] (last synced 4 min ago by Sam)                  │
 │                                                                        │
 │  ☐ ▸ fme-form-basic / Connect To Data 2026.1                          │
-│      ┌────────────────────────────────────────────────────────────┐   │
-│      │ Lesson           │Local│Skilljar│Last push│Conflict│Lock   │   │
-│      │ Connect & View   │ ✓   │  ✓     │ Tara    │  ─     │ ─     │   │
-│      │ Filter Features  │ ✓   │  ✓     │ Sam 2d  │  ⚠     │ ─     │   │
-│      │ Transformer Hub  │ ✓   │  ✓     │ Sam 1h  │  ─     │🔒 Tara │   │
-│      └────────────────────────────────────────────────────────────┘   │
+│      ┌──────────────────────────────────────────────────────────┐     │
+│      │ Lesson           │Draft│Skilljar│Last push│Conflict│Lock │     │
+│      │ Connect & View   │ ✓   │  ✓     │ Tara    │  ─     │ ─   │     │
+│      │ Filter Features  │ ✓   │  ✓     │ Sam 2d  │  ⚠     │ ─   │     │
+│      │ Transformer Hub  │ ✓   │  ✓     │ Sam 1h  │  ─     │🔒Tara│     │
+│      └──────────────────────────────────────────────────────────┘     │
 │  Selected: 2 lessons    [Build Release Plan]                          │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Inventory browser
-- `POST /api/skilljar-inventory/sync` paginates `GET /lessons` and `GET /courses`, hashes each `content_html`, upserts `skilljar_inventory`. Throttled to one team-wide sync per minute.
-- Each row joins `skilljar_inventory` with `skilljar_mapping` and the latest `release_history` row to show: title, mapping status, draft/published, remote `last_modified`, last-pushed-by, conflict indicator (`current_remote_hash != after_hash`), lock status.
+- `POST /api/skilljar-inventory/sync` paginates `GET /courses`, `GET /lessons`, and `GET /v1/published-paths` from Skilljar. Upserts into `skilljar_courses`, `skilljar_lessons`, `skilljar_published_paths`. Caches each lesson's `content_html` to `s3://…/skilljar-content/{lesson_id}/{fetched_at}.html` and stores its hash in `skilljar_lessons.content_html_hash`. Throttled to one team-wide sync per minute.
+- The Release tab tree is built from these tables (Version → Learning Path → Course → Lesson) joined to `lesson_drafts` (do we have a draft for the target version?) and the latest `release_history` row (last pushed by, conflict indicator, lock status).
 - "Sync from Skilljar" timestamp + last-syncer always visible so users know their data freshness.
 
 ### Per-lesson history drawer
 - `GET /api/skilljar-lessons/{id}/history` returns the last 10 `release_history` rows joined to `users` and `runs`: who pushed, when, from which run, success/failure, conflict warnings.
 - Each row links back to the producing run page; one-line diff summary shows lines added/removed.
 
+### Save Draft → S3 (replaces local-folder writes)
+- `POST /api/drafts` body `{to_version, path, html_content}` writes `s3://…/drafts/{to_version}/{path}/index.html` and upserts `lesson_drafts`. The path is the `learning-path/course/lesson` triple from the Skilljar taxonomy, not a file system convention.
+- Image handling matches today's behavior: relative `<img src=...>` references in the HTML are resolved against `images/` (also stored in S3 alongside the draft) and rewritten to public CloudFront URLs at push time via `pipeline/skilljar_release.py`'s existing `_upload_and_rewrite_images` flow.
+- "Save to Version Folder" UX in the report becomes "Save Draft" — same button, same shape, different storage. The user gets a confirmation toast + a link to the draft on the Release tab.
+
 ### Conflict-guard pipeline (every push, every lesson)
 
 ```
 For each lesson the user wants to release:
-  1. acquire row in release_locks (skilljar_lesson_id)
+  1. resolve target_id:
+       - existing Skilljar lesson  → "lesson:<skilljar_lesson_id>"
+       - net-new lesson from draft → "draft:<lesson_drafts.id>"
+  2. acquire row in release_locks (target_id)
        - locked_by = current user, expires_at = now + 10 min
        - if held by another user: show "Tara is releasing this lesson
          (lock expires in 4 min)" — proceed disabled
-  2. fetch live lesson HTML from Skilljar (NOT from cache)
-  3. compute current_remote_hash
-  4. compare to release_history.after_hash for this lesson's last push
+  3. read draft HTML from s3://…/drafts/{to_version}/{path}/index.html
+     (this is the new content we're going to push)
+  4. fetch live lesson HTML from Skilljar via API (NOT from our content cache)
+  5. compute current_remote_hash from step 4
+  6. compare to release_history.after_hash for this lesson's last push
        - match    → proceed
        - mismatch → block; show diff modal; require two-click override:
                     [I've reviewed the diff] then [Overwrite anyway].
                     Override recorded in release_history.conflict_warning_json
-  5. PATCH lesson via existing skilljar_release._patch_lesson_html
-  6. fetch lesson back, compute after_hash
-  7. INSERT into release_history (user, run, before/after hash, status,
+  7. PATCH lesson via existing skilljar_release._patch_lesson_html with draft HTML
+  8. fetch lesson back, compute after_hash
+  9. INSERT into release_history (user, run, before/after hash, status,
      conflict_warning_json if any)
-  8. UPDATE skilljar_inventory.content_html_hash
-  9. release lock
+ 10. UPDATE skilljar_lessons.content_html_hash
+ 11. UPDATE lesson_drafts.status = 'promoted'
+ 12. release lock
 ```
 
 ### Locks UX
@@ -270,14 +361,14 @@ For each lesson the user wants to release:
 - HTMX SSE subscription on the Release page propagates lock changes to other open browsers in near-real-time.
 
 ### Bulk actions + filters + manifest summary
-- Filters: course, learning path, version, mapping status, conflict status, lock status, last-pushed-by.
-- Bulk select via checkbox tree; "Build Release Plan" runs the existing `build_release_plan()` (`pipeline/skilljar_release.py:scan_saved_lessons`) against the multi-selection.
+- Filters: course, learning path, version, draft status, conflict status, lock status, last-pushed-by.
+- Bulk select via checkbox tree; "Build Release Plan" runs `build_release_plan()` (refactored from `pipeline/skilljar_release.py:scan_saved_lessons`, now reading from `lesson_drafts` + `skilljar_taxonomy` instead of scanning the local filesystem).
 - Manifest summary panel preserved from today's UX: "X lessons will be patched, Y new lessons will be created, Z courses archived, A images uploaded." Dry-run preview before final confirm.
 
-### Migration from `data/skilljar-mapping.json` → RDS
-- One-shot script reads JSON, inserts into `skilljar_mapping`, validates row count.
-- All read sites in `pipeline/skilljar_push.py:515-565` switch to a `SkilljarMappingRepo` class with row-level updates (eliminates the read-modify-write race in `pipeline/skilljar_release.py:686-690`).
-- The legacy JSON file becomes export-only (a download endpoint emits the current mapping if anyone needs it).
+### Replacing `data/skilljar-mapping.json`
+- That JSON file mapped local file paths → Skilljar lesson IDs as a workaround for FMETraining's structure differing from Skilljar's. With Skilljar as canonical and the `skilljar_taxonomy` view replacing local-path-based lookups, the mapping is **no longer needed**.
+- All read sites in `pipeline/skilljar_push.py:515-565` and `pipeline/skilljar_release.py:686-690` rewire to use draft IDs / Skilljar lesson IDs directly. The read-modify-write race on the JSON file disappears entirely (no JSON file to race on).
+- One-time migration: scan `data/skilljar-mapping.json` for any draft-only entries (where the mapping value is `to_version`-prefixed) and seed those as `lesson_drafts` rows tagged `status = 'draft'`. Already-published mappings are redundant with the Skilljar taxonomy sync.
 
 ### Image dedup
 - Before `_s3_put` in `pipeline/skilljar_release.py:127`, compute SHA-256 of file bytes, look up `s3_image_cache`.
@@ -347,14 +438,17 @@ infra/
 
 Sequential rollout: Phase 0 → Phase 1 → Phase 2 → optional Phase 3.
 
-### Phase 0 — Foundation *(~3–4 weeks, blocks everything else)*
-*Feature parity in the new architecture. No new user-facing features.*
+### Phase 0 — Foundation *(~4–5 weeks, blocks everything else)*
+*Feature parity in the new architecture. No new user-facing features. Slightly longer than the prior estimate to absorb the Skilljar-as-canonical work.*
 - FastAPI rewrite, Google SSO, Postgres schema + Alembic, S3 artifact storage, Fargate worker mode, SSE log streaming.
 - Run scheduler with concurrency cap (2 team-wide) + cost ceiling ($50/run).
-- Migration scripts: `runs.json`, `artifacts/*`, `skilljar-mapping.json`, `update-job.json`, `jira_api_cache.json`.
+- **`LessonContentSource` abstraction + `SkilljarContentSource` + `LocalFolderSource`** — pipeline modules consume content via this interface.
+- **Skilljar taxonomy sync** — `skilljar_courses`, `skilljar_lessons`, `skilljar_published_paths` tables + sync endpoint. Pipeline tab tree built from these.
+- **Drafts S3 store** — `lesson_drafts` table + `/api/drafts` endpoints replacing `_handle_save_lesson`.
+- Migration scripts: `runs.json`, `artifacts/*`, `update-job.json`, `jira_api_cache.json`, **local `2026.1/` drafts → drafts S3 + `lesson_drafts` rows**.
 - CDK stacks for staging + production. GitHub Actions PR + main + manual prod-deploy workflows.
 - Initial pytest suite covering pipeline modules.
-- **Cutover gate:** dry-run staging for ~1 week, run a real release against staging-mapped Skilljar lessons, then point team at production. Local launcher retired.
+- **Cutover gate:** dry-run staging for ~1 week, run a real release against staging Skilljar lessons (via the drafts→push flow end-to-end), then point team at production. Local launcher retired.
 
 ### Phase 1 — Shared cache *(~2 weeks)*
 - `content_cache` + `s3_image_cache` tables, S3 cache layout under `cache/<kind>/<fingerprint>.json`.
@@ -486,6 +580,7 @@ Sequential rollout: Phase 0 → Phase 1 → Phase 2 → optional Phase 3.
 - No formal DPA with OpenAI (default API ToS).
 - No data-residency guarantee beyond the chosen AWS region.
 - No PII redaction layer before sending data to OpenAI (lesson HTML and Jira summaries pass through unmodified).
+- **No write access to the FMETraining git repo from this app.** Skilljar is the app's canonical content source; FMETraining is mirrored from Skilljar by an existing FME workflow that is independent of this project. No service-account git keys for FMETraining are needed.
 
 ---
 
@@ -498,8 +593,10 @@ Sequential rollout: Phase 0 → Phase 1 → Phase 2 → optional Phase 3.
 4. **Cost ceiling.** Set `MAX_RUN_USD=0.10` in staging, start a run that would exceed it. Confirm worker aborts cleanly with status `aborted_cost_ceiling`, partial artifacts retained, error message visible in UI.
 5. **Cancellation.** Start a long run; click Cancel; confirm worker exits within ~30s with status `cancelled`.
 6. **Resume.** Cancel a run mid-Step-6; click Resume; confirm only the unfinished lesson set is processed and final artifacts are complete.
-7. **Real Skilljar release on staging.** Pick one staging-mapped lesson; run the full Release flow (lock → hash check → PATCH → history row). Confirm Skilljar reflects the change, `release_history` has the new row, and the lock is released.
-8. **Migration script idempotency.** Run it twice on a copy of production data; confirm second run is a no-op and no rows are duplicated.
+7. **Skilljar taxonomy sync.** Trigger `POST /api/skilljar-inventory/sync`. Confirm `skilljar_courses`, `skilljar_lessons`, `skilljar_published_paths` populate. Pipeline tab tree renders Version → Learning Path → Course → Lesson and matches what the live Skilljar admin shows.
+8. **Save Draft → S3.** Edit a lesson, click Save Draft, confirm `s3://…/drafts/{to_version}/.../index.html` is written and a `lesson_drafts` row exists with the user as `created_by`.
+9. **Real Skilljar release on staging.** Pick one Skilljar lesson with a staged draft; run the full Release flow (lock → fetch live Skilljar HTML → hash check → PATCH from draft → history row). Confirm Skilljar reflects the change, `release_history` has the new row, the draft is marked `promoted`, and the lock is released.
+10. **Migration script idempotency.** Run each migration twice on a copy of production data; confirm second run is a no-op and no rows are duplicated.
 
 ### Phase 1 verification
 - Run the same 1-lesson scope twice. First run: cache misses + OpenAI calls + populates `content_cache`. Second run: cache hits, zero OpenAI calls, cost meter ≈ $0.
