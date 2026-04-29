@@ -237,6 +237,7 @@ span.tc-orig-context {{ color: inherit; }}
 .alt-text-note-accepted {{ background: #f0fdf4; border-left-color: #16a34a; }}
 .alt-text-note-accepted strong {{ color: #15803d; }}
 .alt-text-note-rejected {{ background: #f9fafb; border-left-color: #9ca3af; opacity: 0.55; }}
+.le-sticky-bars {{ position: sticky; top: 0; z-index: 400; background: #fff; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06); }}
 .edit-toolbar {{ display: flex; gap: 8px; align-items: center; padding: 8px 24px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }}
 .edit-toolbar button {{ padding: 5px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.82rem; }}
 .edit-toolbar button:disabled {{ opacity: 0.4; cursor: not-allowed; }}
@@ -339,22 +340,24 @@ span.tc-orig-context {{ color: inherit; }}
     <label>Lesson: <select id="le-lesson-filter"><option value="">-- Select a lesson --</option></select></label>
     <span class="change-count" id="le-change-count"></span>
   </div>
-  <div class="edit-toolbar" id="le-toolbar" style="display:none">
-    <button onclick="leUndo()" id="le-undo-btn" disabled>← Undo</button>
-    <button onclick="leRedo()" id="le-redo-btn" disabled>Redo →</button>
-    <button class="save-btn" onclick="leSave()" id="le-save-btn">Save to Version Folder</button>
+  <div class="le-sticky-bars">
+    <div class="edit-toolbar" id="le-toolbar" style="display:none">
+      <button onclick="leUndo()" id="le-undo-btn" disabled>← Undo</button>
+      <button onclick="leRedo()" id="le-redo-btn" disabled>Redo →</button>
+      <button class="save-btn" onclick="leSave()" id="le-save-btn">Save to Version Folder</button>
 
-  </div>
-  <div class="fmt-toolbar" id="le-fmt-toolbar">
-    <button onclick="leFormat('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
-    <button onclick="leFormat('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
-    <span class="fmt-sep"></span>
-    <button onclick="leFormatBlock('h1')" title="Heading 1">H1</button>
-    <button onclick="leFormatBlock('h2')" title="Heading 2">H2</button>
-    <button onclick="leFormatBlock('h3')" title="Heading 3">H3</button>
-    <button onclick="leFormatBlock('h4')" title="Heading 4">H4</button>
-    <span class="fmt-sep"></span>
-    <button onclick="leInsertLink()" title="Insert / edit link">Link</button>
+    </div>
+    <div class="fmt-toolbar" id="le-fmt-toolbar">
+      <button onclick="leFormat('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+      <button onclick="leFormat('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+      <span class="fmt-sep"></span>
+      <button onclick="leFormatBlock('h1')" title="Heading 1">H1</button>
+      <button onclick="leFormatBlock('h2')" title="Heading 2">H2</button>
+      <button onclick="leFormatBlock('h3')" title="Heading 3">H3</button>
+      <button onclick="leFormatBlock('h4')" title="Heading 4">H4</button>
+      <span class="fmt-sep"></span>
+      <button onclick="leInsertLink()" title="Insert / edit link">Link</button>
+    </div>
   </div>
   <div class="save-banner" id="le-save-banner"></div>
   <div id="le-lesson-body" class="lesson-edit-body">
