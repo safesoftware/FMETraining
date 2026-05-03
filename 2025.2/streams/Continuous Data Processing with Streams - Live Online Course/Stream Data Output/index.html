@@ -1,0 +1,111 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you will be able to:</p>
+<ul>
+<li>Reduce record counts of stream data for efficient storage and notifications.&nbsp;</li>
+<li>Write stream data to a database.&nbsp;</li>
+<li>Send alerts for stream data records that meet specific requirements.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-starting-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\Streams\streams-starting-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-complete-workspace.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\Streams\streams-complete-workspace.fmw</li>
+</ul>
+<h2>Reducing Record Counts</h2>
+<p>Once you receive and process your stream data, the following steps are likely to involve sending an alert, storing the data, or both. When using streaming workspaces, you may consider grouping or aggregating data to prevent a high volume of alerts from being sent or records from being stored.</p>
+<p><img src="images/1767649685325.png" alt="" width="1108" height="286" /></p>
+<p>For example, the data stream we've been working with sends approximately 600 messages per second, which is an extremely high volume for sending alerts for each record. Even filtering by attribute, such as only for trucks in our fleet, only reduces those counts by about half, and 300 records per second is still extremely high. The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/timewindower.htm?" target="_blank" rel="noopener">TimeWindower</a> transformer may help group your data into windows at regular time intervals rather than as the workspace processes records. However, you will still need to reduce your record counts. We used a Sorter and Sampler to do this by sampling the last record for each vehicle within each time window.&nbsp;</p>
+<p><img src="images/1767636976502.jpg" alt="" /></p>
+<p>Another option is to summarize or aggregate your data, using transformers such as the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/statisticscalculator.htm?" target="_blank" rel="noopener">StatisticsCalculator</a> or <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/aggregator.htm?" target="_blank" rel="noopener">Aggregator</a>. These transformers group records, resulting in a "many in, few out" transformation.&nbsp;&nbsp;</p>
+<p><img src="images/1767652084807.jpg" alt="" /></p>
+<p>Once you have summarized or aggregated the data, you can write it out or send an alert.&nbsp;</p>
+<p><img src="images/1767649636665.png" alt="" width="1100" height="310" /></p>
+<h2>Sending Notifications</h2>
+<p>Once you reduce your stream data record count, you can send alerts and notifications for the records or scenarios of interest. The most common notification is sending an email with the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pkg-emailer/emailer-pkg.htm?" target="_blank" rel="noopener">Emailer</a> transformer. The Emailer requires you to connect to an SMTP email server, such as Gmail or Microsoft Outlook, using credentials or a web connection. You may also customize the email subject and body to include data from the stream.&nbsp;</p>
+<p><img src="images/1767645397263.jpg" alt="" /></p>
+<p>FME also has specific connectors, such as the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/slackconnector.htm?" target="_blank" rel="noopener">SlackConnector</a>, that send messages or alerts to other applications. If FME does not have a connector for your application, you may also send notifications through any API using an <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/httpcaller.htm?" target="_blank" rel="noopener">HTTPCaller </a>or <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/openapicaller.htm?">OpenAPICaller</a>.&nbsp;</p>
+<h2>Writing Stream Data</h2>
+<p>Due to the high volumes of records, writing and storing stream data commonly uses databases.</p>
+<p>When using writers,&nbsp;<span style="margin: 0px; padding: 0px;">it is essential to be aware of&nbsp;<strong>the Bulk Insert</strong>&nbsp;and&nbsp;<strong>Features per Transaction</strong> parameters to process high volumes</span> of data efficiently. Bulk Insert uses the SQL COPY command instead of SQL INSERT and is more performant, especially when writing a large number of records per second. Features per Transaction is the number of records FME places in each transaction before committing them to the database. There's a balance between keeping the database updated and the number of transactions to the database that you must ensure, based on your data volume. If the number of features per transaction is too low, FME will continually submit records, potentially overwhelming the database with excessive transactions. However, if the number of features per transaction is too high, FME will not update the database frequently, and the database may become outdated as a result.&nbsp;</p>
+<p>The FeatureWriter performs the same as writers, except you may also make use of the Group By option to write records when a group changes, such as the time window. Since the FeatureWriter is a feature-holding transformer, records will not be released through its output ports in stream mode unless Group By is enabled and set to "When Group Changes (Advanced)". If you need to write your stream data to a file, use the FeatureWriter instead of a file-based writer alongside a TimeWindower to group the data into windows.&nbsp;</p>
+<p>Lastly, FME has some transformers that write records while running in stream mode. These are:&nbsp;</p>
+<ul>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pkg-amazonathenaconnector/amazonathenaconnector-pkg.htm?">AmazonAthenaConnector</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pkg-azurequeuestorageconnector/azurequeuestorageconnector-pkg.htm?" target="_blank" rel="noopener">AzureQueueStorageConnector</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlexecutor.htm?" target="_blank" rel="noopener">SQLExecutor</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pkg-googlebigqueryconnector/googlebigqueryconnector-pkg.htm?" target="_blank" rel="noopener">GoogleBigQueryConnector</a></li>
+</ul>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 91.688px; border-style: none;">
+<tbody>
+<tr style="height: 91.688px;">
+<td style="width: 7.22156%; height: 91.688px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 91.688px;">
+<p><span style="font-size: 12pt;">For more information on optimizing performance while writing to databases in FME, please check out the <a href="https://academy.safe.com/optimize-workspace-performance" target="_blank" rel="noopener">Optimize Workspace Performance course</a>.&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2>Exercise (5 minutes)</h2>
+<p>So far, you've helped Jennifer identify trucks that are outside of the City of Vancouver boundary in one-minute windows. Next, you will configure an email to send for each truck that is outside the boundary in the one-minute window. In reality, one-minute windows are very short, sending notifications every minute; however, for training purposes, we will continue to use one-minute intervals to limit the wait time for receiving alerts.&nbsp;</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Configure an email alert.</li>
+<li>Test run the workspace to receive an email.&nbsp;</li>
+</ul>
+<p><strong>Continue with the same workspace open in FME Workbench from the previous exercise.&nbsp;</strong></p>
+<h3>1) Enable Send Alert Bookmark</h3>
+<p><strong>Expand</strong> and <strong>enable</strong> all objects in the <strong>Send Alert bookmark</strong>. Connect the Sampler's Sampled port to the Emailer.&nbsp;</p>
+<p><strong><img src="images/1766431328335.jpg" alt="" /></strong></p>
+<h3>2) Configure Emailer</h3>
+<p>Open the <strong>Emailer</strong> parameters. We have already configured the connection settings for you. <strong>Enter your email address</strong> as the email to send to.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766431567069.jpg" alt="" /></strong></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>All other Emailer parameters should be configured for you. If they are not, enter the following parameters:</p>
+<ul>
+<li>Email Service: Generic SMTP</li>
+<li>Host: smtp.gmail.com</li>
+<li>Port: 465</li>
+<li>Encryption: SSL</li>
+<li>Timeout: 60</li>
+<li>Sender Authentication: Enabled</li>
+<li>Sender's Username: training.fmeflow@gmail.com</li>
+<li>Sender's Password: wjdmzjdkujkzmplw</li>
+<li>From: training.fmeflow@gmail.com</li>
+<li>To: <em style="font-family: inherit; font-size: 1em; color: #222222;">&lt;Enter your email address&gt;</em></li>
+<li>Subject: Vehicle @Value(vehicle_id) outside Vancouver</li>
+<li>Body: Truck @Value(vehicle_id) was located outside Vancouver at @Value(timestamp)</li>
+</ul>
+</blockquote>
+<h3>3) Test the Email Alert</h3>
+<p><strong>Run</strong> the workspace again using Stream mode.&nbsp;</p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 91.688px; border-style: none;">
+<tbody>
+<tr style="height: 91.688px;">
+<td style="width: 7.22156%; height: 91.688px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 91.688px;">
+<p><span style="font-size: 12pt;">Remember that the TimeWindower groups data into one-minute windows and the Sorter sorts the data in each window. To receive records from the Sorter to downstream transformers, you must let the workspace run for at least one minute to complete the first time window.&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Once a record reaches the Emailer and passes through the Sent port, <strong>stop </strong>the workspace translation.&nbsp;</p>
+<p><strong><img src="images/1766433792226.jpg" alt="" /></strong></p>
+<p>Check your email account for the email.&nbsp;</p>
+<p><strong><img src="images/1766434226319.jpg" alt="" width="757" height="340" /></strong></p>
+<p>Your workspace meets Jennifer's needs. Next, you will deploy it as a stream on FME Flow to continuously monitor and process the data.&nbsp;</p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 91.688px; border-style: none;">
+<tbody>
+<tr style="height: 91.688px;">
+<td style="width: 7.22156%; height: 91.688px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 91.688px;">
+<p><span style="font-size: 12pt;">The data stream for the City of Vancouver's vehicle fleet is a simulated stream for training, meaning the data is not live and does not occur in real-time. The dates and timestamps you receive for the data will not match the current date and time.&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>

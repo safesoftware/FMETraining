@@ -1,0 +1,42 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you will be able to:</p>
+<ul>
+<li>Filter stream data based on attribute values.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-starting-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\Streams\streams-starting-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-complete-workspace.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\Streams\streams-complete-workspace.fmw</li>
+</ul>
+<h2>Filter by Attribute</h2>
+<p>Stream data usually consists of high volumes that arrive at high velocities. To analyze the data, you likely need to filter the data to include only the records that are actually of interest. The easiest method of filtering stream data is to filter by attribute.&nbsp;</p>
+<p><img src="images/1769118587716.png" alt="Streams&amp;#32;Diagrams&amp;#32;Rebranded&amp;#32;-&amp;#32;Filtering&amp;#32;-&amp;#32;Dicard&amp;#32;Based&amp;#32;upon&amp;#32;Attributes" width="883" height="228" /></p>
+<p>To filter by attribute, you usually test each data record against a condition. If a data record does not meet the specified condition, the transformer routes it to an alternate port. Some standard transformers that you may use to filter stream data by attribute are:</p>
+<ul>
+<li>Tester</li>
+<li>TestFilter</li>
+<li>AttributeFilter</li>
+<li>AttributeRangeFilter</li>
+</ul>
+<p>Ultimately, filtering stream data by attribute works the same as filtering static data by attribute. The only difference is that, as a stream, the workspace is always running and actively filtering the data as it arrives.&nbsp;</p>
+<h2>Exercise (5 minutes)</h2>
+<p>In the last exercise, you connected to the stream of City of Vancouver fleet GPS locations using a KafkaConnector. Jennifer already extracted the JSON into attributes from the data stream and created geometry for the vehicle locations. Now, Jennifer only needs to process and send alerts for trucks in the fleet.&nbsp;</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Add a Tester transformer to filter the data for trucks.</li>
+</ul>
+<p><strong>Continue with the same workspace open in FME Workbench from the previous exercise.&nbsp;</strong></p>
+<h3>1) Add a Tester</h3>
+<p>Add a<strong> Tester</strong> and connect it to the Reprojector.&nbsp;</p>
+<p><strong><img src="images/1766093997274.jpg" alt="" /></strong></p>
+<p>Open the Tester properties. For <strong>Left Value, set the Attribute Value vehicle_type</strong>. The Operator should automatically populate to =.</p>
+<p><strong><img src="images/1766158064397.jpg" alt="" width="666" height="443" /></strong></p>
+<p>Then, <strong>assign the Right Value to trucks</strong> from the Cached Values.&nbsp;</p>
+<p><strong><img src="images/1766158088987.jpg" alt="" width="906" height="441" /></strong></p>
+<h3>2) Run to the Tester</h3>
+<p><strong>Run</strong> the workspace to the Tester. Since you have cached data in the Reprojector, you may <strong>use the Run to This </strong>function for the Tester to run the cached data through the Tester and generate its caches.&nbsp;</p>
+<p><strong><img src="images/1766158432822.jpg" alt="" /></strong></p>
+<h3>3) Bookmark the Tester</h3>
+<p><strong>Add a bookmark</strong> or annotation for the Tester. As we continue to build our workspace in the following lessons, it is best to document our progress at each step. If you or someone else returns to your workspace, the annotations will tell them the function of each part.&nbsp;</p>
+<p><strong><img src="images/1766158536084.jpg" alt="" /></strong></p>
+<p>The records that pass through the Passed port are trucks. Due to the nature of streaming data, the data counts will differ between your workspace and the example shown here.&nbsp;</p>

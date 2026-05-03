@@ -26,3 +26,31 @@
   }
 </script>
 </p>
+<h2>Leave Us Feedback on This Course</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined' && skilljarUser.id) 
+                  ? skilljarUser.id : 'unknown';
+
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson && skilljarCourse.lesson.id) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/BMX33CJ'
+                    + '?user_id=' + encodeURIComponent(userId)
+                    + '&lesson_id=' + encodeURIComponent(lessonId);
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

@@ -1,0 +1,133 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you will be able to:</p>
+<ul>
+<li>Deploy a streaming workspace on FME Flow.&nbsp;</li>
+<li>Start and stop a Stream on FME Flow.&nbsp;</li>
+<li>Assign an engine to a Stream to keep the workspace running continuously.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-starting-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\Streams\streams-starting-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-complete-workspace.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\Streams\streams-complete-workspace.fmw</li>
+</ul>
+<h2>Creating a Stream</h2>
+<p>Once you publish your workspace to FME Flow, you may create a Stream that runs continuously to process the data. For your workspace to work successfully as a Stream, it must use a transformer in Stream mode that connects to the data stream source.&nbsp;</p>
+<p>To create a Stream, FME Flow presents a simple form that you fill out. You would provide a name and an optional description, then select the workspace you want to use.&nbsp;</p>
+<p><img src="images/1766521916602.jpg" alt="" /></p>
+<p>You may choose to enable Log Debug mode to enable additional logging for troubleshooting. There is a performance drawback, so this should only be used when testing your stream, not when running in production.&nbsp;</p>
+<p>You can also enable Remote Stream and select the Remote Engine Service you would like to dedicate to your stream. <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Remote-Engines-Services.htm" target="_blank" rel="noopener">Remote Engine Services</a> are specialized FME Flow installations that allow you to run workspaces on engines in close proximity to your data, such as on other servers, cloud applications, or outside of your network.&nbsp;</p>
+<p><img src="images/1766522073289.jpg" alt="" /></p>
+<p>Once you create the stream, it will immediately start in the running state. However, the workspace will not begin processing as a job until you assign an engine.&nbsp;</p>
+<h2>Assign an Engine to a Stream</h2>
+<p>The Assigned Engines section lists the FME Flow Engines assigned to continuously run your stream workspace. If you do not have an engine assigned to the stream, clicking Manage opens another window to select one.&nbsp;</p>
+<p><img src="images/1766524147650.jpg" alt="" /></p>
+<p>A window will appear, allowing you to select the engine to assign to your stream. This engine will only run this stream and will not be available for use in running other jobs on your FME Flow.&nbsp;</p>
+<p><img src="images/1766524230746.jpg" alt="" /></p>
+<p>If your FME Flow user account does not have permissions to access and manage engines, you will not see the Manage button; instead, you will see an error message.&nbsp;</p>
+<p><img src="images/1766524436026.jpg" alt="" /></p>
+<p>You will need to contact your FME Flow administrator to either grant you the 'Manage Queue Control' and 'Manage Licensing &amp; Engines' permissions or assign an engine to your stream for you.&nbsp;</p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 73.6875px; border-style: none;">
+<tbody>
+<tr style="height: 73.6875px;">
+<td style="width: 7.22156%; height: 73.6875px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 73.6875px;">
+<p>You can scale processing throughput by assigning multiple engines to the Stream. The engines run the same job simultaneously. The number of jobs a stream runs is equal to the number of engines assigned to the stream. For more information on how multiple engines process stream data, see <a href="https://support.safe.com/hc/en-us/articles/25407392899981-Windowing-Data-Streams-in-FME#h_01HWBN2RZPJT4FCMAHJ2JC9NJ5" target="_blank" rel="noopener">Windowing Across Multiple FME Engines</a>.&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2>Stream Jobs</h2>
+<p>Once you assign an engine to your stream, it will begin running your workspace, creating a job and a log for the stream. You may have to refresh the page to see the job information on the stream page.&nbsp;</p>
+<p><img src="images/1766524750848.jpg" alt="" /></p>
+<p>Because the engine continuously processes the workspace, the job will always appear as running until you manually stop the stream. You may click on the job to open the job log and see the detailed log information for the stream.</p>
+<p><img src="images/1766524931079.jpg" alt="" /></p>
+<h2>Stopping and Starting a Stream</h2>
+<p>To stop your stream, click Stop on the stream page.&nbsp;</p>
+<p><img src="images/1766525073205.jpg" alt="" /></p>
+<p>It's essential to note that once you stop your stream, the engine assigned to it remains dedicated and is not available to run other jobs in your FME Flow. To free the engine, you must use the Manage button to unassign the engine from the stream.&nbsp;</p>
+<p><img src="images/1766525166762.jpg" alt="" /></p>
+<p>To start your stream again, click Start. Remember that the stream needs an assigned engine to run the workspace successfully.&nbsp;</p>
+<p><img src="images/1766525333956.jpg" alt="" /></p>
+<h2>Exercise (10 minutes)</h2>
+<p>So far, you've helped Jennifer identify trucks that are outside of the City of Vancouver boundary and send alerts for those vehicles every minute. Next, you will deploy the workspace on FME Flow as a Stream to run continuously to monitor the fleet traffic.&nbsp;</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Publish your workspace to FME Flow.&nbsp;</li>
+<li>Deploy your workspace as a Stream on FME Flow.&nbsp;</li>
+<li>Assign an engine to your Stream.&nbsp;</li>
+</ul>
+<p><strong>Continue with the same workspace open in FME Workbench from the previous exercise.&nbsp;</strong></p>
+<h3>1) Publish to FME Flow</h3>
+<p>Click <strong>Publish</strong> to publish your workspace to FME Flow.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766434781753.jpg" alt="" /></strong></p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 136.699px; border-style: none;">
+<tbody>
+<tr style="height: 136.699px;">
+<td style="width: 7.22156%; height: 136.699px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 136.699px;">
+<p>The FME Flow web connection should be created for you. If not, create a web connection with the following parameters:</p>
+<ul>
+<li>Web Service: FME Flow</li>
+<li>Connection Name: Training</li>
+<li>FME Flow URL: http://localhost</li>
+<li>Authentication: Basic</li>
+<li>User Name: admin</li>
+<li>Password: FMElearnings</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Select the <strong>Training repository</strong>. Create it from New... if you need to. <strong>Rename your workspace to CoV-fleet-stream.fmw </strong>or something similar and click Next.&nbsp;</p>
+<p><strong><img src="images/1766435542383.jpg" alt="" /></strong></p>
+<p>The workspace uses an Apache Kafka web connection to connect to the data stream. <strong>Select the connection</strong> to ensure it publishes to FME Flow along with the workspace.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766435779872.jpg" alt="" /></strong></p>
+<p>Next, <strong>select the KafkaConnector and Emailer packages</strong> that you also need to publish to FME Flow. Click Next.&nbsp;</p>
+<p><strong><img src="images/1766437531473.jpg" alt="" /></strong></p>
+<p>Lastly, register the workspace with the <strong>Job Submitter service </strong>and click <strong>Publish</strong>.</p>
+<p><strong><img src="images/1766437568914.jpg" alt="" /></strong></p>
+<h3>2) Create a Stream</h3>
+<p>Navigate to FME Flow at http://localhost/fmeserver in the web browser. Firefox should already be open to the FME Flow login page on your lab. <strong>L</strong><strong>og in </strong>to FME Flow.</p>
+<p><img src="images/1766439464711.jpg" alt="" width="336" height="283" /></p>
+<p>From the left side menu, <strong>open Streams</strong> and click <strong>Create</strong>.&nbsp;</p>
+<p><strong><img src="images/1766440339732.jpg" alt="" width="1663" height="534" /></strong></p>
+<p><strong>Name your stream&nbsp;</strong>and scroll down.&nbsp;</p>
+<p><strong><img src="images/1766440441329.jpg" alt="" /></strong></p>
+<p>In the Workspace section, <strong>select the Training repository</strong> and <strong>the workspace you just published</strong> to FME Flow.&nbsp;</p>
+<p><strong><img src="images/1766440523421.jpg" alt="" /></strong></p>
+<p>Click <strong>Create</strong>.&nbsp;</p>
+<h3>3) Manage Assigned Engines</h3>
+<p>Scroll down to<strong> Assigned Engines</strong> and click <strong>Manage</strong>.</p>
+<p><strong><img src="images/1766440699384.jpg" alt="" /></strong></p>
+<p>Use the Engines drop-down to <strong>select an engine</strong> to assign to the Stream. Click <strong>Save</strong>.&nbsp;</p>
+<p><strong><img src="images/1766440800936.jpg" alt="" /></strong></p>
+<p>FME Flow assigns the engine to the Stream. Scroll back to the top and <strong>refresh the Stream</strong>.</p>
+<p><strong><img src="images/1766440967280.jpg" alt="" /></strong></p>
+<p>Once the page refreshes, you'll see the running job for the Stream under Jobs.&nbsp;</p>
+<p><strong><img src="images/1766441498595.jpg" alt="" /></strong></p>
+<h3>4) Check Email</h3>
+<p>After a minute, <strong>check your email</strong> for alerts of vehicles outside Vancouver.&nbsp;</p>
+<p><strong><img src="images/1766441708033.jpg" alt="" width="867" height="292" /></strong></p>
+<h3>5) Stop Stream</h3>
+<p><strong>Stop </strong>your stream.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766442120746.jpg" alt="" /></strong></p>
+<p>In a production environment, you will leave your Stream running. In training, we recommend stopping your recently created Stream to minimize the emails you will receive every minute for trucks outside of the City of Vancouver boundary.&nbsp;</p>
+<p><img src="images/1766442145847.jpg" alt="" /></p>
+<h2>Additional Learning Resources</h2>
+<ul>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407472101005-FME-and-Stream-Processing" target="_blank" rel="noopener">FME and Stream Processing</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407543101197-Introduction-to-Stream-Processing-in-FME" target="_blank" rel="noopener">Introduction to Stream Processing in FME</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Streams.htm" target="_blank" rel="noopener">Streams documentation</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407771021581-Working-with-Real-Time-Data-and-FME" target="_blank" rel="noopener">Working with Real-Time Data and FME</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407408057229-FME-Form-Tips-for-Working-with-Continuous-Data-Streams" target="_blank" rel="noopener">FME Form Tips for Working with Continuous Data Streams</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407769786381-Detecting-Incidents-in-Unbounded-Data-Streams" target="_blank" rel="noopener">Detecting Incidents in Unbounded Data Streams</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407586101389-Filtering-Unbounded-Data-Streams" target="_blank" rel="noopener">Filter Unbounded Data Streams</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407392899981-Windowing-Data-Streams-in-FME" target="_blank" rel="noopener">Windowing Data Streams in FME</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407435250061-Spatial-Analysis-on-Unbounded-Data-Streams" target="_blank" rel="noopener">Spatial Analysis on Unbounded Data Streams</a></li>
+<li><a href="Writing%20to%20Databases%20when%20Running%20in%20Stream%20Mode" target="_blank" rel="noopener">Writing to Databases when Running in Stream Mode</a></li>
+<li><a href="https://fme.safe.com/webinars/powering-real-time-decisions-with-continuous-data-streams/" target="_blank" rel="noopener">Webinar: Powering Real-Time Decisions with Continuous Data Streams</a></li>
+</ul>

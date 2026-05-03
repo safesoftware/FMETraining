@@ -1,0 +1,184 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you will be able to:</p>
+<ul>
+<li>Identify various streaming data sources.&nbsp;</li>
+<li>Use transformers with Stream mode.&nbsp;</li>
+<li>Connect to a stream using a KafkaConnector.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-starting-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\Streams\streams-starting-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-complete-workspace.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\Streams\streams-complete-workspace.fmw</li>
+</ul>
+<h2>Continuous Data Sources</h2>
+<p>Stream data is continuous and unbounded, meaning that the streaming data source outputs data continuously and rarely has a discrete start and end point. Streaming data sources are likely different from the common data sources you are already working with in FME.&nbsp;</p>
+<p>Some common stream data sources include:</p>
+<table style="border-collapse: collapse; width: 68.924%;" border="1">
+<tbody>
+<tr>
+<td style="width: 33.3678%;">
+<h3>Internet of Things</h3>
+</td>
+<td style="width: 33.3678%;">
+<h3>Business Applications</h3>
+</td>
+<td style="width: 33.2846%;">
+<h3>Digital Information</h3>
+</td>
+</tr>
+<tr>
+<td style="width: 33.3678%;">
+<ul>
+<li>GPS sensors</li>
+<li>Telemetry SCADA</li>
+<li>Radio-frequency identification</li>
+<li>Temperature sensors</li>
+<li>Machine logs</li>
+</ul>
+</td>
+<td style="width: 33.3678%;">
+<ul>
+<li>Customer orders</li>
+<li>Airline reservations</li>
+<li>Insurance claims</li>
+<li>Bank transactions</li>
+<li>Telco call detail records</li>
+</ul>
+</td>
+<td style="width: 33.2846%;">
+<ul>
+<li>Customer call logs</li>
+<li>News and weather feeds</li>
+<li>IT network logs</li>
+<li>Market data</li>
+<li>Email</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>FME Flow Streams processes data from these sources at very high velocities - millions of records per second! FME must connect to the data source continuously and be able to receive and process the data immediately. In a typical streaming workflow, FME connects to an intermediate WebSocket or message broker that gets the data directly from the data source.&nbsp;</p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 99.694px; border-style: none;">
+<tbody>
+<tr style="height: 99.694px;">
+<td style="width: 7.22156%; height: 99.694px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 99.694px;">
+<p><strong>WebSocket:&nbsp;</strong>A protocol implemented on top of HTTP that allows for bidirectional, browser-based client-server communication.</p>
+<p><strong>Message Broker:&nbsp;</strong>Intermediary software that translates messages between sending and receiving protocols.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Typically, FME connects to WebSockets and message brokers through Connector transformers. These transformers must be capable of running in <strong>Stream mode</strong>. As of 2025, FME supports connecting to these WebSockets and brokers:&nbsp;</p>
+<p><img src="images/1765992144202.jpg" alt="" width="1222" height="856" /></p>
+<h2>Stream Mode</h2>
+<p>For a workspace to process streaming data, you must set the Connector transformer to Stream mode. In Stream mode, the transformer and workspace will run indefinitely until you stop the translation. FME Flow Streams utilize Stream mode workspaces, allowing them to process data continuously without interruption. Some transformers that support Stream mode include:&nbsp;</p>
+<ul>
+<li>AmazonSQSConnector&nbsp;</li>
+<li>AWSIotConnector</li>
+<li>AzureEventHubConnector&nbsp;</li>
+<li>AzureIoTConnector&nbsp;</li>
+<li>IBMIoTConnector&nbsp;</li>
+<li>IBMMQConnector</li>
+<li>GoogleIoTConnector</li>
+<li>JMSReceiver</li>
+<li>KafkaConnector</li>
+<li>MQTTConnector</li>
+<li>RabbitMQConnector</li>
+<li>WebSocketReceiver</li>
+</ul>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 108.694px; border-style: none;">
+<tbody>
+<tr style="height: 108.694px;">
+<td style="width: 7.22156%; height: 108.694px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 108.694px;">
+<p>A workspace should only contain one transformer set to receive messages in stream mode. While it's possible to add multiple, the workspace won't run as expected, and data will not be received. Create a separate workspace to stream data from another source or consider using topics if the provider you are connecting to supports them.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Some of these transformers also offer a Batch mode. In Batch mode, the workspace and transformer only receive a specific number of records from the stream data source before closing the connection and completing the translation. In the following exercise, you will use a KafkaConnector to connect to a data stream. While building and testing the workspace in FME Workbench, it is easier to use Batch mode to cache and inspect the data. Then, when you are ready to deploy your workflow with FME Flow Streams, change the mode to Stream to run the workspace continuously.&nbsp;</p>
+<p><img src="images/1766091708317.jpg" alt="" /></p>
+<h2>Scenario&nbsp;</h2>
+<p><img src="images/1766004320458.png" alt="" width="244" height="259" /></p>
+<p>Jennifer, a GIS specialist, is creating a workflow to monitor the GPS locations of a city's vehicle fleet. The fleet consists of 1,850 vehicles that report their location approximately every 3 seconds, which equates to about 600 messages per second, sent using <a href="https://www.confluent.io/" target="_blank" rel="noopener">Confluent</a>, a data streaming platform. To connect to the data stream, Jennifer needs to configure a KafkaConnector that uses an <a href="https://developer.confluent.io/faq/apache-kafka/concepts/?utm_medium=sem&amp;utm_source=google&amp;utm_campaign=ch.sem_br.nonbrand_tp.prs_tgt.dsa_mt.dsa_rgn.namer_sbrgn.canada_lng.eng_dv.all_con.confluent-developer&amp;utm_term=&amp;creative=&amp;device=c&amp;placement=&amp;gad_source=1&amp;gad_campaignid=23202512057&amp;gbraid=0AAAAADRv2c1FFHlrtG5GoNOpllvaVoud3&amp;gclid=CjwKCAiAmp3LBhAkEiwAJM2JULMXd8ZR3CWJdt2MeQf9K2O0cEnebY2coZmZxjl1FO9eHjBKSccYcRoCaoQQAvD_BwE" target="_blank" rel="noopener">Apache Kafka</a> web connection to connect to the stream and receive the data. In Jennifer's workspace, she also wants to perform processing on the GPS data to send alerts if fleet trucks are outside the city boundary for more than one minute. Jennifer's not very familiar with FME Streams, so she needs your help to build her workspace and deploy a stream on FME Flow.&nbsp;</p>
+<p>In this course, you will help Jennifer deploy a stream that accomplishes the following:</p>
+<ul>
+<li>Connect to the City of Vancouver's fleet GPS location stream using a KafkaConnector.&nbsp;</li>
+<li>Filter the stream data to only process trucks.&nbsp;</li>
+<li>Find trucks that are outside of the City of Vancouver boundary.</li>
+<li>Group GPS locations into time windows for each truck.&nbsp;</li>
+<li>Send an email alert if a truck is outside the boundary for more than a minute.&nbsp;</li>
+</ul>
+<p><img src="images/1767649871377.png" width="941" height="226" /></p>
+<p>Ultimately, you will create a workspace that resembles the screenshot below and deploy it to run continuously using FME Flow Streams.</p>
+<p><img src="images/1766513917098.jpg" alt="" /></p>
+<p>&nbsp;</p>
+<h2>Exercise (10 minutes)</h2>
+<p>Jennifer has already begun creating the workspace. She has started with her KafkaConnector, which you will need to finish assembling to connect to the data stream. She's also added transformers to extract the JSON returned from the KafkaConnector and create geometry. In the disabled bookmarks, Jennifer reads in the City of Vancouver boundary and sends alerts by email. You will use these in later exercises; for now, leave them collapsed and disabled.&nbsp;</p>
+<p><img src="images/1766425149346.jpg" alt="" /></p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Connect to a data stream with a KafkaConnector transformer.</li>
+<li>Run your workspace in Batch mode.</li>
+<li>Inspect the data you receive from the City of Vancouver fleet data stream.&nbsp;</li>
+</ul>
+<h3>1) Open Starting Workspace</h3>
+<p><strong>Open the </strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-starting-workspace.fmw" target="_blank" rel="noopener"><strong>starting workspace</strong> </a>(C:\FMEData\FMEData\Workspaces\Streams\streams-starting-workspace.fmw) in FME Workbench. If FME prompts you to install the "Apache Kafka Connector", click Install.&nbsp;</p>
+<p><img src="images/1769117558518.jpg" alt="" width="455" height="192" /></p>
+<p><img src="images/1766425248953.jpg" alt="" /></p>
+<h3>2) Edit KafkaConnector</h3>
+<p><strong>Double-click the KafkaConnector</strong> to open its properties.&nbsp;</p>
+<p><strong><img src="images/1766084082854.jpg" alt="" /></strong></p>
+<p>The Authentication and Security sections for the KafkaConnector are already complete. The Connector utilizes a web connection to authenticate and establish a connection to the data stream from Confluent.&nbsp;</p>
+<p>Configure the following parameters:</p>
+<ul>
+<li>Host Name:<strong> pkc-4nym6.us-east-1.aws.confluent.cloud</strong></li>
+<li>Port:<strong> 9092</strong></li>
+<li>Action: <strong>Receive</strong></li>
+</ul>
+<p>For Topics, click the ellipses and select <strong>cov-fleet-location</strong> from the Topics section.&nbsp;</p>
+<p><img src="images/1766080083332.jpg" alt="" width="1060" height="655" /></p>
+<p>Click OK to close the Edit Selection window.</p>
+<p>Set the following parameters for Receive Behavior:</p>
+<ul>
+<li>Mode:<strong> Batch</strong></li>
+<li>Batch Size: <strong>1000</strong></li>
+</ul>
+<p>We already set the remaining parameters for you. Your complete KafkaConnector settings should look like this:</p>
+<p><img src="images/1766080392354.jpg" alt="" /></p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 87.688px; border-style: none;">
+<tbody>
+<tr style="height: 87.688px;">
+<td style="width: 7.22156%; height: 87.688px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 87.688px;">
+<p>For developing and testing your workspace, it is easier to use Batch mode, as it does not run the workspace indefinitely like Stream mode, and it generates data caches that you can inspect. We will switch the Connector to Stream mode once we are done building it.&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Jennifer has already configured the JSONFlattener to expose attributes from the JSON in the _value attribute. She's also configured the GeometryReplacer, CoordinateSystemSetter, and Reprojector to create geometry for the streamed records.&nbsp;</p>
+<h3>3) Run Workspace</h3>
+<p><strong>Run</strong> the workspace. The enabled transformers in the workspace will run and cache the data.&nbsp;</p>
+<p><strong><img src="images/1766081378163.jpg" alt="" /></strong></p>
+<p>Click on the<strong> data cache from the Reprojector transformer</strong> to inspect the data we're working with.&nbsp;</p>
+<p><img src="images/1766082251276.jpg" alt="" /></p>
+<p>In the next lesson, you will use the vehicle_type attribute to filter for trucks. Later in this course, you will use the vehicle_id to filter the last known location for the vehicle in each time window.&nbsp;</p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 79.6937px; border-style: none;">
+<tbody>
+<tr style="height: 79.6937px;">
+<td style="width: 7.22156%; height: 79.6937px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 79.6937px;">
+<p>The data stream for the City of Vancouver's vehicle fleet is a simulated stream for training, meaning the data is not live and does not occur in real-time. The dates and timestamps you receive for the data will not match the current date and time.&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>

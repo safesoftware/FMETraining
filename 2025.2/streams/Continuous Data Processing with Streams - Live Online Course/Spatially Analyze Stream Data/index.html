@@ -1,0 +1,83 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you will be able to:</p>
+<ul>
+<li>Analyze spatial and non-spatial stream data.</li>
+<li>Utilize buffers and geofences to analyze stream data spatially.&nbsp;</li>
+<li>Filter stream data records by location.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-starting-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\Streams\streams-starting-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-complete-workspace.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\Streams\streams-complete-workspace.fmw</li>
+</ul>
+<h2>Spatial and Non-Spatial Stream Data</h2>
+<p>Data streaming does not always use spatial data. Many data streams are actually non-spatial. For example, an air quality sensor may be fixed in place, reporting air quality levels at regular intervals. The data may remain non-spatial for the entire analysis, or one might enrich the non-spatial data with spatial data for further processing or analysis. If your stream consists of multiple air quality sensors, you can use a unique sensor ID to add the spatial locations for the sensors, generating maps of air quality levels.&nbsp;</p>
+<p><img src="images/1767734507998.png" alt="" width="1084" height="265" /></p>
+<p>The City of Vancouver fleet location stream reports vehicle locations using GeoJSON. Our workspace creates geometry from the GeoJSON for spatial analysis on the vehicles.&nbsp;</p>
+<p><img src="images/1767733698157.jpg" alt="" />`<img src="images/1767734125030.jpg" alt="" width="1373" height="480" /></p>
+<h2>Filter by Location</h2>
+<p>One of the simplest ways to work with spatial stream data is to filter records based on their location, which typically involves reading another spatial dataset and then clipping or joining your stream data to that dataset. You may want to trigger an alert if a stream data record remains within a particular area for a specified amount of time.&nbsp;</p>
+<p><img src="images/1767649871377.png" alt="" /></p>
+<p>We will filter the City of Vancouver fleet data stream by location in the exercise below. We're only interested in vehicles outside the City of Vancouver boundary, so we will use a SpatialFilter to filter out vehicle locations within the city boundary and continue processing and analyzing the remaining records.</p>
+<h2>Buffer</h2>
+<p>You may create buffers around stream data records or static data to compare the stream data against. You usually use buffers to determine if a record is within a certain proximity to another record or records. You can use a buffer to filter stream data records that are inside, outside, or within a certain distance of the buffer location.&nbsp;</p>
+<p><img src="images/1767732712346.png" alt="" /></p>
+<p>For example, you have stream data on trucks carrying hazardous materials. The trucks are supposed to stay at least 500 m from any schools or playgrounds. You would create a buffer around the schools and playgrounds and configure an alert to send if the GPS location of a truck overlaps with a buffered area.&nbsp;</p>
+<h2>Geofencing&nbsp;</h2>
+<p>You may also use geofences to analyze your stream data spatially. Static geofences function similarly to location filtering, where stream data records are filtered based on whether they are present within a specified spatial area. Dynamic geofences refer to spatial filtering on areas that may change frequently. You may create your geofences from static data sources or from the stream data itself.</p>
+<p><img src="images/1767649886398.png" alt="" /></p>
+<p>For example, ride share apps rely on drivers reporting their location and dispersing themselves to be quickly accessible to their app users. If a cluster of app users is present without any drivers within a 1-kilometer radius, the drivers are alerted to redistribute themselves to cover the area better.&nbsp;</p>
+<h2>Exercise (10 minutes)</h2>
+<p>Jennifer only needs to send an alert if the trucks are outside of the City of Vancouver boundary. She's already set up a bookmark that reads in the City of Vancouver boundary as a KML file. The next step is to clip the data and determine which vehicle records are outside the boundary.&nbsp;</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Read a static data file of the City of Vancouver boundary.&nbsp;</li>
+<li>Use a SpatialFilter to identify trucks outside of the city boundary.&nbsp;</li>
+</ul>
+<p><strong>Continue with the same workspace open in FME Workbench from the previous exercise.&nbsp;</strong></p>
+<h3>1) Enable the CoV Boundary Bookmark</h3>
+<p>Use the down arrow to <strong>expand the CoV Boundary bookmark</strong>.&nbsp;</p>
+<p><strong><img src="images/1766162530303.jpg" alt="" /></strong></p>
+<p>Right-click the bookmark and select <strong>Enable All Objects in Bookmark</strong>.</p>
+<p><strong><img src="images/1766162675979.jpg" alt="" /></strong></p>
+<h3>2) Add a SpatialFilter</h3>
+<p><strong>Add a SpatialFilter</strong> to the canvas. Connect the Tester Passed port to the Candidate input on the SpatialFilter, and connect the GeometryFilter Area port to the Filter input.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766167549195.jpg" alt="" /></strong></p>
+<p><strong>Open the SpatialFilter properties</strong>. Set the <strong>Filter Type to "Filters First"</strong> and change the <strong>Spatial Predicates to Test to "Filter OGC-Contains Candidate"</strong>.</p>
+<p><img src="images/1766426364536.jpg" alt="" /></p>
+<p><strong>Turn off Merge Attributes. </strong>Your SpatialFilter parameters should look like this:</p>
+<p><img src="images/1766426400997.jpg" alt="" /></p>
+<p>Click OK to close the SpatialFilter Parameters.&nbsp;</p>
+<h3>3) Add a Bookmark or Annotation</h3>
+<p>To organize and document your workspace, <strong>add a bookmark or annotation for the SpatialFilter</strong> and describe its functionality.&nbsp;</p>
+<p><img src="images/1766168149067.jpg" alt="" /></p>
+<h3>4) Rerun Workspace</h3>
+<p>Click the <strong>down arrow</strong> next to<strong> </strong>Run and select <strong>Rerun Entire Workspace</strong>.&nbsp;</p>
+<p><img src="images/1767905930070.jpg" alt="" width="332" height="259" /></p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 95.688px; border-style: none;">
+<tbody>
+<tr style="height: 95.688px;">
+<td style="width: 7.22156%; height: 95.688px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 95.688px;">
+<p><span style="font-size: 12pt;">We rerun the entire workspace here instead of just running from the data caches because our SpatialFilter is set to receive Filters First. If you only run the uncached portions of the workspace, the SpatialFilter will reject features because the CoV Boundary records have not arrived at the SpatialFilter before the cached data from the Tester transformer arrives. The Creator transformer is also set to run any readers in the workspace before creating a record to run the KafkaConnector, which ensures the filters will arrive to the SpatialFilter before the streamed data records.&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>FME will run the transformers with data caches from the previous exercises again, then filter against the City of Vancouver boundary that it reads into the workspace. A portion of the data goes through the Failed port; these are the trucks outside of Vancouver.&nbsp;</p>
+<p><img src="images/1766168905095.jpg" alt="" /></p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 112.694px; border-style: none;">
+<tbody>
+<tr style="height: 112.694px;">
+<td style="width: 7.22156%; height: 112.694px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 112.694px;">
+<p><strong><span style="font-size: 12pt;">The exact record counts from that are sent through the Passed and Failed ports will differ from what is shown in the screenshot. Because our data is a continuous stream, different data records are received at varying times, so it is unlikely that your workspace record counts and those of others will match exactly.</span></strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>&nbsp;</p>

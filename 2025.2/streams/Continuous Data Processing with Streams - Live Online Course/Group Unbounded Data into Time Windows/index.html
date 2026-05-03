@@ -1,0 +1,106 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you will be able to:</p>
+<ul>
+<li>Use the TimeWindower transformer.</li>
+<li>Group stream data records based on time intervals.&nbsp;</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-starting-workspace.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\Streams\streams-starting-workspace.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/Streams/streams-complete-workspace.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\Streams\streams-complete-workspace.fmw</li>
+</ul>
+<h2>TimeWindower Transformer</h2>
+<p>In typical FME workflows with discrete data, you may load, sort, and group the data before analyzing it. With streaming workflows, the data is continuous and possibly infinite, making it impossible to load all the data before processing and analyzing it. The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/timewindower.htm?">TimeWindower</a> transformer groups data into windows by adding a Window ID attribute to the data based on the time the transformer receives the data record or the record's timestamp. Once you break the data into groups, you may process and analyze it as if it were discrete data.&nbsp;</p>
+<p><img src="images/1767653139951.png" alt="" /></p>
+<p>The TimeWindower parameters control how FME groups the data records, when each interval begins, and how long each interval is. The time units options range from seconds to days. The Window ID Type refers to how FME documents each record within a window, either by assigning a window ID number or by using the timestamp that marks the beginning or end of the window. You may also control whether the first window begins when the workspace starts, when the first record is received, or at a specific timestamp.&nbsp;</p>
+<p><img src="images/1767717185391.jpg" alt="" /></p>
+<p>The TimeWindower assigns a new attribute a value identifying which window the record belongs to. You likely will process the data further, grouping it by the window. The TimeWindower does not control the number of records in each window - the records are only grouped by time, not by count. It is possible to have high volumes of data records in one window, followed by a window with no data records at all, which depends on the velocity and rate of the streaming data.&nbsp;</p>
+<p><img src="images/1767653159012.png" alt="" width="1234" height="387" /></p>
+<h2>Processing Records Out of Order</h2>
+<p>In many cases, there may be a slight delay between when a sensor detects or submits data and when the data arrives at FME, which may result in FME receiving and processing data records out of order.&nbsp;</p>
+<p>If your data includes timestamps as an attribute, you can enable this option in the TimeWindower. Then, instead of windowing the data from the time the record arrives to the TimeWindower, it windows the data using the timestamp attribute value assigned to each record. The Order Settings enforce the order of the records through the output port. Records that did not follow the specified window ordering will be sent to an <span class="PortName">OutOfSequence&nbsp;</span>port, unless they arrive within the Tolerance Interval. If a record arrives outside of its window, yet within the tolerance amount, FME will still accept it and assign it to the correct window. If a record is too early or too late, meaning it falls outside the tolerance time amount, the TimeWindower directs it to the OutOfSequence port.&nbsp;</p>
+<p><img style="font-family: inherit; font-size: 1em;" src="images/1767724508821.jpg" alt="" /></p>
+<p>For example, with a window duration of 5 minutes and a tolerance interval set to 1 minute, any records that arrive within a minute before or after their correct window will still be accepted into the window. The red record with the 12:03 AM timestamp should be in Window 1, but the TimeWindower did not receive it until Window 2 began. Since it is over the 1-minute tolerance interval, the TimeWindower will route the record to the OutOfSequence port.&nbsp;</p>
+<p><img src="images/1767653177280.png" alt="" width="1232" height="401" /></p>
+<h2>Exercise (15 minutes)</h2>
+<p>So far, you've helped Jennifer identify trucks that are outside of the City of Vancouver boundary. Each vehicle reports its location roughly every 3 seconds. When you run your workspace in Stream mode, this means that a data record may be produced for each vehicle outside the city boundary every 3 seconds. If you were to configure alerts for each record, that would result in an almost constant pinging of alerts for a truck that is outside the city. To avoid this, Jennifer has set a threshold of one minute, which you will use to window the data into, so that an alert only sends once per minute for each vehicle.&nbsp;</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Configure a TimeWindower transformer to group data into one-minute windows.</li>
+<li>Add Sorter and Sampler transformers to get the last known point of a truck in each window.&nbsp;</li>
+</ul>
+<p><strong>Continue with the same workspace open in FME Workbench from the previous exercise.&nbsp;</strong></p>
+<h3>1) Configure TimeWindower Transformer</h3>
+<p><strong>Add a TimeWindower</strong> to the canvas and attach it to the Failed port on the SpatialFilter.</p>
+<p><img src="images/1766171947527.jpg" alt="" /></p>
+<p>Open its properties. Set the following settings:</p>
+<ul>
+<li>Window Duration: <strong>1</strong></li>
+<li>Time Units: <strong>Minutes</strong></li>
+<li>Window ID Type: <strong>Window Number</strong></li>
+<li>Time Window Starts: <strong>At Workspace Startup</strong></li>
+</ul>
+<p>Leave the remaining settings at their default value.&nbsp;</p>
+<p><img src="images/1766172988324.jpg" alt="" /></p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 94.688px; border-style: none;">
+<tbody>
+<tr style="height: 94.688px;">
+<td style="width: 7.22156%; height: 94.688px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 94.688px;">
+<p><span style="font-size: 12pt;">The Timestamps function in TimeWindower is used to identify out-of-sequence records and reorder them chronologically within a specified tolerance interval. &nbsp;Although our stream data has a timestamp attribute, we don't need to use it for this scenario because it doesn't matter in this scenario if our data is out of order. We will sample the data later to just get one record per vehicle in each time window. Also, because our stream is simulated, our timestamps are not quiet accurate - they are dated in the past.&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h3>2) Run the TimeWindower</h3>
+<p>Use the <strong>Run To This</strong> function to run the cached data through the TimeWindower transformer. <strong>Inspect the Output data</strong> cache.&nbsp;</p>
+<p><strong><img src="images/1766173519961.jpg" alt="" /></strong></p>
+<p>The TimeWindower adds a _window_id attribute to each record, and multiple records exist for each unique vehicle_id. The batched data likely did not capture enough data to span one minute, so the _window_id will not update. When you run the workspace in Stream mode later, you will be able to see it change after each minute.&nbsp;</p>
+<h3>3) Add a Sorter</h3>
+<p>From within each time window, you only need the latest location for each truck, and there are multiple data records for a single truck within the same time window. A Sampler transformer will allow you to query the last known location of each truck within the window, but first, you need to sort the data by vehicle_id and timestamp.&nbsp;</p>
+<p><strong>Add a Sorter</strong> transformer and connect it to the TimeWindower output port.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766175520270.jpg" alt="" /></strong></p>
+<p>Open the Sorter properties and <strong>enable Group Processing</strong>. Select <strong>_window_id to Group By</strong> and set <strong>Complete Groups to When Group Changes (Advanced)</strong>.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766175624683.jpg" alt="" /></strong></p>
+<p>Set the <strong>Sort By Attribute</strong> to both <strong>vehicle_id and timestamp</strong>. Set the method to <strong>Alphabetic</strong> for both and keep the <strong>Order as Ascending</strong>.&nbsp;</p>
+<p><strong><img src="images/1766175976363.jpg" alt="" /></strong></p>
+<p>Close the Sorter Parameters.&nbsp;</p>
+<h3>4) Add a Sampler</h3>
+<p>Now that your data is sorted chronologically and by vehicle_id, a Sampler transformer will enable you to query the last known location of each truck within the window.&nbsp;</p>
+<p>Add a <strong>Sampler</strong> transformer and connect it to the Sorter.&nbsp;</p>
+<p><strong><img src="images/1766176873898.jpg" alt="" /></strong></p>
+<p>Open the Sampler parameters. <strong>Enable Group Processing and Group By _window_id and vehicle_id.</strong> Set <strong>Complete Groups to "When Group Changes (Advanced)"</strong>.<strong>&nbsp;</strong></p>
+<p><strong><img src="images/1766174693606.jpg" alt="" /></strong></p>
+<p>Set the <strong>Sampling Type to 'Last N Features' </strong>and leave the remaining settings as their defaults.&nbsp;</p>
+<p><strong><img src="images/1766174798587.jpg" alt="" /></strong></p>
+<h3>4) Bookmark TimeWindower, Sorter, and Sampler</h3>
+<p>To continue documenting our workspace, <strong>add a bookmark surrounding the TimeWindower, Sorter, and Sampler</strong>.&nbsp;</p>
+<p><img src="images/1766177385027.jpg" alt="" /></p>
+<h3>5) Switch to Stream Mode</h3>
+<p>You may use Run To This on the Sampler to see how the batched data is sorted and sampled; however, this likely does not include a time window change. To see how it functions with multiple time windows, you will need to switch to run the workspace in Stream mode.&nbsp;</p>
+<p>Return to the <strong>KafkaConnector</strong> and open its parameters. Under <strong>Receive Behavior, set the Mode to Stream</strong>.&nbsp;</p>
+<p><strong><img src="images/1766177504850.jpg" alt="" /></strong></p>
+<p>Click OK to close the window.</p>
+<h3>6) Run Workspace in Stream Mode</h3>
+<p>Click <strong>Run </strong>to start running the workspace.&nbsp;</p>
+<p>When the workspace runs in Stream mode, it will continue to run until you manually stop it. You will also not be able to view caches of data beyond the Kafka Connector.&nbsp;</p>
+<p><img src="images/1766427528119.jpg" alt="" /></p>
+<p>The record counts at the Sampler's Sampled port represent the vehicles located outside the City of Vancouver boundary within each one-minute window. These are the records for which Jennifer wants to send a notification.&nbsp;</p>
+<blockquote>
+<table style="border-collapse: collapse; width: 100%; height: 91.688px; border-style: none;">
+<tbody>
+<tr style="height: 91.688px;">
+<td style="width: 7.22156%; height: 91.688px; vertical-align: top;"><img src="images/safe_note.png" alt="Note" /></td>
+<td style="width: 92.7659%; height: 91.688px;">
+<p><span style="font-size: 12pt;">Remember that the TimeWindower groups data into one-minute windows and the Sorter sorts the data in each window. To receive records from the Sorter to the Sampler, you must let the workspace run for at least one minute to complete the first time window.&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h3>7) Stop the Workspace</h3>
+<p>Click <strong>Stop</strong> to stop the workspace. You need to manually stop it because it will run indefinitely in Stream mode.&nbsp;</p>
+<p><strong><img src="images/1766430400976.jpg" alt="" /></strong></p>
+<p>Now that you have filtered and grouped your stream data records, you will configure an alert to be triggered every minute for trucks outside Vancouver.&nbsp;</p>
