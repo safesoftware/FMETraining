@@ -10,7 +10,12 @@
 #                    to non-root appuser (UID 10001), HEALTHCHECK on /health.
 # ---------------------------------------------------------------------------
 
-ARG PYTHON_VERSION=3.11-slim
+# Pinned to a specific patch + Debian release so two builds a month apart
+# can't silently pull a different Python or Debian package set. Bump this
+# manually (or via Renovate / Dependabot) when a new patch ships. To pin
+# more strictly you can replace this with a digest, e.g.
+#   FROM python@sha256:<digest> AS builder
+ARG PYTHON_VERSION=3.11.13-slim-bookworm
 
 # ============================================================================
 # Stage 1 — builder

@@ -18,11 +18,18 @@ case "${MODE}" in
     web)
         # uvicorn defaults are fine for a small internal app. --proxy-headers
         # so X-Forwarded-* from App Runner / ALB is honored once we deploy.
+        #
+        # FORWARDED_ALLOW_IPS is the set of upstream IPs we trust to set
+        # X-Forwarded-* headers. Defaults to loopback only — production
+        # deploys MUST set this to the actual proxy CIDR (e.g. the App
+        # Runner / ALB private subnet) via env var or Secrets Manager.
+        # Local dev with Compose can set it to "*" in .env.compose since
+        # there is no real proxy in front of the container.
         exec uvicorn app.main:app \
             --host 0.0.0.0 \
             --port "${PORT:-8000}" \
             --proxy-headers \
-            --forwarded-allow-ips='*'
+            --forwarded-allow-ips="${FORWARDED_ALLOW_IPS:-127.0.0.1}"
         ;;
     worker)
         # The Fargate worker reads RUN_ID / RESUME / MAX_RUN_USD from env
