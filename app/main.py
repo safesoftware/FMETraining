@@ -80,6 +80,11 @@ def create_app() -> FastAPI:
     fastapi_app.include_router(health.router)
     fastapi_app.include_router(index.router)
 
+    # TODO(future ticket): add CORSMiddleware with explicit `allow_origins`
+    # before the first JSON-only API endpoint goes live. Use the App Runner
+    # domain in production and `http://localhost:8000` in dev — never `"*"`.
+    # See docs/plans/2026-04-29-multi-user-web-app.md (auth section).
+
     return fastapi_app
 
 
