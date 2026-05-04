@@ -231,12 +231,45 @@ def main() -> int:
             changelog = {"issues": []}
 
     # ---------------------------------------------------------------------------
-    # Steps 3+4: Assessment (always run together)
+    # Build the ephemeral descriptions dict (never written to disk).
+    # If the in-memory changelog issues already carry 'description' (same-process
+    # path from step 2), reuse them. If they don't (e.g. resume mode loaded
+    # the slim changelog from disk), fetch descriptions on demand from Jira.
     # ---------------------------------------------------------------------------
     run_assessment = 3 in steps_to_run or 4 in steps_to_run
+    descriptions: dict[str, str] = {}
+    if (run_assessment or 6 in steps_to_run) and not args.dry_run:
+        descriptions = {
+            i["issue_key"]: (i.get("description") or "")
+            for i in changelog.get("issues", [])
+            if i.get("issue_key")
+        }
+        missing_keys = [k for k, v in descriptions.items() if not v]
+        if missing_keys:
+            try:
+                from pipeline.jira_api import fetch_descriptions
+                print(f"\n[descriptions] Fetching {len(missing_keys)} Jira "
+                      "description(s) on demand (in-memory only)...")
+                fetched = fetch_descriptions(missing_keys)
+                for k, v in fetched.items():
+                    descriptions[k] = v
+                print(f"  [descriptions] {sum(1 for v in descriptions.values() if v)} "
+                      f"of {len(descriptions)} populated.")
+            except EnvironmentError as e:
+                print(f"  [descriptions] Skipped on-demand fetch: {e}")
+            except Exception as e:
+                print(f"  [descriptions] On-demand fetch failed ({e}); "
+                      "continuing without those descriptions.")
+
+    # ---------------------------------------------------------------------------
+    # Steps 3+4: Assessment (always run together)
+    # ---------------------------------------------------------------------------
     if run_assessment:
         from pipeline.assessment import run_assessment as do_assessment
-        recs = do_assessment(run_id, manifest, changelog, output_dir, dry_run=args.dry_run)
+        recs = do_assessment(
+            run_id, manifest, changelog, output_dir,
+            descriptions=descriptions, dry_run=args.dry_run,
+        )
         if not args.dry_run:
             mark_step_complete(run_id, 3, output_dir)
             mark_step_complete(run_id, 4, output_dir)
@@ -262,8 +295,11 @@ def main() -> int:
                 return 1
             with open(rp, encoding="utf-8") as f:
                 recs = json.load(f)
-        edit_result = run_edit_suggestions(run_id, recs, output_dir, dry_run=args.dry_run,
-                                          to_version=job.get("to_version", ""))
+        edit_result = run_edit_suggestions(
+            run_id, recs, output_dir, dry_run=args.dry_run,
+            to_version=job.get("to_version", ""),
+            descriptions=descriptions,
+        )
         if not args.dry_run and edit_result.get("completed_lessons", 0) > 0:
             mark_step_complete(run_id, 6, output_dir)
             # Regenerate the report so EDIT_PLANS_FILE is populated in the HTML

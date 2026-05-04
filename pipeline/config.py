@@ -56,7 +56,11 @@ JIRA_BASE_URL: str = os.getenv("JIRA_BASE_URL", "").rstrip("/").replace("http://
 JIRA_USER: str = os.getenv("JIRA_USER", "")
 JIRA_API_TOKEN: str = os.getenv("JIRA_API_KEY", "")  # reuse JIRA_API_KEY from .env
 JIRA_FILTER_ID: str = os.getenv("JIRA_FILTER_ID", "")
-JIRA_CACHE_PATH: Path = REPO_ROOT / "inputs" / "jira_api_cache.json"
+# Slim metadata-only cache: descriptions are NOT persisted here.
+# Jira issue descriptions (which contain customer PII) are fetched on demand
+# and held in memory for the duration of a run only. See pipeline/jira_api.py.
+# Path is gitignored via /.cache/ in .gitignore.
+JIRA_CACHE_PATH: Path = REPO_ROOT / ".cache" / "jira_api_cache.json"
 
 # Skilljar API credentials (for Push to Skilljar feature)
 SKILLJAR_API_KEY: str = os.getenv("SKILLJAR_API_KEY", "")

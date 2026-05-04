@@ -2,11 +2,21 @@
 Jira API client for the FME Training Update Pipeline.
 
 Fetches issues from a Jira filter via the REST API v3 and caches results
-to inputs/jira_api_cache.json to avoid repeated API calls.
+to .cache/jira_api_cache.json (gitignored) to avoid repeated API calls.
+
+The cache is metadata-only: issue descriptions are NEVER written to disk
+because they contain customer-identifying text (emails, support case URLs,
+free-text reproduction narratives). Descriptions are returned in the
+in-memory list from fetch_raw_issues, and re-fetched on demand via
+fetch_descriptions(keys) for steps that need them in a later process.
 
 Usage in changelog.py:
     from pipeline.jira_api import fetch_raw_issues
     raw_issues = fetch_raw_issues(refresh=False)
+
+Usage when only descriptions are needed (e.g. resuming step 6):
+    from pipeline.jira_api import fetch_descriptions
+    descriptions = fetch_descriptions(["KNOW-1", "FMEFORM-2"])
 """
 
 from __future__ import annotations
@@ -58,17 +68,87 @@ def fetch_raw_issues(refresh: bool = False) -> list[dict]:
     print(f"  [Jira API] Fetched {len(raw_issues)} issues from Jira API.")
 
     cache_path.parent.mkdir(parents=True, exist_ok=True)
+    # Strip 'description' before persisting: it contains customer PII.
+    # The full in-memory list (with descriptions) is still returned for the current call.
+    slim_issues = [
+        {k: v for k, v in i.items() if k != "description"}
+        for i in raw_issues
+    ]
     cache_payload = {
         "fetched_at": datetime.now(tz=timezone.utc).isoformat(),
         "filter_id": config.JIRA_FILTER_ID,
         "total": len(raw_issues),
-        "issues": raw_issues,
+        "issues": slim_issues,
     }
     with open(cache_path, "w", encoding="utf-8") as f:
         json.dump(cache_payload, f, indent=2, ensure_ascii=False)
     print(f"  [Jira API] Cached -> {cache_path}")
 
     return raw_issues
+
+
+def fetch_descriptions(issue_keys: list[str]) -> dict[str, str]:
+    """
+    Fetch only the description field for the given issue keys.
+
+    Returns a dict mapping issue_key -> plain-text description (ADF→text).
+    The result is held in memory by the caller and is never persisted to disk
+    by this function. Issues whose description is empty or missing are not
+    included in the returned dict.
+
+    Pages through Jira in batches of 100 keys via JQL `key in (...)`.
+
+    Raises EnvironmentError if Jira credentials are missing.
+    """
+    if not issue_keys:
+        return {}
+
+    _validate_credentials()
+
+    base = config.JIRA_BASE_URL
+    session = _make_session()
+    session.headers.update(_auth_header())
+
+    descriptions: dict[str, str] = {}
+    batch_size = 100
+    total_batches = (len(issue_keys) + batch_size - 1) // batch_size
+
+    for batch_idx in range(total_batches):
+        batch = issue_keys[batch_idx * batch_size : (batch_idx + 1) * batch_size]
+        # JQL: key in (KNOW-1, KNOW-2, ...) — paginate within the batch in case of many results
+        jql = "key in ({})".format(",".join(batch))
+        next_page_token: str | None = None
+
+        while True:
+            url = f"{base}/rest/api/3/search/jql"
+            params: dict = {
+                "jql": jql,
+                "fields": "description",
+                "maxResults": batch_size,
+            }
+            if next_page_token:
+                params["nextPageToken"] = next_page_token
+
+            resp = session.get(url, params=params, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+
+            for raw in data.get("issues", []):
+                key = raw.get("key", "").strip()
+                if not key:
+                    continue
+                desc_raw = (raw.get("fields") or {}).get("description")
+                desc = _adf_to_text(desc_raw).strip() if desc_raw else ""
+                if desc:
+                    descriptions[key] = desc
+
+            if data.get("isLast", True):
+                break
+            next_page_token = data.get("nextPageToken")
+            if not next_page_token:
+                break
+
+    return descriptions
 
 
 # ---------------------------------------------------------------------------

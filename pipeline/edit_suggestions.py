@@ -26,7 +26,7 @@ from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm as atqdm
 
 from pipeline import config
-from pipeline.utils import changelog_path, edit_plans_path, recommendations_path
+from pipeline.utils import edit_plans_path, recommendations_path
 
 
 # ---------------------------------------------------------------------------
@@ -316,6 +316,7 @@ def run_edit_suggestions(
     output_dir: Path,
     dry_run: bool = False,
     to_version: str = "",
+    descriptions: dict[str, str] | None = None,
 ) -> dict:
     """
     Generate edit plans for all lessons with medium/high assessments.
@@ -327,6 +328,10 @@ def run_edit_suggestions(
         dry_run:         If True, print counts but make no API calls.
         to_version:      The target FME version from the job config (e.g. "2026.1").
                          Must be provided; the pipeline validates this before calling here.
+        descriptions:    Optional in-memory mapping of issue_key -> description.
+                         Supplied by the orchestrator; descriptions are never
+                         persisted to disk. If None or empty, prompts include
+                         only the assessment summary/justification.
 
     Returns:
         The edit plans dict.
@@ -385,21 +390,13 @@ def run_edit_suggestions(
             "lessons": [],
         }
 
-    # Load Jira issue descriptions from the changelog for richer prompt context
-    issue_descriptions: dict[str, str] = {}
-    cl_path = changelog_path(run_id, output_dir)
-    if cl_path.exists():
-        try:
-            with open(cl_path, encoding="utf-8") as f:
-                cl_data = json.load(f)
-            for issue in cl_data.get("issues", []):
-                key = issue.get("issue_key") or issue.get("key", "")
-                desc = (issue.get("description") or "").strip()
-                if key and desc:
-                    issue_descriptions[key] = desc
-            print(f"  Loaded descriptions for {len(issue_descriptions)} Jira issues.")
-        except Exception as e:
-            print(f"  WARNING: could not load changelog for descriptions: {e}")
+    # Use in-memory descriptions provided by the orchestrator. The on-disk
+    # changelog is metadata-only (no descriptions) — see pipeline/jira_api.py.
+    issue_descriptions: dict[str, str] = {
+        k: v.strip() for k, v in (descriptions or {}).items() if v and v.strip()
+    }
+    if issue_descriptions:
+        print(f"  Using descriptions for {len(issue_descriptions)} Jira issues (in-memory).")
 
     out_path = edit_plans_path(run_id, output_dir)
     existing_plans, skip_set = _load_existing(out_path)

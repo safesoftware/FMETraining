@@ -84,17 +84,25 @@ def run_assessment(
     manifest: dict,
     changelog: dict,
     output_dir: Path,
+    descriptions: dict[str, str] | None = None,
     dry_run: bool = False,
 ) -> dict:
     """
     Assess all (lesson, issue) pairs and write the recommendations JSON.
 
     Args:
-        run_id:     Current run ID.
-        manifest:   Manifest dict from Step 1.
-        changelog:  Changelog dict from Step 2.
-        output_dir: Artifacts directory.
-        dry_run:    If True, print pair counts but make no API calls.
+        run_id:       Current run ID.
+        manifest:     Manifest dict from Step 1.
+        changelog:    Changelog dict from Step 2 (issue dicts may or may not
+                      carry 'description' — see ``descriptions``).
+        output_dir:   Artifacts directory.
+        descriptions: Optional in-memory mapping of issue_key -> description.
+                      When the changelog was loaded from the slim disk artifact
+                      (resume mode), descriptions are not embedded in the
+                      issue dicts and must be supplied here. The pipeline
+                      orchestrator builds and threads this dict; it is never
+                      persisted to disk.
+        dry_run:      If True, print pair counts but make no API calls.
 
     Returns:
         The recommendations dict.
@@ -164,7 +172,10 @@ def run_assessment(
 
     # Run async assessment
     new_assessments = asyncio.run(
-        _assess_all(pairs_to_run, template, to_version, out_path, existing_assessments)
+        _assess_all(
+            pairs_to_run, template, to_version, out_path, existing_assessments,
+            descriptions or {},
+        )
     )
 
     all_assessments = existing_assessments + new_assessments
@@ -196,6 +207,7 @@ async def _assess_all(
     to_version: str,
     out_path: Path,
     existing: list[dict],
+    descriptions: dict[str, str],
 ) -> list[dict]:
     """Run all pairs through the OpenAI API with concurrency control."""
     if not pairs:
@@ -208,7 +220,7 @@ async def _assess_all(
 
     async def assess_one(lesson: dict, issue: dict) -> dict | None:
         async with semaphore:
-            prompt = _build_prompt(lesson, issue, template, to_version)
+            prompt = _build_prompt(lesson, issue, template, to_version, descriptions)
             result = await _call_openai(client, lesson, issue, prompt)
             return result
 
@@ -298,8 +310,15 @@ async def _call_openai(
 # Prompt building
 # ---------------------------------------------------------------------------
 
-def _build_prompt(lesson: dict, issue: dict, template: str, to_version: str) -> str:
+def _build_prompt(
+    lesson: dict,
+    issue: dict,
+    template: str,
+    to_version: str,
+    descriptions: dict[str, str] | None = None,
+) -> str:
     """Substitute {{PLACEHOLDER}} variables into the ASSESSMENT.md template."""
+    descriptions = descriptions or {}
 
     def _fmt_headings(headings: list[dict]) -> str:
         if not headings:
@@ -333,8 +352,14 @@ def _build_prompt(lesson: dict, issue: dict, template: str, to_version: str) -> 
             )
         return "\n".join(lines)
 
-    # Truncate long issue descriptions
-    description = issue.get("description") or "(no description)"
+    # Truncate long issue descriptions. Prefer the ephemeral descriptions dict
+    # (sourced from same-process changelog or on-demand fetch); fall back to
+    # any description still embedded on the issue dict.
+    description = (
+        descriptions.get(issue.get("issue_key", ""))
+        or issue.get("description")
+        or "(no description)"
+    )
     if len(description) > 2000:
         description = description[:2000] + "\n[truncated]"
 
