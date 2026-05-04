@@ -201,6 +201,50 @@ cdk deploy -c env=production --all --require-approval=any-change
 After production is up, point GitHub Actions' `deploy-prod.yml` workflow
 at the prod account.
 
+### 8. Activate cost-allocation tags in the AWS Billing console
+
+The observability stack's AWS Budget filters spend by `Project=fme-training-automation`
+and `Environment=<env>`. CDK applies these tags to every resource, but
+**AWS will not include them in cost reports until they are activated as
+user-defined cost allocation tags** in the Billing & Cost Management
+console. Until you do this, the $75 staging / $150 production budget
+alarms see $0.00 spend regardless of real usage and will never fire.
+
+This step is a one-time manual click; CDK cannot do it.
+
+1. Open <https://console.aws.amazon.com/billing/home#/tags>.
+2. In the **User-defined cost allocation tags** list, find `Project` and
+   `Environment`. Tick both and click **Activate**.
+3. Wait up to 24 hours for cost data to start flowing through the new
+   filters before trusting the alarm thresholds.
+
+### 9. CI guard against committing live AWS credentials into the image
+
+The repo's `.env` (gitignored) currently holds personal AWS access keys
+left over from the legacy pipeline. Once we deploy, the workers must use
+the IAM task role automatically — but if `.env` ever gets baked into a
+container image (e.g. a `COPY .` that bypasses `.dockerignore`), those
+hardcoded keys would silently override the role credentials at runtime.
+
+Belt-and-suspenders guard: add this step to the GitHub Actions image
+build job (`build-image.yml`) so any image carrying static credentials
+fails CI:
+
+```yaml
+- name: Reject images that bake AWS keys
+  run: |
+    if docker run --rm --entrypoint /bin/sh "${IMAGE_TAG}" \
+         -c 'cat /app/.env 2>/dev/null; printenv' \
+       | grep -qE '^(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY)='; then
+      echo "::error::Image contains AWS credentials. Check .dockerignore."
+      exit 1
+    fi
+```
+
+The Dockerfile in this repo (`Dockerfile`, owned by KNOW-2263) already
+excludes `.env` via `.dockerignore`; this guard catches future
+regressions.
+
 ---
 
 ## Stack reference
@@ -327,6 +371,30 @@ cdk deploy -c env=staging FmeTrainStgNetwork
 # Production resources have RETAIN policies and will not actually delete.
 cdk destroy -c env=staging --all
 ```
+
+### Cleanup after `cdk destroy` on production
+
+Production S3 buckets use `RemovalPolicy.RETAIN`, and the RDS instance
+uses `RemovalPolicy.SNAPSHOT`. After a `cdk destroy` on production these
+resources stay behind, no longer managed by any stack. They will keep
+costing money until manually disposed of. Checklist:
+
+1. List orphaned buckets:
+   ```bash
+   aws s3api list-buckets \
+     --query 'Buckets[?starts_with(Name,`fme-train-prod-`)].Name' \
+     --output text
+   ```
+2. Confirm contents are no longer needed (or copy to a long-term archive
+   bucket), then `aws s3 rb --force s3://<bucket-name>` for each.
+3. Find the final RDS snapshot:
+   ```bash
+   aws rds describe-db-snapshots \
+     --query 'DBSnapshots[?starts_with(DBSnapshotIdentifier,`fme-train-prod`)]'
+   ```
+   Either keep it for compliance/recovery, or `aws rds delete-db-snapshot`.
+4. Check Secrets Manager for any retained secrets:
+   `aws secretsmanager list-secrets --query 'SecretList[?starts_with(Name,`fme-train-prod`)]'`.
 
 ---
 

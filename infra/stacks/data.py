@@ -157,8 +157,14 @@ class DataStack(Stack):
             ),
             instance_type=instance_type,
             vpc=vpc,
+            # Place RDS in fully isolated subnets — it has no legitimate
+            # need to reach the internet, and the egress route in the
+            # PRIVATE_WITH_EGRESS subnets would otherwise let a compromised
+            # database (or a misbehaving stored procedure) exfiltrate data
+            # outbound. Inbound is already gated by ``rds_security_group``
+            # to App Runner / Fargate on port 5432.
             vpc_subnets=ec2.SubnetSelection(
-                subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS,
+                subnet_type=ec2.SubnetType.PRIVATE_ISOLATED,
             ),
             security_groups=[rds_security_group],
             allocated_storage=int(config["rds_allocated_storage_gb"]),
