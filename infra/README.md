@@ -253,9 +253,10 @@ regressions.
 
 * **VPC** with two AZs.
 * **Public subnets** (one per AZ) host the NAT gateway.
-* **Private-with-egress subnets** host RDS, App Runner VPC connector
-  ENIs, and Fargate task ENIs.
-* **Isolated subnets** are reserved for future use (no NAT egress).
+* **Private-with-egress subnets** host the App Runner VPC connector
+  ENIs and the Fargate task ENIs.
+* **Isolated subnets** host the RDS instance (no NAT egress — defence
+  in depth against outbound exfiltration).
 * **Security groups**:
   * `app_runner_sg` — App Runner connector. Allows all outbound.
   * `fargate_sg` — Fargate run-task ENIs. Allows all outbound.
@@ -265,9 +266,9 @@ regressions.
 ### `DataStack` (`stacks/data.py`)
 
 * **KMS CMK** with annual rotation.
-* **RDS Postgres** (db.t4g.micro / db.t4g.small), encrypted, in private
-  subnets, master credentials in Secrets Manager (auto-created with
-  `Credentials.from_generated_secret`).
+* **RDS Postgres** (db.t4g.micro / db.t4g.small), encrypted, in
+  isolated subnets (no internet egress), master credentials in Secrets
+  Manager (auto-created with `Credentials.from_generated_secret`).
 * **S3 buckets** — all private, KMS-encrypted, TLS-only:
   * `artifacts/`         — run artifacts.
   * `drafts/`            — versioned, replaces local
