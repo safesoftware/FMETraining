@@ -169,8 +169,9 @@ services:
     profiles: ["mail"]
     restart: unless-stopped
     ports:
-      - "1025:1025"   # SMTP
-      - "8025:8025"   # web UI
+      # Bind to loopback only — mailhog is dev-tooling, not for sharing.
+      - "127.0.0.1:1025:1025"   # SMTP
+      - "127.0.0.1:8025:8025"   # web UI
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8025/ >/dev/null 2>&1 || exit 1"]
       interval: 15s
