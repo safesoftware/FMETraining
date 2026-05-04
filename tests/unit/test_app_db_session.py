@@ -70,13 +70,18 @@ async def test_get_session_rolls_back_on_caller_error(
     stub.close.assert_awaited_once()
 
 
-@pytest.mark.asyncio
-async def test_get_session_works_through_fastapi_depends(
+def test_get_session_works_through_fastapi_depends(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """End-to-end: FastAPI's Depends() must iterate the async-yield
     dependency correctly, hand the route a real session object, and run
-    the post-yield ``commit()`` after the response."""
+    the post-yield ``commit()`` after the response.
+
+    This test is intentionally synchronous: ``TestClient`` is a sync
+    client (it spins its own event loop internally), and calling it
+    from an already-running ``async def`` test under pytest-asyncio is
+    fragile across asyncio backends.
+    """
     pytest.importorskip("fastapi")
     pytest.importorskip("httpx")
 
