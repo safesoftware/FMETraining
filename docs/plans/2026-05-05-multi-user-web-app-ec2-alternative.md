@@ -11,6 +11,119 @@
 
 ---
 
+## First-time deployment runbook
+
+The five steps below take a fresh AWS account from "we have an idea" to "the team can sign in at the URL." Steps 1 and 4 are things **you** do (in the AWS / DNS / GCP consoles); steps 2, 3, 5 are things **I** do over an SSH session with you watching.
+
+### Step 1 — Ask IT for the EC2 instance and DNS *(you)*
+
+Send IT this exact request:
+
+> Hi IT — for the FME Training Automation web app (KNOW-2257):
+>
+> Could you launch one **`t4g.small`** Amazon Linux 2023 instance in the existing AWS account `201369646709` (us-east-1)? Configuration:
+>
+> - **Instance type:** `t4g.small` (2 vCPU, 2 GB RAM, ARM Graviton).
+> - **AMI:** Amazon Linux 2023 (latest). Default 30 GB gp3 root volume, encrypted.
+> - **Networking:** Default VPC, public subnet. Auto-assign public IP, then attach an Elastic IP and **don't release it** so the address survives a stop/start.
+> - **Security group:** allow **22/tcp** from my office IP (and yours), **80/tcp + 443/tcp** from anywhere. No other inbound.
+> - **IAM role on the instance:** `AmazonSSMManagedInstanceCore` so we can use Session Manager as a fallback to SSH if my keys ever fail. (Read-only on AWS resources is fine; no write permissions needed.)
+> - **SSH access:** add my public key (attached) to the instance.
+> - **Tag:** `Project=fme-training-automation`, `Environment=production`, `Owner=sam.walker`.
+>
+> Plus: please add an **`A` record** `fme-train.safe.com` → the Elastic IP (TTL 300 is fine). I'll handle TLS via Let's Encrypt once DNS resolves.
+>
+> Estimated cost: ~$22/mo all-in. Cost ceiling for the project is $30/mo with a budget alarm at $25/mo — happy to set that up myself once I'm in.
+>
+> Closing out the heavier App Runner + Fargate + RDS plan as Won't Do (KNOW-2262 in Jira) — replacing it with this lighter shape.
+
+The output you need from IT: an SSH-able hostname or IP, plus confirmation that `fme-train.safe.com` resolves to it.
+
+### Step 2 — Provide secrets you'll need *(you, in parallel)*
+
+Gather these so they're ready to paste into `/etc/fme-train/env` in step 3:
+
+```
+[  ] OpenAI API key
+[  ] Jira base URL, user email, API token, filter ID
+[  ] Skilljar API key (use existing for now; rotate to a service-account key later)
+[  ] Google OAuth client ID + secret  (create in safesoftware.atlassian's GCP — see B6 of the original deployment plan)
+[  ] Session signing key (just run `openssl rand -hex 32` in your terminal)
+[  ] AWS access key + secret for S3 image upload (use the existing `fmetraining` IAM user keys you already have in .env)
+```
+
+### Step 3 — Provision and start the app *(I drive, you watch)*
+
+Once you have ssh access to the instance, do this together. Total wall time ≈ 15 minutes.
+
+```bash
+# 1. SSH in
+ssh ec2-user@<instance-public-dns>
+
+# 2. Clone the repo and run the provisioner. setup-ec2.sh is idempotent —
+#    safe to re-run if anything goes sideways.
+sudo dnf install -y git
+sudo git clone https://github.com/safesoftware/fme-training-automation.git /opt/fme-train
+cd /opt/fme-train
+sudo bin/setup-ec2.sh
+# This installs Postgres + Nginx + Python + the venv, creates the
+# `fmetrain` user with linger enabled, writes the systemd units, and
+# leaves /etc/fme-train/env as a placeholder.
+
+# 3. Drop your secrets into the env file. The file is chmod 600, root-owned.
+sudo $EDITOR /etc/fme-train/env
+# Fill in every value listed in step 2. Important: keep the
+# `DATABASE_URL=postgresql+asyncpg://fmetrain:<password>@127.0.0.1:5432/fme_train`
+# line that setup-ec2.sh wrote to /etc/fme-train/env.new — copy that
+# password into the main env file.
+
+# 4. Start the web service (run as the fmetrain user via its user-mode systemd).
+sudo -u fmetrain XDG_RUNTIME_DIR=/run/user/$(id -u fmetrain) \
+  systemctl --user start fme-train-web
+
+# 5. Confirm /health responds locally.
+curl http://127.0.0.1:8000/health
+# Expect: {"status":"ok","version":"...","environment":"production"}
+```
+
+### Step 4 — Wire up TLS and the Google OAuth callback *(you, ~5 min)*
+
+```bash
+# 1. Confirm DNS resolves
+dig +short fme-train.safe.com
+# Expect: the EIP from step 1
+
+# 2. Get a free Let's Encrypt cert + auto-renewal cron
+sudo certbot --nginx -d fme-train.safe.com
+# Pick "redirect HTTP → HTTPS" when asked.
+
+# 3. Confirm /health is reachable from the public internet
+curl https://fme-train.safe.com/health
+# Expect: {"status":"ok",...}
+```
+
+Then in the Google Cloud OAuth client (the one you created in B6 of the
+original deployment doc), add `https://fme-train.safe.com/auth/callback`
+to "Authorized redirect URIs". Save.
+
+### Step 5 — Routine deploys after this *(you, ~30 sec each)*
+
+```bash
+ssh fmetrain@fme-train.safe.com
+bash /opt/fme-train/bin/deploy-prod.sh           # default: deploy origin/main
+bash /opt/fme-train/bin/deploy-prod.sh some-tag  # deploy a specific ref
+```
+
+The script captures the previous SHA before deploying, so a bad deploy is reversible by:
+
+```bash
+cd /opt/fme-train && git reset --hard <prev-sha> && systemctl --user restart fme-train-web
+```
+
+The deploy script prints that exact one-liner if the post-deploy health check fails.
+
+---
+
 ## Context
 
 The audience is **2–5 people on the Knowledge team**. Traffic is, at peak, a
