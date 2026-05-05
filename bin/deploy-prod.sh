@@ -31,8 +31,35 @@ APP_DIR="${APP_DIR:-/opt/fme-train}"
 PG_DB="${PG_DB:-fme_train}"
 PG_USER="${PG_USER:-fmetrain}"
 SCRATCH_DB="${SCRATCH_DB:-fme_train_migration_check}"
+ENV_FILE="${ENV_FILE:-/etc/fme-train/env}"
 
 log() { printf '\n[deploy] %s\n' "$*"; }
+
+# `systemctl --user` needs the running user's bus path. Direct ssh logins
+# get this from PAM, but `sudo -u fmetrain bash deploy-prod.sh` does not.
+# Set it here unconditionally — harmless if already correct.
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+
+# Production DATABASE_URL lives in the root-owned env file. The real
+# alembic upgrade below needs to read it. setup-ec2.sh writes the file
+# with chmod 0600 / root-only by default — for this script to work, the
+# file must be readable by the deploy user. Recommended pattern:
+#     sudo chgrp fmetrain /etc/fme-train/env
+#     sudo chmod 0640 /etc/fme-train/env
+# So root + fmetrain (and only those) can read it.
+if [[ -r "${ENV_FILE}" ]]; then
+  # shellcheck disable=SC1090
+  set -a; source "${ENV_FILE}"; set +a
+else
+  echo "[deploy] Cannot read ${ENV_FILE} as $(whoami)." >&2
+  echo "[deploy] Fix with: sudo chgrp $(whoami) ${ENV_FILE} && sudo chmod 0640 ${ENV_FILE}" >&2
+  exit 2
+fi
+
+if [[ -z "${DATABASE_URL:-}" ]]; then
+  echo "[deploy] DATABASE_URL is not set in ${ENV_FILE}." >&2
+  exit 2
+fi
 
 cd "${APP_DIR}"
 
@@ -76,6 +103,8 @@ dropdb -U "${PG_USER}" "${SCRATCH_DB}"
 # Apply for real
 # --------------------------------------------------------------------------
 log "Applying migration to ${PG_DB}…"
+# DATABASE_URL is exported above from ${ENV_FILE}; alembic uses it via
+# the env-driven URL set in alembic.ini at runtime.
 "${APP_DIR}/.venv/bin/alembic" upgrade head
 
 log "Restarting web service…"

@@ -30,6 +30,10 @@ APP_REF="${APP_REF:-main}"
 PG_DB="${PG_DB:-fme_train}"
 PG_USER="${PG_USER:-fmetrain}"
 APP_REPO_URL="${APP_REPO_URL:-}"
+# Nginx server_name. certbot --nginx pattern-matches against this when
+# inserting the TLS redirect, so it must match the public DNS name —
+# `_` (catch-all) confuses certbot.
+SERVER_NAME="${SERVER_NAME:-fme-train.safe.com}"
 
 log() { printf '\n[setup] %s\n' "$*"; }
 
@@ -59,10 +63,19 @@ if [[ ! -d /var/lib/pgsql/data/base ]]; then
 fi
 systemctl enable --now postgresql
 
+# Ensure the env-file directory exists *before* we try to drop the
+# generated DATABASE_URL into it (.new sidecar).
+install -d -o root -g root -m 0755 "$(dirname "${ENV_FILE}")"
+
 log "Ensuring Postgres role + database exist…"
 sudo -iu postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='${PG_USER}'" | grep -q 1 || {
   PG_PASS="$(openssl rand -hex 24)"
   sudo -iu postgres psql -c "CREATE ROLE ${PG_USER} LOGIN PASSWORD '${PG_PASS}'"
+  # Write the candidate URL to a sidecar file with the same lock-down as
+  # the real env file. Default umask would leave this 0644 — readable by
+  # every user on the box. Force 0600 + root ownership before the
+  # password is ever written into it.
+  install -m 0600 -o root -g root /dev/null "${ENV_FILE}.new"
   printf '\n# Postgres password set during setup-ec2.sh — regenerate with `ALTER ROLE %s WITH PASSWORD ...` if rotated.\nDATABASE_URL=postgresql+asyncpg://%s:%s@127.0.0.1:5432/%s\n' \
     "${PG_USER}" "${PG_USER}" "${PG_PASS}" "${PG_DB}" >> "${ENV_FILE}.new"
 }
@@ -108,6 +121,10 @@ sudo -u "${APP_USER}" "${APP_DIR}/.venv/bin/pip" install -r "${APP_DIR}/requirem
 
 # --------------------------------------------------------------------------
 # 5. Secrets file
+#
+# Directory was already created in section 2 (so the .new sidecar from
+# the role-creation step had a place to land). Re-running install -d is
+# a no-op when the dir already exists.
 # --------------------------------------------------------------------------
 install -d -o root -g root -m 0755 "$(dirname "${ENV_FILE}")"
 if [[ ! -f "${ENV_FILE}" ]]; then
@@ -151,8 +168,16 @@ RUN_CONCURRENCY=2
 TASK_DISPATCHER=systemd
 EOF
 fi
-chmod 0600 "${ENV_FILE}"
-chown root:root "${ENV_FILE}"
+# Permissions: root owns the file. The app user's group can read it so
+# both systemd (root) and bin/deploy-prod.sh (running as fmetrain) can
+# source it. World has no access.
+chown "root:${APP_USER}" "${ENV_FILE}"
+chmod 0640 "${ENV_FILE}"
+# Same for the .new sidecar from the role-creation step, if it exists.
+if [[ -f "${ENV_FILE}.new" ]]; then
+  chown "root:${APP_USER}" "${ENV_FILE}.new"
+  chmod 0640 "${ENV_FILE}.new"
+fi
 
 # --------------------------------------------------------------------------
 # 6. systemd units — installed under the app user's user-mode systemd.
@@ -206,19 +231,22 @@ sudo -u "${APP_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${APP_USER}") \
 # --------------------------------------------------------------------------
 # 7. Nginx
 # --------------------------------------------------------------------------
-log "Writing nginx config…"
-cat > /etc/nginx/conf.d/fme-train.conf <<'EOF'
+log "Writing nginx config (server_name=${SERVER_NAME})…"
+# certbot --nginx looks for a server block whose server_name already
+# contains the requested hostname so it can insert the TLS redirect +
+# HTTPS block. A catch-all `_` confuses it. Use the real hostname.
+cat > /etc/nginx/conf.d/fme-train.conf <<EOF
 server {
-  listen 80 default_server;
-  listen [::]:80 default_server;
-  server_name _;
+  listen 80;
+  listen [::]:80;
+  server_name ${SERVER_NAME};
 
   # certbot --nginx will append the redirect + TLS block here.
   location / {
     proxy_pass http://127.0.0.1:8000;
-    proxy_set_header Host              $host;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Forwarded-For   $remote_addr;
+    proxy_set_header Host              \$host;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Forwarded-For   \$remote_addr;
     proxy_read_timeout 300s;
     proxy_buffering off;  # SSE log streaming wants flushed writes
   }
