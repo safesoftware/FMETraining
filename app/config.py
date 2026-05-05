@@ -39,12 +39,23 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO")
 
     # ---- Database --------------------------------------------------------
-    # Phase 0 leaves the actual SQLAlchemy engine wiring to KNOW-2260; we just
-    # read the URL here so the rest of the stack can pick it up later.
     database_url: Optional[str] = Field(
         default=None,
-        description="postgresql+psycopg://user:pass@host/db. Optional in Phase 0.",
+        description="postgresql+asyncpg://user:pass@host/db. Optional at startup; "
+                    "required before the scheduler dispatches anything.",
     )
+
+    # ---- Run scheduler / worker -----------------------------------------
+    # Team-wide concurrency cap on simultaneously running pipeline runs.
+    # See plan section 3 — the scheduler enforces this before dispatch.
+    run_concurrency: int = Field(default=2, ge=1)
+    # How often the scheduler polls runs.status='queued' (seconds).
+    scheduler_poll_interval_s: float = Field(default=2.0, gt=0)
+    # Selects how the scheduler dispatches workers:
+    #   'stub'           — in-process callable (tests, ad-hoc dev)
+    #   'docker-compose' — runs `docker compose run --rm worker-runner` (local)
+    #   'ecs'            — boto3 ecs.run_task (production)
+    task_dispatcher: str = Field(default="stub")
 
     # ---- Sessions / auth -------------------------------------------------
     # Required once auth lands (KNOW-2259); optional in Phase 0 so the skeleton

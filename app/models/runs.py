@@ -123,7 +123,13 @@ class RunLog(Base):
         Index("ix_run_logs_run_id_id", "run_id", "id"),
     )
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    # BigInteger on Postgres for room to grow; Integer on SQLite so the
+    # column maps to ROWID and autoincrement works in unit tests.
+    id: Mapped[int] = mapped_column(
+        BigInteger().with_variant(Integer(), "sqlite"),
+        primary_key=True,
+        autoincrement=True,
+    )
     run_id: Mapped[str] = mapped_column(
         String(64),
         ForeignKey("runs.id", ondelete="CASCADE"),
