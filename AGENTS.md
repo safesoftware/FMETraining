@@ -68,6 +68,22 @@ This rule is non-negotiable. A "Ready for QA" issue without these four elements 
 - `mcp__claude_ai_Atlassian__editJiraIssue` — update summary, description, fields.
 - `mcp__claude_ai_Atlassian__searchJiraIssuesUsingJql` — find existing issues before filing duplicates.
 
+## Planning
+
+Multi-step work (anything taking more than a few hours, anything touching multiple modules, anything with phasing or staging) gets a written plan **before** code starts. Use plan mode in Claude Code, or hand-write a Markdown plan otherwise.
+
+When a plan is **approved by the user**, save it to `docs/plans/YYYY-MM-DD-short-slug.md`:
+
+- The date is the date of approval (not the date work begins).
+- The slug is a 2–4 word kebab-case description (e.g. `multi-user-web-app-deployment`, `jira-pii-scrub`).
+- Commit the plan file alongside the first piece of code that executes against it, on the same feature branch.
+
+**Why save them:** future agent sessions need to know what was decided and why. The plan is the durable artifact; the original Claude Code chat may not be visible later. A reviewer also benefits from being able to compare the implementation against the agreed plan.
+
+Existing plans:
+- `docs/plans/2026-04-29-multi-user-web-app.md` — architecture decisions for the multi-user web app rebuild (KNOW-2257).
+- `docs/plans/2026-05-05-multi-user-web-app-deployment.md` — Phase 0 remaining work + AWS deployment steps (KNOW-2257 follow-up).
+
 ## Critical Rules
 
 1. **You are working in a sensitive environment. Do not attempt to commit files in the /data or /artifacts folder, and always use environment variables for credentials.**
