@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from app.config import get_settings
 from app.db.engine import _get_or_create_session_factory
-from app.routes import health, index, report_drafts, sse
+from app.routes import health, index, report_drafts, skilljar, sse
 from app.services.run_scheduler import RunScheduler
 from app.services.task_dispatcher import (
     InProcessTaskDispatcher,
@@ -159,6 +159,7 @@ def create_app() -> FastAPI:
     fastapi_app.include_router(health.router)
     fastapi_app.include_router(index.router)
     fastapi_app.include_router(report_drafts.router)
+    fastapi_app.include_router(skilljar.router)
     fastapi_app.include_router(sse.router)
 
     # TODO(future ticket): add CORSMiddleware with explicit `allow_origins`
