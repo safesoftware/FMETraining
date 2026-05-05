@@ -175,6 +175,23 @@ async def run_worker(
                         session_factory, run_id, step_num, "error", cost_meter
                     )
                     break
+                except BaseException as exc:
+                    # KeyboardInterrupt / asyncio.CancelledError / SystemExit.
+                    # Persist the run as 'error' on the way out, then re-raise
+                    # so the caller (asyncio runner / signal handler) sees
+                    # the cancellation it sent us. Without this, a worker
+                    # killed by SIGTERM would record status='done' because
+                    # final_status defaults to TERMINAL_OK.
+                    final_status = TERMINAL_ERROR
+                    error_text = (
+                        f"Worker interrupted by {type(exc).__name__}"
+                        + (f": {exc}" if str(exc) else "")
+                    )
+                    _logger.warning(
+                        "Worker step %d for run %s interrupted: %s",
+                        step_num, run_id, type(exc).__name__,
+                    )
+                    raise
                 else:
                     await _finish_step(
                         session_factory, run_id, step_num, "done", cost_meter
@@ -187,7 +204,7 @@ async def run_worker(
             )
         finally:
             # Always best-effort flip the run's final status, even on
-            # unexpected exit paths.
+            # unexpected exit paths (incl. BaseException re-raises above).
             await _finalise_run(session_factory, run_id, final_status, error_text)
 
     return final_status

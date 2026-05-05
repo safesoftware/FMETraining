@@ -80,8 +80,30 @@ class InProcessTaskDispatcher(TaskDispatcher):
         task_name = f"in-process-worker:{run_id}"
         task = asyncio.create_task(self._worker_callable(run_id), name=task_name)
         self._spawned.add(task)
-        task.add_done_callback(self._spawned.discard)
+        task.add_done_callback(self._on_task_done)
         return task_name
+
+    def _on_task_done(self, task: asyncio.Task) -> None:
+        """Drop the task from the spawn set AND surface exceptions.
+
+        ``run_worker`` already updates ``runs.status`` from its own
+        ``finally`` block, so the DB record is correct even when this
+        callback runs. What we don't want is the task's exception getting
+        silently dropped on the floor — that hides bugs in the dispatcher
+        wiring or the worker callable itself.
+        """
+        self._spawned.discard(task)
+        if task.cancelled():
+            return
+        exc = task.exception()
+        if exc is not None:
+            _logger.error(
+                "In-process worker task %r ended with %s: %s",
+                task.get_name(),
+                type(exc).__name__,
+                exc,
+                exc_info=(type(exc), exc, exc.__traceback__),
+            )
 
 
 # ---------------------------------------------------------------------------
