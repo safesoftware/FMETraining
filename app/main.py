@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from app.config import get_settings
 from app.db.engine import _get_or_create_session_factory
-from app.routes import health, index
+from app.routes import health, index, report_drafts, sse
 from app.services.run_scheduler import RunScheduler
 from app.services.task_dispatcher import (
     InProcessTaskDispatcher,
@@ -37,6 +37,7 @@ from app.services.worker_lifecycle import run_worker
 logger = logging.getLogger(__name__)
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
+ARTIFACTS_DIR = Path(__file__).resolve().parent.parent / "artifacts"
 
 
 def _configure_logging(level: str) -> None:
@@ -142,9 +143,23 @@ def create_app() -> FastAPI:
         name="static",
     )
 
+    # Same-origin mount for the static report HTML emitted by
+    # ``pipeline/report.py``. Lets the report's embedded JS auto-save to
+    # the FastAPI editor-state endpoints without CORS plumbing.
+    # KNOW-2276 (Phase 1a). Phase 2 will move the report into a Jinja
+    # template + this mount goes away.
+    if ARTIFACTS_DIR.exists():
+        fastapi_app.mount(
+            "/artifacts",
+            StaticFiles(directory=str(ARTIFACTS_DIR)),
+            name="artifacts",
+        )
+
     # Routes
     fastapi_app.include_router(health.router)
     fastapi_app.include_router(index.router)
+    fastapi_app.include_router(report_drafts.router)
+    fastapi_app.include_router(sse.router)
 
     # TODO(future ticket): add CORSMiddleware with explicit `allow_origins`
     # before the first JSON-only API endpoint goes live. Use the App Runner
