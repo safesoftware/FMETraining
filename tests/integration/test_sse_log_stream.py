@@ -201,6 +201,32 @@ async def test_rows_arriving_after_connect_are_streamed(async_session_factory) -
     assert any(e.get("event") == "complete" for e in events)
 
 
+# ---- malformed Last-Event-ID -------------------------------------------
+
+@pytest.mark.asyncio
+async def test_negative_last_event_id_treated_as_start_from_beginning(
+    async_session_factory,
+) -> None:
+    """A buggy or hostile client sending Last-Event-ID: -1 used to result
+    in `WHERE id > -1` — replaying the entire log. Should be treated the
+    same as no header (start at 0)."""
+    await _seed_run(async_session_factory, "r-neg", status="running")
+    await _append_log(async_session_factory, "r-neg", "info", "first")
+    await _append_log(async_session_factory, "r-neg", "info", "second")
+    await _set_status(async_session_factory, "r-neg", "done")
+
+    payload = await _drain(stream_logs(
+        session_factory=async_session_factory,
+        run_id="r-neg",
+        last_event_id=-9999,  # malformed — must not replay everything from a "negative" cursor
+        poll_interval_s=0.01,
+    ))
+    events = _parse_sse_events(payload)
+    messages = [e["data"]["message"] for e in events if e.get("event") == "log"]
+    # We expect both rows (clamped to 0 — same as no header).
+    assert messages == ["first", "second"]
+
+
 # ---- run not found ------------------------------------------------------
 
 @pytest.mark.asyncio

@@ -110,66 +110,84 @@ async def stream_logs(
     Yields raw ``bytes`` because that's what FastAPI's ``StreamingResponse``
     wants. The encoding is UTF-8.
     """
-    cursor = last_event_id or 0
+    # Treat negative or out-of-band ids as "start from the beginning" — a
+    # malformed Last-Event-ID (e.g. a negative integer from a buggy client)
+    # would otherwise cause `WHERE id > -1`, replaying the entire log.
+    cursor = last_event_id if (last_event_id is not None and last_event_id >= 0) else 0
     started_at = asyncio.get_event_loop().time()
     last_heartbeat_at = started_at
 
     # Tell the client we're alive even before any rows are ready.
     yield _sse_comment("connected")
 
-    while True:
-        # 1. Drain any rows newer than the cursor.
-        new_rows = await _fetch_rows(session_factory, run_id, cursor)
-        for row in new_rows:
-            yield _sse_event(
-                id=row["id"],
-                event="log",
-                data=json.dumps({
-                    "id": row["id"],
-                    "ts": row["ts"],
-                    "level": row["level"],
-                    "message": row["message"],
-                }),
-            )
-            cursor = row["id"]
-
-        # 2. Check if we should stop. Terminal status AND no new rows
-        #    means the run is done and we've delivered everything.
-        if not new_rows:
-            run_status = await _fetch_run_status(session_factory, run_id)
-            if run_status in _TERMINAL_STATUSES:
+    try:
+        while True:
+            # 1. Drain any rows newer than the cursor.
+            new_rows = await _fetch_rows(session_factory, run_id, cursor)
+            for row in new_rows:
                 yield _sse_event(
-                    event="complete",
-                    data=json.dumps({"run_id": run_id, "status": run_status}),
+                    id=row["id"],
+                    event="log",
+                    data=json.dumps({
+                        "id": row["id"],
+                        "ts": row["ts"],
+                        "level": row["level"],
+                        "message": row["message"],
+                    }),
                 )
-                return
-            if run_status is None:
-                # Run row doesn't exist — surface and stop.
+                cursor = row["id"]
+
+            # 2. Check if we should stop. Terminal status AND no new rows
+            #    means the run is done and we've delivered everything.
+            if not new_rows:
+                run_status = await _fetch_run_status(session_factory, run_id)
+                if run_status in _TERMINAL_STATUSES:
+                    yield _sse_event(
+                        event="complete",
+                        data=json.dumps({"run_id": run_id, "status": run_status}),
+                    )
+                    return
+                if run_status is None:
+                    # Run row doesn't exist — surface and stop.
+                    yield _sse_event(
+                        event="error",
+                        data=json.dumps({"error": "run not found", "run_id": run_id}),
+                    )
+                    return
+
+            # 3. Hard cap.
+            now = asyncio.get_event_loop().time()
+            if now - started_at > max_duration_s:
                 yield _sse_event(
                     event="error",
-                    data=json.dumps({"error": "run not found", "run_id": run_id}),
+                    data=json.dumps({
+                        "error": "stream max-duration reached",
+                        "run_id": run_id,
+                    }),
                 )
                 return
 
-        # 3. Hard cap.
-        now = asyncio.get_event_loop().time()
-        if now - started_at > max_duration_s:
-            yield _sse_event(
-                event="error",
-                data=json.dumps({
-                    "error": "stream max-duration reached",
-                    "run_id": run_id,
-                }),
-            )
-            return
+            # 4. Heartbeat if we haven't sent one in a while.
+            if now - last_heartbeat_at >= heartbeat_interval_s:
+                yield _sse_comment("heartbeat")
+                last_heartbeat_at = now
 
-        # 4. Heartbeat if we haven't sent one in a while.
-        if now - last_heartbeat_at >= heartbeat_interval_s:
-            yield _sse_comment("heartbeat")
-            last_heartbeat_at = now
-
-        # 5. Wait, then loop.
-        await asyncio.sleep(poll_interval_s)
+            # 5. Wait, then loop.
+            await asyncio.sleep(poll_interval_s)
+    except asyncio.CancelledError:
+        # FastAPI's StreamingResponse throws this into the generator when
+        # the client disconnects. Log it once so we have visibility into
+        # how many streams die mid-flight, then re-raise so FastAPI knows
+        # the generator is done and can release its resources.
+        _logger.info(
+            "SSE stream cancelled (client disconnect) for run %s at cursor %s",
+            run_id, cursor,
+        )
+        raise
+    finally:
+        _logger.debug(
+            "SSE stream exiting for run %s (final cursor=%s)", run_id, cursor
+        )
 
 
 # ---------------------------------------------------------------------------
