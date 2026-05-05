@@ -86,6 +86,16 @@ class SkilljarClient:
         the ``next`` URL and reissue against the same path — this keeps the
         request URLs predictable for both our base-url'd httpx client and
         for ``respx`` mocks in tests.
+
+        We always re-set ``page_size`` on every page so a missing
+        ``page_size`` in Skilljar's ``next`` URL doesn't silently revert
+        subsequent pages to Skilljar's default page size.
+
+        If Skilljar's ``next`` URL points at a different path than the one
+        we're paginating (e.g. an API version migration mid-rollout), we
+        log a warning. We continue against the original path because
+        switching mid-stream would require trusting an unsigned URL that
+        the caller didn't ask for.
         """
         from urllib.parse import urlparse, parse_qs
 
@@ -99,10 +109,17 @@ class SkilljarClient:
             next_url = payload.get("next")
             if not next_url:
                 return
-            # Extract the cursor (and any other query kwargs) from the
-            # absolute `next` URL and reissue against the same path.
             parsed = urlparse(next_url)
+            if parsed.path and parsed.path.rstrip("/") != path.rstrip("/"):
+                _logger.warning(
+                    "Skilljar next URL points at a different path: "
+                    "expected %s, got %s. Continuing against the expected path.",
+                    path, parsed.path,
+                )
+            # Carry over Skilljar's cursor (or any other params it includes)
+            # but always force page_size — Skilljar omits it from `next`.
             params = {k: v[0] for k, v in parse_qs(parsed.query).items()}
+            params["page_size"] = self._page_size
 
     # ---- public list endpoints ------------------------------------------
 

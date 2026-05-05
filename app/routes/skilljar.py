@@ -52,36 +52,51 @@ async def sync_skilljar_inventory() -> dict:
             detail="SKILLJAR_API_KEY is not configured",
         )
 
-    now = datetime.now(timezone.utc)
-    if _last_sync_at is not None and now - _last_sync_at < _THROTTLE_WINDOW:
-        seconds_remaining = int(
-            (_THROTTLE_WINDOW - (now - _last_sync_at)).total_seconds()
-        )
-        raise HTTPException(
-            status_code=429,
-            detail=f"Skilljar sync throttled — try again in {seconds_remaining}s",
-            headers={"Retry-After": str(seconds_remaining)},
-        )
-
     try:
         session_factory = _get_or_create_session_factory()
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc))
 
-    # Single-flight: if a sync is already running, the second caller
-    # waits and then sees the throttle window, returning a 429.
+    # Throttle check + sync run + timestamp write all live inside the
+    # lock. If we checked the throttle outside the lock, two near-
+    # simultaneous requests could both pass the check, both queue on
+    # the lock, and both run a full sync.
     async with _sync_lock:
+        now = datetime.now(timezone.utc)
+        if _last_sync_at is not None and now - _last_sync_at < _THROTTLE_WINDOW:
+            seconds_remaining = int(
+                (_THROTTLE_WINDOW - (now - _last_sync_at)).total_seconds()
+            )
+            raise HTTPException(
+                status_code=429,
+                detail=f"Skilljar sync throttled — try again in {seconds_remaining}s",
+                headers={"Retry-After": str(seconds_remaining)},
+            )
+
         async with SkilljarClient(api_key) as client:
             counts = await sync_inventory(
                 session_factory=session_factory, client=client
             )
         _last_sync_at = datetime.now(timezone.utc)
+        synced_at_iso = _last_sync_at.isoformat()
 
     return {
-        "synced_at": _last_sync_at.isoformat(),
-        "courses": {"seen": counts.courses_seen, "upserted": counts.courses_upserted},
-        "lessons": {"seen": counts.lessons_seen, "upserted": counts.lessons_upserted},
-        "paths": {"seen": counts.paths_seen, "upserted": counts.paths_upserted},
+        "synced_at": synced_at_iso,
+        "courses": {
+            "seen": counts.courses_seen,
+            "inserted": counts.courses_inserted,
+            "updated": counts.courses_updated,
+        },
+        "lessons": {
+            "seen": counts.lessons_seen,
+            "inserted": counts.lessons_inserted,
+            "updated": counts.lessons_updated,
+        },
+        "paths": {
+            "seen": counts.paths_seen,
+            "inserted": counts.paths_inserted,
+            "updated": counts.paths_updated,
+        },
     }
 
 

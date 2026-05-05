@@ -93,9 +93,9 @@ async def test_full_sync_upserts_all_three_tables(async_session_factory) -> None
         session_factory=async_session_factory, client=client
     )
 
-    assert counts.courses_seen == 2 and counts.courses_upserted == 2
-    assert counts.lessons_seen == 3 and counts.lessons_upserted == 3
-    assert counts.paths_seen == 1 and counts.paths_upserted == 1
+    assert counts.courses_seen == 2 and counts.courses_inserted == 2 and counts.courses_updated == 0
+    assert counts.lessons_seen == 3 and counts.lessons_inserted == 3 and counts.lessons_updated == 0
+    assert counts.paths_seen == 1 and counts.paths_inserted == 1 and counts.paths_updated == 0
 
     async with async_session_factory() as session:
         courses = (await session.scalars(select(SkilljarCourse))).all()
@@ -133,7 +133,8 @@ async def test_lesson_with_unknown_course_id_gets_null_fk(async_session_factory)
     counts = await sync_inventory(
         session_factory=async_session_factory, client=client
     )
-    assert counts.lessons_upserted == 1
+    assert counts.lessons_seen == 1
+    assert counts.lessons_inserted == 1
     async with async_session_factory() as session:
         l = await session.get(SkilljarLesson, "orphan")
     assert l is not None
@@ -144,15 +145,25 @@ async def test_lesson_with_unknown_course_id_gets_null_fk(async_session_factory)
 
 @pytest.mark.asyncio
 async def test_re_sync_is_idempotent(async_session_factory) -> None:
-    """Running sync twice on the same data must not duplicate rows."""
+    """Running sync twice on the same data must not duplicate rows AND
+    must not falsely report any inserts/updates on the second pass."""
     client = _StubSkilljarClient(
         courses=[{"id": "c1", "title": "C1", "tags": ["version:2026.1"]}],
         lessons=[{"id": "l1", "course_id": "c1", "title": "L1"}],
         published_paths=[{"id": "p1", "title": "P1", "courses": ["c1"]}],
     )
 
-    await sync_inventory(session_factory=async_session_factory, client=client)
-    await sync_inventory(session_factory=async_session_factory, client=client)
+    first = await sync_inventory(session_factory=async_session_factory, client=client)
+    second = await sync_inventory(session_factory=async_session_factory, client=client)
+
+    # First pass: everything inserted, nothing updated.
+    assert (first.courses_inserted, first.courses_updated) == (1, 0)
+    assert (first.lessons_inserted, first.lessons_updated) == (1, 0)
+    assert (first.paths_inserted, first.paths_updated) == (1, 0)
+    # Second pass: nothing inserted, nothing updated (idempotency).
+    assert (second.courses_inserted, second.courses_updated) == (0, 0)
+    assert (second.lessons_inserted, second.lessons_updated) == (0, 0)
+    assert (second.paths_inserted, second.paths_updated) == (0, 0)
 
     async with async_session_factory() as session:
         c_count = len((await session.scalars(select(SkilljarCourse))).all())
@@ -176,12 +187,15 @@ async def test_re_sync_updates_changed_title(async_session_factory) -> None:
         published_paths=[],
     )
 
-    await sync_inventory(session_factory=async_session_factory, client=initial)
-    await sync_inventory(session_factory=async_session_factory, client=updated)
+    first = await sync_inventory(session_factory=async_session_factory, client=initial)
+    second = await sync_inventory(session_factory=async_session_factory, client=updated)
 
     async with async_session_factory() as session:
         course = await session.get(SkilljarCourse, "c1")
     assert course.title == "New Title"
+    assert (first.courses_inserted, first.courses_updated) == (1, 0)
+    # Second pass: no insert, exactly one update.
+    assert (second.courses_inserted, second.courses_updated) == (0, 1)
 
 
 # ---- empty inventory ----------------------------------------------------
