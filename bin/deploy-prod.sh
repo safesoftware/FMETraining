@@ -93,7 +93,15 @@ dropdb --if-exists -U "${PG_USER}" "${SCRATCH_DB}"
 createdb -U "${PG_USER}" "${SCRATCH_DB}"
 pg_dump -U "${PG_USER}" -s "${PG_DB}" | psql -U "${PG_USER}" -q "${SCRATCH_DB}" >/dev/null
 
-SCRATCH_URL="postgresql+asyncpg://${PG_USER}@127.0.0.1:5432/${SCRATCH_DB}"
+# Derive the scratch URL from the real DATABASE_URL so it inherits the
+# password. AL2023 Postgres defaults to md5 auth for TCP connections,
+# so a password-less URL ("…://${PG_USER}@127.0.0.1…") would fail the
+# scratch alembic call and effectively disable this safety check.
+# Strip the trailing "/<dbname>" off DATABASE_URL and append the
+# scratch DB name. Assumes the canonical
+# `postgresql+asyncpg://user:pass@host:port/dbname` shape that
+# setup-ec2.sh writes, which it does.
+SCRATCH_URL="${DATABASE_URL%/*}/${SCRATCH_DB}"
 DATABASE_URL="${SCRATCH_URL}" "${APP_DIR}/.venv/bin/alembic" upgrade head
 
 log "Migration validated cleanly. Cleaning up scratch DB…"
