@@ -1,0 +1,93 @@
+# .dockerignore — keep the build context lean and avoid leaking secrets.
+# Owned by KNOW-2263 (Phase 0 Dockerfile + Compose stack).
+
+# --- VCS / dev metadata ---------------------------------------------------
+.git
+.gitattributes
+.github
+.devcontainer
+.vscode
+.idea
+.claude
+
+# --- Secrets / env files (allow only .env.example and .env.compose) -------
+.env
+.env.*
+!.env.example
+!.env.compose
+!.env.sample
+
+# --- Python build / cache -------------------------------------------------
+__pycache__
+**/__pycache__
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info
+*.egg
+build
+dist
+.eggs
+.venv
+venv
+env
+ENV
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.tox
+.coverage
+.coverage.*
+htmlcov
+.hypothesis
+
+# --- Local-only data, artifacts, and inputs (read-only sources or runtime
+#     state that must not bake into the image) -----------------------------
+artifacts
+data
+inputs
+
+# --- Lesson content trees -------------------------------------------------
+# These are large, version-pinned, and read-only inputs. The Phase 0 web/
+# worker container does not need them baked in — Skilljar is the canonical
+# source per the multi-user web app plan, section 1. Keep them out of the
+# image to keep it small and free of training corpus.
+2021.0
+2021.1
+2022.0
+2022.1
+2023.0
+2023.1
+2023.2
+2024.0
+2024.1
+2024.2
+2025.0
+2025.1
+2026.0
+2026.1
+
+# --- Tests / IaC owned by other tickets ----------------------------------
+tests
+infra
+
+# --- Editor / OS junk -----------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# --- Docs / readmes (don't need them inside the runtime image) -----------
+docs
+*.md
+!README.md
+
+# --- Misc ----------------------------------------------------------------
+*.log
+*.sqlite3
+*.sqlite3-journal
+launcher.html
+launch.sh
+launch.bat
