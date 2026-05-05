@@ -42,6 +42,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -142,7 +143,13 @@ class LessonDraft(Base):
 
     __tablename__ = "lesson_drafts"
     __table_args__ = (
-        Index("ix_lesson_drafts_to_version_path", "to_version", "path"),
+        # UNIQUE on (to_version, path) so two concurrent POSTs to
+        # /api/drafts can't race the existence check and create
+        # duplicate rows for the same lesson. The route catches the
+        # resulting IntegrityError and retries as an UPDATE.
+        UniqueConstraint(
+            "to_version", "path", name="uq_lesson_drafts_to_version_path",
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
