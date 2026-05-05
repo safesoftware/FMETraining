@@ -91,3 +91,31 @@ async def test_read_missing_file_raises_lookup_error(tmp_path: Path) -> None:
     fake = tmp_path / "2026.1" / "missing" / "index.html"
     with pytest.raises(LookupError):
         await storage.read(str(fake))
+
+
+# ---- mkdir lazy + error surfacing ---------------------------------------
+
+def test_init_does_not_mkdir(tmp_path: Path) -> None:
+    """Constructing the storage must not actually mkdir — that's deferred
+    to first write so a misconfigured root doesn't crash the app at
+    import time / on every request."""
+    target = tmp_path / "deferred-root"
+    assert not target.exists()
+    LocalDiskDraftStorage(target)
+    assert not target.exists()
+
+
+@pytest.mark.asyncio
+async def test_unwritable_root_raises_DraftStorageUnavailable(tmp_path: Path) -> None:
+    """Per the route contract: filesystem failures map to a different
+    exception class so the route can return 503 instead of 400."""
+    from app.services.draft_storage import DraftStorageUnavailable
+
+    # Create a regular file where the storage expects a directory. mkdir
+    # against the path will fail with NotADirectoryError, which the
+    # storage wraps as DraftStorageUnavailable.
+    blocker = tmp_path / "blocker"
+    blocker.write_text("I am a file, not a directory")
+    storage = LocalDiskDraftStorage(blocker / "drafts")
+    with pytest.raises(DraftStorageUnavailable):
+        await storage.write(to_version="2026.1", path="lp/c/l", html="x")

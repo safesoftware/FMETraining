@@ -177,6 +177,33 @@ def test_re_save_after_archive_un_archives(configured_app) -> None:
     assert re_saved["status"] == "draft"
 
 
+def test_re_save_of_promoted_draft_returns_409(configured_app, async_session_factory) -> None:
+    """Promoted drafts (already pushed to Skilljar) must not be silently
+    overwritten. Without this guard, an editor correcting a typo on a
+    released lesson would update the file but leave runs.status='promoted'
+    — the Release tab would never know to re-push."""
+    import asyncio
+
+    client, _ = configured_app
+    saved = client.post("/api/drafts", json={
+        "to_version": "2026.1", "path": "lp/c/l", "html_content": "x"
+    }).json()
+
+    async def _promote() -> None:
+        from app.models.skilljar import LessonDraft
+        async with async_session_factory() as session:
+            row = await session.get(LessonDraft, saved["id"])
+            row.status = "promoted"
+            await session.commit()
+    asyncio.get_event_loop().run_until_complete(_promote())
+
+    resp = client.post("/api/drafts", json={
+        "to_version": "2026.1", "path": "lp/c/l", "html_content": "y"
+    })
+    assert resp.status_code == 409
+    assert "promoted" in resp.json()["detail"]
+
+
 def test_archive_refuses_promoted_drafts(configured_app, async_session_factory) -> None:
     """Promoted drafts (already pushed to Skilljar) must not be archivable
     via this endpoint — would confuse the Release tab."""

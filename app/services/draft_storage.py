@@ -30,7 +30,17 @@ _VERSION_RE = re.compile(r"^\d{4}\.\d+$")
 
 
 class DraftStorageError(Exception):
-    """Generic draft-storage failure (mostly path-validation)."""
+    """Generic draft-storage failure (caller's input is invalid).
+
+    The route maps this to HTTP 400. For a server-side problem like an
+    unwritable root, raise :class:`DraftStorageUnavailable` instead.
+    """
+
+
+class DraftStorageUnavailable(DraftStorageError):
+    """The storage backend is itself broken (filesystem, permissions, S3
+    outage, etc.). Distinct from :class:`DraftStorageError` so the route
+    can map it to HTTP 503 instead of 400."""
 
 
 def _validate_to_version(to_version: str) -> None:
@@ -97,16 +107,35 @@ class LocalDiskDraftStorage(DraftStorage):
     """
 
     def __init__(self, root: Path) -> None:
+        # Resolve up front but DO NOT mkdir here. Construction happens on
+        # every request (the route helper builds a fresh storage from
+        # settings each time), so calling mkdir here would mean a flaky
+        # /var/lib path turns the very first request after a fresh deploy
+        # into a 500 with a confusing traceback. Instead, lazy-mkdir on
+        # first write and surface OSError as a clean 503 in the caller.
         self._root = Path(root).resolve()
-        # Ensure the root exists. We do NOT create parent paths above it,
-        # so a misconfigured root fails loudly the first time a write fires.
-        self._root.mkdir(parents=True, exist_ok=True)
+        self._root_ready = False
+
+    def _ensure_root(self) -> None:
+        """Create the storage root on first use. Idempotent."""
+        if self._root_ready:
+            return
+        try:
+            self._root.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            raise DraftStorageUnavailable(
+                f"drafts_root {self._root} is not writable: {exc}. "
+                f"Make sure the FastAPI process owner can mkdir it "
+                f"(setup-ec2.sh creates it as fmetrain by default)."
+            ) from exc
+        self._root_ready = True
 
     async def write(
         self, *, to_version: str, path: str, html: str
     ) -> DraftLocation:
         _validate_to_version(to_version)
         _validate_path(path)
+        self._ensure_root()
 
         target = (self._root / to_version / path / "index.html").resolve()
         # Defence in depth: even with the regex guards above, confirm
@@ -115,8 +144,13 @@ class LocalDiskDraftStorage(DraftStorage):
             raise DraftStorageError(
                 f"draft path resolves outside root: {target}"
             )
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(html, encoding="utf-8")
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(html, encoding="utf-8")
+        except OSError as exc:
+            raise DraftStorageUnavailable(
+                f"failed to write draft to {target}: {exc}"
+            ) from exc
         _logger.info(
             "Wrote draft for to_version=%s path=%s (%d bytes)",
             to_version, path, len(html),

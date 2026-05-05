@@ -24,14 +24,25 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from app.config import get_settings
 from app.db.engine import _get_or_create_session_factory
 from app.models.skilljar import LessonDraft
 from app.services.draft_storage import (
     DraftStorageError,
+    DraftStorageUnavailable,
     LocalDiskDraftStorage,
 )
+
+
+# TODO(KNOW-XXXX, image-serving follow-up): drafts saved via this API
+# can contain `<img src="images/foo.png">` references. Today there is no
+# matching `/api/drafts/{id}/images/{name}` endpoint to serve them, so a
+# browser preview of a saved draft renders broken images. Decide between
+# (a) S3 image bucket via the existing pipeline/lesson_image_upload
+# flow, or (b) local /var/lib/fme-train/drafts/<...>/images served by
+# Nginx. Image upload + rewrite belong here when that decision is made.
 
 _logger = logging.getLogger(__name__)
 
@@ -111,7 +122,16 @@ async def save_draft(req: SaveDraftRequest) -> DraftSummary:
 
     Idempotent on ``(to_version, path)`` — re-saving the same lesson
     overwrites the file and increments ``updated_at`` rather than
-    creating a duplicate row.
+    creating a duplicate row. The DB enforces uniqueness via the
+    ``uq_lesson_drafts_to_version_path`` constraint so two racing POSTs
+    can't double-insert: the second one's INSERT raises
+    ``IntegrityError``, which we catch and retry as an UPDATE.
+
+    Promoted drafts (already pushed to Skilljar) cannot be overwritten
+    via this endpoint — would silently desync the live lesson from our
+    record. Returns 409 instead. The editor flow for a re-edit of a
+    promoted lesson is to first un-promote (a separate Release-tab
+    action) and then re-save through this path.
 
     TODO(KNOW-2259): once auth lands, populate ``created_by`` / ``updated_by``
     from the session cookie. For now both stay NULL.
@@ -123,7 +143,11 @@ async def save_draft(req: SaveDraftRequest) -> DraftSummary:
             path=req.path,
             html=req.html_content,
         )
+    except DraftStorageUnavailable as exc:
+        # Server-side: misconfigured drafts_root, disk full, etc.
+        raise HTTPException(status_code=503, detail=str(exc))
     except DraftStorageError as exc:
+        # Caller's input is invalid (bad path, traversal attempt, etc.).
         raise HTTPException(status_code=400, detail=str(exc))
 
     try:
@@ -132,6 +156,30 @@ async def save_draft(req: SaveDraftRequest) -> DraftSummary:
         raise HTTPException(status_code=503, detail=str(exc))
 
     now = datetime.now(timezone.utc)
+
+    # Attempt INSERT first. If a concurrent request beat us to it, the
+    # UNIQUE constraint trips IntegrityError and we fall through to an
+    # UPDATE instead. This is safer than SELECT-then-INSERT, which has
+    # a TOCTOU window large enough for two browser tabs to collide.
+    async with session_factory() as session:
+        row = LessonDraft(
+            to_version=req.to_version,
+            path=req.path,
+            s3_key=location.key,
+            source_skilljar_lesson_id=req.source_skilljar_lesson_id,
+            status="draft",
+            created_at=now,
+            updated_at=now,
+        )
+        session.add(row)
+        try:
+            await session.commit()
+            await session.refresh(row)
+            return _summary_from_row(row)
+        except IntegrityError:
+            await session.rollback()
+
+    # Fall through to update path: the row already exists.
     async with session_factory() as session:
         existing = await session.scalar(
             select(LessonDraft).where(
@@ -140,32 +188,31 @@ async def save_draft(req: SaveDraftRequest) -> DraftSummary:
             )
         )
         if existing is None:
-            row = LessonDraft(
-                to_version=req.to_version,
-                path=req.path,
-                s3_key=location.key,
-                source_skilljar_lesson_id=req.source_skilljar_lesson_id,
-                status="draft",
-                created_at=now,
-                updated_at=now,
+            # Extremely narrow race: row existed when we INSERT'd, then
+            # was deleted between the rollback and this SELECT. Surface
+            # as 503 so the caller retries.
+            raise HTTPException(
+                status_code=503,
+                detail="Draft row vanished mid-save; please retry.",
             )
-            session.add(row)
-            await session.commit()
-            await session.refresh(row)
-        else:
-            existing.s3_key = location.key
-            existing.source_skilljar_lesson_id = req.source_skilljar_lesson_id
-            existing.updated_at = now
-            # If a previously-archived draft is re-saved, treat that as
-            # un-archiving it. Promoted drafts stay promoted (the editor
-            # shouldn't overwrite a published lesson via this path).
-            if existing.status == "archived":
-                existing.status = "draft"
-            await session.commit()
-            await session.refresh(existing)
-            row = existing
-
-    return _summary_from_row(row)
+        if existing.status == "promoted":
+            raise HTTPException(
+                status_code=409,
+                detail=(
+                    f"Draft {existing.id} for {req.path!r} is promoted; "
+                    "un-promote it from the Release tab before re-saving."
+                ),
+            )
+        existing.s3_key = location.key
+        existing.source_skilljar_lesson_id = req.source_skilljar_lesson_id
+        existing.updated_at = now
+        # If a previously-archived draft is re-saved, treat that as
+        # un-archiving it.
+        if existing.status == "archived":
+            existing.status = "draft"
+        await session.commit()
+        await session.refresh(existing)
+        return _summary_from_row(existing)
 
 
 @router.get("/api/drafts")
