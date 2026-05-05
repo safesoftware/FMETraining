@@ -62,6 +62,12 @@ JIRA_FILTER_ID: str = os.getenv("JIRA_FILTER_ID", "")
 # Path is gitignored via /.cache/ in .gitignore.
 JIRA_CACHE_PATH: Path = REPO_ROOT / ".cache" / "jira_api_cache.json"
 
+# Base URL of the FastAPI app the report's auto-save JS POSTs to. Same
+# origin as the report HTML — the FastAPI app mounts /artifacts so this
+# URL is also where the report itself loads from. Override per-environment
+# (e.g. https://fme-train.safe.com in production).
+APP_BASE_URL: str = os.getenv("APP_BASE_URL", "http://localhost:8000")
+
 # Skilljar API credentials (for Push to Skilljar feature)
 SKILLJAR_API_KEY: str = os.getenv("SKILLJAR_API_KEY", "")
 SKILLJAR_DOMAIN: str = os.getenv("SKILLJAR_DOMAIN", "")

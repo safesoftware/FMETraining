@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Drafts — FME Training Automation{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>Drafts</h2>
+    <p>
+      Runs with in-progress edits or saved lessons. "Open" reopens the
+      lesson edit report with your accept/reject decisions and WYSIWYG
+      content restored.
+    </p>
+  </section>
+
+  {% if not runs %}
+    <section><p><em>No drafts yet. Once you accept or reject any recommendation in a report, it will appear here.</em></p></section>
+  {% else %}
+    {% for run in runs %}
+      <section class="draft-run">
+        <h3>
+          {{ run.run_id }}
+          {% if run.to_version %}<small>&middot; to {{ run.to_version }}</small>{% endif %}
+        </h3>
+        <p class="draft-meta">
+          {% if run.started_at %}Started {{ run.started_at.isoformat(timespec="seconds") }}{% else %}Created {{ run.created_at.isoformat(timespec="seconds") }}{% endif %}
+        </p>
+        <ul class="draft-lessons">
+          {% for lesson in run.lessons %}
+            <li class="draft-lesson">
+              <span class="badge badge-{{ lesson.status }}">{{ lesson.status.replace("_", " ") }}</span>
+              <span class="lesson-dir">{{ lesson.lesson_dir }}</span>
+              <a class="open-link" href="{{ lesson.open_url }}">Open</a>
+              {% if lesson.saved_to_version_path %}
+                <small class="saved-path">saved to <code>{{ lesson.saved_to_version_path }}</code></small>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
