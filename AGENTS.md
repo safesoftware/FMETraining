@@ -72,6 +72,23 @@ This rule is non-negotiable. A "Ready for QA" issue without these four elements 
 
 Multi-step work (anything taking more than a few hours, anything touching multiple modules, anything with phasing or staging) gets a written plan **before** code starts. Use plan mode in Claude Code, or hand-write a Markdown plan otherwise.
 
+### Challenge inherited plans before executing them
+
+When you pick up a plan written by a previous session — whether it's a `docs/plans/*.md` file, a Jira description, or a half-written PR — your **first job is to confirm the plan's scope still fits the constraints**, not to start executing.
+
+Specifically, before touching code, restate in chat:
+
+1. **Who's the audience?** (Number of users, internal vs external, regulated workload, etc.)
+2. **What's the SLA?** (Downtime tolerance in minutes, hours, or "during business hours.")
+3. **What's the budget?** (Implicit if not stated — flag if the plan is implicitly above what a tool of this size would warrant.)
+4. **What's the operator's experience level?** ("Has only deployed a static site" implies a different deployment than "runs a fleet of microservices.")
+
+Then ask: **does the plan's complexity match these constraints?** If a 5-user internal tool's plan reads like a customer-facing SaaS architecture, push back before building anything. The cheapest token to spend is the one that says "this looks heavy for what you described — want me to draft a simpler alternative first?"
+
+A plan inherited from another session does not get a free pass. The previous session may have had different information, or no information, or simply missed the scope mismatch.
+
+### Saving approved plans
+
 When a plan is **approved by the user**, save it to `docs/plans/YYYY-MM-DD-short-slug.md`:
 
 - The date is the date of approval (not the date work begins).
@@ -80,9 +97,12 @@ When a plan is **approved by the user**, save it to `docs/plans/YYYY-MM-DD-short
 
 **Why save them:** future agent sessions need to know what was decided and why. The plan is the durable artifact; the original Claude Code chat may not be visible later. A reviewer also benefits from being able to compare the implementation against the agreed plan.
 
+If a later plan supersedes an earlier one, mark the earlier file with a "Status: superseded by `<path>`" note at the top rather than deleting it — the chain of decisions is part of the audit trail.
+
 Existing plans:
-- `docs/plans/2026-04-29-multi-user-web-app.md` — architecture decisions for the multi-user web app rebuild (KNOW-2257).
-- `docs/plans/2026-05-05-multi-user-web-app-deployment.md` — Phase 0 remaining work + AWS deployment steps (KNOW-2257 follow-up).
+- `docs/plans/2026-04-29-multi-user-web-app.md` — architecture decisions for the multi-user web app rebuild (KNOW-2257). The deployment shape it sketches (App Runner + Fargate + RDS + …) is **superseded** by the EC2 alternative below for v1.
+- `docs/plans/2026-05-05-multi-user-web-app-deployment.md` — original AWS managed-services deployment runbook. **Superseded** by the EC2 alternative.
+- `docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md` — single-EC2 deployment for v1. The active deployment plan.
 
 ## Critical Rules
 

@@ -1,5 +1,15 @@
 # Multi-user web app — remaining work + deployment plan
 
+> **Status:** Superseded 2026-05-05 by `2026-05-05-multi-user-web-app-ec2-alternative.md`.
+> IT pushed back that the AWS managed-services stack (App Runner + Fargate +
+> RDS + Secrets Manager + KMS + CloudFront + NAT) was overscoped for a 5-user
+> internal tool. Plan B (single EC2) replaces Part C of this document. Part A
+> (the local Phase 0 work breakdown) is still accurate — those tickets remain
+> open and unchanged.
+>
+> Kept here as a record of the original deployment shape and the IT feedback
+> loop that led to the simpler alternative. Do not execute Part C.
+
 ## Context
 
 The architecture for the multi-user web app is settled in `docs/plans/2026-04-29-multi-user-web-app.md`. Four Phase 0 PRs are pushed and "Ready for QA" on Jira (KNOW-2258 FastAPI, KNOW-2260 SQLAlchemy/Alembic, KNOW-2262 AWS CDK, KNOW-2263 Dockerfile/Compose). They cover the *frame* — but **9 more Phase 0 tickets are still in the backlog**, all of which can be built and tested locally before we touch AWS.
