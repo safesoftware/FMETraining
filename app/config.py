@@ -52,9 +52,13 @@ class Settings(BaseSettings):
     # How often the scheduler polls runs.status='queued' (seconds).
     scheduler_poll_interval_s: float = Field(default=2.0, gt=0)
     # Selects how the scheduler dispatches workers:
-    #   'stub'           — in-process callable (tests, ad-hoc dev)
-    #   'docker-compose' — runs `docker compose run --rm worker-runner` (local)
-    #   'ecs'            — boto3 ecs.run_task (production)
+    #   'stub'       — in-process callable (tests, ad-hoc dev)
+    #   'in-process' — runs the worker as an asyncio task in the same
+    #                  Python process. Local dev default when DATABASE_URL
+    #                  is set but no real systemd is available.
+    #   'systemd'    — production: spawns a templated systemd user unit
+    #                  per run via `systemctl --user start`. See
+    #                  docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md.
     task_dispatcher: str = Field(default="stub")
 
     # ---- Sessions / auth -------------------------------------------------

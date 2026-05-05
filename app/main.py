@@ -29,6 +29,7 @@ from app.services.run_scheduler import RunScheduler
 from app.services.task_dispatcher import (
     InProcessTaskDispatcher,
     StubTaskDispatcher,
+    SystemdTaskDispatcher,
     TaskDispatcher,
 )
 from app.services.worker_lifecycle import run_worker
@@ -67,10 +68,14 @@ def _build_dispatcher(
         async def _worker_callable(run_id: str) -> None:
             await run_worker(run_id, session_factory=session_factory)
         return InProcessTaskDispatcher(_worker_callable)
+    if kind == "systemd":
+        return SystemdTaskDispatcher()
     if kind == "ecs":
+        # Kept for legacy reference. The active deployment is single-EC2 +
+        # systemd; see docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md.
         raise NotImplementedError(
-            "ECS dispatcher will be wired in once the Fargate cluster lands "
-            "(Part C step 3 of the deployment plan)."
+            "EcsRunTaskDispatcher was retired with the EC2 deployment pivot. "
+            "Use task_dispatcher='systemd' instead."
         )
     raise ValueError(f"Unknown task_dispatcher: {kind!r}")
 
