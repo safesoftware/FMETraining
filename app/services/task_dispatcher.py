@@ -107,35 +107,62 @@ class InProcessTaskDispatcher(TaskDispatcher):
 
 
 # ---------------------------------------------------------------------------
-# AWS ECS (production)
+# systemd (production — single-EC2 deployment)
 # ---------------------------------------------------------------------------
 
-class EcsRunTaskDispatcher(TaskDispatcher):
-    """Production dispatcher: boto3 ECS ``run_task``.
+class SystemdTaskDispatcher(TaskDispatcher):
+    """Production dispatcher for the single-EC2 deployment shape.
 
-    Filled in once Part C step 3 of the deployment plan creates the cluster
-    and task definition. For now we surface a clear NotImplementedError so
-    accidental selection in ``Settings.task_dispatcher`` fails loudly rather
-    than silently pretending to dispatch.
+    Each pipeline run spawns a fresh systemd user-mode service via the
+    template unit ``fme-train-worker@<run_id>.service``. The unit reads
+    ``EnvironmentFile=/etc/fme-train/env`` for shared secrets and gets
+    ``RUN_ID=<run_id>`` injected via the systemd ``%i`` instance specifier.
+
+    The dispatcher itself doesn't run as root — it shells out to
+    ``systemctl --user start --no-block`` against the same user systemd
+    manager that runs the FastAPI app. Lingering must be enabled for the
+    app user (``loginctl enable-linger fmetrain``) so user-mode systemd
+    survives logout and starts at boot.
+
+    Args:
+      unit_template: systemd template unit name with ``%s`` where the
+        run_id goes. Default: ``fme-train-worker@%s.service``.
+      command: list of argv tokens to invoke. The dispatcher appends the
+        formatted unit name. Default: systemctl user-mode start.
+      runner: async-callable matching ``asyncio.create_subprocess_exec``'s
+        signature. Defaults to the real subprocess module; tests inject a
+        stub so they don't actually fork systemctl.
+
+    See ``docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md``
+    for the broader deployment context.
     """
 
     def __init__(
         self,
         *,
-        cluster_arn: str,
-        task_definition_arn: str,
-        subnets: list[str],
-        security_groups: list[str],
-        container_name: str = "worker",
+        unit_template: str = "fme-train-worker@%s.service",
+        command: tuple[str, ...] = ("systemctl", "--user", "start", "--no-block"),
+        runner: Callable[..., Awaitable[Any]] | None = None,
     ) -> None:
-        self._cluster_arn = cluster_arn
-        self._task_definition_arn = task_definition_arn
-        self._subnets = subnets
-        self._security_groups = security_groups
-        self._container_name = container_name
+        if "%s" not in unit_template:
+            raise ValueError("unit_template must contain '%s' for the run_id")
+        self._unit_template = unit_template
+        self._command = tuple(command)
+        self._runner = runner or asyncio.create_subprocess_exec
 
-    async def dispatch(self, run_id: str) -> str:  # pragma: no cover - lands with deploy
-        raise NotImplementedError(
-            "EcsRunTaskDispatcher will be implemented when the Fargate cluster "
-            "lands in staging (Part C step 3 of the deployment plan)."
+    async def dispatch(self, run_id: str) -> str:
+        unit_name = self._unit_template % (run_id,)
+        argv = (*self._command, unit_name)
+        proc = await self._runner(
+            *argv,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
+        stdout, stderr = await proc.communicate()
+        if proc.returncode != 0:
+            raise RuntimeError(
+                f"systemctl exited {proc.returncode} for {unit_name}: "
+                f"stderr={stderr.decode(errors='replace').strip()!r}"
+            )
+        _logger.info("Started systemd unit %s for run %s", unit_name, run_id)
+        return unit_name

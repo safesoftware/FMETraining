@@ -1,8 +1,18 @@
 # Plan — Multi-User Web App for FME Training Automation
 
-> **Status:** Revised 2026-04-29 to treat **Skilljar as the canonical source of training content** instead of FMETraining. Drafts now live in S3, not in a git clone. Removes the EFS volume + service-account FMETraining git-push that an earlier draft assumed. The FME backup workflow (Skilljar → FMETraining) is unchanged and runs independently of this app.
+> **Status:** Architecture and data-model decisions are still active. The
+> *deployment shape* in this document (App Runner + Fargate + RDS +
+> CloudFront + Secrets Manager + KMS + NAT) was reconsidered on
+> 2026-05-05 as too heavy for a 5-user internal tool. The active
+> deployment plan is now `2026-05-05-multi-user-web-app-ec2-alternative.md`
+> (single EC2 + local services). Sections 1, 2, 3, 4, 5, and 7 of this
+> document still describe the application correctly; section 6
+> (Deployment, CI/CD, IaC) is superseded.
 >
-> Pending IT review of the "IT / Security / Privacy Review" section before implementation begins.
+> Earlier revision: 2026-04-29 — treat Skilljar as the canonical source
+> of training content. Drafts in S3, not in a git clone. The FME backup
+> workflow (Skilljar → FMETraining) is unchanged and runs independently
+> of this app.
 
 ---
 
