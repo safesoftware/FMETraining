@@ -7,6 +7,7 @@ Importing this module is also what registers every table on
 from app.models.base import Base, TimestampMixin, utc_now
 from app.models.cache import ContentCache, JiraCache, S3ImageCache
 from app.models.jobs import Job
+from app.models.report_drafts import ReportLessonDraft
 from app.models.runs import Run, RunLog, RunStep
 from app.models.skilljar import (
     LessonDraft,
@@ -26,6 +27,7 @@ __all__ = [
     "LessonDraft",
     "ReleaseHistory",
     "ReleaseLock",
+    "ReportLessonDraft",
     "Run",
     "RunLog",
     "RunStep",
