@@ -21,10 +21,12 @@ from typing import AsyncIterator, Optional
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from starlette.middleware.sessions import SessionMiddleware
 
+from app.auth import AuthMiddleware, init_google_oauth
 from app.config import get_settings
 from app.db.engine import _get_or_create_session_factory
-from app.routes import drafts, health, index, report_drafts, skilljar, sse
+from app.routes import auth, drafts, health, index, report_drafts, skilljar, sse
 from app.services.run_scheduler import RunScheduler
 from app.services.task_dispatcher import (
     InProcessTaskDispatcher,
@@ -136,6 +138,36 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    # ---- Auth middleware stack ----------------------------------------
+    # SessionMiddleware signs the cookie via itsdangerous. We only mount
+    # it when a signing key is configured; without one, sign-in routes
+    # won't work but the app still serves /health and /static so
+    # configuration mistakes are easy to diagnose.
+    if settings.session_signing_key:
+        fastapi_app.add_middleware(
+            SessionMiddleware,
+            secret_key=settings.session_signing_key,
+            session_cookie="fme_session",
+            max_age=14 * 24 * 60 * 60,  # 14-day rolling expiry
+            same_site="lax",
+            https_only=settings.environment == "production",
+        )
+        # AuthMiddleware reads the session cookie + DB on every request
+        # and attaches the User row (or None) to request.state.user.
+        # Falls back to anonymous on any DB hiccup.
+        try:
+            session_fac = _get_or_create_session_factory()
+        except RuntimeError:
+            session_fac = None
+        fastapi_app.add_middleware(AuthMiddleware, session_factory=session_fac)
+        # Register the Google OAuth client (no-op if creds missing).
+        init_google_oauth(settings)
+    else:
+        logger.warning(
+            "SESSION_SIGNING_KEY not set; auth disabled. Set it in .env "
+            "before deploying."
+        )
+
     # Static assets — HTMX, Alpine, app.css. Vendored locally; no CDN.
     fastapi_app.mount(
         "/static",
@@ -158,6 +190,7 @@ def create_app() -> FastAPI:
     # Routes
     fastapi_app.include_router(health.router)
     fastapi_app.include_router(index.router)
+    fastapi_app.include_router(auth.router)
     fastapi_app.include_router(drafts.router)
     fastapi_app.include_router(report_drafts.router)
     fastapi_app.include_router(skilljar.router)
