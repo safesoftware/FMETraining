@@ -1,10 +1,16 @@
 """Auth middleware: hydrate ``request.state.user`` from the session cookie.
 
-Runs once per request. The session cookie is managed by Starlette's
-:class:`~starlette.middleware.sessions.SessionMiddleware`; this
-middleware reads the small payload, looks up the user, and attaches
-the row to ``request.state`` so downstream routes can do
-``request.state.user`` (or ``Depends(require_user)``).
+Runs once per HTTP request. The session cookie is managed by Starlette's
+:class:`~starlette.middleware.sessions.SessionMiddleware`; this middleware
+reads the small payload, looks up the user, and attaches the row to
+``scope["state"]["user"]`` (which is what ``request.state.user`` resolves
+to) so downstream routes can do ``request.state.user`` (or
+``Depends(require_user)``).
+
+Implemented as a pure ASGI middleware -- not :class:`BaseHTTPMiddleware`
+-- because the latter has known issues propagating ``request.state``
+mutations to the inner request. Mutating ``scope["state"]`` directly
+side-steps the problem.
 
 Invalidation rules:
 
@@ -22,13 +28,10 @@ downgrades the request to anonymous rather than 500ing).
 from __future__ import annotations
 
 import logging
-from typing import Awaitable, Callable, Optional
+from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import Response
-from starlette.types import ASGIApp
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.auth.dependencies import SESSION_USER_EPOCH, SESSION_USER_ID
 from app.models.base import utc_now
@@ -37,8 +40,15 @@ from app.models.users import User
 _logger = logging.getLogger(__name__)
 
 
-class AuthMiddleware(BaseHTTPMiddleware):
-    """Look up the authenticated user (if any) for every request."""
+class AuthMiddleware:
+    """Look up the authenticated user (if any) for every HTTP request.
+
+    Pure ASGI -- attach via ``app.add_middleware(AuthMiddleware,
+    session_factory=...)``. SessionMiddleware MUST be mounted earlier
+    (i.e. added later in user-middleware order, since the last add wraps
+    the outermost) so that ``scope["session"]`` is populated before this
+    middleware runs.
+    """
 
     def __init__(
         self,
@@ -46,51 +56,59 @@ class AuthMiddleware(BaseHTTPMiddleware):
         *,
         session_factory: Optional[async_sessionmaker[AsyncSession]] = None,
     ) -> None:
-        super().__init__(app)
+        self.app = app
         self._session_factory = session_factory
 
-    async def dispatch(
-        self,
-        request: Request,
-        call_next: Callable[[Request], Awaitable[Response]],
-    ) -> Response:
-        request.state.user = None
+    async def __call__(
+        self, scope: Scope, receive: Receive, send: Send
+    ) -> None:
+        if scope["type"] != "http":
+            # Not an HTTP request (websocket, lifespan, etc.) -- no-op.
+            await self.app(scope, receive, send)
+            return
 
-        session_factory = self._session_factory
-        if session_factory is None:
-            # No DB configured -- skeleton mode (e.g. dev container with
-            # nothing wired up). Treat as anonymous.
-            return await call_next(request)
+        # FastAPI / Starlette stash request-local state in scope["state"].
+        # Default to None so request.state.user is always well-defined.
+        scope.setdefault("state", {})
+        scope["state"]["user"] = None
 
-        # Starlette's SessionMiddleware sets request.session lazily; if
-        # it isn't installed we fall through to anonymous.
-        try:
-            session = request.session
-        except AssertionError:
-            return await call_next(request)
+        await self._hydrate(scope)
+
+        await self.app(scope, receive, send)
+
+    async def _hydrate(self, scope: Scope) -> None:
+        """Read the session payload and, if valid, attach the user row."""
+        if self._session_factory is None:
+            return
+
+        session = scope.get("session")
+        if not isinstance(session, dict):
+            # SessionMiddleware not mounted, or session uninitialized.
+            return
 
         user_id = session.get(SESSION_USER_ID)
         epoch_snapshot = session.get(SESSION_USER_EPOCH)
         if not isinstance(user_id, int) or not isinstance(epoch_snapshot, int):
-            return await call_next(request)
+            return
 
         try:
-            async with session_factory() as db:
+            async with self._session_factory() as db:
                 user = await db.get(User, user_id)
-                if user is None or not user.is_active or user.session_epoch != epoch_snapshot:
+                if (
+                    user is None
+                    or not user.is_active
+                    or user.session_epoch != epoch_snapshot
+                ):
                     # Stale or revoked session -- clear it so subsequent
                     # requests don't pay the DB lookup again.
                     session.clear()
-                    return await call_next(request)
+                    return
                 user.last_seen_at = utc_now()
                 await db.commit()
-                # Detach so downstream code can use the instance after
-                # the session closes. SQLAlchemy refreshes lazy attrs on
-                # access otherwise, which would error post-close.
+                # Detach so downstream code can read from the instance
+                # after the session closes. SQLAlchemy refreshes lazy
+                # attrs on access otherwise, which would error post-close.
                 db.expunge(user)
-                request.state.user = user
+                scope["state"]["user"] = user
         except Exception:  # pragma: no cover - defensive
             _logger.exception("auth middleware: DB lookup failed; treating as anonymous")
-            return await call_next(request)
-
-        return await call_next(request)

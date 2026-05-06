@@ -144,6 +144,14 @@ def create_app() -> FastAPI:
     # won't work but the app still serves /health and /static so
     # configuration mistakes are easy to diagnose.
     if settings.session_signing_key:
+        # Note ordering: in Starlette, the FIRST-added middleware is the
+        # INNERMOST. AuthMiddleware needs to run AFTER SessionMiddleware
+        # populates scope["session"], so it must be added first.
+        try:
+            session_fac = _get_or_create_session_factory()
+        except RuntimeError:
+            session_fac = None
+        fastapi_app.add_middleware(AuthMiddleware, session_factory=session_fac)
         fastapi_app.add_middleware(
             SessionMiddleware,
             secret_key=settings.session_signing_key,
@@ -152,14 +160,6 @@ def create_app() -> FastAPI:
             same_site="lax",
             https_only=settings.environment == "production",
         )
-        # AuthMiddleware reads the session cookie + DB on every request
-        # and attaches the User row (or None) to request.state.user.
-        # Falls back to anonymous on any DB hiccup.
-        try:
-            session_fac = _get_or_create_session_factory()
-        except RuntimeError:
-            session_fac = None
-        fastapi_app.add_middleware(AuthMiddleware, session_factory=session_fac)
         # Register the Google OAuth client (no-op if creds missing).
         init_google_oauth(settings)
     else:
