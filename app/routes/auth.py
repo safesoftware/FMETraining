@@ -37,6 +37,20 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 ALLOWED_HD = "safe.com"
 
 
+def _is_safe_local_redirect(target: Optional[str]) -> bool:
+    """Return True iff ``target`` is a same-origin path we'll honor.
+
+    Mirrors what's stored at ``/auth/login`` time, but applied again at
+    ``/auth/callback`` consumption time as defence-in-depth: even if a
+    future code path (or another middleware) writes a hostile value into
+    ``request.session["post_login_redirect"]``, we won't 302 the browser
+    off-site.
+    """
+    return bool(
+        target and target.startswith("/") and not target.startswith("//")
+    )
+
+
 class LoginRejected(HTTPException):
     """Caller authenticated with Google but doesn't meet our policy."""
 
@@ -91,11 +105,18 @@ async def complete_login(
         await db.flush()
         _logger.info("auth: created user %s (id=%s)", email, user.id)
     else:
+        # Deactivated users stay locked out -- a future admin tool will
+        # set ``is_active=False`` to suspend an account, and re-signing in
+        # via Google must NOT silently reactivate them.
+        if not user.is_active:
+            raise LoginRejected(
+                "Sign-in rejected: this account has been deactivated. "
+                "Contact an administrator if you believe this is in error."
+            )
         # Refresh display fields on every sign-in so the UI keeps up
         # when the user changes their Google avatar / name.
         user.name = name
         user.picture_url = picture
-        user.is_active = True
         user.last_seen_at = utc_now()
 
     await db.commit()
@@ -132,7 +153,7 @@ async def login(request: Request, next: Optional[str] = "/"):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)
         ) from exc
 
-    if next and next.startswith("/") and not next.startswith("//"):
+    if _is_safe_local_redirect(next):
         request.session["post_login_redirect"] = next
 
     return await client.authorize_redirect(request, _redirect_uri(request))
@@ -170,7 +191,12 @@ async def callback(request: Request):
     async with session_factory() as db:
         await complete_login(request, db, claims=claims)
 
-    next_url = request.session.pop("post_login_redirect", "/") or "/"
+    # Re-validate at consumption time, not just at storage. Even if a
+    # future bug or middleware lets a hostile value slip into the session
+    # under this key, we won't 302 the browser off-site.
+    next_url = request.session.pop("post_login_redirect", None)
+    if not _is_safe_local_redirect(next_url):
+        next_url = "/"
     return RedirectResponse(url=next_url, status_code=status.HTTP_302_FOUND)
 
 

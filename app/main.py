@@ -152,6 +152,9 @@ def create_app() -> FastAPI:
         except RuntimeError:
             session_fac = None
         fastapi_app.add_middleware(AuthMiddleware, session_factory=session_fac)
+        # SessionMiddleware hardcodes httponly=True (it doesn't expose
+        # the kwarg), which is what we want -- the session cookie holds
+        # the user's identity and must never be reachable from JS.
         fastapi_app.add_middleware(
             SessionMiddleware,
             secret_key=settings.session_signing_key,
@@ -159,6 +162,7 @@ def create_app() -> FastAPI:
             max_age=14 * 24 * 60 * 60,  # 14-day rolling expiry
             same_site="lax",
             https_only=settings.environment == "production",
+            path="/",
         )
         # Register the Google OAuth client (no-op if creds missing).
         init_google_oauth(settings)

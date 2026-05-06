@@ -186,6 +186,63 @@ async def test_complete_login_refreshes_existing_user_fields(
     assert users[0].name == "Alice Two"
 
 
+@pytest.mark.asyncio
+async def test_deactivated_user_cannot_sign_in_again(
+    async_session_factory, client: AsyncClient
+) -> None:
+    """An admin-deactivated account stays locked out; signing in via
+    Google must NOT silently flip is_active back to True."""
+    # First sign-in creates the row.
+    first = await client.post("/_test/login")
+    assert first.status_code == 200
+
+    # Admin deactivates the user out-of-band.
+    async with async_session_factory() as db:
+        user = (await db.scalars(select(User))).one()
+        user.is_active = False
+        await db.commit()
+
+    # Fresh client (no session cookie). Google still returns valid
+    # claims, but the upsert path must reject.
+    transport = ASGITransport(app=client._transport.app)  # type: ignore[attr-defined]
+    async with AsyncClient(transport=transport, base_url="http://testserver") as fresh:
+        again = await fresh.post("/_test/login")
+    assert again.status_code == 403
+    assert "deactivated" in again.text.lower()
+
+    async with async_session_factory() as db:
+        user = (await db.scalars(select(User))).one()
+    assert user.is_active is False  # NOT silently re-activated.
+
+
+# ---- Open-redirect guard ------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "next_value,expected",
+    [
+        ("/", True),
+        ("/runs/123", True),
+        ("/runs/123?tab=logs", True),
+        ("//evil.example", False),       # protocol-relative
+        ("https://evil.example", False), # absolute URL
+        ("http://evil.example/", False),
+        ("javascript:alert(1)", False),  # XSS-y scheme
+        ("ftp://x", False),
+        ("", False),                     # empty
+        (None, False),
+    ],
+)
+def test_is_safe_local_redirect_only_accepts_same_origin_paths(
+    next_value: Optional[str], expected: bool
+) -> None:
+    """Pure-function check on the helper that gates both the storage
+    side (``/auth/login``) and the consumption side (``/auth/callback``).
+    """
+    from app.routes.auth import _is_safe_local_redirect
+    assert _is_safe_local_redirect(next_value) is expected
+
+
 # ---- Session middleware: tamper + epoch invalidation ---------------------
 
 
