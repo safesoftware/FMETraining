@@ -54,7 +54,7 @@ After every meaningful chunk of progress, comment on the issue with:
 Whenever you transition an issue to **Ready for QA** — whether the work is complete and awaiting human verification, or you've hit a question that blocks progress — the **same** transition comment must include:
 
 1. **Status summary** — one or two sentences on where things stand.
-2. **Verification steps** — numbered, copy-pasteable commands or click-paths a human can run, with expected output. Be specific. Bad: "test the new endpoint." Good: "1. `curl -i http://localhost:8000/api/runs` → expect 401 with body `{\"detail\":\"Not authenticated\"}`."
+2. **Verification steps** — numbered, copy-pasteable commands or click-paths a human can run, with expected output. Be specific. Bad: "test the new endpoint." Good: "1. `curl -i http://localhost:8000/api/runs` → expect 401 with body `{\"detail\":\"Not authenticated\"}`." **The Jira ticket is the canonical home for these steps**, not the PR. QA reads Jira, not GitHub. Putting the manual / browser / live-integration steps only in the PR's "Test plan" section is incomplete — they must also appear on the ticket. If every verification step is automated and there are no manual ones, say so explicitly: *"All verification automated; no manual steps required."* It is fine — encouraged — to mirror the steps in the PR body too, but the ticket is the source of truth.
 3. **Open questions** — bulleted list, or "None" if there are none.
 4. **`@mention`** — tag `sam.walker@safe.com` so the user gets notified.
 
