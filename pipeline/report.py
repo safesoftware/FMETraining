@@ -249,6 +249,20 @@ span.tc-orig-context {{ color: inherit; }}
 .fmt-toolbar button {{ padding: 4px 10px; border: 1px solid #a5b4fc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.82rem; min-width: 2rem; }}
 .fmt-toolbar button:hover {{ background: #e0e7ff; border-color: #6366f1; }}
 .fmt-toolbar .fmt-sep {{ width: 1px; height: 1.4em; background: #c7d2fe; margin: 0 4px; }}
+/* Image-edit popover (KNOW-2279) */
+#le-lesson-body img.le-img-selected {{ outline: 2px solid #2563eb; outline-offset: 2px; cursor: pointer; }}
+.le-img-popover {{ position: absolute; z-index: 1000; background: #fff; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 10px; min-width: 320px; display: none; font-size: 13px; }}
+.le-img-popover.visible {{ display: block; }}
+.le-img-popover label {{ display: block; font-weight: 600; margin-bottom: 4px; }}
+.le-img-popover input[type=text] {{ width: 100%; padding: 6px 8px; box-sizing: border-box; font: inherit; }}
+.le-img-popover .le-img-actions {{ display: flex; gap: 6px; margin-top: 8px; align-items: center; }}
+.le-img-popover .le-img-err {{ color: #b91c1c; margin-top: 6px; min-height: 1.2em; font-size: 12px; }}
+.le-img-popover .le-img-replace-menu {{ position: relative; display: inline-block; }}
+.le-img-popover .le-img-replace-menu > div {{ position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #d1d5db; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); display: none; min-width: 180px; z-index: 1; }}
+.le-img-popover .le-img-replace-menu.open > div {{ display: block; }}
+.le-img-popover .le-img-replace-menu button {{ display: block; width: 100%; text-align: left; border: none; background: none; padding: 6px 10px; cursor: pointer; }}
+.le-img-popover .le-img-replace-menu button:hover {{ background: #f3f4f6; }}
+#le-img-file-input {{ display: none; }}
 .save-banner {{ display: none; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; padding: 10px 16px; margin: 12px 24px; border-radius: 6px; font-size: 0.85rem; }}
 .change-count {{ font-size: 0.82rem; color: #555; margin-left: auto; }}
 /* Floating next/prev edit nav (issue 47) */
@@ -357,6 +371,7 @@ span.tc-orig-context {{ color: inherit; }}
       <button onclick="leFormatBlock('h4')" title="Heading 4">H4</button>
       <span class="fmt-sep"></span>
       <button onclick="leInsertLink()" title="Insert / edit link">Link</button>
+      <button onclick="leEditImage()" title="Edit image (alt text / replace)">Image</button>
     </div>
   </div>
   <div class="save-banner" id="le-save-banner"></div>
@@ -364,6 +379,26 @@ span.tc-orig-context {{ color: inherit; }}
     <div class="lesson-edit-empty">Select a lesson above to view suggested edits.</div>
   </div>
 </div><!-- end tab-lesson-edits -->
+
+<!-- Image-edit popover (KNOW-2279) — anchored at runtime to the selected <img> -->
+<div id="le-img-popover" class="le-img-popover" role="dialog" aria-label="Edit image">
+  <label for="le-img-alt">Alt text</label>
+  <input type="text" id="le-img-alt" placeholder="Describe the image" />
+  <div class="le-img-actions">
+    <span class="le-img-replace-menu" id="le-img-replace-menu">
+      <button type="button" onclick="leImgToggleReplaceMenu()">Replace ▾</button>
+      <div>
+        <button type="button" onclick="leImgReplaceFromClipboard()">Paste from clipboard</button>
+        <button type="button" onclick="leImgReplaceFromFile()">Upload from file…</button>
+      </div>
+    </span>
+    <span style="flex:1"></span>
+    <button type="button" onclick="leImgSave()">Save</button>
+    <button type="button" onclick="leImgClosePopover()">Cancel</button>
+  </div>
+  <div class="le-img-err" id="le-img-err"></div>
+</div>
+<input type="file" id="le-img-file-input" accept="image/*" />
 
 <!-- Floating next/prev edit nav — visible only when Lesson Edits tab is active and a lesson is loaded (issue 47) -->
 <div class="le-nav-float" id="le-nav-float">
@@ -778,6 +813,8 @@ function switchTab(name, btn) {{
 let leEditPlans = [];
 let leUndoStack = [];
 let leRedoStack = [];
+let leSelectedImage = null; // KNOW-2279: <img> targeted by the alt-text/replace popover
+let _lePendingFileImg = null; // KNOW-2279: <img> snapshot held across the file-picker round-trip (popover may close before 'change' fires)
 let leRejectedIssueKeys = new Set(); // tracks keys rejected from Recommendations tab (issue 30)
 
 // Eager-load edit plans on page load (needed for cross-tab features in issues 37, 30)
@@ -843,6 +880,11 @@ function leRenderLesson() {{
   if (!lessonId) return;
   const plan = leEditPlans.find(l => l.lesson_id === lessonId);
   if (!plan) return;
+
+  // KNOW-2279: drop any open image-edit popover before innerHTML below
+  // detaches the <img> it points at, otherwise Save/Replace would silently
+  // mutate the now-orphaned node.
+  leImgClosePopover();
 
   leUndoStack = [];
   leRedoStack = [];
@@ -1056,6 +1098,24 @@ function leRenderLesson() {{
   _lessonBodyEl.spellcheck = false;
   document.getElementById('le-fmt-toolbar').style.display = 'flex';
   leUpdateNavFloat();
+  // KNOW-2279: image-edit popover wiring (idempotent across re-renders)
+  if (!_lessonBodyEl.dataset.imgEditWired) {{
+    _lessonBodyEl.addEventListener('click', leOnImageClick);
+    document.getElementById('le-img-file-input').addEventListener('change', leImgOnFileChosen);
+    document.addEventListener('click', (e) => {{
+      const pop = document.getElementById('le-img-popover');
+      if (!pop.classList.contains('visible')) return;
+      if (pop.contains(e.target)) return;
+      if (e.target.closest && e.target.closest('#le-lesson-body img')) return;
+      leImgClosePopover();
+    }});
+    document.addEventListener('keydown', (e) => {{
+      if (e.key === 'Escape' && document.getElementById('le-img-popover').classList.contains('visible')) {{
+        leImgClosePopover();
+      }}
+    }});
+    _lessonBodyEl.dataset.imgEditWired = '1';
+  }}
   // Issue 30: apply any rejections that were triggered from the Recommendations tab
   if (leRejectedIssueKeys.size) {{
     document.querySelectorAll('#le-lesson-body .tc-wrap[data-issue-keys]').forEach(wrap => {{
@@ -1422,6 +1482,12 @@ function leGetCleanHtml() {{
     if (attrSrc.startsWith(lessonBase)) img.setAttribute('src', attrSrc.slice(lessonBase.length));
   }});
 
+  // KNOW-2279: don't leak the popover-selection class into saved HTML
+  body.querySelectorAll('img.le-img-selected').forEach(img => {{
+    img.classList.remove('le-img-selected');
+    if (!img.getAttribute('class')) img.removeAttribute('class');
+  }});
+
   return {{ html: body.innerHTML, plan }};
 }}
 
@@ -1532,6 +1598,153 @@ function leInsertLink() {{
     const a = `<a href="${{url}}">${{text || url}}</a>`;
     document.execCommand('insertHTML', false, a);
   }}
+}}
+
+// KNOW-2279: edit alt text and replace image source via floating popover.
+// setAttribute does not fire 'input' on a contenteditable, so any future
+// autosave hook (KNOW-2277) needs to be invoked explicitly after edits.
+function leMaybeAutosave() {{
+  if (typeof leScheduleAutosave === 'function' && typeof leCurrentLessonDir === 'function') {{
+    leScheduleAutosave(leCurrentLessonDir());
+  }}
+}}
+
+function leOnImageClick(e) {{
+  const img = e.target.closest && e.target.closest('img');
+  if (!img) return;
+  if (!document.getElementById('le-lesson-body').contains(img)) return;
+  e.preventDefault();
+  leOpenImgPopover(img);
+}}
+
+function leOpenImgPopover(img) {{
+  document.querySelectorAll('#le-lesson-body img.le-img-selected').forEach(el => {{
+    el.classList.remove('le-img-selected');
+  }});
+  img.classList.add('le-img-selected');
+  leSelectedImage = img;
+
+  const pop = document.getElementById('le-img-popover');
+  document.getElementById('le-img-alt').value = img.getAttribute('alt') || '';
+  document.getElementById('le-img-err').textContent = '';
+  document.getElementById('le-img-replace-menu').classList.remove('open');
+
+  // Anchor the popover below the image, clamped horizontally to the viewport.
+  const r = img.getBoundingClientRect();
+  const top = window.scrollY + r.bottom + 6;
+  const left = window.scrollX + Math.max(8, Math.min(r.left, window.innerWidth - 340));
+  pop.style.top = top + 'px';
+  pop.style.left = left + 'px';
+  pop.classList.add('visible');
+  document.getElementById('le-img-alt').focus();
+}}
+
+function leImgClosePopover() {{
+  document.getElementById('le-img-popover').classList.remove('visible');
+  document.getElementById('le-img-replace-menu').classList.remove('open');
+  if (leSelectedImage) leSelectedImage.classList.remove('le-img-selected');
+  leSelectedImage = null;
+}}
+
+function leImgSave() {{
+  if (!leSelectedImage) {{ leImgClosePopover(); return; }}
+  const alt = document.getElementById('le-img-alt').value;
+  leSelectedImage.setAttribute('alt', alt);
+  leImgClosePopover();
+  leMaybeAutosave();
+}}
+
+function leImgToggleReplaceMenu() {{
+  document.getElementById('le-img-replace-menu').classList.toggle('open');
+}}
+
+async function leImgReplaceFromClipboard() {{
+  const err = document.getElementById('le-img-err');
+  err.textContent = '';
+  // Snapshot the target before the first await: clipboard permission prompts
+  // can pause for seconds, during which Esc / outside-click / lesson switch
+  // could null out leSelectedImage.
+  const img = leSelectedImage;
+  if (!img) {{ err.textContent = 'No image selected.'; return; }}
+  if (!navigator.clipboard || !navigator.clipboard.read) {{
+    err.textContent = 'Clipboard API unavailable in this browser context (HTTPS or localhost required).';
+    return;
+  }}
+  try {{
+    const items = await navigator.clipboard.read();
+    for (const item of items) {{
+      const type = item.types.find(t => t.startsWith('image/'));
+      if (!type) continue;
+      const blob = await item.getType(type);
+      const dataUri = await new Promise((res, rej) => {{
+        const fr = new FileReader();
+        fr.onload = () => res(fr.result);
+        fr.onerror = () => rej(fr.error);
+        fr.readAsDataURL(blob);
+      }});
+      // After the awaits the editor DOM may have been replaced (lesson switch).
+      if (!document.getElementById('le-lesson-body').contains(img)) return;
+      img.setAttribute('src', dataUri);
+      document.getElementById('le-img-replace-menu').classList.remove('open');
+      leMaybeAutosave();
+      return;
+    }}
+    err.textContent = 'No image on the clipboard. Copy an image first, then try again.';
+  }} catch (ex) {{
+    err.textContent = 'Clipboard read failed: ' + (ex && ex.message ? ex.message : ex);
+  }}
+}}
+
+function leImgReplaceFromFile() {{
+  document.getElementById('le-img-replace-menu').classList.remove('open');
+  // Snapshot the target image: Esc / outside-click can close the popover
+  // (clearing leSelectedImage) before the file-picker change event fires.
+  _lePendingFileImg = leSelectedImage;
+  document.getElementById('le-img-file-input').click();
+}}
+
+function leImgOnFileChosen(e) {{
+  const file = e.target.files && e.target.files[0];
+  const img = leSelectedImage || _lePendingFileImg;
+  _lePendingFileImg = null;
+  if (!file || !img || !document.getElementById('le-lesson-body').contains(img)) {{
+    e.target.value = '';
+    return;
+  }}
+  const fr = new FileReader();
+  fr.onload = () => {{
+    img.setAttribute('src', fr.result);
+    leMaybeAutosave();
+  }};
+  fr.onerror = () => {{
+    const err = document.getElementById('le-img-err');
+    if (err) err.textContent = 'Could not read file.';
+  }};
+  fr.readAsDataURL(file);
+  e.target.value = ''; // allow re-picking the same file later
+}}
+
+function leEditImage() {{
+  // Prefer the explicitly-selected image; fall back to one found in the current selection.
+  const editor = document.getElementById('le-lesson-body');
+  if (leSelectedImage && editor.contains(leSelectedImage)) {{
+    leOpenImgPopover(leSelectedImage);
+    return;
+  }}
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount) {{
+    const c = sel.getRangeAt(0).commonAncestorContainer;
+    const root = (c.nodeType === 1 ? c : c.parentElement);
+    const img = root && root.querySelector && root.querySelector('img');
+    if (img && editor.contains(img)) {{
+      leOpenImgPopover(img);
+      return;
+    }}
+  }}
+  const banner = document.getElementById('le-save-banner');
+  banner.style.display = 'block';
+  banner.innerHTML = 'Click an image in the editor first, then press the Image button.';
+  setTimeout(() => {{ banner.style.display = 'none'; }}, 2500);
 }}
 
 </script>
