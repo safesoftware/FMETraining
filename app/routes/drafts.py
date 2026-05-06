@@ -1,18 +1,25 @@
-"""Save Draft API.
+"""Drafts: Save Draft API + per-run editor-state dashboard.
 
-Plan section 5: ``POST /api/drafts`` writes the HTML to the draft store
-(local disk in the EC2 deployment) and upserts ``lesson_drafts``. Replaces
-the legacy ``_handle_save_lesson`` in ``serve.py`` writing to
-``REPO_ROOT/2026.1/...``.
+Two responsibilities live here:
 
-Endpoints:
+* **POST/GET/DELETE ``/api/drafts``** (KNOW-2273) — the Save Draft API
+  that writes lesson HTML to the draft store and upserts ``lesson_drafts``.
+  Replaces the legacy ``_handle_save_lesson`` in ``serve.py`` writing to
+  ``REPO_ROOT/2026.1/...``.
+
+* **GET ``/drafts``** (KNOW-2277) — per-run editor-state dashboard. Lists
+  recent runs that have at least one draft row in
+  ``report_lesson_drafts``, with a status badge per lesson (pending /
+  in-progress / saved). Click "Open" to jump back into the report at the
+  right tab and lesson.
+
+Endpoints in this module:
 
 - ``POST   /api/drafts``        — create or update a draft.
-- ``GET    /api/drafts``        — list drafts (optional ``to_version`` filter).
+- ``GET    /api/drafts``        — list drafts (optional filters).
 - ``GET    /api/drafts/{id}``   — fetch one (metadata + html_content).
 - ``DELETE /api/drafts/{id}``   — archive a draft (status='archived').
-                                  We don't physically delete the file —
-                                  keeps the audit trail.
+- ``GET    /drafts``            — per-run dashboard page.
 """
 from __future__ import annotations
 
@@ -20,20 +27,26 @@ import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.db.engine import _get_or_create_session_factory
+from app.db.session import get_session
 from app.models.skilljar import LessonDraft
+from app.services import report_drafts as svc
 from app.services.draft_storage import (
     DraftStorageError,
     DraftStorageUnavailable,
     LocalDiskDraftStorage,
 )
+from app.templates import templates
 
 
 # TODO(KNOW-XXXX, image-serving follow-up): drafts saved via this API
@@ -46,7 +59,7 @@ from app.services.draft_storage import (
 
 _logger = logging.getLogger(__name__)
 
-router = APIRouter()
+router = APIRouter(tags=["drafts"])
 
 
 # ---------------------------------------------------------------------------
@@ -112,7 +125,7 @@ def _summary_from_row(row: LessonDraft) -> DraftSummary:
 
 
 # ---------------------------------------------------------------------------
-# Endpoints
+# Save Draft API (KNOW-2273)
 # ---------------------------------------------------------------------------
 
 
@@ -287,3 +300,42 @@ async def archive_draft(draft_id: int) -> None:
         row.status = "archived"
         row.updated_at = datetime.now(timezone.utc)
         await session.commit()
+
+
+# ---------------------------------------------------------------------------
+# Drafts dashboard page (KNOW-2277)
+# ---------------------------------------------------------------------------
+
+
+@router.get("/drafts", response_class=HTMLResponse)
+async def drafts_page(
+    request: Request,
+    session: AsyncSession = Depends(get_session),
+) -> HTMLResponse:
+    runs = await svc.list_runs_with_drafts(session, limit=50)
+    rows = [
+        {
+            "run_id": r.run_id,
+            "to_version": r.to_version or "",
+            "started_at": r.started_at,
+            "created_at": r.created_at,
+            "lessons": [
+                {
+                    "lesson_dir": lesson.lesson_dir,
+                    "status": lesson.status,
+                    "open_url": (
+                        "/artifacts/report-"
+                        + quote(r.run_id, safe="")
+                        + ".html?tab=lesson-edits"
+                    ),
+                    "saved_to_version_path": lesson.saved_to_version_path,
+                    "updated_at": lesson.updated_at,
+                }
+                for lesson in r.lessons
+            ],
+        }
+        for r in runs
+    ]
+    return templates.TemplateResponse(
+        request, "drafts.html", {"runs": rows}
+    )
