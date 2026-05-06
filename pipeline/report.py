@@ -997,10 +997,15 @@ async function leResetLesson() {{
   // Re-render the lesson from scratch — leRenderLesson() reads from
   // leEditPlans so this restores the original recommendations DOM.
   // Suppress autosave while we do this to avoid resaving the freshly-
-  // reset state back to the server.
+  // reset state back to the server. try/finally so a thrown render
+  // never leaves leDraftsLoaded=false (which would silently kill all
+  // future autosaves until reload).
   leDraftsLoaded = false;
-  leRenderLesson();
-  leDraftsLoaded = true;
+  try {{
+    leRenderLesson();
+  }} finally {{
+    leDraftsLoaded = true;
+  }}
   const el = leAutosaveStatusEl();
   if (el) {{ el.dataset.savedAt = ''; }}
   leSetAutosaveState('idle', 'Reset');
@@ -1314,16 +1319,26 @@ function leRenderLesson() {{
   // KNOW-2277: restore any persisted decisions for this lesson, then wire
   // the input listener so user keystrokes auto-save. Apply draft AFTER
   // adding the listener so the initial replay does not auto-save itself.
-  _lessonBodyEl.addEventListener('input', () => {{
-    leScheduleAutosave(leCurrentLessonDir());
-  }});
+  // The wired flag keeps the listener idempotent across lesson switches —
+  // the same #le-lesson-body element is reused, so an unguarded
+  // addEventListener would stack one new listener per re-render.
+  if (!_lessonBodyEl.dataset.inputWired) {{
+    _lessonBodyEl.addEventListener('input', () => {{
+      leScheduleAutosave(leCurrentLessonDir());
+    }});
+    _lessonBodyEl.dataset.inputWired = '1';
+  }}
   const _draft = leDrafts && leDrafts[plan.lesson_dir];
   if (_draft) {{
-    // Replay decisions silently (no autosave during replay).
+    // Replay decisions silently (no autosave during replay). try/finally
+    // so a thrown apply never leaves leDraftsLoaded=false permanently.
     const _wasLoaded = leDraftsLoaded;
     leDraftsLoaded = false;
-    leApplyDraftToDom(plan.lesson_dir, _draft);
-    leDraftsLoaded = _wasLoaded;
+    try {{
+      leApplyDraftToDom(plan.lesson_dir, _draft);
+    }} finally {{
+      leDraftsLoaded = _wasLoaded;
+    }}
     if (_draft.body_html && _draft.updated_at) {{
       // The decisions replay above is the source of truth for accept/reject;
       // body_html on disk includes the WYSIWYG keystrokes the user made
