@@ -94,8 +94,12 @@ async def test_seed_runs_dry_run_writes_nothing(async_session_factory, tmp_path)
     source = _write_runs_json(tmp_path)
     result = await seed_runs.migrate(source, async_session_factory, dry_run=True)
     assert result["runs_inserted"] == 2
+    # Dry-run should still report the would-be steps so an operator can
+    # eyeball the count before flipping it live.
+    assert result["steps_inserted"] == 5
     async with async_session_factory() as session:
         assert (await session.scalars(select(Run))).all() == []
+        assert (await session.scalars(select(RunStep))).all() == []
 
 
 # ---- seed_jobs -----------------------------------------------------------

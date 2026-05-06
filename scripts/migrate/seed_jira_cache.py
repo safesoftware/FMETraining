@@ -109,12 +109,17 @@ async def migrate(
                 existing.issue_count = issue_count
 
         if not dry_run:
+            # Commit the DB row first so a write-then-commit-fails sequence
+            # can't leave a stale payload file pointing at a row that
+            # doesn't exist. If the file write fails after commit, the row
+            # still references the intended path and a re-run will rewrite
+            # it.
+            await session.commit()
             payload_dir.mkdir(parents=True, exist_ok=True)
             payload_path.write_text(
                 json.dumps(payload, ensure_ascii=False),
                 encoding="utf-8",
             )
-            await session.commit()
 
     return {
         "rows_inserted": rows_inserted,
