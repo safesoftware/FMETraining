@@ -61,6 +61,13 @@ class Settings(BaseSettings):
     #                  docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md.
     task_dispatcher: str = Field(default="stub")
 
+    # ---- Draft storage ---------------------------------------------------
+    # Where lesson-draft HTML bodies are persisted on disk. The original
+    # plan stored these in S3; the EC2 deployment keeps them on the box
+    # under /var/lib/fme-train/drafts so backups are part of the EBS
+    # snapshot. Tests override this to a temp dir.
+    drafts_root: str = Field(default="/var/lib/fme-train/drafts")
+
     # ---- Sessions / auth -------------------------------------------------
     # Required once auth lands (KNOW-2259); optional in Phase 0 so the skeleton
     # boots without secrets present.
