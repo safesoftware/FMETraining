@@ -1,15 +1,15 @@
 """Pluggable task dispatcher used by the run scheduler.
 
-Plan section 3 calls for the API to ``boto3.client("ecs").run_task()`` per
-queued run. To keep the scheduler unit-testable and dev-friendly, the
-dispatch step lives behind this abstraction with three concrete forms:
+The scheduler hands run_ids to a dispatcher to actually start the worker
+process. Keeping the dispatch step behind this abstraction makes the
+scheduler unit-testable and lets dev / prod use different mechanisms:
 
 - :class:`StubTaskDispatcher`     — records dispatched run_ids; tests use this.
 - :class:`InProcessTaskDispatcher` — runs the worker as an in-process asyncio
                                      task. Local dev default.
-- :class:`EcsRunTaskDispatcher`    — boto3 ``run_task``. Production default.
-                                     Skeleton today; filled in once we have
-                                     the deployed Fargate cluster + task def.
+- :class:`SystemdTaskDispatcher`   — starts a templated systemd unit per run
+                                     (``fme-train-worker@<run_id>.service``)
+                                     on the EC2 host. Production default.
 
 Choose at startup time via ``Settings.task_dispatcher``.
 """
