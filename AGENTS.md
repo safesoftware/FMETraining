@@ -103,6 +103,7 @@ Existing plans:
 - `docs/plans/2026-04-29-multi-user-web-app.md` — architecture decisions for the multi-user web app rebuild (KNOW-2257). The deployment shape it sketches (App Runner + Fargate + RDS + …) is **superseded** by the EC2 alternative below for v1.
 - `docs/plans/2026-05-05-multi-user-web-app-deployment.md` — original AWS managed-services deployment runbook. **Superseded** by the EC2 alternative.
 - `docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md` — single-EC2 deployment for v1. The active deployment plan.
+  - `docs/deployment.md` — operator-facing runbook for the active deployment plan: how to deploy, roll back, read `/health`, and triage when something looks wrong (KNOW-2294).
 
 ## Critical Rules
 
