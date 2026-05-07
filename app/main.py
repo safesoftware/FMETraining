@@ -60,9 +60,8 @@ def _build_dispatcher(
 ) -> TaskDispatcher:
     """Pick a TaskDispatcher per ``Settings.task_dispatcher``.
 
-    Production wiring of ``EcsRunTaskDispatcher`` lands once the Fargate
-    cluster is deployed. For now we expose 'stub' (tests / disabled) and
-    'in-process' (local dev).
+    Production uses ``systemd`` (``SystemdTaskDispatcher``); local dev uses
+    ``in-process``; tests use ``stub``.
     """
     kind = (kind or "").strip().lower()
     if kind == "stub":
@@ -73,14 +72,10 @@ def _build_dispatcher(
         return InProcessTaskDispatcher(_worker_callable)
     if kind == "systemd":
         return SystemdTaskDispatcher()
-    if kind == "ecs":
-        # Kept for legacy reference. The active deployment is single-EC2 +
-        # systemd; see docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md.
-        raise NotImplementedError(
-            "EcsRunTaskDispatcher was retired with the EC2 deployment pivot. "
-            "Use task_dispatcher='systemd' instead."
-        )
-    raise ValueError(f"Unknown task_dispatcher: {kind!r}")
+    raise ValueError(
+        f"Unknown task_dispatcher: {kind!r}. "
+        "Supported values: 'stub', 'in-process', 'systemd'."
+    )
 
 
 @asynccontextmanager
