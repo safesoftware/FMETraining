@@ -1,0 +1,167 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Connect FME Form to FME Flow using a web connection.</li>
+<li>Publish a workspace to the web.</li>
+<li>View your published workspace in FME Flow.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\publish-a-self-serve-workspace-to-the-web.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\publish-a-self-serve-workspace-to-the-web-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">CommunityMap.gdb.zip</a>
+<ul>
+<li>C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="publish-a-workspace-to-the-web">Publish a Workspace to the Web</h2>
+<p>Now that Frank has created a self-serve workspace, he must publish it to FME Flow.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The rest of this course assumes you have access to an FME Flow. If you need help installing, licensing, and creating an account for FME Flow, please </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/Getting-Started-with-FME-Server-Administration" target="_blank" rel="noopener">follow these instructions</a> or speak to your IT department<span style="font-family: inherit; font-size: 1em;">. Options for accessing FME Flow include:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Install FME Flow on your own machine.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Access your organization&rsquo;s FME Flow instance.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Use an instance provided by requesting an on-demand virtual machine in the footer of the <a href="https://academy.safe.com/" target="_blank" rel="noopener">FME Academy</a> home page.</span></li>
+</ul>
+</blockquote>
+<h2 id="preparing-a-workspace-to-publish-to-fme-server">Preparing a Workspace to Publish to FME Flow</h2>
+<p>Frank already has&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-your-self-serve-workspace.fmw" target="_blank" rel="noreferrer noopener">a workspace</a> that is working well. However, Jennifer notices a problem he must address before publishing to FME Flow. She explains that creating the correct user parameters before publishing makes a much better experience for users running the workspace using FME Flow.</p>
+<p>The path for the output data in the workspace is currently hardcoded to &ldquo;C:\FMEData\Output\Training&rdquo;. Frank confirms this in the <strong>Navigator&nbsp;</strong>&gt;&nbsp;<strong>Training [Generic]</strong>&nbsp;writer &gt;&nbsp;<strong>Destination Generic (Any Format) Folder&nbsp;</strong>parameter. Having this hard coded is fine when he runs it on his own machine. When he publishes a workspace to FME Flow, the workspace will try to write data to the C:\ drive of the machine hosting FME Flow. However, he can&rsquo;t assume access to a C:\ drive: FME Flow might not have write access to that drive, or if it&rsquo;s a Linux machine, it won&rsquo;t even exist! Jennifer informs him it&rsquo;s best practice to read and write data that exists in FME Flow's shared <strong>Resources</strong> folder instead.</p>
+<p>To fix this, Frank double-clicks on the&nbsp;<strong>Destination Generic (Any Format) Folder&nbsp;</strong>parameter and enters &ldquo;$(FME_SHAREDRESOURCE_DATA)\CommunityMapping.zip&rdquo;. This path includes the &ldquo;FME_SHAREDRESOURCE_DATA&rdquo; user parameter (viewable under&nbsp;<strong>User Parameters&nbsp;</strong>&gt;&nbsp;<strong>FME Flow Parameters</strong>) and sets the workspace to write out its results to a ZIP file called CommunityMapping. When he runs the workspace on FME Flow, it will write the data to the shared <strong>Data&nbsp;</strong>folder for all users to access. We&rsquo;ll take advantage of that feature in a later lesson.</p>
+<p><img src="images/1713303575547.png" alt="Setting the destination path to use an FME Flow parameter" width="696" height="359" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">FME has many useful built-in parameters similar to&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">FME_SHAREDRESOURCE_DATA&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">that let you access information about FME itself, such as the FME build number used to run the workspace or the location of the temporary data folder on the machine running the workspace. These parameters can be used to customize how FME runs in different environments or to create customized reporting on workspace runs.</span></p>
+<p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!Transformer_Parameters/FME_parameters.htm" target="_blank" rel="noopener">Learn More About FME Parameters</a></p>
+<p><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!Transformer_Parameters/FME-Flow-Parameters.htm" target="_blank" rel="noopener">Learn More About FME Flow Parameters</a></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">All file- and folder-based FME formats can be&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/zip_files.htm" target="_blank" rel="noopener">read as or written to ZIP files</a><span style="font-family: inherit; font-size: 1em;">. Provide a ZIP file for the </span><strong style="font-family: inherit; font-size: 1em;">Dataset</strong><span style="font-family: inherit; font-size: 1em;">&nbsp;parameter of your reader or add &ldquo;.zip&rdquo; into the&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Dataset&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">file path of your writer.</span></p>
+</blockquote>
+<h2 id="connect-to-fme-server-with-a-web-connection">Connect to FME Flow with a Web Connection</h2>
+<p>Now that Frank has prepared the workspace by creating the correct user parameters, he needs to create an FME Flow web connection before he can publish. Jennifer walks him through the steps.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Remember that&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!NamedConnections/Using_Database_Connections.htm" target="_blank" rel="noopener">database</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!NamedConnections/Using_Web_Service_Connections.htm" target="_blank" rel="noopener">web connections</a><span style="font-family: inherit; font-size: 1em;"> save authentication information to connect to databases, web services, and APIs. FME stores them on the user&rsquo;s operating system profile, separating authentication information from the workspace. You can also publish them to FME Flow to allow multiple users to share them without exposing passwords. The FME Flow web connection works the same way as other web connections.</span></p>
+</blockquote>
+<p>To create an FME Flow web connection, Frank clicks <strong>File&nbsp;</strong>&gt;&nbsp;<strong>Publish to FME Flow</strong>:</p>
+<p><img src="images/1713303601858.png" alt="File &gt; Publish to FME Flow" width="302" height="475" /></p>
+<p>The <strong>FME Flow Connection </strong>drop-down says "Disconnected" because this is his first time connecting to FME Flow. He clicks the drop-down and chooses <strong>Connect to FME Flow...</strong></p>
+<p><img src="images/1713303612756.png" alt="Connect to FME Flow drop-down option" width="505" height="573" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are attending a Safe Software-hosted training course, the Training FME Flow connection should already be available. If that's the case, feel free to select it and skip ahead.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can manage Database and Web Connections under Tools &gt; FME Options from the Workbench menu bar on Windows or FME Workbench &gt; Preferences on Mac. You can also create them where needed, such as in a reader or transformer dialog.</p>
+</blockquote>
+<p>The <strong>FME Flow&nbsp;Connection&nbsp;</strong>dialog opens, and he fills it out to connect to FME Flow running on his own machine:</p>
+<p><img src="images/1713303628613.png" alt="FME Flow Connection dialog" width="351" height="448" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you are attending a Safe Software training course, the username is admin, and the password is FMElearnings.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can connect to your organization&rsquo;s FME Flow with permission. Get the connection details from your FME Flow Administrator. If you are using FME Flow on your own machine, use </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="http://localhost/" target="_blank" rel="noreferrer noopener">http://localhost</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and your own username and password set&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/Performing-an-Installation.htm" target="_blank" rel="noopener">during installation</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p>After filling out the dialog, Frank clicks&nbsp;<strong>OK</strong>. FME Workbench tests the connection and returns him to the <strong>Publish to FME Flow </strong>dialog.</p>
+<h2 id="publish-a-workspace-to-fme-server">Publish a Workspace to FME Flow</h2>
+<p>Now that he&rsquo;s set up a web connection, Frank can finish publishing his workspace. He renames it&nbsp;<strong>CommunityMapping.fmw&nbsp;</strong>by typing it into&nbsp;the <strong>Workspace Name</strong>&nbsp;field.</p>
+<p>FME Flow stores workspaces in <a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/Repositories.htm" target="_blank" rel="noopener">repositories</a>. To create a new repository for his workspace, Frank clicks&nbsp;<strong>New&hellip;&nbsp;</strong>and makes a new repository called &ldquo;Self-Serve.&rdquo; He clicks <strong>OK</strong>&nbsp;twice to finish creating his new repository.</p>
+<p><img src="images/1713303656039.png" alt="Creating a new self-serve repository" width="826" height="588" /></p>
+<p>Jennifer reminds Frank to consider how his workspace will access data after he publishes it to FME Flow. Many workspaces use data stored locally on the author&rsquo;s computer, such as C:\FMEData\Data. However, most organizations deploy FME Flow on a different machine that doesn&rsquo;t have access to that directory. Therefore, data used by workspaces published to FME Flow should be accessible by FME Flow, either as a web or database connection or as a URL.</p>
+<p>In the case of our workspace, we use a URL to access the data, so we don't need to upload any data at this step.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If we did need to upload data along with the workspace, we could click the <strong>Select&nbsp;</strong><strong>Files&hellip;&nbsp;</strong>button.</p>
+<p>This dialog offers the option to publish data to the repository along with the workspace, or to use the FME Flow shared Data. For more information, see the <a href="https://academy.safe.com/manage-fme-flow-data-and-connections" target="_blank" rel="noopener">Manage FME Flow Data and Connections</a> course.</p>
+</blockquote>
+<p>Frank clicks <strong>OK&nbsp;</strong>and then&nbsp;<strong>Next</strong>.</p>
+<p>Before he can publish, Frank has to select service(s) for his workspace to use.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">An</span><strong style="font-family: inherit; font-size: 1em;"> FME Flow service</strong><span style="font-family: inherit; font-size: 1em;"> is an interface for interacting with FME Flow.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/FME-Flow-Web-Services.htm" target="_blank" rel="noopener">Learn More</a></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Frank has to choose services to control how users receive the data when they run the workspace on FME Flow. These services each provide a different way to interact with the workspace:</p>
+<ul>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/service_datadownload.htm" target="_blank" rel="noopener"><strong>Data Download&nbsp;</strong><strong>service</strong></a><strong>&nbsp;</strong>links the output as a downloadable ZIP file.</li>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/service_datastreaming.htm" target="_blank" rel="noopener"><strong>Data Streaming service</strong></a><strong>&nbsp;</strong>either immediately downloads the output or, if possible, displays it in the browser (e.g., HTML).</li>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/job_submitter_service.htm" target="_blank" rel="noopener"><strong>Job Submitter service</strong></a><strong>&nbsp;</strong>accepts and runs workspace job requests. The workspace will write data but not present it to the user.</li>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/Notification_Service.htm" target="_blank" rel="noopener"><strong>Notification service</strong></a><strong>&nbsp;</strong>lets the workspace interact with FME Flow Automations.</li>
+</ul>
+<p>Frank&nbsp;makes sure both the<strong>&nbsp;Data Download&nbsp;</strong>and&nbsp;<strong>Job Submitter&nbsp;</strong>services are checked. With these checked, anyone can run the workspace and receive a ZIP file of the results. Then, he clicks <strong>Publish</strong>.</p>
+<p><img src="images/1713306367542.png" alt="Data Download and Job Submitter services" width="505" height="573" /></p>
+<p>Frank&rsquo;s workspace and data are now available on FME Flow.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Most of these actions (uploading data, controlling services, and running workspaces) can also be controlled using the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME_REST/apidoc/v3/index.html" target="_blank" rel="noopener">FME Flow REST API</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="view-a-published-workspace">View a Published Workspace</h2>
+<p>Frank can access his workspace in a web browser using the<strong> Direct Link&nbsp;</strong>in the <strong>Translation Log</strong>: <a href="http://localhost/fmeserver/#/workspaces/run/Self-Serve/CommunityMapping.fmw" target="_blank" rel="noopener">http://localhost/fmeserver/#/workspaces/run/Self-Serve/CommunityMapping.fmw</a>.</p>
+<p><img src="images/1713306628888.png" alt="Viewing direct URL in the Translation Log" width="964" height="454" /></p>
+<p>He clicks the link to open FME Flow and logs in if required.</p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you are attending a Safe Software training course, the username is admin, and the password is FMElearnings.</span></p>
+</blockquote>
+<p>This link directs Frank to the <strong>Run Workspace&nbsp;</strong>page. Here, he can choose which workspace to run and which service to use, optionally provide an email to send the results to, and set the published parameters. He sees why published parameters are important&mdash;creating them in FME Workbench allows him to customize the experience for users running his workspace online.</p>
+<p><img src="images/1690999438131.png" alt="Run workspace page" /></p>
+<h2 id="exercise">Exercise</h2>
+<p>Make sure you follow Frank&rsquo;s steps.</p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>
