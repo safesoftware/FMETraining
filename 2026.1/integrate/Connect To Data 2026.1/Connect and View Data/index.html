@@ -1,0 +1,370 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Connect to a data source.</li>
+<li>Define a feature type.</li>
+<li>Identify feature types in your workspace.</li>
+<li>Distinguish feature types from readers and writers.</li>
+<li>View your existing data.</li>
+</ul>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learning content in the FME Academy presents a user's story addressing their data integration challenges with FME. </span><strong style="font-family: inherit; font-size: 1em;">You should follow along with their actions using your installation of FME (2026.1 or later) </strong><span style="font-family: inherit; font-size: 1em;">or request an on-demand virtual machine in the footer link below. Some lessons will require you to follow their steps or take additional steps to answer a quiz question.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">A&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Resources</strong><span style="font-family: inherit; font-size: 1em;"> section will provide links to interactive tutorials and starting workspaces when necessary.</span></p>
+</blockquote>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<h2>Terminology</h2>
+<!-- Accordion using details/summary (no JS required) --><details>
+<summary><strong>Reader</strong></summary>
+<div>A <span style="font-family: inherit; font-size: 1em;">workspace component that enables you to read a particular dataset.</span></div>
+<div><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/workbench_terminology.htm" target="_blank" rel="noopener"><span style="font-family: inherit; font-size: 1em;">Learn More</span></a></div>
+</details><details>
+<summary><strong>Writer</strong></summary>
+<div>A workspace component that enables you to write a particular dataset. Writers can create new datasets or append/edit existing ones.</div>
+<div><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/workbench_terminology.htm" target="_blank" rel="noopener"><span style="font-family: inherit; font-size: 1em;">Learn More</span></a></div>
+</details><details>
+<summary><strong>Feature Type</strong></summary>
+<div>
+<p>A feature type in FME corresponds to a single sheet in a spreadsheet, table in a database, or a single layer (geometry plus attributes) in spatial data. Feature types are children of readers or writers, so we refer to them as reader feature types or writer feature types.</p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/feature_types_attributes.htm" target="_blank" rel="noopener">Learn More</a></p>
+</div>
+</details><details>
+<summary><strong>Feature / Record</strong></summary>
+<div>Feature types contain features. For spreadsheet or database data, a feature corresponds to a single row. For spatial data, it corresponds to a single piece of geometry (point, line, polygon, etc.) and its attributes.</div>
+<div><span style="font-weight: 400;">Starting with FME 2026.1, we are updating the language in FME to refer to records instead of features. Record is a more general term and makes more sense given that not all data used in FME is spatial.</span></div>
+</details><details>
+<summary><strong>Attribute</strong></summary>
+<div>FME features have attributes that hold information about the feature. These are like columns in a table or spreadsheet or attributes in the ArcGIS Pro attribute table.</div>
+<div><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/feature_types_attributes.htm" target="_blank" rel="noopener">Learn More</a></div>
+</details>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.xlsx" target="_blank" rel="noreferrer noopener">BusinessOwners.xlsx</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here:
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.xlsx</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Culture/PublicArt.xlsx" target="_blank" rel="noreferrer noopener">PublicArt.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Culture\PublicArt.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/connect-and-view-data-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\connect-and-view-data-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="starting-an-fme-project">Starting an FME Project</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>Sven works as a Planning Analyst for a city&rsquo;s economic development department. He has been given an <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/xlsx/xlsx.htm" target="_blank" rel="noopener">Excel</a> spreadsheet containing the&nbsp;point locations of businesses and needs to load it into an&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/geodatabase/geodatabase.htm" target="_blank" rel="noopener">Esri geodatabase</a>. He will use this business data to create guides for each city neighborhood to provide to residents, prospective business owners, and tourists.</p>
+<h2 id="connect-to-your-data">Starting Data</h2>
+<p>Sven is starting with an Excel workbook (<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.xlsx" target="_blank" rel="noreferrer noopener">BusinessOwners.xlsx</a>) with a single sheet. Each row is a separate business and contains information about the business, including the owner's name, the company name, the business license number, and the business&rsquo;s primary address. He wants to keep all this information in his new geodatabase. Here are two sample rows of his data.</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>
+<p><strong>First</strong></p>
+</td>
+<td>
+<p><strong>Last Name</strong></p>
+</td>
+<td>
+<p><strong>Company</strong></p>
+</td>
+<td>
+<p><strong>License Number</strong></p>
+</td>
+<td>
+<p><strong>Longitude</strong></p>
+</td>
+<td>
+<p><strong>Latitude</strong></p>
+</td>
+</tr>
+<tr>
+<td>
+<p>Elvis</p>
+</td>
+<td>
+<p>Clay</p>
+</td>
+<td>
+<p>Diam Industries</p>
+</td>
+<td>
+<p>B347A2</p>
+</td>
+<td>
+<p>-123.101472</p>
+</td>
+<td>
+<p>49.2480941</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>Noelani</p>
+</td>
+<td>
+<p>Curry</p>
+</td>
+<td>
+<p>Mus Donec Associates</p>
+</td>
+<td>
+<p>1991FF</p>
+</td>
+<td>
+<p>-123.1318356</p>
+</td>
+<td>
+<p>49.28042851</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2>1) Create a Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.1 or later).</li>
+<li>Click <strong>New </strong>to create a new workspace in FME.</li>
+</ul>
+<p><img src="images/1742423965405.png" alt="Start tab, New button" /></p>
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Most FME Academy courses assume you can access FME Form and FME Flow. </span><strong style="font-family: inherit; font-size: 1em;">You should follow along with their actions using your installation of FME (2026.1 or later) </strong><span style="font-family: inherit; font-size: 1em;">or request an on-demand virtual machine. Some lessons contain an additional exercise that challenges you to take additional steps independently.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you need access to FME, you can:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Ask your administrator for a license</span></li>
+<li><span style="font-family: inherit; font-size: 1em;"><a href="https://fme.safe.com/pricing/charitable-licenses/" target="_blank" rel="noopener">Request a Work Extension license</a> if you want to use FME for training outside of work</span></li>
+<li><span style="font-family: inherit; font-size: 1em;"><a href="https://bluesky-safe-software.fmecloud.com/fmeserver/apps/FMEAcademyLab" target="_blank" rel="noopener">Request an on-demand virtual machine to gain temporary access to FME</a></span></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://fme.safe.com/pricing/" target="_blank" rel="noopener">Purchase FME</a></li>
+</ul>
+<p><span style="font-family: inherit; font-size: 1em;">If you don&rsquo;t have access to FME, some courses provide step-by-step tutorials you can follow to see the workflow in action. However, some Quizzes will require FME access to answer the questions.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">All the data you need for the training is provided as links in the relevant lessons. If you want to download sample data, use the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://s3.amazonaws.com/FMEData/FMEData.zip" target="_blank" rel="noreferrer noopener">FME data repository</a><span style="font-family: inherit; font-size: 1em;">&nbsp;(also on&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://github.com/safesoftware/fmedata" target="_blank" rel="noreferrer noopener">GitHub</a><span style="font-family: inherit; font-size: 1em;">). Unless otherwise stated, the data used here originates from open data made available by the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://opendata.vancouver.ca/pages/home/" target="_blank" rel="noreferrer noopener">City of Vancouver</a><span style="font-family: inherit; font-size: 1em;">&nbsp;in British Columbia. It contains information licensed under the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://opendata.vancouver.ca/pages/licence/" target="_blank" rel="noreferrer noopener">Open Government License - Vancouver</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2>2) Interface Overview</h2>
+<ul>
+<li>Take a moment to review the Workbench user interface.</li>
+</ul>
+<p><img src="images/1776445631852.png" alt="FME Workbench user interface" width="1302" height="711" /></p>
+<ul>
+<li>The menu/toolbar lets you access common actions.</li>
+<li>The Navigator is an outline view of your workspace that lists readers and writers.</li>
+<li>The Canvas is where you can use a visual drag-and-drop system to build your data integration workflow.</li>
+<li>The Transformer Gallery is a list of all the tools called transformers you can add to the Canvas to process your data.</li>
+<li>The Data Preview window shows tabular and map views of your data.</li>
+<li>The Record Information Window shows all the information FME knows about a single feature.</li>
+<li>You can toggle these windows on and off, or reset them to the default, under View &gt; Windows.</li>
+</ul>
+<h2 id="connect-to-your-data">3) Add a Reader</h2>
+<p><img class="image" src="images/1775849430648.png" alt="Blank canvas Add Data Source button" width="459" height="136" /></p>
+<ul>
+<li>Click the <strong>canvas </strong>once to ensure it is focused.</li>
+<li>Click <strong>Add Data Source</strong>&nbsp;or type &ldquo;Excel&rdquo;.
+<ul>
+<li>When you start typing, the Quick Add dialog appears and suggests objects that match &ldquo;Excel.&rdquo; It lists all objects you can add to the canvas: transformers, readers, and writers.</li>
+</ul>
+</li>
+<li>Double-click the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/xlsx/xlsx.htm" target="_blank" rel="noopener"><strong>Microsoft Excel&nbsp;</strong>reader</a> or press the Enter key.</li>
+</ul>
+<p><img src="images/1776445733985.png" alt="Adding an Excel reader using Quick Add" width="765" height="491" /></p>
+<ul>
+<li>The&nbsp;<strong>Add Reader&nbsp;</strong>dialog appears.
+<ul>
+<li>The&nbsp;<strong>Format</strong> is already set as Excel, but you still need to set the other parameters.</li>
+</ul>
+</li>
+<li>Set the <strong>Dataset&nbsp;</strong>parameter to the location of the Excel file,&nbsp;<span style="margin: 0px; padding: 0px;">either a URL&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.xlsx" target="_blank" rel="noopener">(https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.xlsx)</a> or a local path (for Safe Software-hosted training courses: C:\FMEData\Data\Planning\BusinessOwners.xlsx)</span>.
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">The </span><span style="font-family: inherit; font-size: 1em;">Dataset&nbsp;</span><span style="font-family: inherit; font-size: 1em;">parameter can accept one or more paths to files stored on your computer, URLs, or a connection to a web service (by clicking the downward-pointing arrow and then<strong> </strong>Select&nbsp;File From Web).</span></li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1775849506817.png" alt="Add Reader dialog - Excel" width="429" height="262" /></p>
+<h2>4) Set Reader Parameters</h2>
+<ul>
+<li>Then click the <strong>Parameters&hellip;</strong> button.</li>
+</ul>
+<p><img src="images/1775849537821.png" alt="Add Reader dialog - Parameters button" width="429" height="262" /></p>
+<p>The&nbsp;<strong>Microsoft Excel Parameters&nbsp;</strong>dialog controls how the Excel file will be read, including which sheet(s) to read. The&nbsp;<strong>Preview</strong> section displays how FME sees the data, while the Attributes section displays the <strong>attributes </strong>(spreadsheet columns, in this case) that FME detected. <span style="font-family: inherit; font-size: 1em;">FME automatically detected the </span><strong style="font-family: inherit; font-size: 1em;">Longitude&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">and&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Latitude&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">attributes as X and Y coordinates and set them appropriately (under the </span><strong style="font-family: inherit; font-size: 1em;">Type&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">column). You can also manually set these, if necessary. FME will automatically create points using these attributes when it reads the spreadsheet.</span></p>
+<p><img src="images/1712703817062.png" alt="x and y coordinates set" width="598" height="328" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Some datasets store geometry information, and some do not. In this case, the source Excel file contained spatial data (latitude and longitude coordinates) describing the location of the address associated with each business license. However, in Excel, these coordinates are stored as numbers. The dataset needs to store geometry separate from its attributes to create a spatial dataset that can be analyzed and manipulated using FME or a GIS.</span></p>
+<p>The Attribute Definition looks correct; FME will use the Longitude and Latitude attributes to automatically create points. However, for these points to appear correctly on a map, FME needs to know which coordinate system they are using. If you were reading from a spatial format like an Esri Shapefile, FME could read the coordinate system information directly. But Excel doesn't store that information, so you need to tell FME which coordinate system to use.</p>
+<ul>
+<li>Scroll down to the <strong>Spatial </strong>section and find the <strong>Coordinate System</strong> parameter.
+<ul>
+<li>The <strong style="font-family: inherit; font-size: 1em;">Coordinate System</strong><span style="font-family: inherit; font-size: 1em;"> parameter currently says &ldquo;Unknown,&rdquo; so you need to set it.&nbsp;</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Setting the coordinate system is not mandatory. It is necessary to set the coordinate system to use background maps when inspecting the data, comparing the data to other datasets in different coordinate systems, or writing to formats requiring a coordinate system. </span></li>
+<li><span style="font-family: inherit; font-size: 1em;">FME will use the coordinate system stored by the dataset if it exists. The <strong style="font-family: inherit; font-size: 1em;">Coordinate System </strong>parameter will display &ldquo;Read from source&rdquo; if the dataset can store coordinate system information and &ldquo;Unknown&rdquo; if not. If you are unsure of the coordinate system of your data, check the metadata or contact the creator of the dataset.</span></li>
+</ul>
+</li>
+<li>Set the <strong>Coordinate System</strong> to &ldquo;LL84&rdquo;, a commonly used global coordinate system.</li>
+</ul>
+<p><img src="images/1775849759506.png" alt="Selecting coordinate system" width="452" height="182" /></p>
+<ul>
+<li>Now that all required parameters are set, click <strong>OK </strong>twice to close the dialogs and add the reader to the canvas.
+<ul>
+<li>The canvas now shows the single worksheet from the Excel spreadsheet<span style="margin: 0px; padding: 0px;">,&nbsp;<strong>"BusinessOwners"</strong></span><span style="font-family: inherit; font-size: 1em;">. This object is known as a reader </span><strong style="font-family: inherit; font-size: 1em;">feature type</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
+</ul>
+</li>
+</ul>
+<h3 id="connect-to-your-data">5) Understand Workspace Structure</h3>
+<p>Here is a visual example of how FME components relate to Excel components. In the image below:</p>
+<ol>
+<li>The&nbsp;<strong>dataset&nbsp;</strong>is the XLS or XLSX file (a.k.a. the workbook)</li>
+<li>The&nbsp;<strong>feature types&nbsp;</strong>are the sheets (a.k.a. tables)</li>
+<li>The&nbsp;<strong>features&nbsp;</strong>are the rows (the columns are the&nbsp;<strong>attributes)</strong></li>
+</ol>
+<p><img class="image" src="images/0-c-475-c-63-33-c-8-4-e-9-f-bfbf-c-0-d-60632-d-9-a-6.png" alt="Where FME terminology fits in Excel" width="624" height="295" /></p>
+<p>The components of a workspace are represented in FME Workbench as follows. In the image below:</p>
+<ol>
+<li>The entire&nbsp;<strong>workspace</strong> consisting of the contents of the <strong>canvas&nbsp;</strong>and the&nbsp;<strong>Navigator</strong>.</li>
+<li><strong>Readers&nbsp;</strong>(a) and&nbsp;<strong>writers&nbsp;</strong>(b) at the top of the&nbsp;<strong>Navigator</strong>.</li>
+<li><strong>Reader&nbsp;</strong>(a) and&nbsp;<strong>writer&nbsp;</strong>(b)&nbsp;<strong>feature types</strong>, shown on the&nbsp;<strong>canvas</strong>&nbsp;and under their respective reader and writer in the&nbsp;<strong>Navigator</strong>.</li>
+<li><strong>Features&nbsp;</strong>(rows in a table or single pieces of geometry with associated attributes) are shown as feature counts on connection lines after a workspace is run.</li>
+</ol>
+<p><img class="image" src="images/1712703873235.png" alt="Where you can view workspace components in FME Workbench" width="904" height="254" /></p>
+<p>The total hierarchy of components in FME Workbench looks like this:</p>
+<p><img src="images/1742332907660.png" alt="Workspace structure" /></p>
+<h3>6) Save Your Workspace</h3>
+<ul>
+<li>Save the workspace by clicking the <strong>Save&nbsp;</strong>button in&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Using_Workbench_Menus_and_Tools.htm" target="_blank" rel="noopener">the toolbar</a> (the row of icons below the menu bar):
+<ul>
+<li>FME Workbench saves files called workspaces. They have the file ending .fmw and tend to be relatively small, as they do not contain data from readers and writers. Instead, they contain references to where that data is located, e.g., a file path, URL, or FME Web or Database Connection.</li>
+<li><span style="font-family: inherit; font-size: 1em;">You can save your workspace wherever you like. We recommend that you save often, including every time before you run your workspace.</span></li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1776445915950.png" alt="Save button" width="229" height="62" /></p>
+<h3 id="run-the-workspace">7) Run the Workspace</h3>
+<ul>
+<li>Click <strong>Run </strong>on the toolbar to run the translation.</li>
+</ul>
+<p><img src="images/1776446088639.png" alt="Run button" width="229" height="62" /></p>
+<p>A&nbsp;<strong>Translation Parameter Values&nbsp;</strong>dialog appears to confirm some parameters. This dialog can be helpful if you want to change parameters before he runs his workspace.</p>
+<p><img src="images/1712703959391.png" alt="Confirming run on the Translation Parameters Dialog" width="643" height="256" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Being prompted to fill in the parameter values lets you rerun a workspace with different parameters. For example, you may convert several datasets using the same workspace running multiple times or testing if a workspace runs successfully with different input data. You may disable this prompt by clicking the drop-down triangle beside </span><span style="font-family: inherit; font-size: 1em;">Run&nbsp;</span><span style="font-family: inherit; font-size: 1em;">in the toolbar and deselecting&nbsp;</span><span style="font-family: inherit; font-size: 1em;">Prompt for User Parameters</span><span style="font-family: inherit; font-size: 1em;">.</span></p>
+<p>&nbsp;After the workspace runs and the data is read, the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Viewing_the_Log.htm" target="_blank" rel="noopener"><strong>Translation Log</strong> reports what FME did during the translation and whether the translation was successful</a>. It's likely the Translation Log will only show for a moment; step 8 explains why.</p>
+<p><img class="image image-block" src="images/1776446186309.png" alt="Translation log" width="1000" height="232" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Translation Log is displayed as a sortable table. You can click the hyperlinked transformer name to navigate to the element on the canvas producing the message. This ability to identify where errors are occurring makes debugging workspaces more efficient.</span></p>
+<h3 id="view-your-data">8) View Your Data</h3>
+<p>On the&nbsp;<strong>BusinessOwner</strong><strong>s&nbsp;</strong><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/aboutFeatures/feature-type-attributes-about.htm" target="_blank" rel="noopener">feature type</a>, the new green icon represents a local copy of all the spreadsheet's features. It is called a&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/feature_inspection_about.htm" target="_blank" rel="noopener"><strong>feature cache</strong></a>, and you can click it to inspect the data. Caches store all the features from a particular port, represented by the green magnifying glass icon.</p>
+<ul>
+<li>Click on the green <strong>magnifying glass icon </strong>on the <strong>BusinessOwner</strong><strong>s feature type </strong>to inspect the cached data.</li>
+</ul>
+<p><img src="images/1712704011383.png" alt="Inspecting a cache" width="330" height="112" /></p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Data-Preview.htm" target="_blank" rel="noopener"><strong>Data Preview</strong></a> displays the contents of the cache: a table containing all of the spreadsheet data. The total number of rows (features) is shown in the bottom right of <strong>Table View</strong>.&nbsp;<strong>Graphics View&nbsp;</strong>displays the spatial data, which, in this case, are points. If you had the BusinessOwners feature cache selected, Data Preview will show the data as soon as the workspace finishes running, which explains why you may have only seen the Translation Log briefly.</p>
+<p><img class="image image-block" src="images/1778556857473.png" alt="Viewing a cache in Visual Preview" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If you are taking a Safe Software-hosted training course, we have the background map enabled by default. If you don't see a background map, we'll show you how to configure one in a later lesson.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Data Preview is an embedded version of a standalone program included with FME Form, the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/DataInspector/AboutTheDataInspector/FMEDataInspector_about.htm" target="_blank" rel="noopener">FME Data Inspector</a>. You can use this separate program if you prefer to have a full-screen application when inspecting data. The FME Data Inspector can view any format that FME can read.</p>
+</blockquote>
+<h3 id="exercise">9) Add Another Excel Reader</h3>
+<p>Sven also wants to include data about public art in his neighborhood guides.</p>
+<p>Help him by adding another Excel reader to connect to all the sheets (feature types) in this <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Culture/PublicArt.xlsx" target="_blank" rel="noreferrer noopener">public art Excel workbook</a> (C:\FMEData\Data\Culture\PublicArt.xlsx). The steps are the same; use the new URL, and don't forget to set the <strong>Coordinate System</strong> to <strong>LL84 </strong>again. You don&rsquo;t need to download the file; you can paste the URL into the <strong>Dataset&nbsp;</strong>parameter of the&nbsp;<strong>Add Reader</strong> dialog.</p>
+<p>The workbook contains one sheet per neighborhood. When prompted, add all the feature types. Each row is a public art installation and contains information about the location, the piece's title, and its longitude and latitude. &nbsp;Your canvas should now look like the image below.</p>
+<p><img class="image image-block" src="images/1712704184349.png" alt="Reader feature types on canvas" width="376" height="432" /></p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GMMH7JP?user_id=' + userId + '&lesson_id=' + lessonId;
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

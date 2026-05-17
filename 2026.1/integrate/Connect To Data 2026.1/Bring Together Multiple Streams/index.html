@@ -1,0 +1,121 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Set the schema for your output data.</li>
+<li>Combine data from different sources.</li>
+<li>Find your written data.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/bring-together-multiple-streams.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\bring-together-multiple-streams.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/bring-together-multiple-streams-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\bring-together-multiple-streams-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.xlsx" target="_blank" rel="noreferrer noopener">BusinessOwners.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.xlsx</li>
+</ul>
+</li>
+</ul>
+<h2 id="combine-your-data-streams">Combine Your Data Streams</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>When multiple streams connect to the same input port, the features accumulate. This operation is often called a&nbsp;<strong>union</strong>.</p>
+<p>Sven continues <span style="margin: 0px; padding: 0px;">working on his Excel-to-geodatabase</span> workspace. He realizes that with a separate writer feature type for each public art feature type, he will end up with many layers in the geodatabase, one for each neighborhood&rsquo;s public art features. This corresponds to the Excel file's structure, with one sheet per neighborhood. However, in the geodatabase, he&rsquo;d prefer all public art stored in a single layer called PublicArt. He gets to work on editing his writer feature types to achieve this outcome.</p>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench </strong>(2026.1 or later).</li>
+<li>Open the <span style="margin: 0px; padding: 0px;"><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/bring-together-multiple-streams.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\bring-together-multiple-streams.fmw).</span>&nbsp;</li>
+</ul>
+<h2>2) Edit Writer Feature Types</h2>
+<p>To create a single public art feature type, you could add a new one, but it's easy to edit an existing one and then delete the others.</p>
+<ul>
+<li>Double-click on the <strong>Downtown </strong>writer feature type to open the writer <strong>Feature Type&nbsp;</strong>dialog.</li>
+<li>Rename the <strong>Feature Class or Table Name</strong> to &ldquo;PublicArt".</li>
+</ul>
+<p><img src="images/1776718264294.png" alt="Changing writer feature type name" width="585" height="423" /></p>
+<ul>
+<li>Click on&nbsp;<strong>User Attributes,&nbsp;</strong>and set the&nbsp;<strong>Geometry Type</strong></li>
+</ul>
+<p><img src="images/1778559539717.png" alt="" /></p>
+<ul>
+<li>Click <strong>OK&nbsp;</strong>to accept the changes in the&nbsp;<strong>Feature Type</strong>&nbsp;dialog.</li>
+</ul>
+<h2>3) Connect Feature Types</h2>
+<ul>
+<li>Connect <strong>PublicArt&nbsp;</strong>to all of the neighborhood reader feature types by clicking on the red triangle going into PublicArt, holding down the CTRL key (⌘&nbsp;or Shift on Mac), and clicking on each triangle coming out of the neighborhood feature types (<strong>Downtown</strong>,&nbsp;<strong>Mount Pleasant</strong>,&nbsp;<strong>Strathcona</strong>,&nbsp;<strong>Fairview</strong>,&nbsp;<strong>Kitsilano</strong>, and&nbsp;<strong>West End</strong>).
+<ul>
+<li>By creating these feature connection lines, you are telling FME to route all features from these sources into a single destination. Features travel from left to right across the feature connection lines when the workspace runs.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block" src="images/1712768662840.gif" alt="Connecting feature types" width="500" height="316" /></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Delete the writer feature types that are not connected (</span><strong style="font-family: inherit; font-size: 1em;">Mount_Pleasant</strong><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Strathcona</strong><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Fairview</strong><span style="font-family: inherit; font-size: 1em;">,&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Kitsilano</strong><span style="font-family: inherit; font-size: 1em;">, and&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">West_End</strong><span style="font-family: inherit; font-size: 1em;">).</span>
+<ul>
+<li>Click and drag a rectangle around them, then right-click one of them and select <strong style="font-family: inherit; font-size: 1em;">Delete</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
+</ul>
+</li>
+</ul>
+<h2 id="locate-your-output-data">4) Run and Locate Your Output Data</h2>
+<ul>
+<li>Click <strong>Run</strong>&nbsp;in the toolbar.</li>
+<li>Click&nbsp;<strong>Run&nbsp;</strong>in the Translation Parameter Values dialog.
+<ul>
+<li>This dialog keeps appearing because, by default, workspaces let the user choose the paths for input and output data. You can customize this behavior; we'll show you how later in the course.</li>
+</ul>
+</li>
+<li>Select the <strong>BusinessOwners&nbsp;</strong>writer feature type.</li>
+<li>Click the <strong>Open Containing Folder</strong> icon.
+<ul>
+<li>This opens the C:\FMEData\Output\Training folder, where FME wrote the data.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1712768683609.png" alt="Open Containing Folder button" width="291" height="82" /></p>
+<ul>
+<li>You should see the <strong>Vancouver.gdb</strong> file geodatabase in that folder.
+<ul>
+<li>This confirms that the geodatabase was created in the correct folder, and we can expect the BusinessOwners and PublicArt feature classes to be within it.</li>
+</ul>
+</li>
+</ul>
+<p>In the next lesson, we&rsquo;ll inspect it to ensure the contents of Vancouver.gdb are correct by checking that there are two feature types (BusinessOwners and PublicArt), they have the correct schema (attribute names, types, and allowed geometries), and they contain the correct number of features.</p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

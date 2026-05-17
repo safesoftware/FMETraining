@@ -1,0 +1,160 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Connect FME Form to FME Flow using a web connection.</li>
+<li>Publish a workspace to the web.</li>
+<li>View your published workspace in FME Flow.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<p><span style="font-size: 2.3125em;">Resources</span></p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\publish-a-self-serve-workspace-to-the-web.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\publish-a-self-serve-workspace-to-the-web-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">CommunityMap.gdb.zip</a>
+<ul>
+<li>C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="publish-a-workspace-to-the-web">Publish a Workspace to the Web</h2>
+<p>Now that Frank has a self-serve workspace, he must publish it to FME Flow.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The rest of this course assumes you have access to an FME Flow. If you need help installing, licensing, and creating an account for FME Flow, please </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/s/article/Getting-Started-with-FME-Server-Administration" target="_blank" rel="noopener">follow these instructions</a> or speak to your IT department<span style="font-family: inherit; font-size: 1em;">. Options for accessing FME Flow include:</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Use an instance provided by requesting an on-demand virtual machine in the footer of the <a href="https://academy.safe.com/" target="_blank" rel="noopener">FME Academy</a> home page.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Install FME Flow on your own machine.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Access your organization&rsquo;s FME Flow instance.</span></li>
+</ul>
+</blockquote>
+<h2 id="preparing-a-workspace-to-publish-to-fme-server">Scenario</h2>
+<p><img class="image image-block image-center" src="images/c-523-def-8-4-eb-4-4-add-acbd-274-c-2-ee-65-f-21.png" alt="Frank" width="256" height="256" /></p>
+<p>Frank's workspace is working well. However, Jennifer notices a problem that he must address before publishing to FME Flow. She explains that Automations may require access to the output dataset. This means that the output must be written to a specific location on FME Flow.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">In this exercise, you will:</p>
+<ul>
+<li class="whitespace-normal break-words pl-2">Update the output destination path to use FME Flow's shared Resources folder.</li>
+<li class="whitespace-normal break-words pl-2">Connect FME Workbench to FME Flow by creating a web connection.</li>
+<li class="whitespace-normal break-words pl-2">Publish the workspace to FME Flow using the Data Download and Job Submitter services.</li>
+<li class="whitespace-normal break-words pl-2">View the published workspace in FME Flow.</li>
+</ul>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">1) Open Starting Workspace</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Start <strong>FME Workbench</strong> (2026.1 or later).</li>
+<li class="whitespace-normal break-words pl-2">Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-your-self-serve-workspace.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a>: C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\publish-a-self-serve-workspace-to-the-web.fmw.</li>
+</ul>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">2) Update the Output Path</h3>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">The output destination is currently hardcoded to a local folder that FME Flow may not be able to access.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">In the <strong>Navigator</strong>, expand <strong>Training [Generic]</strong> &gt; <strong>Parameters</strong> and double-click <strong>Destination Generic (Any Format) Folder</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Notice the path is currently set to C:\FMEData\Output\Training. This path won't exist on the FME Flow server.</li>
+</ul>
+</li>
+<li class="whitespace-normal break-words pl-2">Change the value to $(FME_SHAREDRESOURCE_DATA)\CommunityMapping.zip and click <strong>OK</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">This writes workspace output to FME Flow's shared Data folder, making results accessible to all FME Flow users.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1778182027017.png" alt="Setting the destination path to use an FME Flow parameter" width="755" height="325" /></p>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">3) Connect to FME Flow</h3>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">If you are using a Safe virtual machine, it will already be connected to FME Flow, and the menu bar will look like this:</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]"><img src="images/1778192729422.png" alt="FME Flow Connection" /></p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">The "Training FME Flow" FME Flow Connection contains the credentials to connect to FME Flow. Creating a web connection securely stores your FME Flow credentials so FME Workbench can communicate with FME Flow.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">If you are not using a Safe virtual machine, you will have to <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/FME-Flow-Connecting.htm" target="_self">create your own FME Flow web connection</a>.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click <strong>Deploy</strong> &gt; <strong>Publish to FME Flow</strong>, or click on the <strong>Publish </strong>button on the toolbar.</li>
+</ul>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">4) Publish the Workspace to FME Flow</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li>Beside "Repository Name", click <strong>New</strong> and name the new repository "Self-Serve", then click <strong>OK</strong>.</li>
+<li class="whitespace-normal break-words pl-2">In the <strong>Workspace Name</strong> field, type "CommunityMapping.fmw".</li>
+<li class="whitespace-normal break-words pl-2"><span style="font-family: inherit; font-size: 1em;">Click </span><strong style="font-family: inherit; font-size: 1em;">Next</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
+</ul>
+<p><img src="images/1778193503558.png" alt="Creating a new self-serve repository" width="783" height="611" /></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Ensure both <strong>Data Download</strong> and <strong>Job Submitter</strong> are checked.</li>
+<li class="whitespace-normal break-words pl-2">Click <strong>Publish</strong>.</li>
+</ul>
+<p><img src="images/1778193966006.png" alt="" /></p>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">5) View the Published Workspace</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">In the <strong>Translation Log</strong>, click the <strong>Direct Link</strong> to open your workspace in FME Flow.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Log in if prompted.</li>
+<li class="whitespace-normal break-words pl-2">On Safe virtual machines, the username is <code>admin</code> and the password is <code>FMElearnings</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1778194085607.png" alt="Translation log link" /></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Confirm your workspace appears on the <strong>Run Workspace</strong> page with your published parameters visible.</li>
+</ul>
+<p><img src="images/1778194547238.png" alt="Run workspace page" width="778" height="931" /></p>
+<p>We'll run the workspace in the next lesson.</p>
+<h2 id="exercise">Tips &amp; Tricks</h2>
+<ul>
+<li>Be mindful of absolute paths in your published workspaces. Most authoring machines are Windows-based, but most FME Flow installations are Linux based. That means C:\ might not exist!</li>
+<li>FME Flow parameters like $(FME_SHAREDRESOURCE_DATA) can be found in the Text Editor interface when editing parameters. Using the Text Editor interface can reduce typos.</li>
+<li><span style="font-family: inherit; font-size: 1em;">FME has many useful built-in parameters similar to&nbsp;FME_SHAREDRESOURCE_DATA</span><strong style="font-family: inherit; font-size: 1em;">&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">that let you access information about FME itself, such as the FME build number used to run the workspace or the location of the temporary data folder on the machine running the workspace. These parameters can be used to customize how FME runs in different environments or to create customized reporting on workspace runs.</span>
+<ul>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!Transformer_Parameters/FME_parameters.htm" target="_blank" rel="noopener">Learn More About FME Parameters</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!Transformer_Parameters/FME-Flow-Parameters.htm" target="_blank" rel="noopener">Learn More About FME Flow Parameters</a></li>
+</ul>
+</li>
+<li><span style="font-family: inherit; font-size: 1em;">All file- and folder-based FME formats can be&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/zip_files.htm" target="_blank" rel="noopener">read as or written to ZIP files</a><span style="font-family: inherit; font-size: 1em;">. This simplifies sharing data in formats like Esri Shapfile and Esri File Geodatabase.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Remember that&nbsp;<a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!NamedConnections/Using_Database_Connections.htm" target="_blank" rel="noopener">database</a>&nbsp;and&nbsp;<a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!NamedConnections/Using_Web_Service_Connections.htm" target="_blank" rel="noopener">web connections</a> save authentication information to connect to databases, web services, and APIs. FME stores them on the user&rsquo;s operating system profile, separating authentication information from the workspace. You can also publish them to FME Flow to allow multiple users to share them without exposing passwords. The FME Flow web connection works the same way as other web connections.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">FME Flow services each provide a different way to interact with the workspace:</span>
+<ul>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/service_datadownload.htm" target="_blank" rel="noopener"><strong>Data Download&nbsp;</strong><strong>service</strong></a><strong>&nbsp;</strong>links the output as a downloadable ZIP file.</li>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/service_datastreaming.htm" target="_blank" rel="noopener"><strong>Data Streaming service</strong></a><strong>&nbsp;</strong>either immediately downloads the output or, if possible, displays it in the browser (e.g., HTML).</li>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/job_submitter_service.htm" target="_blank" rel="noopener"><strong>Job Submitter service</strong></a><strong>&nbsp;</strong>accepts and runs workspace job requests. The workspace will write data but not present it to the user.</li>
+<li>The&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/ReferenceManual/Notification_Service.htm" target="_blank" rel="noopener"><strong>Notification service</strong></a><strong>&nbsp;</strong>lets the workspace interact with FME Flow Automations.</li>
+</ul>
+</li>
+</ul>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

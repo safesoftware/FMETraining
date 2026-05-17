@@ -1,0 +1,145 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Query records for additional information.</li>
+<li>View coordinate system information about features.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-information-about-a-specific-record.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\view-information-about-a-specific-record.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/building_footprints.sl3" target="_blank" rel="noopener">building_footprints.sl3</a>
+<ul>
+<li>C:\FMEData\Data\Engineering\BuildingFootprints\building_footprints.sl3</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/PointClouds/CoV_4910E_54580N.laz" target="_blank" rel="noopener">CoV_4910E_54580N.laz</a>
+<ul>
+<li>C:\FMEData\Data\PointClouds\CoV_4910E_54580N.laz</li>
+</ul>
+</li>
+</ul>
+<h2 id="inspect-source-data">Scenario</h2>
+<p><img class="image" src="images/bad-35950-6-e-9-c-4-ec-3-a-5-fd-fcbd-103817-d-8.png" alt="Amar" width="256" height="272" /></p>
+<p>Sven's colleague Amar is starting an FME project to convert 2D building footprints to 3D models by comparing them with a point cloud.</p>
+<p>He has already started a workspace. It takes 2D building footprints and extrudes them to make 3D buildings. He wants to compare the resulting extruded 3D buildings to a point cloud to see whether the extrusion is roughly correct with respect to what is observed in the point cloud.</p>
+<p>Amar has not yet inspected the point cloud dataset and is curious about the units of distance used (feet or meters) and the software used to generate it&mdash;TopoDOT was previously used, but Terrascan was used for the most recent point clouds.</p>
+<p>Help him find out this information by using the Record Information Window.</p>
+<h2 id="inspect-source-data">1) Open FME Workbench</h2>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/view-information-about-a-specific-feature.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\view-information-about-a-specific-record.fmw).</li>
+</ul>
+<h2>2) Inspect Source Data</h2>
+<p>The point cloud format is ASPRS Lidar Data Exchange Format (LAS). The reader is listed in the Navigator window as [LAS].</p>
+<ul>
+<li>Right-click on the <strong>LAS reader </strong>and select <strong>View Source Data&hellip;&nbsp;</strong>to inspect the original dataset.</li>
+</ul>
+<p><img src="images/1712779303528.png" alt="View Source Data" width="453" height="285" /></p>
+<ul>
+<li>Observe that <strong>Table </strong>view in <strong>Data Preview </strong>shows no attributes
+<ul>
+<li>&lt;no schema&gt; indicates that no exposed attributes are present in the dataset.</li>
+<li>Exposed attributes appear in the Table view and will be written out if connected to a writer feature type and defined on its schema.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image" src="images/1777397916735.png" alt="No schema shown in Data Preview" width="249" height="242" /></p>
+<p>However, that does not mean there are no attributes at all. The features will have <a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/aboutFeatures/feature-type-attributes-about.htm" target="_blank" rel="noreferrer noopener">format attributes</a>, which are not displayed in the Table view by default. It could also contain other unexposed attributes in some cases.</p>
+<p>A quick check of the ASPRS LiDAR Data Exchange Format (LAS)&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_ReadersWriters/las/quick_facts_las.htm" target="_blank" rel="noreferrer noopener">"Quick Facts" in the documentation</a> confirms that this format does not support user-defined, i.e. exposed, attributes. But there are more attributes than just user-defined attributes.</p>
+<ul>
+<li>Select the <strong>single feature in Table</strong> view.</li>
+<li>Look in the <strong>Record Information </strong>window.</li>
+</ul>
+<h2 id="feature-information-window">3) Find the Record Information Window</h2>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/DataInspector/querying_features.htm" target="_blank" rel="noopener">Record Information</a> window displays everything FME knows about the feature selected in the&nbsp;Table&nbsp;or&nbsp;Graphics view. Here, you can find all the user-defined attributes, format attributes, coordinate system information, and geometry information. It's open by default on the right side of Workbench, but you can also toggle it using this highlighted button on the left of the Data Preview window.</p>
+<p><img src="images/1777398034059.png" alt="Toggling the Record Information Window on" width="1077" height="431" /></p>
+<h2 id="feature-information-window">4) View Attributes in the Record Information Window</h2>
+<ul>
+<li>Note the top-right of <strong>Record Information </strong>reports the feature type or port name.</li>
+<li>Find the sections below that: <strong>Attributes</strong>, both <strong>Exposed</strong> (shown in Table view and written out to the destination table) and <strong>Unexposed</strong> (used by FME but not shown in Table View or written to the destination table).</li>
+</ul>
+<p><span style="font-family: inherit; font-size: 1em;">Because this feature is spatial, the <strong>Geometry </strong>section below <strong>Attributes </strong>contains information on:</span></p>
+<ul>
+<li>Its coordinate system&nbsp;</li>
+<li>Summary information about its geometry (dimension, number of vertices, and extents)</li>
+</ul>
+<h2 id="feature-information-window">5) View Coordinate System in the Record Information Window</h2>
+<p>The coordinate system name under Geometry is a link.</p>
+<ul>
+<li>Click on <strong>UTM83-10 </strong>to open the Properties dialog for the coordinate system.
+<ul>
+<li>Here, you can see that the units for UTM83-10 are meters. This is important for Amar to know, especially if he plans to do any calculations, such as measuring a distance or an area. By default, FME will use the coordinate system&rsquo;s unit as measurement, and the result would look odd if those units were degrees!</li>
+<li><span style="font-family: inherit; font-size: 1em;">Using the<strong> </strong></span><span style="font-family: inherit; font-size: 1em;">Record Information window </span>and Coordinate Systems Properties dialog <span style="font-family: inherit; font-size: 1em;">is one of the fastest ways to determine what units you are working with when calculating areas or distances.</span></li>
+</ul>
+</li>
+</ul>
+<p><img class="image" src="images/1712779634954.png" alt="Coordinate System Properties" width="534" height="602" /></p>
+<h2 id="feature-information-window">6) View Format Attributes in the Record Information Window</h2>
+<ul>
+<li>Close the <strong>Coordinate System Properties</strong> dialog.</li>
+<li>Check the items under the <strong>Unexposed Attributes</strong> header in the&nbsp;<strong>Record Information</strong> window.
+<ul>
+<li>This section reports the attributes associated with the feature, including user attributes and format attributes (for example, fme_type).</li>
+</ul>
+</li>
+<li>Observe that TerraScan, not TeraDOT, generated this dataset, so this is the more recent point cloud dataset.</li>
+<li>Note the creation date of this LAS file (las_file_creation_date (string): 20130425) and the LAS version (las_version (string): 1.2).</li>
+<li>Find additional information under <strong style="font-family: inherit; font-size: 1em;">FME Attributes</strong><span style="font-family: inherit; font-size: 1em;">, including the location of the dataset (</span><code>fme_dataset (string): https://s3.amazonaws.com/FMEData/FMEData/Data/PointClouds/CoV_4910E_54580N.laz</code><span style="font-family: inherit; font-size: 1em;">).</span></li>
+</ul>
+<h2 id="feature-information-window">7) View Geometry in the Record Information Window</h2>
+<ul>
+<li>Check the <strong>Geometry&nbsp;</strong>section in the lower part of the <strong>Record Information </strong>window.
+<ul>
+<li>This section reports the feature's geometry. It includes the geometry type and a list of the coordinates that make up the feature. Here, you can see the extent of the data and the number of points in the point cloud.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image" src="images/1778523812105.png" alt="Geometry information" width="566" height="421" /></p>
+<ul>
+<li>While the&nbsp;<strong>Table</strong> view typically only shows exposed user-defined attributes, the&nbsp;<strong>Record Information</strong> window displays FME-generated&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!FeatureTypeProperties/Controlling_Features_Format_Attributes.htm" target="_blank" rel="noreferrer noopener">format</a>&nbsp;and&nbsp;<a href="https://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Desktop/!List_Attributes/Understanding-List-Attributes.htm" target="_blank" rel="noreferrer noopener">list attributes</a>.
+<ul>
+<li>You can expose any user-defined attributes or fme_type attributes visible in <strong>Record Information </strong>for display in the table, allowing you to use them in your workspace.</li>
+</ul>
+</li>
+</ul>
+<h2>Learn More</h2>
+<ul>
+<li>Check out the <a href="https://academy.safe.com/create-and-modify-attributes" target="_blank" rel="noopener">Create and Modify Attributes course</a> for a more in-depth overview of attributes in FME.</li>
+</ul>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

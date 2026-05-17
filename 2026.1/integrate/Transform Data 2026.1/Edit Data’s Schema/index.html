@@ -1,0 +1,227 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>View your data&rsquo;s schema.</li>
+<li>Edit your data&rsquo;s schema, including feature type and attribute names.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<p><span style="font-size: 2.3125em;">Resources</span></p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-datas-schema.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\edit-datas-schema.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-datas-schema-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\edit-datas-schema-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+</ul>
+<h2 id="view-source-schema">Editing Schema</h2>
+<div>
+<p><span style="font-family: inherit; font-size: 1em;">Manipulating schema (the formal definition of a dataset&rsquo;s structure) is a key process in FME. When creating an FME workspace that modifies schema, there are generally two steps:</span></p>
+<ol>
+<li><strong style="font-family: inherit; font-size: 1em;">Edit the schema</strong><span style="font-family: inherit; font-size: 1em;">: define what schema you want for the written data. In FME, this is done by changing the feature type parameters to reflect what you want, e.g., changing attribute or feature type names.</span></li>
+<li><strong style="font-family: inherit; font-size: 1em;">Map the schema</strong><span style="font-family: inherit; font-size: 1em;">: define the relationship between the source schema (what you have) and the destination schema (what you want). In FME, this is accomplished by using transformers to define how the old and new schema are related.</span></li>
+</ol>
+<p>We&rsquo;ll cover these two steps in this lesson and the next.</p>
+<h2>View Reader Feature Type Schema</h2>
+<p>You can view the schema for your reader feature types by double-clicking a reader feature type. Note, however, that the schema cannot be modified on a reader feature type. If you wish to modify your data in place, you'll have to add a writer feature type for the table or layer you'd like to modify.</p>
+<p><img src="images/1778003319157.png" alt="Reader feature type dialog" width="552" height="419" /></p>
+<h2>View and Edit Writer Feature Type Schema</h2>
+<p>The writer&nbsp;Feature Type<strong>&nbsp;</strong>dialog contains all of the data&rsquo;s schema information:</p>
+<ul>
+<li>Feature type name (in the example below,&nbsp;Feature Class or Table Name, but it varies by format)
+<ul>
+<li>You can edit this to reflect the name of the table or layer you wish to write.</li>
+<li>In some cases, the name of a feature type will be the same name as the file created. In other cases, such as with files containing multiple tables or layers, the feature type indicates the name of the table or layer, not the file.&nbsp;</li>
+<li>The first parameter in all writer feature type dialogs indicates what will be created, e.g., Feature Class or Table Name for geodatabases or Sheet Name for Excel.&nbsp;</li>
+<li>You can set the output file or folder name in the first parameter under the writer in the Navigator.</li>
+</ul>
+</li>
+<li>Attribute names (in the&nbsp;User Attributes&nbsp;tab under the&nbsp;Name&nbsp;column)</li>
+<li>Attribute data types (in the<strong>&nbsp;</strong>User Attributes&nbsp;tab under the&nbsp;Type&nbsp;column)</li>
+<li>Geometry defintion (in the<strong>&nbsp;</strong>User Attributes&nbsp;tab under the Geometry Definition group)</li>
+</ul>
+<p><img src="images/7502fc9a-pasted-f28af89ce1f5.png" alt="Viewing writer feature type schema" width="1134" height="419" /></p>
+</div>
+<h2 id="view-source-schema">Scenario</h2>
+<p><img class="image image-block image-center" src="images/05a4b5fd-61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer continues working on her workspace.&nbsp;This workspace creates an Esri geodatabase from JSON. Jennifer would like her geodatabase to have a different <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Understanding_Schema.htm" target="_blank" rel="noopener">schema</a> from her source data. She&rsquo;d like to make the following changes:</p>
+<ul>
+<li>Change some attributes so they make more sense to the public and match destination system requirements:
+<ul>
+<li>All attributes should be lowercase</li>
+<li>&ldquo;first&rdquo; renamed to &ldquo;first_name&rdquo; to match &ldquo;last_name&rdquo;</li>
+<li>Move &ldquo;last_name&rdquo; to the first column</li>
+<li>Remove &ldquo;latitude,&rdquo; &ldquo;longitude,&rdquo; and all HTTPCaller/JSONFragmenter attributes</li>
+</ul>
+</li>
+</ul>
+<p>Jennifer's writer feature type currently has the same schema as the source data. She now has to edit the schema to get the desired results.&nbsp;</p>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench </strong>(2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/edit-your-datas-schema.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\edit-datas-schema.fmw).</li>
+</ul>
+<h2>2) View Current Writer Schema</h2>
+<p>The first step is to view the current writer schema.&nbsp;</p>
+<ul>
+<li>Double-click on the <strong>BusinessOwners </strong>writer feature type to open its dialog.</li>
+</ul>
+<p><img src="images/e1cf5057-pasted-f6160ef9c925.png" alt="Starting workspace" width="504" height="408" /></p>
+<h2 id="view-source-schema">3) Choose an Attribute Definition Mode</h2>
+<p>We used <strong>Automatic</strong> Feature Type Definition mode when we added the geodatabase writer feature type. This mode sets the feature type's schema to match its given features.</p>
+<p>At this point, we have two options for changing the schema of the destination data:</p>
+<ol>
+<li>&nbsp;Continue to use <strong>Automatic</strong> mode and change the schema of the features using transformers.</li>
+<li>Change to <strong>Manual</strong> mode, manually define the destination schema, and then use transformers to set the schema on the features to match.</li>
+</ol>
+<p>Option two might seem like more work, and it is! However, both approaches can be valid. Automatic mode has to infer the data type, which is (rarely) incorrect.</p>
+<p>So, we will switch to Manual mode in the next step.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/1295f0cc-safe_note.png" alt="Note" /></p>
+<p>In the next lesson, we'll show you how it would work with Automatic. Don't worry about Dynamic; it's an advanced option.</p>
+</blockquote>
+<h2 id="edit-writer-feature-type-attributes">4) Edit Writer Feature Type Attributes</h2>
+<p>Let's change the writer feature type Attribute Definition mode to Manual.</p>
+<ul>
+<li>Click the<strong> User Attributes </strong>tab to view the attributes we want to edit.</li>
+</ul>
+<p><img src="images/1778561594832.png" alt="User Attributes tab" /></p>
+<p>Currently, none of the attributes can be edited because the feature type is still in <strong>Automatic Attribute Definition </strong>mode.</p>
+<ul>
+<li>Click&nbsp;<strong>Manual </strong>to change the mode.</li>
+</ul>
+<p><img src="images/416cc905-1712959851823.png" alt="Changing to Manual mode" width="600" /></p>
+<p>Now, the table of attributes can be edited. We can rename them, change their type, reorder them, or add a new attribute.&nbsp;</p>
+<p>The next step is to remove the attributes we do not want.&nbsp;</p>
+<ul>
+<li>Ctrl+ (or Cmd+) clicks on the <strong>following attributes</strong> one at a time to select them all:
+<ul>
+<li>_creation_instance</li>
+<li>_response_body</li>
+<li>_http_status_code</li>
+<li>json_type</li>
+<li>json_index</li>
+<li>json_geometry_coordinates_0_</li>
+<li>json_geometry_coordinates_1_</li>
+<li>json_geometry_type</li>
+<li>json_ogc_wkt_crs</li>
+<li>Latitude</li>
+<li>Longitude</li>
+</ul>
+</li>
+<li>After they are all selected, click the <strong style="font-family: inherit; font-size: 1em;">Remove Row (minus sign) button</strong><span style="font-family: inherit; font-size: 1em;"> in the bottom left to remove them.</span>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">What does this mean now that these attributes are removed?</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">It means the written data will not contain them, <em>even if they are present on the features going into the writer</em>.</span></li>
+</ul>
+</li>
+</ul>
+<p><img src="images/4b355342-1712959984720.png" alt="Removing attributes" width="600" /></p>
+<p>Next, reorder the attributes.</p>
+<ul>
+<li>Click on a <strong>row </strong>to select it.</li>
+<li>Then use the <strong>up and down triangle buttons</strong> at the bottom of the table to change their order.&nbsp;</li>
+<li>Use the <strong>Move Down</strong> and <strong>Move Up </strong>buttons to move attributes into the following order:
+<ul>
+<li>Last_Name</li>
+<li>First</li>
+<li>Company</li>
+<li>License_Number&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/c5265a42-1712960443189.png" alt="Changing attribute order" width="904" height="282" /></p>
+<ul>
+<li>Next, rename &ldquo;First&rdquo; to &ldquo;first_name&rdquo; by typing it in the <strong>Name </strong>cell of the table.</li>
+<li>Also, change all the other attributes to lowercase.</li>
+</ul>
+<p><img src="images/76ddbe00-1712962271043.png" alt="Editing attribute names" width="600" height="368" /></p>
+<ul>
+<li>Click&nbsp;<strong>OK&nbsp;</strong>to exit the dialog and apply the changes.</li>
+</ul>
+<h2>5) View Data with Edited Schema</h2>
+<p>Let's preview the data with the edited schema.&nbsp;</p>
+<ul>
+<li>Click&nbsp;<strong>Run.</strong></li>
+</ul>
+<p><strong><img src="images/1778003433037.png" alt="Run button" /></strong></p>
+<ul>
+<li>Once the workspace finishes, click the&nbsp;<strong>BusinessOwners feature type</strong> once to select it.</li>
+<li>Then click<strong style="font-family: inherit; font-size: 1em;">&nbsp;View Written Data</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
+</ul>
+<p><img src="images/5c30601b-1712962310790.png" alt="View Written Data button" width="300" height="160" /></p>
+<ul>
+<li>The data appears in<strong>&nbsp;Data Preview</strong>.</li>
+<li>Observe in<strong style="font-family: inherit; font-size: 1em;">&nbsp;Table View</strong><span style="font-family: inherit; font-size: 1em;"> that the schema has been edited, but the data is missing. </span>
+<ul>
+<li>This is because the features going into the writer feature type have attributes with different names.</li>
+<li>Note that the Esri Geodatabase writer added the OBJECTID column, which is required by the format.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/d217aa0c-1712962358758.png" alt="Table View with edited attributes" width="554" height="146" /></p>
+<p>In the next lesson, to ensure the correct values are provided for the written data, we must map our schema, connecting the source and destination schemas.</p>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

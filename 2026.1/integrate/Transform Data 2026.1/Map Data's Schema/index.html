@@ -1,0 +1,238 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use a transformer to edit the features&rsquo; schema.</li>
+<li>Use Automatic Attribute Definition mode to automatically adopt features&rsquo; schema.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<p><span style="font-size: 2.3125em;">Resources</span></p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\map-datas-schema.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\map-datas-schema-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+</ul>
+<h2>Terminology</h2>
+<!-- Accordion using details/summary (no JS required) --><details>
+<summary><strong>Feature connection lines</strong></summary>
+<div>These lines connect feature types and transformers on the canvas and control the flow of features from left to right.</div>
+</details>
+<h2>Schema Mapping</h2>
+<p><span style="font-family: inherit; font-size: 1em;">Once you have edited a writer feature type schema, you have to map the old schema onto the new schema. This step involves changing the names, data types, etc., of your attributes&nbsp;to ensure they match the new schema.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">FME uses colored ports on expanded writer feature types to indicate the status of schema mapping.</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Green <span style="color: #23ad19;">▶</span>: this attribute is connected.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Yellow <span style="color: #e8e058;">▶</span>: this reader feature type attribute is not mapped to any writer feature type; therefore, this attribute will not be in the output.</span></li>
+<li><span style="font-family: inherit;"><span style="font-size: 1em;">Red </span></span><span style="font-family: inherit; font-size: 1em; color: #b80909;">▶</span><span style="font-family: inherit;"><span style="font-size: 1em;">: this writer feature type attribute is not connected. </span></span>Although it exists in the schema, it will not receive any data and therefore<span style="font-family: inherit;"><span style="font-size: 1em;">&nbsp;will not have any values in the written data.</span></span></li>
+</ul>
+<h2 id="determine-schema-mapping-goals">Scenario</h2>
+<p><img class="image image-block image-center" src="images/05a4b5fd-61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Now that Jennifer has created a workspace that edits the web data&rsquo;s schema, she must map it, specifying how the original and new schemas are related.</p>
+<h2>1) Start FME Workbench</h2>
+<ul>
+<li>Start <strong>FME Workbench </strong>(2026.1 or later).</li>
+<li>Open&nbsp;the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/map-datas-schema.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\map-datas-schema.fmw).</li>
+<li>Notice the <strong>red triangle icons</strong> on the writer feature type attributes.</li>
+</ul>
+<p><img src="images/9ded6442-pasted-a81cc02db518.png" alt="" /></p>
+<h2 id="add-an-attribute-manager">2) Add an AttributeManager</h2>
+<p>We must map the new schema onto the old one to ensure our new first_name attribute gets the same values as the existing First attribute. We can use the AttributeManager transformer for that.</p>
+<ul>
+<li>Click the black<strong>&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Including_Transformers_in_a_Workspace.htm" target="_blank" rel="noopener">feature connection line</a>&nbsp;</strong>between the reader and writer feature types<strong>&nbsp;</strong>to select it.&nbsp;</li>
+<li>Observe the <strong>light blue highlight </strong>indicating the line is selected.</li>
+</ul>
+<p><img src="images/1ba633ff-pasted-65b0dae9ba1c.png" alt="" /></p>
+<ul>
+<li>With the <strong>feature connection line</strong> selected, type in &ldquo;<strong>AttributeManager.</strong>&rdquo;&nbsp;
+<ul>
+<li>The Quick Add dialog appears, letting us search for transformers, readers, and writers.&nbsp;</li>
+</ul>
+</li>
+<li>Find the <strong>AttributeManager </strong>and press <strong>Enter </strong>to add it.</li>
+</ul>
+<p><img src="images/fc9b0355-pasted-765b265f4298.png" alt="" /></p>
+<ul>
+<li>The <strong>AttributeManager </strong>appears on the canvas.&nbsp;
+<ul>
+<li>When any object on the canvas is selected, Quick Add automatically connects the new object.&nbsp;</li>
+<li>You may need to click-and-drag the AttributeManager to line it up between the two feature types.</li>
+</ul>
+</li>
+<li>Double-click the <strong>AttributeManager</strong> to open its <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/transformer_parameters.htm" target="_blank" rel="noopener">Parameters dialog</a>.</li>
+</ul>
+<p><img src="images/350fc82b-pasted-c76e5e414591.png" alt="" /></p>
+<h2 id="map-schema-with-an-attribute-manager">3) Map Schema with an AttributeManager</h2>
+<p>The&nbsp;<strong>AttributeManager&nbsp;</strong>parameters are a table that defines how to modify attributes. It allows you to create new attributes, edit existing attribute names, reorder them, and set their values. All transformers have parameters that control their operation. These parameters are unique to each transformer. We can use this transformer to change incoming features so their schema matches the writer feature type.</p>
+<ul>
+<li>Press Ctrl (or Cmd) + clicks the attributes you'd like to remove (<strong>_creation_instance</strong>, <strong>_response_body</strong>, <strong>_http_status_code</strong>, all the transformers beginning with <strong>json_</strong>, <strong>Latitude</strong>, and <strong>Longitude)&nbsp;</strong></li>
+<li>Click the&nbsp;<strong>Remove Row&nbsp;</strong>button&nbsp;to delete them.</li>
+</ul>
+<p><img src="images/9c386346-1742493256694.png" alt="Removing attributes using AttributeManager" width="742" height="578" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Next, we can rename our attributes.&nbsp;</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Click in the</span><strong style="font-family: inherit; font-size: 1em;">&nbsp;Output Attribute</strong><span style="font-family: inherit; font-size: 1em;"> column for the </span><strong style="font-family: inherit; font-size: 1em;">First </strong><span style="font-family: inherit; font-size: 1em;">attribute and rename it &ldquo;first_name.&rdquo;&nbsp;</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Then click the <strong>drop-down arrow</strong> to choose from writer feature type attribute names or type it in manually.</span></li>
+</ul>
+<p><img src="images/45b2d1f8-1742493336985.png" alt="Renaming First to first_name" width="742" height="578" /></p>
+<ul>
+<li>Then, rename the other attributes to use lowercase and underscores by typing in the <strong>Output Attribute </strong>column for each attribute you need to change.</li>
+<li>Then, use the <strong style="font-family: inherit; font-size: 1em;">Move Down </strong><span style="font-family: inherit; font-size: 1em;">and </span><strong style="font-family: inherit; font-size: 1em;">Move Up </strong><span style="font-family: inherit; font-size: 1em;">buttons to change the attribute order so that it is </span><strong style="font-family: inherit; font-size: 1em;">last_name</strong><span style="font-family: inherit; font-size: 1em;">, </span><strong style="font-family: inherit; font-size: 1em;">first_name</strong><span style="font-family: inherit; font-size: 1em;">, </span><strong style="font-family: inherit; font-size: 1em;">company</strong><span style="font-family: inherit; font-size: 1em;">, and </span><strong style="font-family: inherit; font-size: 1em;">license_number:</strong></li>
+</ul>
+<p><strong><img src="images/c8472094-1742493391427.png" alt="Move Up button" width="742" height="578" /></strong></p>
+<p>Your dialog should looks like this:</p>
+<p><img src="images/fc1ea968-1742493432657.png" alt="Setting AttributeManager parameters" /></p>
+<ul>
+<li>Click&nbsp;<strong>OK</strong>.
+<ul>
+<li>The attribute ports on the writer feature type are now green, indicating that the schema is mapped.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/8ca59cdd-pasted-e40396cccb2f.png" alt="" /></p>
+<h2 id="map-schema-with-an-attribute-manager">4) Automatic Attribute Definition Mode</h2>
+<p><span style="font-family: inherit; font-size: 1em;">In the previous lesson, we mentioned that we could use Automatic or Manual Attribute Definition mode on the feature type. We used Manual, defined the schema we wanted, and then mapped it using the AttributeManager.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">That's a valid approach, but let's look at a faster alternative: Automatic mode.</span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Double-click the <strong>BusinessOwners writer feature type </strong>to open its parameters.</span></li>
+<li><span style="font-family: inherit; font-size: 1em;">Click the <strong>User Attribute </strong>tab.</span></li>
+</ul>
+<p><img src="images/1f37189b-pasted-ba4b046816db.png" alt="" /></p>
+<p>The&nbsp;Attribute Definition&nbsp;mode is currently set to Manual.</p>
+<ul>
+<li>Click&nbsp;<strong>Automatic, </strong>and the schema changes to match the incoming features:</li>
+</ul>
+<p><img src="images/5b8d79cf-1713209767303.png" alt="Choosing Automatic attribute definition mode" width="582" height="380" /></p>
+<p>The schema is the same in this case because we already mapped it using the AttributeManager. But consider: it would have also worked to change this to Automatic<strong>&nbsp;</strong>and use the AttributeManager&nbsp;without defining the destination schema in Manual mode. The only major downside is that FME has to infer the attribute types, so you need to check them. In this case, they are all text and set correctly, so it works well.</p>
+<p>After changing to Automatic mode, we could click Manual again to make changes.</p>
+<p>However, we will leave it in Automatic&nbsp;mode.</p>
+<ul>
+<li>Click&nbsp;<strong>OK</strong>.</li>
+<li>Note that the <strong>colored arrows</strong> disappear from the feature type's attributes.
+<ul>
+<li>No arrows are needed in Automatic mode, because the destination schema will always match incoming features.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/05e57fff-pasted-68f5f0fb5e15.png" alt="" /></p>
+<p>We haven't run the workspace yet; in the next lesson, we'll use a technique called partial runs to do that.</p>
+<h2>Optional Challenge</h2>
+<p>Test Automatic mode by changing your AttributeManager parameters. Rename an attribute, for example. You will see the change reflected in the writer feature type schema automatically.&nbsp;</p>
+<p>Make sure to undo your change after testing.</p>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

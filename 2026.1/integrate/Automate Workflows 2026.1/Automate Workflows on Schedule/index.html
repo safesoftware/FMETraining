@@ -1,0 +1,200 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain how FME Flow Automations can save time.</li>
+<li>Create an Automation to run a workspace on a schedule.</li>
+<li>See the other Automation options available.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/publish-a-self-serve-workspace-to-the-web-complete.fmw" target="_blank" rel="noopener">Starting workspace</a> (should already be published to FME Flow as per the previous lesson&rsquo;s instructions)
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\publish-a-self-serve-workspace-to-the-web-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">CommunityMap.gdb.zip</a>
+<ul>
+<li>C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="automate-your-use-of-fme-server">Scenario</h2>
+<p><img class="image image-block image-center" src="images/d-83-c-4-acf-5137-495-e-900-b-d-5-d-5-bcda-8-e-4-a.png" alt="Fatima" width="256" height="256" /></p>
+<p>Frank's colleague Fatima, a Business Data Analyst at the city's Business License Office, has asked to receive a monthly Excel report of all food vendor data without any manual effort from Frank. His workspace already reads feature classes from the community mapping geodatabase and writes them to a user-selected output format. To fulfill her request, Frank builds an FME Flow Automation that runs his workspace on a schedule and emails Fatima the results automatically.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">In this exercise, you will:</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Create an Automation in FME Flow with a Schedule trigger set to run on the last day of every month.</li>
+<li class="whitespace-normal break-words pl-2">Add a Run a Workspace action to execute the community mapping workspace with specific parameters.</li>
+<li class="whitespace-normal break-words pl-2">Add an External Action to deliver the results by email or log a message.</li>
+<li class="whitespace-normal break-words pl-2">Start the Automation and use the Trigger button to test it immediately.</li>
+</ul>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">1) Open FME Flow Automations</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Log in to your FME Flow instance (2026.1 or later).</li>
+<li class="whitespace-normal break-words pl-2">Click <strong>Automations</strong>&nbsp;in the left navigation menu.</li>
+<li class="whitespace-normal break-words pl-2">Click&nbsp;<strong>Create</strong></li>
+</ul>
+<p><strong><img src="images/1778199554967.png" alt="Automations" width="928" height="372" /></strong></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">If the <strong>Get Started</strong> window appears, click <strong>Close</strong>.</li>
+</ul>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">2) Configure the Schedule Trigger</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click the lightning bolt icon on the <strong>Trigger</strong> on the canvas to open the <strong>Trigger Details</strong> pane.</li>
+<li class="whitespace-normal break-words pl-2">In the <strong>Trigger</strong> drop-down, select <strong>FME Flow Schedule (initiated)</strong>.</li>
+</ul>
+<p><img src="images/1778199837233.png" alt="FME Flow Schedule" /></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Keep <strong>Schedule Type</strong> set to Basic.</li>
+<li class="whitespace-normal break-words pl-2">Set <strong>Start</strong> to the last day of the current month.</li>
+<li class="whitespace-normal break-words pl-2">Set <strong>Recurrence</strong> to Last day of every month.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">If this option does not appear, confirm that your <strong>Start</strong> date is set to the last day of a month.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1778200013373.png" alt="Last day of every month" /></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click <strong>Apply</strong>.</li>
+<li class="whitespace-normal break-words pl-2">Click <strong>Menu</strong> &gt; <strong>Save As</strong>, name it Automation Monthly Food Vendor Update, and click <strong>OK</strong>.</li>
+</ul>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">3) Add a Run a Workspace Action</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click the empty circle icon above <strong>Next Action</strong> on the canvas to open the <strong>Next Action Details</strong> pane.</li>
+<li class="whitespace-normal break-words pl-2">In the <strong>Action</strong> drop-down, select <strong>Run a Workspace</strong>.</li>
+</ul>
+<p><img src="images/1778200268940.png" alt="Run a workspace" /></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Set <strong>Repository</strong> to <strong>Self-Serve.</strong></li>
+<li class="whitespace-normal break-words pl-2">Set <strong>Workspace</strong> to <strong>CommunityMapping.fmw</strong>.</li>
+<li class="whitespace-normal break-words pl-2">Under <strong>Parameters</strong>, set <strong>Output Format</strong> to <strong>Microsoft Excel</strong> and <strong>Feature Types to Read</strong> to <strong>FoodVendors</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">You may have to disable <strong>Use Default Value</strong>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1778200414649.png" alt="Community Mapping Details" /></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click <strong>Apply</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Two new <strong>Next Action</strong> options appear on the canvas &mdash; one for the <strong>✔ (Action Succeeded)</strong> port and one for the <strong>✗ (Action Failed)</strong> port.</li>
+</ul>
+</li>
+</ul>
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">4) Add an Email External Action (Optional)</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click the <strong>Next Action</strong> icon from the <strong>✔ (Action Succeeded)</strong> port.</li>
+<li class="whitespace-normal break-words pl-2">In the <strong>Action</strong> drop-down, select <strong>Email (send)</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">If you prefer not to configure email, select <strong>Log a message</strong> instead, enter "Hello World" for the <strong>Formatted Message,</strong>&nbsp;and proceed to step 5.</li>
+</ul>
+</li>
+<li class="whitespace-normal break-words pl-2">Click <strong>Load Template</strong> and select the appropriate template for your email provider.</li>
+<li class="whitespace-normal break-words pl-2">Fill in the following fields:</li>
+</ul>
+<div class="overflow-x-auto w-full px-2 mb-6">
+<table class="min-w-full border-collapse text-sm leading-[1.7] whitespace-normal">
+<thead class="text-left">
+<tr>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col">Field</th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top"><strong>Email To</strong></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top">An email address you monitor</td>
+</tr>
+<tr>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top"><strong>Email From</strong></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top">Your email address</td>
+</tr>
+<tr>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top"><strong>Email Subject</strong></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top">Monthly Food Vendor Report</td>
+</tr>
+<tr>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top"><strong>Email Body</strong></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top">Your message to the recipient</td>
+</tr>
+<tr>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top"><strong>Attachment</strong></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top">$(FME_SHAREDRESOURCE_DATA)/CommunityMapping.zip</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click <strong>Validate</strong> to test the connection.</li>
+<li class="whitespace-normal break-words pl-2">Click <strong>Apply</strong>.
+<h3 class="text-text-100 mt-2 -mb-1 text-base font-bold">5) Start and Test the Automation</h3>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">Click the <strong>Save</strong> icon in the toolbar to save your Automation.</li>
+<li class="whitespace-normal break-words pl-2">Click <strong>Start</strong> in the top-right corner to start the Automation.</li>
+<li class="whitespace-normal break-words pl-2">Double-click the <strong>FME Flow</strong> <strong>Schedule</strong> trigger on the canvas to open its details.</li>
+<li class="whitespace-normal break-words pl-2">Click <strong>Trigger</strong> to run the Automation immediately for testing.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="whitespace-normal break-words pl-2">If you used <strong>Log a message</strong>, go to <strong>Menu</strong> &gt; <strong>View Log Files</strong> &gt; <strong>action_fmelogaction.log</strong> to confirm the Automation ran.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Tips &amp; Tricks</h2>
+<ul>
+<li>Automations takes data integration to the next level.&nbsp;Designing your FME workspaces with this in mind lets you create reusable, modular, and integrated applications for your organization, rather than one-off, single-use workspaces for every workflow. Automations support automated schedules and event-driven workflows that can:
+<ul>
+<li>Eliminate manual intervention.</li>
+<li>Remove schedule-based delays.</li>
+<li>Ensure data is always current and available.</li>
+</ul>
+</li>
+<li>Automations let you implement the&nbsp;<a href="https://community.safe.com/s/article/getting-started-with-enterprise-integration-patter" target="_blank" rel="noopener"><strong>enterprise integration patterns</strong></a><strong>&nbsp;</strong>popularized by&nbsp;<a href="https://www.enterpriseintegrationpatterns.com/" target="_blank" rel="noreferrer noopener">Gregor Hohpe and Bobby Woolf</a>: repeatable solutions to commonly occurring problems encountered when integrating applications or systems.</li>
+<li><span style="font-family: inherit; font-size: 1em;">Automations are composed of three objects:</span>
+<ul>
+<li><strong>Triggers&nbsp;</strong>listen for and receive messages from an external client or within FME Flow. Every Automation begins with a Trigger.</li>
+<li><strong>Actions&nbsp;</strong>process messages between triggers and external actions in an FME workspace or through another tool.</li>
+<li><strong>External Actions&nbsp;</strong>send a message to an external client or another process in FME Flow. What happens afterward is no longer part of this Automation.</li>
+</ul>
+</li>
+<li>If you use Gmail or another email service that requires two-factor authentication, you must create an app password to allow FME Flow to access your account. Use this app password in place of your regular password. <a class="underline underline underline-offset-2 decoration-1 decoration-current/40 hover:decoration-current focus:decoration-current" href="https://support.google.com/mail/answer/185833?hl=en">Create a Gmail App Password</a></li>
+</ul>
+<h2 id="create-an-automation-triggered-on-a-schedule"></h2>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

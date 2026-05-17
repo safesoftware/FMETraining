@@ -1,0 +1,251 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Design a workspace that uses filtering to create multiple data streams.</li>
+<li>Filter your data using a Tester transformer.</li>
+<li>Choose an output port feature cache to inspect.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<p><span style="font-size: 2.3125em;">Resources</span></p>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/IntegrateDataWithTheFMEPlatform/revoked_licenses.csv" target="_blank" rel="noopener">revoked_licenses.csv</a><br />
+<ul>
+<li>C:\FMEData\Resources\IntegrateDataWithTheFMEPlatform\revoked_licenses.csv</li>
+</ul>
+</li>
+</ul>
+<h2 id="creating-multiple-streams-of-data">Creating Multiple Streams of Data</h2>
+<p>FME workspaces send data from left to right across the canvas from reader feature types to writer feature types. The simplest workspace has only one &ldquo;stream&rdquo; of data: features are read in, processed&nbsp;the same way, and then written out. However, workspaces can have multiple data streams, splitting and merging features as required.&nbsp;</p>
+<p>Did you find the correct transformer in the last exercise?</p>
+<p>It was the <strong>DatabaseJoiner.</strong> Jennifer used it to join the features to the revoked_licenses table in the database, using the business license number as the key. The join created multiple streams in Jennifer's workspace when it split the features into <strong>Joined </strong>and <strong>Unjoined </strong>streams:</p>
+<p><img src="images/fe08a645-1713292839987.png" alt="DatabaseJoiner" /></p>
+<p>Jennifer connected the <strong>Unjoined</strong> port to the writer feature type because she wanted to retain features <strong>without</strong> a revoked business license.</p>
+<p>If you didn't guess correctly, try to add the DatabaseJoiner now and see if you can configure it properly. Read the hints in the last exercise and the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasejoiner.htm">transformer documentation</a> if you need help. Part of learning to use new transformers is trying things out for yourself; hopefully, you can add it successfully. If you get stumped, load the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw">starting workspace</a> for this exercise and inspect the DatabaseJoiner's parameters. Ensure you understand how it is configured before proceeding.</p>
+<h2 id="filter-your-data-using-a-tester">Multiple Solutions</h2>
+<p>Like most things in FME, this challenge has multiple solutions. The DatabaseJoiner is the most efficient solution, but you might have found a different transformer.</p>
+<p><strong>FeatureMerger or FeatureJoiner</strong></p>
+<p>The best runner-up solution is a PostGIS or PostgreSQL reader and a joining transformer. The FeatureMerger and FeatureJoiner work in this case. You can read the revoked_licenses table, join it to the source data, and use the unjoined ports to get the valid licenses. That's not a wrong solution, but it doesn't meet the goal of doing this all without adding an additional reader.</p>
+<p><strong>AttributeFilter</strong></p>
+<p>You could add an AttributeFilter and manually set it to remove the four revoked license values from the data. However, this approach has two problems:</p>
+<ol>
+<li>If the underlying data changes, you must update the workspace. The filter values in the AttributeFilter are hard-coded. You would have to edit this transformer to update the workspace to filter out newly revoked licenses, which would make the workspace inflexible.</li>
+<li>You must still add a PostGIS or PostgreSQL reader and read the revoked_licenses table. The goal here is not to have to add an additional reader.
+<ol>
+<li>While it's not an issue in this scenario because the revoked_licenses table is small and only contains necessary data, using a reader would negatively affect workspace performance if you read from a larger table. FME would read the entire table and then look for matches in the source data. The DatabaseJoiner reads only the data needed for the join, making it a more efficient solution.</li>
+</ol>
+</li>
+</ol>
+<p><strong>Tester or TestFilter</strong></p>
+<p>These filtering transformers have the same issue: if you want to use them alone to filter out the revoked licenses, you must hard-code the revoked license numbers into the test. There are more sustainable long-term solutions.</p>
+<h2 id="filter-your-data-using-a-tester">Scenario</h2>
+<p><img class="image image-block image-center" src="images/05a4b5fd-61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>For the next step in her workspace, Jennifer wants to add another filter to her data before FME writes it out. She needs to remove Arcu Ltd's business license. She can use a <strong>Tester </strong>transformer to do that.</p>
+<h2 id="filter-your-data-using-a-tester" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">1) Open FME Workbench</h2>
+<ul>
+<li>Start FME Workbench (2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/IntegrateDataWithTheFMEPlatform/filter-data-by-attribute-values.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\filter-data-by-attribute-values.fmw).</li>
+</ul>
+<h2>2) Add a Tester</h2>
+<ul>
+<li>Add a&nbsp;<strong>Tester&nbsp;</strong>connected to the <strong>DatabaseJoiner's Unjoined </strong>port<strong> </strong>and the <strong>BusinessOwners </strong>writer feature type using<strong> Quick Add.</strong>
+<ul>
+<li>We are filtering our features into two streams with the Tester.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/287bae56-1713293001000.png" alt="Adding a Tester transformer" /></p>
+<ul>
+<li>Before opening the&nbsp;Tester&nbsp;to configure it, let's use a trick to save time.</li>
+<li>Click the&nbsp;<strong>Run&nbsp;</strong>button.</li>
+<li>FME displays a warning dialog: "<strong>Incomplete Transformers</strong>."&nbsp;
+<ul>
+<li>This dialog appears because the Tester has been added to the Canvas&nbsp;but is not configured yet. However, as you will see in a moment, we have a good reason to run.</li>
+</ul>
+</li>
+<li><span style="font-family: inherit; font-size: 1em;">Click </span><strong style="font-family: inherit; font-size: 1em;">OK</strong><span style="font-family: inherit; font-size: 1em;">.</span>
+<ul>
+<li>The workspace runs, and FME creates data caches.</li>
+</ul>
+</li>
+</ul>
+<h2>3) Configure Tester</h2>
+<ul>
+<li>Double-click the <strong>Tester&nbsp;</strong>to open its&nbsp;<strong>Parameters&nbsp;</strong>dialog.&nbsp;
+<ul>
+<li>The table here lets you enter a logical test or a series of tests against incoming features. It works a bit like&nbsp;<a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)%23If%25E2%2580%2593then(%25E2%2580%2593else)" target="_blank" rel="noreferrer noopener">an &ldquo;if-then-else&rdquo; statement in programming languages</a>. If the feature meets the test criteria, it comes out of the Passed&nbsp;port. If it does not, it comes out of the&nbsp;Failed&nbsp;port. The&nbsp;Tester filters data and enables simple branching in your data integration workflow.</li>
+</ul>
+</li>
+<li>Set the <strong style="font-family: inherit; font-size: 1em;">Tester </strong><span style="font-family: inherit; font-size: 1em;">parameters as follows:</span></li>
+</ul>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td colspan="1" rowspan="1"><strong>Logic</strong></td>
+<td colspan="1" rowspan="1"><strong>Left Value</strong></td>
+<td colspan="1" rowspan="1"><strong>Operator</strong></td>
+<td colspan="1" rowspan="1"><strong>Right Value<br /></strong></td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1">NOT</td>
+<td colspan="1" rowspan="1">company</td>
+<td colspan="1" rowspan="1">=</td>
+<td colspan="1" rowspan="1">Arcu Ltd</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The reason we ran the workspace before configuring the <strong>Tester</strong> becomes apparent when we enter the value for&nbsp;<strong>Right Value</strong>. If the <strong>Tester </strong>has a data cache for the features entering the transformer, we can search the Cached Values to help choose the right one.&nbsp;</li>
+<li><span style="font-family: inherit; font-size: 1em;">Type "arc" into the field</span></li>
+<li>Notice the list of values that appears.</li>
+</ul>
+<p><img src="images/4bbfedaa-1713293574092.png" alt="Selecting from cached values" /></p>
+<p>If you don't see values here,&nbsp;ensure you have both:</p>
+<ol>
+<li>Connected the DatabaseJoiner's Unjoined port to the Tester's Input port</li>
+<li>Run the workspace to get a data cache on the DatabaseJoiner</li>
+</ol>
+<ul>
+<li>Click<strong> Arc Ltd </strong>to enter it or use the arrow keys and Enter.
+<ul>
+<li>These settings do the following: &ldquo;For each feature being read by the Tester, if it does NOT have the value Arcu Ltd for the attribute 'company', it passes. Otherwise, it fails.&rdquo; This test accomplishes our goal of sending that specific license to the Failed port.</li>
+<li>You can combine different Logic operators, like OR or AND, for more complex tests.&nbsp;</li>
+</ul>
+</li>
+<li>Click <strong>OK </strong>to close the Tester dialog.</li>
+</ul>
+<h2>4) Run Tester</h2>
+<ul>
+<li>Use&nbsp;<strong>Run to This&nbsp;</strong>on the&nbsp;<strong>Tester</strong>.</li>
+<li>Observe that 95 results exit the <strong>Passed </strong>port, and one exits the <strong>Failed&nbsp;</strong>port.</li>
+</ul>
+<h2 id="inspect-your-filtered-data">5) Inspect Filtered Data</h2>
+<p>We should inspect the <strong>Tester </strong>to ensure the correct features are filtered out.</p>
+<ul>
+<li>Click the&nbsp;<strong>Tester</strong> to select it.
+<ul>
+<li>The <strong style="font-family: inherit; font-size: 1em;">Tester's Passed</strong><span style="font-family: inherit; font-size: 1em;"> port data cache appears in </span><strong style="font-family: inherit; font-size: 1em;">Data Preview</strong><span style="font-family: inherit; font-size: 1em;">. </span></li>
+<li>This is because we have&nbsp;<strong style="font-family: inherit; font-size: 1em;">Toggle Automatic Inspect on Selection</strong><span style="font-family: inherit; font-size: 1em;"> enabled (the button in the top-left corner of</span><strong style="font-family: inherit; font-size: 1em;"> Data Preview</strong><span style="font-family: inherit; font-size: 1em;">). Data Preview always shows the top port with a cache when inspecting data this way.</span></li>
+</ul>
+</li>
+<li>To see the data you filtered out instead, click the<strong style="font-family: inherit; font-size: 1em;"> Tester's Failed</strong><span style="font-family: inherit; font-size: 1em;"> data cache.</span>
+<ul>
+<li><strong style="font-family: inherit; font-size: 1em;">Data Preview&rsquo;s Table View</strong><span style="font-family: inherit; font-size: 1em;"> reports that one row is displayed. </span></li>
+</ul>
+</li>
+<li>Verify the company name is Arcu Ltd.</li>
+</ul>
+<p><img src="images/79609853-1713297245168.png" alt="Filtered data" /></p>
+<h2 id="inspect-final-results">6) Inspect Final Results</h2>
+<p>Now that the workspace is complete,</p>
+<ul>
+<li>Click the <strong>Caching </strong>button on the toolbar (next to the Run button) to turn off data caching.
+<ul>
+<li>You can run your final workspace without caching to ensure it runs as fast as possible.</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Run</strong>.
+<ul>
+<li>The entire workspace runs successfully.</li>
+</ul>
+</li>
+<li>Click the <strong style="font-family: inherit; font-size: 1em;">BusinessOwners&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">writer feature type to select it.</span></li>
+<li>Click&nbsp;<strong style="font-family: inherit; font-size: 1em;">View Written Data</strong><span style="font-family: inherit; font-size: 1em;">.&nbsp;</span></li>
+</ul>
+<p><img src="images/ac955397-1713297294216.png" alt="View Written Data button" /></p>
+<ul>
+<li>Observe that <strong>Data Preview </strong>shows the 95 valid records that were written to this feature class.</li>
+<li>Observe that FME automatically added the required <strong style="font-family: inherit; font-size: 1em;">OBJECTID&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">column to the data as required by the geodatabase format.</span></li>
+</ul>
+<p><img class="image image-block image-center" src="images/4e7c74bb-1733529031392.png" alt="Viewing the new OBJECTID column in Table View" width="588" height="214" /></p>
+<ul>
+<li>Click the writer feature types, then click the <strong>Open Containing Folder button&nbsp;</strong>to view&nbsp;the geodatabase in your file explorer.
+<ul>
+<li>You could open the geodatabase in ArcGIS Pro from there.</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Optional Challenge</h2>
+<p>Jennifer notices a problem. There is now a <strong>_matched_records</strong> attribute on her features. She doesn't want this to be written to the final data.</p>
+<p>Follow along with Jennifer&rsquo;s steps above, and then use one of the techniques covered earlier in the course to ensure that _<strong>matched_records</strong> is not written. You have a few options:</p>
+<ul>
+<li>Use the <strong>AttributeManager </strong>after the <strong>DatabaseJoiner </strong>and remove &nbsp;<strong>_matched_records&nbsp;</strong>
+<ul>
+<li>You'll also have to update the <strong>DatabaseJoiner </strong>because the attribute names it uses will have changed</li>
+</ul>
+</li>
+<li>Switch the <strong>BusinessOwners </strong>writer feature type <strong>Attribute Definition</strong> mode back to <strong>Manual</strong>, and then remove <strong>_matched_records</strong></li>
+<li>Use an <strong>AttributeRemover </strong>transformer before writing to remove <strong>_matched_records</strong></li>
+</ul>
+<p>For an extra challenge, find and add a transformer to order features alphabetically by the value of <strong>last_name</strong>.</p>
+<h2>Learn More</h2>
+<div><span style="font-size: 16px;">See the&nbsp;</span><a style="font-size: 16px;" href="http://docs.safe.com/fme/html/FME_Desktop_Documentation/FME_Transformers/Transformers/tester.htm" target="_blank" rel="noreferrer noopener">Tester documentation</a><span style="font-size: 16px;">&nbsp;</span><span style="font-size: 16px;">for more information.</span></div>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

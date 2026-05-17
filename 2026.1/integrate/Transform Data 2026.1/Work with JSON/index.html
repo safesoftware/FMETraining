@@ -1,0 +1,272 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Turn a JSON response into features using the JSONFragmenter transformer.</li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/0e9f9b71-safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learning content in the FME Academy presents a user story that addresses their data integration challenges with FME. </span><strong style="font-size: 1em; font-family: inherit;">You should follow along with their actions using your FME installation (2026.1 or later) </strong><span style="font-family: inherit; font-size: 1em;">or request an <a href="https://bluesky-safe-software.fmecloud.com/fmeserver/apps/FMEAcademyLab">on-demand virtual machine</a>. Some lessons will require you to follow their steps or take additional steps to answer a quiz question.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">Resources</strong><span style="font-family: inherit; font-size: 1em;"> section will provide links to interactive tutorials and starting workspaces when necessary.</span></p>
+</blockquote>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces\IntegrateDataWithTheFMEPlatform\work-with-json.fmw" target="_self">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\work-with-json.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces\IntegrateDataWithTheFMEPlatform\work-with-json-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\work-with-json-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/BusinessOwners.json" target="_blank" rel="noopener">BusinessOwners.json</a>
+<ul>
+<li>C:\FMEData\Data\Planning\BusinessOwners.json</li>
+</ul>
+</li>
+</ul>
+<h2 id="jumpstart-your-data-integration-workflows">Scenario</h2>
+<p><img class="image image-block image-center" src="images/05a4b5fd-61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer has successfully retreived JSON from an API. However, it's currently stored as a JSON document in an attribute on a feature. She needs to turn the JSON text into FME features with attributes. She'll use a JSON transformer for this task.</p>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench </strong>(2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces\IntegrateDataWithTheFMEPlatform\work-with-json.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\IntegrateDataWithTheFMEPlatform\work-with-json.fmw).</li>
+</ul>
+<h2>2) Add a JSONFragmenter</h2>
+<ul>
+<li>Select the&nbsp;<strong>HTTPCaller</strong>&nbsp;and then use Quick Add to add a <strong>JSONFragmenter</strong> transformer.
+<ul>
+<li>Transformers are aware of the data you connect them to, so it is vital that you connect them before configuring.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/19e98595-1712861272031.png" alt="Adding a JSONFragmenter" width="600" /></p>
+<p>&nbsp;</p>
+<ul>
+<li>Double-click the <strong>JSONFragmenter</strong> to open its parameters. Makes the following changes:</li>
+</ul>
+<table style="border-collapse: collapse; width: 99.9509%;" border="1">
+<tbody>
+<tr>
+<td style="width: 49.9754%;"><strong>Source &gt; JSON Attribute</strong></td>
+<td style="width: 49.9754%;">_response_body</td>
+</tr>
+<tr>
+<td style="width: 49.9754%;"><strong>Flattening &gt; Flatten Query Result into Attributes</strong></td>
+<td style="width: 49.9754%;">Yes</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/27ca5d21-1742424784141.png" alt="Configuring the JSONFragmenter" /></p>
+<p>With these settings, the <strong>JSONFragmenter</strong> will split each JSON array entry into an FME feature. Then&nbsp;it will "flatten" the JSON's nested structure&nbsp;into the columnar structure of FME attributes.</p>
+<p>However, if we use only these settings, the resulting attributes will be unexposed; they will not appear in the Table view or be accessible in&nbsp;the workspace. This is because FME is designed to work with a fixed schema. It is not known in advance what names these attributes will have, because the JSON could contain anything. So we have to expose the attributes we expect.</p>
+<p>Exposing attributes can be done with the&nbsp;<strong>Attributes to Expose</strong> parameter in the JSONFragmenter, but we can use the attributes stored in the data cache if we uses an <strong>AttributeExposer&nbsp;</strong>transformer instead.</p>
+<h2>3) Add an AttributeExposer</h2>
+<ul>
+<li>Click&nbsp;<strong>OK&nbsp;</strong>to close the <strong>JSONFragmenter</strong> parameters.</li>
+<li><strong>Run the workspace </strong>to create the cache on the&nbsp;JSONFragmenter<strong>.</strong></li>
+<li><span style="font-family: inherit; font-size: 1em;">Add an </span><strong style="font-family: inherit; font-size: 1em;">AttributeExposer&nbsp;</strong><span style="font-family: inherit; font-size: 1em;">transformer connected to the JSONFragmenter:</span></li>
+</ul>
+<p><img src="images/84cce3ca-1742424734170.png" alt="Added an AttributeExposer" width="559" height="110" /></p>
+<ul>
+<li>Double-click the <strong>AttributeExposer</strong> to open its parameters.</li>
+<li>Click on <strong style="font-family: inherit; font-size: 1em;">Import-&gt;From Data Cache...</strong>
+<ul>
+<li>The Import button appears in many FME dialogs. It lets you import values from a dataset and can be helpful when you need to supply a list of
+<ul>
+<li>attribute names from an existing dataset</li>
+<li>feature type names from an existing dataset</li>
+<li>coordinate systems</li>
+<li>formats</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/63411cec-pasted-2852a967e8ff.png" alt="" /></p>
+<p>An&nbsp;<strong>Import from Data Cache&nbsp;</strong>dialog appears. By default, all the attributes found in the cache are selected for exposing.&nbsp;</p>
+<p><img src="images/46607df1-pasted-8a637d69dac5.png" alt="" /></p>
+<ul>
+<li>Click&nbsp;<strong>Import&nbsp;</strong>and then <strong>OK</strong> to expose all of the added attributes.</li>
+</ul>
+<p><img src="images/17dc5be8-1725984933994.png" alt="AttributeExposer added" width="584" height="395" /></p>
+<h2>4) Test the JSONFragmenter</h2>
+<p>Let's test if we configured the transformer correctly.</p>
+<ul>
+<li>Click the <strong>Run</strong> button.
+<ul>
+<li>Notice how only the <strong>AttributeExposer </strong>is highlighted in green when you mouse over the Run button. This highlighting indicates which parts of the workspace will run. When FME has data caches, it will only run sections of the workspace that don't yet have caches.</li>
+<li>The workspace runs.</li>
+</ul>
+</li>
+<li>Observe that the <strong>Data Preview's Table view</strong> shows the results of the <strong>AttributeExposer </strong>cache. It now has the attributes we want.
+<ul>
+<li>You might have to scroll the Table view to the right to see all the new attributes.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/955c6873-pasted-b15568676e49.png" alt="" /></p>
+<p>We successfully read the web data and extracted the attributes.</p>
+<p>In the next lesson, we'll generate geometry from coordinates and write the data to a geodatabase.</p>
+<h2>Optional Challenge: Integrate with Generative AI</h2>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/0e9f9b71-safe_note.png" alt="Note" /></p>
+<p>This is an optional section. The changes Jennifer makes to the workspace won't carry over to the next lesson.</p>
+<p>To learn more about AI features in FME, <a href="https://fme.safe.com/blog/2024/02/ai-and-fme-12-inspiring-scenarios-for-data-integration/" target="_blank" rel="noopener">check out this blog post</a>. You can also download our <a href="http://fme.safe.com/security" target="_blank" rel="noopener">AI security whitepaper</a>.</p>
+</blockquote>
+<p>Jennifer would like to generate a short text summary of each business for use in the city's annual business license renewal emails. She doesn't want to write one for every feature, so this is a good use case for generative AI using a large language model.</p>
+<h2>1) Add a Sampler</h2>
+<ul>
+<li>To test this workflow, add a <strong>Sampler </strong>using a new connection to the AttributeExposer.</li>
+</ul>
+<p><img src="images/8dabac3f-1756850884577.png" alt="Added a Sampler" /></p>
+<ul>
+<li>Set the Sampler to a<strong> Sampling Rate</strong> of 1 and a <strong>Sampling Type</strong> of First N Features.
+<ul>
+<li>With this configuration, the Sampler will take just the first feature, which she can use to test her workflow. Once she's happy with the test, she can disable or remove the Sampler.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/61b4d9ac-1747089422016.png" alt="Sampler configuration" /></p>
+<h2>2) Add an OpenAIConnector</h2>
+<p>At this point, we could use another HTTPCaller to call the OpenAI API, but someone has already created an FME <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/custom_transformer_creating.htm" target="_self">custom transformer</a> that makes this process even easier. We can quickly download it from the <a href="http://hub.safe.com/" target="_self">FME Hub</a> and use it in our workspace. Because FME is the all-data, any-AI platform, we could connect to any AI provider she wished via API. We chose OpenAI because we are familiar with their platform.</p>
+<ul>
+<li>Use Quick Add to add the <strong>OpenAIConnector</strong> after the Sampler.
+<ul>
+<li>You are prompted to choose if you'd like to Install this custom transformer from the FME Hub.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1769716e-1747161962223.png" alt="Installing a custom transformer from the FME Hub" /></p>
+<ul>
+<li>Click <strong>Install</strong> and the transformer appears on the canvas.</li>
+</ul>
+<p><img src="images/b88b44f5-1747162037282.png" alt="Added an OpenAIConnector" width="348" height="97" /></p>
+<ul>
+<li>Double-click the <strong>OpenAIConnector </strong>open its parameters.</li>
+<li>Provide her own API Key.
+<ul>
+<li>If you would like to test this workflow, please create an OpenAI Account and retrieve an API key to use.</li>
+</ul>
+</li>
+<li>Choose Text Generation as the <strong>Action </strong>and gpt-4o as the <strong>Model</strong>.</li>
+<li>For <strong>Instructions</strong>, which will instruct the AI assistant what persona to use in its answers, enter:</li>
+</ul>
+<blockquote>
+<p>You are an employee working for a city's Business License department. Your tone should be professional, friendly, and to the point.</p>
+</blockquote>
+<ul>
+<li>For <strong>User Prompt</strong>, which provides the assistant's instructions, enter:</li>
+</ul>
+<blockquote>
+<p>Please generate a 2-sentence summary of the following business.</p>
+<p>Here are the details:</p>
+<p>Company Name: @Value(Company)</p>
+<p>Business License Number: @Value(License Number)</p>
+<p>Business Owner Name: @Value(First) @Value(Last Name)</p>
+<p>Business Location: @Value(Latitude), @Value(Longitude)</p>
+<p>Please only return the summary address in your response; provide no extra text or formatting.</p>
+</blockquote>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<h2>3) Test AI Integration</h2>
+<ul>
+<li><strong>Run </strong>the workspace and <strong>inspect </strong>the single result.</li>
+<li>The <strong>Response </strong>attribute contains the assistant's summary.</li>
+</ul>
+<blockquote>
+<p>Hendrerit Consectetuer Cursus Industries, owned by Garth Garrett, operates under business license number 8BCB7F. The business is located at coordinates 49.24906160267, -123.1006079306.</p>
+</blockquote>
+<p>It's pretty basic, but it will save her time from having to write it herself. If she adds more business information in the future, she could ask the assistant to add more detail or conduct other tasks like classifying business into <a href="https://en.wikipedia.org/wiki/North_American_Industry_Classification_System" target="_blank" rel="noopener">NAICS codes</a> or flagging business with potentially incorrect attribute values.</p>
+<h2>Learn More</h2>
+<ul>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://fme.safe.com/webinars/ai-agents-made-simple-unleash-the-power-of-all-your-data-with-any-ai/" target="_self">Learn more about integrating FME with AI in this webinar.</a></li>
+<li><a href="https://support.safe.com/s/article/tutorial-getting-started-with-json" target="_blank" rel="noopener">Learn more about transformers for working with JSON.</a></li>
+</ul>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>
