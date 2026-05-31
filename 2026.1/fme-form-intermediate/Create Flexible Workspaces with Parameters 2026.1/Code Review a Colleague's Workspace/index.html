@@ -1,0 +1,247 @@
+<h2>Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Remove pre-linked parameters.</li>
+<li>Create a simple user parameter.</li>
+<li>Create a Choice user parameter with different values for Display and Value.</li>
+<li>Use a Choice parameter to define coordinate systems.</li>
+<li>Manually link a user parameter to an FME parameter.</li>
+<li>Publish the Feature Types to Read parameter.</li>
+<li>Set up and use alternative display names in the Feature Types to Read parameter, including grouping feature types.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span><br />
+<ul>
+<li style="font-weight: 400;" aria-level="1"><em><span style="font-weight: 400;">Optional:</span></em><span style="font-weight: 400;"> You can view the video instead of reading the text. The video covers the text material.</span></li>
+</ul>
+</li>
+<li><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/code-review-a-colleagues-workspace.fmw" target="_blank" rel="noopener">Starting Workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\code-review-a-colleagues-workspace.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/code-review-a-colleagues-workspace-complete.fmw" target="_blank" rel="noopener">Complete workspace</a><br />
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\code-review-a-colleagues-workspace-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_self">CommunityMap.gdb.zip</a> (Esri Geodatabase)
+<ul>
+<li>C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+</ul>
+<h2>Exercise</h2>
+<p><img class="image" src="images/bad-35950-6-e-9-c-4-ec-3-a-5-fd-fcbd-103817-d-8.png" alt="Amar" width="256" height="272" /></p>
+<p>Amar is a new FME user. He's authored a workspace that converts data from an Esri Geodatabase to Esri Shapefile. However, as he has not yet taken an FME Form training course, he is not very confident in his workspace design.</p>
+<p>He asks you to conduct a <strong>"<a title="Code Reviews" href="https://en.wikipedia.org/wiki/Code_review" target="_blank" rel="noopener">code review</a>"</strong> of his workspace<strong>. </strong>One of the main tasks is creating user parameters to replace hard-coded values.</p>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench </strong>(2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/code-review-a-colleagues-workspace.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\AdvancedDataTransformation\code-review-a-colleagues-workspace-begin.fmw).</li>
+</ul>
+<p>This is Amar's workspace:</p>
+<p><img src="images/1724346704197.png" alt="Starting workspace" width="1063" height="658" /></p>
+<ul>
+<li>Notice that it converts from an Esri Geodatabase to Esri Shapefile format.
+<ul>
+<li>Currently, the user must disable feature types to choose which ones to process.</li>
+<li>Similarly, they must set the destination coordinate system and data encoding using Navigator parameters. This is all very user-intensive.</li>
+</ul>
+</li>
+<li>Also, notice that the only annotations in the workspace help the end user make such edits.
+<ul>
+<li>There should be no need for that; published parameters should prompt the user instead, and that is what we will implement here.</li>
+</ul>
+</li>
+</ul>
+<h2>2) Clean Up Auto-Created User Parameters</h2>
+<ul>
+<li>Expand the<strong> User Parameters section </strong>of the <strong>Navigator </strong>window.</li>
+<li>Notice how there are already user parameters for the source and destination datasets.</li>
+</ul>
+<p><img src="images/1724346713000.png" alt="Starting user parameters" width="827" height="80" /></p>
+<p>Your public safety colleague tells you the source data will never change, so that parameter is useless.</p>
+<ul>
+<li>Delete the user parameter labeled <strong>SourceDataset_FILEGDB</strong>.</li>
+<li>However, she tells you that the user can set the destination location, so keep the parameter for <strong>DestDataset_ESRISHAPE</strong>.</li>
+</ul>
+<h2>3) Create Encoding Parameter</h2>
+<p>The Public Safety team wants to make it easier to set the encoding of the output dataset. Currently, a workspace annotation points users to where that writer parameter exists in the Navigator window!</p>
+<p><img src="images/1724346724127.png" alt="Annotation" width="315" height="75" /></p>
+<p>This shows you how difficult it is for them to locate the correct parameter in the Navigator window. Let's solve that with a user parameter.</p>
+<ul>
+<li>Locate the <strong>Shapefile (ESRISHAPE) writer </strong>in the <strong>Navigator </strong>window and expand the list of parameters.</li>
+<li>Identify the <strong>Character Encoding</strong> parameter</li>
+<li>Right-click the <strong style="font-family: inherit; font-size: 1em;">Character Encoding</strong><span style="font-family: inherit; font-size: 1em;"> parameter </span>and choose<strong> Create User Parameter.</strong></li>
+</ul>
+<p><img src="images/1724346733702.png" alt="Creating a user parameter via direct link" width="598" height="196" /></p>
+<ul>
+<li>Click <strong>OK </strong>on the dialog that opens.
+<ul>
+<li>FME creates a user parameter and links it to the Character Encoding parameter. Now, a user parameter makes it easy to set that FME parameter.</li>
+</ul>
+</li>
+</ul>
+<h2>4) Create Coordinate System Parameter</h2>
+<p>You are told that another requirement is the ability to set the output coordinate system. Again, this is currently done by using an annotation to point the user towards the Navigator Window.</p>
+<p>However, if you publish the writer&rsquo;s coordinate system parameter, try it and see, but there will be a problem. The parameter will allow the end-user to select <strong>any</strong> coordinate system supported by FME.</p>
+<p>This is not necessarily very useful. Since the data is located in Vancouver, BC, it makes little sense for the user to be able to reproject it to (for example) NZMG (a New Zealand coordinate system).</p>
+<p>It would be preferable if the parameter only allowed the end-user to select a coordinate system from a smaller list.</p>
+<ul>
+<li>So, create a new user parameter (right-click <strong>User Parameters &gt; Manage User Parameters</strong>, then click the <strong>green plus button</strong>) of type <strong>Choice</strong>.</li>
+<li>Set the <strong>Parameter Identifier</strong> to be CoordSysParam.</li>
+<li>Set the <strong>Label </strong>to be "Select Output Coordinate System".</li>
+<li>Disable <strong>Required</strong>.</li>
+</ul>
+<p><img src="images/1750958765636.png" alt="Configuring the CoordSysParam parameter" width="447" height="139" /></p>
+<ul>
+<li>Set <strong>Choice Configuration </strong>to Dropdown.
+<ul>
+<li>We would normally enter values manually into the Value and Display column, but for coordinate systems (and reader/writer formats), we have the option to have FME define them for us.</li>
+</ul>
+</li>
+<li>Click the <strong>Import button </strong>and choose <strong>Coordinate Systems</strong>.
+<ul>
+<li>You may have to use your middle mouse wheel to scroll down to find the Import button under the Choices table. Alternatively, resize the Parameter Manager window to be large enough that the Import button appears.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1724346748843.png" alt="Import &gt; Coordinate Systems" width="609" height="354" /></p>
+<p>This opens a list of coordinate systems that we can import as values in our user parameter.</p>
+<ul>
+<li>Locate and put a checkmark in the box for the following coordinate systems:
+<ul>
+<li>UTM83-10</li>
+<li>BCALB-83</li>
+<li>LL83</li>
+<li>CANBC-LCC</li>
+</ul>
+</li>
+<li>Click <strong>OK </strong>to close this dialog.
+<ul>
+<li>You will be returned to the configuration dialog and find that the Value and Display columns have been automatically filled for these coordinate systems:</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1724346759907.png" alt="Coordinate system table filled in from Import" width="717" height="229" /></p>
+<p>The left side shows the value FME will receive, and the right side shows what the user is prompted to select.</p>
+<ul>
+<li>Click <strong>OK </strong>to close the dialog.</li>
+</ul>
+<h2>5) Link Coordinate System Parameter</h2>
+<p>Now we have the user's selection, but we still have to apply it to the FME parameter.</p>
+<ul>
+<li>Locate the <strong>writer&rsquo;s Coordinate System parameter</strong>, right-click on it, and choose Link to User Parameter.</li>
+</ul>
+<p><img src="images/1779817980609.png" alt="Linking coordinate system user parameter" /></p>
+<ul>
+<li>When prompted, select the newly created&nbsp;<strong>CoordSysParam </strong>and click <strong>OK </strong>to accept the selection.
+<ul>
+<li>Now, when the workspace is run, the user is prompted to select a coordinate system, and that system's short name value is passed to FME.</li>
+</ul>
+</li>
+</ul>
+<h2>6) Create Tables Parameter</h2>
+<p>The final task for us here is to create a way to decide which tables are going to be read. If you remember, your colleagues currently do this by disabling various reader feature types. However, there is a better method.</p>
+<p>This is an interesting task because we want to control the source tables (Libraries, Parks, etc.), but based on the selection of destination tables (CommunityFacilities, Environment, and Miscellaneous).</p>
+<p>For example, we want the user to select output feature types like "Environment", which needs both "Parks" and "DrinkingFountains" reader feature types.</p>
+<p>However, we can do this very easily.</p>
+<ul>
+<li>Locate the <strong>Feature Types to Read parameter </strong>in the <strong>CommunityMap reader </strong>under the <strong>Features to Read parameters section </strong>(in the <strong>Navigator </strong>window):</li>
+</ul>
+<p><img src="images/1724346780106.png" alt="Finding Feature Types to Read parameter" width="878" height="368" /></p>
+<ul>
+<li>Right-click on <strong>Feature Types to Read</strong> and choose <strong>Create User Parameter</strong>.
+<ul>
+<li>A dialog will open that is already populated with a list of feature types.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1724346790963.png" alt="Feature types listed" width="454" height="533" /></p>
+<ul>
+<li>Check the box labeled <strong>Use Alternate Display Name</strong>.
+<ul>
+<li>This option allows you to give alternative names for each feature type. We need to use this dialog to group common reader feature types together under a single display name.</li>
+</ul>
+</li>
+<li>Delete the entry for <strong>GarbageSchedule</strong>, as this data isn&rsquo;t connected and is not needed.</li>
+<li>Then, match the contents of the workspace by editing the<strong> Display Names</strong>. They should match as follows (the order is not important):</li>
+</ul>
+<table style="width: 18.6649%; height: 289.75px;">
+<tbody>
+<tr style="height: 30.75px;">
+<th style="width: 51.2642%; height: 30.75px;">Display Name</th>
+<th style="width: 48.3997%; height: 30.75px;">Feature Type</th>
+</tr>
+<tr style="height: 48.25px;">
+<td style="width: 51.2642%; height: 48.25px;">Miscellaneous</td>
+<td style="width: 48.3997%; height: 48.25px;">AccessibleParking</td>
+</tr>
+<tr style="height: 48.25px;">
+<td style="width: 51.2642%; height: 48.25px;">Community Facilities</td>
+<td style="width: 48.3997%; height: 48.25px;">CommunityCentres</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 51.2642%; height: 32.5px;">Environment</td>
+<td style="width: 48.3997%; height: 32.5px;">DrinkingFountains</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 51.2642%; height: 32.5px;">Miscellaneous</td>
+<td style="width: 48.3997%; height: 32.5px;">FoodVendors</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 51.2642%; height: 32.5px;">Community Facilities</td>
+<td style="width: 48.3997%; height: 32.5px;">Libraries</td>
+</tr>
+<tr style="height: 32.5px;">
+<td style="width: 51.2642%; height: 32.5px;">Environment</td>
+<td style="width: 48.3997%; height: 32.5px;">Parks</td>
+</tr>
+<tr>
+<td style="width: 51.2642%;">Miscellaneous</td>
+<td style="width: 48.3997%;">TransitStations</td>
+</tr>
+</tbody>
+</table>
+<p><img src="images/1724346802577.png" alt="Use Alternate Display Name" width="476" height="337" /></p>
+<ul>
+<li>Underneath that, change the <strong>Label </strong>to read &ldquo;Tables to Write&rdquo;.</li>
+</ul>
+<p><img src="images/1724346812121.png" alt="" width="523" height="137" /></p>
+<ul>
+<li>Click <strong>OK </strong>to close the dialog.</li>
+</ul>
+<p>What we have done here is set up a list of output layers to select from, with a list of input layers that each refers to.</p>
+<h2>7) Save and Run Workspace</h2>
+<ul>
+<li><strong>Save </strong>the workspace.</li>
+<li>Then <strong>run </strong>the workspace, ensuring <strong>Prompt for Parameters </strong>is enabled.</li>
+</ul>
+<p><img src="images/1724346822957.png" alt="Running with user parameters and making a selection" width="990" height="342" /></p>
+<ul>
+<li>Pick Unicode 8-bit (utf-8) as the encoding.</li>
+<li>Select a coordinate system, noting how the user is restricted to those chosen by us.</li>
+<li>Select one or two of the groups of tables to write.</li>
+<li>Click <strong>Run</strong>.
+<ul>
+<li>The translation will be carried out.</li>
+</ul>
+</li>
+<li>Inspect the data to ensure the results are correct.
+<ul>
+<li>The Community Facilities option &ndash; for example &ndash; should be made up of both libraries and community centers.</li>
+</ul>
+</li>
+</ul>
+<h2>Challenge</h2>
+<p>Another part of this code review is cleaning up the workspace style. If you want a challenge, tidy up the workspace by giving it a more logical structure and adding bookmarks and annotations.</p>

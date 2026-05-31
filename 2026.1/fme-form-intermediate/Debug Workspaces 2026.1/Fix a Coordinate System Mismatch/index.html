@@ -1,0 +1,232 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Identify a coordinate system mismatch.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Fix a coordinate system mismatch using a Reprojector transformer.</span></li>
+</ul>
+<h2 id="learning-objectives">Instructions</h2>
+<p>In this lesson, you will:</p>
+<ul>
+<li aria-level="1"><em>Optional:&nbsp;</em>Watch the Debugging a Workspace video.</li>
+<li><em>Optional:&nbsp;</em>Watch the Conclusion video.</li>
+<li aria-level="1">Scroll down to read the text below.</li>
+<li aria-level="1"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</li>
+<li aria-level="1">Click 'Next' to mark the lesson complete.</li>
+</ul>
+<p><span style="font-weight: 400;">Note: This video was recorded using an earlier version of this exercise and appears in both this lesson and the previous one. The steps may not match exactly, but the concepts are the same.</span></p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/fix-a-coordinate-system-mismatch.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\fix-a-coordinate-system-mismatch.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/fix-a-coordinate-system-mismatch-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\fix-a-coordinate-system-mismatch-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_blank" rel="noopener">Addresses.gdb.zip</a> (File GDB)
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noopener">Parks.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Emergency/Crime.csv" target="_blank" rel="noopener">Crime.csv</a>
+<ul>
+<li>C:\FMEData\Data\Emergency\Crime.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm" target="_blank" rel="noopener">leisure.osm</a>
+<ul>
+<li>C:\FMEData\Data\OpenStreetMap\leisure.osm</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Planning/PlanningRestrictions.gpkg" target="_blank" rel="noopener">PlanningRestrictions.gpkg</a>
+<ul>
+<li>C:\FMEData\Data\Planning\PlanningRestrictions.gpkg</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/c-523-def-8-4-eb-4-4-add-acbd-274-c-2-ee-65-f-21.png" alt="Frank" width="256" height="256" /></p>
+<p class="p1">The missing CrimeValue problem is fixed, and Frank can now calculate walkability scores for all address records. But the city has changed its approach. Parks are no longer a useful measure because most addresses already have a park nearby.</p>
+<p class="p1">Instead, the city wants the walkability score to include the walking distance to the nearest swimming pool. Frank can reuse most of Jennifer&rsquo;s existing workflow, but he needs to replace the parks data, update the related attributes, and check whether the new results still make sense.</p>
+<p class="p2">In this exercise, you will:</p>
+<ul>
+<li>Replace the parks data with swimming pool data.</li>
+<li><span class="s1">Update the workspace so </span>Walkability<span class="s1"> uses </span>PoolDistance<span class="s1">.</span></li>
+<li>Identify and fix a coordinate system mismatch.</li>
+</ul>
+<h2 id="1-view-starting-workspace">1) Add Swimming Pools</h2>
+<p class="p1">Start by adding the new dataset. The swimming pool features are stored in an OpenStreetMap dataset that includes multiple leisure facility types.</p>
+<ul>
+<li>Use your same <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/exercise-debugging-a-workspace.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\debugging-a-workspace.fmw) from the last exercise.</li>
+<li><strong>Add</strong> a <strong>Reader</strong> and set the following parameters:</li>
+</ul>
+<div>
+<table class="featureTable sort_table" style="width: 60.0188%;">
+<tbody class="tbody">
+<tr>
+<td style="width: 17.8964%;">
+<p>Reader Format</p>
+</td>
+<td style="width: 82.1036%;">
+<p>OpenStreetMap (OSM) XML</p>
+</td>
+</tr>
+<tr>
+<td style="width: 17.8964%;">
+<p>Reader Dataset</p>
+</td>
+<td style="width: 82.1036%;">
+<p><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm" target="_blank" rel="noreferrer noopener">https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm</a> or C:\FMEData\Data\OpenStreetMap\leisure.osm</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><span class="s1">When prompted, on </span><span class="s2"><strong>Select Feature Types</strong></span><span class="s1">, only select </span><span class="s2"><strong>leisure</strong></span><span class="s1">.</span></li>
+</ul>
+<p><img class="image image-block image-center" src="images/1744659827079.png" alt="Selecting the leisure feature type" width="398" height="324" /></p>
+<h2 id="8-filter-leisure-data">2) Connect Leisure Data</h2>
+<p class="p1">Connect the new leisure data to the workspace section that calculates distance. The parks data currently feeds the Candidate input on the NeighborFinder, so you will replace that input with swimming pool data.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li><span class="s1">Move the </span><span class="s2"><strong>Leisure</strong></span><span class="s1"> <strong>reader</strong> near the </span><span class="s2"><strong>Parks</strong></span><span class="s1"> <strong>reader</strong>.</span></li>
+<li><span class="s1">Connect </span><span class="s2"><strong>Leisure</strong></span><span class="s1"> to the </span><span class="s2"><strong>NeighborFinder</strong></span><span class="s1"> <strong>Candidate input port</strong>.</span></li>
+<li><span class="s1">Right-click </span><span class="s2"><strong>Parks</strong></span><span class="s1">.</span></li>
+<li><span class="s1">Select </span><span class="s2"><strong>Disable</strong></span><span class="s1">.</span>
+<ul>
+<li>Disabling the Parks reader keeps it in the workspace, but prevents it from being used in the translation.</li>
+<li>At this point, all leisure features are connected to the distance calculation. You still need to filter the data so only swimming pools are used.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779916900966.png" alt="" /></p>
+<h2 id="8-filter-leisure-data">3) Filter Leisure Data</h2>
+<p class="p1">The leisure dataset contains more than swimming pools. Before calculating distance, filter the data so only swimming pool features continue through the workflow.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Add a <strong>Tester</strong> between the <strong>Leisure</strong> <strong>feature type</strong> and the <strong>NeighborFinder</strong>,<strong> </strong>with the following settings:
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Left Value: <code><strong>leisure</strong></code></li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Operator: <code><strong>=</strong></code></li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Right Value: <code><strong>swimming_pool</strong></code></li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1717103673004.png" alt="Adding and configuring a Tester to filter to only swimming pools" width="409" height="537" /></p>
+<ul>
+<li>Connect the <strong>Tester</strong>'s <strong>Passed</strong> <strong>port</strong> to the <strong>NeighborFinder's</strong> <strong>Candidate input port</strong>.
+<ul>
+<li>The Passed output contains features where the leisure value is swimming_pool.</li>
+<li>These are the features you want to use in the distance calculation</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-update-transformer-parameters">4) Update Transformer Parameters</h2>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">Now that the data source has changed from parks to pools, several transformers still reference ParkDistance. Update them to use PoolDistance instead so the walkability calculation uses the correct attribute.&nbsp;</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the <strong>AttributeRenamer</strong>, update the <strong>Output Attribute value</strong>&nbsp;from <strong>ParkDistance</strong> to <strong>PoolDistance</strong>.<br />
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li>The ExpressionEvaluator will turn red because it still references ParkDistance.</li>
+</ul>
+</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the <strong>AttributeKeeper</strong>, replace <strong>ParkDistance</strong> with <strong>PoolDistance</strong>.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the <strong>ExpressionEvaluator,</strong>&nbsp;update the <strong>expression</strong> to:<br />
+<div class="relative group/copy bg-bg-000/50 border-0.5 border-border-400 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-100" tabindex="0" role="group" aria-label="Code">
+<div class="overflow-x-auto">
+<pre class="code-block__code !my-0 !rounded-lg !text-sm !leading-relaxed p-3.5"><code>  @Value(PoolDistance) + @Value(CrimeValue) - @Value(NoiseZoneScore)</code></pre>
+</div>
+</div>
+</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><strong>Run</strong> your workspace.</li>
+</ul>
+<h2 id="10-locate-problem">5) Assess Walkability Output</h2>
+<p class="p1">Run the workspace and check whether the new output looks reasonable. Even when a workspace runs without errors, the output can still be incorrect.&nbsp;</p>
+<ul>
+<li><span class="s1">On the </span><span class="s2"><strong>ExpressionEvaluator</strong></span><span class="s1">, click the </span><span class="s2"><strong>Output</strong></span><span class="s1"> <strong>port cache</strong>.</span></li>
+<li>Inspect the <strong>Walkability attribute</strong>.</li>
+<li>Inspect the <strong>PoolDistance attribute</strong>.
+<ul>
+<li>Notice that the walkability scores are now much larger than expected.</li>
+<li>The rounded maximum value is about 5,477,800. Much more than the previous maximum value of 956.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779918611655.png" alt="" /></p>
+<h2 id="10-locate-problem">6) Locate the Problem</h2>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">The large PoolDistance values point to a problem with the pool data. There are no helpful log messages, and the record counts look correct, so you decide to inspect the data directly to find the cause. A common cause of unexpectedly large distance values is a mismatch in coordinate systems between the two datasets being compared.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">On the&nbsp;<strong>Leisure reader</strong>, click the&nbsp;<strong>Passed port cache</strong>.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the <strong>Record Information</strong>, inspect your <strong>system coordinates</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">The leisure data from OSM is in LL84.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779920515663.png" alt="" /></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">On the&nbsp;<strong>CenterPointReplacer</strong>, click the&nbsp;<strong>Point port cache</strong>.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the <strong>Record Information</strong>, inspect your <strong>system coordinates</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">The address data is in UTM83-10.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779920604837.png" alt="" /></p>
+<ul>
+<li>Notice that this mismatch is why pool distances are so large. FME is calculating the distance between two datasets in completely different coordinate spaces.</li>
+</ul>
+<h2 id="11-fix-coordinate-system-problem">7) Fix Coordinate System Problem</h2>
+<p class="p1">Now that you have confirmed the mismatch, reproject the leisure data to match the address data before it reaches the NeighborFinder.</p>
+<ul>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Add a <strong>Reprojector</strong>&nbsp;between the <strong>Tester</strong>'s <strong>Passed</strong> <strong>port</strong> and the <strong>NeighborFinder's Candidate</strong> <strong>input port</strong>.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Set the following parameters:
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Source Coordinate System: <code><strong>LL84</strong></code></li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Destination Coordinate System: <code><strong>UTM83-10</strong></code></li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1749595377373.png" alt="Adding a Reprojector" /></p>
+<h2 id="11-fix-coordinate-system-problem">8) Confirm Walkability Scores</h2>
+<p class="p1">Run the updated part of the workspace and confirm the distance values are now reasonable.</p>
+<ul>
+<li><span class="s1">On </span><span class="s2"><strong>Reprojector</strong></span><span class="s1">, click </span><span class="s2"><strong>Run From This</strong></span><span class="s1">.</span></li>
+<li><span class="s1">On </span><span class="s2"><strong>ExpressionEvaluator</strong></span><span class="s1">, inspect the </span><span class="s2"><strong>Output</strong></span><span class="s1"> <strong>port data cache</strong>.</span></li>
+<li>Inspect the <strong>PoolDistance attribute</strong> and the&nbsp;<strong>Walkability attribute</strong>.
+<ul>
+<li>The walkability scores should now be much smaller.</li>
+<li>The rounded maximum value of walkability should be 4,308.</li>
+</ul>
+</li>
+</ul>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

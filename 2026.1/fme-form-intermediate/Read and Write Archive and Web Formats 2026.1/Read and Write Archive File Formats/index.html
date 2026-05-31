@@ -1,0 +1,154 @@
+<p><span style="color: #222222; font-size: 2.3125em; font-family: inherit;">Learning Objectives</span></p>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Read archive file formats with FME Workbench.</li>
+<li>Write archive file formats with FME Workbench.</li>
+<li>Identify when writing to an archive file format is helpful.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="archive-file-handling">Archive File Handling</h2>
+<p>FME readers and writers can work with compressed, archived files of various formats. In addition to size reduction, these file types are a convenient way to store datasets that need to be handled as a single unit, for example, a set of multiple dataset files contained within a single zip file.</p>
+<h2 id="archive-file-reading">Archive File Reading</h2>
+<p>FME can read the following archive formats:</p>
+<ul>
+<li>Supported archiving files
+<ul>
+<li>7z</li>
+<li>7zip</li>
+<li>rar (except v5)</li>
+<li>rvz</li>
+<li>tar</li>
+<li>tar.bz2</li>
+<li>tar.gz</li>
+<li>tgz</li>
+<li>zip</li>
+</ul>
+</li>
+<li>Supported compression-only files
+<ul>
+<li>bz2</li>
+<li>gz</li>
+</ul>
+</li>
+</ul>
+<p>The dataset a reader reads is defined by the Source Dataset/Files parameter in the Navigator window:</p>
+<p><img class="image image-block image-center" src="images/1723220585562.png" alt="Reading a zip file" width="588" height="312" /></p>
+<p>This dataset parameter can point to an archived file, as shown in the screenshot above. You select the archive file in the source parameter, and FME will extract the data when it reads it.</p>
+<p>This technique works whether the archived dataset is file-based (such as a single AutoCAD file) or folder-based (such as the set of files that make up a Shapefile dataset).</p>
+<p>Because FME supports reading archived files, you might notice the default file filter includes archive formats when browsing for a reader dataset:</p>
+<p><img src="images/1723220735385.png" alt="File browser includes archive formats" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can use wildcards when reading archive files, just as with regular files. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/archive_files_reading.htm" target="_blank" rel="noopener">See the documentation for examples</a>.</p>
+</blockquote>
+<h2 id="archive-file-writing">Zip File Writing</h2>
+<p>Writing data as a zip file is particularly useful when the output data needs to be post-processed. For example, if you use a shutdown script to move or copy output data to a new location, handling a single archive file is more convenient than multiple data files.</p>
+<p>The simplest way to create a zipped output is to change the file extension in the output dataset field:</p>
+<p><img class="image image-block image-center" src="images/1779917799420.png" alt="Setting a path with a zip ending" width="428" height="264" /></p>
+<p>You can also specify the filename to write to the archive file. A shortcut button does this for you:</p>
+<p><img class="image image-block image-center" src="images/1779917819329.png" alt="Using the zip shortcut button" width="428" height="264" /></p>
+<p>Notice the small icon to the left of the dataset field that indicates whether the dataset is zipped.</p>
+<p>When the workspace is run, the log file reports the file creation at various points:</p>
+<pre><code>MULTI_WRITER: Output will be zipped </code><br /><code>Zipping the contents of the temporary dataset </code><br /><code>Finished updating output zip file: `C:\FMEData\Output\Parks.zip'</code><br /><br /></pre>
+<p>...and the output is, indeed, a zip file:</p>
+<p><img class="image image-block image-center" src="images/1723221076890.png" alt="Output Parks.zip" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Some users may want to archive data as a single entity to move or copy it to a different location. You can use a combination of user parameters and TCL or Python shutdown scripts to find the file you just wrote and move/upload it. Alternatively, you can use the FeatureWriter transformer, which provides the dataset's path as an attribute, allowing you to do whatever you want with that path using FME transformers.</p>
+</blockquote>
+<details class="tips-tricks">
+<summary><strong>Tips and Tricks: Reading Files in ZIP Archives</strong></summary>
+<div>
+<p>Some file formats like .docx and .xlsx are actually just ZIP files. But FME won't recognize them as such. What are your options for reading files like that?</p>
+<ol>
+<li>The most obvious solution is to use a built-in FME reader. We have readers for Microsoft Word and Excel, so you can just read those directly.</li>
+<li>But what if FME doesn't support this format or you need to access a file inside the ZIP? Try something like this:
+<ol>
+<li>Use a TempPathnameCreator and FeatureWriter with the format set to File Copy to rename your target file to a temporary ZIP file.</li>
+<li>Then use a FeatureReader to read the temporary ZIP, including files inside it.</li>
+<li>If you still can't see the files, use a command line utility and a SystemCaller to extract the files first.</li>
+<li>Don't know the names of the files in advance? Use a Directory and Pathname in a FeatureReader to scan the new files and read just the files you need.</li>
+</ol>
+</li>
+</ol>
+<p>Thanks to FME Community user ctredinnick for <a href="https://community.safe.com/data-7/adding-more-archive-file-format-extensions-20792" target="_blank" rel="noopener">this advice</a>.</p>
+</div>
+</details>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+summary {
+  font-size: 18px;
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::marker {
+  display: none;
+}
+.tips-tricks summary::before {
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231565c0' d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E");
+  background-size: 32px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.2s ease;
+}
+.tips-tricks[open] summary::before {
+  transform: rotate(90deg);
+}
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.tips-tricks {
+  background-color: #E3F2FD;
+}
+.tips-tricks[open] {
+  background-color: #E3F2FD;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+.tips-tricks:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>

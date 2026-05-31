@@ -1,0 +1,436 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Identify which aspects of output data to inspect when problems occur.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Use record counts to locate problems in a workspace.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Inspect rejected feature attributes to determine why a feature failed.</li>
+</ul>
+<h2 id="learning-objectives">Instructions</h2>
+<p>In this lesson, you will:</p>
+<ul>
+<li aria-level="1"><em>Optional:&nbsp;</em>Watch the Use Output and Feature Counts to Identify Problems video.
+<ul>
+<li aria-level="1">This video uses an older title for this lesson, but the content is otherwise mostly unchanged.</li>
+</ul>
+</li>
+<li aria-level="1">Scroll down to read the text below.</li>
+<li aria-level="1"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</li>
+<li aria-level="1">Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-output-and-record-counts-to-identify-problems.fmw" target="_blank" rel="noopener">Starting workspace</a>&nbsp;
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-output-and-record-counts-to-identify-problems.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-output-and-record-counts-to-identify-problems-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-output-and-record-counts-to-identify-problems-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.zip</a> (OGC / Google KML)
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/street-trees.csv" target="_blank" rel="noopener">street-trees.csv</a>
+<ul>
+<li>C:\FMEData\Resources\FormBasic\street-trees.csv</li>
+</ul>
+</li>
+</ul>
+<h2 id="inspecting-output">Inspecting Output</h2>
+<p>Even if a workspace ran to completion without warnings or errors, it does not follow that the output matches expectations or requirements. For whatever reason, the workspace may be producing data incorrectly. We can determine this by inspecting the translation output.</p>
+<p>To inspect your output, view it in Data Preview or the destination application.</p>
+<p>You can inspect several aspects of data, including:</p>
+<ul>
+<li><strong>Format</strong>: Is the data in the expected format?</li>
+<li><strong>Schema</strong>: Is the data subdivided into the correct layers, categories, or classes?</li>
+<li><strong>Geometry</strong>: Is the geometry in the correct spatial location? Are the geometry types suitable?</li>
+<li><strong>Symbology</strong>: Is each feature's color, size, and style correct?</li>
+<li><strong>Attributes</strong>: Are all the required attributes present? Are all integrity rules being followed?</li>
+<li><strong>Quantity</strong>: Does the data contain the correct number of features?</li>
+<li><strong>Output</strong>: Has the translation process restructured the data as expected?</li>
+</ul>
+<p>When encountering problems, you should inspect your data to see if its components are incorrect.</p>
+<p><span style="font-family: inherit; font-size: 1em;">This stage is solely to determine if there are any problems.</span></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>If there are no problems, we can be satisfied that the translation was a success.</p>
+<p>If there are problems, we should go on to determine where the problem occurred. It's important to avoid jumping to conclusions at this point. The fact that the output needs to be corrected does not tell us where that issue appeared.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="feature-counts">Record Counts</h2>
+<p>A workspace record count refers to the numbers shown on each connection once a translation is complete:</p>
+<p><img class="image image-block image-center" src="images/1717091254445.png" alt="Feature counts on connection lines" width="679" height="289" /></p>
+<p>Once you find an error or problem, record counts help us identify where that problem occurred.</p>
+<p>In the above screenshot, if the Clipper output is incorrect, you should inspect the prior record counts to see if any counts look wrong. Perhaps you know that there are seven neighborhoods, but the record count shows only six.</p>
+<h2 id="incorrect-output">Incorrect Output</h2>
+<p>You can check several things when the number of output features is incorrect.</p>
+<p>If you get zero output, and the record counts show that all features entered a transformer, but none emerged, then you can be reasonably confident that the transformer is the cause of the problem:</p>
+<p><img class="image image-block image-center" src="images/1717091359465.png" alt="Debugging by checking feature counts" width="447" height="289" /></p>
+<p>For example, 80 features enter the Clipper transformer (to be clipped against a single boundary), but none emerge. The Clipper transformer is almost certainly the cause of any incorrect output.</p>
+<p>The transformer does not reject the data; it merely does not pass the test expected. It's possible that Clipper and Clippee don't occupy the same coordinate system; hence, one does not fall inside the other.</p>
+<p>Turning on data caching helps to confirm this to be the case:</p>
+<p><img class="image image-block image-center" src="images/1717091407508.png" alt="Using feature caching to find output" width="447" height="289" /></p>
+<p>Alternatively &ndash; and this is a common cause of missing features &ndash; the author has connected the wrong output port! For example, this user connected the StatisticsCalculator Summary output port when they wanted the features from the Complete port:</p>
+<p><img class="image image-block image-center" src="images/1717091458891.png" alt="Using feature caching to confirm correct port is connected" width="453" height="125" /></p>
+<p>You can observe record counts and data caches to ensure you are getting the expected number of features and they look correct.</p>
+<h2 id="rejected-features">Rejected Features</h2>
+<p>Sometimes, when features go missing, they are rejected by a transformer. Many transformers include a &lt;Rejected&gt; port to output these invalid features:</p>
+<p><img class="image image-block image-center" src="images/1717091580603.png" alt="Observing rejected feature counts" width="390" height="153" /></p>
+<p>Remember, features are automatically counted and stored on a &lt;Rejected&gt; port, even if data caching is off.</p>
+<p>As an additional benefit, the rejected features will often include a rejection code attribute explaining the problem:</p>
+<p><img class="image image-block image-center" src="images/1717091667409.png" alt="Observing fme_rejection_code in Visual Preview" width="512" height="260" /></p>
+<p>Simply reading a rejection code can often help you identify the problem. Please refer to the transformer documentation for more information if it does not.</p>
+<h2 id="checking-key-stages">Checking Key Stages</h2>
+<p>&nbsp;If the record counts cannot help pinpoint a problem's location, the next step is inspecting data at crucial translation stages.</p>
+<p>Generally, issues in an output dataset occur when:</p>
+<ul>
+<li>The workspace reads data incorrectly.</li>
+<li>The workspace transforms data incorrectly.</li>
+<li>The workspace writes data incorrectly.</li>
+<li>Another application misinterprets the data.</li>
+</ul>
+<h2>Exercise</h2>
+<p><img class="image image-block image-center" src="images/c-523-def-8-4-eb-4-4-add-acbd-274-c-2-ee-65-f-21.png" alt="Frank" width="256" height="256" /><img class="image" src="images/bad-35950-6-e-9-c-4-ec-3-a-5-fd-fcbd-103817-d-8.png" alt="Amar" width="256" height="272" /></p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">Amar is having problems with a workspace that clips street trees to Vancouver neighborhood boundaries and sends it to Frank for help. Frank uses his debugging skills to track down two separate issues: a rejected feature that stops the translation, and a coordinate system mismatch that produces empty output.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">In this exercise, you will:</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Use the Translation Log to identify the cause of a rejected feature.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Inspect data caches to confirm a coordinate system mismatch.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Fix both issues to produce correct output.</li>
+</ul>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Start&nbsp;<strong>FME Workbench</strong> (2026.1 or later).</li>
+<li>Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/use-output-and-record-counts-to-identify-problems.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\use-output-and-record-counts-to-identify-problems.fmw).</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><span style="font-family: inherit; font-size: 1em;">Click <strong>Run</strong>.</span>
+<ul>
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><span style="font-family: inherit; font-size: 1em; color: #000000;">You'll notice that the workspace stops running before it's done.</span></li>
+</ul>
+</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the <strong>Unexpected Input </strong>window, click <strong>OK</strong>.<br />
+<ul>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">The Unexpected Input window appears when FME reads data not included in the workspace. This can happen with formats like KML, where the entire dataset is read even if only one feature type is on the canvas. You can safely ignore it once you confirm you have all the source data you need.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779838672975.png" alt="" /></p>
+<h2>2) Find Rejected Feature Code</h2>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">Use the Translation Log to find out why the workspace stops before completing due to an error.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the <strong>Translation Log</strong>, click <strong>Errors</strong>.</li>
+</ul>
+<p><span style="color: #e67e23;"><img src="images/1779838825575.png" alt="" width="598" height="66" /></span></p>
+<ul>
+<li>Review the error message:
+<ul>
+<li><span style="color: #255bfc;"><code>The below feature caused the translation to be terminated</code></span></li>
+<li><span style="color: #255bfc;"><code>JSONExtractor_&lt;Rejected&gt; (TeeFactory): JSONExtractor_&lt;Rejected&gt;: Termination Message: 'JSONExtractor output a &lt;Rejected&gt; feature. &nbsp;To continue translation when features are rejected, change 'Workspace Parameters' &gt; Log and Troubleshoot &gt; 'Rejected Feature Handling' to 'Continue Translation'' </code></span><span style="color: #255bfc;"><code><br /></code></span></li>
+<li>The error message points to a rejected feature from the JSONExtractor. The error itself does not explain the cause. You need to inspect the rejected feature directly to find out more.</li>
+</ul>
+</li>
+<li>On the canvas, locate the <strong>JSONExtractor</strong>.</li>
+<li>On the <strong>&lt;Rejected&gt; port</strong>, click the <strong style="font-family: inherit; font-size: 1em;">data cache</strong> icon<span style="font-family: inherit; font-size: 1em;">.</span></li>
+</ul>
+<p><img src="images/1749587778561.png" alt="Inspecting rejected feature" /></p>
+<ul>
+<li>In&nbsp;<strong>Table View</strong>, scroll right to find the <strong>fme_rejection_code</strong> <strong>attribute</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">The value is <code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">NO_RESULT</code>.</li>
+</ul>
+</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Check the <strong>Geom</strong> <strong>attribute</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">The value is <code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">&lt;null&gt;</code>. You'll need to find out why the JSONExtractor returned no result for this feature.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779838984360.png" alt="" /></p>
+<h2>3) Find Cause of Rejected Feature</h2>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">Now that you know which record was rejected, check the JSONExtractor transformer parameters to determine why.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Double-click the <strong>JSONExtractor</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">In the parameters, you can see the transformer reads JSON from the Geom attribute.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">It also extracts latitude and longitude coordinates using a JSON Query.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">If Geom is null, the transformer has nothing to read and rejects the record.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779839269567.png" alt="JSONExtractor parameters" width="430" height="512" /></p>
+<ul>
+<li>Click&nbsp;<strong>Ok</strong>.</li>
+<li>In the <strong>JSONExtractor</strong>, click the&nbsp;<strong>Evaluated</strong> <strong>data cache</strong>.</li>
+<li>Inspect the <strong>Geom</strong>, <strong>lat</strong>, and <strong>long</strong> <strong>attributes</strong>.
+<ul>
+<li>The three records that processed successfully all have a value for <span style="font-family: inherit; font-size: 1em;">Geom</span><span style="font-family: inherit; font-size: 1em;">, and therefore values for </span><span style="font-family: inherit; font-size: 1em;">lat</span><span style="font-family: inherit; font-size: 1em;"> and </span><span style="font-family: inherit; font-size: 1em;">long</span><span style="font-family: inherit; font-size: 1em;">. This confirms the rejected record failed because </span><span style="font-family: inherit; font-size: 1em;">Geom</span><span style="font-family: inherit; font-size: 1em;"> was null.</span></li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1749588188712.png" alt="Successfully processed features have a value for Geom" /></p>
+<h2>4) Fix Rejected Feature</h2>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">To fix this problem, filter out null Geom records before they reach the JSONExtractor.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Add a <strong>Tester</strong>&nbsp;after the <strong>CSV reader feature type</strong>.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Configure the <strong>Tester</strong> with the following test clause:
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Left Value: <code>Geom</code></li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Operator: <code>Attribute Has a Value</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1749589131793.png" alt="Tester configuration" /></p>
+<ul>
+<li>Connect the <strong>Passed</strong> <strong>port</strong> to the <strong>JSONExtractor</strong> input.</li>
+<li><strong>Run</strong> the workspace.
+<ul>
+<li>The JSONExtractor should no longer output rejected records.</li>
+</ul>
+</li>
+</ul>
+<p><span style="color: #e67e23;"><img src="images/1779839394431.png" alt="" width="530" height="110" /></span></p>
+<h2>5) Use Record Counts to Debug</h2>
+<p>The workspace runs without errors, but you notice something looks off. Check the Clipper transformer's record counts to see if the results look as expected.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">On the <strong>Clipper's</strong> <strong>output ports</strong>, inspect the <strong>record counts</strong>.</li>
+</ul>
+<p><img src="images/1749590124867.png" alt="Missing Inside features" /></p>
+<ul>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">You notice something unexpected:
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">The Inside port is empty and all records are coming out of the Outside port.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">This means the Clipper did not detect any overlap between the tree points and the neighborhood polygons.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">When all records exit the Outside port, the most common cause is a coordinate system mismatch. Check both datasets before drawing any conclusions.</li>
+</ul>
+</li>
+</ul>
+<h2>6) Investigate Coordinate Systems</h2>
+<p class="p1">You&rsquo;ve got the skills to troubleshoot this one. Before following the steps below, take a minute to see if you can confirm whether a coordinate system mismatch is causing the overlap issue.</p>
+<p class="p1">Open both datasets in <span class="s1">Data Preview</span> at the same time. This makes them visible together in the <span class="s1">Graphics View</span>, so you can check whether they overlap.</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">On the <strong>Clipper</strong>, click the&nbsp;<strong>Outside</strong> <strong>port data cache</strong>.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Ctrl+click th<span style="color: #000000;">e <strong>Neighborhoods'</strong> <strong>port</strong> <strong>data cache</strong>.</span></li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><span style="color: #000000;">Select a <strong>tree data record</strong>.</span></li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><span style="color: #000000;">In the <strong>Record Information Window, </strong>check the <strong>Coordinate System</strong>.</span>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><span style="color: #000000;">The tree data is in UTM83-10.</span></li>
+</ul>
+</li>
+</ul>
+<p><span style="color: #e67e23;"><img src="images/1749591124406.png" alt="" width="495" height="203" /></span></p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><span style="color: #000000;">Switch to the <strong>Neighborhoods</strong> <strong>table</strong> and select a <strong>tree data record</strong>.</span>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2"><span style="color: #000000;">The Neighborhoods data is in LL84. This confirms a coordinate system mismatch.</span></li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1749591214474.png" alt="LL84 coordinate system" /></p>
+<h2>7) Fix Coordinate Systems</h2>
+<p>Both datasets need to be in the same coordinate system before the Clipper can detect overlap. It is better to conduct spatial analysis using a projected coordinate system, so reproject the Neighborhoods data to UTM83-10 to match the tree data. You can always reproject back to LL84 at the end if needed.</p>
+<ul>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Right-click the <strong>Reprojector</strong>&nbsp;and select <strong>Duplicate</strong>.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Drag the duplicated <strong>Reprojector</strong> onto the <strong>Neighborhoods</strong> stream until it connects to the line, then release.</li>
+</ul>
+<p><span style="color: #e67e23;"><img src="images/1779839503772.png" alt="" width="713" height="189" /></span></p>
+<ul>
+<li><strong>Run</strong> the workspace.</li>
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Inspect the record counts on the <strong>Clipper's output ports</strong>.
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">The Inside port should now contain records, confirming the coordinate system mismatch has been resolved.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1749592726129.png" alt="Inside port has features" /></p>
+<h2>Optional Challenge: Why Use a Projected Coordinate System?</h2>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">You fixed the coordinate system mismatch by duplicating the Reprojector to reproject the Neighborhoods data to UTM83-10. But there was another option: removing the Reprojector entirely so both datasets stay in LL84. Both approaches resolve the mismatch, but one is the better choice for spatial analysis. Consider why before looking at the answer.</p>
+<p class="font-claude-response-body break-words whitespace-normal leading-[1.7]">In this challenge, you will:</p>
+<ul class="[li_&amp;]:mb-0 [li_&amp;]:mt-1 [li_&amp;]:gap-1 [&amp;:not(:last-child)_ul]:pb-1 [&amp;:not(:last-child)_ol]:pb-1 list-disc flex flex-col gap-1 pl-8 mb-3">
+<li class="font-claude-response-body whitespace-normal break-words pl-2">Explain why reprojecting both datasets to UTM83-10 is a better choice than leaving both in LL84.</li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+summary {
+  font-size: 18px;
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::marker {
+  display: none;
+}
+.challenge-answer summary::before {
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232e7d32' d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E");
+  background-size: 32px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.2s ease;
+}
+.challenge-answer[open] summary::before {
+  transform: rotate(90deg);
+}
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.challenge-answer {
+  background-color: #E8F5E9;
+}
+.challenge-answer[open] {
+  background-color: #E8F5E9;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+.challenge-answer:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<p>&nbsp;</p>
+<details class="challenge-answer">
+<summary><strong>Challenge Answer:</strong> Open after attempting the challenge.</summary>
+<div>
+<p>Both approaches resolve the coordinate system mismatch and the clip will work either way. However, reprojecting both datasets to UTM83-10 is the better choice.</p>
+<p>LL84 is a geographic coordinate system that measures distance in degrees, not meters. This introduces distortion when performing spatial analysis such as clipping, buffering, or area calculations. UTM83-10 is a projected coordinate system that measures in meters, making it more accurate for this type of analysis.</p>
+<p>If the final output needs to be in LL84, add a Reprojector at the end of the workspace to reproject back before writing.</p>
+</div>
+</details>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+summary {
+  font-size: 18px;
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::marker {
+  display: none;
+}
+.challenge-answer summary::before {
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232e7d32' d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E");
+  background-size: 32px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.2s ease;
+}
+.challenge-answer[open] summary::before {
+  transform: rotate(90deg);
+}
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.challenge-answer {
+  background-color: #E8F5E9;
+}
+.challenge-answer[open] {
+  background-color: #E8F5E9;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+.challenge-answer:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

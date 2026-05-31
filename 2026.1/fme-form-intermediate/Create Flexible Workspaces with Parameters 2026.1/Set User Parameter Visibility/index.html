@@ -1,0 +1,101 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Embed user parameters within other parameters for advanced user control.</li>
+<li>Share user parameters by linking them to multiple FME parameters.</li>
+<li>Locate all the places where a user parameter is used in a workspace.</li>
+<li>Use scripted parameters to set the value of private user parameters in more advanced ways.</li>
+<li>Understand the difference between published and private user parameters.</li>
+<li>Set user parameters to be published or private.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span><br />
+<ul>
+<li style="font-weight: 400;" aria-level="1"><em><span style="font-weight: 400;">Optional:</span></em><span style="font-weight: 400;"> You can view the video instead of reading the text. The video covers the text material.</span></li>
+</ul>
+</li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The lesson in the above video has a different name and uses FME 2025.1. We'll be updating it with a new video in the summer of 2026.</p>
+</blockquote>
+<h2 id="shared-embedded-and-scripted-parameters">Shared, Embedded, and Scripted Value Parameters</h2>
+<p>Shared and embedded parameters are not specific types of parameters; instead, they refer to two different ways parameters might be used.</p>
+<p>The Scripted Value parameter lets you define a parameter's value in the workspace at runtime using Python.</p>
+<h3 id="shared-parameters">Shared Parameters</h3>
+<p>There is no limit on how many times a user parameter can be used or linked to an FME parameter. The value obtained from a user parameter can be used as often as required.</p>
+<p>A parameter used in two or more places is called a shared parameter.</p>
+<p>For example, a workspace has a user parameter called TOLERANCE (here being used inside a Generalizer):</p>
+<p><img src="images/1724347262145.png" alt="TOLERANCE user parameter being used in a Generalizer" width="580" height="201" /></p>
+<p>However, the workspace author has decided to apply the same parameter in three places in total: two Generalizers and a Clipper:</p>
+<p><img src="images/1724347273337.png" alt="TOLERANCE parameter supplies values to three FME parameters" width="1054" height="377" /></p>
+<p>The advantage is that the same value can be used without the user having to enter it multiple times.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You might wonder how to tell where FME uses the user parameters you create. What FME parameters is it linked to?</p>
+<p>To find out, right-click the parameter and choose the option to Show References:</p>
+<p><img src="images/1724347283659.png" alt="Show References" width="737" height="408" /></p>
+<p>This applies whether the user parameter is referenced by one FME parameter or many. If you wish to always show these references without having to use "Show References," right-click User Parameters and choose <strong>Always Show References</strong>:</p>
+<p><img src="images/1724347295101.png" alt="Always Show References" width="452" height="127" /></p>
+</blockquote>
+<h3 id="embedded-parameters">Embedded Parameters</h3>
+<p>Sometimes, in FME, parameter values need to be constructed from multiple components. When one parameter is constructed to include the value of another parameter inside it, this is called embedding parameters.</p>
+<p>For example, here, the name of a file is constructed from two user parameters: one is a fixed output path, and the other is the user's name:</p>
+<p><img src="images/1724347301830.png" alt="Embedded parameter example" width="509" height="322" /></p>
+<p>The technique is called&nbsp;embedding because the user parameters - UserName and OutputFolder - are embedded inside the FME parameter (Target Filename).</p>
+<h3 id="scripted-parameters">Scripted Value Parameters</h3>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/scripted_python.htm" target="_self">Scripted Value parameters</a> go one step further than embedded parameters. Instead of simple concatenation, a Scripted Value parameter allows a Python script to construct a value.</p>
+<p>For example, this Python script controls which feature types FME reads based on the value of another user parameter:</p>
+<pre><code>import fme<br />featureTypes = ''<br />if fme.macroValues['layers'].find('Walking and Biking') != -1:<br />&nbsp; &nbsp; featureTypes += 'PublicStreets Bikeways '<br />if fme.macroValues['layers'].find('Rapid Transit') != -1:<br />&nbsp; &nbsp; featureTypes += 'RapidTransitLine RapidTransitStations '<br />if fme.macroValues['layers'].find('All Methods') != -1:<br />&nbsp; &nbsp; featureTypes += 'PublicStreets Bikeways RapidTransitLine RapidTransitStations '<br />#Debug<br />#print(featureTypes)<br />return featureTypes<br /><br /></code></pre>
+<p>Note that the script must include a return statement to return a value to the parameter. A scripted parameter is purely for an author's use. The user is not prompted for a value, as it would be absurd to expect them to enter Python code when a workspace runs!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Use the &lsquo;print&rsquo; command (in Python) to write from the script to the FME log file.</p>
+</blockquote>
+<h2 id="parameter-settings">Parameter Settings</h2>
+<p>There are two key parts of the user parameter creation dialog that you should know about: the Required checkbox and the Visibility group.</p>
+<p><img src="images/1779821629649.png" alt="Required checkboxe and Visibility group on user attribute creation" width="333" height="398" /></p>
+<h3 id="published-parameters">Required Checkbox</h3>
+<p>The Required checkbox tells FME whether the user parameter must be filled out before the workspace runs.</p>
+<p>Here, for example, the DateTimeCalculator is being used to calculate the time a park closes, given its opening time and user input on how many hours and minutes it is open:</p>
+<p><img src="images/1779821818508.png" alt="Viewing the Required checkbox when creating a new user parameter" width="681" height="519" /></p>
+<p>The MINUTES user parameter does not have Required checked, meaning it is optional. For example, the user can enter that the park is open for eight (8) hours and ignore the MINUTES parameter. The HOURS parameter would be required.</p>
+<p>Alternatively, a user parameter might provide a tolerance value to a Generalizer transformer. In this case, the author will want to turn off this checkbox and make the parameter compulsory. A Generalizer that is not given a tolerance value will usually fail, and making tolerance compulsory is one way to prevent that.</p>
+<h3 id="optional-parameters">Visibility Group</h3>
+<p>This option aims to expose or hide the parameter from the end user.</p>
+<p><img src="images/1779821874545.png" alt="Visibility group in the user parameter dialog" /></p>
+<p>There are up to three options available:</p>
+<ul>
+<li>Always Show</li>
+<li>Always Hide</li>
+<li>Conditional</li>
+</ul>
+<p>If you select Always Show, the end user can enter a value for this parameter when the workspace runs. We can call these visible parameters.</p>
+<p>If you select Always Hide, the end user will not be prompted to enter a value. We can call these hidden parameters.</p>
+<p>You might choose Always Hide for two reasons.</p>
+<p>Firstly, it allows a workspace author to create a shared parameter without exposing it to the user.</p>
+<p>For example, if you want to supply the same tolerance value to several Snapper transformers &ndash; but the author, not the user, sets that value.</p>
+<p>The second use of Always Hide is to embed a user's partial input into a larger parameter.</p>
+<p>For example, the workspace author prompts the user to enter a folder in which a file is to be written (1). The author then defines the full folder path as a hidden parameter (2) as a mix of a fixed path and a job ID:</p>
+<p><img src="images/1724347365952.png" alt="Using a private parameter in a published parameter" width="708" height="408" /></p>
+<p>Finally, (3) the hidden parameter is embedded inside the FME parameter for the destination Shapefile dataset.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You might have noticed that many FME Flow Parameters are available to workspace authors who intend to deploy their creation on an enterprise scale.</p>
+<p>If you look at the above screenshot, a Flow parameter (FME_JOB_ID) has been embedded into the FullPath private parameter.</p>
+</blockquote>
+<h3>Conditional Visibility</h3>
+<p>You can control if user parameters appear to the end-user by setting Visibility to Conditional. With this enabled, you can control which parameters are visible based on user input. The end result can be closer to a native FME transformer.</p>
+<p>For example, you can include a checkbox that, when checked, reveals additional parameters. Here is a parameter, TEST_DATE, that lets the user provide a date to use when testing the workspace:</p>
+<p><strong><img src="images/1779822026662.png" alt="Use conditional visibility" width="439" height="552" /></strong></p>
+<p>This parameter will only be shown in the prompt if the user has enabled the TEST_MODE parameter. You could use this for a workspace that runs daily to test it on dates in the past to make sure it can handle a variety of data.</p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">See the documentation for more details</a>.</p>
+<p><a href="https://support.safe.com/hc/en-us/articles/25407456235661-Working-With-Conditionally-Visible-Published-User-Parameters-in-FME-Form" target="_self">Check out a tutorial on this topic.</a></p>
+</blockquote>

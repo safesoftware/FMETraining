@@ -1,0 +1,156 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Understand the difference between the Merge Attributes and Generate List... options in Overlayer transformers.</li>
+<li>Create a list attribute using an Overlayer transformer.</li>
+<li>View a list attribute in the Record Information Window.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span><br />
+<ul>
+<li style="font-weight: 400;" aria-level="1"><em><span style="font-weight: 400;">Optional:</span></em><span style="font-weight: 400;"> You can view the video instead of reading the text. The video covers the text material.</span></li>
+</ul>
+</li>
+<li><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/create-lists-using-transformers.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\AdvancedDataTransformation\create-lists-using-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/create-lists-using-transformers-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\create-lists-using-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/street-trees.csv" target="_blank" rel="noopener">street-trees.csv</a>
+<ul>
+<li>C:\FMEData\Resources\FormBasic\street-trees.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FormBasic/parks-polygon-representation.geojson" target="_self">parks-polygon-representation.geojson</a>&nbsp;
+<ul>
+<li>C:\FMEData\Resources\FormBasic\parks-polygon-representation.geojson</li>
+</ul>
+</li>
+</ul>
+<h2><span style="font-family: inherit; font-size: 1em;">Exercise</span></h2>
+<p>Jennifer is ready to put her knowledge of lists into action!</p>
+<p>She's been asked to identify the most common tree genus in Vancouver's parks.</p>
+<p>She has point data of all the street trees in the city, as well as polygons of the parks. Now she needs to overlay these datasets (what you might know as a <a href="https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/spatial-join.htm" target="_blank" rel="noopener">spatial join</a>) to add information about each tree to the park polygons.</p>
+<p>Jennifer knows that many FME transformers include a Generate List checkbox in the Attribute Accumulation section of their parameter&nbsp;dialog. For example:</p>
+<p><img class="image image-block image-center" src="images/1639088915106.png" alt="Generate List checkbox" /></p>
+<p>For query transformers that return multiple results, such as the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/pointonareaoverlayer.htm" target="_blank" rel="noopener">PointOnAreaOverlayer</a>, these parameters can be used to generate a list to store the results.</p>
+<p>So, Jennifer plans to merge the tree points with the park polygons using the PointOnAreaOverlayer. However, copying attributes from each tree to its respective park polygon isn't enough; what if there is more than one tree per park?</p>
+<p>List attributes are perfect for this scenario: if more than one tree falls within the same park polygon, she can use a list attribute to store information for <em>all</em> trees in each park. The PointOnAreaOverlayer allows her to generate a list that stores the values for all points overlaid on the area.</p>
+<p>Her goal workspace will:</p>
+<ul>
+<li>Read point data with information about trees.</li>
+<li>Read polygon data with information about Vancouver parks.</li>
+<li>Overlay the points and polygons using the&nbsp;PointOnAreaOverlayer.</li>
+<li>Use list attributes to store the values of all tree points within each park.</li>
+</ul>
+<h2 id="1-open-fme-workbench">1) Open Starting Workspace</h2>
+<ul>
+<li>Start<strong> FME Workbench </strong>(2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-create-lists-using-transformers.fmwt" target="_blank" rel="noopener">starting workspace </a>(C:\FMEData\Workspaces\AdvancedDataTransformation\create-lists-using-transformers.fmw).</li>
+</ul>
+<h2 id="2-run-the-workspace-and-inspect-the-data">2) Run the Workspace and Inspect the Data</h2>
+<ul>
+<li><strong>Run</strong> the workspace to generate data caches.</li>
+<li>Inspect both the <strong>Trees </strong>and <strong>parks-polygon-representation </strong>caches by clicking each cache while holding down the Ctrl or Cmd key.</li>
+</ul>
+<p><img src="images/1746637043295.png" alt="Viewing both caches" /></p>
+<p>First, we'd like to visually understand the degree of overlap between the datasets so we can spot-check the list results. We decide to inspect a local park, China Creek North Park.</p>
+<p>With the two datasets in Data Preview, do the following.</p>
+<ul>
+<li>Search for <code>China Creek North</code> using the <strong>Filter </strong>field at the bottom of Table View with the <strong>parks-polygon-representation</strong> table displayed.</li>
+</ul>
+<p><img src="images/1746637141777.png" alt="Searching for China Creek North park" /></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Navigate to the park by selecting the row in Table View and then using the<strong> Zoom to the Selected Features button</strong> in Graphics View:</span></li>
+</ul>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1778795407443.png" alt="Zooming to China Creek North" width="1105" height="226" /></span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Visually confirm that there are over a dozen trees (the points) within China Creek North Park.</span></li>
+</ul>
+<p><img src="images/1746637287756.png" alt="Trees in park" /></p>
+<h2 id="3-set-point-on-area-overlayer-parameters-merge-attributes">3) Set PointOnAreaOverlayer Parameters: Merge Attributes</h2>
+<p>How can we get a list of all trees in each park?</p>
+<ul>
+<li>Double-click the <strong>PointOnAreaOverlayer </strong>to open its parameters.
+<ul>
+<li>By default, the checkboxes under <em>Attribute Accumulation&nbsp;</em>are unchecked, which means the area and point attributes are not being merged, and no list attributes are being created.</li>
+</ul>
+</li>
+<li>Check<strong> Merge </strong>Attributes<em style="font-family: inherit; font-size: 1em;">,&nbsp;</em><span style="font-family: inherit; font-size: 1em;">leaving the other parameters disabled for now.</span></li>
+</ul>
+<p><img class="image image-block image-center" src="images/1746637667426.png" alt="Merge Attributes, don't generate lists" width="349" height="512" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<h2 id="4-run-the-workspace">4) Run the Workspace</h2>
+<ul>
+<li><strong>Run </strong>the workspace</li>
+<li>Inspect China Creek North Park again using the procedure from step #2.
+<ul>
+<li>The PointOnAreaOverlayer added an <code>_overlaps</code> attribute that counts the number of points in each area.</li>
+<li>In the <strong>Record Information window</strong>, we can see that China Creek North Park has 43 overlaps, i.e., trees, but the polygon only has attributes from one of the trees, a Norway Maple.</li>
+<li>This is the result of merging the incoming records. The Merge Attributes option can only add attributes from one record. Because we want attributes from multiple records, we must use a list attribute.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1746638400643.png" alt="Attributes from one tree species" width="882" height="587" /></p>
+<h2 id="5-set-point-on-area-overlayer-parameters-generate-list">5) Set PointOnAreaOverlayer Parameters: Generate List</h2>
+<ul>
+<li>Open the <strong>PointOnAreaOverlayer </strong>parameters.</li>
+<li>Uncheck <strong>Merge Attributes</strong>.</li>
+<li>Check<em>&nbsp;</em><strong>Generate List on Output &lsquo;Area&rsquo;</strong>.</li>
+<li>Name the list <code>_trees</code>.</li>
+<li>Use <strong>Selected Attributes&nbsp;</strong>to select the attributes <code>COMMON_NAME</code>, <code>DIAMETER</code>, <code>HEIGHT</code>, <code>SPECIES_NAME</code>, and <code>TREE_ID</code>:</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1746639114971.png" alt="Don't Merge Attributes, Generate List on Area" width="546" height="512" /></p>
+<ul>
+<li>Click<strong> OK</strong>.</li>
+</ul>
+<h2 id="6-run-the-workspace">6) Run the Workspace</h2>
+<ul>
+<li><strong>Run </strong>the workspace.</li>
+<li>Inspect China Creek North Park again.</li>
+<li>The<strong> Record Information window</strong> shows a list attribute, <code>_trees{}</code>, which contains information from all tree points in the park.</li>
+<li>Click an individual element,<strong> _trees{0}</strong>, to expand it and view its attribute-value pairs.</li>
+</ul>
+<p><img src="images/1779303213054.png" alt="Viewing individual trees in the park list" /></p>
+<p>We successfully used the PointOnAreaOverlayer to create a list called <code>_trees{}</code>, which stores the values of multiple tree points within each park polygon. Note how each numbered list element contains the same attributes: <code>COMMON_NAME</code>, <code>DIAMETER</code>, etc.</p>
+<p>Now that we have lists of all the park trees, we can use list transformers to find the most common genus, which we'll do in the next lesson.</p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

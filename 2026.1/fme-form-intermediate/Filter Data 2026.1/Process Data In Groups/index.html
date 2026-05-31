@@ -1,0 +1,135 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain how the Group By parameter lets you process records in groups.</li>
+<li>Explain the difference between the Process at End and Process When Group Changes Group By modes.</li>
+<li>Use the Group By parameter in an FME transformer.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span><br />
+<ul>
+<li style="font-weight: 400;" aria-level="1"><em><span style="font-weight: 400;">Optional:</span></em><span style="font-weight: 400;"> You can view the video instead of reading the text. The video covers the text material.</span></li>
+</ul>
+</li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/process-data-in-groups.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\process-data-in-groups.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/process-data-in-groups-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\process-data-in-groups-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a>&nbsp;(MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+</ul>
+<h2 id="what-is-group-by">What is Group By?</h2>
+<p>Group By parameters allow records to be processed in groups by a single FME transformer.</p>
+<p>FME transformers perform transformations on either one record at a time or a whole set of records at once.</p>
+<ul>
+<li>For example, the AreaCalculator transformer operates on one record at a time (to measure the area of a single polygon record). We call it a <strong>feature-based transformer</strong>.</li>
+<li>The StatisticsCalculator operates on multiple records simultaneously (to calculate an average value for them all). In FME, we call this set of records a <strong>group</strong> and the transformer a <strong>group-based transformer</strong>.</li>
+</ul>
+<h2 id="creating-groups">Creating Groups</h2>
+<p>A group is a defined set of records processed by a transformer. By default, group-based transformers treat all the records they receive as a single group.</p>
+<p>However, such transformers also have a&nbsp;<strong>Group By</strong> parameter. This parameter lets the user define several groups based on an attribute's value.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">To illustrate groups, let's consider calculating the mean age of FME users. The default group for the calculation includes </span><strong style="font-family: inherit; font-size: 1em;">all</strong><span style="font-family: inherit; font-size: 1em;"> FME users.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">But you could instead divide everyone by their nationality and calculate the average age per country.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">This is the same as having a nationality attribute in a dataset and selecting that in an FME Group By parameter.</span></p>
+</blockquote>
+<p>Here, a Dissolver transformer is used to dissolve (merge) several polygon records. The selected Group By attribute is <em>ViewDescription</em>. Additionally, you can set Complete Groups to When All Features Received, which makes the Dissolver a blocking transformer, or to When Group Changes (Advanced). The latter option should only be used when your data is sorted by the value(s) of the grouping attribute(s). It can offer a performance boost if your data is already sorted or if you are processing many records.</p>
+<p><img class="image" src="images/1714081712903.png" alt="Setting a Group By parameter" width="784" height="193" /></p>
+<p>FME creates a series of groups for overlaying, where the records in each group share the same value for the <em>ViewDescription</em> attribute. The practical outcome is that polygon dissolving takes place only where line records share the same description:</p>
+<p><img class="image" src="images/1699305001209.png" alt="Example of results of using a Dissolver on geometry" width="610" height="350" /></p>
+<h2 id="group-by-mode">Group By Mode</h2>
+<p>When grouping records, the transformer can handle the group in two different ways. The first way is to hold all of the records until all of the records have come through the transformer; this is referred to as blocking. This is set using the Process at End (Blocking) Group By Mode.</p>
+<p>The other way is to pre-sort your data into groups using a transformer like the Sorter. Then, once your data is grouped, use the Process When Group Changes (Advanced) Group By Mode. This mode will push the records through the transformer after each group, which will help speed up performance. Only use this option when your data is pre-sorted.</p>
+<h2 id="exercise">Scenario</h2>
+<p>Sven continues to work with the city park data. He's been asked to add the average size of parks in each neighborhood. To do this, he can use the Group By parameter with an existing workspace.</p>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/process-data-in-groups.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\process-data-in-groups.fmw).</li>
+<li>This workspace calculates the average area of parks in the Downtown neighborhood using the StatisticsCalculator.</li>
+</ul>
+<p><img class="image image-block" src="images/1753902698406.png" alt="Starting workspace" width="1772" height="274" /></p>
+<h2>2) View AverageParkArea Values</h2>
+<ul>
+<li><strong>Run </strong>the workspace.</li>
+<li>Inspect the <strong>AttributeRenamer's Output port</strong>.</li>
+<li>Note that <strong>AverageParkArea </strong>is 10,494 m&sup2; for the Downtown neighborhood.
+<ul>
+<li>Remember that you can view the units for area or length calculations by checking the coordinate system of your data using the Record Information Window. See Connect to Data for more details.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block" src="images/1757091551803.png" alt="AverageParkArea in Table View" width="569" height="129" /></p>
+<h2>3) Set Group By in the StatisticsCalculator</h2>
+<p>Now we'd like to change the workspace to calculate the park area by neighborhood.</p>
+<ul>
+<li>View the parameters for the <strong>StatisticsCalculator </strong>transformer.</li>
+<li>Check <strong>Group Processing</strong>.</li>
+<li>Click the <strong>'...' button</strong> beside the Group By parameter.</li>
+<li>Select the attribute called <strong>Neighborhood</strong>.</li>
+</ul>
+<p><img class="image image-block" src="images/1714081908118.png" alt="Group By Neighborhood" width="666" height="484" /></p>
+<p>He clicks <strong>OK</strong>.</p>
+<h2>4) Run the Workspace</h2>
+<ul>
+<li><strong>Run </strong>to the StatisticsCalculator</li>
+<li>Inspect the <strong>Summary </strong>output port in Data Preview
+<ul>
+<li>This port shows a summarized table of the statistics we are calculating.</li>
+<li>This table displays the value of ParkArea.mean for each neighborhood.</li>
+<li>Because there is only one neighborhood included in the dataset after the AttributeFilter, there is currently only one record in the Summary table:</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1745527216289.png" alt="Summary port" /></p>
+<h2>5) Add Another Neighborhood</h2>
+<p>We decide to include the Fairview neighborhood in the written data as well.</p>
+<ul>
+<li>Connect the <strong>Fairview </strong>output port on the <strong>AttributeFilter </strong>to the <strong>AreaCalculator</strong>.</li>
+<li>Run to the <strong>StatisticsCalculator </strong>again.</li>
+<li>Inspect the <strong>Summary </strong>port.</li>
+<li>Note that <strong>Table View </strong>now shows the average park area for both neighborhoods.</li>
+</ul>
+<p><img src="images/1745527473018.png" alt="Summary port" /></p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

@@ -1,0 +1,186 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use conditional attribute values in the Attribute Manager.</li>
+<li>Use conditional attribute values to map data according to complex conditions.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/flood-risk-project.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>For Safe Software-hosted training courses, you can find this on your virtual machine here: C:\FMEData\Workspaces\TransformAttributes\flood-risk-project.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/flood-risk-project-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\TransformAttributes\flood-risk-project-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/ElevationModel/DEM-Clipped.dem" target="_self">DEM-Clipped.dem</a>
+<ul>
+<li>C:\FMEData\Data\ElevationModel\DEM-Clipped.dem</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb.zip</a>
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/CoastalZones.zip" target="_self">CoastalZones.zip</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\CoastalZones.zip</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer is working on a workspace to calculate the tsunami flood risk for all addresses in the city. The flood risk score combines closeness to the shoreline and elevation above sea level. It is on a scale from one to five (1-5) and is calculated using this table:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td colspan="3"><strong>Elevation (meters above sea level)</strong></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td align="center"><em>0-10m</em></td>
+<td align="center"><em>10-25m</em></td>
+<td align="center"><em>25-60m</em></td>
+</tr>
+<tr>
+<td rowspan="3"><strong>Distance from Shoreline (meters)</strong></td>
+<td align="center"><em>100m</em></td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center"><em>200m</em></td>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">4</td>
+</tr>
+<tr>
+<td align="center"><em>300m</em></td>
+<td align="center">3</td>
+<td align="center">4</td>
+<td align="center">5</td>
+</tr>
+</tbody>
+</table>
+<p>She has built the workspace so that each address has an elevation and distance from the shoreline. Now, she wants to use conditional values to calculate the flood risk score.</p>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench </strong>(2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/TransformAttributes/exercise-flood-risk-project.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> (C:\FMEData\Workspaces\TransformAttributes\exercise-flood-risk-project.fmw).</li>
+<li>Ensure <strong>Caching </strong>is enabled and <strong>run</strong> the workspace.
+<ul>
+<li>You will get an <a href="https://support.safe.com/hc/en-us/articles/25407674781453-Unexpected-Input-Remover" target="_blank" rel="noopener">Unexpected Input dialog</a>, but you can ignore it. FME displays this dialog when it reads features from the source dataset that lack a feature type defined on the canvas.</li>
+</ul>
+</li>
+<li>To observe the data, inspect <strong>all three CoastalZones [GML] reader feature type caches </strong>and the <strong>AttributeRenamer's Output cache</strong> (Ctrl or ⌘-click to inspect multiple caches).</li>
+</ul>
+<p><img class="image" src="images/1714593768184.png" alt="Flood risk zones and addresses" width="744" height="605" /></p>
+<ul>
+<li>This colored screenshot shows how the addresses fall within (and are assigned) a zone denoting their distance from the shoreline. They also possess an elevation value.
+<ul>
+<li>We must now use this information to assign a flood risk to each address.</li>
+</ul>
+</li>
+</ul>
+<h2>2) Finish Configuring AttributeManager</h2>
+<ul>
+<li>We already have an <strong>AttributeManager </strong>in the starting workspace after the AttributeRenamer.</li>
+<li>Double-click the <strong>AttributeManager </strong>to open its parameters.</li>
+<li>Ignore the existing attributes and scroll to the bottom of the dialog to find the <code>FloodRisk</code> attribute.
+<ul>
+<li>The starting workspace already has a partly-configured conditional value for <code>FloodRisk</code>, but we need to finish it.</li>
+</ul>
+</li>
+<li>In the<strong> Attribute Value</strong> field for the <code>FloodRisk</code><span style="font-family: inherit; font-size: 1em;"> attribute</span>, click the <strong>drop-down arrow </strong>and choose <strong>Conditional Value.</strong>
+<ul>
+<li>A new dialog similar to a Tester/TestFilter transformer opens. It has fields for Test Condition and Output Value.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image" src="images/1714593777820.png" alt="Selecting Conditional Value..." width="973" height="447" /></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">The dialog already maps the conditions for where <code>FloodRisk = 1</code> (the highest) through <code>FloodRisk = 4</code> (the second-lowest). According to the table of calculations, <code>FloodRisk = 1</code> can occur only where <code>Zone = 100 AND Elevation &lt;= 10</code>. The Test uses the Boolean operator AND to ensure both conditions are true.</span>
+<ul>
+<li>We need to finish configuring the dialog with the case for <code>FloodRisk = 5</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1714593788310.png" alt="Condition Statement with four outcomes" width="614" height="566" /></p>
+<ul>
+<li>Double-click the cell in the <strong>Test </strong>column to the right of the gray <strong>Else If </strong>text to add a new Test.
+<ul>
+<li>Clicking opens a Tester-like dialog.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image" src="images/1718049057574.png" alt="Defining the first test" width="587" height="348" /></p>
+<ul>
+<li>Configure the <strong>Conditional Value Definition dialog </strong>as follows.
+<ul>
+<li>Remember to specify the output <strong>Value </strong>(5) below the <strong>Test Clauses</strong> area.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image" src="images/1714594255440.png" alt="Defining Logic and setting the Attribute Value" width="453" height="354" /></p>
+<ul>
+<li>Click <strong>OK</strong>&nbsp;to close this part of the dialog.</li>
+<li>The main <strong>Conditional Definition dialog </strong>is complete. It should look like the image below.
+<ul>
+<li>It is essential to keep these tests in the correct order; otherwise, a feature may pass the tests in the wrong order and receive a lower risk than expected.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image" src="images/1714594267209.png" alt="Dialog with remaining tests entered" width="614" height="566" /></p>
+<ul>
+<li>Click <strong>OK </strong>to accept the changes.</li>
+<li>The main <strong>AttributeManager </strong>dialog should now look like the image below.</li>
+</ul>
+<p><img class="image" src="images/1714594276849.png" alt="FloodRisk with 6 possible values" width="724" height="207" /></p>
+<h2>3) Add Inspector</h2>
+<p>We would like to separate the data into layers for easier inspection. We can accomplish this with an Inspector transformer with a Group By setting.</p>
+<ul>
+<li>Add a single <strong>Inspector </strong>transformer connected to the <strong>AttributeManager's Output port</strong>.</li>
+<li>Open the <strong>Inspector parameters dialog.</strong></li>
+<li>Check <strong>Group Processing</strong> and set <strong>Group By </strong>to the newly created <code>FloodRisk</code> attribute.</li>
+<li><strong>Save </strong>and <strong>run </strong>the workspace.</li>
+<li>You should see each <strong>address </strong>colored to match its flood risk.
+<ul>
+<li>You can adjust the feature symbology in Display Control to produce a better result, like the image below.</li>
+<li>You can also turn off each zone by clicking the checkboxes in Display Control to see which addresses are most/least at risk.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block" src="images/1714594293372.png" alt="Result with five flood risk groups of address points" width="1061" height="498" /></p>
+<p>Congratulations. You have successfully used conditional values to filter and map features with a single transformer.</p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>

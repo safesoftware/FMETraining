@@ -1,0 +1,312 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:&nbsp;</p>
+<ul>
+<li>Define a web connection.</li>
+<li>Define a web service.</li>
+<li>Define a database connection.</li>
+<li>Add a database connection.</li>
+<li>Add a web connection.</li>
+</ul>
+<h2>Instructions</h2>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>We don't have a video for this section yet.</p>
+</blockquote>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/manage-connections.fmw" target="_self">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\manage-connections.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/manage-connections-complete.fmw" target="_self">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\manage-connections-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h1>What Are Connections?</h1>
+<p>A great many FME readers, writers, and transformers need to authenticate to an external system, such as a relational or spatial database, an OAuth-protected web service, or an FME Flow instance. Re-typing those credentials in every workspace is tedious, error-prone, and exposes secrets to anyone who can read the workspace XML.</p>
+<p>A&nbsp;<strong>connection</strong>&nbsp;is a saved, named bundle of authentication parameters that FME stores&nbsp;<em>outside</em> the workspace. The workspace references the connection by name only; the username, password, host, OAuth token, and other parameters never appear in the .fmw file or in the Navigator. Edit the connection once, and every workspace that uses it automatically picks up the change.</p>
+<p>It is possible to embed credentials instead of using a connection, but we do not recommend it. This option is less secure and harder to maintain.</p>
+<p>FME divides connections into two categories:</p>
+<ul>
+<li><strong>Database Connections </strong>are for relational and spatial database formats, including PostgreSQL/PostGIS, Oracle, Microsoft SQL Server Spatial, Esri Geodatabase (including ArcSDE), Snowflake, and Google BigQuery. Used by readers, writers, and transformers such as the DatabaseQuerier,&nbsp;SQLExecutor, and&nbsp;SQLCreator.</li>
+<li><strong>Web Connections</strong> are for REST/OAuth-based services used by the HTTPCaller and format-specific Connector transformers and readers/writers, including Google Drive, Dropbox, OneDrive, Box, ArcGIS Online, Bentley ProjectWise, and FME Flow itself.</li>
+</ul>
+<p><em>[Screenshot placeholder &mdash; Reader Parameters dialog with the Connection drop-down expanded, showing a saved named connection selected instead of&nbsp;Embed Connection Parameters. Alt text: &ldquo;Reader Parameters dialog with a named database connection selected from the Connection drop-down.&rdquo;]</em></p>
+<h1>Adding a Database Connection</h1>
+<p>Database connections are managed under&nbsp;<strong>Utilities &gt; FME Options &gt; Database Connections</strong>. The page lists every database connection visible to your current user and current storage location.</p>
+<p>You can add a connection in two places:</p>
+<ol>
+<li><strong>From FME Options.</strong>&nbsp;Click the&nbsp;<strong>Add</strong>&nbsp;[+] button and select&nbsp;<strong>Add</strong>. In the&nbsp;Add Database Connection&nbsp;dialog, choose a database type (PostgreSQL/PostGIS, Oracle, SQL Server Spatial, Esri Geodatabase, Snowflake, and so on). Fill in the parameters &mdash; host, port, database name, username, password, and any type-specific options. Give the connection a name and click&nbsp;<strong>Save</strong>.</li>
+<li><strong>From a workspace.</strong>&nbsp;When you add a reader or writer or configure a transformer such as the&nbsp;<em>DatabaseQuerier</em>, open the Connection drop-down and select&nbsp;<strong>Add Database Connection</strong>. The same dialog appears, and the new connection is available immediately throughout Workbench.</li>
+</ol>
+<p>You can also right-click an existing connection to&nbsp;<strong>Duplicate</strong>,&nbsp;<strong>Export</strong>, or&nbsp;<strong>Import</strong>&nbsp;it. Exporting prompts for an optional password &mdash; if you set one, it must be at least 12 characters.</p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>The following characters are not allowed in connection names:&nbsp;<code>^ \ / : * ? " &lt; &gt; | &amp; = ' + % #</code></p>
+</blockquote>
+<p><em>[Screenshot placeholder &mdash; FME Options &gt; Database Connections page with the Add [+] button highlighted and a few existing database connections in the list (PostGIS, SQL Server, Snowflake). Alt text: &ldquo;FME Options Database Connections page with the Add button highlighted and several saved connections listed.&rdquo;]</em></p>
+<h1>Adding a Web Connection</h1>
+<p>Web connections are managed under&nbsp;<strong>Utilities &gt; FME Options &gt; Web Connections</strong>. There are two layers to understand:</p>
+<ul>
+<li>A&nbsp;<strong>web service</strong>&nbsp;is a reusable template that describes&nbsp;<em>how</em>&nbsp;to authenticate to a provider &mdash; the authorization protocol (OAuth 2.0, Token, or HTTP Authentication) and the endpoints involved. Many common services are pre-registered in FME for testing (Google Drive, Dropbox, Box, OneDrive, ArcGIS Online, FME Flow, and others). For production use, Safe Software recommends registering your own copy of the service using your organization&rsquo;s Client Id and Client Secret.</li>
+<li>A&nbsp;<strong>web connection</strong> is a saved set of credentials, e.g., an OAuth access token, an API key, a username and password, against one of those services.</li>
+</ul>
+<p>To register your own web service, on the Web Connections page click&nbsp;<strong>Manage Services</strong>. On the Manage Web Services dialog, you have two options:</p>
+<ul>
+<li>Start from scratch: Click <strong>Add Web Service</strong> and pick one of the protocols (OAuth 2.0 Service, Token Service, HTTP Authentication Service). Fill out the details and click <strong>Save</strong>.</li>
+<li>Create from an existing service (almost always preferable): Use <strong>Create From</strong>&nbsp;to start from a Safe-provided template such as Google Drive or Dropbox. Each template includes an&nbsp;<em>External Help Links</em>&nbsp;section pointing to the provider&rsquo;s developer documentation for generating a Client Id and Client Secret. Paste those into the service and click&nbsp;<strong>Save</strong>.</li>
+</ul>
+<p>To add a connection against that service, return to the Web Connections page and click&nbsp;<strong>Add</strong>&nbsp;[+] &gt;&nbsp;<strong>Add</strong>. Pick the web service, name the connection, and click&nbsp;<strong>Authenticate</strong>. For OAuth 2.0 services FME opens your browser, the provider asks you to sign in and authorize FME, and the access token is returned and stored in the connection. You can also add a web connection on demand from within a workspace. For example, in the HTTPCaller&rsquo;s&nbsp;<strong>Authentication Method &gt; Web Connection</strong>&nbsp;drop-down, pick&nbsp;<strong>Add Web Connection</strong>.</p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>The Client Id and Client Secret embedded in the<em> </em>pre-registered&nbsp;OAuth services belong to Safe Software and are subject to shared rate limits and provider-side outages outside Safe&rsquo;s control. Register your own service before relying on a web connection in production.</p>
+</blockquote>
+<p><em>[Screenshot placeholder &mdash; Manage Web Services dialog open in front of the Web Connections page, with the &ldquo;Create From&rdquo; menu showing Google Drive, Dropbox, OneDrive, Box, ArcGIS Online, Bentley ProjectWise, and other templates. Alt text: &ldquo;Manage Web Services dialog with the Create From templates list expanded, showing common cloud service templates.&rdquo;]</em></p>
+<h2>Connection Storage Location</h2>
+<p>FME has to put the connections somewhere. Where it lives is configured under <strong>Utilities &gt; FME Options &gt; Default Paths &gt; Connection Storage</strong>. You can click <strong>Manage &gt; Change Connection Storage</strong>&nbsp;to switch modes. FME supports three modes.</p>
+<p><strong>Personal Database</strong></p>
+<p>The default mode. Connection data is stored and encrypted in the current user&rsquo;s OS profile. On Windows the data file is typically at:</p>
+<p><code>C:\Users\&lt;username&gt;\AppData\Roaming\Safe Software\FME\fme_userconnection.data</code></p>
+<p>Connections in this mode are visible only to the OS user who created them; even other accounts on the same machine cannot read them. This is the right choice for individual desktop authoring and personal credentials.</p>
+<p><strong>Shared Database</strong></p>
+<p>For teams that want to author using the same set of connections, choose Shared Database. You specify two folders in the Change Connection Storage dialog:</p>
+<ul>
+<li><strong>Database Folder</strong>: The folder (usually on a network share) where the connection data file lives.</li>
+<li><strong>Key Folder</strong>: The folder containing the encryption key file. If no key file exists yet, FME creates one the first time you save a connection. You can optionally create a password for the file.</li>
+</ul>
+<p>Any user who can read both folders sees the shared connections. When Connection Storage is Shared, the&nbsp;<strong>Visibility</strong> field on each individual connection becomes meaningful. Set a connection to Shared to publish it to other users on the share, or leave it as your private connection within the shared store.</p>
+<p><strong>FME Flow as a Connection Store</strong></p>
+<p>Starting in FME 2025.0, you can point Connection Storage at an FME Flow instance. The connection data, the key file, and the connections themselves live on FME Flow; FME Form pulls them in on demand, and the same connections are reused by FME Flow at workspace runtime. You authenticate to FME Flow once (under&nbsp;Default Paths) and your team&rsquo;s database and web connections appear inside FME Workbench automatically. There is no shared network drive to administer and no manual upload step when you publish a workspace to FME Flow, as the connection is already there.</p>
+<p>This mode is useful for ensuring your local connections stay in sync with organizational connections shared via FME Flow.</p>
+<p><strong>Encryption Keys</strong></p>
+<p>Whichever storage mode you pick, the credentials inside it are encrypted at rest. What differs is where the key comes from and who can read it:</p>
+<ul>
+<li><strong>Personal Database:</strong> The key is tied to the OS user profile. You don&rsquo;t manage it directly; another OS user on the same machine cannot decrypt your connections.</li>
+<li><strong>Shared Database:</strong> The key is a separate file in the Key Folder. Anyone who can read that file can decrypt the connections in the Database Folder, so the file&rsquo;s OS-level permissions are part of your security model. You can also set a&nbsp;<strong>Key File Password</strong>&nbsp;in the&nbsp;Change Connection Storage&nbsp;dialog as an extra layer.</li>
+<li><strong>FME Flow: </strong>The key is managed by FME Flow alongside the connection data, and access is governed by FME Flow user permissions.</li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>The Default Paths page in FME Options also allows you to define paths to other shared FME content like custom transformers. This option is especially useful for workgroups. For instance, if an entire workgroup uses just a few custom coordinate system definitions, keeping these definitions in one place means that everyone doesn't have to have a copy. &nbsp;Then, whenever any of the definitions are updated, the entire group automatically has access to the new version. Each time you start FME, it scans these folders and makes their content available.</p>
+<p>Note that connection files are not shared this way; you must use one of the three options outlined above due to encryption requirements.</p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/options_default_paths.htm" target="_blank" rel="noopener">Learn More</a></p>
+</blockquote>
+<p><span style="font-size: 2.75em;">Exercise</span></p>
+<p><img class="image image-block image-center" src="images/c-523-def-8-4-eb-4-4-add-acbd-274-c-2-ee-65-f-21.png" alt="Frank" width="256" height="256" /></p>
+<p>The City&rsquo;s Planning Department runs an internal &ldquo;What day is my garbage collected?&rdquo; lookup. The workspace reads a postal address from the PostGIS database hosted on Amazon RDS, overlays it on the garbage zones, and writes a small HTML report. The Department lead has asked Frank to:</p>
+<ul>
+<li>Set the workspace to use a database connection.</li>
+<li>Use a web service to automatically store the reports in the team&rsquo;s shared cloud folder so that field staff can open them from any device.</li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>This exercise uses the Safe Software training PostGIS database hosted on Amazon RDS. No extra license is required. If you are taking a Safe Software-hosted training course, the connection FME Training PostGIS Database&nbsp;already exists on your training machine. You will delete and recreate it here so you have practiced the workflow.</p>
+</blockquote>
+<h2>1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench </strong>(2026.1 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/manipulate-lists-using-transformers.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\manage-connections.fmw).</li>
+</ul>
+<p>The workspace uses a DatabaseQuerier to read a specific address from a PostGIS database and an Esri Geodatabase reader that reads the GarbageSchedule. The DatabaseQuerier makes an SQL query and uses the named database connection FME Training PostGIS Database for credentials. These two datasets go in to a PointOnAreaOverlayer. After identifying the garbage zone for an address, the workspace uses an HTMLReportGenerator and a FeatureWriter (using the Text File format) to create the report.</p>
+<p>There is a bug in FME 2026.1 impacting the HTMLReportGenerator (fixed in FME 2026.1.2). It appears invalid, but the workspace still functions correctly. You can ignore the incorrect invalid state.</p>
+<p><img src="images/1779473534570.png" alt="Starting workspace canvas with a DatabaseQuerier reading PostGIS connected to a PointOnAreaOverlayer and an HTMLReportGenerator" width="931" height="420" /></p>
+<blockquote>
+<p><em><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></em></p>
+<p>You will learn more about the FeatureWriter in a <a href="https://academy.safe.com/read-and-write-your-data-mid-workflow" target="_blank" rel="noopener">later course</a>. For now, suffice to say, it is a transformer that allows you to write data and then have the workspace continue processing.</p>
+</blockquote>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>We've also included a disabled PostGIS reader with a PostalAddress reader feature type in the starting workspace. You can see how that compares to using the DatabaseQuerier, if you want. The WHERE clause that restricts reading to a single address is configured on the reader feature type.</p>
+</blockquote>
+<h2>2) Delete Existing Database Connection</h2>
+<p>Let's delete the database connection so we can practice adding it. If you don't already have the FME Training PostGIS Database connection, you can skip this step.</p>
+<ul>
+<li>Select&nbsp;<strong>Utilities &gt; FME Options &gt; Database Connections</strong>.</li>
+<li>In the list, locate the connection named&nbsp;<strong>FME Training PostGIS Database</strong>.</li>
+<li>Select it and click the&nbsp;<strong>Remove&nbsp;[&minus;] button</strong>.</li>
+<li>Confirm the deletion by clicking the <strong>Delete </strong>button.</li>
+<li>Click <strong>OK</strong>&nbsp;to close FME Options.</li>
+</ul>
+<p><em><img src="images/1779473697706.png" alt="FME Options &gt; Database Connections with the FME Training PostGIS Database connection selected and the Remove button highlighted. Alt text: &ldquo;Database Connections page with the FME Training PostGIS Database connection selected and the Remove button highlighted." width="662" height="447" /></em></p>
+<ul>
+<li>Notice the <strong>DatabaseQuerier </strong>becomes invalid.
+<ul>
+<li>The transformer is looking for the named database connection, but no connection by that name exists.</li>
+</ul>
+</li>
+</ul>
+<h2>3) Add Database Connection</h2>
+<ul>
+<li>Click <strong>Utilities &gt; FME Options &gt; Database Connections</strong>&nbsp;again. Click the&nbsp;<strong>Add</strong>&nbsp;<strong>[+] button</strong> and choose&nbsp;<strong>Add</strong>.</li>
+<li>Fill out the <strong>Add Database Connection dialog </strong>like this:
+<ul>
+<li><strong>Type:</strong>&nbsp;PostgreSQL
+<ul>
+<li>PostGIS uses the PostgreSQL connection type.</li>
+</ul>
+</li>
+<li><strong>Name:</strong>&nbsp;FME Training PostGIS Database
+<ul>
+<li>Use this exact name; the starting workspace references the connection by name and it must match.</li>
+</ul>
+</li>
+<li><strong>Host</strong>: postgis.train.safe.com</li>
+<li><strong>Port</strong>: 5432</li>
+<li><strong>Database</strong>: fmedata</li>
+<li><strong>Username</strong>: fmedata</li>
+<li><strong>Password</strong>: fmedata</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Test</strong>&nbsp;to confirm.
+<ul>
+<li>You should see &ldquo;Successfully connected to database.&rdquo;</li>
+</ul>
+</li>
+<li>Click <strong>OK </strong>to dismiss the Database Connection Test dialog.</li>
+<li>Click&nbsp;<strong>Save</strong>, then&nbsp;<strong>OK</strong>&nbsp;to close FME Options.</li>
+<li>Notice the <strong>DatabaseQuerier </strong>becomes valid again.</li>
+</ul>
+<p><img src="images/1779473845003.png" alt="Add Database Connection dialog filled in for the FME Training PostGIS Database with a successful test result." /></p>
+<h2>4) Verify the DatabaseQuerier Runs Successfully</h2>
+<ul>
+<li><strong>Run </strong>the workspace.
+<ul>
+<li>Click <strong>Run </strong>again if the Incomplete Transformers dialog appears; this is an HTMLReportGenerator bug and can be ignored.</li>
+</ul>
+</li>
+<li>In the <strong>Translation Parameter Values</strong> dialog, give <code>AddressID</code> a value of 127209.</li>
+<li>Click <strong>Run </strong>again.
+<ul>
+<li>The translation should complete and produce an HTML report on disk.</li>
+</ul>
+</li>
+<li>Open the results with a web browser. They should look like the image below.</li>
+</ul>
+<p><img src="images/1779473921453.png" alt="Resulting HTML file" /></p>
+<h2>5) Pick a service you already use</h2>
+<p>Now let's set up the workspace to upload the report to a cloud folder. Choose any cloud service you have an account on. Any of the following work in FME out of the box via dedicated Connector transformers.</p>
+<ul>
+<li>Google Drive: GoogleDriveConnector</li>
+<li>Dropbox: DropboxConnector</li>
+<li>Microsoft OneDrive: OneDriveConnector</li>
+<li>Microsoft SharePoint: MicrosoftShareOnlineConnector or reader/writer</li>
+<li>Box: BoxConnector</li>
+<li>Amazon S3: S3Connector</li>
+<li>ArcGIS Online: ArcGISOnlineConnector</li>
+<li>Bentley ProjectWise: ProjectWiseWSGConnector</li>
+</ul>
+<p>If you do not have a preference, Google Drive is a quick option: Safe Software provides a Google Drive template, and the OAuth flow takes a few clicks.</p>
+<h2>6) Register the Web Service</h2>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>For training, you may skip this step and use the pre-registered service that ships with FME. Pick it directly in step 8. Never rely on the pre-registered service in production: it uses Safe Software&rsquo;s shared credentials and is subject to provider-side rate limits and outages outside Safe&rsquo;s control.</p>
+</blockquote>
+<ul>
+<li>Click <strong>Utilities &gt; FME Options &gt; Web Connections</strong>.</li>
+<li>Click the <strong>Manage Services button</strong>.</li>
+<li>On the&nbsp;<strong>Manage Web Services&nbsp;</strong>dialog, click <strong>Add Web Service</strong>.</li>
+<li>Choose <strong>Create From</strong>, then pick the template that matches your chosen service.</li>
+<li>Give the new service a descriptive <strong>Name </strong>(for example, My Org Google Drive).</li>
+<li>Expand&nbsp;<strong>External Help Links</strong>&nbsp;and follow the link to your provider&rsquo;s developer documentation to create an OAuth application.</li>
+<li>Copy the<strong> Client Id </strong>and<strong> Client Secret </strong>from the provider&rsquo;s console into the service and click&nbsp;<strong>Save</strong>.</li>
+<li>Close the&nbsp;<strong>Manage Web Services&nbsp;</strong>dialog.</li>
+</ul>
+<h2>7) Add Web Connection</h2>
+<ul>
+<li>Back on the Web Connections page, click the&nbsp;<strong>Add&nbsp;[+] button</strong> and choose&nbsp;<strong>Add</strong>.</li>
+<li>Fill out the <strong>Add Web Connection </strong>dialog.
+<ul>
+<li>These steps might be slightly different depending on the service you select.&nbsp;</li>
+<li><strong>Web Service:</strong>&nbsp;the service you just registered (or the pre-registered one for training).</li>
+<li><strong>Connection Name:</strong> something memorable, e.g., Google Drive - Training.</li>
+</ul>
+</li>
+<li>Click<strong>&nbsp;Sign in with {Web Service Provider}</strong>.
+<ul>
+<li>Your browser will open and the provider will ask you to sign in and grant FME access. When the callback succeeds, the access token is stored in the connection.</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>OK</strong>.</li>
+</ul>
+<p><img src="images/1779474193005.png" alt="Add Web Connection dialog with the Sign in with Google button highlighted." width="638" height="258" /></p>
+<h2>8) Use Web Connection</h2>
+<p>Pick one of the two patterns below depending on what your chosen service supports and what you want to try. The names of the parameters will vary between Connectors, but the overall structure is similar.</p>
+<p><strong>Pattern A: Upload the HTML Report</strong></p>
+<ul>
+<li>Add the <strong>Connector transformer</strong> that matches your service (for example, DropboxConnector, GoogleDriveConnector, OneDriveConnector, BoxConnector, or S3Connector) downstream of the <strong>FeatureWriter&rsquo;s Summary port</strong>.</li>
+<li>Configure the transformer:
+<ul>
+<li><strong>Web Connection / Account:</strong> the connection you created in step 8. It should be available in the dropdown.</li>
+<li><strong>Action</strong>&nbsp;(or&nbsp;<strong>Request</strong>): Upload (or Put or Create File depending on the connector).</li>
+<li><strong>Source File:</strong> the path to the HTML report the writer just produced. This path is stored in the attribute <code>_dataset</code>, which the FeatureWriter created.</li>
+<li><strong>Destination Folder / Path:</strong>&nbsp;the folder ID or path on the remote service, for example&nbsp;<code>/Garbage Day Reports/${AddressID}.html</code>.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Pattern B: List a Directory</strong></p>
+<ul>
+<li>If your chosen connector does not expose an Upload action, or you just want to confirm authentication, use a directory-listing pattern instead. Add the connector transformer (or an&nbsp;<em>HTTPCaller</em>&nbsp;pointed at the service&rsquo;s &ldquo;list folder&rdquo; REST endpoint with&nbsp;<strong>Authentication Method = Web Connection</strong>) to an empty branch in the workspace:
+<ul>
+<li><strong>Action</strong>&nbsp;(or&nbsp;<strong>Request</strong>): List (or the equivalent GET on the service&rsquo;s folder-children endpoint).</li>
+<li><strong>Web Connection / Authentication:</strong>&nbsp;the connection you created in step 8.</li>
+<li><strong>Path / Folder:</strong>&nbsp;the folder to list &mdash; root, or a specific folder ID/path.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779474466436.png" alt="GoogleDriveConnector transformers attached downstream of the FeatureWriter, parameters dialog showing the named web connection in use" /></p>
+<h2>9) Run and Verify</h2>
+<ul>
+<li><strong>Run </strong>the workspace.
+<ul>
+<li>Click <strong>Run </strong>again if the Incomplete Transformers dialog appears; this is an HTMLReportGenerator bug and can be ignored.</li>
+</ul>
+</li>
+<li>In the <strong>Translation Parameter Values</strong> dialog, give <code>AddressID</code> a value of 127209.</li>
+<li>Inspect the Connector's data cache to confirm success.
+<ul>
+<li>Pattern A: you should see a link to the uploaded file, a confirmation of the number of features or files uploaded, etc.</li>
+<li>Pattern B: you should see the directory listing data.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1779474686271.png" alt="GoogleDriveConnector results in Data Preview showing successfully listed contents" /></p>
+<ul>
+<li><strong>Save </strong>the workspace.</li>
+<li>Open the workspace using <strong>Notepad </strong>or similar to view the underlying XML.</li>
+<li>Note that nowhere&nbsp;in the workspace XML do your database password or your OAuth token appear. Only the connection names are stored. A colleague with their own copies of the same-named connections can run this workspace unchanged.</li>
+</ul>
+<p><img src="images/1779474833206.png" alt="Connection definitions in FMW file" /></p>
+<h2>Leave Us Feedback on This Lesson</h2>
+<div id="survey-container"></div>
+<p>
+<script>
+  // Prevent duplicate injection
+  if (!document.getElementById('survey-iframe')) {
+
+    var userId = (typeof skilljarUser !== 'undefined') ? skilljarUser.id : 'unknown';
+    var lessonId = (typeof skilljarCourse !== 'undefined' && skilljarCourse.lesson) 
+                    ? skilljarCourse.lesson.id : 'unknown';
+
+    var surveyUrl = 'https://www.surveymonkey.ca/r/GTFYTPK?user_id=' + userId + '&lesson_id=' + lessonId;
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'survey-iframe';
+    iframe.src = surveyUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '600px';
+    iframe.style.border = '0';
+
+    document.getElementById('survey-container').appendChild(iframe);
+  }
+</script>
+</p>
