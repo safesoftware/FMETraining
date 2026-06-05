@@ -263,14 +263,18 @@ span.tc-orig-context {{ color: inherit; }}
 .le-img-popover label {{ display: block; font-weight: 600; margin-bottom: 4px; }}
 .le-img-popover input[type=text] {{ width: 100%; padding: 6px 8px; box-sizing: border-box; font: inherit; }}
 .le-img-popover .le-img-actions {{ display: flex; gap: 6px; margin-top: 8px; align-items: center; }}
-.le-img-popover .le-img-err {{ color: #b91c1c; margin-top: 6px; min-height: 1.2em; font-size: 12px; }}
 .le-img-popover .le-img-replace-menu {{ position: relative; display: inline-block; }}
 .le-img-popover .le-img-replace-menu > div {{ position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #d1d5db; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); display: none; min-width: 180px; z-index: 1; }}
 .le-img-popover .le-img-replace-menu.open > div {{ display: block; }}
 .le-img-popover .le-img-replace-menu button {{ display: block; width: 100%; text-align: left; border: none; background: none; padding: 6px 10px; cursor: pointer; }}
 .le-img-popover .le-img-replace-menu button:hover {{ background: #f3f4f6; }}
 #le-img-file-input {{ display: none; }}
-.save-banner {{ display: none; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; padding: 10px 16px; margin: 12px 24px; border-radius: 6px; font-size: 0.85rem; }}
+/* KNOW-2279: single floating toast for all editor feedback (was a static page
+   banner that scrolled away at the top). Fixed near the top of the viewport so
+   it travels with the editor; success/error variants below. */
+.save-banner {{ display: none; position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1100; max-width: 90vw; background: #f0fdf4; border: 1px solid #86efac; color: #15803d; padding: 10px 16px; border-radius: 6px; font-size: 0.85rem; box-shadow: 0 4px 14px rgba(0,0,0,0.18); }}
+.save-banner.le-msg-success {{ background: #f0fdf4; border-color: #86efac; color: #15803d; }}
+.save-banner.le-msg-error {{ background: #fef2f2; border-color: #fca5a5; color: #b91c1c; }}
 .change-count {{ font-size: 0.82rem; color: #555; margin-left: auto; }}
 /* Floating next/prev edit nav (issue 47) */
 .le-nav-float {{ position: fixed; bottom: 24px; right: 24px; z-index: 500; display: none; flex-direction: column; gap: 6px; align-items: stretch; }}
@@ -379,7 +383,7 @@ span.tc-orig-context {{ color: inherit; }}
       <button onclick="leFormatBlock('h4')" title="Heading 4">H4</button>
       <span class="fmt-sep"></span>
       <button onclick="leInsertLink()" title="Insert / edit link">Link</button>
-      <button onclick="leEditImage()" title="Edit image (alt text / replace)">Image</button>
+      <button onclick="leEditImage(event)" title="Edit image (alt text / replace)">Image</button>
     </div>
   </div>
   <div class="save-banner" id="le-save-banner"></div>
@@ -390,21 +394,20 @@ span.tc-orig-context {{ color: inherit; }}
 
 <!-- Image-edit popover (KNOW-2279) — anchored at runtime to the selected <img> -->
 <div id="le-img-popover" class="le-img-popover" role="dialog" aria-label="Edit image">
-  <label for="le-img-alt">Alt text</label>
+  <label for="le-img-alt" id="le-img-alt-label">Alt text</label>
   <input type="text" id="le-img-alt" placeholder="Describe the image" />
   <div class="le-img-actions">
     <span class="le-img-replace-menu" id="le-img-replace-menu">
-      <button type="button" onclick="leImgToggleReplaceMenu()">Replace ▾</button>
+      <button type="button" id="le-img-replace-btn" onclick="leImgToggleReplaceMenu()">Replace ▾</button>
       <div>
         <button type="button" onclick="leImgReplaceFromClipboard()">Paste from clipboard</button>
         <button type="button" onclick="leImgReplaceFromFile()">Upload from file…</button>
       </div>
     </span>
     <span style="flex:1"></span>
-    <button type="button" onclick="leImgSave()">Save</button>
+    <button type="button" id="le-img-save-btn" onclick="leImgSave()">Save</button>
     <button type="button" onclick="leImgClosePopover()">Cancel</button>
   </div>
-  <div class="le-img-err" id="le-img-err"></div>
 </div>
 <input type="file" id="le-img-file-input" accept="image/*" />
 
@@ -802,6 +805,28 @@ function escHtml(str) {{
 }}
 
 // ---------------------------------------------------------------------------
+// KNOW-2279: one floating toast for all editor feedback (success/error).
+// ---------------------------------------------------------------------------
+let leMsgTimer = null;
+function leShowMessage(text, variant, opts) {{
+  opts = opts || {{}};
+  const banner = document.getElementById('le-save-banner');
+  if (!banner) return;
+  if (leMsgTimer) {{ clearTimeout(leMsgTimer); leMsgTimer = null; }}
+  banner.classList.remove('le-msg-success', 'le-msg-error');
+  banner.classList.add(variant === 'error' ? 'le-msg-error' : 'le-msg-success');
+  if (opts.html != null) banner.innerHTML = opts.html; else banner.textContent = text || '';
+  banner.style.display = 'block';
+  if (opts.autoHide) leMsgTimer = setTimeout(() => {{ banner.style.display = 'none'; }}, opts.autoHide);
+}}
+function leHideMessage() {{
+  const banner = document.getElementById('le-save-banner');
+  if (!banner) return;
+  banner.style.display = 'none';
+  banner.classList.remove('le-msg-success', 'le-msg-error');
+}}
+
+// ---------------------------------------------------------------------------
 // Tab switching
 // ---------------------------------------------------------------------------
 function switchTab(name, btn) {{
@@ -824,6 +849,8 @@ let leEditPlans = [];
 let leUndoStack = [];
 let leRedoStack = [];
 let leSelectedImage = null; // KNOW-2279: <img> targeted by the alt-text/replace popover
+let leImgPendingTarget = null; // KNOW-2279: <img> captured when a replace/upload begins (survives the async file dialog)
+let leImgPendingMode = null;   // KNOW-2279: 'replace' | 'insert'
 let leRejectedIssueKeys = new Set(); // tracks keys rejected from Recommendations tab (issue 30)
 
 // KNOW-2277: per-run draft state from the FastAPI /api/runs/<id>/report-drafts
@@ -1731,15 +1758,11 @@ function leSave() {{
   const result = leGetCleanHtml();
   if (!result) return;
   const {{ html: cleanHtml, plan }} = result;
-  const banner = document.getElementById('le-save-banner');
   const hasDataUris = /<img[^>]+src=["']data:/i.test(cleanHtml);
 
-  banner.style.display = 'block';
-  banner.style.background = '';
-  banner.style.borderColor = '';
-  banner.innerHTML = hasDataUris
+  leShowMessage(null, 'success', {{ html: hasDataUris
     ? 'Saving — uploading pasted images, this can take a few seconds…'
-    : 'Saving…';
+    : 'Saving…' }});
 
   fetch('/api/save-lesson', {{
     method: 'POST',
@@ -1769,8 +1792,7 @@ function leSave() {{
   }})
   .then(result => {{
     if (!result) return;
-    banner.style.display = 'block';
-    banner.innerHTML = `✓ Saved to: <code>${{escHtml(result.target_path)}}</code>`;
+    leShowMessage(null, 'success', {{ html: '✓ Saved to: <code>' + escHtml(result.target_path) + '</code>' }});
     // KNOW-2277: tell FastAPI we just pushed a durable snapshot, so the
     // Drafts page surfaces this lesson with a "saved" badge. Best-effort —
     // the version-folder file write is the source of truth either way.
@@ -1793,10 +1815,7 @@ function leSave() {{
   }})
   .catch(err => {{
     if (err && err.serverError) {{
-      banner.style.display = 'block';
-      banner.style.background = '#fef2f2';
-      banner.style.borderColor = '#fca5a5';
-      banner.innerHTML = '⚠ Save failed: ' + escHtml(err.message);
+      leShowMessage(null, 'error', {{ html: '⚠ Save failed: ' + escHtml(err.message) }});
       return;
     }}
     const blob = new Blob([cleanHtml], {{ type: 'text/html;charset=utf-8' }});
@@ -1804,8 +1823,7 @@ function leSave() {{
     const a = document.createElement('a');
     a.href = url; a.download = 'index.html'; a.click();
     URL.revokeObjectURL(url);
-    banner.style.display = 'block';
-    banner.innerHTML = `Downloaded index.html — place it at: <code>${{escHtml(plan.lesson_dir || '')}}/index.html</code>. For direct saving, use <code>python serve.py</code>.`;
+    leShowMessage(null, 'success', {{ html: 'Downloaded index.html — place it at: <code>' + escHtml(plan.lesson_dir || '') + '/index.html</code>. For direct saving, use <code>python serve.py</code>.' }});
   }});
 }}
 
@@ -1872,8 +1890,13 @@ function leOpenImgPopover(img) {{
   leSelectedImage = img;
 
   const pop = document.getElementById('le-img-popover');
+  // Restore edit-mode UI (it may have last been opened in insert mode).
+  pop.classList.remove('le-insert-mode');
+  document.getElementById('le-img-alt-label').style.display = '';
+  document.getElementById('le-img-alt').style.display = '';
+  document.getElementById('le-img-save-btn').style.display = '';
+  document.getElementById('le-img-replace-btn').textContent = 'Replace ▾';
   document.getElementById('le-img-alt').value = img.getAttribute('alt') || '';
-  document.getElementById('le-img-err').textContent = '';
   document.getElementById('le-img-replace-menu').classList.remove('open');
 
   // Anchor the popover below the image, clamped horizontally to the viewport.
@@ -1894,7 +1917,12 @@ function leImgClosePopover() {{
 }}
 
 function leImgSave() {{
-  if (!leSelectedImage) {{ leImgClosePopover(); return; }}
+  if (!leSelectedImage) {{
+    // Alt-text edit needs a real target; insert is handled by the Replace menu.
+    leImgClosePopover();
+    leShowMessage('Select an image first.', 'error', {{ autoHide: 2500 }});
+    return;
+  }}
   const alt = document.getElementById('le-img-alt').value;
   leSelectedImage.setAttribute('alt', alt);
   leImgClosePopover();
@@ -1906,12 +1934,71 @@ function leImgToggleReplaceMenu() {{
   document.getElementById('le-img-replace-menu').classList.toggle('open');
 }}
 
+// KNOW-2279: drop any per-image dimensions so a replaced/inserted image shows at
+// its natural size. The editor's max-width:100% is display-only and is never
+// written to the saved HTML, so Skilljar controls the final width.
+function leImgStripDimensions(img) {{
+  if (!img) return;
+  img.removeAttribute('width');
+  img.removeAttribute('height');
+  if (img.style) {{
+    img.style.removeProperty('width');
+    img.style.removeProperty('height');
+    img.style.removeProperty('max-width');
+    img.style.removeProperty('min-width');
+    img.style.removeProperty('aspect-ratio');
+  }}
+  if (img.getAttribute('style') === '') img.removeAttribute('style');
+}}
+
+// KNOW-2279: insert a node at the caret when it's inside the editor, else append.
+function leImgInsertAtCaret(node) {{
+  const editor = document.getElementById('le-lesson-body');
+  const sel = window.getSelection();
+  let range = null;
+  if (sel && sel.rangeCount) {{
+    const r = sel.getRangeAt(0);
+    if (editor.contains(r.commonAncestorContainer)) range = r;
+  }}
+  if (range) {{
+    range.deleteContents();
+    range.insertNode(node);
+    range.setStartAfter(node);
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }} else {{
+    editor.appendChild(node);
+  }}
+}}
+
+// KNOW-2279: single funnel for paste/upload — replace the target's src (stripping
+// its dimensions) in replace mode, or insert a fresh <img> in insert mode (also
+// covers a replace target that has since left the DOM).
+function leImgApplyDataUri(dataUri, target, mode) {{
+  const editor = document.getElementById('le-lesson-body');
+  if (mode === 'replace' && target && editor.contains(target)) {{
+    target.setAttribute('src', dataUri);
+    leImgStripDimensions(target);
+  }} else {{
+    const img = document.createElement('img');
+    img.setAttribute('src', dataUri);
+    img.setAttribute('alt', '');
+    leImgInsertAtCaret(img);
+  }}
+  leImgClosePopover();
+  leShowMessage(mode === 'replace' ? 'Image replaced.' : 'Image inserted.', 'success', {{ autoHide: 2500 }});
+  // Programmatic DOM changes don't fire the editor 'input' listener.
+  leScheduleAutosave(leCurrentLessonDir());
+}}
+
 async function leImgReplaceFromClipboard() {{
-  const err = document.getElementById('le-img-err');
-  err.textContent = '';
-  if (!leSelectedImage) {{ err.textContent = 'No image selected.'; return; }}
+  // Capture the target now: a null target means "insert a new image".
+  const target = leSelectedImage;
+  const mode = target ? 'replace' : 'insert';
+  document.getElementById('le-img-replace-menu').classList.remove('open');
   if (!navigator.clipboard || !navigator.clipboard.read) {{
-    err.textContent = 'Clipboard API unavailable in this browser context (HTTPS or localhost required).';
+    leShowMessage('Clipboard API unavailable here (needs HTTPS or localhost).', 'error', {{ autoHide: 4000 }});
     return;
   }}
   try {{
@@ -1926,38 +2013,76 @@ async function leImgReplaceFromClipboard() {{
         fr.onerror = () => rej(fr.error);
         fr.readAsDataURL(blob);
       }});
-      leSelectedImage.setAttribute('src', dataUri);
-      document.getElementById('le-img-replace-menu').classList.remove('open');
-      leScheduleAutosave(leCurrentLessonDir());
+      leImgApplyDataUri(dataUri, target, mode);
       return;
     }}
-    err.textContent = 'No image on the clipboard. Copy an image first, then try again.';
+    leShowMessage('No image on the clipboard. Copy an image first, then try again.', 'error', {{ autoHide: 4000 }});
   }} catch (ex) {{
-    err.textContent = 'Clipboard read failed: ' + (ex && ex.message ? ex.message : ex);
+    leShowMessage('Clipboard read failed: ' + (ex && ex.message ? ex.message : ex), 'error', {{ autoHide: 4000 }});
   }}
 }}
 
 function leImgReplaceFromFile() {{
+  // Capture the target BEFORE opening the dialog — opening it clears the
+  // selection/popover, so leSelectedImage can't be trusted in the change handler.
+  leImgPendingTarget = leSelectedImage;
+  leImgPendingMode = leSelectedImage ? 'replace' : 'insert';
   document.getElementById('le-img-replace-menu').classList.remove('open');
   document.getElementById('le-img-file-input').click();
 }}
 
 function leImgOnFileChosen(e) {{
   const file = e.target.files && e.target.files[0];
-  if (!file || !leSelectedImage) {{ e.target.value = ''; return; }}
-  const fr = new FileReader();
-  fr.onload = () => {{
-    leSelectedImage.setAttribute('src', fr.result);
-    leScheduleAutosave(leCurrentLessonDir());
-  }};
-  fr.onerror = () => {{
-    document.getElementById('le-img-err').textContent = 'Could not read file.';
-  }};
-  fr.readAsDataURL(file);
+  const target = leImgPendingTarget;
+  const mode = leImgPendingMode || 'insert';
+  leImgPendingTarget = null;
+  leImgPendingMode = null;
   e.target.value = ''; // allow re-picking the same file later
+  if (!file) return; // dialog cancelled — nothing to report
+  if (!file.type || !file.type.startsWith('image/')) {{
+    leShowMessage('Please choose an image file.', 'error', {{ autoHide: 3000 }});
+    return;
+  }}
+  const fr = new FileReader();
+  fr.onload = () => leImgApplyDataUri(fr.result, target, mode);
+  fr.onerror = () => leShowMessage('Could not read file.', 'error', {{ autoHide: 3000 }});
+  fr.readAsDataURL(file);
 }}
 
-function leEditImage() {{
+// KNOW-2279: open the popover in "insert" mode (no image selected) — only the
+// Insert (paste/upload) actions apply; alt-text editing needs a real target.
+function leOpenImgPopoverForInsert() {{
+  document.querySelectorAll('#le-lesson-body img.le-img-selected').forEach(el => {{
+    el.classList.remove('le-img-selected');
+  }});
+  leSelectedImage = null;
+  const pop = document.getElementById('le-img-popover');
+  pop.classList.add('le-insert-mode');
+  document.getElementById('le-img-alt-label').style.display = 'none';
+  document.getElementById('le-img-alt').style.display = 'none';
+  document.getElementById('le-img-save-btn').style.display = 'none';
+  document.getElementById('le-img-replace-btn').textContent = 'Insert ▾';
+  document.getElementById('le-img-replace-menu').classList.remove('open');
+
+  // Anchor near the caret if it's in the editor, otherwise near the toolbar.
+  const editor = document.getElementById('le-lesson-body');
+  const sel = window.getSelection();
+  let rect = null;
+  if (sel && sel.rangeCount && editor.contains(sel.getRangeAt(0).commonAncestorContainer)) {{
+    rect = sel.getRangeAt(0).getBoundingClientRect();
+  }}
+  if (!rect || (rect.top === 0 && rect.left === 0 && rect.width === 0)) {{
+    rect = document.getElementById('le-toolbar').getBoundingClientRect();
+  }}
+  pop.style.top = (window.scrollY + rect.bottom + 6) + 'px';
+  pop.style.left = (window.scrollX + Math.max(8, Math.min(rect.left, window.innerWidth - 340))) + 'px';
+  pop.classList.add('visible');
+}}
+
+function leEditImage(ev) {{
+  // Stop this click from reaching the document outside-click handler, which
+  // would otherwise immediately close the popover we're about to open.
+  if (ev && ev.stopPropagation) ev.stopPropagation();
   // Prefer the explicitly-selected image; fall back to one found in the current selection.
   const editor = document.getElementById('le-lesson-body');
   if (leSelectedImage && editor.contains(leSelectedImage)) {{
@@ -1974,10 +2099,8 @@ function leEditImage() {{
       return;
     }}
   }}
-  const banner = document.getElementById('le-save-banner');
-  banner.style.display = 'block';
-  banner.innerHTML = 'Click an image in the editor first, then press the Image button.';
-  setTimeout(() => {{ banner.style.display = 'none'; }}, 2500);
+  // Nothing selected → open in insert mode so paste/upload add a NEW image.
+  leOpenImgPopoverForInsert();
 }}
 
 </script>
