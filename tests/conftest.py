@@ -95,3 +95,82 @@ async def async_session_factory() -> AsyncIterator[async_sessionmaker[AsyncSessi
         yield factory
     finally:
         await engine.dispose()
+
+
+# ---- Auth helpers (KNOW-2259) -------------------------------------------
+# The AuthMiddleware gates /api/* with 401 for unauthenticated requests, so
+# integration tests that drive /api through ``create_app()`` must present a
+# valid session. These helpers mint a SessionMiddleware-compatible signed
+# cookie and seed the backing user, without driving the real Google OAuth.
+
+
+def mint_session_cookie(secret: str, data: dict) -> str:
+    """Mint a cookie value Starlette's SessionMiddleware will accept.
+
+    Mirrors SessionMiddleware's own serialization: ``base64(json(data))``
+    signed with an itsdangerous ``TimestampSigner`` over ``secret``.
+    """
+    import base64
+    import json
+
+    from itsdangerous import TimestampSigner
+
+    signer = TimestampSigner(str(secret))
+    payload = base64.b64encode(json.dumps(data).encode("utf-8"))
+    return signer.sign(payload).decode("utf-8")
+
+
+def auth_cookie_for(user_id: int, *, secret: str, epoch: int = 0) -> str:
+    """Signed ``fme_session`` cookie value for the given user id + epoch."""
+    from app.auth.dependencies import SESSION_USER_EPOCH, SESSION_USER_ID
+
+    return mint_session_cookie(
+        secret, {SESSION_USER_ID: user_id, SESSION_USER_EPOCH: epoch}
+    )
+
+
+async def seed_active_user(
+    session_factory, *, email: str = "qa-auth@safe.com"
+):
+    """Insert an active @safe.com user via ``session_factory`` and return a
+    handle with ``id`` / ``epoch`` / ``email``. Call from the same event loop
+    that owns the factory's engine."""
+    from types import SimpleNamespace
+
+    from app.models.users import User
+
+    async with session_factory() as session:
+        user = User(
+            email=email, name="QA Auth", is_active=True, session_epoch=0
+        )
+        session.add(user)
+        await session.flush()
+        uid = user.id
+        await session.commit()
+    return SimpleNamespace(id=uid, epoch=0, email=email)
+
+
+@pytest.fixture
+async def seeded_user(async_session_factory):
+    """An active user seeded into ``async_session_factory`` (in the test
+    event loop, alongside schema creation, so the app under test sees it)."""
+    return await seed_active_user(async_session_factory)
+
+
+@pytest.fixture
+def authenticate():
+    """Return ``auth(client, user_id, epoch=0)`` that attaches a valid signed
+    session cookie to a TestClient so its /api requests pass the auth gate."""
+    from app.config import get_settings
+
+    def _auth(client, user_id: int, *, epoch: int = 0) -> None:
+        client.cookies.set(
+            "fme_session",
+            auth_cookie_for(
+                user_id,
+                secret=get_settings().session_signing_key,
+                epoch=epoch,
+            ),
+        )
+
+    return _auth

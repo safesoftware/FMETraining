@@ -45,7 +45,7 @@ class _StubSkilljarClient:
 
 
 @pytest.fixture
-def configured_app(async_session_factory, monkeypatch):
+def configured_app(async_session_factory, seeded_user, authenticate, monkeypatch):
     """Build the FastAPI app with the test session factory + stub client wired in."""
     # Reset throttle so this test isn't dependent on prior test runs.
     skilljar_route.reset_throttle_for_tests()
@@ -57,6 +57,12 @@ def configured_app(async_session_factory, monkeypatch):
         skilljar_route, "_get_or_create_session_factory",
         lambda: async_session_factory,
     )
+    # Point the auth middleware's user lookup at the same test DB so the
+    # seeded user authenticates past the /api/* gate (KNOW-2259).
+    monkeypatch.setattr(
+        "app.main._get_or_create_session_factory",
+        lambda: async_session_factory,
+    )
     # Pretend we have an API key configured.
     monkeypatch.setenv("SKILLJAR_API_KEY", "test-key-not-used")
     reset_settings()
@@ -64,6 +70,7 @@ def configured_app(async_session_factory, monkeypatch):
         from app.main import create_app  # late import — pulls fresh settings
         app = create_app()
         with TestClient(app) as client:
+            authenticate(client, seeded_user.id)
             yield client
     finally:
         reset_settings()
@@ -107,7 +114,9 @@ def test_reset_throttle_for_tests_clears_state(configured_app) -> None:
 
 # ---- missing API key ----------------------------------------------------
 
-def test_missing_api_key_returns_503(async_session_factory, monkeypatch) -> None:
+def test_missing_api_key_returns_503(
+    async_session_factory, seeded_user, authenticate, monkeypatch
+) -> None:
     """If SKILLJAR_API_KEY is unset the endpoint should fail loudly with
     503, not crash inside the client."""
     skilljar_route.reset_throttle_for_tests()
@@ -116,6 +125,12 @@ def test_missing_api_key_returns_503(async_session_factory, monkeypatch) -> None
     )
     monkeypatch.setattr(
         skilljar_route, "_get_or_create_session_factory",
+        lambda: async_session_factory,
+    )
+    # Authenticate past the /api/* gate (KNOW-2259): point the middleware's
+    # user lookup at the test DB so the seeded user resolves.
+    monkeypatch.setattr(
+        "app.main._get_or_create_session_factory",
         lambda: async_session_factory,
     )
 
@@ -142,6 +157,7 @@ def test_missing_api_key_returns_503(async_session_factory, monkeypatch) -> None
         from app.main import create_app
         app = create_app()
         with TestClient(app) as client:
+            authenticate(client, seeded_user.id)
             response = client.post("/api/skilljar-inventory/sync")
         assert response.status_code == 503
         assert "SKILLJAR_API_KEY" in response.json()["detail"]

@@ -16,14 +16,16 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from app.db.session import get_session
 from app.main import create_app
-from app.models import Base, Run
+from app.models import Base, Run, User
 
 
 pytestmark = pytest.mark.asyncio
 
 
 @pytest.fixture
-async def app_client() -> AsyncIterator[tuple[TestClient, async_sessionmaker[AsyncSession]]]:
+async def app_client(
+    authenticate, monkeypatch
+) -> AsyncIterator[tuple[TestClient, async_sessionmaker[AsyncSession]]]:
     engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:", future=True
     )
@@ -42,16 +44,36 @@ async def app_client() -> AsyncIterator[tuple[TestClient, async_sessionmaker[Asy
         finally:
             await session.close()
 
+    # The auth middleware (KNOW-2259) gates /api/* and resolves the session
+    # user via app.main's factory; point it at this test engine so the
+    # seeded user authenticates.
+    monkeypatch.setattr(
+        "app.main._get_or_create_session_factory", lambda: factory
+    )
+
     app = create_app()
     app.dependency_overrides[get_session] = _override_get_session
 
-    # Seed a run that subsequent tests can attach drafts to.
+    # Seed a run that subsequent tests can attach drafts to, plus an
+    # authenticated user for the /api gate.
     async with factory() as session:
         session.add(Run(id="run-1", status="done", to_version="2026.1"))
+        await session.commit()
+    async with factory() as session:
+        user = User(
+            email="qa-auth@safe.com",
+            name="QA Auth",
+            is_active=True,
+            session_epoch=0,
+        )
+        session.add(user)
+        await session.flush()
+        user_id = user.id
         await session.commit()
 
     try:
         with TestClient(app) as client:
+            authenticate(client, user_id)
             yield client, factory
     finally:
         await engine.dispose()
@@ -171,7 +193,7 @@ async def test_runs_with_drafts_aggregates(
         session.add(Run(id="run-2", status="done", to_version="2026.1"))
         await session.commit()
 
-    client.put(
+    put_resp = client.put(
         "/api/runs/run-1/report-drafts",
         json={
             "lesson_dir": "lp/course/lesson-1",
@@ -179,13 +201,15 @@ async def test_runs_with_drafts_aggregates(
             "body_html": None,
         },
     )
-    client.post(
+    assert put_resp.status_code in (200, 201), put_resp.text
+    post_resp = client.post(
         "/api/runs/run-2/report-drafts/mark-saved",
         json={
             "lesson_dir": "lp/course/lesson-2",
             "saved_to_version_path": "2026.1/lp/course/lesson-2/index.html",
         },
     )
+    assert post_resp.status_code in (200, 201), post_resp.text
 
     res = client.get("/api/runs/with-drafts")
     assert res.status_code == 200

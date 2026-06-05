@@ -17,11 +17,20 @@ from app.routes import drafts as drafts_route
 
 
 @pytest.fixture
-def configured_app(async_session_factory, tmp_path: Path, monkeypatch):
+def configured_app(
+    async_session_factory, seeded_user, authenticate, tmp_path: Path, monkeypatch
+):
     """FastAPI app with the drafts root pointed at a temp dir + DB at SQLite."""
     monkeypatch.setattr(
         drafts_route,
         "_get_or_create_session_factory",
+        lambda: async_session_factory,
+    )
+    # The auth middleware (KNOW-2259) gates /api/* and looks up the session
+    # user via app.main's factory; point it at the same test DB so the
+    # seeded user is found and these /api/drafts requests authenticate.
+    monkeypatch.setattr(
+        "app.main._get_or_create_session_factory",
         lambda: async_session_factory,
     )
     monkeypatch.setenv("DRAFTS_ROOT", str(tmp_path))
@@ -30,6 +39,7 @@ def configured_app(async_session_factory, tmp_path: Path, monkeypatch):
         from app.main import create_app
         app = create_app()
         with TestClient(app) as client:
+            authenticate(client, seeded_user.id)
             yield client, tmp_path
     finally:
         reset_settings()

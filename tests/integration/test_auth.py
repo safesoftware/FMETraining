@@ -90,6 +90,12 @@ def _make_app(session_factory) -> FastAPI:
         u = getattr(request.state, "user", None)
         return {"signed_in": bool(u), "email": getattr(u, "email", None)}
 
+    @app.get("/api/ping")
+    def api_ping() -> dict:
+        # A bare /api/* route with NO Depends(require_user): proves the
+        # middleware's blanket gate is what protects it, not a per-route dep.
+        return {"pong": True}
+
     return app
 
 
@@ -288,6 +294,26 @@ async def test_logout_bumps_session_epoch_and_invalidates_other_sessions(
         # should fail the epoch check and become anonymous.
         assert (await c2.get("/me")).status_code == 401
         assert (await c1.get("/me")).status_code == 401
+
+
+# ---- Blanket /api/* gate -------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_api_path_rejects_anonymous_with_401(client: AsyncClient) -> None:
+    """An unauthenticated request to /api/* is rejected with 401 by the
+    middleware, even when the route itself has no require_user dependency."""
+    resp = await client.get("/api/ping")
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_api_path_allows_authenticated_user(client: AsyncClient) -> None:
+    """After sign-in the same /api/* route is reachable."""
+    await client.post("/_test/login")
+    resp = await client.get("/api/ping")
+    assert resp.status_code == 200
+    assert resp.json() == {"pong": True}
 
 
 # ---- /auth/login when Google not configured ------------------------------

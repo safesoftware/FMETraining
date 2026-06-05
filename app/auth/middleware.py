@@ -31,6 +31,7 @@ import logging
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.auth.dependencies import SESSION_USER_EPOCH, SESSION_USER_ID
@@ -48,7 +49,17 @@ class AuthMiddleware:
     (i.e. added later in user-middleware order, since the last add wraps
     the outermost) so that ``scope["session"]`` is populated before this
     middleware runs.
+
+    After hydration it also *gates* the JSON API: an unauthenticated request
+    to a path under ``/api/`` is rejected with 401 before it reaches the
+    route (KNOW-2259 acceptance). Browser pages (``/``, ``/auth/*``) and
+    infra endpoints (``/health``, ``/static``, ``/artifacts``) stay public.
+    Routes may still add ``Depends(require_user)`` for the user object; this
+    is the blanket backstop.
     """
+
+    # Path prefixes that require an authenticated user.
+    _PROTECTED_PREFIXES = ("/api/",)
 
     def __init__(
         self,
@@ -73,6 +84,18 @@ class AuthMiddleware:
         scope["state"]["user"] = None
 
         await self._hydrate(scope)
+
+        # Blanket gate: unauthenticated requests to the JSON API are rejected
+        # with 401 before reaching the route. Fail-closed -- if hydration
+        # couldn't run (no session/DB), the request is still anonymous and
+        # is rejected.
+        if scope["state"]["user"] is None and scope.get("path", "").startswith(
+            self._PROTECTED_PREFIXES
+        ):
+            await JSONResponse(
+                {"detail": "Authentication required"}, status_code=401
+            )(scope, receive, send)
+            return
 
         await self.app(scope, receive, send)
 
