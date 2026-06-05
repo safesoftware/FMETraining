@@ -215,8 +215,13 @@ async def mark_run_draft_saved(
         lesson_dir=body.lesson_dir,
         saved_to_version_path=body.saved_to_version_path,
     )
-    assert row.saved_to_version_at is not None
-    assert row.saved_to_version_path is not None
+    if row.saved_to_version_at is None or row.saved_to_version_path is None:
+        # mark_saved is contracted to set both; if it didn't, fail loudly
+        # rather than return nulls (an assert would be stripped under -O).
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="mark_saved did not persist save metadata",
+        )
     return MarkSavedResponse(
         saved_to_version_at=row.saved_to_version_at,
         saved_to_version_path=row.saved_to_version_path,

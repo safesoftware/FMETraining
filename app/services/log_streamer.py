@@ -123,7 +123,9 @@ async def stream_logs(
     try:
         while True:
             # 1. Drain any rows newer than the cursor.
-            new_rows = await _fetch_rows(session_factory, run_id, cursor)
+            new_rows = await _fetch_rows(
+                session_factory, run_id, cursor, limit=_FETCH_BATCH
+            )
             for row in new_rows:
                 yield _sse_event(
                     id=row["id"],
@@ -136,6 +138,12 @@ async def stream_logs(
                     }),
                 )
                 cursor = row["id"]
+
+            # If we filled the batch, more rows may be waiting — drain
+            # immediately without sleeping (and don't treat a full batch as
+            # "caught up" for the terminal-status check below).
+            if len(new_rows) >= _FETCH_BATCH:
+                continue
 
             # 2. Check if we should stop. Terminal status AND no new rows
             #    means the run is done and we've delivered everything.
@@ -156,7 +164,7 @@ async def stream_logs(
                     return
 
             # 3. Hard cap.
-            now = asyncio.get_event_loop().time()
+            now = asyncio.get_running_loop().time()
             if now - started_at > max_duration_s:
                 yield _sse_event(
                     event="error",
@@ -194,16 +202,24 @@ async def stream_logs(
 # DB helpers — broken out so tests can stub them
 # ---------------------------------------------------------------------------
 
+# Cap rows pulled per poll so a reconnect against a long run (or a big
+# backlog) can't load the entire run_logs history into memory at once. The
+# stream loop drains successive full batches without sleeping.
+_FETCH_BATCH = 500
+
+
 async def _fetch_rows(
     session_factory: async_sessionmaker[AsyncSession],
     run_id: str,
     cursor_id: int,
+    limit: int = _FETCH_BATCH,
 ) -> Iterable[dict]:
     async with session_factory() as session:
         result = await session.execute(
             select(RunLog)
             .where(RunLog.run_id == run_id, RunLog.id > cursor_id)
             .order_by(RunLog.id.asc())
+            .limit(limit)
         )
         return [
             {
