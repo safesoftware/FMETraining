@@ -54,6 +54,10 @@ services:
       - ./prompts:/app/prompts
       - ./worker.py:/app/worker.py:ro
       - ./pipeline.py:/app/pipeline.py:ro
+      # tests/ is .dockerignore'd out of the runtime image (we don't ship it
+      # to prod), so mount it here so `make test` (pytest, testpaths=tests)
+      # has something to collect inside the container.
+      - ./tests:/app/tests:ro
     depends_on:
       postgres:
         condition: service_healthy
