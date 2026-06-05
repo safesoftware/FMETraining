@@ -33,6 +33,13 @@ services:
     restart: unless-stopped
     env_file:
       - .env.compose
+      # Optional real secrets for local SSO testing. When a .env exists at the
+      # repo root (real GOOGLE_OAUTH_CLIENT_ID/SECRET, SESSION_SIGNING_KEY) it
+      # overrides the .env.compose placeholders. required:false keeps `make up`
+      # working without it. DATABASE_URL / S3 / AWS stay pinned by the
+      # `environment:` block below regardless of what .env contains.
+      - path: .env
+        required: false
     environment:
       ENTRYPOINT_MODE: web
       PORT: "8000"
