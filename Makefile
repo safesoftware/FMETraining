@@ -50,11 +50,14 @@ migrate: ## Run alembic migrations against the local postgres.
 test: ## Run pytest inside the app container.
 	$(COMPOSE) run --rm app pytest
 
+# RUFF_CACHE_DIR points at a writable tmp path: the non-root app user can't
+# write the default /app/.ruff_cache (WORKDIR is owned by appuser but the
+# mounted source tree is owned by the host user).
 lint: ## Run ruff inside the app container.
-	$(COMPOSE) run --rm app ruff check .
+	$(COMPOSE) run --rm -e RUFF_CACHE_DIR=/tmp/ruff-cache app ruff check .
 
 format: ## Run ruff format inside the app container.
-	$(COMPOSE) run --rm app ruff format .
+	$(COMPOSE) run --rm -e RUFF_CACHE_DIR=/tmp/ruff-cache app ruff format .
 
 worker: ## Run a one-shot worker (`docker compose run worker-runner`).
 	$(COMPOSE) run --rm worker-runner
