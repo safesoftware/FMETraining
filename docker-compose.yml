@@ -58,6 +58,12 @@ services:
       # to prod), so mount it here so `make test` (pytest, testpaths=tests)
       # has something to collect inside the container.
       - ./tests:/app/tests:ro
+      # data/ is .dockerignore'd too (it's grouped with the local-only job
+      # inputs), but it also holds product-mapping.json, which the manifest
+      # pipeline + its tests load via config.PRODUCT_MAPPING_PATH. Mount it
+      # read-only for dev/test. Prod data sourcing (bake in vs S3 vs
+      # user-editable) is deferred to the pipeline-integration ticket.
+      - ./data:/app/data:ro
     depends_on:
       postgres:
         condition: service_healthy

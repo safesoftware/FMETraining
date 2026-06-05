@@ -14,6 +14,15 @@ MODE="${ENTRYPOINT_MODE:-web}"
 # is running. GIT_SHA is baked at build time; fall back to "unknown".
 echo "[entrypoint] mode=${MODE} git_sha=${GIT_SHA:-unknown} python=$(python --version 2>&1)"
 
+# If an explicit command was passed to the container, run it instead of the
+# ENTRYPOINT_MODE default. This is what lets `docker compose run app <cmd>`
+# (i.e. `make migrate` / `make test` / `make lint` / `make format`) actually
+# execute <cmd>. The `app` and `worker-runner` services pass no command and so
+# fall through to the mode dispatch below.
+if [ "$#" -gt 0 ]; then
+    exec "$@"
+fi
+
 case "${MODE}" in
     web)
         # uvicorn defaults are fine for a small internal app. --proxy-headers
