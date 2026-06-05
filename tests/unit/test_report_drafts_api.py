@@ -24,10 +24,14 @@ pytestmark = pytest.mark.asyncio
 
 @pytest.fixture
 async def app_client(
-    authenticate, monkeypatch
+    authenticate, monkeypatch, tmp_path
 ) -> AsyncIterator[tuple[TestClient, async_sessionmaker[AsyncSession]]]:
+    # File-backed SQLite (not :memory:) so writes made from the test's event
+    # loop are durably visible to the app's reads in the TestClient portal
+    # loop. A shared in-memory DB races across loops once the auth middleware
+    # opens its own per-request session (KNOW-2259 gate).
     engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:", future=True
+        f"sqlite+aiosqlite:///{tmp_path / 'report_drafts.db'}", future=True
     )
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
