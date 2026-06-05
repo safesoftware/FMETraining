@@ -299,11 +299,22 @@ async def test_auth_login_returns_503_when_google_misconfigured(
 ) -> None:
     """If GOOGLE_OAUTH_CLIENT_ID / SECRET aren't set, /auth/login should
     fail loudly with 503 rather than producing a confusing redirect."""
-    # Make sure no Google client is registered (other tests don't set
-    # one up).
+    # ``oauth`` is a process-wide authlib singleton. Another test (or app
+    # startup when a placeholder GOOGLE_OAUTH_CLIENT_ID is set, as in
+    # .env.compose) may have registered the google client. authlib's
+    # create_client() re-creates the client from ``_registry`` even after
+    # ``_clients`` is cleared, so both must be cleared to simulate "not
+    # configured". Save and restore so this test does not leak its teardown
+    # into later tests.
     from app.auth.google import oauth as google_oauth
-    google_oauth._clients.pop("google", None)  # type: ignore[attr-defined]
-
-    resp = await client.get("/auth/login", follow_redirects=False)
-    assert resp.status_code == 503
-    assert "google" in resp.text.lower()
+    saved_client = google_oauth._clients.pop("google", None)  # type: ignore[attr-defined]
+    saved_registry = google_oauth._registry.pop("google", None)  # type: ignore[attr-defined]
+    try:
+        resp = await client.get("/auth/login", follow_redirects=False)
+        assert resp.status_code == 503
+        assert "google" in resp.text.lower()
+    finally:
+        if saved_client is not None:
+            google_oauth._clients["google"] = saved_client  # type: ignore[attr-defined]
+        if saved_registry is not None:
+            google_oauth._registry["google"] = saved_registry  # type: ignore[attr-defined]
