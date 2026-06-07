@@ -1,0 +1,196 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define the FME Flow Resource file system.</li>
+<li>Explain the difference between Repositories and Resources.</li>
+<li>Summarize each data publishing method and evaluate when to use each method.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define the FME Flow Resource file system.</li>
+<li>Explain the difference between Repositories and Resources.</li>
+<li>Summarize each data publishing method and evaluate when to use each method.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-data-to-fme-flow-resources.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-data-to-fme-flow-resources.fmw</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a>&nbsp;| C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_self">ElectionVoting.gml</a> | <span class="c0">C:\FMEData\Data\Elections\NewElectionsVoting.gml</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_self"><span class="c0">ElectionVoting.xsd</span></a>&nbsp;|&nbsp;<span class="c0">C:\FMEData\Data\Elections\ElectionVoting.xsd</span></li>
+</ul>
+<h2 id="what-are-resources">What are Resources?</h2>
+<p>Another method of managing source file data in FME Flow is to use Resources, <span style="font-family: inherit; font-size: 1em;">a built-in file management system that allows you to publish and reuse data in all FME Flow workflows. You easily access Resources from the FME Flow side menu.&nbsp;</span></p>
+<p><img src="images/1778092553608.jpg" alt="" /></p>
+<p>The Resources page contains files you have uploaded to FME Flow, as well as those created by FME Flow during normal operations, such as logs and backup files. The FME Flow System Share stores Resources content, which you can find in C:\ ProgramData\Safe Software\FMEFlow\resources by default on Windows. If you're taking a Safe Software-hosted training course, your FME Flow stores Resources in the default location. You'll see the same folders and files here as the Resources on FME Flow.&nbsp;</p>
+<p><img src="images/1749765054132.jpg" alt="" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Remember that <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Resources.htm" target="_blank" rel="noopener">Resources</a> and <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Manage-Workspaces.htm" target="_blank" rel="noopener">Repositories </a>are different. You publish workspaces to repositories. You cannot run them if you upload them to Resources.</span></p>
+</blockquote>
+<h2>Data Folder</h2>
+<p>One of the default Resource folders is the Data folder. This folder stores source and destination data for your workflows. You can create folders and sub-folders within them and upload file-based datasets. If your <a href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/AccessControl.htm" target="_self">FME Flow user or role has sufficient permissions</a>, you can use the datasets stored in Resources as source data or write output data for any workspaces.&nbsp;</p>
+<p><img src="images/1778094783488.jpg" alt="" /></p>
+<p>Once you select an item, the Actions options list various operations you can perform on the file or folder, such as duplicate, edit, upload, copy, delete, or move files (or folders).&nbsp;</p>
+<p><img src="images/1778094861152.jpg" alt="" /></p>
+<p>Remember the $(FME_SHAREDRESOURCE_DATA) parameter from <a href="https://academy.safe.com/build-self-serve-workflows-with-parameters-2025-0" target="_self">Build Self-Serve Workflows with Parameters</a>? The Data folder in Resources is precisely where it points to. You can find the Resources path to reference data in Properties.&nbsp;</p>
+<p><img src="images/1778094965176.jpg" alt="" /></p>
+<h2 id="other-upload-methods">Publishing Data to Resources</h2>
+<p>You publish data to Resources in the Data folder, like adding data to a workspace repository. In the publishing wizard, you must switch the default location for uploading files from the Repository to Resources.&nbsp;</p>
+<ol>
+<li>Select Upload data files.&nbsp;</li>
+<li>Click Select Files...</li>
+<li>Click Select Location...</li>
+<li>Select Upload to a shared resource folder</li>
+<li>Select your file folder location in Resources to upload the data to.&nbsp;</li>
+</ol>
+<p><img src="images/1749768802710.jpg" alt="" /></p>
+<p>Like publishing data to a repository, you can check the Publish Summary in the Translation Log to see the Uploaded Resources.&nbsp;</p>
+<p>When you run the workspace on FME Flow, the source data parameters reference the Resources location where you published the data. If the source data is a user parameter, you may upload or select different data to input. However, if there's no parameter, the workspace uses the Resources data by default, and the end-user cannot change it.&nbsp;</p>
+<p><img src="images/1749769295343.jpg" alt="" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on source data parameters on FME Flow, review <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters</a>.&nbsp;</p>
+</blockquote>
+<h2 id="benefits-for-data-management">Data Management Benefits</h2>
+<p>There are several benefits to using the Resources file system for data storage on FME Flow:</p>
+<ul>
+<li>Any workspace can use data without having to upload it every time.</li>
+<li>FME Flow Resources stores data locally (in proximity to the FME Flow Engines), even when an FME Flow Administrator restricts access to the operating system's file system.</li>
+<li>Many users can map and share a Resources folder as a physical drive. The next lesson will explain this in more detail.&nbsp;</li>
+<li>A Resources folder is a more permanent solution than temporary uploads. Automated system cleaning tools do not remove data.</li>
+</ul>
+<h2>Exercise</h2>
+<p><img src="images/1749827421450.png" alt="" width="284" height="301" /></p>
+<p>Sven continues working with his previous workspace, which clips voting locations to neighborhoods in Vancouver and stores the transformed data in a geodatabase. He is working with the source GML and KML data and is experimenting with finding the best location to store the data when he runs the workspace on FME Flow.&nbsp;</p>
+<p>This time, follow along with the steps below to help Sven publish the source data to FME Flow Resources. The benefit of this is that other workspaces can easily access the data, and you do not need to store multiple copies in repositories.&nbsp;</p>
+<h3>1) Open Starting Workspace</h3>
+<p>Open the<strong> <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-data-to-fme-flow-resources.fmw" target="_blank" rel="noopener">starting workspace</a></strong> in FME Workbench (<span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-data-to-fme-flow-resources.fmw)</span>.&nbsp;</p>
+<p><img src="images/1749829801822.jpg" alt="" width="1350" height="390" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>This is the same starting workspace as the previous lesson, Publish Data to Workspace Repository. If you already have the workspace open in FME Workbench, you can continue working with it.&nbsp;</p>
+</blockquote>
+<h3>2) Publish to FME Flow&nbsp;</h3>
+<p>Click<strong> Publish</strong> to open the publishing wizard.&nbsp;</p>
+<p><img src="images/1749227082941.jpg" /></p>
+<p>Select the <strong>Training </strong>repository to house the workspace and name it publish-data-to-fme-flow-resources.fmw.&nbsp;</p>
+<p>Like uploading source data to a repository, select<strong> Upload data files</strong> and then open<strong> Select Files...</strong> Source files are uploaded to the repository by default, so open<strong> Selection Location...</strong> to choose Resources instead.&nbsp;</p>
+<p><img src="images/1749835578317.jpg" alt="" width="1175" height="556" /></p>
+<p>Select the&nbsp;<span style="margin: 0px; padding: 0px;"><strong>Upload to a shared resource folder </strong>option</span>, then select the <strong>Data </strong>folder. Click<strong> New Folder</strong> to create an<strong> Elections </strong>folder to store the data.</p>
+<p><img src="images/1749836087192.jpg" alt="" width="567" height="453" /></p>
+<p>Click <strong>OK</strong> to close and save your settings. From the <strong>Select Files to Upload</strong> window, you should now see that the upload location has changed to <strong>Data/Elections</strong> in the FME Flow Resources. Click <strong>OK</strong> to go to the last publishing step.&nbsp;</p>
+<p><img src="images/1749836287302.jpg" alt="" width="614" height="439" /></p>
+<p>Register the workspace with the <strong>Job Submitter</strong> service and click <strong>Publish</strong>.&nbsp;</p>
+<p>In the translation log's Publish Summary, you should see that FME included the three files as Uploaded Resources again.&nbsp;</p>
+<h3>3) Inspect Resources</h3>
+<p>Navigate to FME Flow and open the new <strong>Elections </strong>folder in<strong> Resources &gt; Data</strong>. You will see the three uploaded files there.&nbsp;</p>
+<p><img src="images/1778096819805.jpg" alt="" /></p>
+<h3>4) Run workspace</h3>
+<p>Next, open the<strong> Run Workspace </strong>page and select your recently published workspace.&nbsp;</p>
+<p>Under User Parameters, you will see the default source files reference the data you published to Resources.&nbsp;</p>
+<p><img src="images/1778097127753.jpg" alt="" /></p>
+<p><strong>Run</strong> the workspace. The workspace reads the data from Resources. Other workspaces can also use these datasets, limiting the duplicate data you otherwise store in repositories.&nbsp;</p>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-data-to-fme-flow-resources.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-data-to-fme-flow-resources.fmw</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a>&nbsp;| C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_self">ElectionVoting.gml</a> | <span class="c0">C:\FMEData\Data\Elections\NewElectionsVoting.gml</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.xsd" target="_self"><span class="c0">ElectionVoting.xsd</span></a>&nbsp;|&nbsp;<span class="c0">C:\FMEData\Data\Elections\ElectionVoting.xsd</span></li>
+</ul>
+<h2 id="what-are-resources">What are Resources?</h2>
+<p>Another method of managing source file data in FME Flow is to use Resources, <span style="font-family: inherit; font-size: 1em;">a built-in file management system that allows you to publish and reuse data in all FME Flow workflows. You easily access Resources from the FME Flow side menu.&nbsp;</span></p>
+<p><img src="images/1778092553608.jpg" alt="" /></p>
+<p>The Resources page contains files you have uploaded to FME Flow, as well as those created by FME Flow during normal operations, such as logs and backup files. The FME Flow System Share stores Resources content, which you can find in C:\ ProgramData\Safe Software\FMEFlow\resources by default on Windows. If you're taking a Safe Software-hosted training course, your FME Flow stores Resources in the default location. You'll see the same folders and files here as the Resources on FME Flow.&nbsp;</p>
+<p><img src="images/1749765054132.jpg" alt="" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Remember that <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Resources.htm" target="_blank" rel="noopener">Resources</a> and <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Manage-Workspaces.htm" target="_blank" rel="noopener">Repositories </a>are different. You publish workspaces to repositories. You cannot run them if you upload them to Resources.</span></p>
+</blockquote>
+<h2>Data Folder</h2>
+<p>One of the default Resource folders is the Data folder. This folder stores source and destination data for your workflows. You can create folders and sub-folders within them and upload file-based datasets. If your <a href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/AccessControl.htm" target="_self">FME Flow user or role has sufficient permissions</a>, you can use the datasets stored in Resources as source data or write output data for any workspaces.&nbsp;</p>
+<p><img src="images/1778094783488.jpg" alt="" /></p>
+<p>Once you select an item, the Actions options list various operations you can perform on the file or folder, such as duplicate, edit, upload, copy, delete, or move files (or folders).&nbsp;</p>
+<p><img src="images/1778094861152.jpg" alt="" /></p>
+<p>Remember the $(FME_SHAREDRESOURCE_DATA) parameter from <a href="https://academy.safe.com/build-self-serve-workflows-with-parameters-2025-0" target="_self">Build Self-Serve Workflows with Parameters</a>? The Data folder in Resources is precisely where it points to. You can find the Resources path to reference data in Properties.&nbsp;</p>
+<p><img src="images/1778094965176.jpg" alt="" /></p>
+<h2 id="other-upload-methods">Publishing Data to Resources</h2>
+<p>You publish data to Resources in the Data folder, like adding data to a workspace repository. In the publishing wizard, you must switch the default location for uploading files from the Repository to Resources.&nbsp;</p>
+<ol>
+<li>Select Upload data files.&nbsp;</li>
+<li>Click Select Files...</li>
+<li>Click Select Location...</li>
+<li>Select Upload to a shared resource folder</li>
+<li>Select your file folder location in Resources to upload the data to.&nbsp;</li>
+</ol>
+<p><img src="images/1749768802710.jpg" alt="" /></p>
+<p>Like publishing data to a repository, you can check the Publish Summary in the Translation Log to see the Uploaded Resources.&nbsp;</p>
+<p>When you run the workspace on FME Flow, the source data parameters reference the Resources location where you published the data. If the source data is a user parameter, you may upload or select different data to input. However, if there's no parameter, the workspace uses the Resources data by default, and the end-user cannot change it.&nbsp;</p>
+<p><img src="images/1749769295343.jpg" alt="" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on source data parameters on FME Flow, review <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters</a>.&nbsp;</p>
+</blockquote>
+<h2 id="benefits-for-data-management">Data Management Benefits</h2>
+<p>There are several benefits to using the Resources file system for data storage on FME Flow:</p>
+<ul>
+<li>Any workspace can use data without having to upload it every time.</li>
+<li>FME Flow Resources stores data locally (in proximity to the FME Flow Engines), even when an FME Flow Administrator restricts access to the operating system's file system.</li>
+<li>Many users can map and share a Resources folder as a physical drive. The next lesson will explain this in more detail.&nbsp;</li>
+<li>A Resources folder is a more permanent solution than temporary uploads. Automated system cleaning tools do not remove data.</li>
+</ul>
+<h2>Exercise</h2>
+<p><img src="images/1749827421450.png" alt="" width="284" height="301" /></p>
+<p>Sven continues working with his previous workspace, which clips voting locations to neighborhoods in Vancouver and stores the transformed data in a geodatabase. He is working with the source GML and KML data and is experimenting with finding the best location to store the data when he runs the workspace on FME Flow.&nbsp;</p>
+<p>This time, follow along with the steps below to help Sven publish the source data to FME Flow Resources. The benefit of this is that other workspaces can easily access the data, and you do not need to store multiple copies in repositories.&nbsp;</p>
+<h3>1) Open Starting Workspace</h3>
+<p>Open the<strong> <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-data-to-fme-flow-resources.fmw" target="_blank" rel="noopener">starting workspace</a></strong> in FME Workbench (<span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-data-to-fme-flow-resources.fmw)</span>.&nbsp;</p>
+<p><img src="images/1749829801822.jpg" alt="" width="1350" height="390" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>This is the same starting workspace as the previous lesson, Publish Data to Workspace Repository. If you already have the workspace open in FME Workbench, you can continue working with it.&nbsp;</p>
+</blockquote>
+<h3>2) Publish to FME Flow&nbsp;</h3>
+<p>Click<strong> Publish</strong> to open the publishing wizard.&nbsp;</p>
+<p><img src="images/1749227082941.jpg" /></p>
+<p>Select the <strong>Training </strong>repository to house the workspace and name it publish-data-to-fme-flow-resources.fmw.&nbsp;</p>
+<p>Like uploading source data to a repository, select<strong> Upload data files</strong> and then open<strong> Select Files...</strong> Source files are uploaded to the repository by default, so open<strong> Selection Location...</strong> to choose Resources instead.&nbsp;</p>
+<p><img src="images/1749835578317.jpg" alt="" width="1175" height="556" /></p>
+<p>Select the&nbsp;<span style="margin: 0px; padding: 0px;"><strong>Upload to a shared resource folder </strong>option</span>, then select the <strong>Data </strong>folder. Click<strong> New Folder</strong> to create an<strong> Elections </strong>folder to store the data.</p>
+<p><img src="images/1749836087192.jpg" alt="" width="567" height="453" /></p>
+<p>Click <strong>OK</strong> to close and save your settings. From the <strong>Select Files to Upload</strong> window, you should now see that the upload location has changed to <strong>Data/Elections</strong> in the FME Flow Resources. Click <strong>OK</strong> to go to the last publishing step.&nbsp;</p>
+<p><img src="images/1749836287302.jpg" alt="" width="614" height="439" /></p>
+<p>Register the workspace with the <strong>Job Submitter</strong> service and click <strong>Publish</strong>.&nbsp;</p>
+<p>In the translation log's Publish Summary, you should see that FME included the three files as Uploaded Resources again.&nbsp;</p>
+<h3>3) Inspect Resources</h3>
+<p>Navigate to FME Flow and open the new <strong>Elections </strong>folder in<strong> Resources &gt; Data</strong>. You will see the three uploaded files there.&nbsp;</p>
+<p><img src="images/1778096819805.jpg" alt="" /></p>
+<h3>4) Run workspace</h3>
+<p>Next, open the<strong> Run Workspace </strong>page and select your recently published workspace.&nbsp;</p>
+<p>Under User Parameters, you will see the default source files reference the data you published to Resources.&nbsp;</p>
+<p><img src="images/1778097127753.jpg" alt="" /></p>
+<p><strong>Run</strong> the workspace. The workspace reads the data from Resources. Other workspaces can also use these datasets, limiting the duplicate data you otherwise store in repositories.&nbsp;</p>

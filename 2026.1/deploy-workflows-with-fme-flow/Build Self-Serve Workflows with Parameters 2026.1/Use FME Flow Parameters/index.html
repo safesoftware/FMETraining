@@ -1,0 +1,280 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define FME Flow parameters and their purpose.&nbsp;</li>
+<li>Link to FME Flow parameters in a workspace.</li>
+<li>Run a workspace that uses FME Flow parameters.&nbsp;</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define FME Flow parameters and their purpose.&nbsp;</li>
+<li>Link to FME Flow parameters in a workspace.</li>
+<li>Run a workspace that uses FME Flow parameters.&nbsp;</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/use-fme-flow-parameters.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\use-fme-flow-parameters.fmw</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/use-fme-flow-parameters--complete.fmw" target="_self">Complete workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\use-fme-flow-parameters--complete.fmw</span></li>
+</ul>
+<h2 id="self-serve-and-parameters">FME Flow Parameters</h2>
+<p>FME Flow parameters reference FME Flow system settings to customize and control workspaces run from FME Flow. FME Workbench lists the FME Flow parameters in the Navigator window for easy insertion into workflows.&nbsp;</p>
+<p>&nbsp;<img src="images/1777658672641.jpg" alt="" /></p>
+<p>Some commonly used FME Flow parameters include:</p>
+<ul>
+<li><strong>FME_SHAREDRESOURCE_DATA </strong>references the FME Flow Resources folder, which stores data files that you may share between workspaces and users. This parameter helps read and write data to Resources.&nbsp;</li>
+<li><strong>FME_SECURITY_USER</strong> references the FME Flow user who runs the workspace, and <strong>FME_SECURITY_ROLE</strong> is the role the user belongs to. You may use the parameter to help monitor FME Flow usage by user and role, filter job results, and log workspace-user information.&nbsp;</li>
+<li><strong>FME_JOB_ID</strong> references the unique ID for each job run on FME Flow. You may use this parameter to name output files, log jobs, track jobs, and troubleshoot.&nbsp;</li>
+<li><strong>FME_SERVER_WEB_URL</strong> specifies the Web Application Server root URL that invokes the workspace to run.&nbsp;</li>
+</ul>
+<p>You can find a description of all FME Flow parameters in our <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!Transformer_Parameters/FME-Flow-Parameters.htm" target="_blank" rel="noopener">FME Flow Parameters</a> documentation.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>You can learn more about managing data in the FME Flow Resources with the FME_SHAREDRESOURCE_DATA parameter in <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/manage-fme-flow-data-and-connections" target="_blank" rel="noopener">Manage FME Flow Data and Connections</a>.&nbsp;</p>
+</blockquote>
+<h2>Linking FME Flow Parameters</h2>
+<p>FME Flow parameters are linked to readers, writers, and transformers, just as existing user parameters are. Here's an example of using the FME_SECURITY_ROLES parameter in a Tester to filter for users who belong to the fmeadmin or fmesuperuser roles on FME Flow. You might expand this workflow to write specific data to the user if they belong to one of those roles, and to exclude it otherwise.&nbsp;</p>
+<p><img src="images/1748636607638.jpg" alt="" width="1087" height="465" /></p>
+<p><span style="margin: 0px; padding: 0px;">Like user parameters in FME Workbench, FME Flow parameters can be hardcoded into workspace parameters following the <span style="margin: 0px; padding: 0px;"><strong>$(</strong>FME_FLOW_PARAMETER<strong>)</strong> format</span>. </span>Here's an example where the output CSV location references the FME Flow Resources Data folder using the $(FME_SHAREDRESOURCE_DATA) parameter.&nbsp;</p>
+<p><img src="images/1748553298184.jpg" alt="" width="552" height="229" /></p>
+<p>By default, FME Workbench populates some FME Flow parameters once you establish a successful connection to FME Flow. These include FME_SERVER_WEB_URL, FME_SERVER_RUNTIME_USER, and FME_SERVER_HOST. Otherwise, when you run workspaces in FME Workbench that reference FME Flow parameters, you need to set the parameter value manually. However, when the workspace runs on FME Flow using these parameters, FME Flow automatically fills in the value based on the FME Flow system settings. Here's an example where the FME_SERVER_WEB_URL parameter is referenced in an HTTP Caller to make a GET request to the FME Flow REST API. If you move the workspace to different FME Flow instances, the parameter will update to use the correct URL value for each FME Flow.&nbsp;</p>
+<p><img src="images/1748644027849.jpg" alt="" width="1300" height="432" /></p>
+<p>While running workspaces on FME Workbench can be useful for testing and debugging, you do not need to set these values to run the workspace only with FME Flow, as it will automatically set and use the correct corresponding value.&nbsp;</p>
+<h2>Exercise</h2>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer continues updating the workspaces she will deploy to FME Flow. She's working on one that clips election voting locations by neighborhood and writes a list of voting places for each neighborhood. This workspace currently writes the data to a local file system, and Jennifer shares it with users who need it for their FME workflows. However, others can easily access it if it were written to the FME Flow Resources, so other users' workflows can read the data from Resources. To accomplish this, Jennifer will use the $(FME_SHAREDRESOURCE_DATA) parameter to write the output data to the FME Flow Resources Data folder.&nbsp;</p>
+<p>For this exercise, follow the steps below to help Jennifer configure the workspace to use the $(FME_SHAREDRESOURCE_DATA) parameter.&nbsp;</p>
+<h3>1) Open Starting Workspace</h3>
+<p>Open the <strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/use-fme-flow-parameters.fmw" target="_self">starting workspace</a></strong> (<span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\use-fme-flow-parameters.fmw</span>) in FME Workbench. The workspace reads the Voting Places and Neighborhoods, clips the data by neighborhood, and writes the clipped data to a Microsoft Excel file with a different sheet for each neighborhood.&nbsp;</p>
+<p><img src="images/1748899745248.jpg" alt="" /></p>
+<h3>2) Edit Writer Parameters</h3>
+<p>Expand the<strong> VotingPlaces [XLSXW] </strong>writer parameters in the <strong>Navigator</strong> and double-click the<strong> Destination Microsoft Excel File</strong> parameter.&nbsp;</p>
+<p><img src="images/1748899857518.jpg" alt="" width="435" height="215" /></p>
+<p>Use the drop-down arrow to<strong> </strong>select the<strong> $(FME_SHAREDRESOURCE_DATA) </strong>FME Flow parameter and then add <span style="color: #ba372a;"><strong>\Output\VotingPlaces.xlsx</strong></span>.</p>
+<p><img src="images/1777666580769.jpg" alt="" /></p>
+<p><img src="images/1777667825362.jpg" alt="" /></p>
+<p>Now that the workspace writes data using the FME Flow parameter, click <strong>OK</strong> to close the writer settings.</p>
+<p>Since you have not set the value for the $(FME_SHAREDRESOURCE_DATA) in FME Workbench, you won't run the workspace before publishing it to FME Flow.&nbsp;</p>
+<h3>3) Publish to FME Flow</h3>
+<p><strong>Publish </strong>the workspace to the <strong>Training repository</strong> and register it with the <strong>Job Submitter</strong> service.</p>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>Once you build your workflows in FME Workbench, you need to transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, you need to complete all the steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong> to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the <strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<h3>4) Run workspace</h3>
+<p>Navigate to the FME Flow <strong>Run Workspace</strong> page and select your recently published workspace. The <strong>Destination Microsoft Excel File</strong> parameter shows the $(FME_SHAREDRESOURCE_DATA) parameter you referenced in the writer settings.&nbsp;</p>
+<p><img src="images/1777667753925.png" alt="" width="777" height="724" /></p>
+<p>Don't change any settings, then<strong> </strong>click<strong> Run</strong>. The workspace runs and processes the Voting Places data.&nbsp;</p>
+<h3>5) Inspect Resources for Output</h3>
+<p>Open<strong> Resources</strong>, and select the <strong>Data</strong> and then <strong>Output </strong>folders.</p>
+<p><img src="images/1777668004972.jpg" alt="" /></p>
+<p>Here, you'll see the workspace wrote the VotingPlaces.xlsx file a moment ago. The workspace used the $(FME_SHAREDRESOURCE_DATA) parameter to reference the FME Flow Resources location for the output. Jennifer's next steps will be to automate this workflow and run it on a schedule to keep the data in Resources up to date for other users to access.&nbsp;</p>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/use-fme-flow-parameters.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\use-fme-flow-parameters.fmw</span></li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/use-fme-flow-parameters--complete.fmw" target="_self">Complete workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\use-fme-flow-parameters--complete.fmw</span></li>
+</ul>
+<h2 id="self-serve-and-parameters">FME Flow Parameters</h2>
+<p>FME Flow parameters reference FME Flow system settings to customize and control workspaces run from FME Flow. FME Workbench lists the FME Flow parameters in the Navigator window for easy insertion into workflows.&nbsp;</p>
+<p>&nbsp;<img src="images/1777658672641.jpg" alt="" /></p>
+<p>Some commonly used FME Flow parameters include:</p>
+<ul>
+<li><strong>FME_SHAREDRESOURCE_DATA </strong>references the FME Flow Resources folder, which stores data files that you may share between workspaces and users. This parameter helps read and write data to Resources.&nbsp;</li>
+<li><strong>FME_SECURITY_USER</strong> references the FME Flow user who runs the workspace, and <strong>FME_SECURITY_ROLE</strong> is the role the user belongs to. You may use the parameter to help monitor FME Flow usage by user and role, filter job results, and log workspace-user information.&nbsp;</li>
+<li><strong>FME_JOB_ID</strong> references the unique ID for each job run on FME Flow. You may use this parameter to name output files, log jobs, track jobs, and troubleshoot.&nbsp;</li>
+<li><strong>FME_SERVER_WEB_URL</strong> specifies the Web Application Server root URL that invokes the workspace to run.&nbsp;</li>
+</ul>
+<p>You can find a description of all FME Flow parameters in our <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!Transformer_Parameters/FME-Flow-Parameters.htm" target="_blank" rel="noopener">FME Flow Parameters</a> documentation.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>You can learn more about managing data in the FME Flow Resources with the FME_SHAREDRESOURCE_DATA parameter in <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/manage-fme-flow-data-and-connections" target="_blank" rel="noopener">Manage FME Flow Data and Connections</a>.&nbsp;</p>
+</blockquote>
+<h2>Linking FME Flow Parameters</h2>
+<p>FME Flow parameters are linked to readers, writers, and transformers, just as existing user parameters are. Here's an example of using the FME_SECURITY_ROLES parameter in a Tester to filter for users who belong to the fmeadmin or fmesuperuser roles on FME Flow. You might expand this workflow to write specific data to the user if they belong to one of those roles, and to exclude it otherwise.&nbsp;</p>
+<p><img src="images/1748636607638.jpg" alt="" width="1087" height="465" /></p>
+<p><span style="margin: 0px; padding: 0px;">Like user parameters in FME Workbench, FME Flow parameters can be hardcoded into workspace parameters following the <span style="margin: 0px; padding: 0px;"><strong>$(</strong>FME_FLOW_PARAMETER<strong>)</strong> format</span>. </span>Here's an example where the output CSV location references the FME Flow Resources Data folder using the $(FME_SHAREDRESOURCE_DATA) parameter.&nbsp;</p>
+<p><img src="images/1748553298184.jpg" alt="" width="552" height="229" /></p>
+<p>By default, FME Workbench populates some FME Flow parameters once you establish a successful connection to FME Flow. These include FME_SERVER_WEB_URL, FME_SERVER_RUNTIME_USER, and FME_SERVER_HOST. Otherwise, when you run workspaces in FME Workbench that reference FME Flow parameters, you need to set the parameter value manually. However, when the workspace runs on FME Flow using these parameters, FME Flow automatically fills in the value based on the FME Flow system settings. Here's an example where the FME_SERVER_WEB_URL parameter is referenced in an HTTP Caller to make a GET request to the FME Flow REST API. If you move the workspace to different FME Flow instances, the parameter will update to use the correct URL value for each FME Flow.&nbsp;</p>
+<p><img src="images/1748644027849.jpg" alt="" width="1300" height="432" /></p>
+<p>While running workspaces on FME Workbench can be useful for testing and debugging, you do not need to set these values to run the workspace only with FME Flow, as it will automatically set and use the correct corresponding value.&nbsp;</p>
+<h2>Exercise</h2>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer continues updating the workspaces she will deploy to FME Flow. She's working on one that clips election voting locations by neighborhood and writes a list of voting places for each neighborhood. This workspace currently writes the data to a local file system, and Jennifer shares it with users who need it for their FME workflows. However, others can easily access it if it were written to the FME Flow Resources, so other users' workflows can read the data from Resources. To accomplish this, Jennifer will use the $(FME_SHAREDRESOURCE_DATA) parameter to write the output data to the FME Flow Resources Data folder.&nbsp;</p>
+<p>For this exercise, follow the steps below to help Jennifer configure the workspace to use the $(FME_SHAREDRESOURCE_DATA) parameter.&nbsp;</p>
+<h3>1) Open Starting Workspace</h3>
+<p>Open the <strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/use-fme-flow-parameters.fmw" target="_self">starting workspace</a></strong> (<span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\use-fme-flow-parameters.fmw</span>) in FME Workbench. The workspace reads the Voting Places and Neighborhoods, clips the data by neighborhood, and writes the clipped data to a Microsoft Excel file with a different sheet for each neighborhood.&nbsp;</p>
+<p><img src="images/1748899745248.jpg" alt="" /></p>
+<h3>2) Edit Writer Parameters</h3>
+<p>Expand the<strong> VotingPlaces [XLSXW] </strong>writer parameters in the <strong>Navigator</strong> and double-click the<strong> Destination Microsoft Excel File</strong> parameter.&nbsp;</p>
+<p><img src="images/1748899857518.jpg" alt="" width="435" height="215" /></p>
+<p>Use the drop-down arrow to<strong> </strong>select the<strong> $(FME_SHAREDRESOURCE_DATA) </strong>FME Flow parameter and then add <span style="color: #ba372a;"><strong>\Output\VotingPlaces.xlsx</strong></span>.</p>
+<p><img src="images/1777666580769.jpg" alt="" /></p>
+<p><img src="images/1777667825362.jpg" alt="" /></p>
+<p>Now that the workspace writes data using the FME Flow parameter, click <strong>OK</strong> to close the writer settings.</p>
+<p>Since you have not set the value for the $(FME_SHAREDRESOURCE_DATA) in FME Workbench, you won't run the workspace before publishing it to FME Flow.&nbsp;</p>
+<h3>3) Publish to FME Flow</h3>
+<p><strong>Publish </strong>the workspace to the <strong>Training repository</strong> and register it with the <strong>Job Submitter</strong> service.</p>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>Once you build your workflows in FME Workbench, you need to transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, you need to complete all the steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong> to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the <strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<h3>4) Run workspace</h3>
+<p>Navigate to the FME Flow <strong>Run Workspace</strong> page and select your recently published workspace. The <strong>Destination Microsoft Excel File</strong> parameter shows the $(FME_SHAREDRESOURCE_DATA) parameter you referenced in the writer settings.&nbsp;</p>
+<p><img src="images/1777667753925.png" alt="" width="777" height="724" /></p>
+<p>Don't change any settings, then<strong> </strong>click<strong> Run</strong>. The workspace runs and processes the Voting Places data.&nbsp;</p>
+<h3>5) Inspect Resources for Output</h3>
+<p>Open<strong> Resources</strong>, and select the <strong>Data</strong> and then <strong>Output </strong>folders.</p>
+<p><img src="images/1777668004972.jpg" alt="" /></p>
+<p>Here, you'll see the workspace wrote the VotingPlaces.xlsx file a moment ago. The workspace used the $(FME_SHAREDRESOURCE_DATA) parameter to reference the FME Flow Resources location for the output. Jennifer's next steps will be to automate this workflow and run it on a schedule to keep the data in Resources up to date for other users to access.&nbsp;</p>

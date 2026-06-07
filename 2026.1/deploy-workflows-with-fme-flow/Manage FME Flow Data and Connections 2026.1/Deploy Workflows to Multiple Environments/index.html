@@ -1,0 +1,422 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explain the purpose of deployment parameters in FME Flow.&nbsp;</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Locate and create deployment parameters.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Know the types of values deployment parameters can hold.&nbsp;</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Describe how deployment parameters can help address connection management challenges across multiple FME Flow instances.</span></li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Explain the purpose of deployment parameters in FME Flow.&nbsp;</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Locate and create deployment parameters.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Know the types of values deployment parameters can hold.&nbsp;</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Describe how deployment parameters can help address connection management challenges across multiple FME Flow instances.</span></li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 class="c9">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-to-multiple-environments.fmw">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\deploy-workflows-to-multiple-environments.fmw</span></li>
+<li><span style="font-weight: 400;"><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-to-multiple-environments--complete.fmw" target="_self">Complete workspace</a> | C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\deploy-workflows-to-multiple-environments--complete.fmw</span></li>
+</ul>
+<h2 class="c9">Deployment Parameters</h2>
+<p><span style="font-weight: 400;"><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Deployment-Parameters.htm">Deployment parameters</a> are key-value pairs that let you use named parameter values across multiple workflows. One key use for deployment parameters is to allow workspaces uploaded to multiple FME Flow environments (e.g., development, test, and production) to run without requiring parameter values to be updated across these environments. When you reference a deployment parameter in a workspace, FME automatically uses its unique value, ensuring smooth workflow transitions. FME Flow stores deployment parameters; however, you can create and edit Deployment Parameters on either FME Form or FME Flow.&nbsp;</span></p>
+<p><span style="font-weight: 400;">As of FME 2026.1, there are four types of deployment parameters:</span></p>
+<ul>
+<li><strong>Text&nbsp;</strong></li>
+<li><strong>Password</strong></li>
+<li><strong>Web Connection</strong></li>
+<li><strong>Database Connection</strong></li>
+</ul>
+<p><span style="font-weight: 400;">Deployment parameters help accomplish the following:</span></p>
+<ul>
+<li><span style="font-weight: 400;">&nbsp;<strong>Consistency across multiple FME Flow instances. </strong>Various FME Flow instances may connect to different databases within the same workflows, and your workflows may use deployment parameters to reference values, like connections, that differ across FME Flow instances.&nbsp;</span></li>
+<li><span style="font-weight: 400;"><strong>&nbsp;Decreased maintenance and redundancy across FME Flow workflows and projects. </strong>You may use the common name of a deployment parameter across multiple workspaces and automations on your FME Flow. When the parameter value changes, such as when a password gets updated, it only needs to be updated once on FME Flow, not across multiple items that use the value.&nbsp;</span></li>
+<li><span style="font-weight: 400;"><strong>&nbsp;Continuous and automated workflow deployments. </strong>Deployment parameters externalize environment-specific variables, allowing you to use, automate, and deploy workspaces across multiple environments without modification. You can store values such as API keys, connections, and file paths as deployment parameters specific to the server level, not to workflows, to enable safe, scalable, and automated deployments of FME Flow workflows.&nbsp;</span></li>
+</ul>
+<h2 class="c9"><span class="c0">Deployment Parameters in FME Workbench</span></h2>
+<p>You may create deployment parameters directly from FME Flow or FME Workbench, and they reside on FME Flow. To access and create deployment parameters from FME Workbench, you must connect to an FME Flow.&nbsp;</p>
+<p>To create a Deployment Parameter from the Navigator window, right-click Deployment Parameters and select Create Deployment Parameter...</p>
+<p><img src="images/1750180635644.jpg" alt="" /></p>
+<p>Since FME Flow stores all deployment parameters on FME Flow, the first step is to ensure you have selected and successfully connected to your FME Flow instance. You may have multiple FME Flow instances and connections, so it's important to ensure you connect to the FME Flow you want to create the deployment parameter for. For the parameter itself, you must give it a name, select the type, and then enter the value. A database connection parameter requires you to enter the database type and select a connection, while a text parameter only asks you to enter the text string value.&nbsp;</p>
+<p><img src="images/1750181131137.jpg" alt="" width="579" height="446" /></p>
+<p>There's also an option to assign a different value when you use the parameter on FME Form, which is useful when testing workspaces before publishing.&nbsp;</p>
+<p>After you create the parameter, you must link it to the reader, writer, or transformer that will reference the parameter value. For example, you might link a password parameter to a Connector transformer that requires a username and password authentication or link a database reader to a database connection parameter.&nbsp;</p>
+<p><img src="images/1750189747295.jpg" alt="" width="1263" height="346" /></p>
+<p>The deployment parameters you may link to include those you've created in FME Flow and FME Form, since FME Flow stores all deployment parameters.&nbsp;</p>
+<p>If you connect to a different FME Flow instance from FME Form, the available deployment parameters will change to match the parameters stored on that instance. To ensure you see all the deployment parameters in FME Form, you need to sync from the FME Flow Connection toolbar. You should sync FME Form and FME Flow after you create or edit any deployment parameters.&nbsp;</p>
+<p><img src="images/1750192696750.jpg" alt="" width="525" height="163" /></p>
+<p>In FME Form, you can only create and link to deployment parameters within workspaces. FME Flow manages, creates, and stores the parameters and their values.&nbsp;</p>
+<h2>FME Flow Deployment Parameter Store</h2>
+<p>The Deployment Parameter Store is a centralized repository for all deployment parameters for a given FME Flow instance. You access it from Connections &amp; Parameters on the side menu. For each parameter, you see the name, type, and value you assign to the parameter.&nbsp;</p>
+<p><img src="images/1778251778984.jpg" alt="" /></p>
+<p>To create a deployment parameter, click Create and fill out a form identical to the one in FME Form except for the FME Flow value.&nbsp;</p>
+<p><img src="images/1750193503456.jpg" alt="" width="640" height="387" /></p>
+<p>Once you create the parameter, you can use it in your FME workflows. You can sync your FME Form to your FME Flow instance and link deployment parameters directly in the workspace before deploying it on FME Flow or reference deployment parameters in Automations on FME Flow.&nbsp;</p>
+<h2>Using Deployment Parameters Across Multiple Environments&nbsp;</h2>
+<p><span style="font-weight: 400;">You may link to deployment parameters in Automations or workspaces. For workspaces, you must link the parameter in FME Workbench and then publish the workspace to FME Flow. In FME Flow Automations, you link deployment parameters to the workspace's user parameters. For example, you configure a workspace with a database connection parameter as input and then link a database connection deployment parameter.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750255833813.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Now, if you migrate the Automation to another FME Flow, perhaps from your Development to your Production instance, the Automation will continue to reference the deployment parameter, but the value may be different. The Production FME Flow needs a different database connection to run the workspace. As long as the deployment parameter with the same name references the Production database connection, you don't need to alter the Automation to run on the Production instance to use the proper connection. Whether you reference deployment parameters directly in workspaces or in Automations, the same principles apply to migrating workflows between FME Flow instances.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750257394235.jpg" alt="" /></span></p>
+<h2><span style="font-weight: 400;">Continuous and Automated Workflow Deployments</span></h2>
+<p>Deployment parameters are essential in CI/CD (Continuous Integration/Continuous Deployment) workflows to deploy FME Flow consistently across different environments (e.g., development, staging, production) without modifying the core workspaces or project files. You can use the same components while dynamically injecting the correct values during deployment by setting environment-specific values&mdash;such as server URLs, database credentials, and file paths&mdash;as deployment parameters. Deployment parameters eliminate manual edits, reduce the risk of configuration errors, and make deployments repeatable and reliable.</p>
+<p>When you use deployment parameters alongside the FME Flow CLI (Command Line Interface), you can pass deployment parameters directly into commands to automate FME Flow configurations. Without human intervention, the script would supply different parameter values based on the FME Flow deployment environment, enabling fully automated continuous integration and deployment.&nbsp;</p>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">For more information on deployment parameters and how to use them with CI/CD workflows and the CLI, see these tutorials:</span></p>
+<ul>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407416414349-Getting-Started-with-Deployment-Parameters" target="_blank" rel="noopener">Getting Started with Deployment Parameters</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407510327437-Getting-Started-With-CI-CD" target="_blank" rel="noopener">Getting Started with CI/CD</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407719099149-Getting-Started-with-the-FME-Flow-Command-Line-Interface-CLI" target="_blank" rel="noopener">Getting Started with the FME Flow Command Line Interface (CLI)</a></li>
+<li><a href="https://fme.safe.com/webinars/automation-in-action-accelerating-your-fme-flow-deployment-with-cicd/" target="_blank" rel="noopener">Automation in Action: Accelerating your FME Flow Deployment Webinar</a></li>
+</ul>
+</blockquote>
+<h2><span style="font-weight: 400;">Exercise</span></h2>
+<p><img src="images/1778253827933.png" alt="" width="242" height="257" /></p>
+<p><span style="font-weight: 400;">Jennifer is a GIS Specialist for a city government's GIS department. She is continuing with her workspace from the previous exercise and wants to configure the workspace to use deployment parameters. The workspace reads data from a PostGIS database, and referencing the database connection as a deployment parameter will allow Jennifer to move the workspace across multiple environments without having to edit the workspace or connection. Jennifer wants to use a different database connection when she runs the workspace in FME Workbench and another when she runs it on FME Flow.&nbsp;</span></p>
+<p><span style="font-weight: 400;">For this exercise, follow the steps below to help Jennifer create and use deployment parameters across FME Workbench and FME Flow.&nbsp;</span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">You will only have one database to connect to for training, the FME Training PostGIS database. However, the theory of using deployment parameters will remain across FME Workbench and FME Flow to reference a different connection through the same parameter.&nbsp;</span></p>
+</blockquote>
+<h3><span style="font-weight: 400;">1) Create Deployment Parameter</span></h3>
+<p><span style="font-weight: 400;">Navigate to <strong>FME Flow</strong> and open the<strong> Deployment Parameter Store</strong>. Click <strong>Create</strong> to make a new deployment parameter.&nbsp;</span></p>
+<p><img src="images/1778254767485.jpg" alt="" /></p>
+<p><span style="font-weight: 400;">Set the following values:</span></p>
+<ul>
+<li><span style="font-weight: 400;">Name:&nbsp;<strong>TrainingDatabase</strong></span></li>
+<li><span style="font-weight: 400;">Type:&nbsp;<strong>Database Connection</strong></span></li>
+<li><span style="font-weight: 400;">Database type:&nbsp;<strong>PostgreSQL</strong></span></li>
+<li><span style="font-weight: 400;">Value:&nbsp;<strong>FME Training PostGIS Database</strong></span></li>
+</ul>
+<p><span style="font-weight: 400;"><img src="images/1750267270184.jpg" alt="" width="606" height="443" /></span></p>
+<p><span style="font-weight: 400;">Click <strong>Create</strong>, and FME Flow adds the deployment parameter and value to the Deployment Parameter Store. FME Flow will use this connection when any workspace linking to the TrainingDatabase deployment parameter runs on this FME Flow.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1778256641019.jpg" alt="" /></span></p>
+<h3><span style="font-weight: 400;">2) Open Starting Workspace</span></h3>
+<p><span style="font-weight: 400;">Open<strong> FME Workbench </strong>to the<strong> </strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-to-multiple-environments.fmw" target="_self"><strong>starting workspace</strong></a> (C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\deploy-workflows-to-multiple-environments.fmw). This workspace is the same as the completed workspace from the previous exercise; you may continue with it if you have it open.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750267510429.jpg" alt="" width="1310" height="345" /></span></p>
+<h3><span style="font-weight: 400;">3) Sync FME Workbench and FME Flow</span></h3>
+<p><span style="font-weight: 400;">Click the<strong> drop-down arrow</strong> next to the FME Flow Connection, then <strong>Sync </strong>to sync FME Workbench with FME Flow.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750267632966.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">In the Navigator, expand<strong> Deployment Parameters</strong>, and you will see your new database connection parameter</span><span style="font-weight: 400;">.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750267963013.jpg" alt="" /></span></p>
+<h3><span style="font-weight: 400;">4) Assign a Local Value to the Deployment Parameter</span></h3>
+<p>To use a different database connection when running the workspace on FME Workbench,<strong> </strong>right-click the<strong> TrainingDatabase</strong> parameter and select <strong>Set Local Value...</strong></p>
+<p><span style="font-weight: 400;"><img src="images/1750268082786.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Set the <strong>FME Form Value</strong> to the <strong>FME Training PostGIS Database</strong> and click<strong> OK.</strong>&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750268418054.jpg" alt="" /></span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">This is the same PostGIS Training database as the FME Flow connection references. Due to training limitations, you only have one database available to connect to so they are technically the same on FME Form and FME Flow in this example. However, in real-world applications, the FME Form value would be a different database connection than the FME Flow one. </span></p>
+</blockquote>
+<h3><span style="font-weight: 400;">5) Link Source Database Connection to Deployment Parameter</span></h3>
+<p><span style="margin: 0px; padding: 0px;">Expand the<strong> POSTGIS reader parameters</strong> in the Navigator, right-click on the <strong>Connection</strong>, and select <strong>Edit Parameter Value...</strong></span></p>
+<p><span style="font-weight: 400;"><img src="images/1750268692719.jpg" alt="" width="555" height="245" /></span></p>
+<p><span style="font-weight: 400;">Select the <strong>TrainingDatabase </strong>deployment parameter for the Connection, found within User Parameters, from the drop-down menu.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750268915118.jpg" alt="" width="1230" height="331" /></span></p>
+<p><span style="font-weight: 400;">The source database connection now links to the deployment parameter. Click <strong>OK</strong>.&nbsp;&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750269112730.jpg" alt="" width="573" height="316" /></span></p>
+<h3><span style="font-weight: 400;">6) Remove User Parameter</span><span style="font-weight: 400;">&nbsp;</span></h3>
+<p><span style="font-weight: 400;">Since deployment parameters control values based on the environment where the workspace runs, having a user parameter that allows the end-user to change the database connection value does not make sense. Expand <strong>User Parameters</strong> and delete the <strong>[SourceDataset_POSTGIS] Connection parameter</strong>.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750270045784.jpg" alt="" width="559" height="506" /></span></p>
+<p><span style="font-weight: 400;">The PostGIS Connection now only references the TrainingDatabase deployment parameter.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750270148723.jpg" alt="" /></span></p>
+<h3><span style="font-weight: 400;">7) Run workspace</span></h3>
+<p><span style="font-weight: 400;"><strong>Run </strong>the workspace to ensure it uses the deployment parameter to link to the database connection before deploying it on FME Flow.&nbsp;</span></p>
+<p><img src="images/1750269522838.jpg" alt="" width="831" height="258" /></p>
+<h3><span style="font-weight: 400;">7) Publish to FME Flow</span></h3>
+<p><span style="font-weight: 400;"><strong>Publish</strong> the workspace to FME Flow, save it in the <strong>Training</strong> repository, and register it with the <strong>Job Submitter</strong> service.&nbsp;</span></p>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>Once you build your workflows in FME Workbench, you need to transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, you need to complete all the steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong>&nbsp;to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the&nbsp;<strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">A workspace with a connection would normally prompt you to choose whether or not to publish the connection along with the workspace to FME Flow. However, because the reader connection parameter references the deployment parameter, there is no direct connection by default to publish with the workspace.&nbsp;</span></p>
+</blockquote>
+<h3><span style="font-weight: 400;">8) Run Workspace on FME Flow</span></h3>
+<p><span style="font-weight: 400;">Navigate to <strong>FME Flow</strong> and <strong>run</strong> your recently published workspace.&nbsp;</span></p>
+<p><img src="images/1778261342115.jpg" alt="" /></p>
+<p>Once it completes, click&nbsp;<strong>View Details</strong> to open the job log. As you scan the job log, you will see references to the deployment parameter and the database connection it uses to run the workspace.</p>
+<p><img src="images/1778261801204.jpg" alt="" /></p>
+<p><span style="font-weight: 400;"><img src="images/1778262590331.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">The workspace runs on FME Flow, and the reader's database connection references the FME Flow database connection through the deployment parameter. You have successfully helped Jennifer create a workspace that references deployment parameters to use a different database connection when it runs on different FME environments.</span></p>
+<h2 class="c9">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-to-multiple-environments.fmw">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\deploy-workflows-to-multiple-environments.fmw</span></li>
+<li><span style="font-weight: 400;"><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-to-multiple-environments--complete.fmw" target="_self">Complete workspace</a> | C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\deploy-workflows-to-multiple-environments--complete.fmw</span></li>
+</ul>
+<h2 class="c9">Deployment Parameters</h2>
+<p><span style="font-weight: 400;"><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Deployment-Parameters.htm">Deployment parameters</a> are key-value pairs that let you use named parameter values across multiple workflows. One key use for deployment parameters is to allow workspaces uploaded to multiple FME Flow environments (e.g., development, test, and production) to run without requiring parameter values to be updated across these environments. When you reference a deployment parameter in a workspace, FME automatically uses its unique value, ensuring smooth workflow transitions. FME Flow stores deployment parameters; however, you can create and edit Deployment Parameters on either FME Form or FME Flow.&nbsp;</span></p>
+<p><span style="font-weight: 400;">As of FME 2026.1, there are four types of deployment parameters:</span></p>
+<ul>
+<li><strong>Text&nbsp;</strong></li>
+<li><strong>Password</strong></li>
+<li><strong>Web Connection</strong></li>
+<li><strong>Database Connection</strong></li>
+</ul>
+<p><span style="font-weight: 400;">Deployment parameters help accomplish the following:</span></p>
+<ul>
+<li><span style="font-weight: 400;">&nbsp;<strong>Consistency across multiple FME Flow instances. </strong>Various FME Flow instances may connect to different databases within the same workflows, and your workflows may use deployment parameters to reference values, like connections, that differ across FME Flow instances.&nbsp;</span></li>
+<li><span style="font-weight: 400;"><strong>&nbsp;Decreased maintenance and redundancy across FME Flow workflows and projects. </strong>You may use the common name of a deployment parameter across multiple workspaces and automations on your FME Flow. When the parameter value changes, such as when a password gets updated, it only needs to be updated once on FME Flow, not across multiple items that use the value.&nbsp;</span></li>
+<li><span style="font-weight: 400;"><strong>&nbsp;Continuous and automated workflow deployments. </strong>Deployment parameters externalize environment-specific variables, allowing you to use, automate, and deploy workspaces across multiple environments without modification. You can store values such as API keys, connections, and file paths as deployment parameters specific to the server level, not to workflows, to enable safe, scalable, and automated deployments of FME Flow workflows.&nbsp;</span></li>
+</ul>
+<h2 class="c9"><span class="c0">Deployment Parameters in FME Workbench</span></h2>
+<p>You may create deployment parameters directly from FME Flow or FME Workbench, and they reside on FME Flow. To access and create deployment parameters from FME Workbench, you must connect to an FME Flow.&nbsp;</p>
+<p>To create a Deployment Parameter from the Navigator window, right-click Deployment Parameters and select Create Deployment Parameter...</p>
+<p><img src="images/1750180635644.jpg" alt="" /></p>
+<p>Since FME Flow stores all deployment parameters on FME Flow, the first step is to ensure you have selected and successfully connected to your FME Flow instance. You may have multiple FME Flow instances and connections, so it's important to ensure you connect to the FME Flow you want to create the deployment parameter for. For the parameter itself, you must give it a name, select the type, and then enter the value. A database connection parameter requires you to enter the database type and select a connection, while a text parameter only asks you to enter the text string value.&nbsp;</p>
+<p><img src="images/1750181131137.jpg" alt="" width="579" height="446" /></p>
+<p>There's also an option to assign a different value when you use the parameter on FME Form, which is useful when testing workspaces before publishing.&nbsp;</p>
+<p>After you create the parameter, you must link it to the reader, writer, or transformer that will reference the parameter value. For example, you might link a password parameter to a Connector transformer that requires a username and password authentication or link a database reader to a database connection parameter.&nbsp;</p>
+<p><img src="images/1750189747295.jpg" alt="" width="1263" height="346" /></p>
+<p>The deployment parameters you may link to include those you've created in FME Flow and FME Form, since FME Flow stores all deployment parameters.&nbsp;</p>
+<p>If you connect to a different FME Flow instance from FME Form, the available deployment parameters will change to match the parameters stored on that instance. To ensure you see all the deployment parameters in FME Form, you need to sync from the FME Flow Connection toolbar. You should sync FME Form and FME Flow after you create or edit any deployment parameters.&nbsp;</p>
+<p><img src="images/1750192696750.jpg" alt="" width="525" height="163" /></p>
+<p>In FME Form, you can only create and link to deployment parameters within workspaces. FME Flow manages, creates, and stores the parameters and their values.&nbsp;</p>
+<h2>FME Flow Deployment Parameter Store</h2>
+<p>The Deployment Parameter Store is a centralized repository for all deployment parameters for a given FME Flow instance. You access it from Connections &amp; Parameters on the side menu. For each parameter, you see the name, type, and value you assign to the parameter.&nbsp;</p>
+<p><img src="images/1778251778984.jpg" alt="" /></p>
+<p>To create a deployment parameter, click Create and fill out a form identical to the one in FME Form except for the FME Flow value.&nbsp;</p>
+<p><img src="images/1750193503456.jpg" alt="" width="640" height="387" /></p>
+<p>Once you create the parameter, you can use it in your FME workflows. You can sync your FME Form to your FME Flow instance and link deployment parameters directly in the workspace before deploying it on FME Flow or reference deployment parameters in Automations on FME Flow.&nbsp;</p>
+<h2>Using Deployment Parameters Across Multiple Environments&nbsp;</h2>
+<p><span style="font-weight: 400;">You may link to deployment parameters in Automations or workspaces. For workspaces, you must link the parameter in FME Workbench and then publish the workspace to FME Flow. In FME Flow Automations, you link deployment parameters to the workspace's user parameters. For example, you configure a workspace with a database connection parameter as input and then link a database connection deployment parameter.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750255833813.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Now, if you migrate the Automation to another FME Flow, perhaps from your Development to your Production instance, the Automation will continue to reference the deployment parameter, but the value may be different. The Production FME Flow needs a different database connection to run the workspace. As long as the deployment parameter with the same name references the Production database connection, you don't need to alter the Automation to run on the Production instance to use the proper connection. Whether you reference deployment parameters directly in workspaces or in Automations, the same principles apply to migrating workflows between FME Flow instances.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750257394235.jpg" alt="" /></span></p>
+<h2><span style="font-weight: 400;">Continuous and Automated Workflow Deployments</span></h2>
+<p>Deployment parameters are essential in CI/CD (Continuous Integration/Continuous Deployment) workflows to deploy FME Flow consistently across different environments (e.g., development, staging, production) without modifying the core workspaces or project files. You can use the same components while dynamically injecting the correct values during deployment by setting environment-specific values&mdash;such as server URLs, database credentials, and file paths&mdash;as deployment parameters. Deployment parameters eliminate manual edits, reduce the risk of configuration errors, and make deployments repeatable and reliable.</p>
+<p>When you use deployment parameters alongside the FME Flow CLI (Command Line Interface), you can pass deployment parameters directly into commands to automate FME Flow configurations. Without human intervention, the script would supply different parameter values based on the FME Flow deployment environment, enabling fully automated continuous integration and deployment.&nbsp;</p>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">For more information on deployment parameters and how to use them with CI/CD workflows and the CLI, see these tutorials:</span></p>
+<ul>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407416414349-Getting-Started-with-Deployment-Parameters" target="_blank" rel="noopener">Getting Started with Deployment Parameters</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407510327437-Getting-Started-With-CI-CD" target="_blank" rel="noopener">Getting Started with CI/CD</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407719099149-Getting-Started-with-the-FME-Flow-Command-Line-Interface-CLI" target="_blank" rel="noopener">Getting Started with the FME Flow Command Line Interface (CLI)</a></li>
+<li><a href="https://fme.safe.com/webinars/automation-in-action-accelerating-your-fme-flow-deployment-with-cicd/" target="_blank" rel="noopener">Automation in Action: Accelerating your FME Flow Deployment Webinar</a></li>
+</ul>
+</blockquote>
+<h2><span style="font-weight: 400;">Exercise</span></h2>
+<p><img src="images/1778253827933.png" alt="" width="242" height="257" /></p>
+<p><span style="font-weight: 400;">Jennifer is a GIS Specialist for a city government's GIS department. She is continuing with her workspace from the previous exercise and wants to configure the workspace to use deployment parameters. The workspace reads data from a PostGIS database, and referencing the database connection as a deployment parameter will allow Jennifer to move the workspace across multiple environments without having to edit the workspace or connection. Jennifer wants to use a different database connection when she runs the workspace in FME Workbench and another when she runs it on FME Flow.&nbsp;</span></p>
+<p><span style="font-weight: 400;">For this exercise, follow the steps below to help Jennifer create and use deployment parameters across FME Workbench and FME Flow.&nbsp;</span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">You will only have one database to connect to for training, the FME Training PostGIS database. However, the theory of using deployment parameters will remain across FME Workbench and FME Flow to reference a different connection through the same parameter.&nbsp;</span></p>
+</blockquote>
+<h3><span style="font-weight: 400;">1) Create Deployment Parameter</span></h3>
+<p><span style="font-weight: 400;">Navigate to <strong>FME Flow</strong> and open the<strong> Deployment Parameter Store</strong>. Click <strong>Create</strong> to make a new deployment parameter.&nbsp;</span></p>
+<p><img src="images/1778254767485.jpg" alt="" /></p>
+<p><span style="font-weight: 400;">Set the following values:</span></p>
+<ul>
+<li><span style="font-weight: 400;">Name:&nbsp;<strong>TrainingDatabase</strong></span></li>
+<li><span style="font-weight: 400;">Type:&nbsp;<strong>Database Connection</strong></span></li>
+<li><span style="font-weight: 400;">Database type:&nbsp;<strong>PostgreSQL</strong></span></li>
+<li><span style="font-weight: 400;">Value:&nbsp;<strong>FME Training PostGIS Database</strong></span></li>
+</ul>
+<p><span style="font-weight: 400;"><img src="images/1750267270184.jpg" alt="" width="606" height="443" /></span></p>
+<p><span style="font-weight: 400;">Click <strong>Create</strong>, and FME Flow adds the deployment parameter and value to the Deployment Parameter Store. FME Flow will use this connection when any workspace linking to the TrainingDatabase deployment parameter runs on this FME Flow.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1778256641019.jpg" alt="" /></span></p>
+<h3><span style="font-weight: 400;">2) Open Starting Workspace</span></h3>
+<p><span style="font-weight: 400;">Open<strong> FME Workbench </strong>to the<strong> </strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/deploy-workflows-to-multiple-environments.fmw" target="_self"><strong>starting workspace</strong></a> (C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\deploy-workflows-to-multiple-environments.fmw). This workspace is the same as the completed workspace from the previous exercise; you may continue with it if you have it open.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750267510429.jpg" alt="" width="1310" height="345" /></span></p>
+<h3><span style="font-weight: 400;">3) Sync FME Workbench and FME Flow</span></h3>
+<p><span style="font-weight: 400;">Click the<strong> drop-down arrow</strong> next to the FME Flow Connection, then <strong>Sync </strong>to sync FME Workbench with FME Flow.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750267632966.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">In the Navigator, expand<strong> Deployment Parameters</strong>, and you will see your new database connection parameter</span><span style="font-weight: 400;">.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750267963013.jpg" alt="" /></span></p>
+<h3><span style="font-weight: 400;">4) Assign a Local Value to the Deployment Parameter</span></h3>
+<p>To use a different database connection when running the workspace on FME Workbench,<strong> </strong>right-click the<strong> TrainingDatabase</strong> parameter and select <strong>Set Local Value...</strong></p>
+<p><span style="font-weight: 400;"><img src="images/1750268082786.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">Set the <strong>FME Form Value</strong> to the <strong>FME Training PostGIS Database</strong> and click<strong> OK.</strong>&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750268418054.jpg" alt="" /></span></p>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">This is the same PostGIS Training database as the FME Flow connection references. Due to training limitations, you only have one database available to connect to so they are technically the same on FME Form and FME Flow in this example. However, in real-world applications, the FME Form value would be a different database connection than the FME Flow one. </span></p>
+</blockquote>
+<h3><span style="font-weight: 400;">5) Link Source Database Connection to Deployment Parameter</span></h3>
+<p><span style="margin: 0px; padding: 0px;">Expand the<strong> POSTGIS reader parameters</strong> in the Navigator, right-click on the <strong>Connection</strong>, and select <strong>Edit Parameter Value...</strong></span></p>
+<p><span style="font-weight: 400;"><img src="images/1750268692719.jpg" alt="" width="555" height="245" /></span></p>
+<p><span style="font-weight: 400;">Select the <strong>TrainingDatabase </strong>deployment parameter for the Connection, found within User Parameters, from the drop-down menu.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750268915118.jpg" alt="" width="1230" height="331" /></span></p>
+<p><span style="font-weight: 400;">The source database connection now links to the deployment parameter. Click <strong>OK</strong>.&nbsp;&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750269112730.jpg" alt="" width="573" height="316" /></span></p>
+<h3><span style="font-weight: 400;">6) Remove User Parameter</span><span style="font-weight: 400;">&nbsp;</span></h3>
+<p><span style="font-weight: 400;">Since deployment parameters control values based on the environment where the workspace runs, having a user parameter that allows the end-user to change the database connection value does not make sense. Expand <strong>User Parameters</strong> and delete the <strong>[SourceDataset_POSTGIS] Connection parameter</strong>.&nbsp;</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750270045784.jpg" alt="" width="559" height="506" /></span></p>
+<p><span style="font-weight: 400;">The PostGIS Connection now only references the TrainingDatabase deployment parameter.</span></p>
+<p><span style="font-weight: 400;"><img src="images/1750270148723.jpg" alt="" /></span></p>
+<h3><span style="font-weight: 400;">7) Run workspace</span></h3>
+<p><span style="font-weight: 400;"><strong>Run </strong>the workspace to ensure it uses the deployment parameter to link to the database connection before deploying it on FME Flow.&nbsp;</span></p>
+<p><img src="images/1750269522838.jpg" alt="" width="831" height="258" /></p>
+<h3><span style="font-weight: 400;">7) Publish to FME Flow</span></h3>
+<p><span style="font-weight: 400;"><strong>Publish</strong> the workspace to FME Flow, save it in the <strong>Training</strong> repository, and register it with the <strong>Job Submitter</strong> service.&nbsp;</span></p>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>Once you build your workflows in FME Workbench, you need to transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, you need to complete all the steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong>&nbsp;to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the&nbsp;<strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<blockquote>
+<p><span style="font-weight: 400;"><img src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-weight: 400;">A workspace with a connection would normally prompt you to choose whether or not to publish the connection along with the workspace to FME Flow. However, because the reader connection parameter references the deployment parameter, there is no direct connection by default to publish with the workspace.&nbsp;</span></p>
+</blockquote>
+<h3><span style="font-weight: 400;">8) Run Workspace on FME Flow</span></h3>
+<p><span style="font-weight: 400;">Navigate to <strong>FME Flow</strong> and <strong>run</strong> your recently published workspace.&nbsp;</span></p>
+<p><img src="images/1778261342115.jpg" alt="" /></p>
+<p>Once it completes, click&nbsp;<strong>View Details</strong> to open the job log. As you scan the job log, you will see references to the deployment parameter and the database connection it uses to run the workspace.</p>
+<p><img src="images/1778261801204.jpg" alt="" /></p>
+<p><span style="font-weight: 400;"><img src="images/1778262590331.jpg" alt="" /></span></p>
+<p><span style="font-weight: 400;">The workspace runs on FME Flow, and the reader's database connection references the FME Flow database connection through the deployment parameter. You have successfully helped Jennifer create a workspace that references deployment parameters to use a different database connection when it runs on different FME environments.</span></p>

@@ -1,0 +1,108 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Edit workspace services on FME Flow.&nbsp;</li>
+<li>Register a workspace with the Data Streaming service.&nbsp;</li>
+<li>Run a workspace with the Data Streaming service and inspect the output.&nbsp;</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Edit workspace services on FME Flow.&nbsp;</li>
+<li>Register a workspace with the Data Streaming service.&nbsp;</li>
+<li>Run a workspace with the Data Streaming service and inspect the output.&nbsp;</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-a-workspace-to-fme-flow.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-a-workspace-to-fme-flow.fmw</span></li>
+</ul>
+<h2>Data Streaming Service</h2>
+<p>The FME Flow Data Streaming transformation service functions similarly to the Data Download service. However, the Data Streaming service immediately streams a workspace's output data to the user's browser rather than as a downloadable zip file. Again, the Writers selected for the Data Streaming service do not write the data in the file location you set in the writer; instead, FME Flow presents the data to the user in the browser upon job completion.&nbsp;</p>
+<p>Data Streaming output can include <span class="mc-variable ProductNames.workspace variable">workspace</span>s that write HTML, PNG, KML, GeoRSS, GeoJSON, PDF, and others. If the format is not compatible with streaming in the browser, the data automatically downloads as a file. If there are multiple output files, FME Flow will package them into a zip file that downloads immediately. The user does not have to click a download link, as with the Data Download service.&nbsp;</p>
+<h2>Editing Services on FME Flow</h2>
+<p>To change a workspace's services on FME Flow, navigate to Workspaces and open the repository that contains the workspace. Select the workspace, expand the Actions button, and select Edit Services.</p>
+<p><img src="images/1745961245611.jpg" alt="" width="944" height="318" /></p>
+<p>The Configure Services window opens, and you can toggle services on or off for the workspaces.&nbsp;</p>
+<p><img src="images/1747259967920.jpg" alt="" width="682" height="347" /></p>
+<p>You should expand the service and select which writer (s) to include in the resulting output. You may also optionally specify reader feature types to receive HTTP content instead of reading the dataset.&nbsp;</p>
+<p><img src="images/1747260156443.jpg" alt="" width="641" height="400" /></p>
+<p>When working with Data Download or Data Streaming services, you don't need to include all writers from your workspace &mdash; you can select just one writer to participate in the service. Any writers you leave out will behave like the Job Submitter service, writing their data directly to the output location specified in the writer parameters. Only the writer you've included in the service will deliver its output through Data Download or Data Streaming. Keep in mind that the Data Streaming service can only stream a single file back to you at a time, so if you include multiple writers, FME Flow will automatically group the output into a zip file and download it instead.</p>
+<h2>Exercise</h2>
+<p><img src="images/1776440038927.png" alt="" width="214" height="227" /></p>
+<p>Sven continues working on his Vancouver Parks and Neighborhoods workflow and, after using the Data Download service, he thinks the Data Streaming service might better suit his workflow. He can immediately stream the HTML report back to the user and write the KML files to a file location.&nbsp;</p>
+<p>Currently, the workspace's registered services are only Data Download and Job Submitter. Sven doesn't want to repeat the publishing process to add the Data Streaming service to the workspace's registered services. Instead, Sven would like to change the workspace's services directly on FME Flow.&nbsp;</p>
+<p>For this exercise, follow the steps below to configure Sven's workspace to use the Data Streaming service on FME Flow.&nbsp;</p>
+<h3>1) Edit Workspace Services</h3>
+<p>On FME Flow, open<strong> Workspaces, </strong>then&nbsp;select the <strong>Training repository</strong>.&nbsp;<span style="margin: 0px; padding: 0px;">Check the box to select the<strong> workspace</strong>, open the<strong> Actions</strong> drop-down menu, and select<strong> Edit Services</strong>.</span>&nbsp;</p>
+<p><img src="images/1748625645034.jpg" alt="" width="978" height="367" /></p>
+<h3>2) Configure the Data Streaming Service</h3>
+<p>Toggle on the<strong> Data Streaming service</strong><span style="margin: 0px; padding: 0px;"><strong>,</strong>&nbsp;then&nbsp;expand its options<strong> </strong></span>by clicking the <strong>arrow</strong>. All writers in the workspace are included in the stream by default. Since Sven only wants to stream the HTML report back to the user running the workspace, deselect the<strong> Output KML writer </strong>from the list.&nbsp;</p>
+<p><img src="images/1746131357870.jpg" alt="" width="573" height="279" /></p>
+<p>Your workspace services look like the following image, then click<strong> Confirm</strong> to close the Configure Services window.&nbsp;</p>
+<p><img src="images/1746132164940.jpg" alt="" /></p>
+<h3>3) Run Workspace with Data Streaming Service</h3>
+<p>Back on the <strong>Workspaces</strong> page, click the<strong> workspace</strong> to open it to the Run Workspace page. Select the<strong> Data Streaming service</strong> and click<strong> Run</strong>.&nbsp;</p>
+<p><strong><img src="images/1748625796268.jpg" alt="" width="625" height="661" /></strong></p>
+<p>As the workspace runs on FME Flow, FME Flow displays a dialog stating that the data streaming service is processing the workspace.</p>
+<p><img src="images/1746132540191.jpg" alt="" width="765" height="182" /></p>
+<p>And once the translation is complete, FME Flow streams the HTML report back to you in the browser. It writes the KML files to C:\FMEData\Output, as specified by the writer.&nbsp;</p>
+<p><img src="images/1746132639213.jpg" alt="" /></p>
+<p>The HTML report separates Parks by neighborhood and displays a map and a table for each neighborhood. The maps are interactive, so you can click on parks and zoom in or out from each park's location. Each park record in the table includes a link to the Park information on the City of Vancouver website. Sven knows this will be very useful for his colleagues to quickly access summary information for the Parks!&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>This HTML report is created using the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/htmlreportgenerator.htm" target="_blank" rel="noopener">HTML Report Generator</a>. See <a href="https://support.safe.com/hc/en-us/articles/25407606894477-How-to-Customize-HTML-Reports" target="_blank" rel="noopener">How to Customize HTML Reports</a> for a tutorial on creating and customizing HTML reports.&nbsp;</p>
+</blockquote>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/DeployWorkflowsWithFMEFlow/publish-a-workspace-to-fme-flow.fmw" target="_self">Starting workspace</a> | <span style="font-weight: 400;">C:\FMEData\Workspaces\DeployWorkflowsWithFMEFlow\publish-a-workspace-to-fme-flow.fmw</span></li>
+</ul>
+<h2>Data Streaming Service</h2>
+<p>The FME Flow Data Streaming transformation service functions similarly to the Data Download service. However, the Data Streaming service immediately streams a workspace's output data to the user's browser rather than as a downloadable zip file. Again, the Writers selected for the Data Streaming service do not write the data in the file location you set in the writer; instead, FME Flow presents the data to the user in the browser upon job completion.&nbsp;</p>
+<p>Data Streaming output can include <span class="mc-variable ProductNames.workspace variable">workspace</span>s that write HTML, PNG, KML, GeoRSS, GeoJSON, PDF, and others. If the format is not compatible with streaming in the browser, the data automatically downloads as a file. If there are multiple output files, FME Flow will package them into a zip file that downloads immediately. The user does not have to click a download link, as with the Data Download service.&nbsp;</p>
+<h2>Editing Services on FME Flow</h2>
+<p>To change a workspace's services on FME Flow, navigate to Workspaces and open the repository that contains the workspace. Select the workspace, expand the Actions button, and select Edit Services.</p>
+<p><img src="images/1745961245611.jpg" alt="" width="944" height="318" /></p>
+<p>The Configure Services window opens, and you can toggle services on or off for the workspaces.&nbsp;</p>
+<p><img src="images/1747259967920.jpg" alt="" width="682" height="347" /></p>
+<p>You should expand the service and select which writer (s) to include in the resulting output. You may also optionally specify reader feature types to receive HTTP content instead of reading the dataset.&nbsp;</p>
+<p><img src="images/1747260156443.jpg" alt="" width="641" height="400" /></p>
+<p>When working with Data Download or Data Streaming services, you don't need to include all writers from your workspace &mdash; you can select just one writer to participate in the service. Any writers you leave out will behave like the Job Submitter service, writing their data directly to the output location specified in the writer parameters. Only the writer you've included in the service will deliver its output through Data Download or Data Streaming. Keep in mind that the Data Streaming service can only stream a single file back to you at a time, so if you include multiple writers, FME Flow will automatically group the output into a zip file and download it instead.</p>
+<h2>Exercise</h2>
+<p><img src="images/1776440038927.png" alt="" width="214" height="227" /></p>
+<p>Sven continues working on his Vancouver Parks and Neighborhoods workflow and, after using the Data Download service, he thinks the Data Streaming service might better suit his workflow. He can immediately stream the HTML report back to the user and write the KML files to a file location.&nbsp;</p>
+<p>Currently, the workspace's registered services are only Data Download and Job Submitter. Sven doesn't want to repeat the publishing process to add the Data Streaming service to the workspace's registered services. Instead, Sven would like to change the workspace's services directly on FME Flow.&nbsp;</p>
+<p>For this exercise, follow the steps below to configure Sven's workspace to use the Data Streaming service on FME Flow.&nbsp;</p>
+<h3>1) Edit Workspace Services</h3>
+<p>On FME Flow, open<strong> Workspaces, </strong>then&nbsp;select the <strong>Training repository</strong>.&nbsp;<span style="margin: 0px; padding: 0px;">Check the box to select the<strong> workspace</strong>, open the<strong> Actions</strong> drop-down menu, and select<strong> Edit Services</strong>.</span>&nbsp;</p>
+<p><img src="images/1748625645034.jpg" alt="" width="978" height="367" /></p>
+<h3>2) Configure the Data Streaming Service</h3>
+<p>Toggle on the<strong> Data Streaming service</strong><span style="margin: 0px; padding: 0px;"><strong>,</strong>&nbsp;then&nbsp;expand its options<strong> </strong></span>by clicking the <strong>arrow</strong>. All writers in the workspace are included in the stream by default. Since Sven only wants to stream the HTML report back to the user running the workspace, deselect the<strong> Output KML writer </strong>from the list.&nbsp;</p>
+<p><img src="images/1746131357870.jpg" alt="" width="573" height="279" /></p>
+<p>Your workspace services look like the following image, then click<strong> Confirm</strong> to close the Configure Services window.&nbsp;</p>
+<p><img src="images/1746132164940.jpg" alt="" /></p>
+<h3>3) Run Workspace with Data Streaming Service</h3>
+<p>Back on the <strong>Workspaces</strong> page, click the<strong> workspace</strong> to open it to the Run Workspace page. Select the<strong> Data Streaming service</strong> and click<strong> Run</strong>.&nbsp;</p>
+<p><strong><img src="images/1748625796268.jpg" alt="" width="625" height="661" /></strong></p>
+<p>As the workspace runs on FME Flow, FME Flow displays a dialog stating that the data streaming service is processing the workspace.</p>
+<p><img src="images/1746132540191.jpg" alt="" width="765" height="182" /></p>
+<p>And once the translation is complete, FME Flow streams the HTML report back to you in the browser. It writes the KML files to C:\FMEData\Output, as specified by the writer.&nbsp;</p>
+<p><img src="images/1746132639213.jpg" alt="" /></p>
+<p>The HTML report separates Parks by neighborhood and displays a map and a table for each neighborhood. The maps are interactive, so you can click on parks and zoom in or out from each park's location. Each park record in the table includes a link to the Park information on the City of Vancouver website. Sven knows this will be very useful for his colleagues to quickly access summary information for the Parks!&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>This HTML report is created using the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/htmlreportgenerator.htm" target="_blank" rel="noopener">HTML Report Generator</a>. See <a href="https://support.safe.com/hc/en-us/articles/25407606894477-How-to-Customize-HTML-Reports" target="_blank" rel="noopener">How to Customize HTML Reports</a> for a tutorial on creating and customizing HTML reports.&nbsp;</p>
+</blockquote>
