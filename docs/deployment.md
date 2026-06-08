@@ -52,14 +52,14 @@ Two options:
 You'll need SSH access (ask Sam if you don't have it). Then run:
 
 ```
-ssh fmetrain@fme-train.safe.com bash /opt/fme-train/bin/deploy-prod.sh --rollback
+ssh fmetrain@fme-train.base.safe.com bash /opt/fme-train/bin/deploy-prod.sh --rollback
 ```
 
 The `--rollback` flag tells the deploy script to read the SHA at `/var/lib/fme-train/last-good-sha` (the last deploy that passed its post-deploy health check) and re-deploy it. It does *not* update the last-good-sha file — by definition the rollback target is already the previously-known-good version.
 
 ## Reading the health page
 
-The production health endpoint is <https://fme-train.safe.com/health>. Open it in any browser. It returns JSON that looks like this:
+The production health endpoint is <https://fme-train.base.safe.com/health>. Open it in any browser. It returns JSON that looks like this:
 
 ```
 {
@@ -81,12 +81,12 @@ Quick sanity check after a deploy: refresh the `/health` URL and confirm `versio
 
 If a user reports an outage or a deploy failed unexpectedly, walk through these four checks in order:
 
-1. **Is `/health` returning 200 with `"status": "ok"`?** Open <https://fme-train.safe.com/health> in a browser. If the JSON shows `"status": "degraded"` or the page doesn't load at all, move to step 2. If `status` is `ok` and `version` matches what you expected, the app is healthy — the user's issue is probably elsewhere (browser cache, their account, etc.).
+1. **Is `/health` returning 200 with `"status": "ok"`?** Open <https://fme-train.base.safe.com/health> in a browser. If the JSON shows `"status": "degraded"` or the page doesn't load at all, move to step 2. If `status` is `ok` and `version` matches what you expected, the app is healthy — the user's issue is probably elsewhere (browser cache, their account, etc.).
 
 2. **What does the web service log say?** SSH into the box and tail the systemd journal. ("SSH" means logging into a remote server over a secure shell; "systemd" is the Linux service manager that keeps the app running and restarts it on crashes.)
 
    ```
-   ssh fmetrain@fme-train.safe.com journalctl -u fme-train-web -n 100 --no-pager
+   ssh fmetrain@fme-train.base.safe.com journalctl -u fme-train-web -n 100 --no-pager
    ```
 
    This shows the last 100 lines of the web service log. Look for Python tracebacks, repeated 5xx errors, or `[deploy]`-prefixed lines from the most recent deploy.
@@ -94,7 +94,7 @@ If a user reports an outage or a deploy failed unexpectedly, walk through these 
 3. **Is the disk full?** A full disk is the most common preventable production outage. Run:
 
    ```
-   ssh fmetrain@fme-train.safe.com df -h /var/lib/fme-train /
+   ssh fmetrain@fme-train.base.safe.com df -h /var/lib/fme-train /
    ```
 
    Each line of output has a `Use%` column. If either filesystem is over 85%, page Sam — disk cleanup needs a human decision about what to delete.
@@ -105,7 +105,7 @@ If a user reports an outage or a deploy failed unexpectedly, walk through these 
 
 The deploy workflow reads three secrets from the repository's GitHub Actions settings (Settings → Secrets and variables → Actions):
 
-- **`DEPLOY_HOST`** — the EC2 instance's hostname (e.g. `fme-train.safe.com`).
+- **`DEPLOY_HOST`** — the EC2 instance's hostname (e.g. `fme-train.base.safe.com`).
 - **`DEPLOY_USER`** — the Linux user the workflow SSHes in as. This is `fmetrain`.
 - **`DEPLOY_SSH_KEY`** — the private SSH key (the multi-line PEM-format one, including the `-----BEGIN OPENSSH PRIVATE KEY-----` and `-----END` lines) for the deploy user. Paste the whole file contents into the secret value. To rotate: generate a new keypair, add the public half to `~fmetrain/.ssh/authorized_keys` on the box, then update this secret with the new private half and remove the old line from `authorized_keys`.
 

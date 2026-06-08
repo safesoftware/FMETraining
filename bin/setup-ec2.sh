@@ -30,10 +30,15 @@ APP_REF="${APP_REF:-main}"
 PG_DB="${PG_DB:-fme_train}"
 PG_USER="${PG_USER:-fmetrain}"
 APP_REPO_URL="${APP_REPO_URL:-}"
-# Nginx server_name. certbot --nginx pattern-matches against this when
-# inserting the TLS redirect, so it must match the public DNS name —
-# `_` (catch-all) confuses certbot.
-SERVER_NAME="${SERVER_NAME:-fme-train.safe.com}"
+# Nginx server_name — must match the DNS name IT created (IS-20384).
+SERVER_NAME="${SERVER_NAME:-fme-train.base.safe.com}"
+# TLS: IT issued a *.base.safe.com wildcard cert (IS-20384). We install it
+# directly into nginx — no certbot / Let's Encrypt (the host isn't publicly
+# reachable, so HTTP-01 can't run). Drop the cert + key at these paths before
+# (or after) running this script; nginx is configured to read them.
+TLS_DIR="${TLS_DIR:-/etc/ssl/fme-train}"
+TLS_CERT="${TLS_CERT:-${TLS_DIR}/fullchain.pem}"
+TLS_KEY="${TLS_KEY:-${TLS_DIR}/privkey.pem}"
 
 log() { printf '\n[setup] %s\n' "$*"; }
 
@@ -51,7 +56,6 @@ dnf install -y --allowerasing \
   python3.11 python3.11-pip \
   postgresql16-server postgresql16 postgresql16-contrib \
   nginx \
-  certbot python3-certbot-nginx \
   jq curl
 
 # --------------------------------------------------------------------------
@@ -94,6 +98,13 @@ loginctl enable-linger "${APP_USER}"
 
 log "Ensuring ${APP_DIR} exists and is owned by ${APP_USER}…"
 install -d -o "${APP_USER}" -g "${APP_USER}" -m 0755 "${APP_DIR}"
+
+# Runtime state dir (KNOW-2298): deploy-prod.sh writes last-good-sha here and
+# the app's drafts_root defaults to /var/lib/fme-train/drafts. Create it owned
+# by the app user so neither falls back to a home-dir path.
+log "Ensuring /var/lib/fme-train state directory exists…"
+install -d -o "${APP_USER}" -g "${APP_USER}" -m 0755 /var/lib/fme-train
+install -d -o "${APP_USER}" -g "${APP_USER}" -m 0755 /var/lib/fme-train/drafts
 
 # --------------------------------------------------------------------------
 # 4. Application source + venv
@@ -232,16 +243,11 @@ sudo -u "${APP_USER}" XDG_RUNTIME_DIR=/run/user/$(id -u "${APP_USER}") \
 # 7. Nginx
 # --------------------------------------------------------------------------
 log "Writing nginx config (server_name=${SERVER_NAME})…"
-# certbot --nginx looks for a server block whose server_name already
-# contains the requested hostname so it can insert the TLS redirect +
-# HTTPS block. A catch-all `_` confuses it. Use the real hostname.
-cat > /etc/nginx/conf.d/fme-train.conf <<EOF
-server {
-  listen 80;
-  listen [::]:80;
-  server_name ${SERVER_NAME};
-
-  # certbot --nginx will append the redirect + TLS block here.
+# TLS is terminated here using IT's *.base.safe.com wildcard cert (IS-20384) —
+# no certbot. The proxy_pass block is shared; the listener depends on whether
+# the cert is already on disk. If the cert isn't present yet, we write an
+# HTTP-only config so `nginx -t` still passes, and print how to finish TLS.
+read -r -d '' PROXY_BLOCK <<EOF || true
   location / {
     proxy_pass http://127.0.0.1:8000;
     proxy_set_header Host              \$host;
@@ -250,8 +256,45 @@ server {
     proxy_read_timeout 300s;
     proxy_buffering off;  # SSE log streaming wants flushed writes
   }
+EOF
+
+if [[ -f "${TLS_CERT}" && -f "${TLS_KEY}" ]]; then
+  log "Wildcard cert found at ${TLS_CERT}; writing HTTPS config."
+  cat > /etc/nginx/conf.d/fme-train.conf <<EOF
+# Redirect HTTP → HTTPS.
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${SERVER_NAME};
+  return 301 https://\$host\$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  listen [::]:443 ssl;
+  server_name ${SERVER_NAME};
+
+  ssl_certificate     ${TLS_CERT};
+  ssl_certificate_key ${TLS_KEY};
+  ssl_protocols TLSv1.2 TLSv1.3;
+
+${PROXY_BLOCK}
 }
 EOF
+else
+  log "WARNING: TLS cert not found at ${TLS_CERT} / ${TLS_KEY}."
+  log "Writing HTTP-only config for now. Drop the *.base.safe.com cert + key"
+  log "at those paths and re-run this script (or reload nginx) to enable HTTPS."
+  cat > /etc/nginx/conf.d/fme-train.conf <<EOF
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${SERVER_NAME};
+
+${PROXY_BLOCK}
+}
+EOF
+fi
 nginx -t
 systemctl enable --now nginx
 systemctl reload nginx
@@ -269,8 +312,13 @@ cat <<EOF
          systemctl --user start fme-train-web
   3. Confirm /health responds locally:
        curl http://127.0.0.1:8000/health
-  4. Once DNS for fme-train.<your-domain> points at this box, get a TLS cert:
-       certbot --nginx -d fme-train.<your-domain>
+  4. Install IT's *.base.safe.com wildcard cert (IS-20384) for HTTPS:
+       sudo install -d -m 0755 ${TLS_DIR}
+       sudo cp fullchain.pem ${TLS_CERT}
+       sudo cp privkey.pem   ${TLS_KEY}   # chmod 600, root-owned
+       sudo bin/setup-ec2.sh              # re-run to write the HTTPS server block
+     Then from the office IP (72.2.40.92):
+       curl https://${SERVER_NAME}/health
   5. Deploy updates with bin/deploy-prod.sh.
 
 EOF
