@@ -1,0 +1,176 @@
+# .github/workflows/deploy-prod.yml — KNOW-2293
+#
+# Deploy the FME Training Automation app to the single production EC2 box.
+#
+# Two triggers:
+#   * push to main           — auto-deploy whatever just landed.
+#   * workflow_dispatch      — manual button with an optional `ref` input.
+#
+# Safe-to-merge-before-EC2-exists: the first step ("guard") checks that the
+# DEPLOY_HOST repo secret is non-empty. When the secret is unset (the state
+# today, before IT provisions the EC2 instance), the guard logs
+# "DEPLOY_HOST not set; skipping deploy" and the workflow exits 0. Every
+# subsequent step is gated on `steps.guard.outputs.ok == 'true'`.
+#
+# Pairs with KNOW-2296 (`bin/deploy-prod.sh` hardening — adds `--rollback`,
+# pre/post health gates, atomic checkout). The `if: failure()` rollback step
+# below depends on `--rollback` existing, so it's a no-op until KNOW-2296
+# merges. That's the intended pairing.
+#
+# All third-party actions are pinned to commit SHAs (not floating tags).
+# A pytest in tests/test_deploy_workflow.py asserts this on every CI run so
+# we don't regress to floating tags.
+
+name: Deploy to prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy (branch, tag, or full SHA). Defaults to main."
+        required: false
+        default: "main"
+        type: string
+  push:
+    branches:
+      - main
+
+# Serialise deploys: two pushes landing back-to-back, or a manual dispatch
+# colliding with a push, must not race on the same box. cancel-in-progress
+# is false so the second one waits rather than discarding the first.
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # ----------------------------------------------------------------
+      # 1. Resolve the ref to deploy.
+      #    push        -> github.sha (the commit that triggered the run)
+      #    dispatch    -> inputs.ref (default "main")
+      # ----------------------------------------------------------------
+      - name: Resolve deploy ref
+        id: resolve
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            REF="${{ inputs.ref }}"
+          else
+            REF="${{ github.sha }}"
+          fi
+          echo "Resolved deploy ref: ${REF}"
+          echo "ref=${REF}" >> "$GITHUB_OUTPUT"
+
+      # ----------------------------------------------------------------
+      # 2. Guard — exit cleanly when DEPLOY_HOST isn't configured yet.
+      #    This is what makes the workflow safe to land BEFORE the EC2
+      #    instance exists.
+      # ----------------------------------------------------------------
+      - name: Guard on DEPLOY_HOST secret
+        id: guard
+        run: |
+          set -euo pipefail
+          if [ -n "${{ secrets.DEPLOY_HOST }}" ]; then
+            echo "DEPLOY_HOST is set; proceeding with deploy."
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "DEPLOY_HOST not set; skipping deploy"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ----------------------------------------------------------------
+      # 3. Checkout. Mostly so the runner has the repo locally for any
+      #    future helpers; the actual deploy is `git fetch` + reset on
+      #    the box (driven by bin/deploy-prod.sh).
+      # ----------------------------------------------------------------
+      - name: Checkout repo at deploy ref
+        if: steps.guard.outputs.ok == 'true'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          ref: ${{ steps.resolve.outputs.ref }}
+
+      # ----------------------------------------------------------------
+      # 4. SSH to EC2 and run the deploy script.
+      #    setup-ec2.sh installs the app at /opt/fme-train owned by the
+      #    `fmetrain` user; bin/deploy-prod.sh expects to be invoked
+      #    from that directory.
+      # ----------------------------------------------------------------
+      - name: Deploy via SSH
+        if: steps.guard.outputs.ok == 'true'
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: 22
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            cd /opt/fme-train
+            bin/deploy-prod.sh "${{ steps.resolve.outputs.ref }}"
+
+      # ----------------------------------------------------------------
+      # 5. Tail the web service log so the workflow run shows what just
+      #    happened. Tries the user-mode unit (how setup-ec2.sh installs
+      #    it), falls back to the system unit just in case.
+      # ----------------------------------------------------------------
+      - name: Tail fme-train-web journal
+        if: steps.guard.outputs.ok == 'true'
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: 22
+          command_timeout: 1m
+          script: |
+            journalctl --user-unit fme-train-web -n 50 --no-pager \
+              || journalctl -u fme-train-web -n 50 --no-pager
+
+      # ----------------------------------------------------------------
+      # 6. External health check.
+      #    NOTE: requires DNS for fme-train.safe.com to point at the box
+      #    (pending IT). Until DNS lands this step will fail and trigger
+      #    the rollback below — that's why DEPLOY_HOST stays unset until
+      #    everything is wired.
+      # ----------------------------------------------------------------
+      - name: Health check
+        if: steps.guard.outputs.ok == 'true'
+        run: |
+          set -euo pipefail
+          url="https://fme-train.safe.com/health"
+          for attempt in 1 2 3 4; do
+            if curl -sfL --max-time 5 "$url" > /tmp/health.json; then
+              echo "Health check passed on attempt ${attempt}:"
+              cat /tmp/health.json
+              exit 0
+            fi
+            echo "Health check attempt ${attempt} failed; retrying…"
+            sleep 5
+          done
+          echo "Health check failed after 4 attempts" >&2
+          exit 1
+
+      # ----------------------------------------------------------------
+      # 7. Rollback on any failure of the deploy/log/health steps above.
+      #    Runs `bin/deploy-prod.sh --rollback` (KNOW-2296). Skipped when
+      #    the guard never fired, so a missing-secret run still exits 0.
+      # ----------------------------------------------------------------
+      - name: Rollback on failure
+        if: failure() && steps.guard.outputs.ok == 'true'
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: 22
+          command_timeout: 5m
+          script: |
+            set -euo pipefail
+            cd /opt/fme-train
+            bin/deploy-prod.sh --rollback
