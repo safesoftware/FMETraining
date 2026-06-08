@@ -4,7 +4,50 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
-from pipeline.skilljar_release import _rewrite_images, _upload_and_rewrite_images
+from pipeline.skilljar_release import (
+    _rewrite_images,
+    _swap_published_course_tags,
+    _upload_and_rewrite_images,
+)
+
+
+class TestSwapPublishedCourseTags:
+    """KNOW-2322: a published-course tag-association record is {"tag": {"id",
+    "name", "slug"}} with NO top-level 'id'. The old-version tag must be
+    removed using the tag id (tag_obj['id']), not a non-existent pt['id']."""
+
+    def test_removes_old_tag_using_tag_id_not_assoc_id(self):
+        pub_courses = [{"id": "pub1"}]
+        pub_tags = [{"tag": {"id": "old-tag-id", "name": "2025.1", "slug": "v2025-1"}}]
+        with patch("pipeline.skilljar_release._get_published_courses", return_value=pub_courses), \
+             patch("pipeline.skilljar_release._get_published_course_tags", return_value=pub_tags), \
+             patch("pipeline.skilljar_release._delete_published_course_tag") as mock_del, \
+             patch("pipeline.skilljar_release._add_published_course_tag") as mock_add:
+            lines = list(_swap_published_course_tags(
+                "academy.safe.com", "src-course",
+                old_version="2025.1", old_tag_id="old-tag-id",
+                new_tag_name="2026.1", new_tag_id="new-tag-id", api_key="k",
+            ))
+        # The delete must use the TAG id from the nested object, not pt['id'].
+        mock_del.assert_called_once_with("academy.safe.com", "pub1", "old-tag-id", "k")
+        mock_add.assert_called_once_with("academy.safe.com", "pub1", "new-tag-id", "k")
+        assert any("Removed tag '2025.1'" in ln for ln in lines)
+        assert any("Added tag '2026.1'" in ln for ln in lines)
+
+    def test_no_matching_old_tag_only_adds_new(self):
+        pub_courses = [{"id": "pub1"}]
+        pub_tags = [{"tag": {"id": "other", "name": "Beginner", "slug": "beginner"}}]
+        with patch("pipeline.skilljar_release._get_published_courses", return_value=pub_courses), \
+             patch("pipeline.skilljar_release._get_published_course_tags", return_value=pub_tags), \
+             patch("pipeline.skilljar_release._delete_published_course_tag") as mock_del, \
+             patch("pipeline.skilljar_release._add_published_course_tag") as mock_add:
+            list(_swap_published_course_tags(
+                "academy.safe.com", "src-course",
+                old_version="2025.1", old_tag_id="old-tag-id",
+                new_tag_name="2026.1", new_tag_id="new-tag-id", api_key="k",
+            ))
+        mock_del.assert_not_called()
+        mock_add.assert_called_once_with("academy.safe.com", "pub1", "new-tag-id", "k")
 
 _S3_ARGS = dict(s3_bucket="test-bucket", s3_key_id="fake-id", s3_secret="fake-secret")
 _S3_KEY = "skilljar-uploads/abc12345-photo.png"
