@@ -134,7 +134,7 @@ jobs:
 
       # ----------------------------------------------------------------
       # 6. External health check.
-      #    NOTE: requires DNS for fme-train.safe.com to point at the box
+      #    NOTE: requires DNS for fme-train.base.safe.com to point at the box
       #    (pending IT). Until DNS lands this step will fail and trigger
       #    the rollback below — that's why DEPLOY_HOST stays unset until
       #    everything is wired.
@@ -143,7 +143,7 @@ jobs:
         if: steps.guard.outputs.ok == 'true'
         run: |
           set -euo pipefail
-          url="https://fme-train.safe.com/health"
+          url="https://fme-train.base.safe.com/health"
           for attempt in 1 2 3 4; do
             if curl -sfL --max-time 5 "$url" > /tmp/health.json; then
               echo "Health check passed on attempt ${attempt}:"
