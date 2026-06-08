@@ -1739,9 +1739,14 @@ function leGetCleanHtml() {{
 
   // Strip the ../lesson_dir/ image prefix added by leRenderLesson
   const lessonBase = '../' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
+  // KNOW-2274: a contenteditable edit can serialise that relative src into an
+  // absolute URL against the page origin (e.g. http://localhost:8080/<dir>/images/x.png).
+  // Strip the origin + lesson_dir prefix back to a relative images/<file> too.
+  const absBase = window.location.origin + '/' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
   body.querySelectorAll('img[src]').forEach(img => {{
     const attrSrc = img.getAttribute('src') || '';
     if (attrSrc.startsWith(lessonBase)) img.setAttribute('src', attrSrc.slice(lessonBase.length));
+    else if (attrSrc.startsWith(absBase)) img.setAttribute('src', attrSrc.slice(absBase.length));
   }});
 
   // KNOW-2279: don't leak the popover-selection class into saved HTML

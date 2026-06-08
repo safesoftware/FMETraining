@@ -1,11 +1,15 @@
 """
 Ensure every <img src> in lesson HTML points at a permanent URL on our
-public-read S3 bucket. Three passes:
+public-read S3 bucket. Four passes:
 
   1. data:image/...;base64,... URIs        → decode + upload (extract_and_upload_data_uris)
   2. relative paths (images/foo.png)       → upload from <repo>/<lesson_dir>/images/<file>
   3. expiring pre-signed URLs (everpath /  → match by filename to local images/<file>,
      ?Expires=)                              upload local file. If no local match, raise.
+  4. absolute app-origin URLs              → a contenteditable edit can serialise a
+     (http://localhost:8080/.../images/      relative src into an absolute URL against
+     <file>, or the prod host)               the page origin. Re-host by filename match.
+                                             Defensive: if no local match, leave it alone.
 
 Permanent URLs (https://s3.{region}.amazonaws.com/<our-bucket>/... and any
 other http(s):// URL with no `Expires=` query param) are left alone.
@@ -142,7 +146,7 @@ def upload_lesson_images(
     <repo_root>/<lesson_dir>/images/ folder.
 
     upload_log entries: {"mime": str, "size": int | None, "url": str, "source": str}
-    where source ∈ {"data_uri", "relative", "expiring_url"}.
+    where source ∈ {"data_uri", "relative", "expiring_url", "absolute_url"}.
     """
     upload_log: list[dict] = []
 
@@ -208,6 +212,48 @@ def upload_lesson_images(
         for original, replacement in seen.items():
             # The HTML may have HTML-encoded the ampersands when serialised;
             # replace both forms so we hit it regardless.
+            html = html.replace(original, replacement)
+            html = html.replace(original.replace("&", "&amp;"), replacement)
+
+    # Pass 4 — absolute URLs a contenteditable edit serialised against the page
+    # origin (e.g. http://localhost:8080/<dir>/images/<file>, or the prod host).
+    # These are unreachable for live viewers. Re-host by filename match against
+    # the local images/ folder. Defensive belt-and-braces: if there is no local
+    # match we leave the URL alone (unlike the expiring pass, which raises) —
+    # an unrelated external image must survive untouched.
+    images_dir = repo_root / lesson_dir / "images"
+    absolute_local: list[tuple[str, str]] = []
+    for m in _HTTP_SRC_RE.finditer(html):
+        url = m.group(1).replace("&amp;", "&")
+        parsed = urllib.parse.urlparse(url)
+        if parsed.netloc.endswith("amazonaws.com"):
+            continue  # permanent (or already re-hosted) S3 URL — leave alone
+        path = urllib.parse.unquote(parsed.path)
+        if "/images/" not in path:
+            continue
+        filename = Path(path).name
+        if (images_dir / filename).exists():
+            absolute_local.append((url, filename))
+    if absolute_local:
+        if not (s3_bucket and s3_key_id and s3_secret):
+            raise RuntimeError(
+                "Cannot re-host absolute image URLs: AWS_S3_BUCKET, "
+                "AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY must be set in .env."
+            )
+        seen_abs: dict[str, str] = {}
+        for url, filename in absolute_local:
+            if url in seen_abs:
+                continue
+            public_url, _key = _s3_put(
+                images_dir / filename, s3_bucket, s3_key_id, s3_secret, s3_region
+            )
+            seen_abs[url] = public_url
+            upload_log.append({
+                "source": "absolute_url",
+                "filename": filename,
+                "url": public_url,
+            })
+        for original, replacement in seen_abs.items():
             html = html.replace(original, replacement)
             html = html.replace(original.replace("&", "&amp;"), replacement)
 

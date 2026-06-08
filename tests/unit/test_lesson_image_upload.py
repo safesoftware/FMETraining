@@ -7,6 +7,7 @@ Covers extract_and_upload_data_uris (data: URI pass) and upload_lesson_images
 from __future__ import annotations
 
 import base64
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -15,6 +16,21 @@ from pipeline.lesson_image_upload import (
     extract_and_upload_data_uris,
     upload_lesson_images,
 )
+
+_REPORT_PY = (Path(__file__).resolve().parents[2] / "pipeline" / "report.py").read_text()
+
+
+class TestReportClientStripsAbsoluteOrigin:
+    """KNOW-2274 client layer: leGetCleanHtml must strip an absolute page-origin
+    prefix (location.origin + '/' + encodedDir + '/'), not just the relative
+    ../dir/ prefix, so a contenteditable-serialized absolute src is saved as a
+    relative images/<file>. Behaviour is browser JS; this is the repo's static
+    presence check (the authoritative re-host guarantee is the server-side
+    Pass 4 covered by TestUploadLessonImages)."""
+
+    def test_clean_html_strips_absolute_origin_image_prefix(self):
+        assert "absBase" in _REPORT_PY
+        assert "window.location.origin" in _REPORT_PY
 
 _S3_ARGS = dict(
     s3_bucket="test-bucket",
@@ -237,6 +253,47 @@ class TestUploadLessonImages:
         assert any(e.get("source") == "data_uri" for e in log)
         assert any(e.get("source") == "relative" for e in log)
         assert any(e.get("source") == "expiring_url" for e in log)
+
+    def test_absolute_app_origin_url_rehosted_via_local_file_match(self, tmp_path):
+        """KNOW-2274: a contenteditable edit can serialize a relative
+        images/<file> src into an absolute URL against the page origin, e.g.
+        http://localhost:8080/<from-version-dir>/images/safe_note.png. Such a
+        URL is unreachable for live viewers and must be re-hosted by filename
+        match against the local images/ folder (Pass 4)."""
+        lesson_dir, images_dir = self._setup_lesson(tmp_path)
+        (images_dir / "safe_note.png").write_bytes(b"\x89PNG fake-note")
+        leaked = (
+            "http://localhost:8080/2025.0/fme-form-basic/"
+            "Transform%20Data%202025.0/Read%20Web%20Data/images/safe_note.png"
+        )
+        html = f'<p><img src="{leaked}"></p>'
+        s3_url = "https://s3.us-east-1.amazonaws.com/test-bucket/skilljar-uploads/safe_note.png"
+
+        with patch("pipeline.lesson_image_upload._s3_put",
+                   return_value=(s3_url, "skilljar-uploads/safe_note.png")) as mock_put:
+            result_html, log = upload_lesson_images(
+                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+            )
+
+        assert "localhost:8080" not in result_html
+        assert s3_url in result_html
+        mock_put.assert_called_once()
+        assert any(e.get("source") == "absolute_url" for e in log)
+
+    def test_absolute_app_origin_url_no_local_match_left_alone(self, tmp_path):
+        """Pass 4 is defensive belt-and-braces: if there's no local file to
+        re-host, leave the URL untouched (do not raise, unlike the expiring
+        pass) — we can't do better and an unrelated external image must survive."""
+        lesson_dir, _ = self._setup_lesson(tmp_path)
+        leaked = "http://localhost:8080/some/dir/images/not-local.png"
+        html = f'<p><img src="{leaked}"></p>'
+        with patch("pipeline.lesson_image_upload._s3_put") as mock_put:
+            result_html, log = upload_lesson_images(
+                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+            )
+        assert result_html == html
+        assert log == []
+        mock_put.assert_not_called()
 
     def test_no_uploads_needed_returns_html_unchanged(self, tmp_path):
         lesson_dir, _ = self._setup_lesson(tmp_path)
