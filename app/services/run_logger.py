@@ -18,7 +18,7 @@ import asyncio
 import logging
 from collections.abc import Sequence
 from contextlib import asynccontextmanager
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import AsyncIterator
 

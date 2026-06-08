@@ -7,7 +7,6 @@ so no file I/O or API calls are required.
 
 from __future__ import annotations
 
-import pytest
 
 from pipeline.changelog import _filter_issues
 

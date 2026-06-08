@@ -27,7 +27,6 @@ from pipeline.utils import (
     edit_plans_path,
     generate_run_id,
     get_completed_steps,
-    get_run_job,
     manifest_path,
     changelog_path,
     recommendations_path,

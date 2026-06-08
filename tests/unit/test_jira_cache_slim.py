@@ -9,11 +9,8 @@ future changes can't quietly reintroduce description persistence.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import patch
 
-import pytest
 
 from pipeline import changelog as changelog_module
 

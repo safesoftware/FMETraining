@@ -331,7 +331,6 @@ def _detect_column_positions(csv_path: Path) -> dict[str, list[int]]:
     """
     # Read only the header row using Python's csv module to avoid any pandas
     # renaming or multiline complications
-    import csv as csv_module
     with open(csv_path, encoding="utf-8", errors="replace", newline="") as f:
         reader = csv_module.reader(f)
         raw_headers = next(reader)

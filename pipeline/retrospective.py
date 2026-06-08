@@ -24,7 +24,6 @@ Output:
 
 import argparse
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from difflib import SequenceMatcher

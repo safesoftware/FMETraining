@@ -7,15 +7,12 @@ Covers: run ID generation, version parsing, path helpers, runs registry.
 from __future__ import annotations
 
 import json
-import re
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
 from pipeline.config import (
     COURSE_VERSION_SUFFIX_PATTERN,
-    EXERCISE_STEP_PATTERN,
-    VERSION_FOLDER_PATTERN,
 )
 
 

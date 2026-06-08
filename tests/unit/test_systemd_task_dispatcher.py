@@ -7,7 +7,6 @@ we don't actually want unit tests forking real subprocesses, so the
 """
 from __future__ import annotations
 
-import asyncio
 from typing import Any
 
 import pytest

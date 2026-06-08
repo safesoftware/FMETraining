@@ -44,8 +44,8 @@ class _StubSkilljarClient:
             yield c
 
     async def list_lessons(self) -> AsyncIterator[dict]:
-        for l in self._lessons:
-            yield l
+        for lesson in self._lessons:
+            yield lesson
 
     async def list_published_paths(self) -> AsyncIterator[dict]:
         for p in self._published_paths:
@@ -107,7 +107,7 @@ async def test_full_sync_upserts_all_three_tables(async_session_factory) -> None
     assert by_id["c2"].version_label == "2025.0"
     assert by_id["c1"].title == "Connect To Data"
 
-    lesson_by_id = {l.skilljar_lesson_id: l for l in lessons}
+    lesson_by_id = {ls.skilljar_lesson_id: ls for ls in lessons}
     # FK link populated because the parent course was synced first.
     assert lesson_by_id["l1"].course_id == "c1"
     assert lesson_by_id["l1"].last_modified_remote is not None
@@ -136,9 +136,9 @@ async def test_lesson_with_unknown_course_id_gets_null_fk(async_session_factory)
     assert counts.lessons_seen == 1
     assert counts.lessons_inserted == 1
     async with async_session_factory() as session:
-        l = await session.get(SkilljarLesson, "orphan")
-    assert l is not None
-    assert l.course_id is None  # FK left null
+        lesson = await session.get(SkilljarLesson, "orphan")
+    assert lesson is not None
+    assert lesson.course_id is None  # FK left null
 
 
 # ---- idempotency --------------------------------------------------------

@@ -17,7 +17,6 @@ import hashlib
 import html as _html_module
 import json
 import re
-import time
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -26,7 +25,7 @@ from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm as atqdm
 
 from pipeline import config
-from pipeline.utils import edit_plans_path, recommendations_path
+from pipeline.utils import edit_plans_path
 
 
 # ---------------------------------------------------------------------------

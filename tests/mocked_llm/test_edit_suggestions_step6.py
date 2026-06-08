@@ -9,11 +9,9 @@ safe_note.png filter, suggested_text HTML stripping, already-present add filter.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
-import pytest
 
 from pipeline.edit_suggestions import _call_openai
 

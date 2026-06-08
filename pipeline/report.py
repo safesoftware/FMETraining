@@ -13,7 +13,6 @@ then open http://localhost:8080/artifacts/report-{RUN_ID}.html in your browser.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 
 from pipeline import config
@@ -73,7 +72,7 @@ def build_report(
         f.write(html)
 
     print(f"  Report written: {out_path.name}")
-    print(f"  To view: python serve.py  (run from project root, enables Save feature)")
+    print("  To view: python serve.py  (run from project root, enables Save feature)")
     print(f"  Then open: http://localhost:8080/artifacts/{out_path.name}")
     return out_path
 

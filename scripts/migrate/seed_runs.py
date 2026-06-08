@@ -45,7 +45,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Optional
 
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.db.engine import _get_or_create_session_factory

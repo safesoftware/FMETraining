@@ -101,7 +101,7 @@ def main() -> None:
         ),
     )
 
-    observability = ObservabilityStack(
+    ObservabilityStack(
         app,
         f"{prefix}Observability",
         config=config,

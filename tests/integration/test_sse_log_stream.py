@@ -144,9 +144,9 @@ async def test_last_event_id_skips_already_seen_rows(async_session_factory) -> N
     """Client reconnects with Last-Event-ID set to the highest id it saw.
     The stream should NOT replay rows up to and including that id."""
     await _seed_run(async_session_factory, "r2", status="running")
-    row1 = await _append_log(async_session_factory, "r2", "info", "first")
+    await _append_log(async_session_factory, "r2", "info", "first")
     row2 = await _append_log(async_session_factory, "r2", "info", "second")
-    row3 = await _append_log(async_session_factory, "r2", "info", "third")
+    await _append_log(async_session_factory, "r2", "info", "third")
     await _set_status(async_session_factory, "r2", "done")
 
     payload = await _drain(stream_logs(

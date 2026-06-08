@@ -30,7 +30,6 @@ from aws_cdk import Duration, RemovalPolicy, Stack, Tags
 from aws_cdk import aws_cloudfront as cloudfront
 from aws_cdk import aws_cloudfront_origins as cloudfront_origins
 from aws_cdk import aws_ec2 as ec2
-from aws_cdk import aws_iam as iam
 from aws_cdk import aws_kms as kms
 from aws_cdk import aws_rds as rds
 from aws_cdk import aws_s3 as s3

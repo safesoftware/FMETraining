@@ -220,7 +220,7 @@ async def test_runs_with_drafts_aggregates(
     body = res.json()
     by_run = {r["run_id"]: r for r in body["runs"]}
     assert {"run-1", "run-2"} <= set(by_run.keys())
-    statuses_run1 = {l["status"] for l in by_run["run-1"]["lessons"]}
-    statuses_run2 = {l["status"] for l in by_run["run-2"]["lessons"]}
+    statuses_run1 = {ls["status"] for ls in by_run["run-1"]["lessons"]}
+    statuses_run2 = {ls["status"] for ls in by_run["run-2"]["lessons"]}
     assert statuses_run1 == {"in_progress"}
     assert statuses_run2 == {"saved"}

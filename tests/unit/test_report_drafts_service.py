@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from app.models import ReportLessonDraft, Run
+from app.models import Run
 from app.services import report_drafts as svc
 
 
