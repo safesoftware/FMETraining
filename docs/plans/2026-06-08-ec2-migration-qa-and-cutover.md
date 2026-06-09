@@ -31,8 +31,12 @@ merge is the *last* QA stage, not the first.
 - **TLS:** IT-issued **`*.base.safe.com` wildcard cert** (Drive folder on the ticket). **No certbot / Let's Encrypt.**
 - Patch regularly (`dnf-automatic`) or SSM Patch Manager.
 
-> Code still says `fme-train.safe.com` + certbot in `setup-ec2.sh` and
-> `docs/deployment.md`. Fixing that is **Stage 4** below (KNOW-2295 / 2298).
+> **Reconciled (Stage 5, KNOW-2295/2298, done 2026-06-09):** `setup-ec2.sh`,
+> `docs/deployment.md`, the `.github/` deploy workflow, `pipeline/config.py`,
+> and the EC2-alternative architecture plan all now use
+> `fme-train.base.safe.com` + the wildcard cert + office-IP access; certbot is
+> gone. The original `…-deployment.md` plan was archived under
+> `docs/plans/archive/`.
 
 ---
 
@@ -176,10 +180,13 @@ acceptance completes in Stage 7).
 These reconcile the code with the locked IT decisions. **Being implemented in
 Phase A of this migration** (see the cutover plan). QA after implementation:
 
-1. **[auto]** Hostname + TLS reconciled (no stale references, no certbot):
+1. **[auto]** Hostname + TLS reconciled (no stale references, no certbot).
+   Grep the **whole tree** (the old `-- bin/ docs/ app/` scope missed stale
+   hostnames in `.github/` and `pipeline/`), excluding the historical archive
+   and this runbook's own descriptive prose:
    ```bash
-   git grep -n "fme-train\.safe\.com" -- bin/ docs/ app/      # expect: none (all base.safe.com)
-   git grep -n "certbot" -- bin/setup-ec2.sh                  # expect: none
+   git grep -n "fme-train\.safe\.com" -- . ':!docs/plans/archive/'   # expect: none (all base.safe.com)
+   git grep -n "certbot" -- bin/setup-ec2.sh                         # expect: none (only "no certbot" comments)
    grep -nE "ssl_certificate|listen 443|72\.2\.40\.92|base\.safe\.com" bin/setup-ec2.sh
    ```
 2. **[auto]** `setup-ec2.sh` provisions state dirs (KNOW-2298):

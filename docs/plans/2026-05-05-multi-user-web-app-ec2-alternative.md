@@ -1,13 +1,29 @@
 # Deployment: single EC2 + local services
 
-> **Status:** Approved 2026-05-05. Active deployment plan for v1.
-> Replaces `2026-05-05-multi-user-web-app-deployment.md` (kept on disk
-> as a record of the original heavier shape, marked superseded).
+> **Status:** Approved 2026-05-05. Active *architecture* plan for v1.
+> Replaces `archive/2026-05-05-multi-user-web-app-deployment.md` (archived
+> as a record of the original heavier shape).
 >
 > The architecture in `2026-04-29-multi-user-web-app.md` is still the
 > source of truth for application design (FastAPI, Postgres schema,
 > run lifecycle, content cache, release tab) — only the deployment
 > stack changes here.
+>
+> **Reconciled 2026-06-09 with IT's locked decisions (IS-20384):**
+> - **Hostname** is `fme-train.base.safe.com` (not `…safe.com`).
+> - **TLS** is an IT-issued `*.base.safe.com` **wildcard cert** installed
+>   directly into nginx — **no certbot / Let's Encrypt** (the box isn't
+>   publicly reachable, so ACME's HTTP-01 challenge can't run anyway).
+> - **Access** is locked to the **office IP `72.2.40.92` only** on 22/80/443
+>   — *not* "443 from anywhere". Obscure hostname + IP allowlist is the
+>   security posture.
+>
+> **For the actual first-time deploy, follow the authoritative runbook
+> `2026-06-08-ec2-migration-qa-and-cutover.md` (Stage 7, B0–B10).** The
+> "First-time deployment runbook" (Steps 1–5) and the TLS/DNS notes *below*
+> predate IS-20384: the hostnames are corrected, but treat their
+> certbot/Let's-Encrypt and from-anywhere-access mechanics as superseded by
+> the wildcard cert + office-IP allowlist described above.
 
 ---
 
@@ -26,18 +42,18 @@ Send IT this exact request:
 > - **Instance type:** `t4g.small` (2 vCPU, 2 GB RAM, ARM Graviton).
 > - **AMI:** Amazon Linux 2023 (latest). Default 30 GB gp3 root volume, encrypted.
 > - **Networking:** Default VPC, public subnet. Auto-assign public IP, then attach an Elastic IP and **don't release it** so the address survives a stop/start.
-> - **Security group:** allow **22/tcp** from my office IP (and yours), **80/tcp + 443/tcp** from anywhere. No other inbound.
+> - **Security group:** allow **22/80/443 tcp** from the office IP `72.2.40.92` only (IS-20384). No other inbound.
 > - **IAM role on the instance:** `AmazonSSMManagedInstanceCore` so we can use Session Manager as a fallback to SSH if my keys ever fail. (Read-only on AWS resources is fine; no write permissions needed.)
 > - **SSH access:** add my public key (attached) to the instance.
 > - **Tag:** `Project=fme-training-automation`, `Environment=production`, `Owner=sam.walker`.
 >
-> Plus: please add an **`A` record** `fme-train.safe.com` → the Elastic IP (TTL 300 is fine). I'll handle TLS via Let's Encrypt once DNS resolves.
+> Plus: please add an **`A` record** `fme-train.base.safe.com` → the Elastic IP (TTL 300 is fine), and issue a `*.base.safe.com` wildcard cert for TLS (the box isn't publicly reachable, so Let's Encrypt can't run).
 >
 > Estimated cost: ~$22/mo all-in. Cost ceiling for the project is $30/mo with a budget alarm at $25/mo — happy to set that up myself once I'm in.
 >
 > Closing out the heavier App Runner + Fargate + RDS plan as Won't Do (KNOW-2262 in Jira) — replacing it with this lighter shape.
 
-The output you need from IT: an SSH-able hostname or IP, plus confirmation that `fme-train.safe.com` resolves to it.
+The output you need from IT: an SSH-able hostname or IP, plus confirmation that `fme-train.base.safe.com` resolves to it.
 
 ### Step 2 — Provide secrets you'll need *(you, in parallel)*
 
@@ -90,26 +106,29 @@ curl http://127.0.0.1:8000/health
 
 ```bash
 # 1. Confirm DNS resolves
-dig +short fme-train.safe.com
+dig +short fme-train.base.safe.com
 # Expect: the EIP from step 1
 
-# 2. Get a free Let's Encrypt cert + auto-renewal cron
-sudo certbot --nginx -d fme-train.safe.com
-# Pick "redirect HTTP → HTTPS" when asked.
+# 2. Install IT's *.base.safe.com wildcard cert (IS-20384) — NOT certbot.
+#    Download fullchain.pem + privkey.pem from IT's Drive folder on the
+#    ticket, scp them to /etc/ssl/fme-train/, then:
+sudo nginx -t && sudo systemctl reload nginx
+# setup-ec2.sh already wrote the 443 server block + HTTP→HTTPS redirect
+# that references those cert paths.
 
 # 3. Confirm /health is reachable from the public internet
-curl https://fme-train.safe.com/health
+curl https://fme-train.base.safe.com/health
 # Expect: {"status":"ok",...}
 ```
 
 Then in the Google Cloud OAuth client (the one you created in B6 of the
-original deployment doc), add `https://fme-train.safe.com/auth/callback`
+original deployment doc), add `https://fme-train.base.safe.com/auth/callback`
 to "Authorized redirect URIs". Save.
 
 ### Step 5 — Routine deploys after this *(you, ~30 sec each)*
 
 ```bash
-ssh fmetrain@fme-train.safe.com
+ssh fmetrain@fme-train.base.safe.com
 bash /opt/fme-train/bin/deploy-prod.sh           # default: deploy origin/main
 bash /opt/fme-train/bin/deploy-prod.sh some-tag  # deploy a specific ref
 ```
@@ -148,7 +167,7 @@ the same box.**
 ## Architecture (Plan B)
 
 ```
-Browser  ── HTTPS ─►  Nginx (TLS, Let's Encrypt)  ─►  Uvicorn (FastAPI on :8000)
+Browser  ── HTTPS ─►  Nginx (TLS, *.base.safe.com wildcard cert)  ─►  Uvicorn (FastAPI on :8000)
                                                           │
                                   ┌───────────────────────┼─────────────────┐
                                   │                       │                 │
@@ -173,8 +192,8 @@ Browser  ── HTTPS ─►  Nginx (TLS, Let's Encrypt)  ─►  Uvicorn (FastA
   with newer Postgres in dnf and has a smaller AWS support gap).
 - **Disk:** 30 GB gp3 EBS volume. Encrypted at rest by default.
 - **Network:** default VPC, public subnet, security group allowing:
-  - port 22 from your IP (or via Session Manager — see below)
-  - port 80 + 443 from anywhere (Let's Encrypt + browser traffic)
+  - ports 22, 80, 443 from the office IP `72.2.40.92` only (IS-20384) — or
+    via Session Manager (see below)
   - no other inbound
 - **Address:** Elastic IP attached so a stop/start doesn't change DNS.
 
@@ -185,7 +204,7 @@ All managed by `systemd`:
 | Unit | Runs | Notes |
 |------|------|-------|
 | `postgresql.service` | Distro-provided Postgres 16 | DB lives at `/var/lib/postgresql`. Tuning: keep defaults — load is tiny. |
-| `nginx.service` | Reverse proxy + TLS termination | Single server block proxying to `127.0.0.1:8000`. Lets Encrypt cert via certbot, auto-renewing cron. |
+| `nginx.service` | Reverse proxy + TLS termination | Single server block proxying to `127.0.0.1:8000`. TLS via IT's `*.base.safe.com` wildcard cert (IS-20384) — no certbot. |
 | `fme-train-web.service` | `uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2` | The FastAPI app. `--workers 2` because at 5 users we want a tiny bit of HTTP concurrency, not because we need to scale. |
 | `fme-train-scheduler.service` | The scheduler half of `app/services/run_scheduler.py` | Continues to run as a background asyncio task in the FastAPI process — no separate unit needed, actually. (Listed here only to make explicit the same code path applies as Plan A.) |
 | (per-run, on-demand) `fme-train-worker@<run_id>.service` | `python -m worker` with `RUN_ID=...` injected | Templated systemd unit so each pipeline run gets its own service instance. Scheduler invokes `systemd-run --unit=fme-train-worker@<id> ...`; status visible in `systemctl status`. |
@@ -222,17 +241,18 @@ servers is small.
 
 ### TLS + DNS
 
-- **DNS:** ask IT to add an `A` record `fme-train.safe.com` → the EIP. One
-  IT request, lives forever.
-- **TLS:** certbot's `--nginx` plugin gets a free Let's Encrypt cert + auto-renews
-  via systemd timer.
+- **DNS:** IT added an `A` record `fme-train.base.safe.com` → the EIP (IS-20384).
+- **TLS:** IT-issued `*.base.safe.com` **wildcard cert** installed into nginx
+  (no certbot / Let's Encrypt — the box isn't publicly reachable, and access
+  is locked to the office IP `72.2.40.92`). Renewal is IT's responsibility on
+  the wildcard cert.
 
 ### Auth
 
 Same Google OIDC flow as Plan A — `authlib` + `itsdangerous`-signed cookies
 + `hd == safe.com` check. The deployment doesn't change the auth code at
 all; Sam still creates an OAuth client in Safe's GCP, redirect URL is
-`https://fme-train.safe.com/auth/callback`.
+`https://fme-train.base.safe.com/auth/callback`.
 
 ### Secrets
 
@@ -268,7 +288,7 @@ straightforward via SSM or an ed25519 deploy key — but it's not required.
 
 - App + Nginx logs go to `journalctl` (systemd unit logs) and `/var/log/nginx/`.
 - A 5-line shell uptime monitor cronned every 5 minutes:
-  `curl --fail https://fme-train.safe.com/health || mail -s 'fme-train down' team@…`
+  `curl --fail https://fme-train.base.safe.com/health || mail -s 'fme-train down' team@…`
 - AWS CloudWatch agent installed only if Sam wants metrics; not required.
 
 ### Hardening checklist
@@ -359,7 +379,7 @@ Cost delta: **~$100–175/month**, ≈ **$1,200–2,100/year**, ≈
 |---|---|
 | AWS CDK (Python flavour) | Linux systemd basics |
 | App Runner deployment model | Nginx config (one server block) |
-| Fargate task definitions | `certbot` once |
+| Fargate task definitions | installing an nginx TLS cert once |
 | RDS knobs (instance class, storage, backups) | `pg_dump` / `pg_restore` |
 | Secrets Manager + IAM least-privilege | OS file permissions for `/etc/fme-train/env` |
 | CloudWatch + log groups + alarms | `journalctl` |
@@ -440,10 +460,10 @@ None of those apply to a 5-person internal training automation tool.
 4. KNOW-2262 (AWS CDK) gets reclassified as "deferred — keep code on
    branch, do not deploy." Closes as `Won't Do for v1`.
 5. Confirm IT will provide one EC2 instance with admin SSH access in their
-   AWS account, plus the DNS record for `fme-train.safe.com`.
+   AWS account, plus the DNS record for `fme-train.base.safe.com`.
 
 The conversation with IT is now: "we'll launch one t4g.small in your
-account, put it behind `fme-train.safe.com`, ssh-managed by me. Cost
+account, put it behind `fme-train.base.safe.com`, ssh-managed by me. Cost
 ceiling: $30/month. Backups: nightly EBS + nightly pg_dump to S3."
 
 That's a request IT can approve in a sentence.
