@@ -91,6 +91,27 @@ If `~/.claude.json` does not exist yet (you haven't logged in), skip this step �
 
 Then use **Dev Containers: Rebuild and Reopen in Container** in VS Code.
 
+### Troubleshooting: container won't build (or Claude won't connect) on the company VPN
+
+If the container fails to build while you're connected to the corporate VPN (Cisco AnyConnect) — typically a `docker pull ... i/o timeout` on `mcr.microsoft.com` — and Claude inside the container can't reach `api.anthropic.com`, the cause is almost always an **MTU mismatch**, not the VPN blocking traffic.
+
+The VPN tunnel uses a smaller MTU (observed: **1390**) than Docker/WSL's default network (**1500**). Small TCP handshakes connect, but the larger TLS packets get silently dropped inside the tunnel ("MTU black hole"), so pulls hang and `api.anthropic.com` calls fail. The Windows host itself works because Windows auto-clamps to the VPN's MTU; WSL2/Docker does not.
+
+**Quick check** (while on the VPN, from PowerShell) — the second ping failing confirms it:
+```powershell
+ping mcr.microsoft.com -f -l 1362 -n 2   # ~1390 bytes — should reply
+ping mcr.microsoft.com -f -l 1472 -n 2   # 1500 bytes — "needs to be fragmented but DF set"
+```
+
+**Fix — put WSL in mirrored networking mode** so it inherits the host's adapters, routes, and MTU automatically (works on or off VPN, no toggling). Add to `~/.wslconfig` (Windows user home, e.g. `C:\Users\<you>\.wslconfig`):
+```ini
+[wsl2]
+networkingMode=mirrored
+```
+Then run `wsl --shutdown` and **fully restart Docker Desktop**. Verify with `wsl -d Ubuntu -e sh -c "ip link show eth0 | grep -o 'mtu [0-9]*'"` — you should see `mtu 1390`, after which the build and Claude both work.
+
+**Fallback** if mirrored mode misbehaves: revert that change and instead set `"mtu": 1350` in Docker Desktop → Settings → Docker Engine (more scoped — fixes container/runtime networking but may not fix the daemon's own base-image pull).
+
 ---
 
 ## Prerequisites
