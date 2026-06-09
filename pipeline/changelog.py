@@ -104,9 +104,20 @@ def build_changelog(
         print("  [dry-run] Skipping changelog write.")
         return changelog
 
+    # Strip 'description' before persisting: it contains customer PII.
+    # The in-memory `changelog` keeps full descriptions so same-process steps
+    # can use them without an extra Jira fetch.
+    slim_changelog = {
+        **changelog,
+        "issues": [
+            {k: v for k, v in i.items() if k != "description"}
+            for i in issues
+        ],
+    }
+
     out_path = changelog_path(run_id, output_dir)
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(changelog, f, indent=2, ensure_ascii=False)
+        json.dump(slim_changelog, f, indent=2, ensure_ascii=False)
 
     print(f"  Changelog written: {out_path.name}")
     return changelog
@@ -320,7 +331,6 @@ def _detect_column_positions(csv_path: Path) -> dict[str, list[int]]:
     """
     # Read only the header row using Python's csv module to avoid any pandas
     # renaming or multiline complications
-    import csv as csv_module
     with open(csv_path, encoding="utf-8", errors="replace", newline="") as f:
         reader = csv_module.reader(f)
         raw_headers = next(reader)

@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import os
 import re
 import sys
 import urllib.error
@@ -34,8 +35,6 @@ try:
     load_dotenv(REPO_ROOT / ".env")
 except ImportError:
     pass
-
-import os
 
 SKILLJAR_API_BASE = "https://api.skilljar.com/v1"
 DEFAULT_OUTPUT = REPO_ROOT / "data" / "skilljar-mapping.json"

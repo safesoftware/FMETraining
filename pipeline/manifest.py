@@ -8,15 +8,12 @@ HTML file, and writes artifacts/manifest-{RUN_ID}.json.
 from __future__ import annotations
 
 import json
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 
 from tqdm import tqdm
 
-from pipeline import config
 from pipeline.config import (
-    COURSE_VERSION_SUFFIX_PATTERN,
     VERSION_FOLDER_PATTERN,
     load_product_mapping,
 )
@@ -26,7 +23,6 @@ from pipeline.utils import (
     manifest_path,
     parse_lesson_path,
     parse_version,
-    sort_key_version,
     strip_course_version,
 )
 

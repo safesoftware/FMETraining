@@ -446,8 +446,44 @@ def _add_published_course_tag(domain: str, pub_course_id: str, tag_id: str, api_
     )
 
 
-def _delete_published_course_tag(domain: str, pub_course_id: str, assoc_id: str, api_key: str) -> None:
-    _request("DELETE", f"/domains/{domain}/published-courses/{pub_course_id}/tags/{assoc_id}", api_key)
+def _delete_published_course_tag(domain: str, pub_course_id: str, tag_id: str, api_key: str) -> None:
+    _request("DELETE", f"/domains/{domain}/published-courses/{pub_course_id}/tags/{tag_id}", api_key)
+
+
+def _swap_published_course_tags(
+    domain: str,
+    source_course_id: str,
+    *,
+    old_version: str | None,
+    old_tag_id: str | None,
+    new_tag_name: str,
+    new_tag_id: str,
+    api_key: str,
+):
+    """Yield log lines while swapping the version tag on every published course
+    for ``source_course_id`` on ``domain``: remove the old-version tag (if the
+    course carries one) and add the new-version tag.
+
+    KNOW-2322: a published-course tag-association record is shaped
+    ``{"tag": {"id", "name", "slug"}}`` with **no top-level id**, so the old tag
+    is removed by its tag id (``tag_obj["id"]``) — the DELETE endpoint's path
+    param is the tag id — not a non-existent association id.
+    """
+    pub_courses = _get_published_courses(domain, source_course_id, api_key)
+    yield f"  Found {len(pub_courses)} published course record(s)."
+    for pub in pub_courses:
+        pub_id = pub["id"]
+        pub_tags = _get_published_course_tags(domain, pub_id, api_key)
+        if old_version:
+            for pt in pub_tags:
+                tag_obj = pt.get("tag", {})
+                if tag_obj.get("id") == old_tag_id or tag_obj.get("name") == old_version:
+                    tag_id = tag_obj.get("id")
+                    if tag_id:
+                        _delete_published_course_tag(domain, pub_id, tag_id, api_key)
+                        yield f"  Removed tag '{old_version}' from pub course {pub_id}"
+        _add_published_course_tag(domain, pub_id, new_tag_id, api_key)
+        yield f"  Added tag '{new_tag_name}' to pub course {pub_id}"
 
 
 def _delete_lesson(lesson_id: str, api_key: str) -> None:
@@ -521,7 +557,7 @@ def execute_release(
                     _patch_course(archive_course_id, {"labels": archive_labels}, api_key)
                     yield f"  Created archive course id={archive_course_id}"
 
-                    for stub in sorted(old_lesson_stubs, key=lambda l: l.get("order", 0)):
+                    for stub in sorted(old_lesson_stubs, key=lambda ls: ls.get("order", 0)):
                         detail = _get_lesson(stub["id"], api_key)
                         new_archived_lesson = _create_lesson(
                             archive_course_id,
@@ -612,7 +648,7 @@ def execute_release(
         if push_errors:
             yield f"  {len(push_errors)} lesson(s) had push errors: {', '.join(push_errors)}"
         if dry_run:
-            yield f"  Would PATCH {len([l for l in lessons if l.get('mapped') and l.get('has_local_file')])} lesson(s)."
+            yield f"  Would PATCH {len([ls for ls in lessons if ls.get('mapped') and ls.get('has_local_file')])} lesson(s)."
 
         # ------------------------------------------------------------------
         # Step 3 — Rename course (skipped for drafts — already has correct name)
@@ -652,25 +688,18 @@ def execute_release(
                         yield f"  Created new org tag: '{new_tag_name}'"
                     new_tag_id = tag_by_name[new_tag_name]
 
-                    pub_courses = _get_published_courses(domain, source_course_id, api_key)
-                    yield f"  Found {len(pub_courses)} published course record(s)."
+                    yield from _swap_published_course_tags(
+                        domain, source_course_id,
+                        old_version=old_version,
+                        old_tag_id=tag_by_name.get(old_version) if old_version else None,
+                        new_tag_name=new_tag_name,
+                        new_tag_id=new_tag_id,
+                        api_key=api_key,
+                    )
 
-                    for pub in pub_courses:
-                        pub_id: str = pub["id"]
-                        pub_tags = _get_published_course_tags(domain, pub_id, api_key)
-
-                        if old_version:
-                            old_tag_id = tag_by_name.get(old_version)
-                            for pt in pub_tags:
-                                tag_obj = pt.get("tag", {})
-                                if tag_obj.get("id") == old_tag_id or tag_obj.get("name") == old_version:
-                                    _delete_published_course_tag(domain, pub_id, pt["id"], api_key)
-                                    yield f"  Removed tag '{old_version}' from pub course {pub_id}"
-
-                        _add_published_course_tag(domain, pub_id, new_tag_id, api_key)
-                        yield f"  Added tag '{new_tag_name}' to pub course {pub_id}"
-
-                except RuntimeError as exc:
+                # A tag-update failure must not abort the release after Steps 1-3
+                # have already archived/pushed/renamed — surface it and move on.
+                except (RuntimeError, KeyError) as exc:
                     yield f"  ERROR updating tags: {exc}"
             else:
                 old_v = old_version or "(unknown)"
@@ -746,7 +775,7 @@ def link_draft_course(
     def _normalise(s: str) -> str:
         return s.lower().strip()
 
-    skilljar_by_title: dict[str, dict] = {_normalise(l.get("title", "")): l for l in skilljar_lessons}
+    skilljar_by_title: dict[str, dict] = {_normalise(ls.get("title", "")): ls for ls in skilljar_lessons}
     local_by_normalised: dict[str, str] = {_normalise(f): f for f in local_folders}
 
     matched = []

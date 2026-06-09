@@ -12,10 +12,8 @@ from __future__ import annotations
 
 import base64
 import json
-import shutil
 import threading
 import urllib.request
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest

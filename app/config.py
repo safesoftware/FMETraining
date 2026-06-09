@@ -39,12 +39,34 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO")
 
     # ---- Database --------------------------------------------------------
-    # Phase 0 leaves the actual SQLAlchemy engine wiring to KNOW-2260; we just
-    # read the URL here so the rest of the stack can pick it up later.
     database_url: Optional[str] = Field(
         default=None,
-        description="postgresql+psycopg://user:pass@host/db. Optional in Phase 0.",
+        description="postgresql+asyncpg://user:pass@host/db. Optional at startup; "
+                    "required before the scheduler dispatches anything.",
     )
+
+    # ---- Run scheduler / worker -----------------------------------------
+    # Team-wide concurrency cap on simultaneously running pipeline runs.
+    # See plan section 3 — the scheduler enforces this before dispatch.
+    run_concurrency: int = Field(default=2, ge=1)
+    # How often the scheduler polls runs.status='queued' (seconds).
+    scheduler_poll_interval_s: float = Field(default=2.0, gt=0)
+    # Selects how the scheduler dispatches workers:
+    #   'stub'       — in-process callable (tests, ad-hoc dev)
+    #   'in-process' — runs the worker as an asyncio task in the same
+    #                  Python process. Local dev default when DATABASE_URL
+    #                  is set but no real systemd is available.
+    #   'systemd'    — production: spawns a templated systemd user unit
+    #                  per run via `systemctl --user start`. See
+    #                  docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md.
+    task_dispatcher: str = Field(default="stub")
+
+    # ---- Draft storage ---------------------------------------------------
+    # Where lesson-draft HTML bodies are persisted on disk. The original
+    # plan stored these in S3; the EC2 deployment keeps them on the box
+    # under /var/lib/fme-train/drafts so backups are part of the EBS
+    # snapshot. Tests override this to a temp dir.
+    drafts_root: str = Field(default="/var/lib/fme-train/drafts")
 
     # ---- Sessions / auth -------------------------------------------------
     # Required once auth lands (KNOW-2259); optional in Phase 0 so the skeleton

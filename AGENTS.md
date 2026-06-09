@@ -54,7 +54,7 @@ After every meaningful chunk of progress, comment on the issue with:
 Whenever you transition an issue to **Ready for QA** — whether the work is complete and awaiting human verification, or you've hit a question that blocks progress — the **same** transition comment must include:
 
 1. **Status summary** — one or two sentences on where things stand.
-2. **Verification steps** — numbered, copy-pasteable commands or click-paths a human can run, with expected output. Be specific. Bad: "test the new endpoint." Good: "1. `curl -i http://localhost:8000/api/runs` → expect 401 with body `{\"detail\":\"Not authenticated\"}`."
+2. **Verification steps** — numbered, copy-pasteable commands or click-paths a human can run, with expected output. Be specific. Bad: "test the new endpoint." Good: "1. `curl -i http://localhost:8000/api/runs` → expect 401 with body `{\"detail\":\"Not authenticated\"}`." **The Jira ticket is the canonical home for these steps**, not the PR. QA reads Jira, not GitHub. Putting the manual / browser / live-integration steps only in the PR's "Test plan" section is incomplete — they must also appear on the ticket. If every verification step is automated and there are no manual ones, say so explicitly: *"All verification automated; no manual steps required."* It is fine — encouraged — to mirror the steps in the PR body too, but the ticket is the source of truth.
 3. **Open questions** — bulleted list, or "None" if there are none.
 4. **`@mention`** — tag `sam.walker@safe.com` so the user gets notified.
 
@@ -101,8 +101,9 @@ If a later plan supersedes an earlier one, mark the earlier file with a "Status:
 
 Existing plans:
 - `docs/plans/2026-04-29-multi-user-web-app.md` — architecture decisions for the multi-user web app rebuild (KNOW-2257). The deployment shape it sketches (App Runner + Fargate + RDS + …) is **superseded** by the EC2 alternative below for v1.
-- `docs/plans/2026-05-05-multi-user-web-app-deployment.md` — original AWS managed-services deployment runbook. **Superseded** by the EC2 alternative.
+- `docs/plans/archive/2026-05-05-multi-user-web-app-deployment.md` — original AWS managed-services deployment runbook. **Superseded** by the EC2 alternative (archived).
 - `docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md` — single-EC2 deployment for v1. The active deployment plan.
+  - `docs/deployment.md` — operator-facing runbook for the active deployment plan: how to deploy, roll back, read `/health`, and triage when something looks wrong (KNOW-2294).
 
 ## Critical Rules
 

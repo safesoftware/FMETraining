@@ -8,9 +8,7 @@ build_manifest() and asserts the output structure. No API calls required.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
-import pytest
 
 from pipeline.manifest import build_manifest
 
@@ -146,7 +144,6 @@ class TestBuildManifestLessonScope:
             dry_run=True,
         )
         for lesson in manifest["lessons"]:
-            lesson_version = float(lesson["version"].replace(".", "", 1).zfill(6))
             # Simpler check: version string in lesson should be 2024.2, not 2026.1+
             assert lesson["version"] == tree["version"]
 

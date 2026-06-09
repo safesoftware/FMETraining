@@ -17,7 +17,10 @@ from pathlib import Path
 from serve import _sanitize_lesson_html
 
 
-_REPORT_PY = Path("/workspaces/fme-training-automation/pipeline/report.py").read_text()
+# Resolve relative to the repo root (tests/unit/ -> repo root) so this works
+# both on the host and inside the container, where the tree lives at /app.
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_REPORT_PY = (_REPO_ROOT / "pipeline" / "report.py").read_text()
 
 
 class TestSanitizeStripsPopupChrome:

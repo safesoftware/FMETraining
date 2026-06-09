@@ -1,30 +1,35 @@
 # Deployment: single EC2 + local services
 
-> **Status:** Approved 2026-05-05. Active deployment plan for v1.
-> Replaces `2026-05-05-multi-user-web-app-deployment.md` (kept on disk
-> as a record of the original heavier shape, marked superseded).
->
-> **Update 2026-06-04 — VPN access.** IT requires the app to sit behind
-> their VPN. The hostname is **`fme-train.base.safe.com`** and only
-> resolves / is routable from inside the VPN — you must be on the VPN to
-> reach it. Two consequences are **open IT asks**, not yet decided:
-> (1) **TLS** — the Let's Encrypt HTTP-01 flow (`certbot --nginx`) below
-> needs inbound port 80 from the public internet, which the VPN likely
-> removes; the cert mechanism (DNS-01 vs. an IT-issued internal cert)
-> is TBD with IT. (2) **Ingress** — the `80+443 from anywhere` security
-> group rule should likely tighten to the VPN CIDR; range TBD from IT.
-> Both are flagged inline below.
+> **Status:** Approved 2026-05-05. Active *architecture* plan for v1.
+> Replaces `archive/2026-05-05-multi-user-web-app-deployment.md` (archived
+> as a record of the original heavier shape).
 >
 > The architecture in `2026-04-29-multi-user-web-app.md` is still the
 > source of truth for application design (FastAPI, Postgres schema,
 > run lifecycle, content cache, release tab) — only the deployment
 > stack changes here.
+>
+> **Reconciled 2026-06-09 with IT's locked decisions (IS-20384):**
+> - **Hostname** is `fme-train.base.safe.com` (not `…safe.com`).
+> - **TLS** is an IT-issued `*.base.safe.com` **wildcard cert** installed
+>   directly into nginx — **no certbot / Let's Encrypt** (the box isn't
+>   publicly reachable, so ACME's HTTP-01 challenge can't run anyway).
+> - **Access** is locked to the **office IP `72.2.40.92` only** on 22/80/443
+>   — *not* "443 from anywhere". Obscure hostname + IP allowlist is the
+>   security posture.
+>
+> **For the actual first-time deploy, follow the authoritative runbook
+> `2026-06-08-ec2-migration-qa-and-cutover.md` (Stage 7, B0–B10).** The
+> "First-time deployment runbook" (Steps 1–5) and the TLS/DNS notes *below*
+> predate IS-20384: the hostnames are corrected, but treat their
+> certbot/Let's-Encrypt and from-anywhere-access mechanics as superseded by
+> the wildcard cert + office-IP allowlist described above.
 
 ---
 
 ## First-time deployment runbook
 
-The steps below take us from "we have an idea" to "the team can sign in at the URL." Step 1 (infra) is **done**; the only open IT asks are the DNS record and the Google OAuth client. Steps 2, 3, 5 are things **I** do over an SSH session with you watching.
+The five steps below take a fresh AWS account from "we have an idea" to "the team can sign in at the URL." Steps 1 and 4 are things **you** do (in the AWS / DNS / GCP consoles); steps 2, 3, 5 are things **I** do over an SSH session with you watching.
 
 ### Step 1 — Instance, Elastic IP, and DNS *(done 2026-06-04)*
 
@@ -34,18 +39,18 @@ The instance, Elastic IP, security group, and key pair were created directly via
 |---|---|
 | Instance | `i-0389b1e00a2661746` — `t4g.small`, Amazon Linux 2023 ARM64, 30 GB gp3 (encrypted) |
 | VPC / subnet | `vpc-01d6d635aa6fd6181` (FME Training-vpc) / `subnet-081826309e7c2e41c` (public1-us-west-2a) |
-| Security group | `sg-0e5a5a8774ee07f9d` (`fme-train`): 22/tcp from the operator IP, 80+443/tcp from anywhere — ⚠️ **to tighten to the VPN CIDR** (range TBD from IT, see Step 4) |
+| Security group | `sg-0e5a5a8774ee07f9d` (`fme-train`): **22/80/443 from the office IP `72.2.40.92` only** (IS-20384) — revoke any "from anywhere" rule at cutover (runbook B0) |
 | Elastic IP | **`44.241.192.143`** (`eipalloc-034acf685f5906c51`) |
 | Key pair | `fme-train` (ed25519) |
-| SSH | `ec2-user@44.241.192.143` |
+| SSH | `ec2-user@44.241.192.143` (from the office IP) |
 
-> ⚠️ Provisioned using the shared `fmetraining` IAM user (the S3 service account), and SSH is currently pinned to a single operator IP. Both are tracked for cleanup — dedicated IAM principal + SSM-based access — in **KNOW-2309**.
+> ⚠️ Provisioned using the shared `fmetraining` IAM user (the S3 service account), and SSH is currently pinned to the operator IP. Both are tracked for cleanup — dedicated IAM principal + SSM-based access — in **KNOW-2309**.
 
-**Remaining IT asks** (filed in the `IS` service desk):
+**IT asks — resolved (IS-20384) + remaining:**
 
-- **DNS** (**IS-20384**): VPN-internal `A` record `fme-train.base.safe.com` → `44.241.192.143` (TTL 300), resolvable only from inside the VPN. ⚠️ Because the host is no longer publicly reachable, the Let's Encrypt HTTP-01 flow in Step 4 won't work as written — **confirm the TLS mechanism with IT** (DNS-01 challenge, or an IT-issued internal/`*.base.safe.com` cert).
-- **VPN ingress** (**IT ask, TBD**): the VPN CIDR range to scope the security group's 80/443 rule to (replacing `from anywhere`). Request alongside the DNS record.
-- **Google OAuth client** (**IS-20383**): Internal-consent Web client in Safe's GCP; see Step 4 for the redirect URIs.
+- **DNS (IS-20384, resolved):** `A` record `fme-train.base.safe.com` → `44.241.192.143` (TTL 300).
+- **Access + TLS (IS-20384, resolved):** access locked to the **office IP `72.2.40.92` only** on 22/80/443 (not VPN-wide); TLS via an **IT-issued `*.base.safe.com` wildcard cert** installed into nginx — no Let's Encrypt (the box isn't publicly reachable, so HTTP-01 can't run).
+- **Google OAuth client (IS-20383, open):** Internal-consent Web client in Safe's GCP; see Step 4 for the redirect URIs.
 
 ### Step 2 — Provide secrets you'll need *(you, in parallel)*
 
@@ -55,9 +60,9 @@ Gather these so they're ready to paste into `/etc/fme-train/env` in step 3:
 [  ] OpenAI API key
 [  ] Jira base URL, user email, API token, filter ID
 [  ] Skilljar API key (use existing for now; rotate to a service-account key later)
-[  ] Google OAuth client ID + secret  (requested from IT in IS-20383; Internal-consent Web client)
+[  ] Google OAuth client ID + secret  (create in safesoftware.atlassian's GCP — see B6 of the original deployment plan)
 [  ] Session signing key (just run `openssl rand -hex 32` in your terminal)
-[  ] AWS access key + secret for S3 image upload (existing `fmetraining` IAM user keys in .env — to be replaced per KNOW-2309)
+[  ] AWS access key + secret for S3 image upload (use the existing `fmetraining` IAM user keys you already have in .env)
 ```
 
 ### Step 3 — Provision and start the app *(I drive, you watch)*
@@ -96,29 +101,19 @@ curl http://127.0.0.1:8000/health
 
 ### Step 4 — Wire up TLS and the Google OAuth callback *(you, ~5 min)*
 
-**You must be connected to the VPN for the steps below** — `fme-train.base.safe.com`
-only resolves and routes from inside it.
-
 ```bash
-# 1. Confirm DNS resolves (while on the VPN)
+# 1. Confirm DNS resolves
 dig +short fme-train.base.safe.com
 # Expect: the EIP from step 1
-```
 
-**2. TLS — ⚠️ open IT decision.** The previous `certbot --nginx` command
-used the Let's Encrypt **HTTP-01** challenge, which needs inbound port 80
-from the public internet. Behind the VPN the host isn't publicly reachable,
-so that challenge can't complete. Confirm the approach with IT, then use one of:
+# 2. Install IT's *.base.safe.com wildcard cert (IS-20384) — NOT certbot.
+#    Download fullchain.pem + privkey.pem from IT's Drive folder on the
+#    ticket, scp them to /etc/ssl/fme-train/, then:
+sudo nginx -t && sudo systemctl reload nginx
+# setup-ec2.sh already wrote the 443 server block + HTTP→HTTPS redirect
+# that references those cert paths.
 
-- **Let's Encrypt DNS-01** — `certbot certonly --dns-<provider>` (or a manual
-  `--preferred-challenges dns` run with IT adding the TXT record). Works
-  without public reachability; wire the issued cert into the nginx server block.
-- **IT-issued cert** — an internal-CA or `*.base.safe.com` wildcard cert
-  supplied by IT, installed directly into nginx (no certbot). Set up renewal
-  per IT's process.
-
-```bash
-# 3. Confirm /health is reachable over the VPN
+# 3. Confirm /health is reachable from the public internet
 curl https://fme-train.base.safe.com/health
 # Expect: {"status":"ok",...}
 ```
@@ -130,7 +125,7 @@ to "Authorized redirect URIs". Save.
 ### Step 5 — Routine deploys after this *(you, ~30 sec each)*
 
 ```bash
-ssh fmetrain@fme-train.base.safe.com             # via the VPN
+ssh fmetrain@fme-train.base.safe.com
 bash /opt/fme-train/bin/deploy-prod.sh           # default: deploy origin/main
 bash /opt/fme-train/bin/deploy-prod.sh some-tag  # deploy a specific ref
 ```
@@ -169,7 +164,7 @@ the same box.**
 ## Architecture (Plan B)
 
 ```
-Browser  ── HTTPS ─►  Nginx (TLS, Let's Encrypt)  ─►  Uvicorn (FastAPI on :8000)
+Browser  ── HTTPS ─►  Nginx (TLS, *.base.safe.com wildcard cert)  ─►  Uvicorn (FastAPI on :8000)
                                                           │
                                   ┌───────────────────────┼─────────────────┐
                                   │                       │                 │
@@ -194,13 +189,10 @@ Browser  ── HTTPS ─►  Nginx (TLS, Let's Encrypt)  ─►  Uvicorn (FastA
   with newer Postgres in dnf and has a smaller AWS support gap).
 - **Disk:** 30 GB gp3 EBS volume. Encrypted at rest by default.
 - **Network:** default VPC, public subnet, security group allowing:
-  - port 22 from your IP (or via Session Manager — see below)
-  - port 80 + 443 — ⚠️ **scope to the VPN CIDR** (range TBD from IT), not
-    `from anywhere`, since access is VPN-only. (If TLS ends up using Let's
-    Encrypt DNS-01 or an IT-issued cert, port 80 needn't be open publicly.)
+  - ports 22, 80, 443 from the office IP `72.2.40.92` only (IS-20384) — or
+    via Session Manager (see below)
   - no other inbound
-- **Address:** Elastic IP attached so a stop/start doesn't change DNS. Reached
-  via `fme-train.base.safe.com`, which IT resolves only inside the VPN.
+- **Address:** Elastic IP attached so a stop/start doesn't change DNS.
 
 ### Services on the box
 
@@ -209,7 +201,7 @@ All managed by `systemd`:
 | Unit | Runs | Notes |
 |------|------|-------|
 | `postgresql.service` | Distro-provided Postgres 16 | DB lives at `/var/lib/postgresql`. Tuning: keep defaults — load is tiny. |
-| `nginx.service` | Reverse proxy + TLS termination | Single server block proxying to `127.0.0.1:8000`. Lets Encrypt cert via certbot, auto-renewing cron. |
+| `nginx.service` | Reverse proxy + TLS termination | Single server block proxying to `127.0.0.1:8000`. TLS via IT's `*.base.safe.com` wildcard cert (IS-20384) — no certbot. |
 | `fme-train-web.service` | `uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2` | The FastAPI app. `--workers 2` because at 5 users we want a tiny bit of HTTP concurrency, not because we need to scale. |
 | `fme-train-scheduler.service` | The scheduler half of `app/services/run_scheduler.py` | Continues to run as a background asyncio task in the FastAPI process — no separate unit needed, actually. (Listed here only to make explicit the same code path applies as Plan A.) |
 | (per-run, on-demand) `fme-train-worker@<run_id>.service` | `python -m worker` with `RUN_ID=...` injected | Templated systemd unit so each pipeline run gets its own service instance. Scheduler invokes `systemd-run --unit=fme-train-worker@<id> ...`; status visible in `systemctl status`. |
@@ -246,24 +238,18 @@ servers is small.
 
 ### TLS + DNS
 
-- **DNS:** ask IT to add a **VPN-internal** `A` record
-  `fme-train.base.safe.com` → the EIP. Resolvable only from inside the VPN,
-  so the app is unreachable from the public internet.
-- **TLS — ⚠️ open IT decision.** certbot's `--nginx` (HTTP-01) plugin needs
-  public port-80 reachability, which the VPN-only setup removes. Confirm with
-  IT and use either Let's Encrypt **DNS-01** (`certbot certonly`, TXT-record
-  challenge, auto-renews via systemd timer) or an **IT-issued internal /
-  `*.base.safe.com` cert** installed directly into nginx. See Step 4.
+- **DNS:** IT added an `A` record `fme-train.base.safe.com` → the EIP (IS-20384).
+- **TLS:** IT-issued `*.base.safe.com` **wildcard cert** installed into nginx
+  (no certbot / Let's Encrypt — the box isn't publicly reachable, and access
+  is locked to the office IP `72.2.40.92`). Renewal is IT's responsibility on
+  the wildcard cert.
 
 ### Auth
 
 Same Google OIDC flow as Plan A — `authlib` + `itsdangerous`-signed cookies
 + `hd == safe.com` check. The deployment doesn't change the auth code at
 all; Sam still creates an OAuth client in Safe's GCP, redirect URL is
-`https://fme-train.base.safe.com/auth/callback`. (Google's OAuth endpoints
-are reached from the user's browser, which is on the VPN — the callback
-redirects back to the VPN-internal host, so the flow works as long as the
-user is connected to the VPN.)
+`https://fme-train.base.safe.com/auth/callback`.
 
 ### Secrets
 
@@ -300,7 +286,6 @@ straightforward via SSM or an ed25519 deploy key — but it's not required.
 - App + Nginx logs go to `journalctl` (systemd unit logs) and `/var/log/nginx/`.
 - A 5-line shell uptime monitor cronned every 5 minutes:
   `curl --fail https://fme-train.base.safe.com/health || mail -s 'fme-train down' team@…`
-  (runs on the box itself, so it reaches the host over the VPN-internal name)
 - AWS CloudWatch agent installed only if Sam wants metrics; not required.
 
 ### Hardening checklist
@@ -391,7 +376,7 @@ Cost delta: **~$100–175/month**, ≈ **$1,200–2,100/year**, ≈
 |---|---|
 | AWS CDK (Python flavour) | Linux systemd basics |
 | App Runner deployment model | Nginx config (one server block) |
-| Fargate task definitions | `certbot` once |
+| Fargate task definitions | installing an nginx TLS cert once |
 | RDS knobs (instance class, storage, backups) | `pg_dump` / `pg_restore` |
 | Secrets Manager + IAM least-privilege | OS file permissions for `/etc/fme-train/env` |
 | CloudWatch + log groups + alarms | `journalctl` |
@@ -472,12 +457,10 @@ None of those apply to a 5-person internal training automation tool.
 4. KNOW-2262 (AWS CDK) gets reclassified as "deferred — keep code on
    branch, do not deploy." Closes as `Won't Do for v1`.
 5. Confirm IT will provide one EC2 instance with admin SSH access in their
-   AWS account, plus the VPN-internal DNS record for `fme-train.base.safe.com`,
-   the VPN CIDR for the security group, and the TLS approach (DNS-01 vs.
-   IT-issued cert).
+   AWS account, plus the DNS record for `fme-train.base.safe.com`.
 
 The conversation with IT is now: "we'll launch one t4g.small in your
-account, put it behind `fme-train.base.safe.com` on the VPN, ssh-managed by
-me. Cost ceiling: $30/month. Backups: nightly EBS + nightly pg_dump to S3."
+account, put it behind `fme-train.base.safe.com`, ssh-managed by me. Cost
+ceiling: $30/month. Backups: nightly EBS + nightly pg_dump to S3."
 
 That's a request IT can approve in a sentence.

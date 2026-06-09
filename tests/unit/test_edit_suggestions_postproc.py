@@ -264,7 +264,6 @@ class TestEnsureVersionChanges:
         )
         # The position covered by the LLM change should not get a duplicate
         # (second occurrence in "1) Open Workbench" section may still be added)
-        original_texts = [c["original_text"] for c in result]
         # No change should have the exact covered text auto-re-added
         assert existing[0] in result  # original change is preserved
 
