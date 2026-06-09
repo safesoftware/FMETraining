@@ -18,10 +18,13 @@ real ``lesson_dir`` strings contain slashes (e.g.
 ``{lesson_dir:path}`` URL converter would greedily swallow the
 ``/reset`` and ``/mark-saved`` action suffixes.
 
-TODO(KNOW-2259): gate every endpoint with the Google-OIDC
-``Depends(require_user)`` once that lands. Today the legacy
-``serve.py`` running alongside is also unauthenticated, so this matches
-existing posture; do not ship to production without the gate.
+Auth: every ``/api/`` path is gated by :class:`app.auth.middleware.AuthMiddleware`
+(fail-closed 401 for anonymous requests), so all endpoints here require a
+signed-in ``@safe.com`` Google-OIDC user. The ``PUT`` additionally takes
+``Depends(require_user)`` to attribute the write via ``updated_by``. Note the
+shared one-row-per-``(run_id, lesson_dir)`` model is intentional (collaborative
+draft); ``body_html`` is sanitized server-side in ``upsert_draft`` rather than
+partitioned per user.
 """
 
 from __future__ import annotations
@@ -33,7 +36,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth.dependencies import require_user
 from app.db.session import get_session
+from app.models.users import User
 from app.services import report_drafts as svc
 
 router = APIRouter(tags=["report-drafts"])
@@ -167,6 +172,7 @@ async def upsert_run_draft(
     run_id: str,
     body: UpsertDraftRequest,
     session: AsyncSession = Depends(get_session),
+    user: User = Depends(require_user),
 ) -> UpsertDraftResponse:
     try:
         row = await svc.upsert_draft(
@@ -176,6 +182,7 @@ async def upsert_run_draft(
             decisions=body.decisions,
             body_html=body.body_html,
             expected_updated_at=body.expected_updated_at,
+            updated_by=user.id,
         )
     except svc.StaleDraftError as exc:
         raise HTTPException(

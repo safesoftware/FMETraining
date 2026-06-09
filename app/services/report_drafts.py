@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.base import utc_now
 from app.models.report_drafts import ReportLessonDraft
 from app.models.runs import Run
+from app.services.html_sanitizer import sanitize_report_html
 
 
 class StaleDraftError(Exception):
@@ -69,7 +70,13 @@ async def upsert_draft(
     If *expected_updated_at* is provided and the existing row's
     ``updated_at`` differs, raises :class:`StaleDraftError` so the
     caller can return 409 + the current row.
+
+    ``body_html`` is sanitized here (the single write choke point) before
+    it is persisted: the report re-renders it via ``innerHTML`` and the
+    draft is shared across all ``@safe.com`` users of the run, so an
+    unsanitized payload would be stored cross-user XSS.
     """
+    body_html = sanitize_report_html(body_html)
     existing = await get_draft(session, run_id, lesson_dir)
     if existing is None:
         row = ReportLessonDraft(

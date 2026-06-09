@@ -27,6 +27,29 @@ async def _seed_run(
     return run
 
 
+async def test_upsert_sanitizes_body_html_on_write(
+    async_session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    """Stage-6 security fix: a stored XSS payload in body_html must be
+    stripped before it is persisted, so it can never reach another user's
+    browser via the report's innerHTML re-render."""
+    async with async_session_factory() as session:
+        await _seed_run(session)
+        row = await svc.upsert_draft(
+            session,
+            run_id="20260505T120000-aaaa",
+            lesson_dir="lp/course/lesson",
+            decisions={},
+            body_html='<p>ok</p><img src="x" onerror="alert(document.cookie)">'
+            "<script>steal()</script>",
+        )
+        await session.commit()
+        assert "onerror" not in (row.body_html or "")
+        assert "<script" not in (row.body_html or "")
+        assert "steal()" not in (row.body_html or "")
+        assert "<p>ok</p>" in (row.body_html or "")  # legitimate content kept
+
+
 async def test_upsert_inserts_then_updates(
     async_session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
