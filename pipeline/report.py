@@ -381,6 +381,9 @@ span.tc-orig-context {{ color: inherit; }}
       <button onclick="leFormatBlock('h3')" title="Heading 3">H3</button>
       <button onclick="leFormatBlock('h4')" title="Heading 4">H4</button>
       <span class="fmt-sep"></span>
+      <button onclick="leFormatList('ul')" title="Bullet list (Ctrl+Shift+8)">• List</button>
+      <button onclick="leFormatList('ol')" title="Numbered list (Ctrl+Shift+7)">1. List</button>
+      <span class="fmt-sep"></span>
       <button onclick="leInsertLink()" title="Insert / edit link">Link</button>
       <button onclick="leEditImage(event)" title="Edit image (alt text / replace)">Image</button>
     </div>
@@ -1103,6 +1106,11 @@ function leRenderLesson() {{
   const plan = leEditPlans.find(l => l.lesson_id === lessonId);
   if (!plan) return;
 
+  // KNOW-2279: drop any open image-edit popover before innerHTML below
+  // detaches the <img> it points at, otherwise Save/Replace would silently
+  // mutate the now-orphaned node.
+  leImgClosePopover();
+
   leUndoStack = [];
   leRedoStack = [];
   leUpdateHistoryBtns();
@@ -1313,6 +1321,17 @@ function leRenderLesson() {{
   const _lessonBodyEl = document.getElementById('le-lesson-body');
   _lessonBodyEl.contentEditable = 'true';
   _lessonBodyEl.spellcheck = false;
+  // KNOW-2275 (QA issue 1): make contenteditable emit <p>, not <div>, for blocks it
+  // creates — including the blocks produced when a list is toggled OFF. Chrome defaults
+  // this to 'div', and .lesson-edit-body div has no margin (only <p> gets margin:0.5em 0),
+  // so toggling a multi-line list off collapsed the original paragraph spacing. <p> keeps it.
+  document.execCommand('defaultParagraphSeparator', false, 'p');
+  // KNOW-2275: rebind list keyboard handler each render (innerHTML wipes listeners).
+  if (_lessonBodyEl._leListKeydownHandler) {{
+    _lessonBodyEl.removeEventListener('keydown', _lessonBodyEl._leListKeydownHandler);
+  }}
+  _lessonBodyEl._leListKeydownHandler = leHandleListKeydown;
+  _lessonBodyEl.addEventListener('keydown', leHandleListKeydown);
   document.getElementById('le-fmt-toolbar').style.display = 'flex';
   leUpdateNavFloat();
   // KNOW-2279: image-edit popover wiring (idempotent across re-renders)
@@ -1755,6 +1774,12 @@ function leGetCleanHtml() {{
     if (!img.getAttribute('class')) img.removeAttribute('class');
   }});
 
+  // KNOW-2279: don't leak the popover-selection class into saved HTML
+  body.querySelectorAll('img.le-img-selected').forEach(img => {{
+    img.classList.remove('le-img-selected');
+    if (!img.getAttribute('class')) img.removeAttribute('class');
+  }});
+
   return {{ html: body.innerHTML, plan }};
 }}
 
@@ -2105,6 +2130,128 @@ function leEditImage(ev) {{
   }}
   // Nothing selected → open in insert mode so paste/upload add a NEW image.
   leOpenImgPopoverForInsert();
+}}
+
+// KNOW-2275: bullet / numbered list support.
+// Uses document.execCommand('insertUnorderedList' | 'insertOrderedList') —
+// the browser handles toggle-off natively and wraps block ancestors only,
+// so contenteditable=false track-change spans (.tc-wrap) survive intact.
+function leFormatList(kind) {{
+  const editor = document.getElementById('le-lesson-body');
+  editor.focus();
+  const cmd = (kind === 'ol') ? 'insertOrderedList' : 'insertUnorderedList';
+  document.execCommand(cmd, false, null);
+}}
+
+// Find the nearest <li> ancestor of a node, bounded by the editor root.
+function leFindLiAncestor(node, editor) {{
+  let n = node;
+  if (n && n.nodeType === Node.TEXT_NODE) n = n.parentElement;
+  while (n && n !== editor) {{
+    if (n.tagName === 'LI') return n;
+    n = n.parentElement;
+  }}
+  return null;
+}}
+
+// Find the nearest block-level ancestor of a node, bounded by the editor root.
+function leFindBlockAncestor(node, editor) {{
+  const BLOCKS = ['P','DIV','LI','H1','H2','H3','H4','H5','H6','BLOCKQUOTE','PRE'];
+  let n = node;
+  if (n && n.nodeType === Node.TEXT_NODE) n = n.parentElement;
+  while (n && n !== editor) {{
+    if (BLOCKS.includes(n.tagName)) return n;
+    n = n.parentElement;
+  }}
+  return null;
+}}
+
+// KNOW-2275: keyboard handler — shortcuts, Tab nesting, Markdown auto-conversion.
+function leHandleListKeydown(e) {{
+  const editor = document.getElementById('le-lesson-body');
+  // Branch 1: Ctrl/Cmd+Shift+8 / 7 shortcuts.
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey) {{
+    if (e.code === 'Digit8') {{
+      e.preventDefault();
+      leFormatList('ul');
+      return;
+    }}
+    if (e.code === 'Digit7') {{
+      e.preventDefault();
+      leFormatList('ol');
+      return;
+    }}
+  }}
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  // Branch 2: Tab / Shift+Tab inside an <li> indents/outdents.
+  if (e.key === 'Tab') {{
+    const li = leFindLiAncestor(range.startContainer, editor);
+    if (!li) return;
+    e.preventDefault();
+    if (e.shiftKey) {{
+      // Only outdent when the <li>'s grandparent is another list, i.e.
+      // the item is genuinely nested. Calling execCommand('outdent') on
+      // a top-level <li> in Chrome SILENTLY UNWRAPS it from its <ul>/<ol>
+      // and replaces it with a plain block — destroying the list and
+      // any attached track-change wrappers. Bail out instead.
+      const parentList = li.parentElement;
+      const grandparent = parentList ? parentList.parentElement : null;
+      const isNested = grandparent && (
+        grandparent.tagName === 'UL' || grandparent.tagName === 'OL' ||
+        grandparent.tagName === 'LI'
+      );
+      if (!isNested) return;
+      document.execCommand('outdent', false, null);
+    }} else {{
+      document.execCommand('indent', false, null);
+    }}
+    return;
+  }}
+  // Branch 3: Markdown auto-conversion on Space.
+  // Pattern source: /^[-*]$/ for UL, /^\\d+\\.$/ for OL.
+  if (e.key === ' ' && !e.ctrlKey && !e.metaKey && !e.altKey) {{
+    const block = leFindBlockAncestor(range.startContainer, editor);
+    if (!block || block.tagName === 'LI') return;
+    // don't auto-convert blocks containing track-change spans —
+    // block.textContent would include their text, fooling the
+    // entire-block-content guard, and probe.deleteContents() could
+    // destroy the pill's data-* attributes.
+    if (block.querySelector('.tc-wrap')) return;
+    // Build a range from the start of the block to the caret.
+    const probe = document.createRange();
+    probe.setStart(block, 0);
+    probe.setEnd(range.startContainer, range.startOffset);
+    const prefixText = probe.toString();
+    // Only fire when the matched text is the entire content of the block —
+    // avoid hijacking "- " mid-sentence.
+    const blockText = block.textContent || '';
+    if (prefixText !== blockText) return;
+    let kind = null;
+    if (/^[-*]$/.test(prefixText)) kind = 'ul';
+    else if (/^\\d+\\.$/.test(prefixText)) kind = 'ol';
+    if (!kind) return;
+    e.preventDefault();
+    // Delete the matched prefix. The prefixText === blockText guard above
+    // guarantees the prefix WAS the block's entire content, so it is now empty.
+    probe.deleteContents();
+    // KNOW-2275 (QA issue 2): build the single-item list directly instead of
+    // calling execCommand('insertUnorderedList') on the now-empty block. On an
+    // empty block Chrome absorbs the FOLLOWING sibling block (the paragraph
+    // below) into the new list. Replacing only this block starts the bullet on
+    // its own line and leaves the paragraph below untouched.
+    const listEl = document.createElement(kind === 'ol' ? 'ol' : 'ul');
+    const li = document.createElement('li');
+    li.appendChild(document.createElement('br'));
+    listEl.appendChild(li);
+    block.parentNode.replaceChild(listEl, block);
+    const caret = document.createRange();
+    caret.setStart(li, 0);
+    caret.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(caret);
+  }}
 }}
 
 </script>

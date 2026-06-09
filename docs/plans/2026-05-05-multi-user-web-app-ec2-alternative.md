@@ -31,29 +31,26 @@
 
 The five steps below take a fresh AWS account from "we have an idea" to "the team can sign in at the URL." Steps 1 and 4 are things **you** do (in the AWS / DNS / GCP consoles); steps 2, 3, 5 are things **I** do over an SSH session with you watching.
 
-### Step 1 — Ask IT for the EC2 instance and DNS *(you)*
+### Step 1 — Instance, Elastic IP, and DNS *(done 2026-06-04)*
 
-Send IT this exact request:
+The instance, Elastic IP, security group, and key pair were created directly via the AWS API (boto3) using the account's existing credentials — not via an IT ticket. Provisioned resources (account `201369646709`, us-west-2):
 
-> Hi IT — for the FME Training Automation web app (KNOW-2257):
->
-> Could you launch one **`t4g.small`** Amazon Linux 2023 instance in the existing AWS account `201369646709` (us-east-1)? Configuration:
->
-> - **Instance type:** `t4g.small` (2 vCPU, 2 GB RAM, ARM Graviton).
-> - **AMI:** Amazon Linux 2023 (latest). Default 30 GB gp3 root volume, encrypted.
-> - **Networking:** Default VPC, public subnet. Auto-assign public IP, then attach an Elastic IP and **don't release it** so the address survives a stop/start.
-> - **Security group:** allow **22/80/443 tcp** from the office IP `72.2.40.92` only (IS-20384). No other inbound.
-> - **IAM role on the instance:** `AmazonSSMManagedInstanceCore` so we can use Session Manager as a fallback to SSH if my keys ever fail. (Read-only on AWS resources is fine; no write permissions needed.)
-> - **SSH access:** add my public key (attached) to the instance.
-> - **Tag:** `Project=fme-training-automation`, `Environment=production`, `Owner=sam.walker`.
->
-> Plus: please add an **`A` record** `fme-train.base.safe.com` → the Elastic IP (TTL 300 is fine), and issue a `*.base.safe.com` wildcard cert for TLS (the box isn't publicly reachable, so Let's Encrypt can't run).
->
-> Estimated cost: ~$22/mo all-in. Cost ceiling for the project is $30/mo with a budget alarm at $25/mo — happy to set that up myself once I'm in.
->
-> Closing out the heavier App Runner + Fargate + RDS plan as Won't Do (KNOW-2262 in Jira) — replacing it with this lighter shape.
+| Resource | Value |
+|---|---|
+| Instance | `i-0389b1e00a2661746` — `t4g.small`, Amazon Linux 2023 ARM64, 30 GB gp3 (encrypted) |
+| VPC / subnet | `vpc-01d6d635aa6fd6181` (FME Training-vpc) / `subnet-081826309e7c2e41c` (public1-us-west-2a) |
+| Security group | `sg-0e5a5a8774ee07f9d` (`fme-train`): **22/80/443 from the office IP `72.2.40.92` only** (IS-20384) — revoke any "from anywhere" rule at cutover (runbook B0) |
+| Elastic IP | **`44.241.192.143`** (`eipalloc-034acf685f5906c51`) |
+| Key pair | `fme-train` (ed25519) |
+| SSH | `ec2-user@44.241.192.143` (from the office IP) |
 
-The output you need from IT: an SSH-able hostname or IP, plus confirmation that `fme-train.base.safe.com` resolves to it.
+> ⚠️ Provisioned using the shared `fmetraining` IAM user (the S3 service account), and SSH is currently pinned to the operator IP. Both are tracked for cleanup — dedicated IAM principal + SSM-based access — in **KNOW-2309**.
+
+**IT asks — resolved (IS-20384) + remaining:**
+
+- **DNS (IS-20384, resolved):** `A` record `fme-train.base.safe.com` → `44.241.192.143` (TTL 300).
+- **Access + TLS (IS-20384, resolved):** access locked to the **office IP `72.2.40.92` only** on 22/80/443 (not VPN-wide); TLS via an **IT-issued `*.base.safe.com` wildcard cert** installed into nginx — no Let's Encrypt (the box isn't publicly reachable, so HTTP-01 can't run).
+- **Google OAuth client (IS-20383, open):** Internal-consent Web client in Safe's GCP; see Step 4 for the redirect URIs.
 
 ### Step 2 — Provide secrets you'll need *(you, in parallel)*
 
