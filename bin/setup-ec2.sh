@@ -207,7 +207,11 @@ Type=simple
 WorkingDirectory=${APP_DIR}
 EnvironmentFile=${ENV_FILE}
 ExecStartPre=${APP_DIR}/.venv/bin/alembic upgrade head
-ExecStart=${APP_DIR}/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2
+# --proxy-headers + --forwarded-allow-ips so uvicorn trusts nginx's
+# X-Forwarded-Proto/For: without them request.url.scheme is always "http"
+# behind the proxy, which would build http:// OAuth callback URLs and break
+# secure-cookie/redirect logic. Mirrors docker/entrypoint.sh.
+ExecStart=${APP_DIR}/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2 --proxy-headers --forwarded-allow-ips 127.0.0.1
 Restart=on-failure
 RestartSec=5
 

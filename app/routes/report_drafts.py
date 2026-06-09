@@ -215,12 +215,14 @@ async def mark_run_draft_saved(
     run_id: str,
     body: MarkSavedRequest,
     session: AsyncSession = Depends(get_session),
+    user: User = Depends(require_user),
 ) -> MarkSavedResponse:
     row = await svc.mark_saved(
         session,
         run_id=run_id,
         lesson_dir=body.lesson_dir,
         saved_to_version_path=body.saved_to_version_path,
+        updated_by=user.id,
     )
     if row.saved_to_version_at is None or row.saved_to_version_path is None:
         # mark_saved is contracted to set both; if it didn't, fail loudly

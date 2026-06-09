@@ -1774,12 +1774,6 @@ function leGetCleanHtml() {{
     if (!img.getAttribute('class')) img.removeAttribute('class');
   }});
 
-  // KNOW-2279: don't leak the popover-selection class into saved HTML
-  body.querySelectorAll('img.le-img-selected').forEach(img => {{
-    img.classList.remove('le-img-selected');
-    if (!img.getAttribute('class')) img.removeAttribute('class');
-  }});
-
   return {{ html: body.innerHTML, plan }};
 }}
 

@@ -118,9 +118,13 @@ jobs:
       # 5. Tail the web service log so the workflow run shows what just
       #    happened. Tries the user-mode unit (how setup-ec2.sh installs
       #    it), falls back to the system unit just in case.
+      #    Informational only — continue-on-error so a transient SSH flap
+      #    here can't fail the job and trigger the rollback step below on
+      #    an otherwise-healthy deploy. The real gate is the health check.
       # ----------------------------------------------------------------
       - name: Tail fme-train-web journal
         if: steps.guard.outputs.ok == 'true'
+        continue-on-error: true
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2  # v1.2.5
         with:
           host: ${{ secrets.DEPLOY_HOST }}
