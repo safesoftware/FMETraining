@@ -17,6 +17,7 @@ import os
 import sys
 
 from app.db.engine import _get_or_create_session_factory
+from app.services.pipeline_runner import make_step_body
 from app.services.worker_lifecycle import (
     TERMINAL_ERROR,
     run_worker,
@@ -64,6 +65,7 @@ def main() -> int:
             session_factory=session_factory,
             max_run_usd=max_run_usd,
             resume=resume,
+            step_body=make_step_body(),
         )
     )
     _logger.info("Worker exited with status=%s", final_status)

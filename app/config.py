@@ -98,6 +98,25 @@ class Settings(BaseSettings):
     aws_s3_bucket: Optional[str] = None
     aws_s3_region: str = "us-west-2"
 
+    # ---- Artifact storage ------------------------------------------------
+    # Root directory for per-run pipeline artifacts (manifests, changelogs,
+    # reports, edit plans). Plan B (single EC2): local disk only; no S3.
+    # Tests override this to a temp dir via the ARTIFACTS_ROOT env var.
+    artifacts_root: str = Field(
+        default="/var/lib/fme-train/artifacts",
+        description="Root dir for per-run artifacts (<artifacts_root>/<run_id>/). "
+                    "Set ARTIFACTS_ROOT=./artifacts in .env.compose for local dev.",
+    )
+
+    # Root of the lesson content tree (versioned HTML files). The worker
+    # resolves lesson paths relative to this. Defaults to the repo root.
+    lesson_content_root: str = Field(
+        default=".",
+        description="Absolute or relative path to the repo root containing "
+                    "versioned lesson folders (e.g. 2025.0/, 2026.1/). "
+                    "Set LESSON_CONTENT_ROOT=/app in the container.",
+    )
+
     # ---- Cost ceiling ----------------------------------------------------
     # Per-run dollar cap for OpenAI spend; enforced by the worker (KNOW-2261).
     max_run_usd: float = 50.0

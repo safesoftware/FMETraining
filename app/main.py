@@ -27,6 +27,7 @@ from app.auth import AuthMiddleware, init_google_oauth
 from app.config import get_settings
 from app.db.engine import _get_or_create_session_factory
 from app.routes import auth, drafts, health, index, report_drafts, skilljar, sse
+from app.services.pipeline_runner import make_step_body
 from app.services.run_scheduler import RunScheduler
 from app.services.task_dispatcher import (
     InProcessTaskDispatcher,
@@ -39,7 +40,10 @@ from app.services.worker_lifecycle import run_worker
 logger = logging.getLogger(__name__)
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
-ARTIFACTS_DIR = Path(__file__).resolve().parent.parent / "artifacts"
+# KNOW-2334: artifacts_root is now driven by Settings; the legacy constant
+# pointing at <repo_root>/artifacts is kept as a fallback for the static mount
+# path (will be resolved at app-creation time).
+_LEGACY_ARTIFACTS_DIR = Path(__file__).resolve().parent.parent / "artifacts"
 
 
 def _configure_logging(level: str) -> None:
@@ -67,8 +71,16 @@ def _build_dispatcher(
     if kind == "stub":
         return StubTaskDispatcher()
     if kind in ("in-process", "inprocess", "local"):
+        # KNOW-2334: inject the real pipeline step body so in-process workers
+        # run the actual pipeline, not the stub.
+        _real_step_body = make_step_body()
+
         async def _worker_callable(run_id: str) -> None:
-            await run_worker(run_id, session_factory=session_factory)
+            await run_worker(
+                run_id,
+                session_factory=session_factory,
+                step_body=_real_step_body,
+            )
         return InProcessTaskDispatcher(_worker_callable)
     if kind == "systemd":
         return SystemdTaskDispatcher()
@@ -179,10 +191,16 @@ def create_app() -> FastAPI:
     # the FastAPI editor-state endpoints without CORS plumbing.
     # KNOW-2276 (Phase 1a). Phase 2 will move the report into a Jinja
     # template + this mount goes away.
-    if ARTIFACTS_DIR.exists():
+    # KNOW-2334: use Settings.artifacts_root; fall back to the legacy dir if
+    # the configured root doesn't exist yet (avoids a startup crash when the
+    # dir hasn't been created, e.g. first boot before any run has been queued).
+    artifacts_dir = Path(settings.artifacts_root)
+    if not artifacts_dir.exists():
+        artifacts_dir = _LEGACY_ARTIFACTS_DIR
+    if artifacts_dir.exists():
         fastapi_app.mount(
             "/artifacts",
-            StaticFiles(directory=str(ARTIFACTS_DIR)),
+            StaticFiles(directory=str(artifacts_dir)),
             name="artifacts",
         )
 

@@ -27,7 +27,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime, timezone
-from typing import Awaitable, Callable, Optional
+from typing import Any, Awaitable, Callable, Optional
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
@@ -62,7 +62,14 @@ StepBody = Callable[[int, "WorkerContext"], Awaitable[None]]
 
 class WorkerContext:
     """State passed into each step body. Lets steps log, record token usage,
-    and check for cancellation without each step pulling its own session."""
+    and check for cancellation without each step pulling its own session.
+
+    New in KNOW-2334: the context is enriched with the Run row fields so that
+    step bodies can access scope/options/to_version without a separate DB query.
+    ``scratch`` is a plain dict for cross-step in-memory state (e.g. the full
+    manifest/changelog dicts that carry Jira descriptions — these are never
+    written to disk).
+    """
 
     def __init__(
         self,
@@ -71,11 +78,35 @@ class WorkerContext:
         logger: RunLogger,
         cost_meter: RunCostMeter,
         session_factory: async_sessionmaker[AsyncSession],
+        # KNOW-2334: populated from the Run row in run_worker
+        scope: Optional[dict] = None,
+        options: Optional[dict] = None,
+        to_version: Optional[str] = None,
+        created_by: Optional[int] = None,
+        job: Optional[dict] = None,
+        requested_steps: Optional[frozenset[int]] = None,
+        scratch: Optional[dict] = None,
     ) -> None:
         self.run_id = run_id
         self.logger = logger
         self.cost_meter = cost_meter
         self._session_factory = session_factory
+
+        # KNOW-2334 enrichments
+        self.scope: dict = scope or {}
+        self.options: dict = options or {}
+        self.to_version: Optional[str] = to_version
+        self.created_by: Optional[int] = created_by
+        # Legacy job dict shape: {"to_version": ..., "scope": ...}
+        self.job: dict = job or {}
+        # Steps that should actually run (default: all 1..6). Populated once
+        # at the top of run_worker from options["steps"].
+        self.requested_steps: frozenset[int] = (
+            requested_steps if requested_steps is not None else frozenset(PIPELINE_STEPS)
+        )
+        # Cross-step scratch pad (manifests, changelogs, descriptions in
+        # memory; never serialised to disk).
+        self.scratch: dict[str, Any] = scratch if scratch is not None else {}
 
     async def is_cancelled(self) -> bool:
         async with self._session_factory() as session:
@@ -98,6 +129,39 @@ async def _stub_step_body(step_num: int, ctx: WorkerContext) -> None:
     await ctx.logger.log("info", f"[step {step_num}] complete (stub)")
 
 
+def _parse_requested_steps(options: dict) -> frozenset[int]:
+    """Parse ``options["steps"]`` into a frozenset of step ints.
+
+    Accepts:
+      - ``"1,2,3"`` → {1, 2, 3}
+      - ``"1-3"``   → {1, 2, 3}   (simple range, for convenience)
+      - ``None`` / missing → all of PIPELINE_STEPS
+
+    Invalid tokens are silently skipped (non-fatal — we default to all steps).
+    """
+    raw = (options or {}).get("steps")
+    if not raw:
+        return frozenset(PIPELINE_STEPS)
+    result: set[int] = set()
+    for token in str(raw).split(","):
+        token = token.strip()
+        if "-" in token:
+            parts = token.split("-", 1)
+            try:
+                lo, hi = int(parts[0]), int(parts[1])
+                result.update(range(lo, hi + 1))
+            except (ValueError, IndexError):
+                pass
+        else:
+            try:
+                result.add(int(token))
+            except ValueError:
+                pass
+    # Intersect with valid steps so garbage input can't inject phantom steps.
+    valid = frozenset(PIPELINE_STEPS)
+    return result & valid if result else valid
+
+
 async def run_worker(
     run_id: str,
     *,
@@ -114,6 +178,12 @@ async def run_worker(
       - TERMINAL_CANCELLED     — observed cancel_requested between steps
       - TERMINAL_COST_ABORTED  — cost meter blew the ceiling
       - TERMINAL_ERROR         — an unhandled exception during a step
+
+    KNOW-2334: loads the Run row once at startup and enriches WorkerContext
+    with scope/options/to_version/job/requested_steps/scratch. Steps not in
+    requested_steps are marked 'skipped' without calling step_body.
+    Steps 3 and 4 are treated as a unit: assessment runs at 3, step 4 is a
+    confirmation no-op (logs + marks done immediately).
     """
     ceiling = max_run_usd if max_run_usd is not None else float(
         os.environ.get("MAX_RUN_USD", "50")
@@ -121,6 +191,21 @@ async def run_worker(
     cost_meter = RunCostMeter(ceiling_usd=ceiling)
     final_status = TERMINAL_OK
     error_text: Optional[str] = None
+
+    # ---- Load Run row once -------------------------------------------------
+    async with session_factory() as session:
+        run_row = await session.get(Run, run_id)
+
+    if run_row is None:
+        _logger.error("run_worker: Run %s not found in DB", run_id)
+        return TERMINAL_ERROR
+
+    scope: dict = run_row.scope_json or {}
+    options: dict = run_row.options_json or {}
+    to_version: Optional[str] = run_row.to_version
+    created_by: Optional[int] = run_row.created_by
+    job: dict = {"to_version": to_version, "scope": scope}
+    requested_steps = _parse_requested_steps(options)
 
     async with RunLogger.attached(
         session_factory, run_id, flush_interval_s=log_flush_interval_s
@@ -130,10 +215,19 @@ async def run_worker(
             logger=run_logger,
             cost_meter=cost_meter,
             session_factory=session_factory,
+            scope=scope,
+            options=options,
+            to_version=to_version,
+            created_by=created_by,
+            job=job,
+            requested_steps=requested_steps,
+            scratch={},
         )
         await run_logger.log(
             "info",
-            f"Worker started (run_id={run_id}, resume={resume}, ceiling=${ceiling:.2f})",
+            f"Worker started (run_id={run_id}, resume={resume}, "
+            f"ceiling=${ceiling:.2f}, to_version={to_version!r}, "
+            f"requested_steps={sorted(requested_steps)})",
         )
 
         try:
@@ -146,9 +240,30 @@ async def run_worker(
                     )
                     break
 
+                # KNOW-2334: honour options["steps"] skip list
+                if step_num not in requested_steps:
+                    await run_logger.log(
+                        "info",
+                        f"[step {step_num}] not in requested_steps={sorted(requested_steps)}; skipping",
+                    )
+                    await _skip_step(session_factory, run_id, step_num)
+                    continue
+
                 if resume and await _step_already_done(session_factory, run_id, step_num):
                     await run_logger.log(
                         "info", f"[step {step_num}] resume: already done, skipping"
+                    )
+                    continue
+
+                # KNOW-2334: step 4 is a no-op confirmation when step 3 ran
+                if step_num == 4 and 3 in requested_steps:
+                    await run_logger.log(
+                        "info",
+                        "[step 4] assessment confirmation (step 3+4 unit); marking done",
+                    )
+                    await _start_step(session_factory, run_id, step_num)
+                    await _finish_step(
+                        session_factory, run_id, step_num, "done", cost_meter
                     )
                     continue
 
@@ -215,6 +330,32 @@ async def run_worker(
 
 
 # ---- DB helpers ----------------------------------------------------------
+
+async def _skip_step(
+    session_factory: async_sessionmaker[AsyncSession],
+    run_id: str,
+    step_num: int,
+) -> None:
+    """Upsert a RunStep row with status='skipped'."""
+    now = datetime.now(timezone.utc)
+    async with session_factory() as session:
+        existing = await session.get(RunStep, (run_id, step_num))
+        if existing is None:
+            session.add(
+                RunStep(
+                    run_id=run_id,
+                    step_num=step_num,
+                    status="skipped",
+                    started_at=now,
+                    finished_at=now,
+                )
+            )
+        else:
+            existing.status = "skipped"
+            existing.started_at = now
+            existing.finished_at = now
+        await session.commit()
+
 
 async def _step_already_done(
     session_factory: async_sessionmaker[AsyncSession],

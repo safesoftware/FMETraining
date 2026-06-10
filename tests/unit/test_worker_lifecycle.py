@@ -25,12 +25,20 @@ from app.services.worker_lifecycle import (
 )
 
 
-async def _seed_run(session_factory, run_id: str = "r-test", status: str = "running") -> None:
+async def _seed_run(
+    session_factory,
+    run_id: str = "r-test",
+    status: str = "running",
+    *,
+    options: dict | None = None,
+) -> None:
     async with session_factory() as session:
         session.add(
             Run(
                 id=run_id,
                 status=status,
+                scope_json={},
+                options_json=options or {},
                 created_at=datetime.now(timezone.utc),
                 started_at=datetime.now(timezone.utc) if status == "running" else None,
             )
@@ -158,16 +166,19 @@ async def test_cost_ceiling_abort(async_session_factory) -> None:
 
 @pytest.mark.asyncio
 async def test_step_exception_marks_run_error(async_session_factory) -> None:
+    # NOTE: step 4 is a lifecycle no-op (confirmation step for 3+4 unit) when
+    # step 3 is in requested_steps, so the step_body is not called for step 4.
+    # Use step 5 here so the crash actually reaches the step_body.
     await _seed_run(async_session_factory, "r-err")
 
-    async def crash_on_step_4(step_num: int, ctx: WorkerContext) -> None:
-        if step_num == 4:
+    async def crash_on_step_5(step_num: int, ctx: WorkerContext) -> None:
+        if step_num == 5:
             raise RuntimeError("kaboom")
 
     final = await run_worker(
         "r-err",
         session_factory=async_session_factory,
-        step_body=crash_on_step_4,
+        step_body=crash_on_step_5,
         log_flush_interval_s=0.05,
     )
 
@@ -215,8 +226,13 @@ async def test_resume_skips_already_done_steps(async_session_factory) -> None:
     )
 
     assert final == TERMINAL_OK
-    # Steps 1 and 2 were already done; only 3..6 should have been called.
-    assert executed == [3, 4, 5, 6]
+    # Steps 1 and 2 were already done. Step 3, 5 and 6 run via step_body; step 4
+    # is the assessment-confirmation no-op (KNOW-2334 — step 3+4 are a unit),
+    # marked done inline WITHOUT calling step_body, so it is absent from `executed`.
+    assert executed == [3, 5, 6]
+    async with async_session_factory() as session:
+        step4 = await session.get(RunStep, (run_id, 4))
+        assert step4 is not None and step4.status == "done"
 
 
 # ---- step body type signature -------------------------------------------

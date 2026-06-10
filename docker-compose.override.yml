@@ -1,0 +1,33 @@
+# docker-compose.override.yml — LOCAL QA PARITY (KNOW-2334 §2H). Dev only.
+#
+# Auto-loaded by `docker compose`. The base compose + the prod image
+# deliberately exclude the version content corpus (Skilljar is the canonical
+# source for prod, per the multi-user web-app plan §1). For LOCAL QA we want a
+# queued Run to actually execute the real pipeline, so this override:
+#   - mounts the repo read-only at /content and points LESSON_CONTENT_ROOT
+#     there, so build_manifest can resolve real lesson paths;
+#   - forces TASK_DISPATCHER=inprocess so the app's scheduler runs the worker
+#     in-process (the default is `stub`, which never runs anything);
+#   - maps ./artifacts to the container so written artifacts are inspectable
+#     on the host.
+# Do NOT use in production.
+services:
+  app:
+    environment:
+      TASK_DISPATCHER: inprocess
+      LESSON_CONTENT_ROOT: /content
+    volumes:
+      - .:/content:ro
+      - ./artifacts:/app/artifacts
+
+  worker-runner:
+    environment:
+      TASK_DISPATCHER: inprocess
+      LESSON_CONTENT_ROOT: /content
+    volumes:
+      - ./app:/app/app
+      - ./pipeline:/app/pipeline
+      - ./prompts:/app/prompts
+      - ./data:/app/data:ro
+      - .:/content:ro
+      - ./artifacts:/app/artifacts
