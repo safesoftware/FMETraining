@@ -12,8 +12,9 @@ Design notes (see plan section 2B):
 - stdout is redirected to ``ctx.logger.log_sync`` via a line-splitting sink.
 - Cross-step in-memory state (manifest dict, full changelog with descriptions)
   lives in ``ctx.scratch``; it is NEVER written to disk.
-- Steps 3–6 log "not yet integrated" and return immediately in this slice;
-  real integration is the next increment.
+- Step 3 runs LLM assessment via ``pipeline/assessment.py:run_assessment``,
+  wired to ``ctx.cost_meter`` for ceiling enforcement and token accounting.
+  Steps 5–6 log "not yet integrated" and return immediately.
 - PII guarantee: the slim changelog written by ``pipeline/changelog.py``
   already strips ``description`` fields. The full in-memory changelog (with
   descriptions) stays in ``ctx.scratch["changelog"]`` only.
@@ -98,11 +99,13 @@ def make_step_body(
             await _run_step_1(ctx, run_artifact_dir, _content_root)
         elif step_num == 2:
             await _run_step_2(ctx, run_artifact_dir)
+        elif step_num == 3:
+            await _run_step_3(ctx, run_artifact_dir)
         else:
-            # Steps 3–6: not yet integrated in this slice.
+            # Steps 5–6: not yet integrated in this slice.
             await ctx.logger.log(
                 "info",
-                f"[step {step_num}] not yet integrated (KNOW-2334 slice 2); "
+                f"[step {step_num}] not yet integrated (KNOW-2334 slice 3); "
                 "logging and returning",
             )
 
@@ -196,4 +199,88 @@ async def _run_step_2(
         "info",
         f"[step 2] changelog done: {issue_count} issue(s), "
         f"artifact changelog-{ctx.run_id}.json",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Step 3 — LLM Assessment
+# ---------------------------------------------------------------------------
+
+async def _run_step_3(
+    ctx: "WorkerContext",
+    output_dir: Path,
+) -> None:
+    """Run ``pipeline/assessment.py:run_assessment`` in a thread.
+
+    Reads ``manifest`` and ``changelog`` from ``ctx.scratch`` (set by steps 1
+    and 2).  Builds the ephemeral ``descriptions`` dict in-process and passes
+    it (along with ``ctx.cost_meter``) into ``run_assessment`` so that:
+
+    - Jira descriptions never touch disk (PII guarantee).
+    - Token usage is recorded against the run's ``RunCostMeter``.
+    - ``CostCeilingExceeded`` propagates out of ``to_thread`` to
+      ``run_worker``'s handler → ``status='aborted_cost_ceiling'``.
+
+    The resulting recommendations dict is stored in ``ctx.scratch["recommendations"]``.
+    """
+    from pipeline.assessment import run_assessment
+
+    manifest = ctx.scratch.get("manifest")
+    changelog = ctx.scratch.get("changelog")
+
+    if manifest is None:
+        raise RuntimeError(
+            "Step 3 requires manifest in ctx.scratch (step 1 must run first)"
+        )
+    if changelog is None:
+        raise RuntimeError(
+            "Step 3 requires changelog in ctx.scratch (step 2 must run first)"
+        )
+
+    # Build the ephemeral descriptions dict: issue_key → description string.
+    # These stay in memory only and are NEVER written to disk.
+    descriptions: dict[str, str] = {
+        i["issue_key"]: (i.get("description") or "")
+        for i in changelog.get("issues", [])
+        if i.get("issue_key")
+    }
+
+    issue_count = len(changelog.get("issues", []))
+    lesson_count = len(manifest.get("lessons", []))
+    dry_run = ctx.options.get("dry_run", False)
+    cost_meter = ctx.cost_meter
+
+    await ctx.logger.log(
+        "info",
+        f"[step 3] running LLM assessment "
+        f"({lesson_count} lesson(s) × {issue_count} issue(s), "
+        f"dry_run={dry_run})...",
+    )
+
+    def _sync() -> dict:
+        sink = _LogSink(ctx.logger)
+        with contextlib.redirect_stdout(sink):
+            result = run_assessment(
+                run_id=ctx.run_id,
+                manifest=manifest,
+                changelog=changelog,
+                output_dir=output_dir,
+                descriptions=descriptions,
+                dry_run=dry_run,
+                cost_meter=cost_meter,
+            )
+        sink.flush()
+        return result
+
+    recommendations = await asyncio.to_thread(_sync)
+
+    ctx.scratch["recommendations"] = recommendations
+
+    completed = recommendations.get("completed_pairs", 0)
+    total = recommendations.get("total_pairs", 0)
+    model = recommendations.get("model", "?")
+    await ctx.logger.log(
+        "info",
+        f"[step 3] assessment done: {completed}/{total} pair(s) assessed, "
+        f"model={model}, artifact update-recommendations-{ctx.run_id}.json",
     )

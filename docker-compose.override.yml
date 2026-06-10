@@ -9,7 +9,10 @@
 #   - forces TASK_DISPATCHER=inprocess so the app's scheduler runs the worker
 #     in-process (the default is `stub`, which never runs anything);
 #   - maps ./artifacts to the container so written artifacts are inspectable
-#     on the host.
+#     on the host;
+#   - mounts .github so the deploy-workflow structural tests (KNOW-2293) can
+#     find .github/workflows/deploy-prod.yml — it's .dockerignore'd out of the
+#     image, so without this `make test` errors on those tests in-container.
 # Do NOT use in production.
 services:
   app:
@@ -19,6 +22,7 @@ services:
     volumes:
       - .:/content:ro
       - ./artifacts:/app/artifacts
+      - ./.github:/app/.github:ro
 
   worker-runner:
     environment:

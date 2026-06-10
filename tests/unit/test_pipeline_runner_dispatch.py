@@ -305,15 +305,20 @@ async def test_worker_context_scratch_shared_across_steps(async_session_factory)
 
 
 @pytest.mark.asyncio
-async def test_make_step_body_steps_3_to_6_are_no_ops(
+async def test_make_step_body_steps_5_6_are_no_ops(
     async_session_factory, tmp_path
 ) -> None:
-    """Steps 3–6 log 'not yet integrated' and return — they must not crash."""
-    run_id = "r-nyi"
+    """Steps 5–6 log 'not yet integrated' and return — they must not crash.
+
+    Step 3 is now real (slice 2 integration). Steps 5 and 6 are still stubs.
+    Note: step 4 is only a no-op in the lifecycle when step 3 is also requested.
+    Here we request only steps 5 and 6 so the test is isolated to the stubs.
+    """
+    run_id = "r-nyi-5-6"
     await _seed_run(
         async_session_factory,
         run_id,
-        options={"steps": "3,4,5,6"},
+        options={"steps": "5,6"},  # only steps 5 and 6
     )
 
     # Use make_step_body with tmp_path as artifacts_root so the dir exists.
@@ -322,8 +327,7 @@ async def test_make_step_body_steps_3_to_6_are_no_ops(
         lesson_content_root=str(tmp_path),
     )
 
-    # Override step 4 handling: step 4 is a no-op already in lifecycle.
-    # The body should only be called for step 3, 5, 6.
+    # Steps 5 and 6 are still "not yet integrated" stubs — they must not crash.
     called: list[int] = []
     original_body = step_body
 
@@ -339,5 +343,5 @@ async def test_make_step_body_steps_3_to_6_are_no_ops(
     )
 
     assert final == TERMINAL_OK
-    # step_body called for 3, 5, 6 (4 is no-op in lifecycle)
-    assert set(called) == {3, 5, 6}
+    # step_body called only for 5 and 6 (steps 1-4 not requested → skipped or no-op)
+    assert set(called) == {5, 6}

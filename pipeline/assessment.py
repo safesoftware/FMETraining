@@ -16,12 +16,16 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm as atqdm
 
 from pipeline import config
 from pipeline.utils import recommendations_path
+
+if TYPE_CHECKING:
+    from app.services.run_cost_meter import RunCostMeter
 
 
 # ---------------------------------------------------------------------------
@@ -85,6 +89,7 @@ def run_assessment(
     output_dir: Path,
     descriptions: dict[str, str] | None = None,
     dry_run: bool = False,
+    cost_meter: "RunCostMeter | None" = None,
 ) -> dict:
     """
     Assess all (lesson, issue) pairs and write the recommendations JSON.
@@ -102,6 +107,12 @@ def run_assessment(
                       orchestrator builds and threads this dict; it is never
                       persisted to disk.
         dry_run:      If True, print pair counts but make no API calls.
+        cost_meter:   Optional ``RunCostMeter`` for per-call cost accounting and
+                      ceiling enforcement. When supplied, ``check_before_call``
+                      is invoked before each OpenAI call and ``record_usage``
+                      after. ``CostCeilingExceeded`` propagates to the caller
+                      unmodified. Default ``None`` preserves legacy behaviour
+                      (no cost tracking).
 
     Returns:
         The recommendations dict.
@@ -174,6 +185,7 @@ def run_assessment(
         _assess_all(
             pairs_to_run, template, to_version, out_path, existing_assessments,
             descriptions or {},
+            cost_meter=cost_meter,
         )
     )
 
@@ -207,6 +219,7 @@ async def _assess_all(
     out_path: Path,
     existing: list[dict],
     descriptions: dict[str, str],
+    cost_meter: "RunCostMeter | None" = None,
 ) -> list[dict]:
     """Run all pairs through the OpenAI API with concurrency control."""
     if not pairs:
@@ -220,7 +233,7 @@ async def _assess_all(
     async def assess_one(lesson: dict, issue: dict) -> dict | None:
         async with semaphore:
             prompt = _build_prompt(lesson, issue, template, to_version, descriptions)
-            result = await _call_openai(client, lesson, issue, prompt)
+            result = await _call_openai(client, lesson, issue, prompt, cost_meter=cost_meter)
             return result
 
     tasks = [assess_one(lesson, issue) for lesson, issue in pairs]
@@ -247,17 +260,41 @@ async def _call_openai(
     lesson: dict,
     issue: dict,
     prompt: str,
+    cost_meter: "RunCostMeter | None" = None,
 ) -> dict | None:
-    """Make a single OpenAI API call and return an assessment dict."""
+    """Make a single OpenAI API call and return an assessment dict.
+
+    When ``cost_meter`` is supplied, ``check_before_call`` is invoked before
+    each attempt (raises ``CostCeilingExceeded`` if over budget — callers must
+    not catch this) and ``record_usage`` is called after a successful response.
+    """
     max_retries = 3
     for attempt in range(max_retries):
         try:
+            # Cost guard: check before every attempt (not just the first) so
+            # that partial-run totals from earlier pairs are respected.
+            if cost_meter is not None:
+                cost_meter.check_before_call(
+                    model=config.OPENAI_MODEL,
+                    expected_input_tokens=len(prompt) // 4,
+                    expected_output_tokens=200,
+                )
+
             response = await client.chat.completions.create(
                 model=config.OPENAI_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 response_format=_RESPONSE_SCHEMA,
                 temperature=0.1,
             )
+
+            # Record actual usage after a successful call.
+            if cost_meter is not None and response.usage is not None:
+                cost_meter.record_usage(
+                    model=config.OPENAI_MODEL,
+                    prompt_tokens=response.usage.prompt_tokens,
+                    completion_tokens=response.usage.completion_tokens,
+                )
+
             raw = response.choices[0].message.content
             parsed = json.loads(raw)
 
@@ -294,6 +331,17 @@ async def _call_openai(
             }
 
         except Exception as e:
+            # CostCeilingExceeded must propagate — it is a hard stop that the
+            # worker lifecycle handles.  Do not swallow it in the retry loop.
+            # Import lazily to keep pipeline/ independent of app/ at import time;
+            # the check_before_call guard above only runs when cost_meter is set,
+            # so this branch is only reachable if cost_meter is set.
+            try:
+                from app.services.run_cost_meter import CostCeilingExceeded
+                if isinstance(e, CostCeilingExceeded):
+                    raise
+            except ImportError:
+                pass
             if attempt < max_retries - 1:
                 await asyncio.sleep(2 ** attempt)
             else:
