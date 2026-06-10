@@ -1,11 +1,11 @@
 """Batched, durable per-run log writer.
 
 Plan section 3: the worker appends rows to ``run_logs`` and the API tails
-the table to stream them to the browser via SSE. Rows survive App Runner
+the table to stream them to the browser via SSE. Rows survive web-process
 restarts (durability) and arrive at the browser within ~200 ms (latency).
 
 The writer is intentionally async because:
-- We want to batch inserts to keep RDS round-trips low.
+- We want to batch inserts to keep DB round-trips low.
 - The worker's main loop is async; logging is a fire-and-forget call.
 
 Sync callers (the legacy pipeline code we run inside ``asyncio.to_thread``)

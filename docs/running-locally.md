@@ -24,5 +24,7 @@ The legacy `serve.py` is a thin Python `BaseHTTPServer` that wraps the
 existing pipeline CLI for a single local user. The new `app/` is a FastAPI
 service that will (in later tickets) add multi-user auth, a Postgres-backed
 job queue, and run scheduling — see
-`docs/plans/2026-04-29-multi-user-web-app.md`. They ship side-by-side until
-the FastAPI app reaches feature parity, then `serve.py` retires.
+`docs/plans/2026-04-29-multi-user-web-app.md` for the application design.
+They ship side-by-side until the FastAPI app reaches feature parity, then
+`serve.py` retires. Production deployment of the FastAPI app follows
+`docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md` (single EC2).

@@ -1,7 +1,8 @@
 """Health check endpoint.
 
-Used by App Runner's load balancer / readiness probe and by humans during
-local dev. No auth — must work before any DB is reachable.
+Used by Nginx as a readiness probe (and by `bin/deploy-prod.sh` post-deploy)
+and by humans during local dev. No auth — must work before any DB is
+reachable.
 """
 from __future__ import annotations
 

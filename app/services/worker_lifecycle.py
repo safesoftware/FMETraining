@@ -1,4 +1,4 @@
-"""The lifecycle a Fargate worker runs through.
+"""The lifecycle a per-run background worker runs through.
 
 Plan section 3:
 
@@ -10,10 +10,14 @@ Plan section 3:
 - It honours the ``RunCostMeter`` ceiling, marking the run
   ``aborted_cost_ceiling`` if the next OpenAI call would push past the cap.
 
+In production each worker runs as a templated systemd unit
+(``fme-train-worker@<run_id>.service``); in local dev it can also run
+in-process via :class:`InProcessTaskDispatcher`.
+
 Today's scope (KNOW-2270): wire the lifecycle, the logger, the cost meter,
 and the cancellation poll. The body of each step is a **stub** — actual
 pipeline integration (rewiring ``pipeline/*`` modules to read inputs from
-RDS/S3 and write outputs back) lands in a follow-up ticket. The stub is
+Postgres / object storage and write outputs back) lands in a follow-up ticket. The stub is
 real enough to drive the moving parts: it writes log lines, advances
 ``run_steps`` rows, and respects cancellation.
 """

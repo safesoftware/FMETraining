@@ -68,7 +68,7 @@ class ContentCache(Base):
 
 
 class S3ImageCache(Base):
-    """Dedup table for images uploaded to the public CloudFront prefix."""
+    """Dedup table for lesson images uploaded to the public S3 image bucket."""
 
     __tablename__ = "s3_image_cache"
 

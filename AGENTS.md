@@ -9,7 +9,7 @@ These rules apply to **all work**, not just specific projects.
 3. **Make small, focused commits.** Prefer many small commits with clear scope over one giant commit. Each commit should leave the tree in a buildable state.
 4. **Push regularly.** Don't sit on local-only commits — push to the remote feature branch so work is visible and recoverable.
 5. **Merge to `main` only via pull request.** Open the PR with `gh pr create` (see process at the bottom of this file). Do not fast-forward locally.
-6. **Never commit secrets.** API keys, OAuth client secrets, session signing keys, AWS credentials, OpenAI / Jira / Skilljar tokens, database passwords — none of these go in git. They live in `.env` (local, gitignored) or AWS Secrets Manager (production). Add a `.env.example` with placeholder values instead.
+6. **Never commit secrets.** API keys, OAuth client secrets, session signing keys, AWS credentials, OpenAI / Jira / Skilljar tokens, database passwords — none of these go in git. They live in `.env` (local, gitignored) or `/etc/fme-train/env` (production, on the EC2 instance, read by systemd via `EnvironmentFile=`). Add a `.env.example` with placeholder values instead.
 7. **Before staging files, sanity-check the diff for accidental secret patterns** (`AKIA[0-9A-Z]{16}`, `sk-[A-Za-z0-9]{20,}`, `xoxb-`, `ghp_`, etc.). If you spot anything that looks like a credential, stop and ask.
 8. **Never bypass hooks** (`--no-verify`, `--no-gpg-sign`) without explicit user permission. If a hook fails, fix the underlying problem.
 
@@ -100,7 +100,7 @@ When a plan is **approved by the user**, save it to `docs/plans/YYYY-MM-DD-short
 If a later plan supersedes an earlier one, mark the earlier file with a "Status: superseded by `<path>`" note at the top rather than deleting it — the chain of decisions is part of the audit trail.
 
 Existing plans:
-- `docs/plans/2026-04-29-multi-user-web-app.md` — architecture decisions for the multi-user web app rebuild (KNOW-2257). The deployment shape it sketches (App Runner + Fargate + RDS + …) is **superseded** by the EC2 alternative below for v1.
+- `docs/plans/2026-04-29-multi-user-web-app.md` — application architecture for the multi-user web app rebuild (KNOW-2257); sections 1–5 and 7 (FastAPI app, Postgres schema, run lifecycle, content cache, Release tab) are **still authoritative**. Its section-6 deployment shape (App Runner + Fargate + RDS + …) is **superseded** by the EC2 alternative below for v1.
 - `docs/plans/archive/2026-05-05-multi-user-web-app-deployment.md` — original AWS managed-services deployment runbook. **Superseded** by the EC2 alternative (archived).
 - `docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md` — single-EC2 deployment for v1. The active deployment plan.
   - `docs/deployment.md` — operator-facing runbook for the active deployment plan: how to deploy, roll back, read `/health`, and triage when something looks wrong (KNOW-2294).

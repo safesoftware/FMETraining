@@ -41,8 +41,8 @@ _TERMINAL_STATUSES = frozenset(
 DEFAULT_POLL_INTERVAL_S = 0.5
 
 # How often to send a heartbeat comment so intermediaries don't time out
-# the connection (Nginx default proxy_read_timeout is 60s; App Runner /
-# ALB are similar).
+# the connection (Nginx default proxy_read_timeout is 60s; most reverse
+# proxies are similar).
 DEFAULT_HEARTBEAT_INTERVAL_S = 15.0
 
 # Hard cap so a runaway connection doesn't hold a worker forever even

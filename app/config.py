@@ -1,10 +1,13 @@
 """Application settings loaded via pydantic-settings.
 
 In local dev, values come from a `.env` file at the repo root. In production
-(App Runner / Fargate), AWS Secrets Manager values are injected as plain env
-vars by the task definition — there is no boto3 lookup in the hot path.
+(single EC2), values come from `/etc/fme-train/env` which systemd reads via
+`EnvironmentFile=` and exposes as plain env vars — there is no secrets-store
+lookup in the hot path.
 
-Reference: docs/plans/2026-04-29-multi-user-web-app.md sections 1, 6.
+Reference: docs/plans/2026-04-29-multi-user-web-app.md sections 1–5 (app
+design) and docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md
+(deployment).
 """
 from __future__ import annotations
 
