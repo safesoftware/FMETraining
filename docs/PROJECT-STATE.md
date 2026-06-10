@@ -11,16 +11,17 @@
 
 | System | Branch / SHA | State | Notes |
 |---|---|---|---|
-| **EC2 production** | `main` @`9a9d6e91` | **LIVE but app = scaffold** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup all up. **Runs are stubbed** (`_stub_step_body`) and there's **no launch UI** until KNOW-2334/2335 land — do not point real users at it yet. |
+| **EC2 production (the box)** | deployed at cutover (~`86f7e40c`) | **LIVE, running the cutover-era build** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up. ⚠️ **Not yet redeployed** — still runs the **stubbed worker + placeholder index**. Ship the new app with `bin/deploy-prod.sh` (needs OpenAI/Jira creds in `/etc/fme-train/env` for real runs). |
+| **`main` (code)** | `31b388d9` | **Full launch-capable app** | KNOW-2334 (all 6 real pipeline steps + cost meter) and KNOW-2335 (launch UI + `POST /api/runs`) merged. A signed-in `@safe.com` user can launch a run and the real pipeline executes (verified live locally). |
 | Local dev | Compose (`make up`) | Full app: FastAPI + Postgres 16 + minio + worker | `InProcessTaskDispatcher`; `LocalFolderSource` for content; minio = S3. This is where the agent runs functional QA. |
 
 ## Active work (ticket ↔ branch ↔ PR ↔ status ↔ plan ↔ next)
 
 | Ticket | Branch | PR | Status | Plan | Next action |
 |---|---|---|---|---|---|
-| **KNOW-2334** real pipeline in worker | `know-2334-steps-5-6` | #26/#27 merged; #28 (slice 3) | In Progress | build plan Part 2 | Slices 1–3: **all 6 steps real** (manifest, changelog, assessment, report, edit-suggestions) + RunCostMeter on the OpenAI steps + `/report/{run_id}`; `make test` green (440 pass; `run_worker` integration tests Postgres-gated — KNOW-2265). `_stub_step_body` fully replaced. Remaining: real e2e run verification (needs OpenAI + KNOW-2335 launch) + `run_steps.artifact_keys_json` (minor). Then **KNOW-2335** (launch UI). |
-| **KNOW-2335** run-launch UI + endpoint | `know-2335-launch-ui` | #29 (draft) | Ready for QA | build plan Part 2 | Review + merge #29. Adds `POST /api/runs`, `GET /api/runs/*`, `GET /api/versions`, `GET /api/content-tree`, and the full launch UI replacing the placeholder index. 23 new integration tests. |
-| **KNOW-2337** PROJECT-STATE + AGENTS ritual | `know-2337-project-state` | #25 | Ready for QA (this PR) | build plan Part 1 | Review + merge #25. |
+| **KNOW-2334** real pipeline in worker | — (merged) | #26/#27/#28 merged | **Ready for QA** | build plan Part 2 | **All 6 steps real** + RunCostMeter + `/report/{run_id}`; `_stub_step_body` gone; `make test` green; launch→execute verified live (steps 1–2; 3/6 mocked-tested). QA: a real-OpenAI run (small scope). Follow-ups: `artifact_keys_json` (KNOW-2339), Postgres test harness (KNOW-2265). |
+| **KNOW-2335** run-launch UI + endpoint | — (merged) | #29 merged | **Ready for QA** | build plan Part 2 | Merged. `POST /api/runs` + `GET /api/runs/*` + `/api/versions` + `/api/content-tree` + launch UI (signed-out sign-in link / signed-in form). Verified live: authed `POST /api/runs` → real run executed. QA: browser/UX pass. |
+| **KNOW-2337** PROJECT-STATE + AGENTS ritual | — (merged) | #25 merged | Ready for QA | build plan Part 1 | Done/merged; awaiting close. |
 | **KNOW-2333** `bin/setup-ec2.sh` fixes (exec bit, pg_hba) | — | — | In Backlog | cutover tracker | Fix in repo; bites next provision. |
 | **KNOW-2330** give agent SSM box access | — | — | In Backlog (**IT/IAM-blocked**) | — | Folded into KNOW-2309 IAM ask. |
 | **KNOW-2309** dedicated IAM + SSM | — | — | In Backlog (**IT-blocked**) | — | IT to create roles (DLM + SSM + app IAM). |
@@ -39,7 +40,7 @@
 ## Open blockers
 
 - **IT/IAM (KNOW-2309 / KNOW-2330):** EBS snapshot *schedule* (manual baseline taken), off-box S3 `pg_dump`, SSM box access for the agent, and the GH-Actions deploy E2E (KNOW-2293) all wait on IT creating IAM roles.
-- **App not user-ready:** no way to launch a run and the worker is stubbed → KNOW-2334 then KNOW-2335.
+- **App is now launch-capable on `main`** (KNOW-2334 + 2335 merged) but **not yet deployed to the box** — run `bin/deploy-prod.sh` and add OpenAI/Jira creds to `/etc/fme-train/env`, then do a real-OpenAI smoke run to close 2334/2335.
 - **Cutover leftovers (low):** uptime/health monitor cron and `dnf-automatic` patching not yet set on the box; housekeeping ticket transitions (see below).
 
 ## Plan docs (index)
