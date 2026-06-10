@@ -11,8 +11,8 @@
 
 | System | Branch / SHA | State | Notes |
 |---|---|---|---|
-| **EC2 production (the box)** | deployed at cutover (~`86f7e40c`) | **LIVE, running the cutover-era build** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up. ⚠️ **Not yet redeployed** — still runs the **stubbed worker + placeholder index**. Ship the new app with `bin/deploy-prod.sh` (needs OpenAI/Jira creds in `/etc/fme-train/env` for real runs). |
-| **`main` (code)** | `31b388d9` | **Full launch-capable app** | KNOW-2334 (all 6 real pipeline steps + cost meter) and KNOW-2335 (launch UI + `POST /api/runs`) merged. A signed-in `@safe.com` user can launch a run and the real pipeline executes (verified live locally). |
+| **EC2 production (the box)** | `b03710f8` (deployed 2026-06-10) | **LIVE on the full app** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up; OpenAI/Jira secrets loaded in `/etc/fme-train/env`. **A real pipeline job ran successfully on prod** → KNOW-2334/2335 verified live end-to-end. ⚠️ Known post-deploy fixes pending (batched PR): `/artifacts` report mount (needs `/var/lib/fme-train/artifacts` to exist at app startup), launch-UI width, `setup-ec2.sh` artifacts dir, `deploy-prod.sh` scratch-DB validation (replays from baseline). |
+| **`main` (code)** | `b03710f8` | **Full launch-capable app, deployed** | KNOW-2334 (all 6 real pipeline steps + cost meter) and KNOW-2335 (launch UI + `POST /api/runs`) merged and **running on the box** — a signed-in `@safe.com` user launched a real run and the pipeline executed. |
 | Local dev | Compose (`make up`) | Full app: FastAPI + Postgres 16 + minio + worker | `InProcessTaskDispatcher`; `LocalFolderSource` for content; minio = S3. This is where the agent runs functional QA. |
 
 ## Active work (ticket ↔ branch ↔ PR ↔ status ↔ plan ↔ next)
