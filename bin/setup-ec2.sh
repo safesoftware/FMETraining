@@ -74,7 +74,9 @@ install -d -o root -g root -m 0755 "$(dirname "${ENV_FILE}")"
 log "Ensuring Postgres role + database exist…"
 sudo -iu postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='${PG_USER}'" | grep -q 1 || {
   PG_PASS="$(openssl rand -hex 24)"
-  sudo -iu postgres psql -c "CREATE ROLE ${PG_USER} LOGIN PASSWORD '${PG_PASS}'"
+  # CREATEDB so bin/deploy-prod.sh can spin up its throwaway migration-check DB
+  # (KNOW-2340). LOGIN for the app; no SUPERUSER.
+  sudo -iu postgres psql -c "CREATE ROLE ${PG_USER} LOGIN CREATEDB PASSWORD '${PG_PASS}'"
   # Write the candidate URL to a sidecar file with the same lock-down as
   # the real env file. Default umask would leave this 0644 — readable by
   # every user on the box. Force 0600 + root ownership before the
@@ -100,11 +102,15 @@ log "Ensuring ${APP_DIR} exists and is owned by ${APP_USER}…"
 install -d -o "${APP_USER}" -g "${APP_USER}" -m 0755 "${APP_DIR}"
 
 # Runtime state dir (KNOW-2298): deploy-prod.sh writes last-good-sha here and
-# the app's drafts_root defaults to /var/lib/fme-train/drafts. Create it owned
-# by the app user so neither falls back to a home-dir path.
-log "Ensuring /var/lib/fme-train state directory exists…"
+# the app's drafts_root defaults to /var/lib/fme-train/drafts. The worker writes
+# per-run pipeline artifacts to /var/lib/fme-train/artifacts and the web app's
+# /artifacts mount serves them (KNOW-2340) — create it too so the mount doesn't
+# fall back to the wrong dir on first boot. Owned by the app user so nothing
+# falls back to a home-dir path.
+log "Ensuring /var/lib/fme-train state directories exist…"
 install -d -o "${APP_USER}" -g "${APP_USER}" -m 0755 /var/lib/fme-train
 install -d -o "${APP_USER}" -g "${APP_USER}" -m 0755 /var/lib/fme-train/drafts
+install -d -o "${APP_USER}" -g "${APP_USER}" -m 0755 /var/lib/fme-train/artifacts
 
 # --------------------------------------------------------------------------
 # 4. Application source + venv

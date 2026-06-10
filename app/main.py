@@ -191,11 +191,20 @@ def create_app() -> FastAPI:
     # the FastAPI editor-state endpoints without CORS plumbing.
     # KNOW-2276 (Phase 1a). Phase 2 will move the report into a Jinja
     # template + this mount goes away.
-    # KNOW-2334: use Settings.artifacts_root; fall back to the legacy dir if
-    # the configured root doesn't exist yet (avoids a startup crash when the
-    # dir hasn't been created, e.g. first boot before any run has been queued).
+    # KNOW-2340: serve the configured Settings.artifacts_root (where the worker
+    # writes). Create it at startup so the mount always points at the real dir —
+    # without this, a missing dir on first boot fell back to <repo>/artifacts and
+    # completed-run reports 404'd. Legacy dir is only a last resort if the
+    # configured root can't be created (e.g. a permissions problem).
     artifacts_dir = Path(settings.artifacts_root)
-    if not artifacts_dir.exists():
+    try:
+        artifacts_dir.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        logger.warning(
+            "could not create artifacts_root %s; falling back to %s",
+            artifacts_dir,
+            _LEGACY_ARTIFACTS_DIR,
+        )
         artifacts_dir = _LEGACY_ARTIFACTS_DIR
     if artifacts_dir.exists():
         fastapi_app.mount(

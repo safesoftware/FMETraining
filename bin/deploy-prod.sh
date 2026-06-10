@@ -256,6 +256,12 @@ validate_migration_against_scratch_db() {
   dropdb --if-exists -U "${PG_USER}" "${SCRATCH_DB}"
   createdb -U "${PG_USER}" "${SCRATCH_DB}"
   pg_dump -U "${PG_USER}" -s "${PG_DB}" | psql -U "${PG_USER}" -q "${SCRATCH_DB}" >/dev/null
+  # Carry over the current alembic revision so `upgrade head` only applies NEW
+  # migrations. Without this the schema-only dump above leaves alembic_version
+  # empty, so alembic replays from baseline and collides with the dumped tables
+  # ("relation ... already exists"). KNOW-2340.
+  pg_dump -U "${PG_USER}" --data-only -t alembic_version "${PG_DB}" \
+    | psql -U "${PG_USER}" -q "${SCRATCH_DB}" >/dev/null
 
   # Derive scratch URL from prod DATABASE_URL so it inherits the password.
   local scratch_url="${DATABASE_URL%/*}/${SCRATCH_DB}"
