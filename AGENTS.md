@@ -1,5 +1,18 @@
 # AGENTS.md — Rules for AI Agents Working in This Repository
 
+## Before Starting Work — Reconcile Sources
+
+Project state lives in several places that can disagree: this repo's `main`, feature branches, open PRs, Jira (KNOW), and `docs/plans/`. **`docs/PROJECT-STATE.md` is the single source of truth** — read it first. Then, before picking up a ticket or executing a plan, run this ~2-minute reconcile so you don't rebuild already-shipped work or follow a superseded plan:
+
+1. **Read `docs/PROJECT-STATE.md`** — deployment state, the ticket↔branch↔PR↔status table, recent merges, and open blockers.
+2. **Sync git:** `git fetch origin -q`, then `git log -1 --oneline origin/main`.
+3. **Is the ticket already done?** `git log --all --oneline --grep="KNOW-XXXX"`, then `git branch -r --contains <sha>`. If the commit is on `origin/main`, the work is already merged — **do not rebuild**; verify the ticket and transition it instead.
+4. **Anything in flight?** `gh pr list --state open` — if a PR touches your area, coordinate rather than fork new work. (If `gh` 401s despite being logged in, prefix commands with `GH_TOKEN=$(gh auth token)`.)
+5. **Plan still live?** If a `docs/plans/*.md` is referenced, check its Status banner and the index in `docs/PROJECT-STATE.md` — don't execute a superseded plan (see "Challenge inherited plans" below).
+6. **Branch hygiene:** when starting or resuming branch work, use the `starting-branch-work` skill to confirm the branch is in sync with `main` and isn't trapping shared state.
+
+If steps 3–5 show the work is already merged, superseded, or in an open PR, **stop and reconcile before coding.** This is the exact failure mode that left stale PRs (#15/#17/#18) open after their content shipped to `main` via PR #24.
+
 ## Git Workflow
 
 These rules apply to **all work**, not just specific projects.
@@ -198,6 +211,7 @@ Use `gh pr create` to open PRs to `main`. Required structure:
 
 - **Title:** short and concrete (≤70 chars). Reference the Jira key when applicable: `KNOW-1234: short description`.
 - **Body:**
+  - **Jira key on its own line** (e.g. `KNOW-1234`) — for branch↔ticket↔PR traceability. **Note:** this does **not** auto-close the Jira ticket (Jira ≠ GitHub Issues; no smart-commit integration is wired here), so you must still transition the ticket yourself — see "After merging" below. (Stale tickets like the ones behind PRs #15/#17/#18 are prevented by that discipline, not by magic.)
   - **Summary** — 1–3 bullets on what changed and why.
   - **Jira link** — full URL to the parent issue.
   - **Test plan** — bulleted checklist of how to verify (commands to run, click-paths for UI, what to look for).
@@ -207,4 +221,9 @@ Open PRs as soon as the work is meaningfully reviewable, even if not 100% done �
 
 Never force-push to a branch someone else might be reviewing. If you need to rewrite history on your own feature branch (e.g., to clean up commits before merge), warn in a PR comment first.
 
-When the PR is approved and CI is green, merge with **squash-and-merge** by default unless the commit history is intentionally meaningful. Delete the branch after merge.
+When the PR is approved and CI is green, merge with **squash-and-merge** by default unless the commit history is intentionally meaningful.
+
+**After merging (required):**
+1. **Update `docs/PROJECT-STATE.md`** — deployment state, the active-work table, and Recent merges. This is what keeps the source of truth honest.
+2. **Transition the Jira ticket yourself** — merge does **not** auto-close it. Move it to **Ready for QA** (transition `31`) with the required verification comment so a human can verify and close it, per the Issue Tracking workflow above. (Note: the "Closed" transition id is **state-dependent** — e.g. `Close` is `231` from *In QA*, not the `301` listed in the workflow table; fetch valid transitions with `getTransitionsForJiraIssue` rather than assuming.)
+3. **Delete the merged branch** (`git push origin --delete <branch>`), so stale branches don't accumulate.
