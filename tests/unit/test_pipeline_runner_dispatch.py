@@ -300,41 +300,49 @@ async def test_worker_context_scratch_shared_across_steps(async_session_factory)
 
 
 # ---------------------------------------------------------------------------
-# make_step_body smoke: steps 3–6 return without error
+# make_step_body smoke: step dispatch routes correctly for steps 5/6
 # ---------------------------------------------------------------------------
 
 
 @pytest.mark.asyncio
-async def test_make_step_body_steps_5_6_are_no_ops(
+async def test_make_step_body_dispatches_steps_5_6(
     async_session_factory, tmp_path
 ) -> None:
-    """Steps 5–6 log 'not yet integrated' and return — they must not crash.
+    """Steps 5 and 6 are now real and dispatched correctly by make_step_body.
 
-    Step 3 is now real (slice 2 integration). Steps 5 and 6 are still stubs.
-    Note: step 4 is only a no-op in the lifecycle when step 3 is also requested.
-    Here we request only steps 5 and 6 so the test is isolated to the stubs.
+    This smoke test verifies the dispatcher routes step 5 and 6 to their
+    handlers (_run_step_5 / _run_step_6) by checking that they raise a
+    RuntimeError about missing prerequisites (not 'not yet integrated') when
+    called without prior steps having run.
+
+    Full end-to-end coverage of steps 5/6 is in
+    tests/integration/test_pipeline_runner_steps.py (Postgres-gated).
     """
-    run_id = "r-nyi-5-6"
+    run_id = "r-dispatch-5-6"
     await _seed_run(
         async_session_factory,
         run_id,
         options={"steps": "5,6"},  # only steps 5 and 6
     )
 
-    # Use make_step_body with tmp_path as artifacts_root so the dir exists.
+    # Use make_step_body with tmp_path as artifacts_root.
     step_body = make_step_body(
         artifacts_root=str(tmp_path / "artifacts"),
         lesson_content_root=str(tmp_path),
     )
 
-    # Steps 5 and 6 are still "not yet integrated" stubs — they must not crash.
-    called: list[int] = []
+    errors: list[tuple[int, Exception]] = []
     original_body = step_body
 
     async def _tracking_body(step_num: int, ctx: WorkerContext) -> None:
-        called.append(step_num)
-        await original_body(step_num, ctx)
+        try:
+            await original_body(step_num, ctx)
+        except (RuntimeError, FileNotFoundError) as exc:
+            errors.append((step_num, exc))
+            raise  # re-raise so run_worker sets status=error
 
+    # The run will error because step 5 requires recommendations from step 3.
+    # That's correct — steps 5/6 are real and enforce their prerequisites.
     final = await run_worker(
         run_id,
         session_factory=async_session_factory,
@@ -342,6 +350,19 @@ async def test_make_step_body_steps_5_6_are_no_ops(
         log_flush_interval_s=0.05,
     )
 
-    assert final == TERMINAL_OK
-    # step_body called only for 5 and 6 (steps 1-4 not requested → skipped or no-op)
-    assert set(called) == {5, 6}
+    # Step 5 raises RuntimeError/FileNotFoundError about missing recommendations.
+    # Verify step 5 was invoked (not silently skipped with "not yet integrated").
+    assert len(errors) >= 1, (
+        "Step 5 should raise about missing prerequisites, not silently succeed"
+    )
+    step_num, exc = errors[0]
+    assert step_num == 5
+    # The error should mention 'recommendations' or 'Recommendations', not 'not yet integrated'
+    err_msg = str(exc).lower()
+    assert "not yet integrated" not in err_msg, (
+        f"Step 5 still returns the old stub message: {exc}"
+    )
+    # The error must be about a missing prerequisite (recs not found)
+    assert "recommendation" in err_msg or "step 3" in err_msg or "not found" in err_msg, (
+        f"Expected a prerequisite-missing error for step 5, got: {exc}"
+    )

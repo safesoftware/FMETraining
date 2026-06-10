@@ -20,12 +20,16 @@ import re
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm as atqdm
 
 from pipeline import config
 from pipeline.utils import edit_plans_path
+
+if TYPE_CHECKING:
+    from app.services.run_cost_meter import RunCostMeter
 
 
 # ---------------------------------------------------------------------------
@@ -316,6 +320,7 @@ def run_edit_suggestions(
     dry_run: bool = False,
     to_version: str = "",
     descriptions: dict[str, str] | None = None,
+    cost_meter: "RunCostMeter | None" = None,
 ) -> dict:
     """
     Generate edit plans for all lessons with medium/high assessments.
@@ -331,6 +336,11 @@ def run_edit_suggestions(
                          Supplied by the orchestrator; descriptions are never
                          persisted to disk. If None or empty, prompts include
                          only the assessment summary/justification.
+        cost_meter:      Optional ``RunCostMeter`` for per-call cost accounting and
+                         ceiling enforcement. When supplied, ``check_before_call`` is
+                         invoked before each OpenAI call and ``record_usage`` after.
+                         ``CostCeilingExceeded`` propagates to the caller unmodified.
+                         Default ``None`` preserves legacy behaviour (no cost tracking).
 
     Returns:
         The edit plans dict.
@@ -411,7 +421,10 @@ def run_edit_suggestions(
         print(f"  Resuming: {skipped} lessons already processed, {len(lessons_to_run)} remaining.")
 
     new_plans = asyncio.run(
-        _plan_all(lessons_to_run, template, out_path, existing_plans, issue_descriptions, to_version)
+        _plan_all(
+            lessons_to_run, template, out_path, existing_plans, issue_descriptions,
+            to_version, cost_meter=cost_meter,
+        )
     )
 
     all_plans = existing_plans + new_plans
@@ -443,6 +456,7 @@ async def _plan_all(
     existing: list[dict],
     issue_descriptions: dict[str, str],
     to_version: str = "",
+    cost_meter: "RunCostMeter | None" = None,
 ) -> list[dict]:
     if not lessons:
         return []
@@ -457,7 +471,7 @@ async def _plan_all(
             prompt = _build_prompt(lesson_id, group, template, issue_descriptions, to_version)
             if prompt is None:
                 return None
-            return await _call_openai(client, lesson_id, group, prompt)
+            return await _call_openai(client, lesson_id, group, prompt, cost_meter=cost_meter)
 
     tasks = [plan_one(lid, group) for lid, group in lessons.items()]
 
@@ -480,18 +494,43 @@ async def _call_openai(
     lesson_id: str,
     group: list[dict],
     prompt: str,
+    cost_meter: "RunCostMeter | None" = None,
 ) -> dict | None:
+    """Make a single OpenAI API call and return an edit-plan dict.
+
+    When ``cost_meter`` is supplied, ``check_before_call`` is invoked before
+    each attempt (raises ``CostCeilingExceeded`` if over budget — callers must
+    not catch this) and ``record_usage`` is called after a successful response.
+    Default ``None`` preserves legacy behaviour (no cost tracking).
+    """
     max_retries = 3
     first = group[0]
 
     for attempt in range(max_retries):
         try:
+            # Cost guard: check before every attempt so that cumulative totals
+            # from earlier lessons are respected.
+            if cost_meter is not None:
+                cost_meter.check_before_call(
+                    model=config.EDIT_SUGGESTIONS_MODEL,
+                    expected_input_tokens=len(prompt) // 4,
+                    expected_output_tokens=800,
+                )
+
             response = await client.chat.completions.create(
                 model=config.EDIT_SUGGESTIONS_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 response_format=_RESPONSE_SCHEMA,
                 temperature=0.1,
             )
+
+            # Record actual usage after a successful call.
+            if cost_meter is not None and response.usage is not None:
+                cost_meter.record_usage(
+                    model=config.EDIT_SUGGESTIONS_MODEL,
+                    prompt_tokens=response.usage.prompt_tokens,
+                    completion_tokens=response.usage.completion_tokens,
+                )
             raw = response.choices[0].message.content
             parsed = json.loads(raw)
 
@@ -580,6 +619,17 @@ async def _call_openai(
             }
 
         except Exception as e:
+            # CostCeilingExceeded must propagate — it is a hard stop that the
+            # worker lifecycle handles. Do not swallow it in the retry loop.
+            # Import lazily to keep pipeline/ independent of app/ at import time;
+            # the check_before_call guard above only runs when cost_meter is set,
+            # so this branch is only reachable if cost_meter is set.
+            try:
+                from app.services.run_cost_meter import CostCeilingExceeded
+                if isinstance(e, CostCeilingExceeded):
+                    raise
+            except ImportError:
+                pass
             if attempt < max_retries - 1:
                 await asyncio.sleep(2 ** attempt)
             else:

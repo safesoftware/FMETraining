@@ -14,10 +14,15 @@ Design notes (see plan section 2B):
   lives in ``ctx.scratch``; it is NEVER written to disk.
 - Step 3 runs LLM assessment via ``pipeline/assessment.py:run_assessment``,
   wired to ``ctx.cost_meter`` for ceiling enforcement and token accounting.
-  Steps 5–6 log "not yet integrated" and return immediately.
+- Step 5 generates the HTML report via ``pipeline/report.py:build_report``.
+- Step 6 generates edit suggestions via
+  ``pipeline/edit_suggestions.py:run_edit_suggestions``, also wired to
+  ``ctx.cost_meter`` for ceiling enforcement.
 - PII guarantee: the slim changelog written by ``pipeline/changelog.py``
   already strips ``description`` fields. The full in-memory changelog (with
-  descriptions) stays in ``ctx.scratch["changelog"]`` only.
+  descriptions) stays in ``ctx.scratch["changelog"]`` only. The descriptions
+  dict built for assessment/edit-suggestions also lives only in
+  ``ctx.scratch`` and is NEVER written to disk.
 """
 from __future__ import annotations
 
@@ -101,13 +106,10 @@ def make_step_body(
             await _run_step_2(ctx, run_artifact_dir)
         elif step_num == 3:
             await _run_step_3(ctx, run_artifact_dir)
-        else:
-            # Steps 5–6: not yet integrated in this slice.
-            await ctx.logger.log(
-                "info",
-                f"[step {step_num}] not yet integrated (KNOW-2334 slice 3); "
-                "logging and returning",
-            )
+        elif step_num == 5:
+            await _run_step_5(ctx, run_artifact_dir)
+        elif step_num == 6:
+            await _run_step_6(ctx, run_artifact_dir)
 
     return _step_body
 
@@ -283,4 +285,214 @@ async def _run_step_3(
         "info",
         f"[step 3] assessment done: {completed}/{total} pair(s) assessed, "
         f"model={model}, artifact update-recommendations-{ctx.run_id}.json",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Step 5 — Report
+# ---------------------------------------------------------------------------
+
+async def _run_step_5(
+    ctx: "WorkerContext",
+    output_dir: Path,
+) -> None:
+    """Run ``pipeline/report.py:build_report`` in a thread.
+
+    Reads the recommendations from ``ctx.scratch["recommendations"]`` (set by
+    step 3) and the edit-plans path from disk if present (set by step 6 when
+    it ran before this, or absent on first pass). Writes
+    ``report-<run_id>.html`` to the artifact directory.
+
+    ``build_report`` internally calls ``get_run_job`` which reads
+    ``runs.json``.  Since the worker pipeline does not use ``runs.json``, we
+    write a minimal stub so ``get_run_job`` can resolve ``to_version`` for the
+    report's save-draft JS.
+    """
+    import json as _json
+
+    from pipeline.report import build_report
+    from pipeline.utils import edit_plans_path as _edit_plans_path, recommendations_path
+
+    recommendations = ctx.scratch.get("recommendations")
+    recs_path: Path | None = None
+
+    if recommendations is None:
+        # Fall back to reading the recs artifact from disk (resume path).
+        recs_path = recommendations_path(ctx.run_id, output_dir)
+        if not recs_path.exists():
+            raise RuntimeError(
+                "Step 5 requires recommendations in ctx.scratch or on disk "
+                "(step 3 must run first)"
+            )
+        await ctx.logger.log(
+            "info",
+            "[step 5] recommendations not in scratch; reading from disk (resume mode)",
+        )
+    else:
+        recs_path = recommendations_path(ctx.run_id, output_dir)
+
+    # Determine if an edit-plans file exists (step 6 may have already run or
+    # be running after step 5 — the file presence is what matters here).
+    edit_plans_file = _edit_plans_path(ctx.run_id, output_dir)
+    edit_plans_arg = edit_plans_file if edit_plans_file.exists() else None
+
+    # Write a minimal runs.json stub so build_report can resolve to_version.
+    # This only writes to the run's own artifact dir — no PII touches disk.
+    _runs_json = output_dir / "runs.json"
+    if not _runs_json.exists():
+        to_version = ctx.to_version or ""
+        _stub_runs = {
+            "runs": [{
+                "run_id": ctx.run_id,
+                "job": {"to_version": to_version, "scope": ctx.scope},
+                "steps_completed": [],
+            }]
+        }
+        _runs_json.write_text(
+            _json.dumps(_stub_runs, indent=2), encoding="utf-8"
+        )
+
+    await ctx.logger.log("info", "[step 5] generating HTML report...")
+
+    def _sync() -> Path:
+        sink = _LogSink(ctx.logger)
+        with contextlib.redirect_stdout(sink):
+            result = build_report(
+                run_id=ctx.run_id,
+                output_dir=output_dir,
+                recs_path=recs_path,
+                edit_plans_path=edit_plans_arg,
+            )
+        sink.flush()
+        return result
+
+    report_file = await asyncio.to_thread(_sync)
+
+    await ctx.logger.log(
+        "info",
+        f"[step 5] report done: {report_file.name}",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Step 6 — Edit Suggestions
+# ---------------------------------------------------------------------------
+
+async def _run_step_6(
+    ctx: "WorkerContext",
+    output_dir: Path,
+) -> None:
+    """Run ``pipeline/edit_suggestions.py:run_edit_suggestions`` in a thread.
+
+    Reads recommendations + descriptions from ``ctx.scratch`` (set by step 3).
+    Passes ``ctx.cost_meter`` so token usage is tracked and
+    ``CostCeilingExceeded`` propagates to ``run_worker``'s existing handler
+    (→ ``aborted_cost_ceiling``).
+
+    After edit-plans are generated, re-runs ``build_report`` so the HTML
+    report's "Lesson Edits" tab is enabled (mirrors the legacy pipeline.py
+    behavior where step 6 regenerates the report).
+
+    PII guarantee: ``descriptions`` lives only in ``ctx.scratch`` and is NEVER
+    written to disk by either ``run_edit_suggestions`` or the report.
+    """
+    import json as _json
+
+    from pipeline.edit_suggestions import run_edit_suggestions
+    from pipeline.report import build_report
+    from pipeline.utils import edit_plans_path as _edit_plans_path, recommendations_path
+
+    recommendations = ctx.scratch.get("recommendations")
+    if recommendations is None:
+        # Resume: read recs from disk.
+        recs_path = recommendations_path(ctx.run_id, output_dir)
+        if not recs_path.exists():
+            raise RuntimeError(
+                "Step 6 requires recommendations in ctx.scratch or on disk "
+                "(step 3 must run first)"
+            )
+        with open(recs_path, encoding="utf-8") as _f:
+            recommendations = _json.load(_f)
+        await ctx.logger.log(
+            "info",
+            "[step 6] recommendations not in scratch; read from disk (resume mode)",
+        )
+
+    # Descriptions live in ctx.scratch — NEVER on disk.
+    # If step 3 populated them they're already there; otherwise we can
+    # reconstruct from the in-memory changelog (also in scratch).
+    descriptions: dict[str, str] = ctx.scratch.get("descriptions", {})
+    if not descriptions:
+        changelog = ctx.scratch.get("changelog", {})
+        descriptions = {
+            i["issue_key"]: (i.get("description") or "")
+            for i in changelog.get("issues", [])
+            if i.get("issue_key")
+        }
+
+    to_version = ctx.to_version or ""
+    cost_meter = ctx.cost_meter
+    dry_run = ctx.options.get("dry_run", False)
+
+    lesson_count = len({
+        a["lesson_id"]
+        for a in recommendations.get("assessments", [])
+        if a.get("update_likelihood") in ("medium", "high")
+    })
+    await ctx.logger.log(
+        "info",
+        f"[step 6] generating edit suggestions "
+        f"({lesson_count} lesson(s) with medium/high likelihood, "
+        f"dry_run={dry_run})...",
+    )
+
+    def _sync() -> dict:
+        sink = _LogSink(ctx.logger)
+        with contextlib.redirect_stdout(sink):
+            result = run_edit_suggestions(
+                run_id=ctx.run_id,
+                recommendations=recommendations,
+                output_dir=output_dir,
+                dry_run=dry_run,
+                to_version=to_version,
+                descriptions=descriptions,
+                cost_meter=cost_meter,
+            )
+        sink.flush()
+        return result
+
+    edit_plans = await asyncio.to_thread(_sync)
+
+    # Store edit-plans in scratch for any downstream use.
+    ctx.scratch["edit_plans"] = edit_plans
+    completed_lessons = edit_plans.get("completed_lessons", 0)
+    await ctx.logger.log(
+        "info",
+        f"[step 6] edit suggestions done: {completed_lessons} lesson(s), "
+        f"artifact edit-plans-{ctx.run_id}.json",
+    )
+
+    # Regenerate the report now that the edit-plans artifact exists, so the
+    # "Lesson Edits" tab is enabled in the HTML report.
+    await ctx.logger.log("info", "[step 6] regenerating report with edit-plans tab...")
+
+    edit_plans_file = _edit_plans_path(ctx.run_id, output_dir)
+    recs_path = recommendations_path(ctx.run_id, output_dir)
+
+    def _regen_report() -> Path:
+        sink = _LogSink(ctx.logger)
+        with contextlib.redirect_stdout(sink):
+            result = build_report(
+                run_id=ctx.run_id,
+                output_dir=output_dir,
+                recs_path=recs_path,
+                edit_plans_path=edit_plans_file,
+            )
+        sink.flush()
+        return result
+
+    report_file = await asyncio.to_thread(_regen_report)
+    await ctx.logger.log(
+        "info",
+        f"[step 6] report regenerated: {report_file.name}",
     )

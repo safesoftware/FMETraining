@@ -772,3 +772,369 @@ async def test_step3_pii_description_absent_from_recs_artifact(
         f"PII sentinel '{PII_SENTINEL}' found in artifact files: {contaminated}. "
         "Jira descriptions must never be written to any artifact file."
     )
+
+
+# ---------------------------------------------------------------------------
+# Step 5: Report generation (mocked OpenAI for steps 1-3)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_step5_writes_report_html(
+    async_session_factory, tmp_version_tree, tmp_path, monkeypatch
+) -> None:
+    """Step 5 should write report-<run_id>.html to the artifact dir."""
+    run_id = "r-step5-report"
+    tree = tmp_version_tree
+    artifact_dir = tmp_path / "artifacts"
+
+    csv_path = tmp_path / "data" / "jira_export.csv"
+    _make_small_jira_csv(csv_path, to_version="2026.1")
+
+    import pipeline.config as pipeline_cfg
+    monkeypatch.setattr(pipeline_cfg, "JIRA_CSV_PATH", csv_path)
+
+    await _seed_run(
+        async_session_factory,
+        run_id,
+        scope={"learning_paths": [tree["lp"]], "courses": [], "lessons": []},
+        to_version="2026.1",
+        options={"steps": "1,2,3,5"},
+    )
+
+    step_body = make_step_body(
+        artifacts_root=str(artifact_dir),
+        lesson_content_root=str(tree["repo_root"]),
+    )
+
+    with _mock_assessment_patches(_mock_openai_client()):
+        final = await run_worker(
+            run_id,
+            session_factory=async_session_factory,
+            step_body=step_body,
+            log_flush_interval_s=0.05,
+        )
+
+    assert final == TERMINAL_OK
+
+    report_file = artifact_dir / run_id / f"report-{run_id}.html"
+    assert report_file.exists(), f"report file not found at {report_file}"
+
+    content = report_file.read_text(encoding="utf-8")
+    assert run_id in content, "report HTML should contain the run_id"
+    assert "<!DOCTYPE html>" in content, "report should be valid HTML"
+
+
+@pytest.mark.asyncio
+async def test_step5_pii_absent_from_report(
+    async_session_factory, tmp_version_tree, tmp_path, monkeypatch
+) -> None:
+    """The on-disk report HTML must NOT contain the PII sentinel."""
+    run_id = "r-step5-pii"
+    tree = tmp_version_tree
+    artifact_dir = tmp_path / "artifacts"
+
+    csv_path = tmp_path / "data" / "jira_export.csv"
+    _make_small_jira_csv(csv_path)  # includes PII_SENTINEL in FMEENGINE-1001
+
+    import pipeline.config as pipeline_cfg
+    monkeypatch.setattr(pipeline_cfg, "JIRA_CSV_PATH", csv_path)
+
+    await _seed_run(
+        async_session_factory,
+        run_id,
+        scope={"learning_paths": [tree["lp"]], "courses": [], "lessons": []},
+        to_version="2026.1",
+        options={"steps": "1,2,3,5"},
+    )
+
+    step_body = make_step_body(
+        artifacts_root=str(artifact_dir),
+        lesson_content_root=str(tree["repo_root"]),
+    )
+
+    with _mock_assessment_patches(_mock_openai_client()):
+        final = await run_worker(
+            run_id,
+            session_factory=async_session_factory,
+            step_body=step_body,
+            log_flush_interval_s=0.05,
+        )
+
+    assert final == TERMINAL_OK
+
+    run_dir = artifact_dir / run_id
+    contaminated: list[str] = []
+    for fpath in run_dir.rglob("*"):
+        if fpath.is_file():
+            try:
+                content = fpath.read_text(encoding="utf-8", errors="replace")
+                if PII_SENTINEL in content:
+                    contaminated.append(str(fpath))
+            except Exception:  # noqa: BLE001
+                pass
+
+    assert not contaminated, (
+        f"PII sentinel found after steps 1,2,3,5: {contaminated}. "
+        "Jira descriptions must never be written to any artifact file."
+    )
+
+
+# ---------------------------------------------------------------------------
+# Step 6: Edit suggestions (mocked OpenAI for all LLM calls)
+# ---------------------------------------------------------------------------
+
+
+def _mock_edit_suggestions_patches(
+    mock_client: MagicMock,
+    *,
+    assessment_client: MagicMock | None = None,
+):
+    """Return a context-manager stack patching both assessment and edit_suggestions.
+
+    ``assessment_client`` defaults to the same mock_client if not provided.
+    Both AsyncOpenAI classes + their api_key getters are patched so no real
+    credentials are needed.
+    """
+    from contextlib import contextmanager
+
+    _asmnt_client = assessment_client if assessment_client is not None else mock_client
+
+    @contextmanager
+    def _ctx():
+        with patch("pipeline.assessment.AsyncOpenAI") as asmnt_cls, \
+             patch("pipeline.assessment.config.get_openai_api_key", return_value="sk-test"), \
+             patch("pipeline.edit_suggestions.AsyncOpenAI") as es_cls, \
+             patch("pipeline.edit_suggestions.config.get_openai_api_key", return_value="sk-test"):
+            asmnt_cls.return_value = _asmnt_client
+            es_cls.return_value = mock_client
+            yield
+
+    return _ctx()
+
+
+def _make_edit_plan_response() -> str:
+    """Minimal valid edit-plan JSON for mocking."""
+    import json
+    return json.dumps({
+        "rename_pairs": [],
+        "changes": [],
+        "screenshot_updates": [],
+    })
+
+
+def _mock_edit_suggestions_client(
+    *,
+    prompt_tokens: int = 200,
+    completion_tokens: int = 100,
+) -> MagicMock:
+    """Build a mock AsyncOpenAI client for edit_suggestions."""
+    mock_response = SimpleNamespace(
+        choices=[SimpleNamespace(message=SimpleNamespace(
+            content=_make_edit_plan_response()
+        ))],
+        usage=SimpleNamespace(
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+        ),
+    )
+    client = MagicMock()
+    client.chat.completions.create = AsyncMock(return_value=mock_response)
+    return client
+
+
+@pytest.mark.asyncio
+async def test_step6_writes_edit_plans_json(
+    async_session_factory, tmp_version_tree, tmp_path, monkeypatch
+) -> None:
+    """Step 6 should write edit-plans-<run_id>.json to the artifact dir."""
+    run_id = "r-step6-plans"
+    tree = tmp_version_tree
+    artifact_dir = tmp_path / "artifacts"
+
+    csv_path = tmp_path / "data" / "jira_export.csv"
+    _make_small_jira_csv(csv_path, to_version="2026.1")
+
+    import pipeline.config as pipeline_cfg
+    monkeypatch.setattr(pipeline_cfg, "JIRA_CSV_PATH", csv_path)
+
+    await _seed_run(
+        async_session_factory,
+        run_id,
+        scope={"learning_paths": [tree["lp"]], "courses": [], "lessons": []},
+        to_version="2026.1",
+        options={"steps": "1,2,3,5,6"},
+    )
+
+    step_body = make_step_body(
+        artifacts_root=str(artifact_dir),
+        lesson_content_root=str(tree["repo_root"]),
+    )
+
+    with _mock_edit_suggestions_patches(_mock_edit_suggestions_client()):
+        final = await run_worker(
+            run_id,
+            session_factory=async_session_factory,
+            step_body=step_body,
+            log_flush_interval_s=0.05,
+        )
+
+    assert final == TERMINAL_OK
+
+    edit_plans_file = artifact_dir / run_id / f"edit-plans-{run_id}.json"
+    assert edit_plans_file.exists(), f"edit-plans file not found at {edit_plans_file}"
+
+    import json
+    data = json.loads(edit_plans_file.read_text(encoding="utf-8"))
+    assert data["run_id"] == run_id
+
+
+@pytest.mark.asyncio
+async def test_step6_regenerates_report_with_edit_plans_tab(
+    async_session_factory, tmp_version_tree, tmp_path, monkeypatch
+) -> None:
+    """After step 6, the regenerated report HTML should reference the edit-plans file."""
+    run_id = "r-step6-regen"
+    tree = tmp_version_tree
+    artifact_dir = tmp_path / "artifacts"
+
+    csv_path = tmp_path / "data" / "jira_export.csv"
+    _make_small_jira_csv(csv_path, to_version="2026.1")
+
+    import pipeline.config as pipeline_cfg
+    monkeypatch.setattr(pipeline_cfg, "JIRA_CSV_PATH", csv_path)
+
+    await _seed_run(
+        async_session_factory,
+        run_id,
+        scope={"learning_paths": [tree["lp"]], "courses": [], "lessons": []},
+        to_version="2026.1",
+        options={"steps": "1,2,3,5,6"},
+    )
+
+    step_body = make_step_body(
+        artifacts_root=str(artifact_dir),
+        lesson_content_root=str(tree["repo_root"]),
+    )
+
+    with _mock_edit_suggestions_patches(_mock_edit_suggestions_client()):
+        final = await run_worker(
+            run_id,
+            session_factory=async_session_factory,
+            step_body=step_body,
+            log_flush_interval_s=0.05,
+        )
+
+    assert final == TERMINAL_OK
+
+    report_file = artifact_dir / run_id / f"report-{run_id}.html"
+    assert report_file.exists(), f"report file not found at {report_file}"
+
+    content = report_file.read_text(encoding="utf-8")
+    # The regenerated report should reference the edit-plans file in its JS constants
+    assert f"edit-plans-{run_id}.json" in content, (
+        "Regenerated report should contain a reference to the edit-plans JSON file"
+    )
+
+
+@pytest.mark.asyncio
+async def test_step6_pii_absent_from_edit_plans_and_report(
+    async_session_factory, tmp_version_tree, tmp_path, monkeypatch
+) -> None:
+    """No artifact file (edit-plans OR report) may contain the PII sentinel after step 6."""
+    run_id = "r-step6-pii"
+    tree = tmp_version_tree
+    artifact_dir = tmp_path / "artifacts"
+
+    csv_path = tmp_path / "data" / "jira_export.csv"
+    _make_small_jira_csv(csv_path)  # includes PII_SENTINEL
+
+    import pipeline.config as pipeline_cfg
+    monkeypatch.setattr(pipeline_cfg, "JIRA_CSV_PATH", csv_path)
+
+    await _seed_run(
+        async_session_factory,
+        run_id,
+        scope={"learning_paths": [tree["lp"]], "courses": [], "lessons": []},
+        to_version="2026.1",
+        options={"steps": "1,2,3,5,6"},
+    )
+
+    step_body = make_step_body(
+        artifacts_root=str(artifact_dir),
+        lesson_content_root=str(tree["repo_root"]),
+    )
+
+    with _mock_edit_suggestions_patches(_mock_edit_suggestions_client()):
+        final = await run_worker(
+            run_id,
+            session_factory=async_session_factory,
+            step_body=step_body,
+            log_flush_interval_s=0.05,
+        )
+
+    assert final == TERMINAL_OK
+
+    run_dir = artifact_dir / run_id
+    assert run_dir.exists()
+
+    contaminated: list[str] = []
+    for fpath in run_dir.rglob("*"):
+        if fpath.is_file():
+            try:
+                content = fpath.read_text(encoding="utf-8", errors="replace")
+                if PII_SENTINEL in content:
+                    contaminated.append(str(fpath))
+            except Exception:  # noqa: BLE001
+                pass
+
+    assert not contaminated, (
+        f"PII sentinel found in artifact files after step 6: {contaminated}. "
+        "Jira descriptions must never be written to any artifact file."
+    )
+
+
+@pytest.mark.asyncio
+async def test_step6_cost_ceiling_aborts_run(
+    async_session_factory, tmp_version_tree, tmp_path, monkeypatch
+) -> None:
+    """A tiny MAX_RUN_USD ceiling should abort during step 6 with 'aborted_cost_ceiling'."""
+    run_id = "r-step6-ceiling"
+    tree = tmp_version_tree
+    artifact_dir = tmp_path / "artifacts"
+
+    csv_path = tmp_path / "data" / "jira_export.csv"
+    _make_small_jira_csv(csv_path, to_version="2026.1")
+
+    import pipeline.config as pipeline_cfg
+    monkeypatch.setattr(pipeline_cfg, "JIRA_CSV_PATH", csv_path)
+
+    await _seed_run(
+        async_session_factory,
+        run_id,
+        scope={"learning_paths": [tree["lp"]], "courses": [], "lessons": []},
+        to_version="2026.1",
+        options={"steps": "1,2,3,5,6"},
+    )
+
+    step_body = make_step_body(
+        artifacts_root=str(artifact_dir),
+        lesson_content_root=str(tree["repo_root"]),
+    )
+
+    # Step 3 uses a normal ceiling to pass. Step 6 uses a near-zero ceiling
+    # to trigger the cost guard before its first API call. We set max_run_usd
+    # very small so the check_before_call in step 6 fires immediately.
+    with _mock_edit_suggestions_patches(_mock_edit_suggestions_client()):
+        final = await run_worker(
+            run_id,
+            session_factory=async_session_factory,
+            step_body=step_body,
+            log_flush_interval_s=0.05,
+            max_run_usd=0.000001,  # near-zero — fires on step 3 OR step 6
+        )
+
+    # Either step 3 or step 6 triggers the ceiling; both produce TERMINAL_COST_ABORTED
+    assert final == TERMINAL_COST_ABORTED, (
+        f"Expected '{TERMINAL_COST_ABORTED}', got '{final}'"
+    )

@@ -18,7 +18,7 @@
 
 | Ticket | Branch | PR | Status | Plan | Next action |
 |---|---|---|---|---|---|
-| **KNOW-2334** real pipeline in worker | `know-2334-steps-3-4` | #26 merged; #27 (slice 2) | In Progress | build plan Part 2 | Slices 1–2: steps 1–3 real (manifest, changelog, assessment) + RunCostMeter wired; `make test` green (428 pass; `run_worker` integration tests gated on Postgres — KNOW-2265). Next: step 5 (report serving), step 6, drafts. |
+| **KNOW-2334** real pipeline in worker | `know-2334-steps-5-6` | #26/#27 merged; #28 (slice 3) | In Progress | build plan Part 2 | Slices 1–3: **all 6 steps real** (manifest, changelog, assessment, report, edit-suggestions) + RunCostMeter on the OpenAI steps + `/report/{run_id}`; `make test` green (440 pass; `run_worker` integration tests Postgres-gated — KNOW-2265). `_stub_step_body` fully replaced. Remaining: real e2e run verification (needs OpenAI + KNOW-2335 launch) + `run_steps.artifact_keys_json` (minor). Then **KNOW-2335** (launch UI). |
 | **KNOW-2335** run-launch UI + endpoint | — | — | In Backlog (blocked by 2334) | build plan Part 2 | After 2334 runs e2e. |
 | **KNOW-2337** PROJECT-STATE + AGENTS ritual | `know-2337-project-state` | #25 | Ready for QA (this PR) | build plan Part 1 | Review + merge #25. |
 | **KNOW-2333** `bin/setup-ec2.sh` fixes (exec bit, pg_hba) | — | — | In Backlog | cutover tracker | Fix in repo; bites next provision. |
