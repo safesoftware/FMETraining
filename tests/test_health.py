@@ -25,8 +25,11 @@ def test_index_renders_with_htmx_and_alpine() -> None:
         response = client.get("/")
     assert response.status_code == 200
     html = response.text
-    assert "placeholder index" in html
-    # Static script references — proves both vendor files are wired in.
+    # Unauthenticated: the index is the launch UI's signed-out state, which
+    # gives a clear sign-in entry point (KNOW-2335 replaced the Phase-0
+    # placeholder). Returns 200, not 401.
+    assert "/auth/login" in html
+    # Static script references — proves both vendor files are wired in (base.html).
     assert "/static/htmx.min.js" in html
     assert "/static/alpine.min.js" in html
 

@@ -1,6 +1,6 @@
 # Project state — single source of truth
 
-> **Last updated:** 2026-06-10 (session post-cutover + PR cleanup; KNOW-2337).
+> **Last updated:** 2026-06-10 (KNOW-2335 launch UI implemented; PR #29 draft).
 > **What this is:** the always-current snapshot of *what is actually deployed, what is in
 > flight, and what is next*. Read this **before starting any work** (see the reconcile ritual
 > in `AGENTS.md`). It sits above the individual plan docs in `docs/plans/` — those describe
@@ -19,7 +19,7 @@
 | Ticket | Branch | PR | Status | Plan | Next action |
 |---|---|---|---|---|---|
 | **KNOW-2334** real pipeline in worker | `know-2334-steps-5-6` | #26/#27 merged; #28 (slice 3) | In Progress | build plan Part 2 | Slices 1–3: **all 6 steps real** (manifest, changelog, assessment, report, edit-suggestions) + RunCostMeter on the OpenAI steps + `/report/{run_id}`; `make test` green (440 pass; `run_worker` integration tests Postgres-gated — KNOW-2265). `_stub_step_body` fully replaced. Remaining: real e2e run verification (needs OpenAI + KNOW-2335 launch) + `run_steps.artifact_keys_json` (minor). Then **KNOW-2335** (launch UI). |
-| **KNOW-2335** run-launch UI + endpoint | — | — | In Backlog (blocked by 2334) | build plan Part 2 | After 2334 runs e2e. |
+| **KNOW-2335** run-launch UI + endpoint | `know-2335-launch-ui` | #29 (draft) | Ready for QA | build plan Part 2 | Review + merge #29. Adds `POST /api/runs`, `GET /api/runs/*`, `GET /api/versions`, `GET /api/content-tree`, and the full launch UI replacing the placeholder index. 23 new integration tests. |
 | **KNOW-2337** PROJECT-STATE + AGENTS ritual | `know-2337-project-state` | #25 | Ready for QA (this PR) | build plan Part 1 | Review + merge #25. |
 | **KNOW-2333** `bin/setup-ec2.sh` fixes (exec bit, pg_hba) | — | — | In Backlog | cutover tracker | Fix in repo; bites next provision. |
 | **KNOW-2330** give agent SSM box access | — | — | In Backlog (**IT/IAM-blocked**) | — | Folded into KNOW-2309 IAM ask. |
