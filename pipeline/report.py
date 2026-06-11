@@ -368,7 +368,7 @@ span.tc-orig-context {{ color: inherit; }}
     <div class="edit-toolbar" id="le-toolbar" style="display:none">
       <button onclick="leUndo()" id="le-undo-btn" disabled>← Undo</button>
       <button onclick="leRedo()" id="le-redo-btn" disabled>Redo →</button>
-      <button class="save-btn" onclick="leSave()" id="le-save-btn">Save to Version Folder</button>
+      <button class="save-btn" onclick="leSave()" id="le-save-btn" disabled title="Saving to the version folder isn't available in the web app yet (KNOW-2278) — your edits are saved automatically (see status at right).">Save to Version Folder (coming soon)</button>
       <button class="reset-btn" onclick="leResetLesson()" id="le-reset-btn">Reset to original</button>
       <span class="le-autosave-status" id="le-autosave-status" data-state="idle"></span>
     </div>
@@ -1793,6 +1793,19 @@ function leGetCleanHtml() {{
 }}
 
 function leSave() {{
+  // KNOW-2278: the /api/save-lesson endpoint that wrote the cleaned lesson HTML
+  // to the version folder lived in the legacy serve.py and has NOT yet been
+  // ported into the FastAPI web app, so this POST 404s in the deployed app. The
+  // button is disabled in the UI; this guard is belt-and-suspenders so a manual
+  // invocation surfaces a clear message instead of a silent 404. Edits are
+  // already persisted by auto-save (report-drafts). Remove both when KNOW-2278
+  // ports the endpoint.
+  leShowMessage(
+    "Saving to the version folder isn't available in the web app yet — your edits are saved automatically (see the status at the top of the editor).",
+    'error', {{ autoHide: 6000 }}
+  );
+  return;
+  // eslint-disable-next-line no-unreachable -- retained for KNOW-2278 (re-enable on port)
   const result = leGetCleanHtml();
   if (!result) return;
   const {{ html: cleanHtml, plan }} = result;

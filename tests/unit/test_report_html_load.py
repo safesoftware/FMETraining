@@ -98,3 +98,19 @@ def test_report_decouples_edit_plans_from_drafts(tmp_path, monkeypatch):
     assert "fetch(EDIT_PLANS_FILE)\n    .then(r => r.json())" in html
     assert "fetch(EDIT_PLANS_FILE).then(r => r.json())," not in html
     assert "leLoadDrafts();" in html
+
+
+def test_report_save_to_version_button_disabled(tmp_path, monkeypatch):
+    """'Save to Version Folder' stays disabled until the legacy /api/save-lesson
+    endpoint is ported into the web app (KNOW-2278) — otherwise the button 404s
+    in the deployed app. Stopgap so users aren't given a silent failure."""
+    monkeypatch.setattr(cfg, "APP_BASE_URL", "")
+    run_id = "20260101T000000-cccc"
+    recs_path, edit_plans_path = _seed(tmp_path, run_id, with_edit_plans=True)
+
+    out = build_report(
+        run_id, tmp_path, recs_path=recs_path, edit_plans_path=edit_plans_path
+    )
+    html = out.read_text(encoding="utf-8")
+
+    assert 'id="le-save-btn" disabled' in html
