@@ -290,6 +290,29 @@ async def test_create_run_steps_normalised(authed_client, async_session_factory)
     assert run.options_json["steps"] == "1,3,5"
 
 
+@pytest.mark.asyncio
+async def test_create_run_defaults_steps_include_step_6(
+    authed_client, async_session_factory
+) -> None:
+    """Omitting ``steps`` defaults to all of 1,2,3,5,6 — step 6 (edit plans) is
+    on by default (KNOW-2342)."""
+    client, user = authed_client
+    resp = await client.post(
+        "/api/runs",
+        json={
+            "to_version": "2026.1",
+            "scope": {"lessons": ["2026.1/lp/c/l/index.html"]},
+            "options": {},
+        },
+    )
+    assert resp.status_code == 201, resp.text
+    run_id = resp.json()["run_id"]
+
+    async with async_session_factory() as session:
+        run = await session.get(Run, run_id)
+    assert run.options_json["steps"] == "1,2,3,5,6"
+
+
 # ---------------------------------------------------------------------------
 # Scheduler dispatch (StubTaskDispatcher picks up queued run)
 # ---------------------------------------------------------------------------

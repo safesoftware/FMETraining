@@ -63,13 +63,13 @@ class _OptionsIn(BaseModel):
     jira_source: str = Field(default="csv", pattern="^(csv|api)$")
     refresh_jira: bool = False
     dry_run: bool = False
-    steps: str = Field(default="1,2,3,5")
+    steps: str = Field(default="1,2,3,5,6")
 
     @field_validator("steps")
     @classmethod
     def _validate_steps(cls, v: str) -> str:
         if not v.strip():
-            return "1,2,3,5"
+            return "1,2,3,5,6"
         parts = [s.strip() for s in v.split(",") if s.strip()]
         try:
             nums = {int(p) for p in parts}

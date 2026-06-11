@@ -62,11 +62,14 @@ JIRA_FILTER_ID: str = os.getenv("JIRA_FILTER_ID", "")
 # Path is gitignored via /.cache/ in .gitignore.
 JIRA_CACHE_PATH: Path = REPO_ROOT / ".cache" / "jira_api_cache.json"
 
-# Base URL of the FastAPI app the report's auto-save JS POSTs to. Same
-# origin as the report HTML — the FastAPI app mounts /artifacts so this
-# URL is also where the report itself loads from. Override per-environment
-# (e.g. https://fme-train.base.safe.com in production).
-APP_BASE_URL: str = os.getenv("APP_BASE_URL", "http://localhost:8000")
+# Base URL of the FastAPI app the report's auto-save JS POSTs to. The app
+# serves the report HTML (via /artifacts) and the API from the SAME origin, so
+# this should be RELATIVE ("" -> "/api/...") by default. A non-empty default
+# (e.g. http://localhost:8000) made browser-side drafts calls target the report
+# viewer's own machine, hanging the load (KNOW-2342). Only the legacy serve.py
+# workflow (report on a separate static server) needs an absolute base — set
+# APP_BASE_URL explicitly there.
+APP_BASE_URL: str = os.getenv("APP_BASE_URL", "")
 
 # Skilljar API credentials (for Push to Skilljar feature)
 SKILLJAR_API_KEY: str = os.getenv("SKILLJAR_API_KEY", "")

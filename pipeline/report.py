@@ -91,7 +91,7 @@ def _build_html(
     jira_base_url: str = "",
     edit_plans_filename: str = "",
     to_version: str = "",
-    app_base_url: str = "http://localhost:8000",
+    app_base_url: str = "",
 ) -> str:
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -976,14 +976,23 @@ function leScheduleAutosave(lessonDir) {{
 
 async function leLoadDrafts() {{
   try {{
-    const res = await fetch(APP_BASE + '/api/runs/' + encodeURIComponent(RUN_ID) + '/report-drafts');
+    // Bound the request so a slow / unreachable drafts endpoint can't hang the
+    // editor indefinitely (KNOW-2342).
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    let res;
+    try {{
+      res = await fetch(APP_BASE + '/api/runs/' + encodeURIComponent(RUN_ID) + '/report-drafts', {{ signal: ctrl.signal }});
+    }} finally {{
+      clearTimeout(timer);
+    }}
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     leDrafts = (data && data.lessons) || {{}};
   }} catch (err) {{
     // Drafts are best-effort — if the FastAPI app isn't reachable (e.g.
-    // dev opening the report from file:// or via serve.py only), the
-    // editor still works without persistence. Log and move on.
+    // dev opening the report from file:// or via serve.py only, or a slow /
+    // misconfigured APP_BASE), the editor still works without persistence.
     console.warn('Could not load drafts:', err);
     leDrafts = {{}};
   }}
@@ -1042,11 +1051,14 @@ async function leResetLesson() {{
 
 // Eager-load edit plans on page load (needed for cross-tab features in issues 37, 30)
 if (EDIT_PLANS_FILE) {{
-  Promise.all([
-    fetch(EDIT_PLANS_FILE).then(r => r.json()),
-    leLoadDrafts(),
-  ])
-    .then(([data]) => {{
+  // Load edit plans independently of drafts. The lesson list MUST NOT be gated
+  // on the best-effort drafts fetch: if drafts stalls (e.g. a misconfigured
+  // APP_BASE pointing at an unreachable/hanging origin), the dropdown must
+  // still populate. (KNOW-2342: a hung drafts request left Promise.all pending
+  // forever, so leEditPlans was never assigned and the lesson list was empty.)
+  fetch(EDIT_PLANS_FILE)
+    .then(r => r.json())
+    .then(data => {{
       leEditPlans = data.lessons || [];
       lePopulateFilters();
       _plansLoaded = true;
@@ -1056,6 +1068,9 @@ if (EDIT_PLANS_FILE) {{
       document.getElementById('le-lesson-body').innerHTML =
         '<div class="lesson-edit-empty" style="color:#b91c1c">Could not load edit plans JSON.</div>';
     }});
+  // Drafts are best-effort and loaded separately so they can never block the
+  // lesson list. leLoadDrafts() swallows its own errors and has its own timeout.
+  leLoadDrafts();
 }}
 
 function lePopulateFilters() {{

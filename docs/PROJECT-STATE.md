@@ -1,6 +1,6 @@
 # Project state — single source of truth
 
-> **Last updated:** 2026-06-10 (KNOW-2335 launch UI implemented; PR #29 draft).
+> **Last updated:** 2026-06-11 (KNOW-2340 deployed + verified on the box; KNOW-2342 Lesson-Edits/report fix in flight).
 > **What this is:** the always-current snapshot of *what is actually deployed, what is in
 > flight, and what is next*. Read this **before starting any work** (see the reconcile ritual
 > in `AGENTS.md`). It sits above the individual plan docs in `docs/plans/` — those describe
@@ -11,8 +11,8 @@
 
 | System | Branch / SHA | State | Notes |
 |---|---|---|---|
-| **EC2 production (the box)** | `b03710f8` (deployed 2026-06-10) | **LIVE on the full app** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up; OpenAI/Jira secrets loaded in `/etc/fme-train/env`. **A real pipeline job ran successfully on prod** → KNOW-2334/2335 verified live end-to-end. Post-deploy fixes (report `/artifacts` mount, launch-UI width, `setup-ec2.sh` artifacts dir, `deploy-prod.sh` scratch-DB validation) **fixed in code under KNOW-2340** — ⚠️ **redeploy `bin/deploy-prod.sh` to apply them on the box** (the box still runs `b03710f8` pre-fix). |
-| **`main` (code)** | `b03710f8` | **Full launch-capable app, deployed** | KNOW-2334 (all 6 real pipeline steps + cost meter) and KNOW-2335 (launch UI + `POST /api/runs`) merged and **running on the box** — a signed-in `@safe.com` user launched a real run and the pipeline executed. |
+| **EC2 production (the box)** | `601ff82f` (deployed 2026-06-11) | **LIVE on the full app** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up; OpenAI/Jira secrets in `/etc/fme-train/env`. **Real pipeline jobs ran on prod** → KNOW-2334/2335 verified live. **KNOW-2340 deployed + verified** (report `/artifacts` mount, launch-UI width, `setup-ec2.sh` artifacts dir, `deploy-prod.sh` scratch-DB validation) — `bin/deploy-prod.sh` now runs clean end-to-end (also proves the KNOW-2296 fix). ⚠️ **KNOW-2342** (Lesson-Edits dropdown empty: drafts-fetch coupling + `APP_BASE_URL`=localhost; + default step 6 on) fixed in code — **redeploy to apply**; reports already on disk need regeneration. |
+| **`main` (code)** | `601ff82f` (+ KNOW-2342 once merged) | **Full launch-capable app, deployed** | KNOW-2334 + 2335 + 2340 merged and running on the box. KNOW-2342 (Lesson-Edits/report fix + step 6 default-on) on branch `know-2342-lesson-edits-drafts-coupling`, PR pending. |
 | Local dev | Compose (`make up`) | Full app: FastAPI + Postgres 16 + minio + worker | `InProcessTaskDispatcher`; `LocalFolderSource` for content; minio = S3. This is where the agent runs functional QA. |
 
 ## Active work (ticket ↔ branch ↔ PR ↔ status ↔ plan ↔ next)
@@ -21,7 +21,8 @@
 |---|---|---|---|---|---|
 | **KNOW-2334** real pipeline in worker | — (merged) | #26/#27/#28 merged | **Ready for QA** | build plan Part 2 | **All 6 steps real** + RunCostMeter + `/report/{run_id}`; `_stub_step_body` gone; `make test` green; launch→execute verified live (steps 1–2; 3/6 mocked-tested). QA: a real-OpenAI run (small scope). Follow-ups: `artifact_keys_json` (KNOW-2339), Postgres test harness (KNOW-2265). |
 | **KNOW-2335** run-launch UI + endpoint | — (merged) | #29 merged | **Ready for QA** | build plan Part 2 | Merged. `POST /api/runs` + `GET /api/runs/*` + `/api/versions` + `/api/content-tree` + launch UI (signed-out sign-in link / signed-in form). Verified live: authed `POST /api/runs` → real run executed. QA: browser/UX pass. |
-| **KNOW-2340** post-first-deploy fixes | `know-2340-post-deploy-fixes` | open | In Progress | — | Report `/artifacts` mount mkdir, launch-UI width (`.site-main` 1200px), `setup-ec2.sh` `/var/lib/fme-train/artifacts` + role `CREATEDB`, `deploy-prod.sh` scratch-DB `alembic_version` carry-over. `make test` green. Merge → redeploy. |
+| **KNOW-2340** post-first-deploy fixes | — (merged) | #32 merged | **Ready for QA** (deployed) | — | Merged + **deployed to box 2026-06-11**; the redeploy ran clean end-to-end (proves the KNOW-2296 scratch-DB fix). QA: launch page full-width + Report opens on the box. |
+| **KNOW-2342** Lesson-Edits tab empty + step 6 default | `know-2342-lesson-edits-drafts-coupling` | PR pending | In Progress | — | Root-caused live on run `20260610T204941-3fe8`: report edit-plans load coupled (via `Promise.all`) to a hung drafts fetch (`APP_BASE`=localhost). Fix: decouple load + drafts `AbortController` timeout + `APP_BASE_URL` default `""` (same-origin) + step 6 on by default. `make test` green (467). Merge → redeploy → **fresh run** to verify dropdown populates + drafts autosave (same-origin PUT). Existing reports need regeneration. |
 | **KNOW-2337** PROJECT-STATE + AGENTS ritual | — (merged) | #25 merged | Ready for QA | build plan Part 1 | Done/merged; awaiting close. |
 | **KNOW-2333** `bin/setup-ec2.sh` fixes (exec bit, pg_hba) | — | — | In Backlog | cutover tracker | Fix in repo; bites next provision. |
 | **KNOW-2330** give agent SSM box access | — | — | In Backlog (**IT/IAM-blocked**) | — | Folded into KNOW-2309 IAM ask. |
