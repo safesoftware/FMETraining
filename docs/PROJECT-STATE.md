@@ -1,6 +1,6 @@
 # Project state — single source of truth
 
-> **Last updated:** 2026-06-12 (**Closed KNOW-2334/2335/2340/2342/2347** — QA'd this session; KNOW-2340 launch page now full-width #37; KNOW-2347 lesson-image 404 fix #36; the KNOW-2278 *disable-Save stopgap* shipped #34 but its full Phase-2 port stays In Backlog; AGENTS epic-parenting #35; filed KNOW-2348 + KNOW-2350; box redeploy of `main` pending for hygiene).
+> **Last updated:** 2026-06-12 (**Closed KNOW-2334/2335/2340/2342/2347** — QA'd this session; KNOW-2340 launch page now full-width #37; KNOW-2347 lesson-image 404 fix #36; the KNOW-2278 *disable-Save stopgap* shipped #34 but its full Phase-2 port stays In Backlog; AGENTS epic-parenting #35; filed KNOW-2348 + KNOW-2350; **dev-backlog batch merged #38–#41** (KNOW-2348 Regen-Report; 2169/2170 suggestion accuracy; 2287/2288/2289 drafts hardening; 2350/2320 flake fix + ruff clean) — all 8 now **Ready for QA**, integrated suite 501 passed / ruff clean; box redeploy of `main` pending for hygiene).
 > **What this is:** the always-current snapshot of *what is actually deployed, what is in
 > flight, and what is next*. Read this **before starting any work** (see the reconcile ritual
 > in `AGENTS.md`). It sits above the individual plan docs in `docs/plans/` — those describe
@@ -11,8 +11,8 @@
 
 | System | Branch / SHA | State | Notes |
 |---|---|---|---|
-| **EC2 production (the box)** | KNOW-2340-fullwidth code (`06bbbfc3` equiv) — redeploy `main` pending (hygiene) | **LIVE on the full app** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up; OpenAI/Jira secrets in `/etc/fme-train/env`. **Real pipeline jobs ran on prod** → KNOW-2334/2335 verified live. **KNOW-2340 deployed + verified** (report `/artifacts` mount, launch-UI width, `setup-ec2.sh` artifacts dir, `deploy-prod.sh` scratch-DB validation) — `bin/deploy-prod.sh` now runs clean end-to-end (also proves the KNOW-2296 fix). **KNOW-2342 / 2278-stopgap / 2347 all deployed + verified live 2026-06-12**: Lesson-Edits dropdown + drafts ✅, Save-to-Version disabled ✅, lesson images served via `/lesson-content` ✅, launch page full-width ✅. Box is on the KNOW-2340-launch-full-width branch ref — `bash bin/deploy-prod.sh` (no ref) resets HEAD/last-good-SHA to `main` (`06bbbfc3`, no code change). |
-| **`main` (code)** | `06bbbfc3` | **Full launch-capable app** | KNOW-2334 + 2335 + 2340 + 2342 (#33) + 2278-stopgap (#34) + AGENTS (#35) + 2347 (#36) + **2340 full-width (#37)** merged. |
+| **EC2 production (the box)** | KNOW-2340-fullwidth code (`06bbbfc3` equiv) — redeploy `main` pending (hygiene) | **LIVE on the full app** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up; OpenAI/Jira secrets in `/etc/fme-train/env`. **Real pipeline jobs ran on prod** → KNOW-2334/2335 verified live. **KNOW-2340 deployed + verified** (report `/artifacts` mount, launch-UI width, `setup-ec2.sh` artifacts dir, `deploy-prod.sh` scratch-DB validation) — `bin/deploy-prod.sh` now runs clean end-to-end (also proves the KNOW-2296 fix). **KNOW-2342 / 2278-stopgap / 2347 all deployed + verified live 2026-06-12**: Lesson-Edits dropdown + drafts ✅, Save-to-Version disabled ✅, lesson images served via `/lesson-content` ✅, launch page full-width ✅. Box is on the KNOW-2340-launch-full-width branch ref — `bash bin/deploy-prod.sh` (no ref) resets HEAD/last-good-SHA to `main` (`3cdfa890`). **Note:** `main` now also carries the Ready-for-QA dev batch (#38–#41: Regen-Report endpoint, suggestion-accuracy filters, drafts hardening, test/lint hygiene) — QA those before treating a `main` redeploy as a no-op. |
+| **`main` (code)** | `3cdfa890` | **Full launch-capable app** | KNOW-2334 + 2335 + 2340 + 2342 (#33) + 2278-stopgap (#34) + AGENTS (#35) + 2347 (#36) + 2340 full-width (#37) + **dev batch: 2350/2320 (#41), 2169/2170 (#39), 2287/2288/2289 (#40), 2348 (#38)** merged. |
 | Local dev | Compose (`make up`) | Full app: FastAPI + Postgres 16 + minio + worker | `InProcessTaskDispatcher`; `LocalFolderSource` for content; minio = S3. This is where the agent runs functional QA. |
 
 ## Active work (ticket ↔ branch ↔ PR ↔ status ↔ plan ↔ next)
@@ -32,13 +32,23 @@
 | **KNOW-2341** EBS-snapshot schedule + off-box `pg_dump`→S3 | — | — | In Backlog (**IT-blocked**) | — | Split from 2309. `aws dlm create-default-role` + S3 bucket/perms. Manual snapshot baseline taken; nightly dump is on-box only until this lands. |
 | **KNOW-2343** renew `*.base.safe.com` TLS cert | — | — | In Backlog (**IT, due Aug 5**) | — | Wildcard cert expires **2026-08-19**; no certbot → manual IT re-issue. |
 | **KNOW-2293** GH Actions deploy workflow | code on `main` | #17 closed-superseded | Ready for QA — **E2E blocked** | cutover tracker (B8) | Rework to SSM/self-hosted runner; runner can't reach office-IP box. |
-| **KNOW-2348** port Regen-Report to web app | — | — | In Backlog | — | Legacy launcher had it (serve.py `/api/run-action` → `pipeline.py --report-only`); not ported to the FastAPI app. Add run-history button + endpoint. Interim: CLI `pipeline.py --report-only <run> --output-dir /var/lib/fme-train/artifacts/<run>`. |
-| **KNOW-2350** flaky test (steps 5/6 dispatch) | — | — | In Backlog | — | `test_make_step_body_dispatches_steps_5_6` ~2/10 fail in isolation (async log-flush race in `run_worker`); pre-existing. Plus 13 pre-existing ruff errors in `make lint`. |
+| **KNOW-2348** port Regen-Report to web app | — (merged) | #38 merged | **Ready for QA** | — | `POST /api/runs/{id}/regenerate-report` + run-history "Regen Report" button; regenerates in-process (no OpenAI cost), KNOW-2347 image handling preserved. 8 new tests. |
+| **KNOW-2350** flaky test (steps 5/6 dispatch) | — (merged) | #41 merged | **Ready for QA** | — | Root cause: in-memory SQLite shared one connection across the worker + log-flush coroutines → commit race. Fixed with per-test file-backed SQLite (own connection, matches prod pool). 50/50 loop pass. |
+| **KNOW-2320** clear ruff lint debt (make lint green) | — (merged) | #41 merged | **Ready for QA** | — | Cleared all 13 ruff errors (8 F401, 4 F841, 1 E741), test-files only, behaviour-preserving. `ruff check .` clean. |
+| **KNOW-2169** drop unmatched edit suggestions | — (merged) | #39 merged | **Ready for QA** | — | Drop suggestions the renderer can't apply; check mirrors renderer's real apply-time matching (attribute-aware + normalized text). |
+| **KNOW-2170** empty-heading version suggestions | — (merged) | #39 merged | **Ready for QA** | — | `_ensure_version_changes()` fallback chain (nearest h2/h3 → first heading → "Introduction") guarantees a non-empty heading. |
+| **KNOW-2287** bound list_runs_with_drafts (SQL) | — (merged) | #40 merged | **Ready for QA** | — | SQL-layer bound (DISTINCT run-id window + LIMIT) + dead branch removed; output unchanged. |
+| **KNOW-2288** asserts in mark_run_draft_saved | — (merged) | #40 merged | **Ready for QA** | — | Asserts already gone on `main` (`9847873b`); added the missing regression test + verified `app/routes/` assert-free. |
+| **KNOW-2289** draft saved-status stickiness | — (merged) | #40 merged | **Ready for QA** | — | Post-save edits now show `saved_edited` (Option C, Sam-confirmed) — keeps "saved to &lt;path&gt;" while flagging unpersisted changes; zero template/CSS change. |
 
 ## Recent merges
 
 | PR | → | Date | Carried |
 |---|---|---|---|
+| #41 `…KNOW-2350-2320` | `main` (`82ee26c4`) | 2026-06-12 | Fix flaky steps-5/6 dispatch test (per-test file SQLite) + clear 13 ruff errors |
+| #40 `…KNOW-2287-2289` | `main` (`214c0247`) | 2026-06-12 | Drafts backend: SQL-bound list_runs_with_drafts, assert→error test, `saved_edited` status |
+| #39 `…KNOW-2169-2170` | `main` (`3c119413`) | 2026-06-12 | Drop renderer-unapplyable + empty-heading edit suggestions |
+| #38 `…KNOW-2348` | `main` (`3cdfa890`) | 2026-06-12 | Regenerate-Report endpoint + run-history button (in-process) |
 | #37 `…KNOW-2340-launch-full-width` | `main` (`06bbbfc3`) | 2026-06-12 | Launch page full-width (drop fixed 1200px cap) |
 | #36 `…KNOW-2347` | `main` (`d1359161`) | 2026-06-12 | Lesson images via `/lesson-content` route + draft path hardening |
 | #35 `docs/know-epic-parenting` | `main` (`88d90d76`) | 2026-06-11 | AGENTS KNOW epic hierarchy + parenting convention |
@@ -55,7 +65,7 @@
   - **KNOW-2309** — SSM instance role + scoped `ssm:StartSession` on `fmetraining` (agent box access; also unblocks the GH-Actions deploy E2E, KNOW-2293). Decision: **keep `fmetraining`** — no dedicated principal, no scope-down. Outbound 443 already works (box calls GitHub/OpenAI/Jira/Skilljar/S3), so no egress change needed.
   - **KNOW-2341** — DLM role for scheduled EBS snapshots + S3 bucket/perms for off-box `pg_dump` (manual snapshot baseline taken; dumps on-box only until this lands).
   - **KNOW-2343** — re-issue `*.base.safe.com` wildcard TLS cert before **2026-08-19** (no certbot; due-dated Aug 5).
-- **App:** ✅ resolved — KNOW-2342 / 2278 / 2347 all deployed + verified live on the box (2026-06-12). Remaining is a hygiene `bash bin/deploy-prod.sh` (no ref) to reset the box from the KNOW-2347 branch ref to `main` (`d1359161`) — no code change. Pre-existing test flake (KNOW-2350) + 13 ruff lint errors noted, non-blocking.
+- **App:** ✅ resolved — KNOW-2342 / 2278 / 2347 all deployed + verified live on the box (2026-06-12). Pre-existing test flake (KNOW-2350) + 13 ruff lint errors **fixed** (#41) — `make test` / `ruff check .` now green (501 passed). Remaining is a hygiene `bash bin/deploy-prod.sh` (no ref) to reset the box to `main` (`3cdfa890`); note `main` now carries the Ready-for-QA dev batch (#38–#41), so that redeploy is no longer a no-op — QA first.
 - **Cutover leftovers (low):** uptime/health monitor cron not yet set on the box (`dnf-automatic` patching ✅ confirmed enabled 2026-06-11); housekeeping ticket transitions (see below).
 
 ## Plan docs (index)
@@ -67,6 +77,7 @@
 
 ## Housekeeping (done 2026-06-12)
 
+- ✅ **Parallel dev-backlog batch (#38–#41) merged → 8 tickets Ready for QA:** KNOW-2348 (Regen-Report endpoint + button), KNOW-2169/2170 (suggestion-accuracy filters), KNOW-2287/2288/2289 (drafts hardening), KNOW-2350/2320 (flaky-test root-cause fix + ruff clean). Four independent agents in isolated worktrees off `main`; integrated `main` verified green (501 passed, 19 skipped, `ruff check .` clean). Design calls confirmed with Sam: renderer-accurate matching (2169), "Introduction" heading fallback (2170), `saved_edited` status (2289).
 - ✅ **Closed KNOW-2334 / 2335 / 2340 / 2342 / 2347** — QA'd live this session (real pipeline E2E, run-launch UI, post-deploy fixes incl. launch full-width, Lesson-Edits dropdown/drafts, lesson images).
 - **KNOW-2340** closed after the full-width follow-up (#37): the launch page's fixed 1200px cap → `max-width:none` so it fills the viewport like the header (it read as ~1/3 width on wide monitors before).
 - **KNOW-2293** left **Ready for QA** — GH-Actions deploy E2E is IT-blocked (office-IP firewall blocks the runner), can't QA.
