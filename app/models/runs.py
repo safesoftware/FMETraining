@@ -71,6 +71,12 @@ class Run(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=utc_now, index=True
     )
+    # When the HTML report was last (re)generated for this run. Set by the
+    # manual "Regen Report" action (KNOW-2348) so Recent Runs can show an
+    # "Updated" timestamp distinct from created_at.
+    report_regenerated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     fargate_task_arn: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     error_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

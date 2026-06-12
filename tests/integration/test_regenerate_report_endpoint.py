@@ -21,10 +21,12 @@ from fastapi.staticfiles import StaticFiles
 from httpx import ASGITransport, AsyncClient
 from starlette.middleware.sessions import SessionMiddleware
 
+from sqlalchemy import select
+
 from app.auth import AuthMiddleware
 from app.config import reset_settings
 from app.db.session import get_session
-from app.models.runs import Run
+from app.models.runs import Run, RunLog
 from app.routes import auth as auth_routes
 from app.routes import index as index_routes
 from app.routes import runs as runs_routes
@@ -61,6 +63,9 @@ def _make_app(session_factory, artifacts_root: Path) -> FastAPI:
             yield session
 
     app.dependency_overrides[get_session] = _get_session_override
+    # The regenerate endpoint attaches a RunLogger via get_session_factory; point
+    # it at this test's per-test SQLite factory so log rows land in the same DB.
+    app.dependency_overrides[runs_routes.get_session_factory] = lambda: session_factory
     app.include_router(auth_routes.router)
     app.include_router(index_routes.router)
     app.include_router(runs_routes.router)
@@ -174,11 +179,73 @@ async def test_regenerate_report_happy_path(
 
 
 @pytest.mark.asyncio
+async def test_regenerate_report_sets_and_returns_regenerated_at(
+    authed_client, async_session_factory, artifacts_root
+) -> None:
+    """The endpoint persists ``report_regenerated_at`` on the run and returns it,
+    so Recent Runs can show an "Updated" timestamp."""
+    client, user = authed_client
+    run_id = "20260612T000000-stamp"
+    await _seed_run(async_session_factory, run_id, user.id)
+    _write_recs(artifacts_root, run_id)
+
+    resp = await client.post(f"/api/runs/{run_id}/regenerate-report")
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["report_regenerated_at"], body
+
+    # Persisted on the run row.
+    async with async_session_factory() as session:
+        run = await session.get(Run, run_id)
+        assert run.report_regenerated_at is not None
+
+    # And surfaced by the list endpoint.
+    list_resp = await client.get("/api/runs")
+    assert list_resp.status_code == 200
+    summary = next(r for r in list_resp.json()["runs"] if r["run_id"] == run_id)
+    assert summary["report_regenerated_at"] is not None
+
+
+@pytest.mark.asyncio
+async def test_regenerate_report_writes_run_log_lines(
+    authed_client, async_session_factory, artifacts_root
+) -> None:
+    """The endpoint emits progress lines into the existing ``run_logs`` table so
+    the per-run SSE stream surfaces "regenerating…/report written"."""
+    client, user = authed_client
+    run_id = "20260612T000000-logged"
+    await _seed_run(async_session_factory, run_id, user.id)
+    _write_recs(artifacts_root, run_id)
+
+    resp = await client.post(f"/api/runs/{run_id}/regenerate-report")
+    assert resp.status_code == 200, resp.text
+
+    async with async_session_factory() as session:
+        rows = (
+            await session.execute(
+                select(RunLog).where(RunLog.run_id == run_id).order_by(RunLog.id)
+            )
+        ).scalars().all()
+    assert rows, "expected run_logs rows written for the regeneration"
+    messages = " ".join(r.message for r in rows).lower()
+    assert "regenerat" in messages
+    assert f"report-{run_id}.html" in " ".join(r.message for r in rows)
+
+
+@pytest.mark.asyncio
 async def test_launch_page_renders_regen_report_button(authed_client) -> None:
-    """The signed-in launch page wires the run-history "Regen Report" action."""
+    """The signed-in launch page wires the run-history "Regen Report" action,
+    shows an "Updated" column, and (KNOW-2348 rework) does NOT auto-open the
+    report on regenerate."""
     client, _ = authed_client
     resp = await client.get("/")
     assert resp.status_code == 200
     body = resp.text
     assert "Regen Report" in body
     assert "regenerate-report" in body
+    # New "Updated" column for the (re)generation timestamp.
+    assert "<th>Updated</th>" in body
+    assert "report_regenerated_at" in body
+    # Regen must not open the report — the regen handler no longer calls
+    # window.open (the only window.open left, if any, is unrelated).
+    assert "Regenerated ✓" in body

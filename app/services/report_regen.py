@@ -27,10 +27,15 @@ import contextlib
 import io
 import logging
 from pathlib import Path
+from typing import Callable, Optional
 
 from app.config import get_settings
 
 _logger = logging.getLogger(__name__)
+
+# (level, message) -> None. Thread-safe (e.g. ``RunLogger.log_sync``) so the
+# in-thread ``build_report`` call can emit progress without blocking the loop.
+LogCallback = Callable[[str, str], None]
 
 
 class RecommendationsNotFound(Exception):
@@ -46,6 +51,7 @@ async def regenerate_report(
     run_id: str,
     *,
     artifacts_root: str | Path | None = None,
+    on_log: Optional[LogCallback] = None,
 ) -> Path:
     """Regenerate ``report-<run_id>.html`` from the run's existing artifacts.
 
@@ -53,6 +59,12 @@ async def regenerate_report(
         run_id: The run whose report to regenerate.
         artifacts_root: Override for ``Settings.artifacts_root`` (tests pass a
             tmp dir). Defaults to the configured artifacts root.
+        on_log: Optional ``(level, message)`` callback used to surface progress
+            through the caller's existing per-run log stream (the regenerate
+            endpoint passes ``RunLogger.log_sync``). Called with a "starting"
+            line and a "report written" line so the user sees the regeneration
+            run in the same Logs UI they already use. Must be thread-safe — it
+            is invoked from within ``asyncio.to_thread``.
 
     Returns:
         Path to the written report HTML.
@@ -63,6 +75,10 @@ async def regenerate_report(
     """
     from pipeline.report import build_report
     from pipeline.utils import edit_plans_path, recommendations_path
+
+    def _emit(level: str, message: str) -> None:
+        if on_log is not None:
+            on_log(level, message)
 
     root = Path(artifacts_root or get_settings().artifacts_root)
     output_dir = root / run_id
@@ -78,6 +94,8 @@ async def regenerate_report(
     ep = edit_plans_path(run_id, output_dir)
     edit_plans_arg = ep if ep.exists() else None
 
+    _emit("info", f"Regenerating report for run {run_id} from existing artifacts…")
+
     def _sync() -> Path:
         # Swallow build_report's stdout so it doesn't leak into the server log.
         with contextlib.redirect_stdout(io.StringIO()):
@@ -89,5 +107,6 @@ async def regenerate_report(
             )
 
     report_path = await asyncio.to_thread(_sync)
+    _emit("info", f"Report written: {report_path.name}")
     _logger.info("Regenerated report for run %s → %s", run_id, report_path.name)
     return report_path

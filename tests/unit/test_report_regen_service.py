@@ -70,6 +70,32 @@ async def test_regenerate_report_missing_recs_raises(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
+async def test_regenerate_report_emits_progress_via_on_log(tmp_path: Path) -> None:
+    """The service calls ``on_log(level, message)`` with start + finish lines so
+    the endpoint can surface them through the existing run-log stream."""
+    run_id = "20260612T000000-logs"
+    artifacts_root = tmp_path / "artifacts"
+    run_dir = artifacts_root / run_id
+    _write_recs(run_dir, run_id)
+
+    lines: list[tuple[str, str]] = []
+
+    await regenerate_report(
+        run_id,
+        artifacts_root=artifacts_root,
+        on_log=lambda level, message: lines.append((level, message)),
+    )
+
+    messages = " ".join(m for _, m in lines)
+    # A "starting" line and a "written" line, both mentioning the run/report.
+    assert any("regenerat" in m.lower() for _, m in lines), lines
+    assert any(
+        f"report-{run_id}.html" in m for _, m in lines
+    ), lines
+    assert "regenerat" in messages.lower()
+
+
+@pytest.mark.asyncio
 async def test_regenerate_report_includes_edit_plans_when_present(
     tmp_path: Path,
 ) -> None:

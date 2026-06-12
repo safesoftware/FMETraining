@@ -124,11 +124,12 @@
               <th>Status</th>
               <th>Version</th>
               <th>Created</th>
+              <th>Updated</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="runs-tbody">
-            <tr><td colspan="5" class="empty-cell">No runs yet.</td></tr>
+            <tr><td colspan="6" class="empty-cell">No runs yet.</td></tr>
           </tbody>
         </table>
       </div>
@@ -924,15 +925,19 @@ async function loadRunList() {
   tbody.innerHTML = '';
   const runs = data.runs || [];
   if (!runs.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-cell">No runs yet.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No runs yet.</td></tr>';
     return;
   }
 
+  const fmtTs = iso => iso
+    ? new Date(iso).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })
+    : '—';
+
   runs.forEach(run => {
     const tr = document.createElement('tr');
-    const ts = run.created_at
-      ? new Date(run.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })
-      : '—';
+    const ts = fmtTs(run.created_at);
+    // "Updated" = when the report was last (re)generated (KNOW-2348).
+    const updated = fmtTs(run.report_regenerated_at);
 
     const statusClass = {
       queued: 'status-queued', running: 'status-running',
@@ -943,6 +948,7 @@ async function loadRunList() {
       + '<td><span class="status-badge ' + statusClass + '">' + run.status.toUpperCase() + '</span></td>'
       + '<td>' + (run.to_version || '—') + '</td>'
       + '<td>' + ts + '</td>'
+      + '<td class="run-updated" id="ru-' + run.run_id + '">' + updated + '</td>'
       + '<td><div class="run-actions" id="ra-' + run.run_id + '"></div></td>';
 
     tbody.appendChild(tr);
@@ -984,6 +990,9 @@ async function regenerateReport(runId, btn) {
   const original = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Regenerating…';
+  // Reveal this run's live log so the user sees the regen ran (reuses the
+  // existing /logs/stream SSE + console log — no auto-open of the report).
+  revealRegenLog(runId);
   try {
     const resp = await fetch(
       '/api/runs/' + encodeURIComponent(runId) + '/regenerate-report',
@@ -992,17 +1001,65 @@ async function regenerateReport(runId, btn) {
     let data = {};
     try { data = await resp.json(); } catch(_) {}
     if (!resp.ok) {
+      btn.textContent = original;
       alert('Could not regenerate report: ' + (data.detail || resp.status));
       return;
     }
-    // Open the freshly regenerated report in a new tab.
-    window.open(data.report_url || ('/report/' + encodeURIComponent(runId)), '_blank');
+    // Reflect the new "Updated" timestamp without navigating anywhere. Click
+    // "Report" to view the freshly regenerated report.
+    if (data.report_regenerated_at) {
+      const cell = document.getElementById('ru-' + runId);
+      if (cell) {
+        cell.textContent = new Date(data.report_regenerated_at)
+          .toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' });
+      }
+    }
+    btn.textContent = 'Regenerated ✓';
+    setTimeout(() => { btn.textContent = original; }, 2500);
+    // Refresh the list so the Updated column is authoritative.
+    loadRunList();
   } catch(e) {
+    btn.textContent = original;
     alert('Could not regenerate report: ' + e.message);
   } finally {
     btn.disabled = false;
-    btn.textContent = original;
   }
+}
+
+// Stream a run's logs into the console pane on demand (used by Regen Report).
+// Reuses the existing /api/runs/{id}/logs/stream SSE endpoint and #log-output.
+function revealRegenLog(runId) {
+  if (currentEventSource) { currentEventSource.close(); currentEventSource = null; }
+  clearConsoleLog();
+  setConsoleStatus('running');
+  appendLog('— Regenerating report for ' + runId + ' —');
+
+  const es = new EventSource('/api/runs/' + encodeURIComponent(runId) + '/logs/stream');
+  currentEventSource = es;
+
+  const onLine = e => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg && typeof msg.message === 'string') {
+        appendLog('[' + (msg.level || 'info').toUpperCase() + '] ' + msg.message);
+        return;
+      }
+    } catch(_) {}
+    appendLog(e.data);
+  };
+  es.addEventListener('log', onLine);
+  es.onmessage = onLine;
+
+  // Regen runs against an already-terminal run, so the stream sends every row
+  // then closes with `complete`.
+  es.addEventListener('complete', () => {
+    es.close(); if (currentEventSource === es) currentEventSource = null;
+    setConsoleStatus('done');
+  });
+  es.onerror = () => {
+    if (es.readyState !== EventSource.CLOSED) es.close();
+    if (currentEventSource === es) currentEventSource = null;
+  };
 }
 </script>
 

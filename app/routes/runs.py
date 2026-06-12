@@ -29,7 +29,7 @@ from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.auth.dependencies import require_user
 from app.config import get_settings
@@ -38,6 +38,7 @@ from app.models.runs import Run, RunStep
 from app.models.users import User
 from app.services.lesson_content_source import LocalFolderSource
 from app.services.report_regen import RecommendationsNotFound, regenerate_report
+from app.services.run_logger import RunLogger
 from pipeline.utils import generate_run_id
 
 _logger = logging.getLogger(__name__)
@@ -110,6 +111,7 @@ class _RunSummary(BaseModel):
     to_version: Optional[str]
     created_at: datetime
     created_by: Optional[int]
+    report_regenerated_at: Optional[datetime] = None
 
 
 class RunListResponse(BaseModel):
@@ -131,17 +133,32 @@ class RunDetailResponse(BaseModel):
     started_at: Optional[datetime]
     finished_at: Optional[datetime]
     error_text: Optional[str]
+    report_regenerated_at: Optional[datetime]
     steps: list[_StepStatus]
 
 
 class RegenerateReportResponse(BaseModel):
     run_id: str
     report_url: str
+    report_regenerated_at: datetime
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+
+def get_session_factory() -> async_sessionmaker[AsyncSession]:
+    """Resolve the app's async session factory for background log writes.
+
+    The regenerate endpoint uses this to attach a :class:`RunLogger` (the same
+    batched ``run_logs`` writer the worker uses) so its progress lines flow
+    through the existing per-run SSE stream. Split out as a dependency so tests
+    can override it with their per-test SQLite factory.
+    """
+    from app.db.engine import _get_or_create_session_factory
+
+    return _get_or_create_session_factory()
 
 
 def _scope_is_empty(scope: _ScopeIn) -> bool:
@@ -253,6 +270,7 @@ async def list_runs(
                 to_version=r.to_version,
                 created_at=r.created_at,
                 created_by=r.created_by,
+                report_regenerated_at=r.report_regenerated_at,
             )
             for r in runs
         ]
@@ -293,6 +311,7 @@ async def get_run(
         started_at=run.started_at,
         finished_at=run.finished_at,
         error_text=run.error_text,
+        report_regenerated_at=run.report_regenerated_at,
         steps=[
             _StepStatus(
                 step_num=s.step_num,
@@ -318,6 +337,7 @@ async def regenerate_run_report(
     run_id: str,
     session: AsyncSession = Depends(get_session),
     user: User = Depends(require_user),
+    session_factory: async_sessionmaker[AsyncSession] = Depends(get_session_factory),
 ) -> RegenerateReportResponse:
     """Regenerate the HTML report for an existing run from its artifacts.
 
@@ -326,6 +346,13 @@ async def regenerate_run_report(
     ``build_report`` in-process over the run's existing artifacts — **no OpenAI
     cost** — so report fixes (e.g. the KNOW-2347 lesson-image route) can be
     applied to already-completed runs without a full, paid re-run.
+
+    UX (KNOW-2348 rework): this regenerates *only* — it does not return the
+    report for opening. Progress is surfaced through the existing per-run log
+    stream (a :class:`RunLogger` writes "regenerating…/report written" lines
+    into ``run_logs``, which the ``/api/runs/{id}/logs/stream`` SSE endpoint
+    tails) and the run's ``report_regenerated_at`` timestamp is bumped so
+    Recent Runs shows when it was last updated.
 
     Guards:
       - 404 if the run isn't in the DB.
@@ -336,15 +363,22 @@ async def regenerate_run_report(
     if run is None:
         raise HTTPException(status_code=404, detail=f"Run {run_id!r} not found")
 
-    try:
-        await regenerate_report(run_id)
-    except RecommendationsNotFound as exc:
-        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    # Surface progress through the same run_logs table the live Logs UI tails.
+    async with RunLogger.attached(session_factory, run_id) as run_logger:
+        try:
+            await regenerate_report(run_id, on_log=run_logger.log_sync)
+        except RecommendationsNotFound as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    regenerated_at = datetime.now(timezone.utc)
+    run.report_regenerated_at = regenerated_at
+    await session.commit()
 
     _logger.info("User %s regenerated report for run %s", user.email, run_id)
     return RegenerateReportResponse(
         run_id=run_id,
         report_url=f"/report/{run_id}",
+        report_regenerated_at=regenerated_at,
     )
 
 
