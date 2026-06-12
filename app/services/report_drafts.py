@@ -133,6 +133,16 @@ async def mark_saved(
 
     Creates the draft row if it doesn't exist yet (e.g. user never
     touched accept/reject and went straight to Save to Version Folder).
+
+    Both code paths stamp ``updated_at == saved_to_version_at`` (the same
+    ``now``). This is the invariant ``_draft_status`` relies on to tell a
+    *fresh* save (``saved``) from a *later* edit (``saved_edited``,
+    KNOW-2289): right after a save the two timestamps are equal, and only a
+    subsequent ``upsert_draft`` — which bumps ``updated_at`` via a new
+    ``utc_now()`` — makes ``updated_at`` strictly greater. On create we set
+    ``updated_at`` explicitly rather than leaning on the column default,
+    which would resolve at flush time a few microseconds later and falsely
+    tip a brand-new save into ``saved_edited``.
     """
     existing = await get_draft(session, run_id, lesson_dir)
     now = utc_now()
@@ -145,6 +155,7 @@ async def mark_saved(
             saved_to_version_at=now,
             saved_to_version_path=saved_to_version_path,
             updated_by=updated_by,
+            updated_at=now,
         )
         session.add(row)
         await session.flush()
@@ -171,7 +182,7 @@ class RunWithDrafts:
 @dataclass
 class LessonDraftSummary:
     lesson_dir: str
-    status: str  # "pending" | "in_progress" | "saved"
+    status: str  # "pending" | "in_progress" | "saved" | "saved_edited"
     updated_at: datetime
     saved_to_version_at: Optional[datetime]
     saved_to_version_path: Optional[str]
@@ -180,13 +191,42 @@ class LessonDraftSummary:
 def _draft_status(draft: ReportLessonDraft) -> str:
     """Compute the lesson status badge from a draft row.
 
-    * ``saved`` if the row records a version-folder push.
-    * ``in_progress`` if any decision is non-pending or any WYSIWYG
-      content has been typed.
-    * ``pending`` otherwise (a row that exists but is essentially empty
-      — rare; arises if the user reset everything without deleting).
+    * ``saved`` — the row records a version-folder push and has **not**
+      been edited since (``updated_at <= saved_to_version_at``). The
+      live draft matches what is in the version folder.
+    * ``saved_edited`` — the row was pushed to a version folder, but has
+      been edited afterwards (``updated_at > saved_to_version_at``), so
+      the live draft differs from the saved snapshot — there are
+      unpersisted changes.
+    * ``in_progress`` — never saved, but any decision is non-pending or
+      any WYSIWYG content has been typed.
+    * ``pending`` — a row that exists but is essentially empty (rare;
+      arises if the user reset everything without deleting).
+
+    KNOW-2289 decision (Option C, "saved + edited"): a post-save edit is
+    surfaced as ``saved_edited`` rather than left sticky on ``saved``.
+    Rationale: the badge should not claim "this is what's in the version
+    folder" once the user has edited again — that would hide unpersisted
+    changes. Option C is preferred over Option B (revert to
+    ``in_progress``) because the row still carries ``saved_to_version_path``
+    (the Drafts page renders "saved to <path>" beneath it), so dropping the
+    "saved" signal entirely would read as contradictory. The badge is
+    plain text (``drafts.html`` renders ``status.replace("_", " ")`` with
+    no per-status CSS), so ``saved_edited`` shows as "saved edited" with no
+    template change required. The autosave/upsert flow is unchanged; only
+    the derived badge moves.
+
+    ``mark_saved`` stamps ``updated_at == saved_to_version_at`` on the
+    write (see that function), so a *fresh* save is ``saved`` and only a
+    genuinely *later* ``upsert_draft`` (which bumps ``updated_at`` via
+    ``utc_now()``) tips it to ``saved_edited``.
     """
     if draft.saved_to_version_at is not None:
+        if (
+            draft.updated_at is not None
+            and draft.updated_at > draft.saved_to_version_at
+        ):
+            return "saved_edited"
         return "saved"
     decisions = draft.decisions_json or {}
     has_decision = any(v != "pending" for v in decisions.values())
@@ -201,10 +241,34 @@ async def list_runs_with_drafts(
 ) -> list[RunWithDrafts]:
     """Return recent runs that have at least one draft row, with
     per-lesson status summaries. Backs the Phase 1b ``/drafts`` page.
+
+    The ``limit`` bounds the number of *runs* returned, newest first by
+    ``Run.created_at``. That bound is pushed into the database (KNOW-2287):
+    we first resolve the ``limit`` most-recent run ids that have any draft,
+    then fetch only those runs' draft rows — so the table is never fully
+    scanned into Python just to slice afterwards. Every lesson of each
+    selected run is returned intact (no mid-run truncation).
     """
+    # Step 1: the bounded window of run ids — newest runs that have at
+    # least one draft. DISTINCT + LIMIT keeps this cheap even as the
+    # drafts table grows.
+    run_ids_q = await session.execute(
+        select(Run.id)
+        .join(ReportLessonDraft, ReportLessonDraft.run_id == Run.id)
+        .group_by(Run.id, Run.created_at)
+        .order_by(Run.created_at.desc())
+        .limit(limit)
+    )
+    run_ids = [row[0] for row in run_ids_q.all()]
+    if not run_ids:
+        return []
+
+    # Step 2: all draft rows for exactly those runs, preserving the
+    # newest-run-first / lesson-dir-asc ordering the page renders.
     drafts_q = await session.execute(
         select(ReportLessonDraft, Run)
         .join(Run, Run.id == ReportLessonDraft.run_id)
+        .where(ReportLessonDraft.run_id.in_(run_ids))
         .order_by(Run.created_at.desc(), ReportLessonDraft.lesson_dir.asc())
     )
     rows = list(drafts_q.all())
@@ -221,12 +285,6 @@ async def list_runs_with_drafts(
                 lessons=[],
             )
             by_run[run.id] = bucket
-            if len(by_run) > limit:
-                # Trimmed implicitly by ``break`` once we exhaust the
-                # limit. We keep filling the buckets we already have
-                # though, so subsequent draft rows for an already-seen
-                # run still attach.
-                pass
         bucket.lessons.append(
             LessonDraftSummary(
                 lesson_dir=draft.lesson_dir,
@@ -238,6 +296,5 @@ async def list_runs_with_drafts(
         )
 
     # ``by_run`` was built in run-creation-desc order via the SQL ORDER
-    # BY, so dict insertion order is the order we want. Apply the
-    # limit at the run granularity here.
-    return list(by_run.values())[:limit]
+    # BY, matching the run_ids window above.
+    return list(by_run.values())

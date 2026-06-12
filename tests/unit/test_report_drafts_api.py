@@ -189,6 +189,42 @@ async def test_mark_saved_sets_timestamp(
     assert lesson["saved_to_version_at"] is not None
 
 
+async def test_mark_saved_500s_if_service_returns_null_metadata(
+    app_client: tuple[TestClient, async_sessionmaker[AsyncSession]],
+    monkeypatch,
+) -> None:
+    """KNOW-2288: the mark-saved handler must fail loudly (500) if the
+    service hands back a row missing the save metadata, instead of relying
+    on an ``assert`` that ``python -O`` would strip — which would otherwise
+    return a 200 with null ``saved_to_version_*`` fields and break the
+    report JS. We force the degenerate row to prove the explicit guard, not
+    an assertion, is what protects the contract.
+    """
+    from types import SimpleNamespace
+
+    from app.routes import report_drafts as route_mod
+
+    async def _bad_mark_saved(*args, **kwargs):
+        # A row the service contract says can't happen, but which an
+        # -O-stripped assert would have let through.
+        return SimpleNamespace(
+            saved_to_version_at=None, saved_to_version_path=None
+        )
+
+    monkeypatch.setattr(route_mod.svc, "mark_saved", _bad_mark_saved)
+
+    client, _ = app_client
+    res = client.post(
+        "/api/runs/run-1/report-drafts/mark-saved",
+        json={
+            "lesson_dir": "lp/course/lesson",
+            "saved_to_version_path": "2026.1/lp/course/lesson/index.html",
+        },
+    )
+    assert res.status_code == 500, res.text
+    assert "save metadata" in res.json()["detail"]
+
+
 async def test_runs_with_drafts_aggregates(
     app_client: tuple[TestClient, async_sessionmaker[AsyncSession]],
 ) -> None:
