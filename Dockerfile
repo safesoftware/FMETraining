@@ -106,6 +106,13 @@ COPY --chown=appuser:appuser . /app
 COPY --chown=appuser:appuser docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
+# Pre-create a writable cache dir owned by the runtime user. At runtime the
+# Compose bind-mounts leave the /app dir node root-owned, so appuser cannot
+# create /app/.cache itself. The Jira API cache (pipeline/config.py
+# JIRA_CACHE_PATH = REPO_ROOT/.cache/...) lives here and step 2 (changelog)
+# crashes with PermissionError without it. See KNOW-2352.
+RUN mkdir -p /app/.cache && chown appuser:appuser /app/.cache
+
 USER appuser
 
 EXPOSE 8000
