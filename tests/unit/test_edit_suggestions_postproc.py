@@ -130,6 +130,64 @@ class TestFilterStaleOriginalText:
         assert len(result) == 1
         assert result[0]["change_id"] == "aaa"
 
+    # ----- KNOW-2169: drop suggestions the renderer can never apply --------
+    #
+    # The report renderer (pipeline/report.py) applies a change via an EXACT
+    # `html.indexOf(original_text)` and skips matches that sit inside a tag's
+    # attributes. The filter must mirror that: a suggestion whose only would-be
+    # match is inside a tag attribute can never be applied and must be dropped.
+    # Normalization (entity/whitespace) is still allowed as a *more lenient*
+    # fallback so we never drop a suggestion the renderer would have matched.
+
+    def test_match_only_inside_tag_attribute_dropped(self):
+        # "icon_2024.2.png" appears only inside the src attribute of an <img>.
+        # The renderer skips matches inside tag attributes, so it can never
+        # apply this change — it is noise and must be dropped (KNOW-2169).
+        html_attr_only = (
+            '<p>Open the file.</p>'
+            '<img src="icon_2024.2.png" alt="an icon">'
+        )
+        changes = [{
+            "change_id": "attr1",
+            "type": "change",
+            "original_text": "icon_2024.2.png",
+            "suggested_text": "icon_2026.1.png",
+        }]
+        result = _filter_stale_original_text(changes, html_attr_only, "lesson/id")
+        assert result == [], (
+            "original_text matching only inside a tag attribute is unreachable "
+            "by the renderer and must be dropped (KNOW-2169)"
+        )
+
+    def test_match_in_text_content_kept_even_with_attr_decoy(self):
+        # Same term appears in an attribute AND in visible text — the renderer
+        # would match the text occurrence, so the change must be kept.
+        html_both = (
+            '<img src="run_translation.png" alt="icon">'
+            '<p>Click the Run Translation button.</p>'
+        )
+        changes = [{
+            "change_id": "both1",
+            "type": "change",
+            "original_text": "Run Translation",
+            "suggested_text": "Run Workspace",
+        }]
+        result = _filter_stale_original_text(changes, html_both, "lesson/id")
+        assert len(result) == 1, (
+            "a text-content occurrence is reachable by the renderer and must be kept"
+        )
+
+    def test_exact_text_match_kept(self):
+        # Plain exact substring in text content — renderer applies it directly.
+        changes = [{
+            "change_id": "exact1",
+            "type": "change",
+            "original_text": "Start FME Workbench from the Start menu.",
+            "suggested_text": "Launch FME Workbench from the Start menu.",
+        }]
+        result = _filter_stale_original_text(changes, LESSON_HTML, "lesson/id")
+        assert len(result) == 1
+
 
 # ---------------------------------------------------------------------------
 # _filter_fmeengine_no_ui — issue #72
@@ -335,10 +393,14 @@ class TestEnsureVersionChanges:
         )
         assert len(result) == 1, f"Expected 1 auto-change (only the regular mention), got {len(result)}"
         change = result[0]
-        # The regular mention is at "covers FME 2024.2" — heading should be empty
-        # (no preceding h2/h3) but the change should target the right occurrence.
+        # The regular mention is at "covers FME 2024.2" — there is no preceding
+        # h2/h3 in this snippet, so the heading must fall back to a non-empty
+        # label rather than "" (KNOW-2170).
         assert change["original_text"] == "2024.2"
         assert change["suggested_text"] == "2026.1"
+        assert change["heading"] != "", (
+            "auto-added version change must never carry an empty heading (KNOW-2170)"
+        )
 
     @pytest.mark.parametrize("html", [
         '<p><strong>⭐ New for FME 2024.2:</strong> x</p>',
@@ -402,3 +464,59 @@ class TestEnsureVersionChanges:
         )
         assert len(result) == 1, "A normal '2024.2' mention must still get an auto-change"
         assert result[0]["original_text"] == "2024.2"
+
+
+# ---------------------------------------------------------------------------
+# _ensure_version_changes — KNOW-2170 (never emit empty-heading suggestions)
+# ---------------------------------------------------------------------------
+
+class TestEnsureVersionChangesNoEmptyHeading:
+    def test_version_before_any_heading_gets_nonempty_heading(self):
+        # The version string appears before any <h2>/<h3>, so _heading_before
+        # finds nothing. Previously this produced heading="" which broke
+        # section-level context downstream. It must now fall back to a
+        # non-empty label (KNOW-2170).
+        html = (
+            '<p>This lesson covers FME Form 2024.2.</p>'
+            '<h2>Later Section</h2><p>More content.</p>'
+        )
+        result = _ensure_version_changes(
+            changes=[], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert len(result) == 1
+        assert result[0]["heading"] != "", (
+            "version string before any heading must still get a non-empty heading"
+        )
+
+    def test_no_change_in_result_has_empty_heading(self):
+        # Multiple version mentions, some before and some after headings —
+        # NONE of the auto-added changes may carry an empty heading.
+        html = (
+            '<p>Intro mentions FME 2024.2 up top.</p>'
+            '<h2>Open Workbench</h2>'
+            '<p>Launch FME Workbench 2024.2 here.</p>'
+            '<h3>Details</h3>'
+            '<p>And again FME 2024.2 in the details.</p>'
+        )
+        result = _ensure_version_changes(
+            changes=[], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert len(result) == 3
+        for change in result:
+            assert change["heading"] != "", (
+                f"no auto-added version change may have an empty heading; "
+                f"got {change!r}"
+            )
+
+    def test_document_with_no_headings_still_nonempty(self):
+        # A document with zero headings must still produce a non-empty heading
+        # fallback rather than "".
+        html = '<p>Plain doc referencing FME 2024.2 with no headings at all.</p>'
+        result = _ensure_version_changes(
+            changes=[], lesson_html=html, lesson_id="test/lesson",
+            from_version="2024.2", to_version="2026.1",
+        )
+        assert len(result) == 1
+        assert result[0]["heading"] != ""

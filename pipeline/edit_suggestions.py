@@ -1028,13 +1028,46 @@ def _propagate_renames(
 # Version string post-processing (issue 56)
 # ---------------------------------------------------------------------------
 
+_HEADING_RE = re.compile(r"<h[23][^>]*>(.*?)</h[23]>", re.IGNORECASE | re.DOTALL)
+
+# Fallback heading used only when a lesson has no usable h2/h3 at all. Keeping it
+# non-empty preserves section-level context downstream (the report groups and
+# links changes by heading; an empty value reads as a missing section).
+_DEFAULT_SECTION_HEADING = "Introduction"
+
+
 def _heading_before(html: str, pos: int) -> str:
-    """Return text of the nearest h2/h3 heading before pos in html, or '' if none found."""
+    """Return text of the nearest h2/h3 heading before pos in html, or '' if none found.
+
+    Inner markup (e.g. ``<h2><strong>Foo</strong></h2>``) is stripped so the
+    returned text is the heading's visible content.
+    """
     snippet = html[:pos]
-    matches = list(re.finditer(r"<h[23][^>]*>([^<]+)</h[23]>", snippet, re.IGNORECASE))
+    matches = list(_HEADING_RE.finditer(snippet))
     if matches:
-        return matches[-1].group(1).strip()
+        return _normalize_html_text(re.sub(r"<[^>]+>", "", matches[-1].group(1)))
     return ""
+
+
+def _section_heading_for(html: str, pos: int) -> str:
+    """Resolve a non-empty section heading for an auto-generated change at ``pos``.
+
+    Order of preference (KNOW-2170 — never emit an empty heading, which breaks
+    section-level context downstream):
+      1. nearest preceding h2/h3,
+      2. the first h2/h3 anywhere in the lesson (content before the first
+         heading conceptually belongs to that opening section),
+      3. a generic ``_DEFAULT_SECTION_HEADING`` when the lesson has no headings.
+    """
+    nearest = _heading_before(html, pos)
+    if nearest:
+        return nearest
+    first = _HEADING_RE.search(html)
+    if first:
+        text = _normalize_html_text(re.sub(r"<[^>]+>", "", first.group(1)))
+        if text:
+            return text
+    return _DEFAULT_SECTION_HEADING
 
 
 _NEW_FOR_FME_TAIL_RE = re.compile(r"new for fme\s*$", re.IGNORECASE)
@@ -1146,7 +1179,7 @@ def _ensure_version_changes(
         new_changes.append({
             "change_id": new_change_id,
             "type": "change",
-            "heading": _heading_before(lesson_html, pos),
+            "heading": _section_heading_for(lesson_html, pos),
             "original_text": from_version,
             "suggested_text": to_version,
             "explanation": (
@@ -1172,22 +1205,65 @@ def _normalize_html_text(t: str) -> str:
     return " ".join(_html_module.unescape(t).split())
 
 
+def _renderer_can_match(orig: str, lesson_html: str) -> bool:
+    """Mirror the report renderer's apply-time matching for ``orig``.
+
+    The Lesson-Edits renderer (pipeline/report.py) applies a change by scanning
+    ``html.indexOf(original_text)`` and *skipping* any occurrence whose start
+    sits inside an HTML tag's attributes (a ``<`` is the nearest unclosed
+    bracket before it). A change whose only occurrences are inside tag
+    attributes can therefore never be applied. This reproduces that exact-match,
+    attribute-aware scan so the filter drops only what the renderer truly
+    cannot reach.
+    """
+    start = 0
+    while True:
+        pos = lesson_html.find(orig, start)
+        if pos == -1:
+            return False
+        pre = lesson_html[:pos]
+        if pre.rfind("<") <= pre.rfind(">"):
+            return True  # reachable text-content occurrence
+        start = pos + 1  # inside a tag attribute — keep scanning
+
+
+def _normalize_text_content(html: str) -> str:
+    """Strip tags, decode entities and collapse whitespace.
+
+    Yields the visible *text content* of the HTML (attribute values removed),
+    so a normalized substring check tolerates the editorial template's
+    entity/whitespace variations without matching strings that live only inside
+    tag attributes — which the renderer can never reach.
+    """
+    return _normalize_html_text(re.sub(r"<[^>]+>", " ", html))
+
+
 def _filter_stale_original_text(
     changes: list[dict],
     lesson_html: str,
     lesson_id: str,
 ) -> list[dict]:
     """
-    Remove changes whose original_text cannot be found in the lesson HTML.
+    Remove changes whose original_text cannot be applied by the report renderer.
     Applies only to 'change' and 'delete' types — 'add' has no original_text.
-    Issue #74.
+
+    A change is kept if EITHER the renderer's exact, attribute-aware scan would
+    find original_text in text content (``_renderer_can_match``), OR a more
+    lenient entity/whitespace-normalized substring check matches against the
+    HTML's *text content only* (``_normalize_text_content``). The normalized
+    fallback guards against dropping suggestions the renderer would have matched
+    after the editorial template's entity/whitespace variations, while excluding
+    matches that live only inside tag attributes. A change is dropped only when
+    BOTH fail — i.e. the renderer can never apply it (issue #74, KNOW-2169).
     """
-    norm_html = _normalize_html_text(lesson_html)
+    norm_text = _normalize_text_content(lesson_html)
     valid: list[dict] = []
     for change in changes:
         orig = change.get("original_text", "")
         if change.get("type") in ("change", "delete") and orig:
-            if _normalize_html_text(orig) not in norm_html:
+            reachable = _renderer_can_match(orig, lesson_html)
+            normalized_match = _normalize_html_text(orig) in norm_text
+            if not reachable and not normalized_match:
                 print(
                     f"\n  [filter-74] Dropping change {change.get('change_id', '')} "
                     f"in {lesson_id}: original_text not found: {orig[:60]!r}"
