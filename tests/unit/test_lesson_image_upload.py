@@ -21,16 +21,18 @@ _REPORT_PY = (Path(__file__).resolve().parents[2] / "pipeline" / "report.py").re
 
 
 class TestReportClientStripsAbsoluteOrigin:
-    """KNOW-2274 client layer: leGetCleanHtml must strip an absolute page-origin
+    """KNOW-2274 client layer: the editor must strip an absolute page-origin
     prefix (location.origin + '/' + encodedDir + '/'), not just the relative
     ../dir/ prefix, so a contenteditable-serialized absolute src is saved as a
-    relative images/<file>. Behaviour is browser JS; this is the repo's static
-    presence check (the authoritative re-host guarantee is the server-side
-    Pass 4 covered by TestUploadLessonImages)."""
+    relative images/<file>. KNOW-2347 centralised this in leImgRelTail, whose
+    prefix list still includes the absolute-origin form. Behaviour is browser
+    JS; this is the repo's static presence check (the authoritative re-host
+    guarantee is the server-side Pass 4 covered by TestUploadLessonImages)."""
 
     def test_clean_html_strips_absolute_origin_image_prefix(self):
-        assert "absBase" in _REPORT_PY
+        assert "function leImgRelTail(" in _REPORT_PY
         assert "window.location.origin" in _REPORT_PY
+        assert "origin + '/' + encBase + '/'" in _REPORT_PY
 
 _S3_ARGS = dict(
     s3_bucket="test-bucket",

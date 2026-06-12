@@ -100,6 +100,99 @@ def test_report_decouples_edit_plans_from_drafts(tmp_path, monkeypatch):
     assert "leLoadDrafts();" in html
 
 
+def test_report_images_use_lesson_content_route(tmp_path, monkeypatch):
+    """Lesson images resolve via the stable same-origin /lesson-content/ route,
+    not a relative ../lesson_dir path that 404s in the deployed app (KNOW-2347).
+
+    The report is served at /artifacts/{run_id}/report-{run_id}.html; a
+    relative ../{lesson_dir}/... resolved to /artifacts/{lesson_dir}/... which
+    the /artifacts mount doesn't serve. The fix points <img> at an absolute,
+    same-origin /lesson-content/{lesson_dir}/... URL backed by a real route.
+    """
+    monkeypatch.setattr(cfg, "APP_BASE_URL", "")
+    run_id = "20260101T000000-dddd"
+    recs_path, edit_plans_path = _seed(tmp_path, run_id, with_edit_plans=True)
+
+    out = build_report(
+        run_id, tmp_path, recs_path=recs_path, edit_plans_path=edit_plans_path
+    )
+    html = out.read_text(encoding="utf-8")
+
+    # Images now point at the content route.
+    assert "/lesson-content/" in html
+    # The old relative display bases are gone (they broke post-cutover).
+    assert "const lessonBase = '../'" not in html
+    assert "`../${lessonDir}/" not in html
+
+
+def test_report_defines_centralized_image_path_helpers(tmp_path, monkeypatch):
+    """Image path forms are understood in ONE place — leImgRelTail (reduce any
+    form to the relative tail) + leNormalizeImages (rewrite to the route URL).
+    Centralizing kills the recurring path-translation bugs (KNOW-2347)."""
+    monkeypatch.setattr(cfg, "APP_BASE_URL", "")
+    run_id = "20260101T000000-eeee"
+    recs_path, edit_plans_path = _seed(tmp_path, run_id, with_edit_plans=True)
+
+    out = build_report(
+        run_id, tmp_path, recs_path=recs_path, edit_plans_path=edit_plans_path
+    )
+    html = out.read_text(encoding="utf-8")
+
+    assert "function leImgRelTail(" in html
+    assert "function leNormalizeImages(" in html
+
+
+def test_report_image_normalizer_heals_legacy_paths(tmp_path, monkeypatch):
+    """leImgRelTail must recognize BOTH the current /lesson-content/ form and the
+    legacy ../{lesson_dir}/ form, so a draft saved by the old code (which baked
+    in ../ paths) auto-heals on the next render instead of 404ing (KNOW-2347)."""
+    monkeypatch.setattr(cfg, "APP_BASE_URL", "")
+    run_id = "20260101T000000-ffff"
+    recs_path, edit_plans_path = _seed(tmp_path, run_id, with_edit_plans=True)
+
+    out = build_report(
+        run_id, tmp_path, recs_path=recs_path, edit_plans_path=edit_plans_path
+    )
+    html = out.read_text(encoding="utf-8")
+
+    assert "'/lesson-content/' + encBase + '/'" in html  # current display form
+    assert "'../' + encBase + '/'" in html               # legacy form -> auto-heal
+
+
+def test_report_normalizes_images_after_draft_swap(tmp_path, monkeypatch):
+    """When a saved draft replaces the lesson body, its image paths must be
+    re-normalized — the earlier fresh-render normalize ran before the swap, so
+    without this the draft's (possibly stale) paths bypass the fix (KNOW-2347)."""
+    monkeypatch.setattr(cfg, "APP_BASE_URL", "")
+    run_id = "20260101T000000-0001"
+    recs_path, edit_plans_path = _seed(tmp_path, run_id, with_edit_plans=True)
+
+    out = build_report(
+        run_id, tmp_path, recs_path=recs_path, edit_plans_path=edit_plans_path
+    )
+    html = out.read_text(encoding="utf-8")
+
+    after_swap = html.split("_lessonBodyEl.innerHTML = _draft.body_html;", 1)
+    assert len(after_swap) == 2, "draft body_html swap not found"
+    assert "leNormalizeImages(_lessonBodyEl" in after_swap[1]
+
+
+def test_report_autosave_stores_relative_image_paths(tmp_path, monkeypatch):
+    """Autosave must persist canonical relative paths, not the display-form
+    innerHTML — otherwise drafts couple to the display URL scheme (KNOW-2347)."""
+    monkeypatch.setattr(cfg, "APP_BASE_URL", "")
+    run_id = "20260101T000000-0002"
+    recs_path, edit_plans_path = _seed(tmp_path, run_id, with_edit_plans=True)
+
+    out = build_report(
+        run_id, tmp_path, recs_path=recs_path, edit_plans_path=edit_plans_path
+    )
+    html = out.read_text(encoding="utf-8")
+
+    assert "leBodyHtmlForDraft(bodyEl, lessonDir)" in html
+    assert "? bodyEl.innerHTML : null" not in html  # old raw-innerHTML path gone
+
+
 def test_report_save_to_version_button_disabled(tmp_path, monkeypatch):
     """'Save to Version Folder' stays disabled until the legacy /api/save-lesson
     endpoint is ported into the web app (KNOW-2278) — otherwise the button 404s

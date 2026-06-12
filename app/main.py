@@ -26,7 +26,18 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.auth import AuthMiddleware, init_google_oauth
 from app.config import get_settings
 from app.db.engine import _get_or_create_session_factory
-from app.routes import auth, drafts, health, index, report, report_drafts, runs, skilljar, sse
+from app.routes import (
+    auth,
+    drafts,
+    health,
+    index,
+    lesson_content,
+    report,
+    report_drafts,
+    runs,
+    skilljar,
+    sse,
+)
 from app.services.pipeline_runner import make_step_body
 from app.services.run_scheduler import RunScheduler
 from app.services.task_dispatcher import (
@@ -220,6 +231,9 @@ def create_app() -> FastAPI:
     fastapi_app.include_router(drafts.router)
     fastapi_app.include_router(report_drafts.router)
     fastapi_app.include_router(report.router)
+    # KNOW-2347: serve lesson content images the report references, so they
+    # don't 404 against the /artifacts mount (which only serves artifacts_root).
+    fastapi_app.include_router(lesson_content.router)
     fastapi_app.include_router(runs.router)
     fastapi_app.include_router(skilljar.router)
     fastapi_app.include_router(sse.router)

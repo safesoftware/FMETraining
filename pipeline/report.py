@@ -690,12 +690,16 @@ function renderCard(a) {{
 
   const screenshots = a.affected_screenshots || [];
   const lessonDir = a.lesson_dir || '';
+  // KNOW-2347: build a stable same-origin /lesson-content/ URL (segments
+  // URL-encoded for spaces) instead of a relative ../lesson_dir path, which
+  // 404s now that the report is served from /artifacts/{{run_id}}/.
+  const lessonDirUrl = lessonDir.split('/').map(seg => encodeURIComponent(seg)).join('/');
   const screenshotDetailsHtml = screenshots.length > 0
     ? `<details class="assessment-section">
         <summary>📷 ${{screenshots.length}} screenshot${{screenshots.length !== 1 ? 's' : ''}} need retaking</summary>
         <div class="section-body"><ul>
           ${{screenshots.map(s => {{
-            const imgUrl = lessonDir ? `../${{lessonDir}}/${{escHtml(s.src || '')}}` : escHtml(s.src || '');
+            const imgUrl = lessonDir ? `/lesson-content/${{lessonDirUrl}}/${{escHtml(s.src || '')}}` : escHtml(s.src || '');
             return `<li class="screenshot-item">
               <a class="ss-img" href="${{imgUrl}}" target="_blank" title="Open full size">
                 <img src="${{imgUrl}}" alt="${{escHtml(s.src || '')}}" loading="lazy">
@@ -899,6 +903,56 @@ function leCurrentLessonDir() {{
   return plan ? (plan.lesson_dir || null) : null;
 }}
 
+// --- KNOW-2347: one place that understands lesson-image path forms ---------
+// A lesson image is stored canonically as a relative "images/foo.png". For
+// display it must become an absolute same-origin /lesson-content/<lesson_dir>/
+// URL the FastAPI app serves; for storage (drafts, Skilljar push) it must go
+// back to relative. Centralising form-detection here kills the path-translation
+// bugs that recurred across the report / editor / Skilljar paths (ISSUES
+// #27/#45/#61, KNOW-2274).
+function leImgEncBase(lessonDir) {{
+  return (lessonDir || '').split('/').map(s => encodeURIComponent(s)).join('/');
+}}
+// Reduce ANY recognised lesson-image src to its lesson-relative tail
+// (e.g. "images/foo.png"); return null to leave data:/blob:/external URLs alone.
+function leImgRelTail(src, encBase) {{
+  if (!src || src.startsWith('data:') || src.startsWith('blob:')) return null;
+  const origin = window.location.origin;
+  const prefixes = [
+    '/lesson-content/' + encBase + '/',           // current display (root-relative)
+    origin + '/lesson-content/' + encBase + '/',  // current display, serialised absolute
+    '../' + encBase + '/',                        // legacy display (pre-KNOW-2347) -> auto-heal
+    origin + '/' + encBase + '/',                 // legacy absolute (KNOW-2274)
+  ];
+  for (const pfx of prefixes) {{
+    if (src.startsWith(pfx)) return src.slice(pfx.length);
+  }}
+  // Bare relative "images/foo.png" (not absolute, external, or parent-relative).
+  if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('..')) return src;
+  return null;  // external http(s) or unknown absolute -- leave untouched
+}}
+// Rewrite every <img> in containerEl to the same-origin /lesson-content/ URL.
+// Idempotent, and heals legacy draft paths. Call after ANY innerHTML assignment.
+function leNormalizeImages(containerEl, lessonDir) {{
+  const encBase = leImgEncBase(lessonDir);
+  const route = '/lesson-content/' + encBase + '/';
+  containerEl.querySelectorAll('img').forEach(img => {{
+    const tail = leImgRelTail(img.getAttribute('src') || '', encBase);
+    if (tail !== null) img.setAttribute('src', route + tail);
+  }});
+}}
+// Inverse: clone the editor body and reduce <img> srcs to canonical relative,
+// so drafts / saves never persist display-form paths.
+function leBodyHtmlForDraft(bodyEl, lessonDir) {{
+  const encBase = leImgEncBase(lessonDir);
+  const clone = bodyEl.cloneNode(true);
+  clone.querySelectorAll('img[src]').forEach(img => {{
+    const tail = leImgRelTail(img.getAttribute('src') || '', encBase);
+    if (tail !== null) img.setAttribute('src', tail);
+  }});
+  return clone.innerHTML;
+}}
+
 function leDraftPayload(lessonDir) {{
   // Decisions map (changeId -> accepted/rejected/pending) harvested from
   // every .tc-wrap currently in the editor.
@@ -907,7 +961,7 @@ function leDraftPayload(lessonDir) {{
     decisions[wrap.dataset.id] = wrap.dataset.state || 'pending';
   }});
   const bodyEl = document.getElementById('le-lesson-body');
-  const body_html = bodyEl && bodyEl.contentEditable === 'true' ? bodyEl.innerHTML : null;
+  const body_html = bodyEl && bodyEl.contentEditable === 'true' ? leBodyHtmlForDraft(bodyEl, lessonDir) : null;
   const existing = leDrafts[lessonDir] || {{}};
   return {{
     lesson_dir: lessonDir,
@@ -1323,14 +1377,10 @@ function leRenderLesson() {{
 
   document.getElementById('le-lesson-body').innerHTML = html;
 
-  // Fix relative image paths via DOM — more reliable than regex (issue 61)
-  const lessonBase = '../' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
-  document.querySelectorAll('#le-lesson-body img').forEach(img => {{
-    const src = img.getAttribute('src') || '';
-    if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:') && !src.startsWith('blob:') && !src.startsWith('..')) {{
-      img.setAttribute('src', lessonBase + src);
-    }}
-  }});
+  // KNOW-2347: rewrite lesson images to the same-origin /lesson-content/ route
+  // (issue 61: via DOM, not regex). Centralised in leNormalizeImages so the
+  // draft-swap path below reuses the exact same logic.
+  leNormalizeImages(document.getElementById('le-lesson-body'), plan.lesson_dir || '');
   document.getElementById('le-save-banner').style.display = 'none';
   leBindPopups();
   const _lessonBodyEl = document.getElementById('le-lesson-body');
@@ -1404,6 +1454,10 @@ function leRenderLesson() {{
       // body_html on disk includes the WYSIWYG keystrokes the user made
       // *after* those decisions, so it's safe to swap in.
       _lessonBodyEl.innerHTML = _draft.body_html;
+      // KNOW-2347: the draft body replaces the freshly-normalised DOM, so
+      // re-normalise its image paths too — this also heals legacy drafts that
+      // stored the old ../{{lesson_dir}}/ form.
+      leNormalizeImages(_lessonBodyEl, plan.lesson_dir || '');
       // Re-bind popups since we replaced the DOM.
       leBindPopups();
       _lessonBodyEl.contentEditable = 'true';
@@ -1771,16 +1825,13 @@ function leGetCleanHtml() {{
     wrap.remove();
   }});
 
-  // Strip the ../lesson_dir/ image prefix added by leRenderLesson
-  const lessonBase = '../' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
-  // KNOW-2274: a contenteditable edit can serialise that relative src into an
-  // absolute URL against the page origin (e.g. http://localhost:8080/<dir>/images/x.png).
-  // Strip the origin + lesson_dir prefix back to a relative images/<file> too.
-  const absBase = window.location.origin + '/' + (plan.lesson_dir || '').split('/').map(s => encodeURIComponent(s)).join('/') + '/';
+  // KNOW-2347: reduce image srcs to the canonical relative images/<file> form
+  // (handles the /lesson-content/ display prefix, its absolute-origin variant,
+  // and legacy ../{{lesson_dir}}/ paths) so saved/pushed HTML stays relative.
+  const _encBase = leImgEncBase(plan.lesson_dir || '');
   body.querySelectorAll('img[src]').forEach(img => {{
-    const attrSrc = img.getAttribute('src') || '';
-    if (attrSrc.startsWith(lessonBase)) img.setAttribute('src', attrSrc.slice(lessonBase.length));
-    else if (attrSrc.startsWith(absBase)) img.setAttribute('src', attrSrc.slice(absBase.length));
+    const tail = leImgRelTail(img.getAttribute('src') || '', _encBase);
+    if (tail !== null) img.setAttribute('src', tail);
   }});
 
   // KNOW-2279: don't leak the popover-selection class into saved HTML
