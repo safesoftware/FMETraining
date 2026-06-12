@@ -21,6 +21,16 @@ REPO_ROOT: Path = Path(__file__).parent.parent.resolve()
 # Load .env from repo root
 load_dotenv(REPO_ROOT / ".env")
 
+# Root of the versioned lesson-content corpus (e.g. 2025.0/, 2026.1/). On the
+# box and for the CLI this IS the repo root, so it defaults to REPO_ROOT and
+# behaviour is unchanged. In the container the corpus is bind-mounted at a
+# SEPARATE path (/content) from the code (/app, = REPO_ROOT), so the worker
+# sets LESSON_CONTENT_ROOT=/content. Lesson HTML / image reads must resolve
+# against THIS root, not REPO_ROOT (KNOW-2353). Mirrors app.config
+# Settings.lesson_content_root. Do NOT use this for prompts/, data/, or
+# artifacts — those stay on their own repo-relative roots.
+LESSON_CONTENT_ROOT: Path = Path(os.getenv("LESSON_CONTENT_ROOT") or REPO_ROOT)
+
 
 # ---------------------------------------------------------------------------
 # Credentials / API config

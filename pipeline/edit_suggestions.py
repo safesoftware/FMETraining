@@ -32,6 +32,22 @@ if TYPE_CHECKING:
     from app.services.run_cost_meter import RunCostMeter
 
 
+def _resolve_lesson_html_path(lesson_dir: str) -> Path | None:
+    """Resolve a lesson's index.html under the lesson-content root.
+
+    Lesson content lives under ``config.LESSON_CONTENT_ROOT`` — which equals
+    ``REPO_ROOT`` on the box / CLI, but is the bind-mounted corpus (``/content``)
+    in the container, distinct from the code root (``/app``). Resolving against
+    ``REPO_ROOT`` there finds nothing, so every lesson is skipped and the
+    edit-plan comes back empty (KNOW-2353).
+
+    Returns the path if it exists, else ``None`` (caller logs + skips).
+    """
+    if not lesson_dir:
+        return None
+    return config.LESSON_CONTENT_ROOT / lesson_dir / "index.html"
+
+
 # ---------------------------------------------------------------------------
 # Structured output JSON schema for OpenAI
 # ---------------------------------------------------------------------------
@@ -260,7 +276,9 @@ async def _vision_verify_screenshots(
     if not images:
         return screenshot_updates
 
-    lesson_path = config.REPO_ROOT / lesson_dir
+    # Lesson images are content, not code — resolve under the content root
+    # (KNOW-2353), which equals REPO_ROOT on the box but /content in the container.
+    lesson_path = config.LESSON_CONTENT_ROOT / lesson_dir
     sem = asyncio.Semaphore(config.ALT_TEXT_MAX_CONCURRENT)
 
     # Separate images we can verify (exist on disk) from those we cannot
@@ -662,8 +680,8 @@ def _build_prompt(
         print(f"  WARNING: no lesson_dir for {lesson_id}, skipping.")
         return None
 
-    html_path = config.REPO_ROOT / lesson_dir / "index.html"
-    if not html_path.exists():
+    html_path = _resolve_lesson_html_path(lesson_dir)
+    if html_path is None or not html_path.exists():
         print(f"  WARNING: lesson HTML not found at {html_path}, skipping.")
         return None
 

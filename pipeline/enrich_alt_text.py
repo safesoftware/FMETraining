@@ -198,12 +198,12 @@ async def _run(
             ld = lesson.get("lesson_dir", "")
             if not ld:
                 continue
-            hp = config.REPO_ROOT / ld / "index.html"
+            hp = config.LESSON_CONTENT_ROOT / ld / "index.html"
             if hp.exists():
                 html_paths.append(hp)
                 lesson_dirs[hp] = ld
     elif version and learning_path:
-        base = config.REPO_ROOT / version / learning_path
+        base = config.LESSON_CONTENT_ROOT / version / learning_path
         if not base.exists():
             print(f"ERROR: path not found: {base}")
             return
