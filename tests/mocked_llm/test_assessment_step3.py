@@ -12,11 +12,9 @@ Validates:
 
 from __future__ import annotations
 
-import asyncio
 import json
-from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import AsyncMock, MagicMock, call, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -234,7 +232,7 @@ class TestRunAssessmentMockedOpenAI:
         run_id = "recs-write-test"
 
         with self._ctx(_make_client(self._good_response_json())):
-            recs = run_assessment(
+            run_assessment(
                 run_id=run_id,
                 manifest=manifest,
                 changelog=changelog,

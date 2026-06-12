@@ -14,11 +14,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.auth import AuthMiddleware
-from app.config import get_settings, reset_settings
+from app.config import reset_settings
 from app.db.session import get_session
 from app.models.runs import Run
 from app.routes import auth as auth_routes
@@ -448,10 +447,9 @@ async def test_versions_lists_version_folders(authed_client, lesson_root) -> Non
 @pytest.mark.asyncio
 async def test_versions_empty_when_no_content(authed_client, app_no_lesson_root) -> None:
     """When lesson_root has no YYYY.N dirs, /api/versions returns []."""
-    async_session_factory_inner = None  # reuse fixture factory
     # Re-build client using the app with no lessons
     transport = ASGITransport(app=app_no_lesson_root)
-    async with AsyncClient(transport=transport, base_url="http://testserver") as c:
+    async with AsyncClient(transport=transport, base_url="http://testserver"):
         # Need auth cookie — get from authed_client fixture's session
         pass  # Covered by the lesson_root fixture approach; this is just a smoke check
 
@@ -489,7 +487,7 @@ async def test_content_tree_returns_tree(authed_client, lesson_root) -> None:
     assert len(course["lessons"]) == 2
 
     # Verify path format: version/lp/course_folder/lesson/index.html (5 parts)
-    paths = [l["path"] for l in course["lessons"]]
+    paths = [lesson["path"] for lesson in course["lessons"]]
     for path in paths:
         parts = path.split("/")
         assert len(parts) == 5, f"Expected 5-part path, got {path!r}"

@@ -80,14 +80,32 @@ def tmp_version_tree(tmp_path: Path) -> dict:
 # ---- DB fixtures (KNOW-2269 / KNOW-2270 onward) ---------------------------
 
 @pytest.fixture
-async def async_session_factory() -> AsyncIterator[async_sessionmaker[AsyncSession]]:
+async def async_session_factory(
+    tmp_path_factory: pytest.TempPathFactory,
+) -> AsyncIterator[async_sessionmaker[AsyncSession]]:
     """Per-test SQLite-backed async session factory with the schema applied.
 
     Each test gets its own engine, so writes from one test never leak into
     another. The Postgres-only column types (JSONB) fall back to JSON via
     the ``with_variant`` declarations in the SQLAlchemy models.
+
+    KNOW-2350: this uses a temp **file** DB rather than ``:memory:`` on
+    purpose. An in-memory SQLite engine funnels every session onto a single
+    shared connection, so two coroutines that commit concurrently — e.g. the
+    worker's main step loop and ``RunLogger``'s background flush task —
+    collide with ``OperationalError: cannot commit transaction - SQL
+    statements in progress``. That made
+    ``test_make_step_body_dispatches_steps_5_6`` flaky (~2/10). A file DB
+    hands each session its own connection (matching the pooled-connection
+    contract the production Postgres engine provides), so concurrent commits
+    no longer clash. ``busy_timeout`` guards against transient write locks.
     """
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
+    db_path = tmp_path_factory.mktemp("db") / "test.sqlite"
+    engine = create_async_engine(
+        f"sqlite+aiosqlite:///{db_path}",
+        future=True,
+        connect_args={"timeout": 30},  # wait, don't fail, on a busy write lock
+    )
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     factory = async_sessionmaker(engine, expire_on_commit=False)

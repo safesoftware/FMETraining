@@ -36,7 +36,6 @@ import pytest
 
 from app.models.runs import Run, RunLog, RunStep
 from app.services.pipeline_runner import make_step_body
-from app.services.run_cost_meter import CostCeilingExceeded, RunCostMeter
 from app.services.worker_lifecycle import (
     TERMINAL_COST_ABORTED,
     TERMINAL_OK,

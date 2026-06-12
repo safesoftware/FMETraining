@@ -343,7 +343,7 @@ async def test_make_step_body_dispatches_steps_5_6(
 
     # The run will error because step 5 requires recommendations from step 3.
     # That's correct — steps 5/6 are real and enforce their prerequisites.
-    final = await run_worker(
+    await run_worker(
         run_id,
         session_factory=async_session_factory,
         step_body=_tracking_body,
