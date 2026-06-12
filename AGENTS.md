@@ -209,13 +209,18 @@ If Verifier or Reviewer rejects, the loop returns to Planner — not to Builder.
 
 ### Running the App Locally for Manual Tests
 
+The current app is the **FastAPI multi-user web app** (`app/`), served on **http://localhost:8000** via Docker Compose:
+
 ```bash
-python serve.py 8080          # start server
-# open http://localhost:8080  in browser
-# open report: http://localhost:8080/artifacts/report-{RUN_ID}.html
+make up                       # starts app (:8000) + postgres + minio + worker
+# open http://localhost:8000  in a browser and sign in
+# reports open from a run's row in "Recent Runs" (or directly at /report/{run_id})
+docker compose ps             # confirm the `app` container is Up/healthy
 ```
 
-Port forwarding must be active in VS Code (Ports tab). If the port times out, kill and restart `serve.py` and re-forward the port.
+Port forwarding must be active in VS Code (Ports tab) for **:8000**.
+
+> **Legacy:** `python serve.py 8080` starts the *old* `BaseHTTPServer` launcher (`launcher.html`). It is superseded by the FastAPI app and kept only for the Skilljar release flow (push / archive / releases) that has not been ported yet — see **KNOW-2307 / KNOW-2323**. Do **not** QA new web-app work against :8080. Details: `docs/running-locally.md`.
 
 ---
 

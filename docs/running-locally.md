@@ -1,30 +1,32 @@
-# Running Locally — serve.py and the new FastAPI app
+# Running Locally — the FastAPI web app (and the legacy serve.py launcher)
 
-The repo currently has **two** web apps that coexist during the multi-user web
-app rebuild:
+The **FastAPI multi-user web app under `app/` is the app to use** — it is the
+full launcher, run history, report viewer, and Lesson Edits surface, and it is
+what runs in production. The legacy `serve.py` launcher is superseded and kept
+only for one not-yet-ported feature.
 
-| App                   | Default port | Start command                       | Purpose                                                                                       |
-|-----------------------|-------------:|-------------------------------------|-----------------------------------------------------------------------------------------------|
-| `serve.py` (legacy)   | **8080**     | `python serve.py`                   | The existing browser launcher + report viewer. Keep running on 8080 — `launch.sh`/`.bat` use it. |
-| `app/` (new, FastAPI) | **8000**     | `uvicorn app.main:app --reload`     | Phase 0 skeleton for the multi-user web app (KNOW-2257 onward).                               |
-
-Run them in **separate terminals**. They are independent processes — neither
-imports from the other and they share no in-memory state. Port collisions are
-the only failure mode, so do not start uvicorn on 8080 unless you have first
-stopped `serve.py`.
+| App | Port | Start | Use it for |
+|-----|-----:|-------|------------|
+| **`app/` (FastAPI)** — primary | **8000** | `make up` (Docker Compose; also brings up postgres + minio + worker). Non-Docker: `uvicorn app.main:app --reload`. | Everything: launching runs, run history, viewing/regenerating reports, Lesson Edits + drafts. **QA all new web-app work here.** |
+| `serve.py` (legacy) | 8080 | `python serve.py` (also invoked by `launch.sh` / `launch.bat`) | **Only** the Skilljar release flow (push / archive / releases, draft-course linking) that hasn't been ported to the FastAPI app yet — see KNOW-2307 / KNOW-2323. |
 
 ## Health checks
 
-- `serve.py`: open `http://localhost:8080/` in a browser.
-- FastAPI:   `curl http://localhost:8000/health` returns `{"status":"ok",...}`.
+- FastAPI app: `curl http://localhost:8000/health` → `{"status":"ok",...}`; or open `http://localhost:8000/` and sign in.
+- Legacy launcher: open `http://localhost:8080/` (it now shows a deprecation banner pointing back here).
 
-## Why two apps?
+## Why two apps (still)?
 
-The legacy `serve.py` is a thin Python `BaseHTTPServer` that wraps the
-existing pipeline CLI for a single local user. The new `app/` is a FastAPI
-service that will (in later tickets) add multi-user auth, a Postgres-backed
-job queue, and run scheduling — see
-`docs/plans/2026-04-29-multi-user-web-app.md` for the application design.
-They ship side-by-side until the FastAPI app reaches feature parity, then
-`serve.py` retires. Production deployment of the FastAPI app follows
-`docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md` (single EC2).
+The legacy `serve.py` is a thin `BaseHTTPServer` wrapping the pipeline CLI for a
+single local user — the original UI. The app was rewritten as the FastAPI
+service under `app/` (multi-user auth, Postgres-backed job queue, run
+scheduling, background worker); see
+`docs/plans/2026-04-29-multi-user-web-app.md`. The FastAPI app is now the
+**deployed production app** (single EC2 —
+`docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md`).
+
+The only thing the FastAPI app does **not** yet have is the Skilljar publish /
+archive / release flow, which still lives in `serve.py` + `pipeline/`. Once that
+ports across (KNOW-2307 / KNOW-2323), `serve.py`, `launcher.html`, and
+`launch.sh` / `launch.bat` can be retired — tracked by the "retire the legacy
+launcher" ticket.

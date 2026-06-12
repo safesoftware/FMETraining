@@ -246,13 +246,14 @@ python pipeline.py --output-dir path/to/output
 
 The HTML report (`artifacts/report-{RUN_ID}.html`) fetches its data from a JSON file via `fetch()`. Most browsers block `fetch()` for `file://` URLs, so you need a local HTTP server.
 
-Use `serve.py` (recommended — enables the **Save to Version Folder** feature in the Lesson Edits tab):
+**Recommended — the FastAPI web app** (`app/`), which serves runs, reports, and the Lesson Edits tab on **http://localhost:8000**:
 
 ```bash
-# Run from the project root (not the artifacts/ subdirectory)
-python serve.py
-# Then open http://localhost:8080/artifacts/report-{RUN_ID}.html
+make up
+# open http://localhost:8000, sign in, then open a run's report from "Recent Runs"
 ```
+
+> **Legacy:** `python serve.py` (port **8080**) is the old single-user launcher. It is superseded by the FastAPI app and retained only for the Skilljar release flow until that ports across (KNOW-2307 / KNOW-2323). The standalone `python -m http.server 8080` below still works for *viewing* a report file (the Save feature falls back to a browser download).
 
 Alternatively, use Python's built-in server (report viewing only — the Save feature will fall back to a browser download):
 
