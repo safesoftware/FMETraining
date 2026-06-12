@@ -49,6 +49,44 @@ class TestConfigLessonContentRoot:
 
 
 # ---------------------------------------------------------------------------
+# config.CACHE_ROOT — env-driven writable scratch, defaults to REPO_ROOT/.cache
+# (KNOW-2354). In the container /app is root-owned; compose sets FME_CACHE_DIR
+# to a writable bind-mounted dir so nothing writes under /app at runtime.
+# ---------------------------------------------------------------------------
+
+class TestConfigCacheRoot:
+    def test_defaults_to_repo_root_cache_when_unset(self, monkeypatch):
+        """Unset env → CACHE_ROOT == REPO_ROOT/.cache (CLI/box behaviour)."""
+        monkeypatch.delenv("FME_CACHE_DIR", raising=False)
+        import pipeline.config as config
+
+        config = importlib.reload(config)
+        try:
+            assert config.CACHE_ROOT == config.REPO_ROOT / ".cache"
+            # JIRA_CACHE_PATH must hang off CACHE_ROOT, not REPO_ROOT directly.
+            assert config.JIRA_CACHE_PATH == config.CACHE_ROOT / "jira_api_cache.json"
+            assert config.JIRA_CACHE_PATH == config.REPO_ROOT / ".cache" / "jira_api_cache.json"
+        finally:
+            importlib.reload(config)
+
+    def test_honors_env_when_set(self, monkeypatch, tmp_path):
+        """Set FME_CACHE_DIR → CACHE_ROOT (and JIRA_CACHE_PATH) relocate off
+        REPO_ROOT to the writable dir (the container case: a writable mount
+        rather than the root-owned /app)."""
+        monkeypatch.setenv("FME_CACHE_DIR", str(tmp_path))
+        import pipeline.config as config
+
+        config = importlib.reload(config)
+        try:
+            assert config.CACHE_ROOT == Path(str(tmp_path))
+            assert config.CACHE_ROOT != config.REPO_ROOT / ".cache"
+            assert config.JIRA_CACHE_PATH == Path(str(tmp_path)) / "jira_api_cache.json"
+        finally:
+            monkeypatch.delenv("FME_CACHE_DIR", raising=False)
+            importlib.reload(config)
+
+
+# ---------------------------------------------------------------------------
 # edit_suggestions resolves lesson HTML under LESSON_CONTENT_ROOT
 # ---------------------------------------------------------------------------
 

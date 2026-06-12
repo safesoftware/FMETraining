@@ -13,7 +13,7 @@ GIT_SHA  ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo local)
 BUILD_DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 COMPOSE := GIT_SHA=$(GIT_SHA) BUILD_DATE=$(BUILD_DATE) docker compose
 
-.PHONY: help build up up-mail down logs ps shell migrate test lint format clean nuke
+.PHONY: help build up up-mail down logs ps shell migrate test lint format smoke clean nuke
 
 help: ## Show this help.
 	@awk 'BEGIN { FS = ":.*##"; printf "Targets:\n" } \
@@ -58,6 +58,18 @@ lint: ## Run ruff inside the app container.
 
 format: ## Run ruff format inside the app container.
 	$(COMPOSE) run --rm -e RUFF_CACHE_DIR=/tmp/ruff-cache app ruff format .
+
+# Hermetic in-container Docker smoke check (KNOW-2354). Runs as the real
+# runtime user (appuser) against the mounted layout that the docker-compose
+# override sets up: content at /content, FME_CACHE_DIR + DRAFTS_ROOT on
+# writable bind mounts. It builds a manifest from a committed synthetic
+# 1-lesson fixture and probes cache/artifacts/drafts writability, failing
+# loudly on any PermissionError/FileNotFoundError. No live OpenAI/Jira, no DB
+# (`--no-deps`), so it's free and collision-safe alongside a running stack.
+# Catches the KNOW-2352 (cache write under /app) and KNOW-2353 (content read
+# against /app) bug classes. CI wiring is deferred to the KNOW-2293 rework.
+smoke: ## Run the hermetic Docker smoke check (as appuser, no OpenAI/DB).
+	$(COMPOSE) run --rm --no-deps -e DATABASE_URL= app python tests/smoke/smoke_check.py
 
 worker: ## Run a one-shot worker (`docker compose run worker-runner`).
 	$(COMPOSE) run --rm worker-runner

@@ -21,6 +21,21 @@ REPO_ROOT: Path = Path(__file__).parent.parent.resolve()
 # Load .env from repo root
 load_dotenv(REPO_ROOT / ".env")
 
+# ---------------------------------------------------------------------------
+# Location-sensitive runtime roots (the single source of truth — KNOW-2354)
+#
+# Only TWO globals are genuinely location-sensitive at runtime: the read-only
+# lesson-content corpus and the writable scratch/cache dir. Everything else
+# (prompts/, data/, artifacts/) either is baked/mounted at its exact
+# REPO_ROOT-relative path or is threaded in explicitly by the worker. These
+# two roots are env-driven and BOTH default to their historical REPO_ROOT
+# location, so when the envs are unset (prod box + CLI) behaviour is identical
+# to before. In the Docker split the code lives at /app (root-owned,
+# content-stripped) while content is bind-mounted at /content and writable
+# scratch lives on a separate writable mount — see
+# docs/analysis/2026-06-12-docker-architecture-assessment.md.
+# ---------------------------------------------------------------------------
+
 # Root of the versioned lesson-content corpus (e.g. 2025.0/, 2026.1/). On the
 # box and for the CLI this IS the repo root, so it defaults to REPO_ROOT and
 # behaviour is unchanged. In the container the corpus is bind-mounted at a
@@ -30,6 +45,15 @@ load_dotenv(REPO_ROOT / ".env")
 # Settings.lesson_content_root. Do NOT use this for prompts/, data/, or
 # artifacts — those stay on their own repo-relative roots.
 LESSON_CONTENT_ROOT: Path = Path(os.getenv("LESSON_CONTENT_ROOT") or REPO_ROOT)
+
+# Writable scratch/cache root. On the box and for the CLI this defaults to
+# REPO_ROOT/.cache (writable, gitignored) so behaviour is unchanged. In the
+# container /app is root-owned and not writable by appuser, so compose points
+# FME_CACHE_DIR at a writable bind-mounted dir — that retires the ad-hoc
+# `mkdir /app/.cache` Dockerfile patch (KNOW-2352) and means NOTHING writes
+# under /app at runtime. Anything the pipeline needs to write outside the
+# per-run artifacts dir (e.g. the Jira metadata cache) MUST live under here.
+CACHE_ROOT: Path = Path(os.getenv("FME_CACHE_DIR") or (REPO_ROOT / ".cache"))
 
 
 # ---------------------------------------------------------------------------
@@ -69,8 +93,9 @@ JIRA_FILTER_ID: str = os.getenv("JIRA_FILTER_ID", "")
 # Slim metadata-only cache: descriptions are NOT persisted here.
 # Jira issue descriptions (which contain customer PII) are fetched on demand
 # and held in memory for the duration of a run only. See pipeline/jira_api.py.
-# Path is gitignored via /.cache/ in .gitignore.
-JIRA_CACHE_PATH: Path = REPO_ROOT / ".cache" / "jira_api_cache.json"
+# Lives under the writable CACHE_ROOT (default REPO_ROOT/.cache, gitignored
+# via /.cache/) so it resolves to a writable dir in every layout (KNOW-2354).
+JIRA_CACHE_PATH: Path = CACHE_ROOT / "jira_api_cache.json"
 
 # Base URL of the FastAPI app the report's auto-save JS POSTs to. The app
 # serves the report HTML (via /artifacts) and the API from the SAME origin, so

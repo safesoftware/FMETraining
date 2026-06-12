@@ -10,6 +10,19 @@
 #     in-process (the default is `stub`, which never runs anything);
 #   - maps ./artifacts to the container so written artifacts are inspectable
 #     on the host;
+#   - points the two WRITABLE runtime roots at bind-mounted host dirs so
+#     NOTHING writes under the root-owned /app tree at runtime (KNOW-2354):
+#       * FME_CACHE_DIR=/app/.local-cache  (pipeline CACHE_ROOT / Jira cache;
+#         retires the ad-hoc `mkdir /app/.cache` Dockerfile patch, KNOW-2352)
+#       * DRAFTS_ROOT=/app/.local-drafts   (lesson-edit-save target; the
+#         default /var/lib/fme-train/drafts is root-owned & unprovisioned in
+#         the container → every draft save 503'd, audit finding #1)
+#     Both mirror the ./artifacts pattern: a bind-mounted host dir carries the
+#     host uid and is writable by appuser, unlike a root-owned named volume;
+#   - bind-mounts ./alembic (read-only) so `make migrate` applies NEW
+#     migrations without an image rebuild: alembic/ is baked into the image,
+#     but a fresh revision authored on the host wouldn't be visible until a
+#     rebuild — exactly the seam hit when adding migration 0004 (KNOW-2354);
 #   - mounts .github so the deploy-workflow structural tests (KNOW-2293) can
 #     find .github/workflows/deploy-prod.yml — it's .dockerignore'd out of the
 #     image, so without this `make test` errors on those tests in-container.
@@ -19,15 +32,22 @@ services:
     environment:
       TASK_DISPATCHER: inprocess
       LESSON_CONTENT_ROOT: /content
+      FME_CACHE_DIR: /app/.local-cache
+      DRAFTS_ROOT: /app/.local-drafts
     volumes:
       - .:/content:ro
       - ./artifacts:/app/artifacts
+      - ./alembic:/app/alembic:ro
+      - ./.local-cache:/app/.local-cache
+      - ./.local-drafts:/app/.local-drafts
       - ./.github:/app/.github:ro
 
   worker-runner:
     environment:
       TASK_DISPATCHER: inprocess
       LESSON_CONTENT_ROOT: /content
+      FME_CACHE_DIR: /app/.local-cache
+      DRAFTS_ROOT: /app/.local-drafts
     volumes:
       - ./app:/app/app
       - ./pipeline:/app/pipeline
@@ -35,3 +55,6 @@ services:
       - ./data:/app/data:ro
       - .:/content:ro
       - ./artifacts:/app/artifacts
+      - ./alembic:/app/alembic:ro
+      - ./.local-cache:/app/.local-cache
+      - ./.local-drafts:/app/.local-drafts
