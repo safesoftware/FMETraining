@@ -32,15 +32,29 @@ Issues are tracked in **Jira project KNOW** (https://safesoftware.atlassian.net/
 
 ### When to file an issue
 
-File a Jira issue for **every meaningful unit of work** — features, bug fixes, refactors, infrastructure changes, doc updates that take more than a few minutes. Don't wait for someone to file it for you. Multi-step plans get a parent story plus child tasks.
+File a Jira issue for **every meaningful unit of work** — features, bug fixes, refactors, infrastructure changes, doc updates that take more than a few minutes. Don't wait for someone to file it for you. New issues become child tasks under the relevant **epic** (see *Epic hierarchy* below); a genuinely large, new workstream may warrant its own epic.
 
 When filing, use these standard fields:
 - **Type:** Task
 - **Assignee:** sam.walker@safe.com (account ID `5a6103bb9d0ea46a7a5b6cde`)
 - **Component:** Development
 - **Class of Service:** Standard (`customfield_10253`: `{"value": "Standard"}`)
+- **Parent (epic):** set the real `parent` field to the automation-app epic the work belongs to (see *Epic hierarchy* below). Do **not** write "Parent: KNOW-…" in the description — that was an old workaround (KNOW-2257 used to be a Task), now replaced by the proper field.
 
 Use the Jira MCP (`mcp__claude_ai_Atlassian__createJiraIssue`, cloud ID `646a4867-d35f-4b64-958d-eb9a1def6740`). See `memory/jira_config.md` for the full field config and workflow transition IDs.
+
+### Epic hierarchy — parent new issues to the right epic
+
+The automation-app work **currently** rolls up to these four Epics — this is a living list, **not** a fixed cap (see *When to create a new epic* below). Set a new issue's `parent` to whichever fits:
+
+- **KNOW-2257** — Multi-user web app + EC2 migration (FastAPI rewrite, auth, DB, worker, deploy/infra, the `[Phase N]` tickets).
+- **KNOW-2344** — Core tool: the pipeline (steps 1–6), edit-suggestion engine, HTML report + Lesson Edits WYSIWYG, and the launcher.
+- **KNOW-2345** — Skilljar publishing & release lifecycle (push, archive/publish, version tags).
+- **KNOW-2280** — Skills (apply Claude skills to lesson content).
+
+Set it with `editJiraIssue(fields={"parent": {"key": "KNOW-23xx"}})`, or `createJiraIssue`'s `parent` arg. Jira's hierarchy is **Epic → Story/Task/Bug → Sub-task**, so an epic parents level-0 issues and Sub-tasks are only for small steps *within* a task. The MCP can also change an issue's type (e.g. Task→Epic) via `editJiraIssue(fields={"issuetype": {"id": "10000"}})` — but it has **no delete-issue-link tool**, so stale `Relates` links must be cleared in the Jira UI. A rare process/meta ticket with no clear epic may stay unparented.
+
+**When to create a new epic.** The list above is a snapshot — expect it to grow. Spin up a **new** Epic when a *substantial* new chunk of work arrives: a multi-ticket package with a common objective/theme (a new major feature area, a migration, a new integration) that doesn't belong under an existing epic. A single task, bug, or small follow-up is **not** an epic — it's a child of one; don't proliferate epics for ordinary work. To create one: `createJiraIssue(issueTypeName="Epic", projectKey="KNOW", …)` with the same standard fields as above (Component = Development, Class of Service = Standard; the "Epic Name" field `customfield_10005` is optional in this project). Then parent its child tasks to it — **and add the new epic to the list above so it stays discoverable.**
 
 ### Workflow — agents move issues through states themselves
 
