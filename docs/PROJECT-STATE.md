@@ -1,6 +1,6 @@
 # Project state — single source of truth
 
-> **Last updated:** 2026-06-12 (KNOW-2342 + 2278 deployed & verified live; **KNOW-2347** lesson-image 404 fix merged #36 + verified — redeploy `main` for hygiene; AGENTS epic-parenting merged #35; filed KNOW-2348 Regen-Report port + KNOW-2350 flaky test).
+> **Last updated:** 2026-06-12 (**Closed KNOW-2334/2335/2342/2347** — QA'd this session; KNOW-2347 lesson-image 404 fix merged #36; the KNOW-2278 *disable-Save stopgap* shipped #34 but its full Phase-2 port stays In Backlog; AGENTS epic-parenting merged #35; filed KNOW-2348 + KNOW-2350; box redeploy of `main` pending for hygiene).
 > **What this is:** the always-current snapshot of *what is actually deployed, what is in
 > flight, and what is next*. Read this **before starting any work** (see the reconcile ritual
 > in `AGENTS.md`). It sits above the individual plan docs in `docs/plans/` — those describe
@@ -11,7 +11,7 @@
 
 | System | Branch / SHA | State | Notes |
 |---|---|---|---|
-| **EC2 production (the box)** | KNOW-2347 code (`d1359161` equiv) — redeploy `main` pending (hygiene) | **LIVE on the full app** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up; OpenAI/Jira secrets in `/etc/fme-train/env`. **Real pipeline jobs ran on prod** → KNOW-2334/2335 verified live. **KNOW-2340 deployed + verified** (report `/artifacts` mount, launch-UI width, `setup-ec2.sh` artifacts dir, `deploy-prod.sh` scratch-DB validation) — `bin/deploy-prod.sh` now runs clean end-to-end (also proves the KNOW-2296 fix). **KNOW-2342 / 2278 / 2347 all deployed + verified live 2026-06-12**: Lesson-Edits dropdown + drafts ✅, Save-to-Version disabled ✅, lesson images served via `/lesson-content` ✅. Box is on the KNOW-2347 branch ref — `bash bin/deploy-prod.sh` (no ref) resets HEAD/last-good-SHA to `main` (no code change). |
+| **EC2 production (the box)** | KNOW-2347 code (`d1359161` equiv) — redeploy `main` pending (hygiene) | **LIVE on the full app** | Box `i-0389b1e00a2661746`, `fme-train.base.safe.com` (EIP `44.241.192.143`), us-west-2. Auth + TLS + DB + nightly backup up; OpenAI/Jira secrets in `/etc/fme-train/env`. **Real pipeline jobs ran on prod** → KNOW-2334/2335 verified live. **KNOW-2340 deployed + verified** (report `/artifacts` mount, launch-UI width, `setup-ec2.sh` artifacts dir, `deploy-prod.sh` scratch-DB validation) — `bin/deploy-prod.sh` now runs clean end-to-end (also proves the KNOW-2296 fix). **KNOW-2342 / 2278-stopgap / 2347 all deployed + verified live 2026-06-12**: Lesson-Edits dropdown + drafts ✅, Save-to-Version disabled ✅, lesson images served via `/lesson-content` ✅. Box is on the KNOW-2347 branch ref — `bash bin/deploy-prod.sh` (no ref) resets HEAD/last-good-SHA to `main` (no code change). |
 | **`main` (code)** | `d1359161` | **Full launch-capable app** | KNOW-2334 + 2335 + 2340 + 2342 (#33) + **2278 (#34)** + AGENTS epic-parenting (#35) + **2347 (#36)** merged. |
 | Local dev | Compose (`make up`) | Full app: FastAPI + Postgres 16 + minio + worker | `InProcessTaskDispatcher`; `LocalFolderSource` for content; minio = S3. This is where the agent runs functional QA. |
 
@@ -19,12 +19,12 @@
 
 | Ticket | Branch | PR | Status | Plan | Next action |
 |---|---|---|---|---|---|
-| **KNOW-2334** real pipeline in worker | — (merged) | #26/#27/#28 merged | **Ready for QA** | build plan Part 2 | **All 6 steps real** + RunCostMeter + `/report/{run_id}`; `_stub_step_body` gone; `make test` green; launch→execute verified live (steps 1–2; 3/6 mocked-tested). QA: a real-OpenAI run (small scope). Follow-ups: `artifact_keys_json` (KNOW-2339), Postgres test harness (KNOW-2265). |
-| **KNOW-2335** run-launch UI + endpoint | — (merged) | #29 merged | **Ready for QA** | build plan Part 2 | Merged. `POST /api/runs` + `GET /api/runs/*` + `/api/versions` + `/api/content-tree` + launch UI (signed-out sign-in link / signed-in form). Verified live: authed `POST /api/runs` → real run executed. QA: browser/UX pass. |
+| **KNOW-2334** real pipeline in worker | — (merged) | #26/#27/#28 merged | **Closed** ✅ (QA'd this session) | build plan Part 2 | **All 6 steps real** + RunCostMeter + `/report/{run_id}`; `_stub_step_body` gone; `make test` green; launch→execute verified live (steps 1–2; 3/6 mocked-tested). QA: a real-OpenAI run (small scope). Follow-ups: `artifact_keys_json` (KNOW-2339), Postgres test harness (KNOW-2265). |
+| **KNOW-2335** run-launch UI + endpoint | — (merged) | #29 merged | **Closed** ✅ (QA'd this session) | build plan Part 2 | Merged. `POST /api/runs` + `GET /api/runs/*` + `/api/versions` + `/api/content-tree` + launch UI (signed-out sign-in link / signed-in form). Verified live: authed `POST /api/runs` → real run executed. QA: browser/UX pass. |
 | **KNOW-2340** post-first-deploy fixes | — (merged) | #32 merged | **Ready for QA** (deployed) | — | Merged + **deployed to box 2026-06-11**; the redeploy ran clean end-to-end (proves the KNOW-2296 scratch-DB fix). QA: launch page full-width + Report opens on the box. |
-| **KNOW-2342** Lesson-Edits tab empty + step 6 default | — (merged) | #33 merged | **Ready for QA** (deployed ✅) | — | Decoupled edit-plans load + drafts `AbortController` + `APP_BASE_URL`="" (same-origin) + step 6 default-on. **Deployed + verified live 2026-06-12**: dropdown populates, drafts autosave 200 same-origin. |
-| **KNOW-2278** disable Save-to-Version (stopgap) | — (merged) | #34 merged | **Ready for QA** (deployed ✅) | — | `/api/save-lesson` never ported to FastAPI → button hard-404'd. Stopgap: disable button + guard `leSave()`. Verified live 2026-06-12. Full port still pending. |
-| **KNOW-2347** lesson images 404 in report | — (merged) | #36 merged | **Ready for QA** (deployed ✅) | — | Report used relative `../{lesson_dir}/` → 404 vs the `/artifacts` mount. Fix: new `/lesson-content/{rel}` route + `resolve_content_path` (serves `lesson_content_root`); report repointed; centralized `leImgRelTail`/`leNormalizeImages`, autosave stores relative, legacy drafts auto-heal. Verified live (direct URL + fresh report + edit→reload). See [[project_lesson_image_paths]]. |
+| **KNOW-2342** Lesson-Edits tab empty + step 6 default | — (merged) | #33 merged | **Closed** ✅ (QA'd this session) | — | Decoupled edit-plans load + drafts `AbortController` + `APP_BASE_URL`="" (same-origin) + step 6 default-on. **Deployed + verified live 2026-06-12**: dropdown populates, drafts autosave 200 same-origin. |
+| **KNOW-2278** [Phase 2] port report.py → Jinja templates | — | — (stopgap #34) | **In Backlog** | — | Large refactor: Jinja report + split inline JS + port `/api/save-lesson` off `serve.py`. **Not started.** Only the *disable-Save-to-Version stopgap* shipped under this number (#34, verified live 2026-06-12); the full port remains open. |
+| **KNOW-2347** lesson images 404 in report | — (merged) | #36 merged | **Closed** ✅ (QA'd this session) | — | Report used relative `../{lesson_dir}/` → 404 vs the `/artifacts` mount. Fix: new `/lesson-content/{rel}` route + `resolve_content_path` (serves `lesson_content_root`); report repointed; centralized `leImgRelTail`/`leNormalizeImages`, autosave stores relative, legacy drafts auto-heal. Verified live (direct URL + fresh report + edit→reload). See [[project_lesson_image_paths]]. |
 | **KNOW-2337** PROJECT-STATE + AGENTS ritual | — (merged) | #25 merged | Ready for QA | build plan Part 1 | Done/merged; awaiting close. |
 | **KNOW-2333** `bin/setup-ec2.sh` fixes (exec bit, pg_hba) | — | — | In Backlog | cutover tracker | Fix in repo; bites next provision. |
 | **KNOW-2330** give agent SSM box access | — | — | In Backlog (**blocked by 2309**) | — | Dev-side only now: install `aws` CLI + `session-manager-plugin`, verify SSM session. IT/IAM provisioning split to KNOW-2309. |
@@ -63,6 +63,13 @@
 - `docs/plans/2026-05-05-multi-user-web-app-ec2-alternative.md` — **active deployment architecture** (single EC2).
 - `docs/plans/2026-06-08-ec2-migration-qa-and-cutover.md` — cutover runbook (Stages 1–7 / B0–B10).
 - `docs/plans/2026-06-09-ec2-cutover-progress.md` — cutover **record**: B0–B7 + nightly-backup done; B8 / EBS-schedule / SSM deferred.
+
+## Housekeeping (done 2026-06-12)
+
+- ✅ **Closed KNOW-2334 / 2335 / 2342 / 2347** — QA'd live this session (real pipeline E2E, run-launch UI, Lesson-Edits dropdown/drafts, lesson images).
+- **KNOW-2340** left **Ready for QA** — report-opens + clean-deploy verified, but launch-page full-width + fresh `setup-ec2` artifacts-dir not checked this session.
+- **KNOW-2293** left **Ready for QA** — GH-Actions deploy E2E is IT-blocked (office-IP firewall blocks the runner), can't QA.
+- **KNOW-2278** clarified: the ticket is the **Phase-2 Jinja port** (In Backlog); only the disable-Save-to-Version stopgap shipped (#34).
 
 ## Housekeeping (done 2026-06-10)
 
