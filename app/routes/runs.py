@@ -37,6 +37,7 @@ from app.db.session import get_session
 from app.models.runs import Run, RunStep
 from app.models.users import User
 from app.services.lesson_content_source import LocalFolderSource
+from app.services.report_regen import RecommendationsNotFound, regenerate_report
 from pipeline.utils import generate_run_id
 
 _logger = logging.getLogger(__name__)
@@ -131,6 +132,11 @@ class RunDetailResponse(BaseModel):
     finished_at: Optional[datetime]
     error_text: Optional[str]
     steps: list[_StepStatus]
+
+
+class RegenerateReportResponse(BaseModel):
+    run_id: str
+    report_url: str
 
 
 # ---------------------------------------------------------------------------
@@ -296,6 +302,49 @@ async def get_run(
             )
             for s in steps
         ],
+    )
+
+
+# ---------------------------------------------------------------------------
+# POST /api/runs/{run_id}/regenerate-report — ported from serve.py run-action
+# ---------------------------------------------------------------------------
+
+
+@router.post(
+    "/api/runs/{run_id}/regenerate-report",
+    response_model=RegenerateReportResponse,
+)
+async def regenerate_run_report(
+    run_id: str,
+    session: AsyncSession = Depends(get_session),
+    user: User = Depends(require_user),
+) -> RegenerateReportResponse:
+    """Regenerate the HTML report for an existing run from its artifacts.
+
+    Ports the legacy launcher's "Regenerate Report" action (``serve.py``
+    ``/api/run-action`` → ``pipeline.py --report-only``). Re-runs
+    ``build_report`` in-process over the run's existing artifacts — **no OpenAI
+    cost** — so report fixes (e.g. the KNOW-2347 lesson-image route) can be
+    applied to already-completed runs without a full, paid re-run.
+
+    Guards:
+      - 404 if the run isn't in the DB.
+      - 409 if the run has no ``update-recommendations-<run_id>.json`` artifact
+        (nothing to render yet).
+    """
+    run = await session.get(Run, run_id)
+    if run is None:
+        raise HTTPException(status_code=404, detail=f"Run {run_id!r} not found")
+
+    try:
+        await regenerate_report(run_id)
+    except RecommendationsNotFound as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    _logger.info("User %s regenerated report for run %s", user.email, run_id)
+    return RegenerateReportResponse(
+        run_id=run_id,
+        report_url=f"/report/{run_id}",
     )
 
 

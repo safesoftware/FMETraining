@@ -964,7 +964,45 @@ async function loadRunList() {
     rl.className = 'run-action-btn';
     rl.textContent = 'Logs';
     btns.appendChild(rl);
+
+    // Regenerate Report button (KNOW-2348) — re-runs build_report over the
+    // run's existing artifacts (no OpenAI cost). Disabled while in flight.
+    const rg = document.createElement('button');
+    rg.type = 'button';
+    rg.className = 'run-action-btn';
+    rg.textContent = 'Regen Report';
+    rg.title = 'Regenerate the HTML report from this run\'s existing artifacts';
+    rg.addEventListener('click', () => regenerateReport(run.run_id, rg));
+    btns.appendChild(rg);
   });
+}
+
+// =========================================================================
+// Regenerate report (KNOW-2348)
+// =========================================================================
+async function regenerateReport(runId, btn) {
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Regenerating…';
+  try {
+    const resp = await fetch(
+      '/api/runs/' + encodeURIComponent(runId) + '/regenerate-report',
+      { method: 'POST' }
+    );
+    let data = {};
+    try { data = await resp.json(); } catch(_) {}
+    if (!resp.ok) {
+      alert('Could not regenerate report: ' + (data.detail || resp.status));
+      return;
+    }
+    // Open the freshly regenerated report in a new tab.
+    window.open(data.report_url || ('/report/' + encodeURIComponent(runId)), '_blank');
+  } catch(e) {
+    alert('Could not regenerate report: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 }
 </script>
 
