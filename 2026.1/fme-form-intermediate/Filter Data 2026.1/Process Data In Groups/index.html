@@ -2,7 +2,7 @@
 <p>After completing this lesson, you&rsquo;ll be able to:</p>
 <ul>
 <li>Explain how the Group By parameter lets you process records in groups.</li>
-<li>Explain the difference between the Process at End and Process When Group Changes Group By modes.</li>
+<li>Explain the difference between setting Complete Groups to When All Features Received versus When Group Changes (Advanced).</li>
 <li>Use the Group By parameter in an FME transformer.</li>
 </ul>
 <h2><span style="font-weight: 400;">Instructions</span></h2>
@@ -44,7 +44,7 @@
 </ul>
 <h2 id="creating-groups">Creating Groups</h2>
 <p>A group is a defined set of records processed by a transformer. By default, group-based transformers treat all the records they receive as a single group.</p>
-<p>However, such transformers also have a&nbsp;<strong>Group By</strong> parameter. This parameter lets the user define several groups based on an attribute's value.</p>
+<p>However, such transformers also have a&nbsp;<strong>Group By</strong> parameter. This parameter allows the user to define multiple groups based on an attribute's value.</p>
 <blockquote>
 <p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
 <p><span style="font-family: inherit; font-size: 1em;">To illustrate groups, let's consider calculating the mean age of FME users. The default group for the calculation includes </span><strong style="font-family: inherit; font-size: 1em;">all</strong><span style="font-family: inherit; font-size: 1em;"> FME users.</span></p>
@@ -55,10 +55,11 @@
 <p><img class="image" src="images/1714081712903.png" alt="Setting a Group By parameter" width="784" height="193" /></p>
 <p>FME creates a series of groups for overlaying, where the records in each group share the same value for the <em>ViewDescription</em> attribute. The practical outcome is that polygon dissolving takes place only where line records share the same description:</p>
 <p><img class="image" src="images/1699305001209.png" alt="Example of results of using a Dissolver on geometry" width="610" height="350" /></p>
-<h2 id="group-by-mode">Group By Mode</h2>
-<p>When grouping records, the transformer can handle the group in two different ways. The first way is to hold all of the records until all of the records have come through the transformer; this is referred to as blocking. This is set using the Process at End (Blocking) Group By Mode.</p>
-<p>The other way is to pre-sort your data into groups using a transformer like the Sorter. Then, once your data is grouped, use the Process When Group Changes (Advanced) Group By Mode. This mode will push the records through the transformer after each group, which will help speed up performance. Only use this option when your data is pre-sorted.</p>
-<h2 id="exercise">Scenario</h2>
+<h2 id="group-by-mode">Complete Groups</h2>
+<p>When grouping records, the transformer can handle the group in two different ways. The first way is to hold all of the records until all of the records have come through the transformer; this is referred to as blocking. This blocking occurs when Complete Groups is set to When All Features Received.</p>
+<p>The other way is to pre-sort your data into groups using a transformer like the Sorter. Then, once your data is grouped, set Complete Groups to When Group Changes (Advanced). This mode will push the records through the transformer after each group, which will help speed up performance. Only use this option when your data is pre-sorted.</p>
+<h2 id="exercise">Exercise</h2>
+<p><img src="images/sven.png" width="256" /></p>
 <p>Sven continues to work with the city park data. He's been asked to add the average size of parks in each neighborhood. To do this, he can use the Group By parameter with an existing workspace.</p>
 <h2>1) Open Starting Workspace</h2>
 <ul>
