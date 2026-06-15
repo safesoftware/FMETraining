@@ -1616,7 +1616,10 @@ function leShowChange(lessonId, changeId) {{
   const tabBtn = document.querySelector('.tab-btn[onclick*="lesson-edits"]');
   if (tabBtn && !tabBtn.disabled) switchTab('lesson-edits', tabBtn);
   setTimeout(() => {{
-    const plan = leEditPlans.find(l => l.lesson_id === lessonId);
+    // Accept either the canonical lesson_id or the lesson_dir: the /drafts
+    // deep-link only has lesson_dir, which differs from lesson_id by the
+    // course's version suffix (KNOW-2356). Each plan carries both.
+    const plan = leEditPlans.find(l => l.lesson_id === lessonId || l.lesson_dir === lessonId);
     if (!plan) return;
     const lpSel = document.getElementById('le-lp-filter');
     if (lpSel && plan.learning_path) {{ lpSel.value = plan.learning_path; leUpdateCourses(); }}
@@ -1624,7 +1627,7 @@ function leShowChange(lessonId, changeId) {{
     if (courseSel && plan.course_canonical) {{ courseSel.value = plan.course_canonical; leUpdateLessons(); }}
     const lessonSel = document.getElementById('le-lesson-filter');
     if (!lessonSel) return;
-    lessonSel.value = lessonId;
+    lessonSel.value = plan.lesson_id;
     leRenderLesson();
     if (changeId) {{
       setTimeout(() => {{

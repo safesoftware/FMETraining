@@ -326,7 +326,8 @@ async def drafts_page(
                     "open_url": (
                         "/report/"
                         + quote(r.run_id, safe="")
-                        + "?tab=lesson-edits"
+                        + "?tab=lesson-edits&lesson="
+                        + quote(lesson.lesson_dir, safe="")
                     ),
                     "saved_to_version_path": lesson.saved_to_version_path,
                     "updated_at": lesson.updated_at,

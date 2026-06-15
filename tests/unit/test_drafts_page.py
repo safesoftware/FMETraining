@@ -86,10 +86,13 @@ async def test_drafts_page_lists_seeded_run(
     # Status badges
     assert "in progress" in body
     assert "saved" in body
-    # Open link uses the canonical /report/{id} redirect, which carries the
-    # tab query through to the per-run artifact path (KNOW-2355). The old flat
-    # /artifacts/report-{id}.html link 404'd (missing the per-run subdir).
+    # Open link uses /report/{id} (carries the tab through to the per-run
+    # artifact path, KNOW-2355) and deep-links to the lesson via
+    # &lesson=<lesson_dir> (KNOW-2356). Jinja HTML-escapes the & to &amp; in the
+    # rendered href (the browser decodes it on navigation), so assert the parts.
+    # The old flat /artifacts/report-{id}.html link 404'd.
     assert "/report/run-z?tab=lesson-edits" in body
+    assert "lesson=lp-x%2Fcourse%2Flesson-q" in body
     assert "/artifacts/report-run-z.html" not in body
 
 
