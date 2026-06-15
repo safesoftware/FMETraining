@@ -1,6 +1,6 @@
 # Project state — single source of truth
 
-> **Last updated:** 2026-06-12 (**Closed KNOW-2334/2335/2340/2342/2347** — QA'd this session; KNOW-2340 launch page now full-width #37; KNOW-2347 lesson-image 404 fix #36; the KNOW-2278 *disable-Save stopgap* shipped #34 but its full Phase-2 port stays In Backlog; AGENTS epic-parenting #35; filed KNOW-2348 + KNOW-2350; **dev-backlog batch merged #38–#41** (KNOW-2348 Regen-Report; 2169/2170 suggestion accuracy; 2287/2288/2289 drafts hardening; 2350/2320 flake fix + ruff clean) — all 8 now **Ready for QA**, integrated suite 501 passed / ruff clean. **Then a local-Docker full-run QA pass surfaced a path/permission seam** (the pipeline layer was blind to the container's split `/app` vs `/content` layout) → fixed as one coordinated arc: **KNOW-2352** (`/app/.cache`, #44), **KNOW-2353** (lesson content-root, #45), **KNOW-2348** Regen-UX rework (#46), and **KNOW-2354** Docker runtime hardening (#47: single content/cache root + writable-root model + `make smoke` regression guard) — all Ready for QA; integrated suite 511 / ruff clean / `make smoke` green. Legacy `serve.py` launcher deprecated (#43; full retire = **KNOW-2351**). Audit + verdict in `docs/analysis/`. Box redeploy of `main` pending for hygiene.)
+> **Last updated:** 2026-06-15 (**Publishing-in-app release sprint staged** — the next sprint is planned and ticketed: **KNOW-2357** (Save-to-Version port, WS-A+F) and **KNOW-2358** (Skilljar publish/release port, WS-B/C/D/E; folds in + closes KNOW-2321/2322 and the Step-4-deletion slice of KNOW-2323). Backlog reprioritized (order in the new section), and a full **"Publishing-in-app release sprint"** handoff section added below so the team can continue while Sam is away. The build itself is driven via the `/goal` slash command with parallel agents — **see that section first if you are picking up publishing work.** — *Prior, 2026-06-12:* **Closed KNOW-2334/2335/2340/2342/2347** — QA'd this session; KNOW-2340 launch page now full-width #37; KNOW-2347 lesson-image 404 fix #36; the KNOW-2278 *disable-Save stopgap* shipped #34 but its full Phase-2 port stays In Backlog; AGENTS epic-parenting #35; filed KNOW-2348 + KNOW-2350; **dev-backlog batch merged #38–#41** (KNOW-2348 Regen-Report; 2169/2170 suggestion accuracy; 2287/2288/2289 drafts hardening; 2350/2320 flake fix + ruff clean) — all 8 now **Ready for QA**, integrated suite 501 passed / ruff clean. **Then a local-Docker full-run QA pass surfaced a path/permission seam** (the pipeline layer was blind to the container's split `/app` vs `/content` layout) → fixed as one coordinated arc: **KNOW-2352** (`/app/.cache`, #44), **KNOW-2353** (lesson content-root, #45), **KNOW-2348** Regen-UX rework (#46), and **KNOW-2354** Docker runtime hardening (#47: single content/cache root + writable-root model + `make smoke` regression guard) — all Ready for QA; integrated suite 511 / ruff clean / `make smoke` green. Legacy `serve.py` launcher deprecated (#43; full retire = **KNOW-2351**). Audit + verdict in `docs/analysis/`. Box redeploy of `main` pending for hygiene.)
 > **What this is:** the always-current snapshot of *what is actually deployed, what is in
 > flight, and what is next*. Read this **before starting any work** (see the reconcile ritual
 > in `AGENTS.md`). It sits above the individual plan docs in `docs/plans/` — those describe
@@ -23,7 +23,7 @@
 | **KNOW-2335** run-launch UI + endpoint | — (merged) | #29 merged | **Closed** ✅ (QA'd this session) | build plan Part 2 | Merged. `POST /api/runs` + `GET /api/runs/*` + `/api/versions` + `/api/content-tree` + launch UI (signed-out sign-in link / signed-in form). Verified live: authed `POST /api/runs` → real run executed. QA: browser/UX pass. |
 | **KNOW-2340** post-first-deploy fixes | — (merged) | #32 + #37 | **Closed** ✅ (QA'd this session) | — | Report-mount + scratch-DB validation + launch-UI width. Report opens ✅; launch page now **full-width** (1200px cap → `max-width:none`, follow-up #37) ✅; deploy clean E2E ✅. |
 | **KNOW-2342** Lesson-Edits tab empty + step 6 default | — (merged) | #33 merged | **Closed** ✅ (QA'd this session) | — | Decoupled edit-plans load + drafts `AbortController` + `APP_BASE_URL`="" (same-origin) + step 6 default-on. **Deployed + verified live 2026-06-12**: dropdown populates, drafts autosave 200 same-origin. |
-| **KNOW-2278** [Phase 2] port report.py → Jinja templates | — | — (stopgap #34) | **In Backlog** | — | Large refactor: Jinja report + split inline JS + port `/api/save-lesson` off `serve.py`. **Not started.** Only the *disable-Save-to-Version stopgap* shipped under this number (#34, verified live 2026-06-12); the full port remains open. |
+| **KNOW-2278** [Phase 2] port report.py → Jinja templates | — | — (stopgap #34) | **In Backlog** | — | Large refactor: Jinja report + split inline JS. **Not started.** Only the *disable-Save-to-Version stopgap* shipped under this number (#34, verified live 2026-06-12). **Note:** the `/api/save-lesson` port is **carved out to KNOW-2357** (release sprint) — 2278 is now just the Jinja/JS refactor. |
 | **KNOW-2347** lesson images 404 in report | — (merged) | #36 merged | **Closed** ✅ (QA'd this session) | — | Report used relative `../{lesson_dir}/` → 404 vs the `/artifacts` mount. Fix: new `/lesson-content/{rel}` route + `resolve_content_path` (serves `lesson_content_root`); report repointed; centralized `leImgRelTail`/`leNormalizeImages`, autosave stores relative, legacy drafts auto-heal. Verified live (direct URL + fresh report + edit→reload). See [[project_lesson_image_paths]]. |
 | **KNOW-2337** PROJECT-STATE + AGENTS ritual | — (merged) | #25 merged | Ready for QA | build plan Part 1 | Done/merged; awaiting close. |
 | **KNOW-2333** `bin/setup-ec2.sh` fixes (exec bit, pg_hba) | — | — | In Backlog | cutover tracker | Fix in repo; bites next provision. |
@@ -36,7 +36,7 @@
 | **KNOW-2352** local Docker `/app/.cache` 503 | — (merged) | #44 merged | **Ready for QA** | — | appuser couldn't create `/app/.cache` (root-owned `/app`) → step-2 crash. Interim Dockerfile mkdir; superseded by KNOW-2354's writable-root model. |
 | **KNOW-2353** pipeline content-root (`/content`) | — (merged) | #45 merged | **Ready for QA** | — | Pipeline read lesson HTML at `/app` not `LESSON_CONTENT_ROOT` → step 5/6 skipped all lessons (empty Lesson Edits). Plumbed `LESSON_CONTENT_ROOT` into pipeline reads. |
 | **KNOW-2354** Docker runtime hardening | — (merged) | #47 merged | **Ready for QA** | — | Single content/cache root + writable-root model (drafts/cache off `/app`) + `./alembic` mount + **`make smoke`** guard (catches the 2352/2353 class). Dev-override only; prod unaffected. See `docs/analysis/`. |
-| **KNOW-2351** retire legacy `serve.py` launcher | — | — | In Backlog (**blocked**) | — | Delete launcher once Skilljar release flow ports (KNOW-2307/2323) + save-lesson (KNOW-2278). Docs repointed + `:8080` banner shipped (#43). |
+| **KNOW-2351** retire legacy `serve.py` launcher | — | — | In Backlog (**blocked by the release sprint**) | — | Delete launcher once the publish/release flow (**KNOW-2358**) + save-lesson (**KNOW-2357**) reach parity in the app — see the release-sprint section. Docs repointed + `:8080` banner shipped (#43). |
 | **KNOW-2350** flaky test (steps 5/6 dispatch) | — (merged) | #41 merged | **Ready for QA** | — | Root cause: in-memory SQLite shared one connection across the worker + log-flush coroutines → commit race. Fixed with per-test file-backed SQLite (own connection, matches prod pool). 50/50 loop pass. |
 | **KNOW-2320** clear ruff lint debt (make lint green) | — (merged) | #41 merged | **Ready for QA** | — | Cleared all 13 ruff errors (8 F401, 4 F841, 1 E741), test-files only, behaviour-preserving. `ruff check .` clean. |
 | **KNOW-2169** drop unmatched edit suggestions | — (merged) | #39 merged | **Ready for QA** | — | Drop suggestions the renderer can't apply; check mirrors renderer's real apply-time matching (attribute-aware + normalized text). |
@@ -44,6 +44,92 @@
 | **KNOW-2287** bound list_runs_with_drafts (SQL) | — (merged) | #40 merged | **Ready for QA** | — | SQL-layer bound (DISTINCT run-id window + LIMIT) + dead branch removed; output unchanged. |
 | **KNOW-2288** asserts in mark_run_draft_saved | — (merged) | #40 merged | **Ready for QA** | — | Asserts already gone on `main` (`9847873b`); added the missing regression test + verified `app/routes/` assert-free. |
 | **KNOW-2289** draft saved-status stickiness | — (merged) | #40 merged | **Ready for QA** | — | Post-save edits now show `saved_edited` (Option C, Sam-confirmed) — keeps "saved to &lt;path&gt;" while flagging unpersisted changes; zero template/CSS change. |
+| **KNOW-2357** port Save-to-Version (`/api/save-lesson`) + re-enable report Save (WS-A+F) | — | — | **In Backlog** (release sprint #1) | `as-far-as-i-golden-wave.md` | **Release-critical, not started.** New `app/services/lesson_writer.py` + `app/routes/save_lesson.py`; re-enable report Save button + drop `leSave()` guard. Carve-out from KNOW-2278. **Drive via `/goal`** — see the release-sprint section. |
+| **KNOW-2358** port Skilljar publish/release flow into the app (WS-B/C/D/E) | — | — | **In Backlog** (release sprint #2) | `as-far-as-i-golden-wave.md` | **Release-critical, not started.** Release service + new `/api/release-*` router + `/releases` page; folds in KNOW-2321 (idempotency/labels) + KNOW-2322 + the Step-4-deletion slice of KNOW-2323. **Drive via `/goal`** — see the release-sprint section. |
+
+## Publishing-in-app release sprint (handoff — START HERE for publishing work)
+
+> **Status as of 2026-06-15:** *planned + ticketed, not started.* The build is launched
+> via the **`/goal`** slash command with parallel coding agents (see the dependency graph).
+> Approved plan: `~/.claude/plans/as-far-as-i-golden-wave.md`. Tickets: **KNOW-2357**, **KNOW-2358**.
+
+### Goal
+Make **edit → Save to Version → push a course to Skilljar** work **inside the FastAPI app** (port 8000),
+hermetically tested locally first, then deployed to the box for human QA against real Skilljar.
+**Why now:** the editing half already works and is "good enough" for the team to use for edit-suggestions
+while Sam is away; the publish half was *never ported* into the new app — `Save to Version` is disabled
+(KNOW-2278 stopgap) and the whole Skilljar push/release/archive flow lives only in the legacy `serve.py`
+launcher (`:8080`) + `pipeline/skilljar_release.py`. Publishing is per-team-member, so it must be in-app.
+
+### Locked architecture decisions (design around these — do not relitigate)
+1. **Port the proven v1 logic; do NOT migrate to Skilljar API v2 / MCP now.** Reuse `pipeline/skilljar_release.py`
+   + `pipeline/skilljar_push.py` + `pipeline/lesson_image_upload.py` largely verbatim, wrapped in an app service.
+   (KNOW-2307 v2/MCP is explicitly deferred.)
+2. **Operate on the on-disk version-folder tree.** Save-to-Version writes `index.html` + copies `images/` under
+   `Settings.lesson_content_root`; the release flow's `scan_saved_lessons` reads that same tree; the saved badge
+   uses the already-wired `report_lesson_drafts.mark_saved`. **Leave `lesson_drafts` / `drafts_root` untouched**
+   (different path taxonomy — reconciling it is deferred v2 work). ← single most important seam (Risk R6).
+3. **Fold in the bug fixes:** KNOW-2321 (archive idempotency guard + archive labels `["archived"]` only) and
+   KNOW-2322/2323 (**delete Step 4 — the published-course tag-swap — entirely**; tags are dashboard-managed).
+4. Keep `data/skilljar-mapping.json` as the mapping store (no DB migration now).
+5. **Deferred (team continues / post-vacation):** v2/MCP (KNOW-2307); rest of the KNOW-2323 UX rework
+   (inventory-dropdown draft-linking, auto-publish); `lesson_drafts` reconciliation; mapping→DB;
+   `release_locks`/`release_history` if time runs short; KNOW-2313 (report XSS); retiring the legacy launcher (KNOW-2351).
+
+### Work-streams (live status — update as each lands)
+| WS | Scope | Ticket | Status | Branch / PR |
+|---|---|---|---|---|
+| **A** | `POST /api/save-lesson` — write accepted HTML to version folder + copy images + sanitize track-changes chrome (`app/services/lesson_writer.py`, `app/routes/save_lesson.py`) | KNOW-2357 | **Not started** | — |
+| **F** | Re-enable report Save button (`pipeline/report.py` ~371) + remove `leSave()` early-`return` guard (~1849-1862) | KNOW-2357 | **Not started** | — |
+| **B** | App release service wrapping the v1 flow + 2321/2322/Step-4 fixes (`app/services/skilljar_release_service.py`; edit `pipeline/skilljar_release.py`) | KNOW-2358 | **Not started** | — |
+| **C** | Release endpoints — NEW router `app/routes/skilljar_release.py`: `GET /api/release-status\|release-plan`, `POST /api/release-execute\|link-draft-course`, `GET /api/release-log` | KNOW-2358 | **Not started** | — |
+| **D** | Releases page UI (`app/templates/releases.html` + `/releases` route + one nav link) — no tag UI; explicit "publish manually in Skilljar" affordance | KNOW-2358 | **Not started** | — |
+| **E** | `release_locks`/`release_history` wiring (POLISH; tables already in `0001_baseline`) | KNOW-2358 | **Not started** | — |
+
+### Parallelization / dependency graph (for the `/goal` fan-out)
+- **Start concurrently at t=0 (disjoint files):** WS-A, WS-B, WS-D template skeleton (against documented API shapes), WS-F.
+- **Barrier B1:** freeze `skilljar_release_service` public signatures first (stub the module in the first hour) so WS-C codes against them.
+- **Barrier C1:** freeze the `/api/release-*` JSON shapes (copy `serve.py`'s exactly, lines 540-655) so WS-D builds against them.
+- **Collision mitigations:** WS-C creates a **NEW** router (never touches `app/routes/skilljar.py`, the existing sync route); **only WS-B** edits `pipeline/skilljar_release.py` (WS-C imports the *service*, never the pipeline module); the integrator owns final `app/main.py` `include_router` wiring; `base.html` nav link is a trivial 1-liner.
+- **Critical path to "edit→save→push one course E2E":** WS-A + WS-F (save) and WS-B → WS-C (push). WS-D is convenience — the endpoints are curl/dry-run-driveable for the first QA.
+
+### MVP cut line
+**MVP (end-to-end, testable): WS-A + WS-F + WS-B + WS-C.** A human can: run pipeline → open report → accept edits →
+Save to Version → `POST /api/release-execute` (dry-run, then live) → lesson HTML lands in the Skilljar draft.
+The bug fixes (2321 idempotency/labels, Step-4 deletion) ship as part of WS-B.
+**Polish / team-continues (clean seams, no MVP dependency):** WS-D (Releases UI — the obvious first pickup); WS-E (locks/history);
+RunLogger-backed SSE for release logs (MVP uses an in-process dict + poll). Then the deferred backlog below.
+
+### Run + hermetically test locally (no live Skilljar)
+```
+make up          # boot full stack (app :8000 + postgres + minio), InProcessTaskDispatcher
+make test        # pytest inside the app container — hermetic (SQLite file, faked Skilljar, monkeypatched env)
+make lint        # ruff check
+make smoke       # hermetic Docker smoke guard (runs as appuser, no OpenAI/DB) — MUST stay green
+```
+Test pattern: `TestClient(create_app())` + `async_session_factory` + `seeded_user`/`authenticate` cookie; monkeypatch the
+Skilljar client/primitives in `pipeline/skilljar_release.py` (see `tests/unit/test_skilljar_release.py`);
+`monkeypatch.setenv("SKILLJAR_API_KEY", …)` + `reset_settings()`. **Keep `make smoke` hermetic.**
+WS-B asserts: 2321 idempotency (re-run → no second `_create_course`; archive labels == `["archived"]`); Step-4 gone (no tag-helper calls); execute happy path (archive→push→rename→mapping; tmp mapping updated).
+
+### Box QA (Sam, vs real Skilljar — one low-stakes course)
+1. Deploy `main` to the box with real `SKILLJAR_API_KEY`/`SKILLJAR_DOMAIN`/`AWS_*` in `/etc/fme-train/env` (Risk R2); run migrations if WS-E added one.
+2. **Confirm writability before testing:** `lesson_content_root` (`/content` bind mount) must be **read-write** or Save fails (Risk R5); `data/` must be writable or the mapping read-modify-write won't persist (Risk R3).
+3. **Regenerate the report** (`POST /api/runs/{id}/regenerate-report`, free) to get the *enabled* Save button — the report is a **static artifact**, so the WS-F change only lands in regenerated/new reports, never historical ones (Risk R1).
+4. Edit a lesson → **Save to Version** (file appears under the version folder; `/drafts` badge flips to "saved") → `POST /api/release-execute?dry_run=true` (eyeball the plan) → live execute → verify in the Skilljar dashboard: draft got the HTML; archive exists, **labelled `archived` only**; renamed; images load from S3; **no tags touched**. Re-run → **no duplicate archive** (proves 2321). Then **manually publish** the draft in Skilljar. Test `link-draft-course` against a real draft.
+
+### Reprioritized backlog order (no Jira rank tool via MCP — order recorded here)
+Release-critical, in order: **1)** KNOW-2357 Save-to-Version port (WS-A+F) → **2)** KNOW-2358 release service + 2321/2322/Step-4 fixes (WS-B) → **3)** KNOW-2358 release endpoints (WS-C) → **4)** KNOW-2358 Releases UI (WS-D) → **5)** KNOW-2358 locks/history (WS-E).
+Then deferred (post-vacation): KNOW-2307 (v2/MCP), the rest of the KNOW-2323 UX rework, `lesson_drafts` reconciliation, mapping→DB, KNOW-2313 (report XSS), retire the legacy launcher (KNOW-2351).
+
+### Risks (flag R2/R3/R5 to Sam before box QA)
+- **R5 (content-root writable):** Save writes under `lesson_content_root` (`/content`). KNOW-2354 made `/app` read-only — confirm `/content` is mounted **read-write** or saves fail.
+- **R3 (mapping writable + concurrency):** `execute_release`/`link_draft_course` read-modify-write `data/skilljar-mapping.json` (~307 KB). If `data/` is read-only, the push still works but the local mapping record won't persist (known MVP gap) — relocate to a writable mount or accept the gap.
+- **R2 (secrets on box):** the service threads `Settings.skilljar_api_key`/`aws_*` into the `pipeline.*` calls; ensure `/etc/fme-train/env` carries `SKILLJAR_API_KEY` + `AWS_*` for the app process.
+- **R6 (draft-taxonomy):** Save MUST route through the on-disk tree + `report_lesson_drafts.mark_saved`, **NOT** `lesson_drafts`/`POST /api/drafts` — else `scan_saved_lessons` won't see the save and the push finds nothing.
+- **R4 (S3/region):** `app/config` defaults region `us-west-2`, `pipeline/config` `us-east-1` — thread `Settings.aws_s3_region` through; live-QA a real pasted image.
+- **R1 (static report):** the Save-button re-enable only affects regenerated/new reports — use regenerate-report in QA; don't promise historical reports.
+- **R7 (log streaming):** MVP = in-process `action_key` dict + poll (port `serve.py`'s `_active_runs`); RunLogger/SSE is polish.
 
 ## Recent merges
 
