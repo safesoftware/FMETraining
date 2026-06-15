@@ -18,20 +18,24 @@ is the perimeter).
 """
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 
 router = APIRouter(tags=["report"])
 
 
 @router.get("/report/{run_id}", response_class=RedirectResponse)
-async def redirect_to_report(run_id: str) -> RedirectResponse:
+async def redirect_to_report(run_id: str, request: Request) -> RedirectResponse:
     """Redirect ``/report/{run_id}`` to the static HTML report artifact.
 
     Returns 302 so browsers and curl follow the redirect automatically.
     The target URL is same-origin (``/artifacts/...``) so the report's
     embedded ``fetch()`` calls to ``/api/runs/{run_id}/report-drafts``
-    work without CORS plumbing.
+    work without CORS plumbing. Any query string is forwarded (e.g.
+    ``/report/{run_id}?tab=lesson-edits``) so callers can deep-link to a
+    report tab without hand-building the per-run artifact path (KNOW-2355).
     """
     target = f"/artifacts/{run_id}/report-{run_id}.html"
+    if request.url.query:
+        target += f"?{request.url.query}"
     return RedirectResponse(url=target, status_code=302)

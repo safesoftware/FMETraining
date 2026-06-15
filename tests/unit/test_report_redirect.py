@@ -38,6 +38,16 @@ class TestReportRedirectRoute:
             f"Expected /artifacts/{run_id}/report-{run_id}.html, got {location!r}"
         )
 
+    def test_redirect_preserves_query_string(self, report_client: TestClient):
+        """A query string (e.g. ?tab=lesson-edits) is forwarded to the target (KNOW-2355)."""
+        run_id = "20260610T120000-abcd"
+        resp = report_client.get(f"/report/{run_id}?tab=lesson-edits")
+        assert resp.status_code == 302
+        location = resp.headers.get("location", "")
+        assert location == (
+            f"/artifacts/{run_id}/report-{run_id}.html?tab=lesson-edits"
+        ), location
+
     def test_redirect_with_different_run_id(self, report_client: TestClient):
         """Different run IDs produce different redirect targets."""
         run_id = "20260101T000000-beef"

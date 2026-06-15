@@ -324,9 +324,9 @@ async def drafts_page(
                     "lesson_dir": lesson.lesson_dir,
                     "status": lesson.status,
                     "open_url": (
-                        "/artifacts/report-"
+                        "/report/"
                         + quote(r.run_id, safe="")
-                        + ".html?tab=lesson-edits"
+                        + "?tab=lesson-edits"
                     ),
                     "saved_to_version_path": lesson.saved_to_version_path,
                     "updated_at": lesson.updated_at,

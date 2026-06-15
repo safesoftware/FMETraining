@@ -86,8 +86,11 @@ async def test_drafts_page_lists_seeded_run(
     # Status badges
     assert "in progress" in body
     assert "saved" in body
-    # Open link points at the artifacts mount
-    assert "/artifacts/report-run-z.html?tab=lesson-edits" in body
+    # Open link uses the canonical /report/{id} redirect, which carries the
+    # tab query through to the per-run artifact path (KNOW-2355). The old flat
+    # /artifacts/report-{id}.html link 404'd (missing the per-run subdir).
+    assert "/report/run-z?tab=lesson-edits" in body
+    assert "/artifacts/report-run-z.html" not in body
 
 
 async def test_nav_includes_drafts_link(
