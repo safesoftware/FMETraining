@@ -87,6 +87,22 @@ Whenever you transition an issue to **Ready for QA** — whether the work is com
 
 This rule is non-negotiable. A "Ready for QA" issue without these four elements is incomplete and will be sent back.
 
+### QA division — the agent runs terminal QA; humans do interaction tests
+
+When QA'ing a "Ready for QA" issue or PR, **the agent runs all deterministic, local, terminal-based verification itself and records the actual output on the ticket** — a human should never re-run a command the agent already ran. Split every ticket's verification into three buckets:
+
+- **✅ agent-verified** — deterministic local checks (pytest, ruff, `make smoke`, a documented `curl`/`grep` with a fixed expected result). Run them and paste the **real output** (never "looks good"), then:
+  - **Close it yourself** when QA is *entirely* mechanical / zero-judgment — lint, flaky-test, unit-test-only, infra guards like `make smoke`. Close path: `Ready for QA → In QA (231 from "In Review"/transition `291`) → Closed`; transition ids are state-dependent, so fetch them with `getTransitionsForJiraIssue` rather than assuming.
+  - If the ticket has **any** functional / output-quality / UX dimension, verify the terminal parts + attach evidence, then **leave it Ready for QA** with a one-line "👤 left for you" step — do **not** self-close.
+- **👤 human** — browser / UX / visual / interaction / judgment checks. Leave these for the human, clearly listed, with the agent's terminal evidence already attached so they never redo it.
+- **🔒 box-only** — anything that must run on the prod EC2 box stays the human's until the agent has SSM access (KNOW-2330 / KNOW-2309).
+
+**Guardrails (non-negotiable):**
+- **Evidence, never assertion** — paste actual command output, per `verification-before-completion`.
+- **Green ≠ done** — verify against the ticket's *acceptance criteria*, and explicitly call out when a passing command only proves a slice (e.g. "endpoint returns 200" ≠ "the output is correct").
+- **Flag circular checks** — when a test was authored alongside the fix it verifies, say so; the useful human check is a *read* of the test, not a re-run.
+- **Confirm before costly/destructive QA** — a paid OpenAI run or a shared-state mutation gets a heads-up first, not silent execution.
+
 ### MCP tool reference
 
 - `mcp__claude_ai_Atlassian__createJiraIssue` — file a new issue.
