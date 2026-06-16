@@ -48,7 +48,7 @@ migrate: ## Run alembic migrations against the local postgres.
 	$(COMPOSE) run --rm app alembic upgrade head
 
 test: ## Run pytest inside the app container.
-	$(COMPOSE) run --rm app pytest
+	$(COMPOSE) run --rm -e CONTENT_SOURCE=local app pytest
 
 # RUFF_CACHE_DIR points at a writable tmp path: the non-root app user can't
 # write the default /app/.ruff_cache (WORKDIR is owned by appuser but the
@@ -69,7 +69,7 @@ format: ## Run ruff format inside the app container.
 # Catches the KNOW-2352 (cache write under /app) and KNOW-2353 (content read
 # against /app) bug classes. CI wiring is deferred to the KNOW-2293 rework.
 smoke: ## Run the hermetic Docker smoke check (as appuser, no OpenAI/DB).
-	$(COMPOSE) run --rm --no-deps -e DATABASE_URL= app python tests/smoke/smoke_check.py
+	$(COMPOSE) run --rm --no-deps -e DATABASE_URL= -e CONTENT_SOURCE=local app python tests/smoke/smoke_check.py
 
 worker: ## Run a one-shot worker (`docker compose run worker-runner`).
 	$(COMPOSE) run --rm worker-runner

@@ -34,6 +34,14 @@ services:
       LESSON_CONTENT_ROOT: /content
       FME_CACHE_DIR: /app/.local-cache
       DRAFTS_ROOT: /app/.local-drafts
+      # KNOW-2364: the local git corpus is gone — source content from the
+      # public S3 mirror for `make up`. (`make test`/`make smoke` pin
+      # CONTENT_SOURCE=local via -e in the Makefile; they use their own
+      # fixtures/tmp.) SAVED_VERSIONS_ROOT points at a writable bind mount so
+      # local Save-to-Version works.
+      CONTENT_SOURCE: s3mirror
+      CONTENT_S3_BASE_URL: https://safeskilljar.s3.us-west-2.amazonaws.com
+      SAVED_VERSIONS_ROOT: /app/.local-drafts
     volumes:
       - .:/content:ro
       - ./artifacts:/app/artifacts
@@ -48,6 +56,9 @@ services:
       LESSON_CONTENT_ROOT: /content
       FME_CACHE_DIR: /app/.local-cache
       DRAFTS_ROOT: /app/.local-drafts
+      CONTENT_SOURCE: s3mirror
+      CONTENT_S3_BASE_URL: https://safeskilljar.s3.us-west-2.amazonaws.com
+      SAVED_VERSIONS_ROOT: /app/.local-drafts
     volumes:
       - ./app:/app/app
       - ./pipeline:/app/pipeline

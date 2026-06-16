@@ -53,24 +53,11 @@ inputs
 .local-drafts
 
 # --- Lesson content trees -------------------------------------------------
-# These are large, version-pinned, and read-only inputs. The Phase 0 web/
-# worker container does not need them baked in — Skilljar is the canonical
-# source per the multi-user web app plan, section 1. Keep them out of the
-# image to keep it small and free of training corpus.
-2021.0
-2021.1
-2022.0
-2022.1
-2023.0
-2023.1
-2023.2
-2024.0
-2024.1
-2024.2
-2025.0
-2025.1
-2026.0
-2026.1
+# The version-folder corpus was removed from the repo in KNOW-2364 — content is
+# now sourced at runtime from the public S3 mirror (CONTENT_SOURCE=s3mirror,
+# pipeline/content_source.py). Nothing to ignore here anymore; a defensive glob
+# keeps any stray local version folder out of the image.
+20[0-9][0-9].[0-9]*/
 
 # --- Tests / IaC owned by other tickets ----------------------------------
 tests
