@@ -8,12 +8,10 @@
 #                       docker compose run --rm worker-runner
 #                   to mimic an ECS run-task locally.
 #   postgres        Postgres 16, durable state for runs, locks, etc.
-#   minio           Local S3 surrogate for artifacts/drafts/cache/images.
-#   minio-init      One-shot mc bucket creator. Exits 0 once buckets exist.
 #   mailhog         SMTP catcher for future email-notification testing.
 #
 # Network is scoped to a private bridge; only the ports we want exposed on
-# the host (app, postgres, minio API + console, mailhog UI) are published.
+# the host (app, postgres, mailhog UI) are published.
 
 name: fme-train
 
@@ -36,20 +34,17 @@ services:
       # Optional real secrets for local SSO testing. When a .env exists at the
       # repo root (real GOOGLE_OAUTH_CLIENT_ID/SECRET, SESSION_SIGNING_KEY) it
       # overrides the .env.compose placeholders. required:false keeps `make up`
-      # working without it. DATABASE_URL / S3 / AWS stay pinned by the
+      # working without it. DATABASE_URL stays pinned by the
       # `environment:` block below regardless of what .env contains.
       - path: .env
         required: false
     environment:
       ENTRYPOINT_MODE: web
       PORT: "8000"
-      # These override any stale values in .env.compose so that names always
-      # match the compose service hostnames.
+      # Pin DATABASE_URL to the compose postgres hostname. AWS_*/S3 are NOT
+      # pinned — real creds (for image rehost on Save) flow from .env, and
+      # nothing in the app uses minio (KNOW-2361 removed the dead surrogate).
       DATABASE_URL: postgresql+asyncpg://fme_train:fme_train@postgres:5432/fme_train
-      S3_ENDPOINT_URL: http://minio:9000
-      AWS_ACCESS_KEY_ID: minioadmin
-      AWS_SECRET_ACCESS_KEY: minioadmin
-      AWS_REGION: us-west-2
     ports:
       - "8000:8000"
     volumes:
@@ -74,8 +69,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      minio-init:
-        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8000/health"]
       interval: 15s
@@ -95,15 +88,9 @@ services:
     environment:
       ENTRYPOINT_MODE: worker
       DATABASE_URL: postgresql+asyncpg://fme_train:fme_train@postgres:5432/fme_train
-      S3_ENDPOINT_URL: http://minio:9000
-      AWS_ACCESS_KEY_ID: minioadmin
-      AWS_SECRET_ACCESS_KEY: minioadmin
-      AWS_REGION: us-west-2
     depends_on:
       postgres:
         condition: service_healthy
-      minio-init:
-        condition: service_completed_successfully
     networks: [fme-train]
 
   # ---------------------------------------------------------------- postgres
@@ -130,51 +117,6 @@ services:
       start_period: 5s
     networks: [fme-train]
 
-  # ------------------------------------------------------------------- minio
-  minio:
-    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
-    container_name: fme-train-minio
-    restart: unless-stopped
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    ports:
-      # Bind to loopback only — see postgres above for rationale.
-      - "127.0.0.1:9000:9000"   # S3 API
-      - "127.0.0.1:9001:9001"   # web console
-    volumes:
-      - miniodata:/data
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:9000/minio/health/live"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 5s
-    networks: [fme-train]
-
-  # ------------------------------------------------------------- minio-init
-  # One-shot container that creates the buckets the app expects, then exits.
-  # docker compose treats `service_completed_successfully` as a satisfied
-  # dependency, so app/worker-runner won't start until buckets exist.
-  minio-init:
-    image: minio/mc:RELEASE.2024-11-21T17-21-54Z
-    container_name: fme-train-minio-init
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: >
-      /bin/sh -c "
-        set -eu;
-        mc alias set local http://minio:9000 minioadmin minioadmin;
-        for b in fme-train-prod-artifacts fme-train-prod-drafts fme-train-prod-skilljar-content fme-train-prod-cache fme-train-prod-images; do
-          mc mb --ignore-existing local/$$b;
-        done;
-        mc anonymous set download local/fme-train-prod-images || true;
-        echo 'minio-init: buckets ready';
-      "
-    networks: [fme-train]
-
   # ----------------------------------------------------------------- mailhog
   # Optional SMTP catcher — kept out of the default startup path via a
   # profile so simple `docker compose up` doesn't pull an extra image. Run
@@ -199,7 +141,6 @@ services:
 
 volumes:
   pgdata:
-  miniodata:
 
 networks:
   fme-train:
