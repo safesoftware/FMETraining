@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block title %}Release — FME Training Automation{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>Release</h2>
+    <p>
+      Push updated lessons to Skilljar for a target version. Check what's
+      saved, preview the plan, then execute (dry-run first). Errors are read
+      from the response <code>detail</code> field.
+    </p>
+    <p class="release-note" role="note">
+      <strong>After a release, publish the draft manually in Skilljar.</strong>
+      This tool does not manage course publish state or tags.
+    </p>
+  </section>
+
+  <!-- ============================ Version + status ====================== -->
+  <section class="release-block">
+    <h3>1. Target version</h3>
+    <p>
+      <label for="to-version">Version (e.g. <code>2026.1</code>):</label>
+      <input
+        id="to-version"
+        type="text"
+        name="to_version"
+        placeholder="2026.1"
+        list="version-options"
+        autocomplete="off"
+      >
+      <datalist id="version-options"></datalist>
+      <button id="check-status-btn" type="button">Check status</button>
+    </p>
+    <div id="status-result" class="result" aria-live="polite"></div>
+  </section>
+
+  <!-- ============================ Plan preview ========================== -->
+  <section class="release-block">
+    <h3>2. Preview plan</h3>
+    <p>
+      Select lessons below (from the status lists), then preview the
+      courses/lessons that will be released.
+    </p>
+    <div id="lesson-picker" class="lesson-picker"><em>Check status first.</em></div>
+    <p>
+      <button id="preview-plan-btn" type="button">Preview plan</button>
+    </p>
+    <div id="plan-result" class="result" aria-live="polite"></div>
+  </section>
+
+  <!-- ============================ Execute =============================== -->
+  <section class="release-block">
+    <h3>3. Execute release</h3>
+    <p>
+      <label>
+        <input id="dry-run-toggle" type="checkbox" checked>
+        Dry run (log intended actions, mutate nothing)
+      </label>
+    </p>
+    <p>
+      <button id="execute-btn" type="button">Execute</button>
+      <span id="execute-status" class="execute-status"></span>
+    </p>
+    <pre id="execute-log" class="release-log" aria-live="polite"></pre>
+  </section>
+
+  <!-- ============================ Link draft course ==================== -->
+  <section class="release-block">
+    <h3>Link draft course</h3>
+    <p>
+      Match a local draft course folder to an existing Skilljar course and
+      write the mapping.
+    </p>
+    <p>
+      <label for="course-prefix">Course prefix
+        (<code>&lt;version&gt;/&lt;lp&gt;/&lt;course folder&gt;</code>):</label>
+      <input
+        id="course-prefix"
+        type="text"
+        name="course_prefix"
+        placeholder="2026.1/fme-form-basic/Connect To Data 2026.1"
+        autocomplete="off"
+      >
+    </p>
+    <p>
+      <label for="skilljar-course-id">Skilljar course id:</label>
+      <input
+        id="skilljar-course-id"
+        type="text"
+        name="skilljar_course_id"
+        placeholder="abc123"
+        autocomplete="off"
+      >
+      <button id="link-draft-btn" type="button">Link draft course</button>
+    </p>
+    <div id="link-result" class="result" aria-live="polite"></div>
+  </section>
+
+  <script>
+  (function () {
+    "use strict";
+
+    const POLL_INTERVAL_MS = 1500;
+
+    function $(id) { return document.getElementById(id); }
+    function esc(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function setText(el, msg) { el.textContent = msg; }
+    function setError(el, msg) {
+      el.innerHTML = '<p class="error">' + esc(msg) + "</p>";
+    }
+
+    // Read an error message out of a non-OK response. The frozen contract
+    // returns {"detail": ...}; fall back to the status text otherwise.
+    async function detailOf(resp) {
+      try {
+        const data = await resp.json();
+        if (data && data.detail != null) {
+          return typeof data.detail === "string"
+            ? data.detail
+            : JSON.stringify(data.detail);
+        }
+      } catch (e) { /* not JSON */ }
+      return "HTTP " + resp.status + " " + resp.statusText;
+    }
+
+    function versionValue() { return ($("to-version").value || "").trim(); }
+
+    function selectedLessons() {
+      return Array.from(
+        document.querySelectorAll('input[name="lesson-select"]:checked')
+      ).map((c) => c.value);
+    }
+
+    // ----- Populate the version datalist from /api/versions (best effort).
+    async function loadVersions() {
+      try {
+        const resp = await fetch("/api/versions", {
+          headers: { Accept: "application/json" },
+        });
+        if (!resp.ok) return;
+        const versions = await resp.json();
+        if (!Array.isArray(versions)) return;
+        const dl = $("version-options");
+        dl.innerHTML = "";
+        for (const v of versions) {
+          const opt = document.createElement("option");
+          opt.value = v;
+          dl.appendChild(opt);
+        }
+      } catch (e) { /* leave the free-text input */ }
+    }
+
+    // ----- 1. Check status -------------------------------------------------
+    function renderLessonPicker(saved, mapped, direct) {
+      const picker = $("lesson-picker");
+      if (!saved || saved.length === 0) {
+        picker.innerHTML = "<em>No saved lessons for this version.</em>";
+        return;
+      }
+      const mappedSet = new Set(mapped || []);
+      const directSet = new Set(direct || []);
+      const items = saved.map(function (dir) {
+        const id = "ls-" + Math.random().toString(36).slice(2);
+        let tag = "";
+        if (directSet.has(dir)) tag = ' <span class="tag tag-direct">direct</span>';
+        else if (mappedSet.has(dir)) tag = ' <span class="tag tag-mapped">mapped</span>';
+        else tag = ' <span class="tag tag-unmapped">no mapping</span>';
+        return (
+          '<li><label><input type="checkbox" name="lesson-select" value="' +
+          esc(dir) + '" id="' + id + '"> ' + esc(dir) + tag + "</label></li>"
+        );
+      });
+      picker.innerHTML = '<ul class="lesson-list">' + items.join("") + "</ul>";
+    }
+
+    async function checkStatus() {
+      const v = versionValue();
+      const out = $("status-result");
+      if (!v) { setError(out, "Enter a version first."); return; }
+      setText(out, "Checking…");
+      try {
+        const resp = await fetch(
+          "/api/release-status?to_version=" + encodeURIComponent(v),
+          { headers: { Accept: "application/json" } }
+        );
+        if (!resp.ok) { setError(out, await detailOf(resp)); return; }
+        const data = await resp.json();
+        const saved = data.saved || [];
+        const mapped = data.mapped || [];
+        const direct = data.direct || [];
+        out.innerHTML =
+          "<p><strong>Saved:</strong> " + saved.length +
+          " &middot; <strong>Mapped:</strong> " + mapped.length +
+          " &middot; <strong>Direct:</strong> " + direct.length + "</p>";
+        renderLessonPicker(saved, mapped, direct);
+      } catch (e) {
+        setError(out, "Request failed: " + e.message);
+      }
+    }
+
+    // ----- 2. Preview plan -------------------------------------------------
+    function renderPlan(plan) {
+      const out = $("plan-result");
+      const courses = plan.courses || [];
+      const warnings = plan.warnings || [];
+      let html = "";
+      if (warnings.length) {
+        html += '<ul class="warnings">';
+        for (const w of warnings) html += "<li>⚠ " + esc(w) + "</li>";
+        html += "</ul>";
+      }
+      if (!courses.length) {
+        html += "<p><em>No courses in plan.</em></p>";
+        out.innerHTML = html;
+        return;
+      }
+      for (const c of courses) {
+        html +=
+          '<div class="plan-course"><h4>' + esc(c.new_title || c.course_folder) +
+          ' <span class="tag">' + esc(c.action) + "</span></h4>";
+        html += "<p>LP: <code>" + esc(c.lp) + "</code>";
+        if (c.is_draft) html += ' <span class="tag tag-draft">draft</span>';
+        html += "</p><ul>";
+        for (const l of (c.lessons || [])) {
+          const flag = l.has_local_file ? "" : ' <span class="tag tag-unmapped">no local file</span>';
+          const m = l.mapped ? "" : ' <span class="tag tag-unmapped">unmapped</span>';
+          html += "<li>" + esc(l.lesson_name) + flag + m + "</li>";
+        }
+        html += "</ul></div>";
+      }
+      out.innerHTML = html;
+    }
+
+    async function previewPlan() {
+      const v = versionValue();
+      const out = $("plan-result");
+      if (!v) { setError(out, "Enter a version first."); return; }
+      const lessons = selectedLessons();
+      let qs = "to_version=" + encodeURIComponent(v);
+      for (const l of lessons) qs += "&lessons=" + encodeURIComponent(l);
+      setText(out, "Building plan…");
+      try {
+        const resp = await fetch("/api/release-plan?" + qs, {
+          headers: { Accept: "application/json" },
+        });
+        if (!resp.ok) { setError(out, await detailOf(resp)); return; }
+        renderPlan(await resp.json());
+      } catch (e) {
+        setError(out, "Request failed: " + e.message);
+      }
+    }
+
+    // ----- 3. Execute + poll log ------------------------------------------
+    let pollTimer = null;
+
+    function renderLog(lines) {
+      $("execute-log").textContent = (lines || []).join("\n");
+    }
+
+    async function pollLog(actionKey) {
+      try {
+        const resp = await fetch(
+          "/api/release-log?action_key=" + encodeURIComponent(actionKey),
+          { headers: { Accept: "application/json" } }
+        );
+        if (!resp.ok) {
+          setText($("execute-status"), await detailOf(resp));
+          return;
+        }
+        const data = await resp.json();
+        renderLog(data.log);
+        const status = data.status;
+        setText($("execute-status"), "status: " + status);
+        if (status === "done" || status === "error") {
+          if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+          $("execute-btn").disabled = false;
+          return;
+        }
+        pollTimer = setTimeout(function () { pollLog(actionKey); }, POLL_INTERVAL_MS);
+      } catch (e) {
+        setText($("execute-status"), "poll failed: " + e.message);
+        $("execute-btn").disabled = false;
+      }
+    }
+
+    async function execute() {
+      const v = versionValue();
+      const statusEl = $("execute-status");
+      if (!v) { setText(statusEl, "Enter a version first."); return; }
+      const dryRun = $("dry-run-toggle").checked;
+      const body = {
+        to_version: v,
+        lessons: selectedLessons(),
+        dry_run: dryRun,
+      };
+      $("execute-btn").disabled = true;
+      $("execute-log").textContent = "";
+      setText(statusEl, dryRun ? "starting (dry run)…" : "starting…");
+      try {
+        const resp = await fetch("/api/release-execute", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+        if (!resp.ok) {
+          setText(statusEl, await detailOf(resp));
+          $("execute-btn").disabled = false;
+          return;
+        }
+        const data = await resp.json();
+        if (!data.action_key) {
+          setText(statusEl, "No action_key returned.");
+          $("execute-btn").disabled = false;
+          return;
+        }
+        pollLog(data.action_key);
+      } catch (e) {
+        setText(statusEl, "Request failed: " + e.message);
+        $("execute-btn").disabled = false;
+      }
+    }
+
+    // ----- Link draft course ----------------------------------------------
+    function renderLink(data) {
+      const out = $("link-result");
+      const matched = data.matched || [];
+      const ul = data.unmatched_local || [];
+      const us = data.unmatched_skilljar || [];
+      let html = "<p><strong>Matched:</strong> " + matched.length + "</p>";
+      if (matched.length) {
+        html += "<ul>";
+        for (const m of matched) {
+          html += "<li>" + esc(m.title) + " → <code>" +
+            esc(m.skilljar_lesson_id) + "</code></li>";
+        }
+        html += "</ul>";
+      }
+      if (ul.length) {
+        html += "<p><strong>Unmatched local:</strong></p><ul>";
+        for (const x of ul) html += "<li>" + esc(x) + "</li>";
+        html += "</ul>";
+      }
+      if (us.length) {
+        html += "<p><strong>Unmatched Skilljar:</strong></p><ul>";
+        for (const x of us) html += "<li>" + esc(x) + "</li>";
+        html += "</ul>";
+      }
+      out.innerHTML = html;
+    }
+
+    async function linkDraft() {
+      const out = $("link-result");
+      const prefix = ($("course-prefix").value || "").trim();
+      const courseId = ($("skilljar-course-id").value || "").trim();
+      if (!prefix || !courseId) {
+        setError(out, "Both course prefix and Skilljar course id are required.");
+        return;
+      }
+      setText(out, "Linking…");
+      try {
+        const resp = await fetch("/api/link-draft-course", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            course_prefix: prefix,
+            skilljar_course_id: courseId,
+          }),
+        });
+        if (!resp.ok) { setError(out, await detailOf(resp)); return; }
+        renderLink(await resp.json());
+      } catch (e) {
+        setError(out, "Request failed: " + e.message);
+      }
+    }
+
+    // ----- Wire up ---------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+      $("check-status-btn").addEventListener("click", checkStatus);
+      $("preview-plan-btn").addEventListener("click", previewPlan);
+      $("execute-btn").addEventListener("click", execute);
+      $("link-draft-btn").addEventListener("click", linkDraft);
+      loadVersions();
+    });
+  })();
+  </script>
+{% endblock %}

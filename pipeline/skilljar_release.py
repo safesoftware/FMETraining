@@ -414,76 +414,27 @@ def _patch_course(course_id: str, data: dict, api_key: str) -> dict:
     return _request("PATCH", f"/courses/{course_id}", api_key, data)
 
 
-def _get_tags(api_key: str) -> list[dict]:
-    data = _request("GET", "/tags?limit=200", api_key)
-    return data.get("results", [])
+def _find_course_by_title_and_label(title: str, label: str, api_key: str) -> dict | None:
+    """Return the first course whose title == ``title`` and whose labels include
+    ``label``, following pagination; otherwise None.
 
-
-def _create_tag(name: str, api_key: str) -> dict:
-    return _request("POST", "/tags", api_key, {"name": name})
-
-
-def _get_published_courses(domain: str, course_id: str, api_key: str) -> list[dict]:
-    data = _request(
-        "GET",
-        f"/domains/{domain}/published-courses?course__id={course_id}&limit=100",
-        api_key,
-    )
-    return data.get("results", [])
-
-
-def _get_published_course_tags(domain: str, pub_course_id: str, api_key: str) -> list[dict]:
-    data = _request("GET", f"/domains/{domain}/published-courses/{pub_course_id}/tags", api_key)
-    return data.get("results", [])
-
-
-def _add_published_course_tag(domain: str, pub_course_id: str, tag_id: str, api_key: str) -> None:
-    _request(
-        "POST",
-        f"/domains/{domain}/published-courses/{pub_course_id}/tags",
-        api_key,
-        {"tag": {"id": tag_id}},
-    )
-
-
-def _delete_published_course_tag(domain: str, pub_course_id: str, tag_id: str, api_key: str) -> None:
-    _request("DELETE", f"/domains/{domain}/published-courses/{pub_course_id}/tags/{tag_id}", api_key)
-
-
-def _swap_published_course_tags(
-    domain: str,
-    source_course_id: str,
-    *,
-    old_version: str | None,
-    old_tag_id: str | None,
-    new_tag_name: str,
-    new_tag_id: str,
-    api_key: str,
-):
-    """Yield log lines while swapping the version tag on every published course
-    for ``source_course_id`` on ``domain``: remove the old-version tag (if the
-    course carries one) and add the new-version tag.
-
-    KNOW-2322: a published-course tag-association record is shaped
-    ``{"tag": {"id", "name", "slug"}}`` with **no top-level id**, so the old tag
-    is removed by its tag id (``tag_obj["id"]``) — the DELETE endpoint's path
-    param is the tag id — not a non-existent association id.
+    Used by the archive step's idempotency guard so re-running a release does not
+    create duplicate archive courses (KNOW-2321).
     """
-    pub_courses = _get_published_courses(domain, source_course_id, api_key)
-    yield f"  Found {len(pub_courses)} published course record(s)."
-    for pub in pub_courses:
-        pub_id = pub["id"]
-        pub_tags = _get_published_course_tags(domain, pub_id, api_key)
-        if old_version:
-            for pt in pub_tags:
-                tag_obj = pt.get("tag", {})
-                if tag_obj.get("id") == old_tag_id or tag_obj.get("name") == old_version:
-                    tag_id = tag_obj.get("id")
-                    if tag_id:
-                        _delete_published_course_tag(domain, pub_id, tag_id, api_key)
-                        yield f"  Removed tag '{old_version}' from pub course {pub_id}"
-        _add_published_course_tag(domain, pub_id, new_tag_id, api_key)
-        yield f"  Added tag '{new_tag_name}' to pub course {pub_id}"
+    from urllib.parse import urlparse
+    path: str | None = "/courses?limit=100"
+    while path:
+        data = _request("GET", path, api_key)
+        for course in data.get("results", []):
+            if course.get("title") == title and label in (course.get("labels") or []):
+                return course
+        next_url = data.get("next")
+        if next_url:
+            parsed = urlparse(next_url)
+            path = parsed.path + ("?" + parsed.query if parsed.query else "")
+        else:
+            path = None
+    return None
 
 
 def _delete_lesson(lesson_id: str, api_key: str) -> None:
@@ -514,9 +465,15 @@ def execute_release(
       Step 1 — Archive: copy all existing lessons to a new archive course
       Step 2 — Push:    PATCH lesson HTML with new to_version content
       Step 3 — Rename:  PATCH course title + labels
-      Step 4 — Tags:    update published-course tags on the domain
-      Step 5 — Mapping: add new to_version entries to skilljar-mapping.json
+      Step 4 — Mapping: add new to_version entries to skilljar-mapping.json
+
+    ``domain`` is retained for backwards compatibility with a downstream wrapper
+    that still passes it, but is no longer used (KNOW-2322/2323 removed the
+    published-course tag-swap step).
     """
+    # `domain` is intentionally unused (KNOW-2322/2323 removed the tag-swap step);
+    # kept in the signature because a downstream wrapper still passes it.
+    del domain
     to_version = plan["to_version"]
     dry = "[DRY RUN] " if dry_run else ""
 
@@ -538,39 +495,51 @@ def execute_release(
         # Step 1 — Archive (skipped for push_only / draft courses)
         # ------------------------------------------------------------------
         if is_push_only:
-            yield "Step 1/5: Skipping archive (target is an existing draft/linked course)."
+            yield "Step 1/4: Skipping archive (target is an existing draft/linked course)."
         else:
-            yield f"{dry}Step 1/5: Archiving '{archive_title}'…"
+            yield f"{dry}Step 1/4: Archiving '{archive_title}'…"
 
         if not is_push_only:
             if not dry_run:
                 try:
                     source_course = _get_course(source_course_id, api_key)
-                    old_lesson_stubs = _get_lessons_for_course(source_course_id, api_key)
-                    yield f"  {len(old_lesson_stubs)} lesson(s) to copy."
 
-                    existing_labels = source_course.get("labels") or []
-                    archive_labels = list({*existing_labels, "archived"})
-
-                    archive_course_resp = _create_course(archive_title, source_course, api_key)
-                    archive_course_id: str = archive_course_resp["id"]
-                    _patch_course(archive_course_id, {"labels": archive_labels}, api_key)
-                    yield f"  Created archive course id={archive_course_id}"
-
-                    for stub in sorted(old_lesson_stubs, key=lambda ls: ls.get("order", 0)):
-                        detail = _get_lesson(stub["id"], api_key)
-                        new_archived_lesson = _create_lesson(
-                            archive_course_id,
-                            detail.get("title", stub.get("title", "")),
-                            detail.get("type", "HTML"),
-                            detail.get("order", 0),
-                            api_key,
+                    # Idempotency guard (KNOW-2321): if an archive course with this
+                    # title + the "archived" label already exists, reuse it and skip
+                    # re-copying lessons so re-running a release makes no duplicate.
+                    existing_archive = _find_course_by_title_and_label(
+                        archive_title, "archived", api_key
+                    )
+                    if existing_archive is not None:
+                        yield (
+                            f"  Archive already exists id={existing_archive['id']} "
+                            "— skipping (idempotent)."
                         )
-                        html_content = detail.get("content_html", "")
-                        if html_content:
-                            _patch_lesson_html(new_archived_lesson["id"], html_content, api_key)
+                    else:
+                        old_lesson_stubs = _get_lessons_for_course(source_course_id, api_key)
+                        yield f"  {len(old_lesson_stubs)} lesson(s) to copy."
 
-                    yield "  Archive complete."
+                        archive_labels = ["archived"]
+
+                        archive_course_resp = _create_course(archive_title, source_course, api_key)
+                        archive_course_id: str = archive_course_resp["id"]
+                        _patch_course(archive_course_id, {"labels": archive_labels}, api_key)
+                        yield f"  Created archive course id={archive_course_id}"
+
+                        for stub in sorted(old_lesson_stubs, key=lambda ls: ls.get("order", 0)):
+                            detail = _get_lesson(stub["id"], api_key)
+                            new_archived_lesson = _create_lesson(
+                                archive_course_id,
+                                detail.get("title", stub.get("title", "")),
+                                detail.get("type", "HTML"),
+                                detail.get("order", 0),
+                                api_key,
+                            )
+                            html_content = detail.get("content_html", "")
+                            if html_content:
+                                _patch_lesson_html(new_archived_lesson["id"], html_content, api_key)
+
+                        yield "  Archive complete."
                 except RuntimeError as exc:
                     yield f"  ERROR during archive: {exc}"
                     yield "  Aborting this course — no changes made to live lessons."
@@ -581,7 +550,7 @@ def execute_release(
         # ------------------------------------------------------------------
         # Step 2 — Push new content
         # ------------------------------------------------------------------
-        yield f"{dry}Step 2/5: Pushing new {to_version} content…"
+        yield f"{dry}Step 2/4: Pushing new {to_version} content…"
         push_errors: list[str] = []
         new_mapping_entries: dict[str, dict] = {}
 
@@ -654,9 +623,9 @@ def execute_release(
         # Step 3 — Rename course (skipped for drafts — already has correct name)
         # ------------------------------------------------------------------
         if is_push_only:
-            yield "Step 3/5: Skipping rename (draft already has correct title/labels)."
+            yield "Step 3/4: Skipping rename (draft already has correct title/labels)."
         else:
-            yield f"{dry}Step 3/5: Renaming course → '{new_title}', labels={new_labels}…"
+            yield f"{dry}Step 3/4: Renaming course → '{new_title}', labels={new_labels}…"
             if not dry_run:
                 try:
                     _patch_course(source_course_id, {"title": new_title, "labels": new_labels}, api_key)
@@ -667,50 +636,9 @@ def execute_release(
                 yield f"  Would PATCH /v1/courses/{source_course_id} title='{new_title}' labels={new_labels}"
 
         # ------------------------------------------------------------------
-        # Step 4 — Update published-course tags (skipped for drafts — not published)
+        # Step 4 — Update mapping
         # ------------------------------------------------------------------
-        if is_push_only:
-            yield "Step 4/5: Skipping tag update (draft course is not yet published)."
-        elif domain:
-            yield f"{dry}Step 4/5: Updating published-course tags on domain '{domain}'…"
-            old_version_match = _VERSION_SUFFIX_RE.search(course.get("source_course_title", ""))
-            old_version: str | None = old_version_match.group(1) if old_version_match else None
-
-            if not dry_run:
-                try:
-                    all_tags = _get_tags(api_key)
-                    tag_by_name: dict[str, str] = {t["name"]: t["id"] for t in all_tags}
-
-                    new_tag_name = to_version
-                    if new_tag_name not in tag_by_name:
-                        new_tag = _create_tag(new_tag_name, api_key)
-                        tag_by_name[new_tag_name] = new_tag["id"]
-                        yield f"  Created new org tag: '{new_tag_name}'"
-                    new_tag_id = tag_by_name[new_tag_name]
-
-                    yield from _swap_published_course_tags(
-                        domain, source_course_id,
-                        old_version=old_version,
-                        old_tag_id=tag_by_name.get(old_version) if old_version else None,
-                        new_tag_name=new_tag_name,
-                        new_tag_id=new_tag_id,
-                        api_key=api_key,
-                    )
-
-                # A tag-update failure must not abort the release after Steps 1-3
-                # have already archived/pushed/renamed — surface it and move on.
-                except (RuntimeError, KeyError) as exc:
-                    yield f"  ERROR updating tags: {exc}"
-            else:
-                old_v = old_version or "(unknown)"
-                yield f"  Would remove tag '{old_v}' and add tag '{to_version}' on published courses."
-        else:
-            yield "Step 4/5: Skipped — SKILLJAR_DOMAIN not configured."
-
-        # ------------------------------------------------------------------
-        # Step 5 — Update mapping
-        # ------------------------------------------------------------------
-        yield f"{dry}Step 5/5: Updating skilljar-mapping.json…"
+        yield f"{dry}Step 4/4: Updating skilljar-mapping.json…"
         if new_mapping_entries:
             mapping.update(new_mapping_entries)
             if not dry_run:
@@ -773,7 +701,11 @@ def link_draft_course(
     skilljar_lessons = _get_lessons_for_course(skilljar_course_id, api_key)
 
     def _normalise(s: str) -> str:
-        return s.lower().strip()
+        # Local folder names are filesystem-sanitised (e.g. ':' -> '_', '/'
+        # dropped), so the Skilljar title "Exercise: Foo" must match the folder
+        # "Exercise_ Foo". Compare on alphanumerics only — collapse every run of
+        # non-alphanumeric chars to a single space. (KNOW-2358 QA finding)
+        return re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
 
     skilljar_by_title: dict[str, dict] = {_normalise(ls.get("title", "")): ls for ls in skilljar_lessons}
     local_by_normalised: dict[str, str] = {_normalise(f): f for f in local_folders}

@@ -193,10 +193,11 @@ def test_report_autosave_stores_relative_image_paths(tmp_path, monkeypatch):
     assert "? bodyEl.innerHTML : null" not in html  # old raw-innerHTML path gone
 
 
-def test_report_save_to_version_button_disabled(tmp_path, monkeypatch):
-    """'Save to Version Folder' stays disabled until the legacy /api/save-lesson
-    endpoint is ported into the web app (KNOW-2278) — otherwise the button 404s
-    in the deployed app. Stopgap so users aren't given a silent failure."""
+def test_report_save_to_version_button_enabled(tmp_path, monkeypatch):
+    """'Save to Version Folder' is re-enabled now that /api/save-lesson is ported
+    into the FastAPI web app (KNOW-2278 follow-up). The button must be clickable
+    (no ``disabled``) and ``leSave()`` must run the real save path instead of the
+    early-return stopgap that surfaced a "coming soon" message."""
     monkeypatch.setattr(cfg, "APP_BASE_URL", "")
     run_id = "20260101T000000-cccc"
     recs_path, edit_plans_path = _seed(tmp_path, run_id, with_edit_plans=True)
@@ -206,4 +207,16 @@ def test_report_save_to_version_button_disabled(tmp_path, monkeypatch):
     )
     html = out.read_text(encoding="utf-8")
 
-    assert 'id="le-save-btn" disabled' in html
+    # (a) The button is present and NOT disabled.
+    assert 'id="le-save-btn"' in html
+    assert 'id="le-save-btn" disabled' not in html
+
+    # (b) The KNOW-2278 stopgap is gone: no "coming soon" message, no
+    #     no-unreachable eslint pragma, and leSave() falls straight into the
+    #     real save logic that POSTs to /api/save-lesson.
+    assert "isn't available in the web app yet" not in html
+    assert "no-unreachable" not in html
+    leSave_body = html.split("function leSave() {", 1)[1]
+    leSave_head = leSave_body[: leSave_body.index("leGetCleanHtml()")]
+    assert "return;" not in leSave_head, "leSave() still has the early-return stopgap"
+    assert "fetch('/api/save-lesson'" in html

@@ -1,53 +1,18 @@
-"""Unit tests for _upload_and_rewrite_images and _rewrite_images in skilljar_release.py."""
+"""Unit tests for skilljar_release.py: image rewriting, the archive step's
+labels + idempotency guard (KNOW-2321), and the removal of the tag-swap step
+(KNOW-2322/2323)."""
 
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import patch
 
+import pipeline.skilljar_release as skilljar_release
 from pipeline.skilljar_release import (
     _rewrite_images,
-    _swap_published_course_tags,
     _upload_and_rewrite_images,
+    execute_release,
 )
-
-
-class TestSwapPublishedCourseTags:
-    """KNOW-2322: a published-course tag-association record is {"tag": {"id",
-    "name", "slug"}} with NO top-level 'id'. The old-version tag must be
-    removed using the tag id (tag_obj['id']), not a non-existent pt['id']."""
-
-    def test_removes_old_tag_using_tag_id_not_assoc_id(self):
-        pub_courses = [{"id": "pub1"}]
-        pub_tags = [{"tag": {"id": "old-tag-id", "name": "2025.1", "slug": "v2025-1"}}]
-        with patch("pipeline.skilljar_release._get_published_courses", return_value=pub_courses), \
-             patch("pipeline.skilljar_release._get_published_course_tags", return_value=pub_tags), \
-             patch("pipeline.skilljar_release._delete_published_course_tag") as mock_del, \
-             patch("pipeline.skilljar_release._add_published_course_tag") as mock_add:
-            lines = list(_swap_published_course_tags(
-                "academy.safe.com", "src-course",
-                old_version="2025.1", old_tag_id="old-tag-id",
-                new_tag_name="2026.1", new_tag_id="new-tag-id", api_key="k",
-            ))
-        # The delete must use the TAG id from the nested object, not pt['id'].
-        mock_del.assert_called_once_with("academy.safe.com", "pub1", "old-tag-id", "k")
-        mock_add.assert_called_once_with("academy.safe.com", "pub1", "new-tag-id", "k")
-        assert any("Removed tag '2025.1'" in ln for ln in lines)
-        assert any("Added tag '2026.1'" in ln for ln in lines)
-
-    def test_no_matching_old_tag_only_adds_new(self):
-        pub_courses = [{"id": "pub1"}]
-        pub_tags = [{"tag": {"id": "other", "name": "Beginner", "slug": "beginner"}}]
-        with patch("pipeline.skilljar_release._get_published_courses", return_value=pub_courses), \
-             patch("pipeline.skilljar_release._get_published_course_tags", return_value=pub_tags), \
-             patch("pipeline.skilljar_release._delete_published_course_tag") as mock_del, \
-             patch("pipeline.skilljar_release._add_published_course_tag") as mock_add:
-            list(_swap_published_course_tags(
-                "academy.safe.com", "src-course",
-                old_version="2025.1", old_tag_id="old-tag-id",
-                new_tag_name="2026.1", new_tag_id="new-tag-id", api_key="k",
-            ))
-        mock_del.assert_not_called()
-        mock_add.assert_called_once_with("academy.safe.com", "pub1", "new-tag-id", "k")
 
 _S3_ARGS = dict(s3_bucket="test-bucket", s3_key_id="fake-id", s3_secret="fake-secret")
 _S3_KEY = "skilljar-uploads/abc12345-photo.png"
@@ -179,3 +144,178 @@ class TestRewriteImagesSkipsExpiring:
         rewritten, unmatched = _rewrite_images(new, original)
         assert permanent in rewritten
         assert unmatched == []
+
+
+def _release_plan() -> dict:
+    """Minimal single-course 'release' plan with one mapped lesson."""
+    return {
+        "to_version": "2026.1",
+        "warnings": [],
+        "courses": [
+            {
+                "action": "release",
+                "source_course_id": "src-course",
+                "source_course_title": "Connect To Data 2025.0",
+                "archive_title": "Connect To Data 2025.0",
+                "new_title": "Connect To Data 2026.1",
+                "new_labels": ["2026.1"],
+                "lp": "fme-form-basic",
+                "course_canonical": "Connect To Data",
+                "course_folder": "Connect To Data 2026.1",
+                "lessons": [
+                    {
+                        "skilljar_lesson_id": "les-1",
+                        "skilljar_course_id": "src-course",
+                        "lesson_dir": "2026.1/fme-form-basic/Connect To Data 2026.1/Intro",
+                        "lesson_name": "Intro",
+                        "local_path": None,
+                        "has_local_file": False,
+                        "mapped": True,
+                        "is_draft": False,
+                    }
+                ],
+                "is_draft": False,
+            }
+        ],
+    }
+
+
+def _run_release(monkeypatch, tmp_path, *, existing_archive, create_calls):
+    """Drive execute_release once with all network helpers patched.
+
+    ``existing_archive`` is what _find_course_by_title_and_label returns (None ⇒
+    no archive yet). ``create_calls`` is a mutable list that records the title of
+    every _create_course call so callers can assert how many archives were made.
+    """
+    monkeypatch.setattr(
+        skilljar_release, "_get_course",
+        lambda cid, key: {"id": cid, "title": "Connect To Data 2025.0", "labels": ["2025.0"]},
+    )
+    monkeypatch.setattr(
+        skilljar_release, "_find_course_by_title_and_label",
+        lambda title, label, key: existing_archive,
+    )
+    monkeypatch.setattr(
+        skilljar_release, "_get_lessons_for_course",
+        lambda cid, key: [{"id": "old-les-1", "title": "Intro", "order": 0}],
+    )
+    patched_labels: dict = {}
+
+    def _fake_create_course(title, source_course, key):
+        create_calls.append(title)
+        return {"id": "archive-course-id", "title": title}
+
+    def _fake_patch_course(cid, data, key):
+        patched_labels[cid] = data.get("labels")
+        return {"id": cid, **data}
+
+    monkeypatch.setattr(skilljar_release, "_create_course", _fake_create_course)
+    monkeypatch.setattr(skilljar_release, "_patch_course", _fake_patch_course)
+    monkeypatch.setattr(
+        skilljar_release, "_get_lesson",
+        lambda lid, key: {"id": lid, "title": "Intro", "type": "HTML", "order": 0, "content_html": "<p>hi</p>"},
+    )
+    monkeypatch.setattr(
+        skilljar_release, "_create_lesson",
+        lambda cid, title, ltype, order, key: {"id": "new-archived-les"},
+    )
+    monkeypatch.setattr(skilljar_release, "_patch_lesson_html", lambda lid, html, key: None)
+
+    lines = list(execute_release(
+        _release_plan(),
+        api_key="k",
+        domain="academy.safe.com",
+        mapping={},
+        mapping_path=tmp_path / "skilljar-mapping.json",
+        repo_root=tmp_path,
+        dry_run=False,
+    ))
+    return lines, patched_labels
+
+
+class TestArchiveStep:
+    """KNOW-2321: the archive course is labelled exactly ['archived'] and the
+    archive step is idempotent — re-running against an already-archived course
+    creates no duplicate."""
+
+    def test_archive_labelled_exactly_archived(self, monkeypatch, tmp_path):
+        create_calls: list[str] = []
+        _lines, patched_labels = _run_release(
+            monkeypatch, tmp_path, existing_archive=None, create_calls=create_calls,
+        )
+        # Exactly one archive course created, labelled exactly ["archived"].
+        assert create_calls == ["Connect To Data 2025.0"]
+        assert patched_labels["archive-course-id"] == ["archived"]
+
+    def test_idempotent_when_archive_already_exists(self, monkeypatch, tmp_path):
+        create_calls: list[str] = []
+        existing = {"id": "pre-existing-archive", "title": "Connect To Data 2025.0", "labels": ["archived"]}
+        lines, _patched_labels = _run_release(
+            monkeypatch, tmp_path, existing_archive=existing, create_calls=create_calls,
+        )
+        # No archive course created on the second run.
+        assert create_calls == []
+        assert any("Archive already exists" in ln for ln in lines)
+
+
+class TestTagSwapRemoved:
+    """KNOW-2322/2323: the published-course tag-swap step and its helper are gone,
+    and no 'Step N/5' log strings remain (flow is now Step N/4)."""
+
+    def test_swap_helper_no_longer_exposed(self):
+        assert not hasattr(skilljar_release, "_swap_published_course_tags")
+
+    def test_no_step_of_5_strings_in_source(self):
+        import re
+        src = Path(skilljar_release.__file__).read_text(encoding="utf-8")
+        assert not re.search(r"Step .*?/5", src), "stale 'Step N/5' log string in module source"
+
+    def test_no_step_of_5_log_strings(self, monkeypatch, tmp_path):
+        create_calls: list[str] = []
+        lines, _patched_labels = _run_release(
+            monkeypatch, tmp_path, existing_archive=None, create_calls=create_calls,
+        )
+        joined = "\n".join(lines)
+        import re
+        assert not re.search(r"Step .*?/5", joined), joined
+        # Sanity: the renumbered steps are present.
+        assert any("Step 1/4" in ln for ln in lines)
+        assert any("Step 4/4" in ln for ln in lines)
+
+
+class TestLinkDraftCourseTitleMatch:
+    """KNOW-2358 QA: link_draft_course must match filesystem-sanitised local
+    folders to Skilljar lesson titles whose punctuation differs (e.g. a folder
+    ``Exercise_ Foo`` vs the title ``Exercise: Foo``). The matcher normalises on
+    alphanumerics only, so the ``_``/``:`` difference no longer blocks the link."""
+
+    def test_matches_underscore_folder_to_colon_title(self, monkeypatch, tmp_path):
+        prefix = "2026.1/fme-form-advanced/Custom Transformers 2026.1"
+        folder = "Exercise_ Turn a Reusable Workflow into a Custom Transformer"
+        (tmp_path / prefix / folder).mkdir(parents=True)
+
+        monkeypatch.setattr(
+            skilljar_release,
+            "_get_lessons_for_course",
+            lambda course_id, key: [
+                {"id": "les_x",
+                 "title": "Exercise: Turn a Reusable Workflow into a Custom Transformer"},
+                {"id": "les_y", "title": "What Are Custom Transformers?"},
+            ],
+        )
+
+        mapping: dict = {}
+        mapping_path = tmp_path / "skilljar-mapping.json"
+        result = skilljar_release.link_draft_course(
+            prefix, "draft123", "k", mapping, mapping_path, tmp_path,
+        )
+
+        # The ':'-vs-'_' lesson matched despite the punctuation difference.
+        assert len(result["matched"]) == 1, result
+        assert result["matched"][0]["skilljar_lesson_id"] == "les_x"
+        assert result["unmatched_local"] == []
+        # A direct mapping entry was written + persisted for the to_version dir.
+        lesson_dir = f"{prefix}/{folder}"
+        assert mapping[lesson_dir]["skilljar_lesson_id"] == "les_x"
+        assert mapping[lesson_dir]["skilljar_course_id"] == "draft123"
+        assert mapping_path.exists()

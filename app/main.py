@@ -32,10 +32,13 @@ from app.routes import (
     health,
     index,
     lesson_content,
+    release_page,
     report,
     report_drafts,
     runs,
+    save_lesson,
     skilljar,
+    skilljar_release,
     sse,
 )
 from app.services.pipeline_runner import make_step_body
@@ -236,6 +239,11 @@ def create_app() -> FastAPI:
     fastapi_app.include_router(lesson_content.router)
     fastapi_app.include_router(runs.router)
     fastapi_app.include_router(skilljar.router)
+    # release-sprint (feature/publish-in-app): stub routers wired once at the
+    # foundation so the parallel WS agents never contend on main.py.
+    fastapi_app.include_router(save_lesson.router)
+    fastapi_app.include_router(skilljar_release.router)
+    fastapi_app.include_router(release_page.router)
     fastapi_app.include_router(sse.router)
 
     # TODO(future ticket): add CORSMiddleware with explicit `allow_origins`
