@@ -5,10 +5,10 @@ Mirrors ``tests/unit/test_drafts_page.py``: builds the app via
 controls + workflow copy are present on ``GET /release`` and that the nav
 on ``GET /`` now links to ``/release``.
 
-The page itself is a public browser route (the ``AuthMiddleware`` only
-gates ``/api/*``); the data it calls lives behind the frozen
-``/api/release-*`` contract. We authenticate anyway so the test exercises
-the same ``create_app() + authenticate`` path the contract endpoints use.
+The page is gated by the default-deny ``AuthMiddleware`` (KNOW-2366); the
+data it calls lives behind the frozen ``/api/release-*`` contract. The
+fixture authenticates a seeded user and points the middleware's lookup at
+the test DB so ``GET /release`` is reachable.
 """
 
 from __future__ import annotations
@@ -30,8 +30,7 @@ async def client(
     async_session_factory, seeded_user, authenticate, monkeypatch
 ) -> AsyncIterator[TestClient]:
     # Point the auth middleware's session lookup at the test DB so the
-    # seeded user authenticates (the page is public, but this keeps the
-    # fixture identical to the contract-endpoint integration tests).
+    # seeded user authenticates -- the page is gated, so this is required.
     monkeypatch.setattr(
         "app.main._get_or_create_session_factory",
         lambda: async_session_factory,

@@ -1,4 +1,11 @@
-"""Drafts page render test. KNOW-2277."""
+"""Drafts page render test. KNOW-2277.
+
+The /drafts page is gated by the default-deny AuthMiddleware (KNOW-2366), so
+the fixture authenticates a seeded user (mirroring the contract-endpoint
+integration tests) before driving the page. It points the middleware's user
+lookup and the route's ``get_session`` at the same test engine so the auth
+hydration and the page data share one DB.
+"""
 
 from __future__ import annotations
 
@@ -6,11 +13,12 @@ from typing import AsyncIterator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.config import reset_settings
 from app.db.session import get_session
 from app.main import create_app
-from app.models import Base, Run
+from app.models import Run
 from app.services import report_drafts as svc
 
 
@@ -18,16 +26,16 @@ pytestmark = pytest.mark.asyncio
 
 
 @pytest.fixture
-async def app_and_factory() -> AsyncIterator[
-    tuple[TestClient, async_sessionmaker[AsyncSession]]
-]:
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    factory = async_sessionmaker(engine, expire_on_commit=False)
+async def app_and_factory(
+    async_session_factory, seeded_user, authenticate, monkeypatch
+) -> AsyncIterator[tuple[TestClient, async_sessionmaker[AsyncSession]]]:
+    monkeypatch.setattr(
+        "app.main._get_or_create_session_factory",
+        lambda: async_session_factory,
+    )
 
     async def _override_get_session() -> AsyncIterator[AsyncSession]:
-        session = factory()
+        session = async_session_factory()
         try:
             yield session
             await session.commit()
@@ -37,13 +45,15 @@ async def app_and_factory() -> AsyncIterator[
         finally:
             await session.close()
 
-    app = create_app()
-    app.dependency_overrides[get_session] = _override_get_session
+    reset_settings()
     try:
+        app = create_app()
+        app.dependency_overrides[get_session] = _override_get_session
         with TestClient(app) as client:
-            yield client, factory
+            authenticate(client, seeded_user.id)
+            yield client, async_session_factory
     finally:
-        await engine.dispose()
+        reset_settings()
 
 
 async def test_drafts_page_empty_state(

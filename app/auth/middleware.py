@@ -31,7 +31,7 @@ import logging
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, RedirectResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.auth.dependencies import SESSION_USER_EPOCH, SESSION_USER_ID
@@ -50,16 +50,32 @@ class AuthMiddleware:
     the outermost) so that ``scope["session"]`` is populated before this
     middleware runs.
 
-    After hydration it also *gates* the JSON API: an unauthenticated request
-    to a path under ``/api/`` is rejected with 401 before it reaches the
-    route (KNOW-2259 acceptance). Browser pages (``/``, ``/auth/*``) and
-    infra endpoints (``/health``, ``/static``, ``/artifacts``) stay public.
-    Routes may still add ``Depends(require_user)`` for the user object; this
-    is the blanket backstop.
+    After hydration it *gates the whole app default-deny*: an unauthenticated
+    request to any non-public path is rejected before it reaches the route.
+    Only a tiny explicit allowlist stays public -- the landing page (``/``),
+    the sign-in flow (``/auth/*``), vendored assets (``/static/*``), and infra
+    probes (``/health``, ``/_ping``). Everything else -- including the report
+    HTML (``/artifacts/*``), lesson images (``/lesson-content/*``), and the
+    ``/drafts`` / ``/release`` pages -- requires a signed-in user.
+
+    Rejection shape depends on the path: ``/api/*`` gets a 401 JSON (so
+    ``fetch()`` callers see a clean error); any other path gets a 302 redirect
+    to the landing page, so a human following a deep link lands on sign-in
+    rather than a raw error. Routes may still add ``Depends(require_user)`` for
+    the user object; this middleware is the blanket backstop.
     """
 
-    # Path prefixes that require an authenticated user.
-    _PROTECTED_PREFIXES = ("/api/",)
+    # Paths reachable WITHOUT authentication. Everything else requires a
+    # signed-in user (default-deny). Keep this list tiny + explicit -- it is
+    # the app's entire unauthenticated surface.
+    #   /, /_ping, /health  landing + infra probes
+    #   /auth/...           the Google sign-in flow itself (can't gate login)
+    #   /static/...         vendored CSS/JS for the landing + login pages
+    # NB: /artifacts (report HTML + AI edit plans) and /lesson-content (lesson
+    # images) are deliberately NOT public -- a signed-in browser sends the
+    # session cookie on those same-origin requests, so they still render.
+    _PUBLIC_EXACT = frozenset({"/", "/_ping", "/health", "/favicon.ico"})
+    _PUBLIC_PREFIXES = ("/auth/", "/static/")
 
     def __init__(
         self,
@@ -85,19 +101,31 @@ class AuthMiddleware:
 
         await self._hydrate(scope)
 
-        # Blanket gate: unauthenticated requests to the JSON API are rejected
-        # with 401 before reaching the route. Fail-closed -- if hydration
-        # couldn't run (no session/DB), the request is still anonymous and
-        # is rejected.
-        if scope["state"]["user"] is None and scope.get("path", "").startswith(
-            self._PROTECTED_PREFIXES
-        ):
-            await JSONResponse(
-                {"detail": "Authentication required"}, status_code=401
-            )(scope, receive, send)
+        # Default-deny gate: an unauthenticated request to any non-public path
+        # is rejected before it reaches the route. /api/* -> 401 JSON; any
+        # other path -> 302 redirect to the landing page (sign-in). Fail-closed
+        # -- if hydration couldn't run (no session/DB), the request is still
+        # anonymous and is rejected.
+        path = scope.get("path", "")
+        if scope["state"]["user"] is None and not self._is_public(path):
+            if path.startswith("/api/"):
+                response = JSONResponse(
+                    {"detail": "Authentication required"}, status_code=401
+                )
+            else:
+                # Browser navigation to a protected page -> bounce to the
+                # landing page, which offers Google sign-in.
+                response = RedirectResponse("/", status_code=302)
+            await response(scope, receive, send)
             return
 
         await self.app(scope, receive, send)
+
+    def _is_public(self, path: str) -> bool:
+        """True if ``path`` is reachable without authentication."""
+        return path in self._PUBLIC_EXACT or path.startswith(
+            self._PUBLIC_PREFIXES
+        )
 
     async def _hydrate(self, scope: Scope) -> None:
         """Read the session payload and, if valid, attach the user row."""

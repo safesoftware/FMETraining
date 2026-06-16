@@ -2,8 +2,9 @@
 
 The report points <img> at a stable same-origin /lesson-content/... URL; this
 route streams the file from Settings.lesson_content_root (the same root the
-pipeline reads lesson HTML from). It is public — not under /api/ — so images
-load in a browser without an auth round-trip, exactly like /artifacts.
+pipeline reads lesson HTML from). KNOW-2366: it is gated by the default-deny
+AuthMiddleware (lesson content isn't public) — a signed-in browser sends the
+session cookie on the same-origin <img> request, so images still load.
 """
 from __future__ import annotations
 
@@ -65,9 +66,12 @@ def test_missing_image_returns_404(content_client):
     assert resp.status_code == 404
 
 
-def test_route_is_public_under_auth_middleware(tmp_path, monkeypatch):
-    """AuthMiddleware gates only /api/* — /lesson-content/ must stay public so
-    report images load without a session."""
+def test_route_is_gated_under_auth_middleware(tmp_path, monkeypatch):
+    """KNOW-2366: /lesson-content/ is NOT public — it carries lesson content,
+    so the default-deny AuthMiddleware 302-redirects an anonymous request to
+    the sign-in page. (A signed-in browser sends the session cookie on the
+    same-origin <img> request, so images still load for authenticated users.)
+    """
     monkeypatch.setenv("LESSON_CONTENT_ROOT", str(tmp_path))
     reset_settings()
     rel = "2025.1/lp/c/l/images/a.png"
@@ -76,8 +80,10 @@ def test_route_is_public_under_auth_middleware(tmp_path, monkeypatch):
     app.add_middleware(AuthMiddleware, session_factory=None)
     app.include_router(router)
     try:
-        resp = TestClient(app).get("/lesson-content/" + rel)
-        assert resp.status_code == 200
-        assert resp.content == b"Z"
+        resp = TestClient(app, follow_redirects=False).get(
+            "/lesson-content/" + rel
+        )
+        assert resp.status_code == 302
+        assert resp.headers["location"] == "/"
     finally:
         reset_settings()
