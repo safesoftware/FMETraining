@@ -28,6 +28,11 @@ def parse_lesson_html(html_path: Path) -> dict:
     """
     Parse a single lesson index.html file and return extracted fields.
 
+    Thin filesystem wrapper around :func:`parse_lesson_html_from_str`; kept for
+    call sites that already hold a path. Content-source-backed callers (which may
+    read from the S3 mirror) should fetch the HTML string and call
+    :func:`parse_lesson_html_from_str` directly.
+
     Returns:
         {
             "headings": [...],
@@ -39,8 +44,19 @@ def parse_lesson_html(html_path: Path) -> dict:
     """
     with open(html_path, encoding="utf-8", errors="replace") as f:
         content = f.read()
+    return parse_lesson_html_from_str(content)
 
-    soup = BeautifulSoup(content, "lxml")
+
+def parse_lesson_html_from_str(html: str) -> dict:
+    """
+    Parse lesson index.html *content* (already read into a string) and return
+    extracted fields.
+
+    Identical parsing to :func:`parse_lesson_html`; this variant lets callers
+    that obtain HTML from a non-filesystem source (e.g. the S3 content mirror)
+    parse without a disk read.
+    """
+    soup = BeautifulSoup(html, "lxml")
 
     headings = _extract_headings(soup)
     exercise_steps = _extract_exercise_steps(headings)

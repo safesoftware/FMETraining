@@ -44,9 +44,12 @@ class SaveLessonRequest(BaseModel):
 
 @router.post("/api/save-lesson")
 def save_lesson(body: SaveLessonRequest):
-    """Write accepted lesson edits into ``Settings.lesson_content_root``.
+    """Write accepted lesson edits into ``Settings.saved_versions_root``.
 
-    See module docstring for the frozen response contract.
+    Source lesson HTML/images are read through the config-switched content
+    resolver; the new-version lesson is written to the WRITABLE saved-versions
+    store, never the (read-only under s3mirror) content root. See module
+    docstring for the frozen response contract.
     """
     lesson_dir = body.lesson_dir.strip()
     to_version = body.to_version.strip()
@@ -56,7 +59,7 @@ def save_lesson(body: SaveLessonRequest):
         )
 
     settings = get_settings()
-    content_root = Path(settings.lesson_content_root)
+    saved_versions_root = Path(settings.saved_versions_root)
 
     try:
         target_path = write_lesson(
@@ -64,7 +67,7 @@ def save_lesson(body: SaveLessonRequest):
             to_version,
             body.html_content,
             force=body.force,
-            content_root=content_root,
+            saved_versions_root=saved_versions_root,
             s3_bucket=settings.aws_s3_bucket,
             s3_key_id=settings.aws_access_key_id,
             s3_secret=settings.aws_secret_access_key,

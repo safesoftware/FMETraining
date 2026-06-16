@@ -1,19 +1,21 @@
-"""Write accepted lesson edits into the on-disk version tree.
+"""Write accepted lesson edits into the writable saved-versions store.
 
 Ports the legacy ``serve.py`` "Save to Version" flow
 (``_compute_target_path`` / ``_sanitize_lesson_html`` /
 ``_upload_lesson_images`` / ``_handle_save_lesson``) into the FastAPI app.
 
-The critical seam vs. the legacy implementation: we write under
-``Settings.lesson_content_root`` rather than the repo root. The release
-flow's ``scan_saved_lessons`` and the report's "saved" badge both read
-*that* tree, so the FastAPI port must target the same root the worker and
-report use — not the directory ``serve.py`` happens to live in.
+The critical seam (Wave 2, S3-content publish side): SOURCE lesson HTML +
+images are READ through the config-switched ``pipeline.content_source``
+resolver (local filesystem under ``CONTENT_SOURCE=local``, the public S3
+mirror under ``s3mirror``), and the new-version lesson is WRITTEN under
+``Settings.saved_versions_root`` — the writable store — NOT under the (now
+read-only under s3mirror) ``lesson_content_root``. The saved ``index.html`` is
+self-contained: every ``<img src>`` is rehosted to permanent S3 URLs, so there
+is no relative ``images/`` dir alongside it (and nothing to byte-copy).
 """
 from __future__ import annotations
 
 import re
-import shutil
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -50,6 +52,23 @@ def compute_target_path(lesson_dir: str, to_version: str) -> Path:
     course_canonical = _COURSE_VERSION_SUFFIX.sub("", course_folder).strip()
     new_course_folder = f"{course_canonical} {to_version}"
     return Path(to_version) / learning_path / new_course_folder / lesson_folder
+
+
+def saved_lesson_index_path(saved_versions_root: Path, lesson_dir: str, to_version: str) -> Path:
+    """Absolute ``index.html`` path of a saved lesson in the WRITABLE store.
+
+    CONTRACT (P3, Wave 2): the single source of truth for where Save writes and
+    where the release reads a saved-to-version lesson. Joins
+    :func:`compute_target_path` (the ``{to_version}/{lp}/{course} {to_version}/
+    {lesson}`` relative dir) onto ``saved_versions_root`` and appends
+    ``index.html``. ``saved_versions_root`` is ``Settings.saved_versions_root``
+    (app) / ``config.SAVED_VERSIONS_ROOT`` (pipeline) — NEVER the (read-only
+    under s3mirror) content root.
+
+    IMPL (fan-out): wire the body — ``return Path(saved_versions_root) /
+    compute_target_path(lesson_dir, to_version) / "index.html"``.
+    """
+    return Path(saved_versions_root) / compute_target_path(lesson_dir, to_version) / "index.html"
 
 
 def sanitize_lesson_html(html: str) -> str:
@@ -95,7 +114,6 @@ def _upload_lesson_images(
     html: str,
     lesson_dir: str,
     *,
-    content_root: Path,
     s3_bucket,
     s3_key_id,
     s3_secret,
@@ -105,11 +123,15 @@ def _upload_lesson_images(
 
     No-op when the HTML contains nothing that needs uploading. Raises
     ``RuntimeError`` if uploads are needed but credentials are missing, the
-    local file is missing, or any upload fails — the caller surfaces this as
+    source image is missing, or any upload fails — the caller surfaces this as
     a 500/503. Ported from ``serve.py:_upload_lesson_images``, but with S3
     credentials threaded from app ``Settings`` rather than ``pipeline.config``
     globals (so the app's ``aws_s3_region`` default of ``us-west-2`` is what
     we honor here — NOT pipeline's ``us-east-1``).
+
+    SOURCE images are read by ``upload_lesson_images`` through the config-
+    switched ``pipeline.content_source`` resolver (no filesystem ``repo_root``
+    is threaded — the resolver owns SOURCE location).
     """
     needs_upload = (
         "data:image/" in html
@@ -126,10 +148,6 @@ def _upload_lesson_images(
     rewritten, _log = upload_lesson_images(
         html,
         lesson_dir=lesson_dir,
-        # The legacy code passes REPO_ROOT here so relative/expiring images
-        # resolve under <root>/<lesson_dir>/images. We pass the content root
-        # instead, which is where the source lesson tree actually lives.
-        repo_root=content_root,
         s3_bucket=s3_bucket,
         s3_key_id=s3_key_id,
         s3_secret=s3_secret,
@@ -144,13 +162,24 @@ def write_lesson(
     html: str,
     *,
     force: bool,
-    content_root: Path,
+    saved_versions_root: Path,
     s3_bucket,
     s3_key_id,
     s3_secret,
     s3_region,
 ) -> str:
-    """Write sanitized lesson HTML into the version tree under ``content_root``.
+    """Write a self-contained saved lesson under ``saved_versions_root``.
+
+    SOURCE images referenced by ``html`` are read through the config-switched
+    ``pipeline.content_source`` resolver (local filesystem under
+    ``CONTENT_SOURCE=local``; the public S3 mirror under ``s3mirror``) and
+    rehosted to permanent S3 URLs, so the written ``index.html`` is
+    self-contained — there is NO relative ``images/`` dir alongside it, and we
+    do NOT byte-copy a source images dir (under s3mirror none exists locally).
+
+    The write target is ``saved_lesson_index_path(saved_versions_root,
+    lesson_dir, to_version)`` — the WRITABLE saved-versions store — NEVER the
+    (read-only under s3mirror) content root.
 
     Returns the relative ``<target_dir>/index.html`` path string
     (forward-slashed), suitable for the API ``target_path`` field and for the
@@ -166,7 +195,7 @@ def write_lesson(
     Ported from ``serve.py:_handle_save_lesson``.
     """
     target_dir = compute_target_path(lesson_dir, to_version)
-    target_file = content_root / target_dir / "index.html"
+    target_file = saved_lesson_index_path(saved_versions_root, lesson_dir, to_version)
     target_path_str = str(target_dir / "index.html").replace("\\", "/")
 
     if target_file.exists() and not force:
@@ -176,12 +205,12 @@ def write_lesson(
         exc.filename = target_path_str
         raise exc
 
-    # Upload images BEFORE writing anything so a failed upload leaves no
-    # partially-written target on disk (matches serve.py ordering).
+    # Rehost images BEFORE writing anything so a failed upload leaves no
+    # partially-written target on disk (matches serve.py ordering). Source
+    # images are read via the resolver inside upload_lesson_images.
     html = _upload_lesson_images(
         html,
         lesson_dir,
-        content_root=content_root,
         s3_bucket=s3_bucket,
         s3_key_id=s3_key_id,
         s3_secret=s3_secret,
@@ -190,20 +219,5 @@ def write_lesson(
 
     target_file.parent.mkdir(parents=True, exist_ok=True)
     target_file.write_text(sanitize_lesson_html(html), encoding="utf-8")
-
-    source_images = content_root / lesson_dir / "images"
-    if source_images.is_dir():
-        target_images = content_root / target_dir / "images"
-        # Copy image BYTES only, not metadata. shutil.copytree defaults to
-        # copy2, whose copystat() (timestamps/permissions/xattrs) raises
-        # EPERM ("Operation not permitted") on bind-mounted / non-owner
-        # filesystems — Docker volumes, WSL2 mounts, and the prod /content
-        # mount all hit this. The lesson only needs the image bytes, so we
-        # walk + shutil.copyfile (data only, no copystat) instead.
-        for src_img in source_images.rglob("*"):
-            if src_img.is_file():
-                dst_img = target_images / src_img.relative_to(source_images)
-                dst_img.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(src_img, dst_img)
 
     return target_path_str

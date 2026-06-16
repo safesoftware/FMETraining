@@ -1,7 +1,15 @@
 """Unit tests for pipeline/lesson_image_upload.py.
 
 Covers extract_and_upload_data_uris (data: URI pass) and upload_lesson_images
-(orchestrator that also handles relative paths and expiring pre-signed URLs).
+(orchestrator that also handles relative paths, expiring pre-signed URLs, and
+absolute app-origin URLs).
+
+SOURCE images are read through the config-switched ``pipeline.content_source``
+resolver (not the filesystem). The tests inject a ``LocalFolderSource`` rooted
+at a tmp dir via the ``content_source=`` parameter so they stay hermetic while
+exercising the real resolver path; all three source-reading passes now upload
+via ``lesson_image_upload._s3_put`` (Pass 2 no longer delegates to
+``skilljar_release``).
 """
 
 from __future__ import annotations
@@ -12,6 +20,7 @@ from unittest.mock import patch
 
 import pytest
 
+from pipeline.content_source import LocalFolderSource
 from pipeline.lesson_image_upload import (
     extract_and_upload_data_uris,
     upload_lesson_images,
@@ -143,31 +152,45 @@ class TestExtractAndUploadDataUris:
 
 class TestUploadLessonImages:
     def _setup_lesson(self, tmp_path):
-        """Create a fake repo with a lesson dir and images/ folder."""
+        """Create a fake corpus with a lesson dir + images/ folder, and a
+        LocalFolderSource rooted at it (the SOURCE resolver the passes read
+        through). Returns (lesson_dir, images_dir, source)."""
         lesson_dir = "ver/lp/course/lesson"
         images_dir = tmp_path / lesson_dir / "images"
         images_dir.mkdir(parents=True)
-        return lesson_dir, images_dir
+        source = LocalFolderSource(tmp_path)
+        return lesson_dir, images_dir, source
 
-    def test_relative_path_uploaded_from_local_images_folder(self, tmp_path):
-        lesson_dir, images_dir = self._setup_lesson(tmp_path)
+    def test_relative_path_uploaded_from_source_images_folder(self, tmp_path):
+        lesson_dir, images_dir, source = self._setup_lesson(tmp_path)
         (images_dir / "foo.png").write_bytes(b"\x89PNG fake")
         html = '<p><img src="images/foo.png" alt="x"></p>'
         s3_url = "https://s3.us-east-1.amazonaws.com/test-bucket/skilljar-uploads/foo.png"
 
-        with patch("pipeline.skilljar_release._s3_put",
+        with patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(s3_url, "skilljar-uploads/foo.png")) as mock_put:
             result_html, log = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
 
         assert s3_url in result_html
         assert 'src="images/foo.png"' not in result_html
         mock_put.assert_called_once()
+        # _s3_put receives a temp file named after the source image.
+        assert Path(mock_put.call_args.args[0]).name == "foo.png"
         assert any(e.get("source") == "relative" for e in log)
 
-    def test_expiring_everpath_url_replaced_via_local_file_match(self, tmp_path):
-        lesson_dir, images_dir = self._setup_lesson(tmp_path)
+    def test_relative_path_missing_source_raises(self, tmp_path):
+        lesson_dir, _, source = self._setup_lesson(tmp_path)
+        html = '<p><img src="images/missing.png"></p>'
+        with patch("pipeline.lesson_image_upload._s3_put"):
+            with pytest.raises(RuntimeError, match="missing.png"):
+                upload_lesson_images(
+                    html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
+                )
+
+    def test_expiring_everpath_url_replaced_via_source_file_match(self, tmp_path):
+        lesson_dir, images_dir, source = self._setup_lesson(tmp_path)
         (images_dir / "abc-foo.png").write_bytes(b"\x89PNG fake")
         html = f'<p><img src="{_EXPIRING_URL}"></p>'
         s3_url = "https://s3.us-east-1.amazonaws.com/test-bucket/skilljar-uploads/abc-foo.png"
@@ -175,7 +198,7 @@ class TestUploadLessonImages:
         with patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(s3_url, "skilljar-uploads/abc-foo.png")):
             result_html, log = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
 
         assert _EXPIRING_URL not in result_html
@@ -183,7 +206,7 @@ class TestUploadLessonImages:
         assert any(e.get("source") == "expiring_url" for e in log)
 
     def test_expiring_url_html_encoded_ampersands_replaced(self, tmp_path):
-        lesson_dir, images_dir = self._setup_lesson(tmp_path)
+        lesson_dir, images_dir, source = self._setup_lesson(tmp_path)
         (images_dir / "abc-foo.png").write_bytes(b"\x89PNG fake")
         html = (
             '<p><img src="https://everpath-course-content.s3.amazonaws.com/x/'
@@ -193,36 +216,34 @@ class TestUploadLessonImages:
         with patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(s3_url, "skilljar-uploads/abc-foo.png")):
             result_html, _ = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
         assert "everpath-course-content" not in result_html
         assert s3_url in result_html
 
-    def test_expiring_url_no_local_match_raises_with_filename(self, tmp_path):
-        lesson_dir, _ = self._setup_lesson(tmp_path)
+    def test_expiring_url_no_source_match_raises_with_filename(self, tmp_path):
+        lesson_dir, _, source = self._setup_lesson(tmp_path)
         html = f'<p><img src="{_EXPIRING_URL}"></p>'
         with pytest.raises(RuntimeError, match="abc-foo.png"):
             upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
 
     def test_permanent_s3_url_left_alone(self, tmp_path):
-        lesson_dir, _ = self._setup_lesson(tmp_path)
+        lesson_dir, _, source = self._setup_lesson(tmp_path)
         permanent = "https://s3.us-east-1.amazonaws.com/FMETraining/skilljar-uploads/abc-x.png"
         html = f'<p><img src="{permanent}"></p>'
-        with patch("pipeline.lesson_image_upload._s3_put") as mock_put, \
-             patch("pipeline.skilljar_release._s3_put") as mock_put_release:
+        with patch("pipeline.lesson_image_upload._s3_put") as mock_put:
             result_html, log = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
         assert result_html == html
         assert log == []
         mock_put.assert_not_called()
-        mock_put_release.assert_not_called()
 
     def test_mixed_passes_run_in_order(self, tmp_path):
-        """Cover all three passes in one HTML document."""
-        lesson_dir, images_dir = self._setup_lesson(tmp_path)
+        """Cover all three source passes in one HTML document."""
+        lesson_dir, images_dir, source = self._setup_lesson(tmp_path)
         (images_dir / "rel.png").write_bytes(b"\x89PNG fake-rel")
         (images_dir / "abc-foo.png").write_bytes(b"\x89PNG fake-exp")
         html = (
@@ -232,8 +253,8 @@ class TestUploadLessonImages:
             f'<p><img src="https://s3.us-east-1.amazonaws.com/Other/keep.png"></p>'
         )
 
-        # All three passes call _s3_put — pass 1 in lesson_image_upload, pass 2
-        # via skilljar_release, pass 3 in lesson_image_upload again.
+        # All passes call lesson_image_upload._s3_put now (Pass 2 no longer
+        # delegates to skilljar_release).
         urls = iter([
             ("https://s3.us-east-1.amazonaws.com/test-bucket/data-uri.png", "k1"),
             ("https://s3.us-east-1.amazonaws.com/test-bucket/rel.png", "k2"),
@@ -242,10 +263,9 @@ class TestUploadLessonImages:
         def fake_put(*a, **kw):
             return next(urls)
 
-        with patch("pipeline.lesson_image_upload._s3_put", side_effect=fake_put), \
-             patch("pipeline.skilljar_release._s3_put", side_effect=fake_put):
+        with patch("pipeline.lesson_image_upload._s3_put", side_effect=fake_put):
             result_html, log = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
 
         assert _PNG_DATA_URI not in result_html
@@ -256,13 +276,13 @@ class TestUploadLessonImages:
         assert any(e.get("source") == "relative" for e in log)
         assert any(e.get("source") == "expiring_url" for e in log)
 
-    def test_absolute_app_origin_url_rehosted_via_local_file_match(self, tmp_path):
+    def test_absolute_app_origin_url_rehosted_via_source_file_match(self, tmp_path):
         """KNOW-2274: a contenteditable edit can serialize a relative
         images/<file> src into an absolute URL against the page origin, e.g.
         http://localhost:8080/<from-version-dir>/images/safe_note.png. Such a
         URL is unreachable for live viewers and must be re-hosted by filename
-        match against the local images/ folder (Pass 4)."""
-        lesson_dir, images_dir = self._setup_lesson(tmp_path)
+        match against the source images/ (Pass 4)."""
+        lesson_dir, images_dir, source = self._setup_lesson(tmp_path)
         (images_dir / "safe_note.png").write_bytes(b"\x89PNG fake-note")
         leaked = (
             "http://localhost:8080/2025.0/fme-form-basic/"
@@ -274,7 +294,7 @@ class TestUploadLessonImages:
         with patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(s3_url, "skilljar-uploads/safe_note.png")) as mock_put:
             result_html, log = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
 
         assert "localhost:8080" not in result_html
@@ -282,27 +302,27 @@ class TestUploadLessonImages:
         mock_put.assert_called_once()
         assert any(e.get("source") == "absolute_url" for e in log)
 
-    def test_absolute_app_origin_url_no_local_match_left_alone(self, tmp_path):
-        """Pass 4 is defensive belt-and-braces: if there's no local file to
+    def test_absolute_app_origin_url_no_source_match_left_alone(self, tmp_path):
+        """Pass 4 is defensive belt-and-braces: if there's no source file to
         re-host, leave the URL untouched (do not raise, unlike the expiring
         pass) — we can't do better and an unrelated external image must survive."""
-        lesson_dir, _ = self._setup_lesson(tmp_path)
+        lesson_dir, _, source = self._setup_lesson(tmp_path)
         leaked = "http://localhost:8080/some/dir/images/not-local.png"
         html = f'<p><img src="{leaked}"></p>'
         with patch("pipeline.lesson_image_upload._s3_put") as mock_put:
             result_html, log = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
         assert result_html == html
         assert log == []
         mock_put.assert_not_called()
 
     def test_no_uploads_needed_returns_html_unchanged(self, tmp_path):
-        lesson_dir, _ = self._setup_lesson(tmp_path)
+        lesson_dir, _, source = self._setup_lesson(tmp_path)
         html = '<p>plain text and <img src="https://example.com/x.png"></p>'
         with patch("pipeline.lesson_image_upload._s3_put") as mock_put:
             result_html, log = upload_lesson_images(
-                html, lesson_dir=lesson_dir, repo_root=tmp_path, **_S3_ARGS,
+                html, lesson_dir=lesson_dir, content_source=source, **_S3_ARGS,
             )
         assert result_html == html
         assert log == []

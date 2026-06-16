@@ -1,12 +1,15 @@
-"""Unit tests for ``app.services.skilljar_release_service`` (WS-B2).
+"""Unit tests for ``app.services.skilljar_release_service`` (WS-B2 / Wave 2).
 
-The service is a thin wrapper around the proven v1 pipeline primitives
+The service is a thin wrapper around the pipeline primitives
 (``pipeline.skilljar_release`` + ``pipeline.skilljar_push.load_mapping``). These
 tests monkeypatch those primitives so the suite runs with **no Docker, no git
-tree, and no network**:
+tree, no DB, and no network**:
 
-* ``scan_saved_lessons`` is git-based — we patch it to return a fixed set rather
-  than rely on a real ``git status`` work tree.
+* ``scan_saved_lessons`` is now a plain filesystem listing of the WRITABLE saved
+  store and takes ``(to_version, saved_root)`` — we patch it to return a fixed
+  set so the test doesn't touch the disk, and assert it is called with the
+  service's ``saved_root`` (``settings.saved_versions_root``), NOT
+  ``lesson_content_root``. No git/subprocess is involved.
 * ``load_mapping`` is patched so ``release_status`` can compute ``mapped`` /
   ``direct`` against a fake mapping.
 * The pipeline ``execute_release`` generator is patched with a fake that yields a
@@ -17,6 +20,14 @@ The service uses **deferred imports** (it imports the pipeline names inside each
 method), so we patch them at their definition modules
 (``pipeline.skilljar_release.<name>`` / ``pipeline.skilljar_push.load_mapping``),
 which is where ``from pipeline.X import Y`` resolves ``Y`` at call time.
+
+Saved store vs content root
+---------------------------
+``_make_settings`` points ``saved_versions_root`` at ``tmp_path`` (the saved
+store the service must use) and ``lesson_content_root`` at a SEPARATE,
+deliberately-wrong sentinel path. Threading assertions check the pipeline
+received ``saved_root == tmp_path`` — proving the service threads the saved
+store and never the (read-only-under-s3mirror) content root.
 """
 from __future__ import annotations
 
@@ -31,16 +42,25 @@ from app.services.skilljar_release_service import (
     SkilljarReleaseService,
 )
 
+# Sentinel content root: distinct from the saved store so any test that
+# accidentally threads ``lesson_content_root`` instead of ``saved_versions_root``
+# fails its ``saved_root == tmp_path`` assertion.
+_WRONG_CONTENT_ROOT = "/nonexistent/content-root-must-not-be-used"
+
 
 def _make_settings(tmp_path) -> Settings:
-    """Construct a Settings instance with a tmp content root + dummy creds.
+    """Construct a Settings instance with a tmp SAVED store + dummy creds.
 
-    ``_env_file=None`` prevents pydantic from reading a real ``.env`` so the
-    test is hermetic regardless of the dev box's environment.
+    ``saved_versions_root`` is ``tmp_path`` (the writable saved store the
+    release service reads/pushes); ``lesson_content_root`` is a sentinel that
+    must never be used for the saved path. ``_env_file=None`` prevents pydantic
+    from reading a real ``.env`` so the test is hermetic regardless of the dev
+    box's environment.
     """
     return Settings(
         _env_file=None,
-        lesson_content_root=str(tmp_path),
+        saved_versions_root=str(tmp_path),
+        lesson_content_root=_WRONG_CONTENT_ROOT,
         skilljar_api_key="test-api-key",
         skilljar_domain="test.skilljar.com",
         aws_s3_bucket="test-bucket",
@@ -84,13 +104,21 @@ def test_release_status_sorts_and_computes_direct(tmp_path, monkeypatch) -> None
         "2026.1/fme-form-basic/Zeta",
     }
 
+    captured: dict = {}
+
     monkeypatch.setattr(
         "pipeline.skilljar_push.load_mapping",
         lambda path: fake_mapping,
     )
+
+    def _fake_scan(tv, saved_root):
+        # New Wave-2 signature: (to_version, saved_root) — a filesystem listing
+        # of the writable saved store. Record args to assert no git/content-root.
+        captured["scan"] = (tv, saved_root)
+        return fake_saved
+
     monkeypatch.setattr(
-        "pipeline.skilljar_release.scan_saved_lessons",
-        lambda tv, repo_root: fake_saved,
+        "pipeline.skilljar_release.scan_saved_lessons", _fake_scan
     )
     monkeypatch.setattr(
         "pipeline.skilljar_release.is_lesson_mapped",
@@ -99,6 +127,12 @@ def test_release_status_sorts_and_computes_direct(tmp_path, monkeypatch) -> None
 
     svc = _make_service(tmp_path)
     result = svc.release_status(to_version)
+
+    # scan_saved_lessons got the saved store (tmp_path), NOT lesson_content_root.
+    scan_tv, scan_root = captured["scan"]
+    assert scan_tv == to_version
+    assert str(scan_root) == str(tmp_path)
+    assert str(scan_root) != _WRONG_CONTENT_ROOT
 
     assert result["saved"] == [
         "2026.1/fme-form-basic/Alpha",

@@ -21,7 +21,15 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from pipeline.edit_suggestions import _call_openai, run_edit_suggestions
+import pipeline.edit_suggestions as edit_suggestions
+from pipeline.content_source import LocalFolderSource
+from pipeline.edit_suggestions import (
+    _build_prompt,
+    _call_openai,
+    _src_to_image_filename,
+    _vision_verify_screenshots,
+    run_edit_suggestions,
+)
 from app.services.run_cost_meter import CostCeilingExceeded, RunCostMeter
 
 
@@ -497,3 +505,150 @@ class TestRunEditSuggestionsMockedOpenAI:
                 f"Jira descriptions must never be written to disk.\n"
                 f"File: {edit_plans_file}"
             )
+
+
+# ---------------------------------------------------------------------------
+# Content-resolver integration (KNOW-2360): HTML + image reads route through
+# pipeline.content_source rather than touching the filesystem directly.
+# ---------------------------------------------------------------------------
+
+
+def _build_lesson_tree(tmp_path, *, html="<p>Hello world.</p>", image_name="shot.png"):
+    """Create version/lp/course/lesson/{index.html, images/<image>} on disk.
+
+    Returns (content_root, lesson_dir) where lesson_dir is the repo-relative
+    POSIX path the resolver / pipeline thread around.
+    """
+    lesson_dir = "2024.2/fme-form-basic/Connect To Data 2024.2/My Lesson"
+    lesson = tmp_path / lesson_dir
+    (lesson / "images").mkdir(parents=True)
+    (lesson / "index.html").write_text(html, encoding="utf-8")
+    if image_name:
+        (lesson / "images" / image_name).write_bytes(b"\x89PNG\r\n\x1a\nFAKE")
+    return tmp_path, lesson_dir
+
+
+class TestSrcToImageFilename:
+    """_src_to_image_filename reduces an <img src> to the bare resolver key."""
+
+    @pytest.mark.parametrize(
+        "src,expected",
+        [
+            ("images/shot.png", "shot.png"),
+            ("shot.png", "shot.png"),
+            ("images/sub/shot.png", "shot.png"),  # nested → leaf name
+            ("images/shot.png?v=2", "shot.png"),  # query string stripped
+            ("images/shot.png#frag", "shot.png"),  # fragment stripped
+        ],
+    )
+    def test_reduces_to_bare_filename(self, src, expected):
+        assert _src_to_image_filename(src) == expected
+
+
+class TestBuildPromptUsesContentSource:
+    """_build_prompt reads lesson HTML through the configured content source."""
+
+    def test_html_loaded_via_resolver(self, monkeypatch, tmp_path):
+        content_root, lesson_dir = _build_lesson_tree(
+            tmp_path, html="<p>UNIQUE-MARKER content.</p>"
+        )
+        source = LocalFolderSource(content_root)
+        monkeypatch.setattr(edit_suggestions, "get_content_source", lambda: source)
+
+        group = [{
+            "issue_key": "FMEFORM-1",
+            "issue_summary": "x",
+            "update_likelihood": "high",
+            "justification": "x",
+            "lesson_dir": lesson_dir,
+            "lesson_name": "My Lesson",
+            "course_canonical": "Connect To Data",
+            "learning_path": "fme-form-basic",
+            "version": "2024.2",
+        }]
+        prompt = _build_prompt(
+            lesson_id="lid", group=group, template="{{LESSON_HTML}}", to_version="2026.1"
+        )
+        assert prompt is not None
+        assert "UNIQUE-MARKER" in prompt
+        # And it was stashed for _call_openai to reuse.
+        assert "UNIQUE-MARKER" in group[0]["_lesson_html"]
+
+
+class TestVisionVerifyUsesContentSource:
+    """_vision_verify_screenshots probes + reads images through the resolver."""
+
+    async def test_reads_image_bytes_via_resolver(self, monkeypatch, tmp_path):
+        content_root, lesson_dir = _build_lesson_tree(tmp_path, image_name="shot.png")
+        source = LocalFolderSource(content_root)
+        monkeypatch.setattr(edit_suggestions, "get_content_source", lambda: source)
+
+        # Spy on the resolver to prove the read goes through it (not raw FS).
+        seen: dict[str, list] = {"exists": [], "read": []}
+        real_exists = source.image_exists
+        real_read = source.read_image_bytes
+
+        def spy_exists(ld, fn):
+            seen["exists"].append((ld, fn))
+            return real_exists(ld, fn)
+
+        def spy_read(ld, fn):
+            seen["read"].append((ld, fn))
+            return real_read(ld, fn)
+
+        monkeypatch.setattr(source, "image_exists", spy_exists)
+        monkeypatch.setattr(source, "read_image_bytes", spy_read)
+
+        lesson_html = '<p><img src="images/shot.png" alt="a screenshot"></p>'
+
+        client = _make_client(
+            json.dumps({
+                "needs_update": True,
+                "relevant_issue_keys": ["FMEFORM-1"],
+                "explanation": "UI changed",
+            })
+        )
+
+        merged = await _vision_verify_screenshots(
+            client,
+            lesson_dir,
+            lesson_html,
+            screenshot_updates=[],
+            group=[{"issue_key": "FMEFORM-1", "issue_summary": "x"}],
+            lesson_id="lid",
+        )
+
+        # The existence probe and byte read both went through the resolver with
+        # the bare filename (images/ prefix stripped).
+        assert (lesson_dir, "shot.png") in seen["exists"]
+        assert (lesson_dir, "shot.png") in seen["read"]
+        # Vision confirmed a new flag.
+        assert any(su["src"] == "images/shot.png" for su in merged)
+
+    async def test_missing_image_is_unverifiable_and_preserved(
+        self, monkeypatch, tmp_path
+    ):
+        # Lesson has HTML referencing an image that does NOT exist in the source.
+        content_root, lesson_dir = _build_lesson_tree(tmp_path, image_name=None)
+        source = LocalFolderSource(content_root)
+        monkeypatch.setattr(edit_suggestions, "get_content_source", lambda: source)
+
+        lesson_html = '<p><img src="images/ghost.png" alt="missing"></p>'
+        client = _make_client(json.dumps({
+            "needs_update": True, "relevant_issue_keys": [], "explanation": "",
+        }))
+
+        # A pre-existing text flag for the missing image must be preserved
+        # unchanged (vision can't verify it), and the API must not be called.
+        text_update = {"src": "images/ghost.png", "explanation": "text flag", "source": "text"}
+        merged = await _vision_verify_screenshots(
+            client,
+            lesson_dir,
+            lesson_html,
+            screenshot_updates=[text_update],
+            group=[{"issue_key": "FMEFORM-1", "issue_summary": "x"}],
+            lesson_id="lid",
+        )
+
+        assert text_update in merged
+        client.chat.completions.create.assert_not_called()

@@ -19,33 +19,36 @@ import json
 import re
 from datetime import datetime, timezone
 from html.parser import HTMLParser
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING
 
 from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm as atqdm
 
 from pipeline import config
+from pipeline.content_source import LessonContentNotFound, get_content_source
 from pipeline.utils import edit_plans_path
 
 if TYPE_CHECKING:
     from app.services.run_cost_meter import RunCostMeter
 
 
-def _resolve_lesson_html_path(lesson_dir: str) -> Path | None:
-    """Resolve a lesson's index.html under the lesson-content root.
+def _src_to_image_filename(src: str) -> str:
+    """Reduce an ``<img src>`` value to the bare image filename for the resolver.
 
-    Lesson content lives under ``config.LESSON_CONTENT_ROOT`` — which equals
-    ``REPO_ROOT`` on the box / CLI, but is the bind-mounted corpus (``/content``)
-    in the container, distinct from the code root (``/app``). Resolving against
-    ``REPO_ROOT`` there finds nothing, so every lesson is skipped and the
-    edit-plan comes back empty (KNOW-2353).
+    The content resolver keys images by their bare filename inside the lesson's
+    ``images/`` dir (``foo.png``), not the ``images/foo.png`` relative ``src``.
+    This strips any directory prefix (the leading ``images/`` and any nested
+    segments) and any ``?query``/``#fragment`` suffix, yielding ``foo.png``.
 
-    Returns the path if it exists, else ``None`` (caller logs + skips).
+    ``read_image_bytes``/``image_exists`` also tolerate a leading ``images/``,
+    but reducing to the bare name here keeps both backends' key shape identical
+    and drops query strings the resolver would otherwise treat as part of the
+    filename.
     """
-    if not lesson_dir:
-        return None
-    return config.LESSON_CONTENT_ROOT / lesson_dir / "index.html"
+    # Drop any query string / fragment first, then take the final path segment.
+    cleaned = src.split("?", 1)[0].split("#", 1)[0]
+    return PurePosixPath(cleaned).name
 
 
 # ---------------------------------------------------------------------------
@@ -186,25 +189,30 @@ def _extract_lesson_images(lesson_html: str) -> list[dict]:
 async def _vision_verify_one(
     client: AsyncOpenAI,
     sem: asyncio.Semaphore,
-    img_path: Path,
+    lesson_dir: str,
+    filename: str,
     src: str,
     issues: list[dict],
     existing_updates: list[dict],
 ) -> dict:
     """Ask the vision model whether a single screenshot is affected by any Jira issue.
 
+    ``filename`` is the bare image name (``foo.png``) under the lesson's
+    ``images/`` dir; bytes are fetched through the content resolver so the same
+    code path serves the local corpus and the S3 mirror.
+
     Returns {"src", "needs_update", "relevant_issue_keys", "explanation"}.
     On error returns needs_update=False so the image is not incorrectly promoted.
     """
     async with sem:
         try:
-            img_bytes = img_path.read_bytes()
-        except OSError as exc:
-            print(f"\n  [vision] Cannot read {img_path.name}: {exc}")
+            img_bytes = get_content_source().read_image_bytes(lesson_dir, filename)
+        except (LessonContentNotFound, OSError) as exc:
+            print(f"\n  [vision] Cannot read {filename}: {exc}")
             return {"src": src, "needs_update": False, "relevant_issue_keys": [], "explanation": ""}
 
         img_data = base64.standard_b64encode(img_bytes).decode()
-        ext = img_path.suffix.lstrip(".")
+        ext = PurePosixPath(filename).suffix.lstrip(".")
 
         issues_text = "\n".join(
             f"- {i.get('issue_key', '')}: {i.get('issue_summary', '')[:200]}"
@@ -252,7 +260,7 @@ async def _vision_verify_one(
                 "explanation": result.get("explanation", ""),
             }
         except Exception as exc:
-            print(f"\n  [vision] API call failed for {img_path.name}: {exc}")
+            print(f"\n  [vision] API call failed for {filename}: {exc}")
             return {"src": src, "needs_update": False, "relevant_issue_keys": [], "explanation": ""}
 
 
@@ -276,22 +284,31 @@ async def _vision_verify_screenshots(
     if not images:
         return screenshot_updates
 
-    # Lesson images are content, not code — resolve under the content root
-    # (KNOW-2353), which equals REPO_ROOT on the box but /content in the container.
-    lesson_path = config.LESSON_CONTENT_ROOT / lesson_dir
+    # Lesson images are content, not code — resolve through the content source
+    # (KNOW-2353/KNOW-2360). The local backend reads LESSON_CONTENT_ROOT (=
+    # REPO_ROOT on the box, /content in the container); the s3mirror backend
+    # reads the public S3 mirror. ``img["src"]`` is an ``images/foo.png`` style
+    # relative path; the resolver keys on the bare filename.
+    source = get_content_source()
     sem = asyncio.Semaphore(config.ALT_TEXT_MAX_CONCURRENT)
 
-    # Separate images we can verify (exist on disk) from those we cannot
-    verifiable = [(img, lesson_path / img["src"]) for img in images if (lesson_path / img["src"]).exists()]
-    unverifiable_srcs = {img["src"] for img in images if not (lesson_path / img["src"]).exists()}
+    # Separate images we can verify (exist in the source) from those we cannot.
+    verifiable: list[tuple[dict, str]] = []  # (img, bare filename)
+    unverifiable_srcs: set[str] = set()
+    for img in images:
+        filename = _src_to_image_filename(img["src"])
+        if filename and source.image_exists(lesson_dir, filename):
+            verifiable.append((img, filename))
+        else:
+            unverifiable_srcs.add(img["src"])
 
     if not verifiable:
         return screenshot_updates
 
     # Run vision check for all verifiable images concurrently
     vision_results = await asyncio.gather(*[
-        _vision_verify_one(client, sem, img_path, img["src"], group, screenshot_updates)
-        for img, img_path in verifiable
+        _vision_verify_one(client, sem, lesson_dir, filename, img["src"], group, screenshot_updates)
+        for img, filename in verifiable
     ])
 
     text_by_src = {u["src"]: u for u in screenshot_updates}
@@ -674,18 +691,26 @@ def _build_prompt(
     """Build the EDIT_SUGGESTIONS prompt for a lesson group."""
     first = group[0]
 
-    # Load lesson HTML from disk
+    # Load lesson HTML via the content resolver. The configured source is the
+    # local corpus by default (LESSON_CONTENT_ROOT — = REPO_ROOT on box/CLI, the
+    # bind-mounted /content in the container, per KNOW-2353), or the S3 mirror
+    # under CONTENT_SOURCE=s3mirror (KNOW-2360). Both back the same lesson_dir
+    # interface, so Step 6 works unchanged off either.
     lesson_dir = first.get("lesson_dir", "")
     if not lesson_dir:
         print(f"  WARNING: no lesson_dir for {lesson_id}, skipping.")
         return None
 
-    html_path = _resolve_lesson_html_path(lesson_dir)
-    if html_path is None or not html_path.exists():
-        print(f"  WARNING: lesson HTML not found at {html_path}, skipping.")
+    source = get_content_source()
+    # NOTE: a missing lesson is skipped *silently* (returns None → no edit plan
+    # for this lesson). KNOW-2353 warned this silent skip can mask a misconfigured
+    # content root yielding an empty edit-plan; lesson_html_exists keeps that exact
+    # behaviour while routing the probe through the resolver.
+    if not source.lesson_html_exists(lesson_dir):
+        print(f"  WARNING: lesson HTML not found for {lesson_dir}, skipping.")
         return None
 
-    lesson_html = html_path.read_text(encoding="utf-8")
+    lesson_html = source.get_lesson_html(lesson_dir)
 
     # Store on the first assessment so _call_openai can access them
     first["_lesson_html"] = lesson_html

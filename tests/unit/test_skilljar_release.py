@@ -11,7 +11,10 @@ import pipeline.skilljar_release as skilljar_release
 from pipeline.skilljar_release import (
     _rewrite_images,
     _upload_and_rewrite_images,
+    build_release_plan,
     execute_release,
+    lesson_local_path,
+    scan_saved_lessons,
 )
 
 _S3_ARGS = dict(s3_bucket="test-bucket", s3_key_id="fake-id", s3_secret="fake-secret")
@@ -144,6 +147,111 @@ class TestRewriteImagesSkipsExpiring:
         rewritten, unmatched = _rewrite_images(new, original)
         assert permanent in rewritten
         assert unmatched == []
+
+
+class TestScanSavedLessons:
+    """scan_saved_lessons lists the WRITABLE saved store filesystem (NO git, NO
+    subprocess): every ``{saved_root}/{to_version}/**/index.html`` is a saved
+    lesson, returned as its POSIX lesson_dir."""
+
+    def test_returns_saved_lesson_dirs_from_filesystem(self, tmp_path):
+        lesson_dir = "2026.1/fme-form-basic/Connect To Data 2026.1/Intro"
+        idx = tmp_path / lesson_dir / "index.html"
+        idx.parent.mkdir(parents=True)
+        idx.write_text("<p>hi</p>", encoding="utf-8")
+        # A stray non-index file must not be reported.
+        (tmp_path / lesson_dir / "notes.txt").write_text("x", encoding="utf-8")
+
+        result = scan_saved_lessons("2026.1", tmp_path)
+        assert result == {lesson_dir}
+
+    def test_finds_multiple_nested_lessons(self, tmp_path):
+        dirs = {
+            "2026.1/fme-form-basic/Connect To Data 2026.1/Intro",
+            "2026.1/fme-form-basic/Connect To Data 2026.1/Exercise_ Foo",
+            "2026.1/fme-form-advanced/Custom Transformers 2026.1/Lesson One",
+        }
+        for d in dirs:
+            idx = tmp_path / d / "index.html"
+            idx.parent.mkdir(parents=True)
+            idx.write_text("<p>hi</p>", encoding="utf-8")
+        # A lesson under a DIFFERENT version must be excluded.
+        other = tmp_path / "2025.0/fme-form-basic/Connect To Data 2025.0/Intro/index.html"
+        other.parent.mkdir(parents=True)
+        other.write_text("<p>old</p>", encoding="utf-8")
+
+        assert scan_saved_lessons("2026.1", tmp_path) == dirs
+
+    def test_missing_version_dir_returns_empty_set(self, tmp_path):
+        # saved_root exists but has no {to_version} subdir at all.
+        assert scan_saved_lessons("2026.1", tmp_path) == set()
+
+    def test_does_not_shell_out(self, tmp_path, monkeypatch):
+        """Regression: detection must never invoke git/subprocess."""
+        import subprocess
+
+        def _boom(*a, **k):  # pragma: no cover - only fires on regression
+            raise AssertionError("scan_saved_lessons must not call subprocess")
+
+        monkeypatch.setattr(subprocess, "run", _boom)
+        monkeypatch.setattr(subprocess, "Popen", _boom)
+        assert scan_saved_lessons("2026.1", tmp_path) == set()
+
+
+class TestLessonLocalPath:
+    """lesson_local_path resolves the saved index.html under saved_root."""
+
+    def test_resolves_under_saved_root_when_present(self, tmp_path):
+        lesson_dir = "2026.1/fme-form-basic/Connect To Data 2026.1/Intro"
+        idx = tmp_path / lesson_dir / "index.html"
+        idx.parent.mkdir(parents=True)
+        idx.write_text("<p>hi</p>", encoding="utf-8")
+
+        result = lesson_local_path(lesson_dir, tmp_path)
+        assert result == idx
+        assert result.is_relative_to(tmp_path)
+
+    def test_returns_none_when_absent(self, tmp_path):
+        assert lesson_local_path("2026.1/lp/Course 2026.1/Missing", tmp_path) is None
+
+
+class TestBuildReleasePlanResolvesSavedRoot:
+    """build_release_plan resolves each lesson's local_path against saved_root
+    (the writable store), so the push read is saved_root-rooted — not content_root."""
+
+    def test_local_path_resolved_under_saved_root(self, tmp_path):
+        lesson_dir = "2026.1/fme-form-basic/Connect To Data 2026.1/Intro"
+        idx = tmp_path / lesson_dir / "index.html"
+        idx.parent.mkdir(parents=True)
+        idx.write_text("<p>hi</p>", encoding="utf-8")
+
+        mapping = {
+            lesson_dir: {
+                "skilljar_lesson_id": "les-1",
+                "skilljar_course_id": "course-1",
+                "_course_title": "Connect To Data 2026.1",
+            }
+        }
+
+        plan = build_release_plan([lesson_dir], "2026.1", mapping, tmp_path)
+        lesson = plan["courses"][0]["lessons"][0]
+        assert lesson["has_local_file"] is True
+        assert lesson["local_path"] == str(idx)
+        assert Path(lesson["local_path"]).is_relative_to(tmp_path)
+
+    def test_missing_saved_file_yields_none_local_path(self, tmp_path):
+        lesson_dir = "2026.1/fme-form-basic/Connect To Data 2026.1/Intro"
+        mapping = {
+            lesson_dir: {
+                "skilljar_lesson_id": "les-1",
+                "skilljar_course_id": "course-1",
+                "_course_title": "Connect To Data 2026.1",
+            }
+        }
+        plan = build_release_plan([lesson_dir], "2026.1", mapping, tmp_path)
+        lesson = plan["courses"][0]["lessons"][0]
+        assert lesson["has_local_file"] is False
+        assert lesson["local_path"] is None
 
 
 def _release_plan() -> dict:

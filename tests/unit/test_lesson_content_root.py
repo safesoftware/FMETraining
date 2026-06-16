@@ -87,50 +87,31 @@ class TestConfigCacheRoot:
 
 
 # ---------------------------------------------------------------------------
-# edit_suggestions resolves lesson HTML under LESSON_CONTENT_ROOT
+# edit_suggestions resolves lesson HTML through the content source
+# (KNOW-2353 root-resolution lives in pipeline/content_source.py now;
+# KNOW-2360 migrated Step 6's reads onto it.)
 # ---------------------------------------------------------------------------
 
 class TestEditSuggestionsLessonHtmlResolver:
-    def test_resolves_under_lesson_content_root(self, monkeypatch, tmp_version_tree):
-        """The lesson-HTML resolver finds index.html under LESSON_CONTENT_ROOT,
-        even when REPO_ROOT points elsewhere (the container case: /content vs
-        /app)."""
-        from pipeline import config, edit_suggestions
+    def test_build_prompt_reads_html_via_content_source(
+        self, monkeypatch, tmp_version_tree
+    ):
+        """Regression for KNOW-2353 / KNOW-2360: _build_prompt must NOT skip the
+        lesson when content lives under LESSON_CONTENT_ROOT but REPO_ROOT is /app.
+        Before the fix it returned None ("lesson HTML not found"), yielding an
+        empty edit-plan (completed_lessons=0). The reads now go through a
+        LocalFolderSource rooted at the content corpus."""
+        from pipeline import edit_suggestions
+        from pipeline.content_source import LocalFolderSource
 
         tree = tmp_version_tree
         content_root = tree["repo_root"]  # the tmp content corpus
         lesson_dir = f"{tree['version']}/{tree['lp']}/{tree['course_folder']}/{tree['lessons'][0]}"
 
-        # Content lives under content_root; REPO_ROOT is somewhere else.
-        monkeypatch.setattr(config, "LESSON_CONTENT_ROOT", content_root)
-        monkeypatch.setattr(config, "REPO_ROOT", Path("/nonexistent-repo-root"))
-
-        resolved = edit_suggestions._resolve_lesson_html_path(lesson_dir)
-
-        assert resolved == content_root / lesson_dir / "index.html"
-        assert resolved.exists()
-
-    def test_returns_none_for_blank_lesson_dir(self, monkeypatch, tmp_version_tree):
-        from pipeline import config, edit_suggestions
-
-        monkeypatch.setattr(config, "LESSON_CONTENT_ROOT", tmp_version_tree["repo_root"])
-        assert edit_suggestions._resolve_lesson_html_path("") is None
-
-    def test_build_prompt_does_not_skip_lesson_under_content_root(
-        self, monkeypatch, tmp_version_tree
-    ):
-        """Regression for KNOW-2353: _build_prompt must NOT skip the lesson when
-        content lives under LESSON_CONTENT_ROOT but REPO_ROOT is /app. Before the
-        fix it returned None ("lesson HTML not found"), yielding an empty
-        edit-plan (completed_lessons=0)."""
-        from pipeline import config, edit_suggestions
-
-        tree = tmp_version_tree
-        content_root = tree["repo_root"]
-        lesson_dir = f"{tree['version']}/{tree['lp']}/{tree['course_folder']}/{tree['lessons'][0]}"
-
-        monkeypatch.setattr(config, "LESSON_CONTENT_ROOT", content_root)
-        monkeypatch.setattr(config, "REPO_ROOT", Path("/nonexistent-repo-root"))
+        # Pin the resolver at the content corpus (the container case: /content),
+        # independent of REPO_ROOT.
+        source = LocalFolderSource(content_root)
+        monkeypatch.setattr(edit_suggestions, "get_content_source", lambda: source)
 
         group = [{
             "issue_key": "KNOW-1",
@@ -151,3 +132,45 @@ class TestEditSuggestionsLessonHtmlResolver:
 
         assert prompt is not None
         assert tree["lessons"][0] in prompt
+        # The actual lesson HTML (from index.html on disk) made it into the prompt.
+        assert source.get_lesson_html(lesson_dir).strip()[:20] in prompt
+
+    def test_build_prompt_skips_silently_when_html_absent(
+        self, monkeypatch, tmp_version_tree
+    ):
+        """A missing lesson HTML returns None (skip), preserving the historical
+        silent-skip behaviour KNOW-2353 flagged — now routed through
+        lesson_html_exists on the resolver."""
+        from pipeline import edit_suggestions
+        from pipeline.content_source import LocalFolderSource
+
+        tree = tmp_version_tree
+        source = LocalFolderSource(tree["repo_root"])
+        monkeypatch.setattr(edit_suggestions, "get_content_source", lambda: source)
+
+        group = [{
+            "issue_key": "KNOW-1",
+            "issue_summary": "x",
+            "update_likelihood": "high",
+            "justification": "x",
+            "lesson_dir": f"{tree['version']}/{tree['lp']}/{tree['course_folder']}/Does Not Exist",
+            "lesson_name": "Does Not Exist",
+            "course_canonical": tree["course_canonical"],
+            "learning_path": tree["lp"],
+            "version": tree["version"],
+        }]
+        template = "{{LESSON_HTML}}"
+
+        prompt = edit_suggestions._build_prompt(
+            lesson_id="missing", group=group, template=template, to_version="2025.0"
+        )
+        assert prompt is None
+
+    def test_build_prompt_returns_none_for_blank_lesson_dir(self, tmp_version_tree):
+        from pipeline import edit_suggestions
+
+        group = [{"issue_key": "KNOW-1", "lesson_dir": ""}]
+        prompt = edit_suggestions._build_prompt(
+            lesson_id="blank", group=group, template="{{LESSON_HTML}}", to_version="2025.0"
+        )
+        assert prompt is None

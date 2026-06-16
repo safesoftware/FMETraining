@@ -71,6 +71,23 @@ class Settings(BaseSettings):
     # snapshot. Tests override this to a temp dir.
     drafts_root: str = Field(default="/var/lib/fme-train/drafts")
 
+    # ---- Saved-version store (Wave 2, S3-content publish side) -----------
+    # WRITABLE root for the "Save to Version Folder" output — the new-version
+    # lesson tree that Save writes and the Skilljar release reads/pushes.
+    # CONTRACT (P3): saved lessons live at
+    #   {saved_versions_root}/{to_version}/{lp}/{course} {to_version}/{lesson}/index.html
+    # (+ images/). Under content_source='s3mirror' the content root is the
+    # READ-ONLY public mirror, so Save MUST NOT write there and the release
+    # MUST NOT git/read content_root for saved lessons — both go through THIS
+    # root instead. Defaults to drafts_root so a single writable mount serves
+    # both; ops may point it elsewhere. Tests override to a temp dir.
+    saved_versions_root: str = Field(
+        default="/var/lib/fme-train/drafts",
+        description="Writable root for Save-to-Version output; release reads "
+                    "saved lessons from here, never from the (read-only under "
+                    "s3mirror) lesson_content_root.",
+    )
+
     # ---- Sessions / auth -------------------------------------------------
     # Required once auth lands (KNOW-2259); optional in Phase 0 so the skeleton
     # boots without secrets present.
@@ -115,6 +132,22 @@ class Settings(BaseSettings):
         description="Absolute or relative path to the repo root containing "
                     "versioned lesson folders (e.g. 2025.0/, 2026.1/). "
                     "Set LESSON_CONTENT_ROOT=/app in the container.",
+    )
+
+    # ---- Lesson-content source (KNOW-2360, S3-mirror keystone) ----------
+    # Selects the pipeline.content_source backend. "local" reads the on-disk
+    # corpus under lesson_content_root (default); "s3mirror" reads lesson
+    # HTML/images from the public S3 mirror over anonymous HTTPS and discovers
+    # lessons via ListObjectsV2. Mirrors pipeline.config.CONTENT_SOURCE /
+    # CONTENT_S3_BASE_URL so the app and pipeline agree.
+    content_source: str = Field(
+        default="local",
+        description="local | s3mirror — which lesson-content backend to use.",
+    )
+    content_s3_base_url: str = Field(
+        default="https://safeskilljar.s3.us-west-2.amazonaws.com",
+        description="Origin of the public S3 content mirror (no trailing slash). "
+                    "Used only when content_source='s3mirror'.",
     )
 
     # ---- Cost ceiling ----------------------------------------------------

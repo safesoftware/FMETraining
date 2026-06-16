@@ -43,12 +43,28 @@ def http_server():
 
 @pytest.fixture
 def isolated_repo(tmp_path, monkeypatch):
-    """Point serve.REPO_ROOT at a temp dir with a minimal source lesson layout."""
+    """Point serve.REPO_ROOT at a temp dir with a minimal source lesson layout.
+
+    SOURCE images are now read through the config-switched content resolver
+    (KNOW-2360 / Wave 2), whose LocalFolderSource default roots at
+    ``config.LESSON_CONTENT_ROOT`` — NOT ``serve.REPO_ROOT``. On the box + CLI
+    those are the same path; here we align them by also pointing
+    LESSON_CONTENT_ROOT at the temp tree and resetting the cached source so the
+    relative/expiring passes find the seeded images.
+    """
+    import pipeline.config as pipeline_config
+    from pipeline.content_source import reset_content_source
+
     src = tmp_path / "2025.0" / "fme-form-basic" / "Connect To Data 2025.0" / "My Lesson"
     src.mkdir(parents=True)
     (src / "index.html").write_text("<p>source</p>", encoding="utf-8")
     monkeypatch.setattr(serve, "REPO_ROOT", tmp_path)
-    yield tmp_path
+    monkeypatch.setattr(pipeline_config, "LESSON_CONTENT_ROOT", tmp_path)
+    reset_content_source()
+    try:
+        yield tmp_path
+    finally:
+        reset_content_source()
 
 
 def _post_json(url: str, body: dict) -> tuple[int, dict]:
@@ -172,7 +188,7 @@ class TestSaveLessonWithRelativePaths:
         html = '<p><img src="images/diagram.png" alt="d"></p>'
 
         with patch.multiple("pipeline.config", **_CONFIG_PATCHES), \
-             patch("pipeline.skilljar_release._s3_put",
+             patch("pipeline.lesson_image_upload._s3_put",
                    return_value=(public_url, "skilljar-uploads/abc-diagram.png")) as mock_put:
             status, body = _post_json(
                 f"{http_server}/api/save-lesson",

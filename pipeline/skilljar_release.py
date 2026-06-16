@@ -2,12 +2,19 @@
 Skilljar Release module.
 
 Entry points:
-  scan_saved_lessons(to_version, repo_root) → set[str]
-      Walk the to_version folder for saved index.html files.
-  build_release_plan(scope_lesson_dirs, to_version, mapping, repo_root) → dict
+  scan_saved_lessons(to_version, saved_root) → set[str]
+      List the writable saved store for the to_version's saved index.html files.
+  build_release_plan(scope_lesson_dirs, to_version, mapping, saved_root) → dict
       Group selected lessons by Skilljar course and produce a release plan.
   execute_release(plan, api_key, domain, mapping, mapping_path, repo_root, dry_run) → Iterator[str]
       Generator yielding log lines for the full archive→push→rename→tag→mapping flow.
+
+Detection + saved-lesson reads target the WRITABLE saved store (``saved_root``,
+i.e. ``config.SAVED_VERSIONS_ROOT`` / ``Settings.saved_versions_root``), NOT git
+and NOT the (read-only under s3mirror) lesson-content root. Save writes each
+lesson to ``{saved_root}/{lesson_dir}/index.html`` where ``lesson_dir`` is the
+``{to_version}/{lp}/{course} {to_version}/{lesson}`` relative path. The pipeline
+stays DB-free + app-free: ``saved_root`` is always passed in by the caller.
 """
 
 from __future__ import annotations
@@ -144,37 +151,33 @@ def _upload_and_rewrite_images(
 # Local file helpers
 # ---------------------------------------------------------------------------
 
-def lesson_local_path(lesson_dir: str, repo_root: Path) -> Path | None:
-    """Return absolute path to index.html for a lesson_dir if it exists, else None."""
-    p = repo_root / lesson_dir / "index.html"
+def lesson_local_path(lesson_dir: str, saved_root: Path) -> Path | None:
+    """Return absolute path to the saved index.html for a lesson_dir, else None.
+
+    Resolves against the WRITABLE saved store (``saved_root``), where Save writes
+    ``{saved_root}/{lesson_dir}/index.html`` — NOT the read-only content root.
+    """
+    p = saved_root / lesson_dir / "index.html"
     return p if p.exists() else None
 
 
-def scan_saved_lessons(to_version: str, repo_root: Path) -> set[str]:
-    """Return lesson_dirs with new or modified index.html files according to git."""
-    import subprocess
-    version_dir = repo_root / to_version
+def scan_saved_lessons(to_version: str, saved_root: Path) -> set[str]:
+    """Return the saved lesson_dirs for ``to_version`` by listing the saved store.
+
+    Lists the WRITABLE saved store filesystem (NO git, NO subprocess, NO DB):
+    finds every ``{saved_root}/{to_version}/**/index.html`` and returns the set of
+    lesson_dirs — the POSIX path from ``saved_root`` to each lesson folder (without
+    the trailing ``/index.html``). Everything present in the saved store for that
+    ``to_version`` is a saved lesson; there is no new/modified distinction. A
+    missing ``{saved_root}/{to_version}`` directory yields an empty set.
+    """
+    version_dir = saved_root / to_version
     if not version_dir.is_dir():
         return set()
-    result = set()
-    try:
-        proc = subprocess.run(
-            ["git", "status", "--porcelain", "--", to_version],
-            cwd=repo_root, capture_output=True, text=True, timeout=30,
-        )
-        for line in proc.stdout.splitlines():
-            if len(line) < 4:
-                continue
-            path = line[3:].strip()
-            # Untracked directories: git shows "dir/" — scan inside for index.html
-            if path.endswith("/"):
-                for idx in (repo_root / path).rglob("index.html"):
-                    result.add(str(idx.parent.relative_to(repo_root)).replace("\\", "/"))
-            elif path.endswith("index.html"):
-                result.add(str(Path(path).parent).replace("\\", "/"))
-    except Exception:
-        pass
-    return result
+    return {
+        idx.parent.relative_to(saved_root).as_posix()
+        for idx in version_dir.rglob("index.html")
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -270,7 +273,7 @@ def build_release_plan(
     scope_lesson_dirs: list[str],
     to_version: str,
     mapping: dict,
-    repo_root: Path,
+    saved_root: Path,
 ) -> dict:
     """
     Group selected lessons by Skilljar course and produce a release plan dict:
@@ -321,7 +324,7 @@ def build_release_plan(
         for lesson_dir in sorted(lesson_dirs):
             lparts = Path(lesson_dir).parts
             lesson_name = "/".join(lparts[3:])
-            local = lesson_local_path(lesson_dir, repo_root)
+            local = lesson_local_path(lesson_dir, saved_root)
 
             source_key, source_entry = _find_source_entry(lesson_dir, mapping)
             if source_entry is None:
@@ -673,14 +676,17 @@ def link_draft_course(
     api_key: str,
     mapping: dict,
     mapping_path: Path,
-    repo_root: Path,
+    saved_root: Path,
 ) -> dict:
     """
     Fetch lessons from an existing Skilljar course (e.g. a manually-created draft),
-    match them to local lesson dirs under to_version_course_prefix by title, and
+    match them to saved lesson dirs under to_version_course_prefix by title, and
     write the matched entries into skilljar-mapping.json.
 
-    to_version_course_prefix: e.g. "2026.1/fme-form-basic/Connect To Data 2026.1"
+    to_version_course_prefix: e.g. "2026.1/fme-form-basic/Connect To Data 2026.1".
+    This is a ``{to_version}/...`` path that only exists in the WRITABLE saved
+    store, so the lesson folders are listed under ``saved_root`` — NOT the
+    read-only content root.
 
     Returns:
         {
@@ -690,9 +696,9 @@ def link_draft_course(
         }
     """
     course_prefix = to_version_course_prefix.rstrip("/")
-    course_dir = repo_root / course_prefix
+    course_dir = saved_root / course_prefix
 
-    # Collect local lesson folders (any subdir — doesn't require index.html)
+    # Collect saved lesson folders (any subdir — doesn't require index.html)
     local_folders: list[str] = []
     if course_dir.is_dir():
         local_folders = [d.name for d in sorted(course_dir.iterdir()) if d.is_dir()]

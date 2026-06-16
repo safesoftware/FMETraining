@@ -38,9 +38,11 @@ EXPECTED_TARGET = f"2026.1/{LP}/Connect To Data 2026.1/{LESSON}/index.html"
 def configured_app(
     async_session_factory, seeded_user, authenticate, tmp_path: Path, monkeypatch
 ):
-    """FastAPI app with content root at a temp tree, image upload stubbed."""
+    """FastAPI app with the SOURCE content root and a SEPARATE writable
+    saved-versions root, both at temp trees, image upload stubbed."""
     # Lay down a minimal source lesson tree under the temp content root.
     content_root = tmp_path / "content"
+    saved_root = tmp_path / "saved"
     src = content_root / SRC_VERSION / LP / COURSE_FOLDER / LESSON
     src.mkdir(parents=True)
     if SAMPLE_LESSON_HTML.exists():
@@ -65,8 +67,10 @@ def configured_app(
         "app.main._get_or_create_session_factory",
         lambda: async_session_factory,
     )
-    # Point the lesson content root at our temp tree.
+    # Source reads come from LESSON_CONTENT_ROOT; the WRITE target is the
+    # separate writable SAVED_VERSIONS_ROOT.
     monkeypatch.setenv("LESSON_CONTENT_ROOT", str(content_root))
+    monkeypatch.setenv("SAVED_VERSIONS_ROOT", str(saved_root))
     reset_settings()
     try:
         from app.main import create_app  # late import — pulls fresh settings
@@ -77,15 +81,15 @@ def configured_app(
         app.include_router(save_lesson_route.router)
         with TestClient(app) as client:
             authenticate(client, seeded_user.id)
-            yield client, content_root
+            yield client, content_root, saved_root
     finally:
         reset_settings()
 
 
 # ---- happy path ----------------------------------------------------------
 
-def test_save_writes_file_under_content_root(configured_app) -> None:
-    client, content_root = configured_app
+def test_save_writes_file_under_saved_root_not_content_root(configured_app) -> None:
+    client, content_root, saved_root = configured_app
     resp = client.post(
         "/api/save-lesson",
         json={
@@ -97,10 +101,12 @@ def test_save_writes_file_under_content_root(configured_app) -> None:
     assert resp.status_code == 200, resp.text
     body = resp.json()
     assert body == {"target_path": EXPECTED_TARGET}
-    on_disk = content_root / EXPECTED_TARGET
+    on_disk = saved_root / EXPECTED_TARGET
     assert "accepted edits" in on_disk.read_text(encoding="utf-8")
-    # Source images were copied alongside.
-    assert (on_disk.parent / "images" / "diagram.png").exists()
+    # Self-contained saved lesson: no relative images/ dir copied alongside.
+    assert not (on_disk.parent / "images").exists()
+    # Nothing written under the (read-only under s3mirror) content root.
+    assert not (content_root / EXPECTED_TARGET).exists()
 
 
 # ---- 409 on re-POST without force ----------------------------------------
@@ -108,7 +114,7 @@ def test_save_writes_file_under_content_root(configured_app) -> None:
 def test_resave_without_force_returns_409_with_top_level_target_path(
     configured_app,
 ) -> None:
-    client, _ = configured_app
+    client, _, _ = configured_app
     first = client.post(
         "/api/save-lesson",
         json={
@@ -138,7 +144,7 @@ def test_resave_without_force_returns_409_with_top_level_target_path(
 # ---- force overwrites ----------------------------------------------------
 
 def test_force_overwrites_existing(configured_app) -> None:
-    client, content_root = configured_app
+    client, _content_root, saved_root = configured_app
     client.post(
         "/api/save-lesson",
         json={
@@ -157,7 +163,7 @@ def test_force_overwrites_existing(configured_app) -> None:
         },
     )
     assert resp.status_code == 200, resp.text
-    on_disk = content_root / EXPECTED_TARGET
+    on_disk = saved_root / EXPECTED_TARGET
     saved = on_disk.read_text(encoding="utf-8")
     assert "replacement" in saved
     assert "original" not in saved
@@ -166,7 +172,7 @@ def test_force_overwrites_existing(configured_app) -> None:
 # ---- 400 on bad lesson_dir -----------------------------------------------
 
 def test_shallow_lesson_dir_returns_400(configured_app) -> None:
-    client, _ = configured_app
+    client, _, _ = configured_app
     resp = client.post(
         "/api/save-lesson",
         json={
@@ -180,7 +186,7 @@ def test_shallow_lesson_dir_returns_400(configured_app) -> None:
 
 
 def test_missing_fields_returns_400(configured_app) -> None:
-    client, _ = configured_app
+    client, _, _ = configured_app
     resp = client.post(
         "/api/save-lesson",
         json={

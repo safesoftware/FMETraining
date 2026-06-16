@@ -503,6 +503,73 @@ async def test_content_tree_missing_version_returns_empty(authed_client) -> None
     assert resp.json() == []
 
 
+@pytest.mark.asyncio
+async def test_content_tree_shape_is_identical_after_resolver_migration(
+    authed_client, lesson_root
+) -> None:
+    """Lock the exact JSON contract the launch UI depends on (KNOW-2360).
+
+    After migrating ``/api/content-tree`` from a raw ``iterdir`` walk to the
+    ``pipeline.content_source`` resolver, the response must be byte-for-byte the
+    same structure: LP ``{id,label,courses}`` → course ``{id,label,lessons}`` →
+    lesson ``{id,label,path}`` with the raw course folder in ``path`` but the
+    version-suffix-stripped name in the course ``id``/``label``.
+    """
+    client, _ = authed_client
+    resp = await client.get("/api/content-tree?version=2024.2")
+    assert resp.status_code == 200
+    expected = [
+        {
+            "id": "fme-form-basic",
+            "label": "Fme Form Basic",
+            "courses": [
+                {
+                    "id": "Connect To Data",
+                    "label": "Connect To Data",
+                    "lessons": [
+                        {
+                            "id": "Lesson A",
+                            "label": "Lesson A",
+                            "path": "2024.2/fme-form-basic/Connect To Data 2024.2/"
+                                    "Lesson A/index.html",
+                        },
+                        {
+                            "id": "Lesson B",
+                            "label": "Lesson B",
+                            "path": "2024.2/fme-form-basic/Connect To Data 2024.2/"
+                                    "Lesson B/index.html",
+                        },
+                    ],
+                }
+            ],
+        }
+    ]
+    assert resp.json() == expected
+
+
+@pytest.mark.asyncio
+async def test_versions_shape_is_descending_string_array(
+    async_session_factory, tmp_path
+) -> None:
+    """``/api/versions`` returns a flat, newest-first JSON array of YYYY.N
+    strings — unchanged by the resolver migration (KNOW-2360)."""
+    root = tmp_path / "multiver"
+    for v in ("2024.2", "2026.1", "2025.0"):
+        (root / v / "lp" / "c" / "l").mkdir(parents=True)
+        (root / v / "lp" / "c" / "l" / "index.html").write_text("x", encoding="utf-8")
+    app = _make_app(async_session_factory, lesson_root=root)
+    user = await seed_active_user(
+        async_session_factory, email="versions-shape@safe.com"
+    )
+    cookie = auth_cookie_for(user.id, secret=SESSION_SECRET, epoch=user.epoch)
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://testserver") as c:
+        c.cookies.set("fme_session", cookie)
+        resp = await c.get("/api/versions")
+    assert resp.status_code == 200
+    assert resp.json() == ["2026.1", "2025.0", "2024.2"]
+
+
 # ---------------------------------------------------------------------------
 # Index page (signed-out / signed-in rendering)
 # ---------------------------------------------------------------------------

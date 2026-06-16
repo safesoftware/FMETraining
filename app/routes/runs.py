@@ -36,9 +36,9 @@ from app.config import get_settings
 from app.db.session import get_session
 from app.models.runs import Run, RunStep
 from app.models.users import User
-from app.services.lesson_content_source import LocalFolderSource
 from app.services.report_regen import RecommendationsNotFound, regenerate_report
 from app.services.run_logger import RunLogger
+from pipeline.content_source import ContentSource, build_content_source
 from pipeline.utils import generate_run_id
 
 _logger = logging.getLogger(__name__)
@@ -165,10 +165,22 @@ def _scope_is_empty(scope: _ScopeIn) -> bool:
     return not scope.lessons and not scope.courses and not scope.learning_paths
 
 
-def _get_content_source() -> LocalFolderSource:
+def _get_content_source() -> ContentSource:
+    """Build the configured lesson-content backend honoring the app Settings.
+
+    Returns a ``pipeline.content_source`` source (``LocalFolderSource`` for
+    ``content_source='local'`` — today's default — or ``S3MirrorSource`` for
+    ``'s3mirror'``). Built fresh per call from ``get_settings()`` so per-test
+    ``reset_settings()`` overrides (LESSON_CONTENT_ROOT / CONTENT_SOURCE) take
+    effect; ``get_content_source()`` is not used here because it caches a single
+    process-wide source that wouldn't see those overrides.
+    """
     settings = get_settings()
-    root = Path(settings.lesson_content_root).resolve()
-    return LocalFolderSource(root)
+    return build_content_source(
+        source=settings.content_source,
+        content_root=Path(settings.lesson_content_root).resolve(),
+        base_url=settings.content_s3_base_url,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -391,17 +403,13 @@ async def regenerate_run_report(
 async def list_versions(
     user: User = Depends(require_user),
 ) -> list[str]:
-    """Return version folders available in the lesson content root."""
-    source = _get_content_source()
-    root = source._repo_root
-    if not root.is_dir():
-        return []
-    versions = sorted(
-        [d.name for d in root.iterdir() if d.is_dir() and _VERSION_RE.match(d.name)],
-        key=lambda v: [int(x) for x in v.split(".")],
-        reverse=True,
-    )
-    return versions
+    """Return version folders available from the configured content source.
+
+    Newest-first. Shape is identical to the old ``root.iterdir()`` scan: a flat
+    JSON array of ``YYYY.N`` strings (the source already filters to the version
+    pattern and sorts descending).
+    """
+    return _get_content_source().list_versions()
 
 
 # ---------------------------------------------------------------------------
@@ -411,46 +419,58 @@ async def list_versions(
 _COURSE_VERSION_SUFFIX = re.compile(r"\s+\d{4}[\.\d]*$")
 
 
-def _build_content_tree(root: Path, version: str) -> list:
-    """Build the LP/course/lesson tree for a version, mirroring serve.py."""
-    version_dir = root / version
-    if not version_dir.is_dir():
-        return []
+def _build_content_tree(source: ContentSource, version: str) -> list:
+    """Build the LP/course/lesson tree for a version from the content source.
+
+    Composed from ``list_learning_paths`` (LP order) + ``list_courses`` (course
+    order) + ``discover_lessons`` (lessons under each LP, which already filters
+    to dirs that have an ``index.html`` and dedupes punctuation variants). The
+    JSON shape is byte-for-byte the same as the old three-level ``iterdir``
+    walk — the launch UI depends on it:
+
+      ``[{id, label, courses: [{id, label, lessons: [{id, label, path}]}]}]``
+
+    Per-level details preserved from the old walk:
+      - LP ``id`` = raw folder name; ``label`` = ``name.replace('-', ' ').title()``
+      - course ``id``/``label`` = folder name with the trailing version suffix
+        stripped (e.g. ``Connect To Data 2024.2`` → ``Connect To Data``)
+      - lesson ``id`` = folder name; ``label`` = ``name.replace('_', ' ').strip()``
+      - lesson ``path`` = ``version/lp/<raw course folder>/<lesson>/index.html``
+        (5 parts; uses the *raw* course folder, not the suffix-stripped id)
+      - empty courses and empty LPs are dropped.
+    """
     tree = []
-    for lp_dir in sorted(version_dir.iterdir()):
-        if not lp_dir.is_dir():
-            continue
-        lp_label = lp_dir.name.replace("-", " ").title()
+    for lp in source.list_learning_paths(version):
+        # Lessons under this LP, grouped by their raw course-folder segment.
+        # discover_lessons returns repo-relative POSIX lesson_dirs of the form
+        # ``version/lp/<course folder>/<lesson folder>`` (index.html-bearing only).
+        lessons_by_course: dict[str, list[dict]] = {}
+        for lesson_dir in source.discover_lessons(version, lp):
+            parts = lesson_dir.split("/")
+            if len(parts) != 4:
+                continue  # defensive: only the canonical 4-segment shape
+            course_folder, lesson_folder = parts[2], parts[3]
+            label = lesson_folder.replace("_", " ").strip()
+            path = "/".join([version, lp, course_folder, lesson_folder, "index.html"])
+            lessons_by_course.setdefault(course_folder, []).append(
+                {"id": lesson_folder, "label": label, "path": path}
+            )
+
         courses = []
-        for course_dir in sorted(lp_dir.iterdir()):
-            if not course_dir.is_dir():
+        for course_folder in source.list_courses(version, lp):
+            lessons = lessons_by_course.get(course_folder)
+            if not lessons:
                 continue
-            course_canonical = _COURSE_VERSION_SUFFIX.sub("", course_dir.name).strip()
-            lessons = []
-            for lesson_dir in sorted(course_dir.iterdir()):
-                if not lesson_dir.is_dir():
-                    continue
-                if not (lesson_dir / "index.html").exists():
-                    continue
-                path = "/".join([
-                    version,
-                    lp_dir.name,
-                    course_dir.name,
-                    lesson_dir.name,
-                    "index.html",
-                ])
-                label = lesson_dir.name.replace("_", " ").strip()
-                lessons.append({"id": lesson_dir.name, "label": label, "path": path})
-            if lessons:
-                courses.append({
-                    "id": course_canonical,
-                    "label": course_canonical,
-                    "lessons": lessons,
-                })
+            course_canonical = _COURSE_VERSION_SUFFIX.sub("", course_folder).strip()
+            courses.append({
+                "id": course_canonical,
+                "label": course_canonical,
+                "lessons": lessons,
+            })
         if courses:
             tree.append({
-                "id": lp_dir.name,
-                "label": lp_label,
+                "id": lp,
+                "label": lp.replace("-", " ").title(),
                 "courses": courses,
             })
     return tree
@@ -467,5 +487,4 @@ async def get_content_tree(
             status_code=400,
             detail="valid version parameter required (e.g. '2026.1')",
         )
-    source = _get_content_source()
-    return _build_content_tree(source._repo_root, version)
+    return _build_content_tree(_get_content_source(), version)

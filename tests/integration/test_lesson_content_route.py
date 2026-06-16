@@ -41,7 +41,10 @@ def test_serves_existing_image(content_client):
     _write(root, rel, b"PNGBYTES")
     resp = client.get("/lesson-content/" + rel)
     assert resp.status_code == 200
+    # KNOW-2360: served as bytes via the content source (not FileResponse), with
+    # the content type detected from the extension.
     assert resp.content == b"PNGBYTES"
+    assert resp.headers["content-type"] == "image/png"
 
 
 def test_serves_image_with_spaces_in_path(content_client):

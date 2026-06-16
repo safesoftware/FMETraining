@@ -19,6 +19,7 @@ import asyncio
 import base64
 import json
 import re
+import urllib.parse
 from pathlib import Path
 from typing import Optional
 
@@ -26,6 +27,7 @@ from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm as atqdm
 
 from pipeline import config
+from pipeline.content_source import LessonContentNotFound, get_content_source
 from pipeline.utils import edit_plans_path
 
 # ---------------------------------------------------------------------------
@@ -79,9 +81,28 @@ def _is_candidate_alt(alt: str) -> bool:
     return False
 
 
-def _extract_candidates(html_path: Path) -> list[dict]:
-    """Return list of {src, original_alt, img_path} for candidate images in a lesson."""
-    content = html_path.read_text(encoding="utf-8", errors="ignore")
+def _src_to_filename(src: str) -> str:
+    """Reduce an ``images/foo.png`` (optionally ``?query``) src to ``foo.png``.
+
+    Strips any directory prefix and query/fragment, matching how the rest of the
+    codebase resolves an image src to a bare ``images/`` filename
+    (cf. ``pipeline/lesson_image_upload.py``: ``Path(urlparse(url).path).name``).
+    """
+    return Path(urllib.parse.urlparse(src).path).name
+
+
+def _extract_candidates(lesson_dir: str) -> list[dict]:
+    """Return list of {src, original_alt, filename, lesson_dir} for candidate images.
+
+    Reads the lesson's ``index.html`` and checks image existence through the
+    configured content source, so this works against both the local corpus and
+    the S3 mirror.
+    """
+    source = get_content_source()
+    try:
+        content = source.get_lesson_html(lesson_dir)
+    except LessonContentNotFound:
+        return []
     candidates: list[dict] = []
     seen_srcs: set[str] = set()
     for m in re.finditer(r"<img[^>]+>", content):
@@ -93,7 +114,7 @@ def _extract_candidates(html_path: Path) -> list[dict]:
         src = src_m.group(1)
         if not src.startswith("images/"):
             continue
-        filename = Path(src).name
+        filename = _src_to_filename(src)
         if filename in DECORATIVE_IMAGES:
             continue
         if src in seen_srcs:
@@ -101,10 +122,14 @@ def _extract_candidates(html_path: Path) -> list[dict]:
         alt = alt_m.group(1) if alt_m else ""
         if not _is_candidate_alt(alt):
             continue
-        img_path = html_path.parent / src
-        if img_path.exists():
+        if source.image_exists(lesson_dir, filename):
             seen_srcs.add(src)
-            candidates.append({"src": src, "original_alt": alt, "img_path": img_path})
+            candidates.append({
+                "src": src,
+                "original_alt": alt,
+                "filename": filename,
+                "lesson_dir": lesson_dir,
+            })
     return candidates
 
 
@@ -119,14 +144,15 @@ async def _enrich_image(
 ) -> Optional[dict]:
     """Call the multimodal LLM to generate alt text for a single image."""
     async with sem:
-        img_path: Path = candidate["img_path"]
+        lesson_dir: str = candidate["lesson_dir"]
+        filename: str = candidate["filename"]
         try:
-            img_bytes = img_path.read_bytes()
-        except OSError as e:
-            print(f"  WARNING: Cannot read {img_path.name}: {e}")
+            img_bytes = get_content_source().read_image_bytes(lesson_dir, filename)
+        except (LessonContentNotFound, OSError) as e:
+            print(f"  WARNING: Cannot read {filename}: {e}")
             return None
         img_data = base64.standard_b64encode(img_bytes).decode()
-        ext = img_path.suffix.lstrip(".")
+        ext = Path(filename).suffix.lstrip(".")
         try:
             resp = await client.chat.completions.create(
                 model=config.ALT_TEXT_MODEL,
@@ -153,17 +179,17 @@ async def _enrich_image(
                 ),
             }
         except Exception as e:
-            print(f"  WARNING: Alt text generation failed for {img_path.name}: {e}")
+            print(f"  WARNING: Alt text generation failed for {filename}: {e}")
             return None
 
 
 async def _enrich_lesson(
     client: AsyncOpenAI,
     sem: asyncio.Semaphore,
-    html_path: Path,
+    lesson_dir: str,
 ) -> list[dict]:
-    """Enrich all candidate images in one lesson HTML file."""
-    candidates = _extract_candidates(html_path)
+    """Enrich all candidate images in one lesson."""
+    candidates = _extract_candidates(lesson_dir)
     if not candidates:
         return []
     results = await asyncio.gather(*[_enrich_image(client, sem, c) for c in candidates])
@@ -183,10 +209,11 @@ async def _run(
 ) -> None:
     client = AsyncOpenAI(api_key=config.get_openai_api_key())
     sem = asyncio.Semaphore(config.ALT_TEXT_MAX_CONCURRENT)
+    source = get_content_source()
 
-    # Collect HTML paths
-    html_paths: list[Path] = []
-    lesson_dirs: dict[Path, str] = {}  # html_path → lesson_dir (for edit-plans merge)
+    # Collect lesson_dirs (repo-relative POSIX), resolved through the content
+    # source so this works against both the local corpus and the S3 mirror.
+    lesson_dirs: list[str] = []
 
     if run_id:
         plans_path = edit_plans_path(run_id)
@@ -198,27 +225,23 @@ async def _run(
             ld = lesson.get("lesson_dir", "")
             if not ld:
                 continue
-            hp = config.LESSON_CONTENT_ROOT / ld / "index.html"
-            if hp.exists():
-                html_paths.append(hp)
-                lesson_dirs[hp] = ld
+            if source.lesson_html_exists(ld):
+                lesson_dirs.append(ld)
     elif version and learning_path:
-        base = config.LESSON_CONTENT_ROOT / version / learning_path
-        if not base.exists():
-            print(f"ERROR: path not found: {base}")
+        lesson_dirs = source.discover_lessons(version, learning_path)
+        if not lesson_dirs:
+            print(f"ERROR: no lessons found for {version}/{learning_path}")
             return
-        for hp in sorted(base.rglob("index.html")):
-            html_paths.append(hp)
     else:
         print("ERROR: Provide --run-id OR (--version + --learning-path)")
         return
 
-    if not html_paths:
+    if not lesson_dirs:
         print("No lesson HTML files found.")
         return
 
-    print(f"Scanning {len(html_paths)} lesson HTML files for alt text candidates...")
-    tasks = [_enrich_lesson(client, sem, hp) for hp in html_paths]
+    print(f"Scanning {len(lesson_dirs)} lesson HTML files for alt text candidates...")
+    tasks = [_enrich_lesson(client, sem, ld) for ld in lesson_dirs]
     all_results: list[list[dict]] = await atqdm.gather(*tasks, desc="Enriching alt text")
 
     total = sum(len(r) for r in all_results)
@@ -226,9 +249,9 @@ async def _run(
 
     if dry_run:
         print("\nDRY RUN — no changes written. Suggestions:")
-        for hp, updates in zip(html_paths, all_results):
+        for ld, updates in zip(lesson_dirs, all_results):
             if updates:
-                print(f"\n  {hp.parent.name}:")
+                print(f"\n  {ld.rstrip('/').split('/')[-1]}:")
                 for u in updates:
                     print(f"    {u['src']}")
                     print(f"      current:   {u['original_alt']!r}")
@@ -245,8 +268,7 @@ async def _run(
     # Merge into edit-plans JSON
     plans_data = json.loads(plans_path.read_text(encoding="utf-8"))
     update_map: dict[str, list[dict]] = {}
-    for hp, updates in zip(html_paths, all_results):
-        ld = lesson_dirs.get(hp, "")
+    for ld, updates in zip(lesson_dirs, all_results):
         if ld and updates:
             update_map[ld] = updates
 

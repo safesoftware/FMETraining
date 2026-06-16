@@ -55,6 +55,34 @@ LESSON_CONTENT_ROOT: Path = Path(os.getenv("LESSON_CONTENT_ROOT") or REPO_ROOT)
 # per-run artifacts dir (e.g. the Jira metadata cache) MUST live under here.
 CACHE_ROOT: Path = Path(os.getenv("FME_CACHE_DIR") or (REPO_ROOT / ".cache"))
 
+# WRITABLE root for the "Save to Version Folder" output (Wave 2, S3-content
+# publish side). The new-version lesson tree that Save writes and the Skilljar
+# release reads/pushes lives HERE, not under LESSON_CONTENT_ROOT — which is the
+# READ-ONLY public mirror when CONTENT_SOURCE=s3mirror. Defaults to REPO_ROOT so
+# the box + CLI keep their historical in-repo layout; the container/EC2 box set
+# SAVED_VERSIONS_ROOT to a writable mount. Mirrors app.config
+# Settings.saved_versions_root. CONTRACT (P3): saved lessons live at
+#   {SAVED_VERSIONS_ROOT}/{to_version}/{lp}/{course} {to_version}/{lesson}/index.html
+SAVED_VERSIONS_ROOT: Path = Path(os.getenv("SAVED_VERSIONS_ROOT") or REPO_ROOT)
+
+
+# ---------------------------------------------------------------------------
+# Lesson-content source selection (KNOW-2360, S3-mirror keystone)
+#
+# Selects which backend pipeline.content_source.get_content_source() builds:
+#   "local"    — read the on-disk corpus under LESSON_CONTENT_ROOT (default;
+#                identical to historical behaviour for the box + CLI + tests).
+#   "s3mirror" — read all lesson HTML/images from the public S3 mirror over
+#                anonymous HTTPS, and discover lessons via ListObjectsV2.
+# CONTENT_S3_BASE_URL is the mirror's origin (no trailing slash); keys mirror
+# the corpus layout byte-for-byte. Mirrored into app.config Settings so the app
+# and pipeline agree. Defaults keep "local" behaviour when the envs are unset.
+# ---------------------------------------------------------------------------
+CONTENT_SOURCE: str = os.getenv("CONTENT_SOURCE", "local").strip().lower()
+CONTENT_S3_BASE_URL: str = os.getenv(
+    "CONTENT_S3_BASE_URL", "https://safeskilljar.s3.us-west-2.amazonaws.com"
+).rstrip("/")
+
 
 # ---------------------------------------------------------------------------
 # Credentials / API config

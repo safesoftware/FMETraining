@@ -107,7 +107,7 @@ def _check_content_read(content_root: Path, artifacts_root: Path) -> int:
     Exercises LESSON_CONTENT_ROOT resolution + HTML parse + artifacts write,
     plus the exact edit_suggestions resolver that KNOW-2353 fixed.
     """
-    from pipeline import edit_suggestions
+    from pipeline.content_source import LessonContentNotFound, get_content_source
     from pipeline.manifest import build_manifest
 
     # Miniature content corpus: the fixture subtree under the REAL content
@@ -126,19 +126,20 @@ def _check_content_read(content_root: Path, artifacts_root: Path) -> int:
         )
     _ok(f"fixture present under content root: {lesson_abs}")
 
-    # KNOW-2353 surface: the pipeline's lesson-HTML resolver MUST find the
-    # lesson under config.LESSON_CONTENT_ROOT. If a regression repointed it at
-    # REPO_ROOT (=/app), this returns None / a non-existent path.
-    resolved = edit_suggestions._resolve_lesson_html_path(
-        SMOKE_LESSON_DIR_FROM_CONTENT_ROOT
-    )
-    if resolved is None or not resolved.is_file():
+    # KNOW-2353/KNOW-2360 surface: the content resolver MUST find the lesson
+    # under config.LESSON_CONTENT_ROOT (the local backend; default CONTENT_SOURCE).
+    # If a regression repointed it at REPO_ROOT (=/app), get_lesson_html raises.
+    try:
+        html = get_content_source().get_lesson_html(SMOKE_LESSON_DIR_FROM_CONTENT_ROOT)
+    except LessonContentNotFound as exc:
         raise SmokeFailure(
-            "edit_suggestions._resolve_lesson_html_path did not resolve the "
-            f"fixture under LESSON_CONTENT_ROOT (got {resolved}). This is the "
-            "KNOW-2353 failure mode (content read against REPO_ROOT)."
+            "content resolver did not resolve the fixture under "
+            f"LESSON_CONTENT_ROOT ({exc}). This is the KNOW-2353 failure mode "
+            "(content read against REPO_ROOT)."
         )
-    _ok(f"edit_suggestions resolver found lesson HTML: {resolved}")
+    if not html or not html.strip():
+        raise SmokeFailure("content resolver returned empty HTML for the fixture lesson.")
+    _ok("content resolver found lesson HTML via get_content_source()")
 
     run_id = "smoke-" + datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%S")
     run_artifact_dir = artifacts_root / run_id

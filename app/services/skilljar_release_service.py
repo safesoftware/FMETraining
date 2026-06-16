@@ -11,41 +11,46 @@ Background / source of truth
   ``_handle_release_plan`` / ``_handle_release_execute`` /
   ``_handle_link_draft_course`` (serve.py lines 540-655) define the behaviour
   and the JSON shapes the UI expects. This service ports them verbatim.
-* ``pipeline/skilljar_release.py`` exposes the proven v1 primitives this service
+* ``pipeline/skilljar_release.py`` exposes the proven primitives this service
   wraps **verbatim**: ``scan_saved_lessons``, ``is_lesson_mapped``,
-  ``build_release_plan``, ``execute_release``, ``link_draft_course``.
+  ``build_release_plan``, ``execute_release``, ``link_draft_course``. These now
+  operate over the WRITABLE saved-version store (``saved_root``), a plain
+  filesystem scan — no git, no DB (Wave 2, S3-content publish side).
 * ``pipeline/skilljar_push.load_mapping`` loads the mapping dict.
 
 Credentials / paths
 -------------------
 Resolved from the app ``Settings`` (NOT ``pipeline.config`` module globals,
 which read raw ``os.environ`` and have a *different* S3 region default):
-    - api_key   ← settings.skilljar_api_key
-    - domain    ← settings.skilljar_domain
-    - s3_bucket ← settings.aws_s3_bucket
-    - s3_key_id ← settings.aws_access_key_id
-    - s3_secret ← settings.aws_secret_access_key
-    - s3_region ← settings.aws_s3_region   (default "us-west-2" in app Settings)
-    - repo_root / content root ← settings.lesson_content_root
+    - api_key    ← settings.skilljar_api_key
+    - domain     ← settings.skilljar_domain
+    - s3_bucket  ← settings.aws_s3_bucket
+    - s3_key_id  ← settings.aws_access_key_id
+    - s3_secret  ← settings.aws_secret_access_key
+    - s3_region  ← settings.aws_s3_region    (default "us-west-2" in app Settings)
+    - saved_root ← settings.saved_versions_root
+
+Saved store (Wave 2)
+--------------------
+Detection and all saved-lesson reads/pushes go through the WRITABLE
+``settings.saved_versions_root`` — the same tree "Save to Version Folder"
+writes. Under ``content_source='s3mirror'`` the lesson content root is a
+READ-ONLY public mirror, so the release MUST NOT read/git it for saved lessons;
+it reads them from ``saved_root`` instead. ``scan_saved_lessons`` is a plain
+filesystem listing of that store (no ``git status``, no DB query). We therefore
+do NOT hold ``lesson_content_root`` here at all — no saved-path read needs it.
 
 Box-QA risks (path decisions — flagged, not resolved here)
 ----------------------------------------------------------
 * **R3 — read-only mapping path.** ``mapping_path`` reuses
   ``pipeline.config.SKILLJAR_MAPPING_PATH`` (``<repo>/data/skilljar-mapping.json``).
   On the EC2 box the repo is checked out under the **read-only** ``/app`` mount,
-  so ``execute_release`` Step 5 (which rewrites the mapping file) and
+  so ``execute_release`` Step 4 (which rewrites the mapping file) and
   ``link_draft_course`` (which writes matched entries) will fail to persist
   there. We do NOT relocate the mapping now — flag for box QA. The default S3
   region also differs from ``pipeline.config`` (``us-west-2`` here vs
   ``us-east-1`` in the pipeline default); we thread the app Settings value so the
   app and the pipeline agree.
-* **repo_root is a git work tree assumption.** ``scan_saved_lessons`` runs
-  ``git status --porcelain`` in ``repo_root = Path(settings.lesson_content_root)``.
-  It therefore only sees NEW/MODIFIED *uncommitted* ``index.html`` dirs and
-  silently returns an empty set if ``repo_root`` is not a git work tree (the
-  subprocess error is swallowed). On the box, ``LESSON_CONTENT_ROOT`` must point
-  at an actual git checkout with the to_version edits still uncommitted for
-  release status/plan to see anything — flag for box QA.
 
 Concurrency
 -----------
@@ -110,11 +115,14 @@ class SkilljarReleaseService:
         Args:
             settings: app ``Settings`` (typically ``get_settings()``). The
                 service reads skilljar_api_key / skilljar_domain / aws_* /
-                lesson_content_root off this and never touches
+                saved_versions_root off this and never touches
                 ``pipeline.config`` module globals.
         """
         self._settings = settings
-        self._repo_root = Path(settings.lesson_content_root)
+        # Writable saved-version store. Detection + all saved-lesson reads/pushes
+        # go through this root (NOT lesson_content_root, which is read-only under
+        # content_source='s3mirror'). Wave 2 (S3-content publish side).
+        self._saved_root = Path(settings.saved_versions_root)
         # Instance registry so a shared service persists runs across
         # execute → poll. Guarded by an instance lock (mirrors serve.py's
         # module-level _active_runs / _runs_lock pattern, but per-instance).
@@ -139,8 +147,10 @@ class SkilljarReleaseService:
     def release_status(self, to_version: str) -> dict[str, list[str]]:
         """Saved + mapped lesson dirs for ``to_version``.
 
-        Wraps ``scan_saved_lessons`` + ``is_lesson_mapped`` (pipeline) exactly as
-        serve.py ``_handle_release_status`` (lines 540-553).
+        Wraps ``scan_saved_lessons`` (a filesystem listing of the writable saved
+        store, ``self._saved_root``) + ``is_lesson_mapped`` (pipeline). Stays
+        SYNC — no DB, no async. Detection is the pipeline's filesystem scan over
+        ``saved_root``.
 
         Args:
             to_version: e.g. ``"2026.1"``. Caller validates the ``\\d{4}\\.\\d+``
@@ -154,7 +164,7 @@ class SkilljarReleaseService:
         from pipeline.skilljar_release import is_lesson_mapped, scan_saved_lessons
 
         mapping = self._load_mapping()
-        saved = scan_saved_lessons(to_version, self._repo_root)
+        saved = scan_saved_lessons(to_version, self._saved_root)
         mapped = [d for d in saved if is_lesson_mapped(d, mapping)]
         # "direct" = lesson_dirs whose mapping key IS the to_version path
         # (draft/linked courses).
@@ -171,8 +181,8 @@ class SkilljarReleaseService:
         """Pre-flight release plan for the selected lessons.
 
         Thin wrapper over ``pipeline.skilljar_release.build_release_plan`` (loads
-        mapping, threads repo_root). Mirrors serve.py ``_handle_release_plan``
-        (lines 557-568).
+        mapping, threads the writable ``saved_root``). Mirrors serve.py
+        ``_handle_release_plan`` (lines 557-568).
 
         Args:
             to_version: target version, e.g. ``"2026.1"``.
@@ -185,7 +195,7 @@ class SkilljarReleaseService:
         from pipeline.skilljar_release import build_release_plan
 
         mapping = self._load_mapping()
-        return build_release_plan(list(lessons), to_version, mapping, self._repo_root)
+        return build_release_plan(list(lessons), to_version, mapping, self._saved_root)
 
     # -- execute -----------------------------------------------------------
 
@@ -225,7 +235,7 @@ class SkilljarReleaseService:
 
         settings = self._settings
         mapping = self._load_mapping()
-        plan = build_release_plan(list(lessons), to_version, mapping, self._repo_root)
+        plan = build_release_plan(list(lessons), to_version, mapping, self._saved_root)
 
         action_key = f"release:{to_version}:{int(time.time() * 1000)}"
         log = ReleaseLog(action_key=action_key)
@@ -240,7 +250,7 @@ class SkilljarReleaseService:
                     settings.skilljar_domain,
                     mapping,
                     SKILLJAR_MAPPING_PATH,
-                    self._repo_root,
+                    self._saved_root,
                     dry_run=dry_run,
                     s3_bucket=settings.aws_s3_bucket,
                     s3_key_id=settings.aws_access_key_id,
@@ -269,8 +279,8 @@ class SkilljarReleaseService:
         """Link a local draft course folder to an existing Skilljar course.
 
         Wraps ``pipeline.skilljar_release.link_draft_course`` (loads mapping,
-        threads api_key + mapping_path + repo_root). Mirrors serve.py
-        ``_handle_link_draft_course`` (lines 629-655). The pipeline raises
+        threads api_key + mapping_path + the writable ``saved_root``). Mirrors
+        serve.py ``_handle_link_draft_course`` (lines 629-655). The pipeline raises
         ``RuntimeError`` on failure; we let it propagate so WS-C can map it to
         HTTP 400.
 
@@ -292,7 +302,7 @@ class SkilljarReleaseService:
             self._settings.skilljar_api_key,
             mapping,
             SKILLJAR_MAPPING_PATH,
-            self._repo_root,
+            self._saved_root,
         )
 
     # -- run log -----------------------------------------------------------
