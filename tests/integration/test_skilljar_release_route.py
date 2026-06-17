@@ -20,8 +20,26 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.config import reset_settings
+from app.db.session import get_session
 from app.routes import skilljar_release as skilljar_release_route
 from app.services.skilljar_release_service import ReleaseLog
+
+
+def _override_get_session_factory(async_session_factory):
+    """Build a ``get_session`` override that yields from the test engine."""
+
+    async def _override_get_session():
+        session = async_session_factory()
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
+
+    return _override_get_session
 
 
 # ---- fake service --------------------------------------------------------
@@ -134,6 +152,11 @@ def configured_app(async_session_factory, seeded_user, authenticate, monkeypatch
     try:
         from app.main import create_app  # late import — pulls fresh settings
         app = create_app()
+        # release-execute / release-log / release-history use the DB (WS-E);
+        # wire get_session at the test engine so those writes hit the test DB.
+        app.dependency_overrides[get_session] = _override_get_session_factory(
+            async_session_factory
+        )
         with TestClient(app) as client:
             authenticate(client, seeded_user.id)
             yield client
@@ -309,6 +332,9 @@ def test_missing_api_key_returns_503(
     try:
         from app.main import create_app
         app = create_app()
+        app.dependency_overrides[get_session] = _override_get_session_factory(
+            async_session_factory
+        )
         with TestClient(app) as client:
             authenticate(client, seeded_user.id)
             execute = client.post(

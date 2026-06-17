@@ -65,6 +65,16 @@
     <pre id="execute-log" class="release-log" aria-live="polite"></pre>
   </section>
 
+  <!-- ============================ Recent releases ====================== -->
+  <section class="release-block">
+    <h3>Recent releases</h3>
+    <p>
+      Audit trail of live releases (most recent first). Dry runs are not
+      recorded. Filtered to the version above when one is entered.
+    </p>
+    <div id="history-result" class="result" aria-live="polite"></div>
+  </section>
+
   <!-- ============================ Link draft course ==================== -->
   <section class="release-block">
     <h3>Link draft course</h3>
@@ -197,6 +207,7 @@
           " &middot; <strong>Mapped:</strong> " + mapped.length +
           " &middot; <strong>Direct:</strong> " + direct.length + "</p>";
         renderLessonPicker(saved, mapped, direct);
+        loadHistory();
       } catch (e) {
         setError(out, "Request failed: " + e.message);
       }
@@ -278,6 +289,7 @@
         if (status === "done" || status === "error") {
           if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
           $("execute-btn").disabled = false;
+          loadHistory();
           return;
         }
         pollTimer = setTimeout(function () { pollLog(actionKey); }, POLL_INTERVAL_MS);
@@ -324,6 +336,41 @@
       } catch (e) {
         setText(statusEl, "Request failed: " + e.message);
         $("execute-btn").disabled = false;
+      }
+    }
+
+    // ----- Recent releases (audit) ----------------------------------------
+    function renderHistory(rows) {
+      const out = $("history-result");
+      if (!rows || rows.length === 0) {
+        out.innerHTML = "<p><em>No releases recorded yet.</em></p>";
+        return;
+      }
+      let html = '<ul class="history-list">';
+      for (const r of rows) {
+        const when = r.finished_at || r.started_at || "";
+        html +=
+          '<li><code>' + esc(r.status) + "</code> — " + esc(r.course) +
+          ' <span class="tag">' + esc(r.to_version) + "</span>" +
+          (when ? ' <span class="muted">' + esc(when) + "</span>" : "") +
+          "</li>";
+      }
+      html += "</ul>";
+      out.innerHTML = html;
+    }
+
+    async function loadHistory() {
+      const out = $("history-result");
+      const v = versionValue();
+      let url = "/api/release-history";
+      if (v) url += "?to_version=" + encodeURIComponent(v);
+      try {
+        const resp = await fetch(url, { headers: { Accept: "application/json" } });
+        if (!resp.ok) { setError(out, await detailOf(resp)); return; }
+        const data = await resp.json();
+        renderHistory(data.history || []);
+      } catch (e) {
+        setError(out, "Request failed: " + e.message);
       }
     }
 
@@ -390,6 +437,7 @@
       $("execute-btn").addEventListener("click", execute);
       $("link-draft-btn").addEventListener("click", linkDraft);
       loadVersions();
+      loadHistory();
     });
   })();
   </script>
