@@ -217,7 +217,15 @@ ExecStartPre=${APP_DIR}/.venv/bin/alembic upgrade head
 # X-Forwarded-Proto/For: without them request.url.scheme is always "http"
 # behind the proxy, which would build http:// OAuth callback URLs and break
 # secure-cookie/redirect logic. Mirrors docker/entrypoint.sh.
-ExecStart=${APP_DIR}/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2 --proxy-headers --forwarded-allow-ips 127.0.0.1
+#
+# --workers 1 (KNOW-2368): the release-log buffer, the WS-E release lock/history
+# finalize map, and the Skilljar throttle state are all IN-PROCESS, so a poll or
+# finalize must hit the same process that started the release. With >1 worker,
+# ~half the /api/release-log polls land on the other worker -> "No log for key"
+# 404s and unreliable lock/history finalize. A single worker + the async loop is
+# plenty for this internal tool (releases run in a daemon thread, off the loop).
+# If we ever need >1 worker, move that state to the DB/Redis first.
+ExecStart=${APP_DIR}/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
 Restart=on-failure
 RestartSec=5
 
