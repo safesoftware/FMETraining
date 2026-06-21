@@ -118,54 +118,8 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <ul>
 <li>Double-click&nbsp;<strong>HTTPCaller</strong> or press <strong>Enter </strong>with it selected in Quick Add to add the transformer to the canvas:</li>
 </ul>
-<p><img src="images/5d1af57c-1712857387204.png" alt="HTTPCaller on Canvas" width="200" /></p>
-<ul>
-<li>Notice that the HTTPCaller requires an <strong>Input</strong> feature to work. What should we connect to the Input port?</li>
-</ul>
-<h2>3) Add a Creator</h2>
-<p>If we wanted to make many API calls, we could send features into the Input port containing requests or query parameters to fill in while making the call. For example, maybe we would send features with a Request attribute with the following values:</p>
-<ul>
-<li><code>https://my-api.com/v1/business-licenses?neighborhood=Downtown&amp;page=1</code></li>
-<li><code>https://my-api.com/v1/business-licenses?neighborhood=Downtown&amp;page=2</code></li>
-<li><code>https://my-api.com/v1/business-licenses?neighborhood=Downtown&amp;page=3</code></li>
-</ul>
-<p>Or we could send features with the query parameter values and use those in the HTTPCaller to construct each call:</p>
-<table style="border-collapse: collapse; width: 99.9509%; height: 129.556px;" border="1">
-<tbody>
-<tr style="height: 32.3889px;">
-<td style="width: 33.3165%; height: 32.3889px;"><strong>FeatureID</strong></td>
-<td style="width: 33.3165%; height: 32.3889px;"><strong>Neighborhood</strong></td>
-<td style="width: 33.3179%; height: 32.3889px;"><strong>Page</strong></td>
-</tr>
-<tr style="height: 32.3889px;">
-<td style="width: 33.3165%; height: 32.3889px;">19b16b26</td>
-<td style="width: 33.3165%; height: 32.3889px;">Downtown</td>
-<td style="width: 33.3179%; height: 32.3889px;">1</td>
-</tr>
-<tr style="height: 32.3889px;">
-<td style="width: 33.3165%; height: 32.3889px;">a43c3e7a</td>
-<td style="width: 33.3165%; height: 32.3889px;">Downtown</td>
-<td style="width: 33.3179%; height: 32.3889px;">2</td>
-</tr>
-<tr style="height: 32.3889px;">
-<td style="width: 33.3165%; height: 32.3889px;">66f88db0</td>
-<td style="width: 33.3165%; height: 32.3889px;">Downtown</td>
-<td style="width: 33.3179%; height: 32.3889px;">3</td>
-</tr>
-</tbody>
-</table>
-<p>However, in this case, we want to make a single call and receive a JSON payload, and we already know the URL in advance.</p>
-<p>In this case, we can use a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/creator.htm" target="_blank" rel="noopener">Creator</a> transformer to make the call. The Creator transformer creates simple features. It's unusual because it has only one output port. We can create a single empty feature and use it to kick off the API call.</p>
-<ul>
-<li>So, keep the <strong>HTTPCaller</strong> selected and use Quick Add to add a <strong>Creator </strong>(type Creator and select it from the list):</li>
-</ul>
-<p><img src="images/6848fe8d-pasted-afd0cd7cbf6f.png" alt="" /></p>
-<ul>
-<li>Because the <strong>HTTPCaller</strong> was selected, and FME knows the <strong>Creator</strong> only has an output port, it will correctly add it to the canvas already connected to the <strong>HTTPCaller's Input </strong>port:</li>
-</ul>
-<p><img src="images/0e487aef-1712857947727.png" alt="Creator connected to HTTPCaller" width="400" /></p>
-<h2>4) Configure the HTTPCaller</h2>
-<p>Now that the <strong>HTTPCaller</strong> has a feature going into Input, it will make one HTTP request.&nbsp;</p>
+<p><img src="images/1781816961209.png" alt="HTTPCaller on Canvas" width="219" height="146" /></p>
+<h2>3) Configure the HTTPCaller</h2>
 <ul>
 <li>Double-click the <strong>HTTPCaller</strong> to open its parameters and configure them.
 <ul>
@@ -175,7 +129,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>Enter&nbsp;<code>https://fme.ly/businessowners</code>&nbsp;for the <strong>Request URL </strong>and choose GET for the <strong>HTTP Method.</strong></li>
 </ul>
 <p><img src="images/1778560890431.png" alt="Request URL" /></p>
-<h2>5) Test the HTTPCaller</h2>
+<h2>4) Test the HTTPCaller</h2>
 <p>It is vital to test transformers after configuring them. Normally, you can just run the transformer you just configured and then inspect the output in Data Preview to ensure it is correct. However, the HTTPCaller includes a special <strong>Send Test Request </strong>button we can use to test our query without running&nbsp;the workspace.</p>
 <ul>
 <li>Click&nbsp;<strong>Send Test Request.</strong></li>
@@ -194,17 +148,17 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <ul>
 <li>Click&nbsp;<strong>OK </strong>twice to close the transformer parameters.&nbsp;</li>
 </ul>
-<h2>6) View HTTPCaller Response Attribute</h2>
+<h2>5) View HTTPCaller Response Attribute</h2>
 <ul>
 <li>Click the <strong>Run </strong>button.
 <ul>
-<li>The Creator creates a single feature and sends it to the HTTPCaller. The HTTPCaller makes a single HTTP GET request to the request URL. It returns a JSON payload stored as a text attribute in the default attribute <strong style="font-family: inherit; font-size: 1em;">_response_body</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
+<li>The HTTPCaller makes a single HTTP GET request to the request URL. It returns a JSON payload stored as a text attribute in the default attribute <strong style="font-family: inherit; font-size: 1em;">_response_body</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
 <li>We want to view this attribute to see the results of the the HTTP call.</li>
 </ul>
 </li>
 <li><strong style="font-family: inherit; font-size: 1em;">Data Preview </strong><span style="font-family: inherit; font-size: 1em;">should automatically open to show the HTTPCaller's data cache, but if it doesn't, click the green cache icon on the </span><strong style="font-family: inherit; font-size: 1em;">HTTPCaller's Output </strong><span style="font-family: inherit; font-size: 1em;">port.</span></li>
 </ul>
-<p><img src="images/55f69cee-1712860285837.png" alt="The HTTPCaller feature cache" width="400" /></p>
+<p><img src="images/1781817324699.png" alt="The HTTPCaller feature cache" width="212" height="158" /></p>
 <ul>
 <li>The results of the call are displayed in <strong>Data Preview</strong>. You should notice three things.
 <ul>
@@ -214,7 +168,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </ul>
 </li>
 </ul>
-<p><img src="images/620e5e6e-pasted-9d204234334c.png" alt="" /></p>
+<p><img src="images/1781817345392.png" alt="" width="406" height="230" /></p>
 <ul>
 <li>Click the ellipsis button <strong>[. . .] </strong>in the <strong>_response_body </strong>attribute.
 <ul>
