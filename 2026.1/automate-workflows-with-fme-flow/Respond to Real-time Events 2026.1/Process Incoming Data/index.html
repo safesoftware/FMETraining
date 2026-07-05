@@ -1,0 +1,462 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Determine when to use automation parameters and output attributes.&nbsp;</li>
+<li>Use output attributes in downstream actions.</li>
+<li>Configure an automation to run a workspace in response to a trigger.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Determine when to use automation parameters and output attributes.&nbsp;</li>
+<li>Use output attributes in downstream actions.</li>
+<li>Configure an automation to run a workspace in response to a trigger.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/process-incoming-data.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\process-incoming-data.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Building Footprints Esri Shapefiles</a> | C:\FMEData\Data\Engineering\BuildingFootprints</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/buildingfootprints_geodb.zip" target="_blank" rel="noopener">buildingfootprints_geodb.zip</a> | C:\FMEData\Data\Engineering\BuildingFootprints\buildingfootprints.gdb&nbsp;</li>
+</ul>
+<h2>Controlling Workflows with Parameters</h2>
+<p>FME Flow Automations rely on sending messages between triggers and actions. When configuring triggers and actions, you use parameters to customize how they run and process data. For example, an FME Flow Schedule trigger has parameters for the Schedule Type and how often the schedule should run, which you provide values to control how the trigger functions.&nbsp;</p>
+<p><img src="images/1781278453566.jpg" alt="" /></p>
+<p>When you configure a Run a Workspace action, the workspace's user parameters appear, allowing you to customize its behavior.&nbsp;</p>
+<p><img src="images/1781278998706.jpg" alt="" /></p>
+<p>The values you enter for a trigger's or an action's parameters will control how the node runs. The value you enter will depend on the parameter type and what FME Flow expects as input for the parameter. For example, FME Flow has you pick a connection for a connection parameter. Source and destination dataset parameters accept file paths or URLs to web-based datasets.&nbsp;</p>
+<h2>Automation Parameters</h2>
+<p>Automation Parameters are global to an automation. They allow you to reference a value multiple times at multiple components of your workflow without explicitly defining it each time.&nbsp;</p>
+<p>You create and edit automation parameters in the Automation Parameters Editor, which you open from the automations toolbar.</p>
+<p><img src="images/1781279114681.jpg" alt="" /></p>
+<p>You may also open the editor to create Automation Parameters directly from parameter inputs.&nbsp;</p>
+<p><img src="images/1781279273378.jpg" alt="" /></p>
+<p>Every automation parameter begins with the <code>global.</code> prefix followed by the parameter name. When you reference this key, FME Flow will use the value saved to the parameter. For example, you create the SourceDataset_SHAPEFILE parameter that you will use in a source dataset parameter for a workspace. For the workspace source dataset parameter, you enter <code>global.SourceDataset_SHAPEFILE</code>, and the workspace will read from the file path value.&nbsp;</p>
+<p><img src="images/1781279359020.jpg" alt="" /></p>
+<p>Automation Parameters are reusable throughout an automation. You may reference them multiple times across multiple nodes. If the value changes, update it in the Automation Parameters Editor, and your workflow uses the new value anywhere it references the parameter. You do not have to update a value multiple times across your automation, which helps prevent errors if you forget to update a parameter.&nbsp;</p>
+<h2>Output Attributes</h2>
+<p>Automations function by passing JSON-formatted messages between components and nodes. When a trigger receives a message to kick off the automation, it passes the message to the next action, triggering it to run. Once the action completes, it passes another message to the following actions. While it is possible to parse key pieces of information from the entire JSON message, FME Flow makes this task easier by extracting key-value pairs from the JSON messages and creating attributes. In automations, you can link these attributes to parameter values in downstream actions to further control how they function based on information from upstream in the automation.&nbsp;</p>
+<p><img src="images/1753893137525.jpg" alt="" /></p>
+<p>Each trigger and action has pre-set Output Attributes, called Event Attributes, specific to its type. You may reference Output Attributes in action parameters downstream from the trigger or action that creates the attribute. Be cautious if multiple actions produce the same attribute values - FME Flow only stores one value per attribute, so the value from the second action will overwrite the value from the first. If you need values from multiple actions, create Custom Attributes and provide a unique key for each action. Custom Attributes are Output Attributes you define manually, meaning you make the attribute name and assign a value to it.&nbsp;</p>
+<p><img src="images/1781279578297.jpg" alt="" /></p>
+<h2 id="introduction">Exercise</h2>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">This exercise uses the Incoming Building Footprints Automation from the previous exercise, </span><strong>Create a Directory Watch Trigger</strong><span style="font-family: inherit; font-size: 1em;">. You should complete the previous exercise before completing this exercise.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img src="images/1753381053031.png" alt="" width="202" height="214" /></p>
+<p>Jennifer continues with her Incoming Building Footprints automation. So far, you've helped Jennifer trigger the automation when someone adds or updates files in the BuildingUpdates folder. Now, Jennifer needs to use a Filter messages action and a Run a Workspace action to process each shapefile and update the geodatabase.&nbsp;</p>
+<p>In this exercise, you will:&nbsp;</p>
+<ul>
+<li>Publish Jennifer's workspace that reads shapefiles and updates the geodatabase to FME Flow, and add it to the automation.</li>
+<li>Use a Filter messages action to filter the trigger output messages.&nbsp;</li>
+<li>Trigger the automation to process each shapefile of updates and update the geodatabase.&nbsp;</li>
+</ul>
+<h3>1) Open and Run Starting Workspace</h3>
+<ul>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/process-incoming-data.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\process-incoming-data.fmw) in <strong>FME Workbench</strong>.&nbsp;</li>
+<li><strong>Run</strong> the workspace.&nbsp;</li>
+<li>Once the translation is complete, select the&nbsp;<strong>writer</strong> and then click the&nbsp;<strong>View Written Data</strong> icon.&nbsp;</li>
+</ul>
+<p><img src="images/1753389069768.jpg" alt="" width="835" height="407" /></p>
+<ul>
+<li>Observe the written data in the <strong>Data Preview</strong> window.&nbsp;</li>
+</ul>
+<p><img src="images/1753389113391.jpg" alt="" width="1094" height="501" /></p>
+<h3>2) Publish to FME Flow</h3>
+<p>The workspace processes the building updates as expected, so it is ready to deploy to FME Flow.</p>
+<ul>
+<li>Click&nbsp;<strong>Publish</strong> to open the publishing wizard.&nbsp;</li>
+</ul>
+<p><img src="images/1753389408458.jpg" alt="" /></p>
+<ul>
+<li>Ensure FME Workbench successfully connects to FME Flow.</li>
+<li>Select the <strong>Training</strong> repository.
+<ul>
+<li>If the Training repository does not exist, click New... to create it. She ensures FME Workbench successfully connects to FME Flow, creates the Training repository for the workspace, and clicks Next.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753389992729.jpg" alt="" width="538" height="538" /></p>
+<ul>
+<li>Register the workspace with the <strong>Job Submitter</strong> service and click <strong>Publish</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1753390248660.jpg" alt="" width="554" height="554" /></p>
+<ul>
+<li>Check the <strong>Translation Log</strong> to ensure FME published the workspace successfully.</li>
+<li>Navigate to <strong>FME Flow</strong>.&nbsp;</li>
+</ul>
+<h3>3) Upload Geodatabase</h3>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If the buildingfootprints.gdb already exists in Resources &gt; Data &gt; Output, you may skip this step and move on to Step 4.&nbsp;</p>
+</blockquote>
+<p>When you ran the workspace on FME Workbench, FME wrote the destination geodatabase to the local computer. Jennifer wants others to be able to access the geodatabase containing all the building updates for their workflows on FME Flow.</p>
+<ul>
+<li>Open <strong>Resources &gt; Data &gt; Output</strong>.</li>
+<li>Click <strong>Upload</strong> and select <strong>Folder</strong>.&nbsp;&nbsp;</li>
+</ul>
+<p><img src="images/1753390982819.jpg" alt="" width="1116" height="340" /></p>
+<ul>
+<li>Navigate to <span class="c7 c10"><strong>C:\FMEData\Data\Engineering\BuildingFootprints\</strong> and select <strong>buildingfootprints.gdb</strong> to upload.&nbsp;</span></li>
+</ul>
+<p><span class="c7 c10"><img src="images/1753391047000.jpg" alt="" width="862" height="392" /></span></p>
+<p><span class="c7 c10"><img src="images/1753391133095.jpg" alt="" width="1121" height="296" /></span></p>
+<h3>4) Stop Automation</h3>
+<ul>
+<li>Navigate back to the <strong>Incoming Building Footprints </strong>automation.</li>
+<li>Click <strong>Stop Debug</strong>.
+<ul>
+<li>The Automation stops polling the BuildingUpdates folder for creations and modifications, and allows you to edit the nodes.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1781282786218.jpg" alt="" /></p>
+<h3>5) Filter Messages</h3>
+<ul>
+<li>Open the<strong> Log</strong> action details.
+<ul>
+<li>Either double-click the node or click the icon in the center to open the Log Details.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753383937085.jpg" alt="" width="797" height="453" /></p>
+<ul>
+<li>Change the&nbsp;<strong>Action</strong> to&nbsp;<strong>Filter messages</strong>.</li>
+<li>For the&nbsp;<strong>Attribute</strong> parameter, select&nbsp;<strong>File Path&nbsp;</strong>from the drop-down.&nbsp;</li>
+<li>Enter&nbsp;<strong>.shp</strong> for the&nbsp;<strong>Contains</strong> parameter.&nbsp;
+<ul>
+<li>FME Flow will filter the event file path for .shp files only. Since shapefiles contain four files, FME Flow sends four CREATE events from the trigger, and this workflow only requires one event to trigger for each shapefile.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Apply</strong> to update the action and close the Filter Details.&nbsp;</li>
+</ul>
+<p><img src="images/1782159691838.jpg" alt="" /></p>
+<h3>6) Add a Workspace Action</h3>
+<ul>
+<li>Attach an internal action to the Filter success port.</li>
+<li>Configure it to run the&nbsp;<strong>process-incoming-data.fmw&nbsp;</strong>workspace you published to the&nbsp;<strong>Training</strong> repository.&nbsp;</li>
+</ul>
+<p><img src="images/1782160051432.jpg" alt="" /></p>
+<p>Next, configure the workspace parameters.</p>
+<ul>
+<li>For <strong>Source Esri Shapefile(s)</strong>, deselect <strong>Use Default Value</strong>, then open the parameter drop-down, expand <strong>Directory</strong>, and select the <strong>File Path</strong> attribute.</li>
+</ul>
+<p><img src="images/1782160253605.jpg" alt="" /></p>
+<ul>
+<li>For the <strong>File Geodatabase</strong> parameter, also deselect the <strong>Use Default Value</strong> option. Then, click the ellipsis and navigate to the <strong>buildingfootprints.gdb</strong> in Resources.&nbsp;</li>
+</ul>
+<p><img src="images/1782162069130.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>Apply</strong> to save the workspace details and close the pane.&nbsp;</li>
+</ul>
+<p><img src="images/1782162158755.jpg" alt="" /></p>
+<h3>7) Start Automation</h3>
+<ul>
+<li><strong>Save</strong> the updated automation.&nbsp;</li>
+<li>Click <strong>Start</strong> to run the automation, this time in Production Mode.&nbsp;
+<ul>
+<li>You will likely receive a pop-up warning about running the automation in Production Mode. Click&nbsp;<strong>Start</strong> to continue.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753392210572.jpg" alt="" /></p>
+<p><img src="images/1782162234965.jpg" alt="" /></p>
+<h3>8) Test Automation</h3>
+<ul>
+<li>Go to&nbsp;<strong>Resources</strong> and open the&nbsp;<strong>BuildingUpdates</strong> folder.&nbsp;</li>
+<li>Upload another shapefile of updates. Click&nbsp;<strong>Upload </strong>and select&nbsp;<strong>Files</strong>. Select all four files that comprise a <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_self">shapefile of updates</a> (C:\FMEData\Data\Engineering\BuildingFootprints).</li>
+</ul>
+<p><img src="images/1753392500632.jpg" alt="" width="1103" height="549" /></p>
+<ul>
+<li>Return to the automation and see that the message counts reflect the shapefile you uploaded, and that only one message passes the Filter action to the workspace.&nbsp;
+<ul>
+<li>If the event counts do not update automatically, click <strong>Refresh</strong> on the top toolbar.&nbsp;&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753392698118.jpg" alt="" /></p>
+<h3>9) View Triggered Jobs</h3>
+<p>Now, check the job of the workspace that ran in the automation.&nbsp;</p>
+<ul>
+<li>Open the&nbsp;<strong>Menu&nbsp;</strong>and select&nbsp;<strong>View Triggered Jobs</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1753392808068.jpg" alt="" /></p>
+<p>The FME Flow Jobs page opens and shows the jobs completed by this automation. Notice whether your workspace ran successfully.&nbsp;&nbsp;</p>
+<p><img src="images/1782162399867.jpg" alt="" /></p>
+<h3>10) Optional: Inspect Output</h3>
+<ul>
+<li>Return to the&nbsp;<strong>buildingfootprints.gdb</strong> in&nbsp;<strong>Resources</strong>.&nbsp;</li>
+<li>Check that the timestamp was recently updated, which indicates that the workspace just updated the data.&nbsp;</li>
+<li>Click the box to select the geodatabase, then expand the&nbsp;<strong>Actions</strong> options, and select&nbsp;<strong>Download</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1753393362464.jpg" alt="" width="1115" height="372" /></p>
+<ul>
+<li>In the File Explorer, open the <strong>Downloads</strong> folder, then&nbsp;extract the zip file containing the geodatabase.&nbsp;</li>
+</ul>
+<p><img src="images/1753393496673.jpg" alt="" /></p>
+<ul>
+<li>Next, open <strong>FME Data Inspector</strong> and click <strong>Open Dataset</strong> from the Get Started section.</li>
+<li>For Format, select <strong>Esri Geodatabase (OpenFile Geodb)</strong> and then select the extracted geodatabase in Downloads.&nbsp;</li>
+</ul>
+<p><img src="images/1753393727210.jpg" alt="" width="918" height="294" /></p>
+<ul>
+<li>Click <strong>OK</strong>, and the data opens in Data Inspector.&nbsp;</li>
+</ul>
+<p><img src="images/1753393860614.jpg" alt="" width="1246" height="662" /></p>
+<div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The building footprints data you see will depend on which shapefiles you uploaded for processing.&nbsp;</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img4.423.Ex3.ViewOutputInDataInspector.png" alt="Inspect the output" /></a></p>
+</blockquote>
+<p>You've now completely automated the building updates workflow for Jennifer. When someone adds new shapefiles to the BuildingUpdates folder, the automation triggers and runs the workspace that updates the geodatabase with the latest data. This automation eliminates Jennifer's need to process the shapefiles manually and ensures that other users can access the most up-to-date data.&nbsp;</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/process-incoming-data.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\process-incoming-data.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_blank" rel="noreferrer noopener">Building Footprints Esri Shapefiles</a> | C:\FMEData\Data\Engineering\BuildingFootprints</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints/buildingfootprints_geodb.zip" target="_blank" rel="noopener">buildingfootprints_geodb.zip</a> | C:\FMEData\Data\Engineering\BuildingFootprints\buildingfootprints.gdb&nbsp;</li>
+</ul>
+<h2>Controlling Workflows with Parameters</h2>
+<p>FME Flow Automations rely on sending messages between triggers and actions. When configuring triggers and actions, you use parameters to customize how they run and process data. For example, an FME Flow Schedule trigger has parameters for the Schedule Type and how often the schedule should run, which you provide values to control how the trigger functions.&nbsp;</p>
+<p><img src="images/1781278453566.jpg" alt="" /></p>
+<p>When you configure a Run a Workspace action, the workspace's user parameters appear, allowing you to customize its behavior.&nbsp;</p>
+<p><img src="images/1781278998706.jpg" alt="" /></p>
+<p>The values you enter for a trigger's or an action's parameters will control how the node runs. The value you enter will depend on the parameter type and what FME Flow expects as input for the parameter. For example, FME Flow has you pick a connection for a connection parameter. Source and destination dataset parameters accept file paths or URLs to web-based datasets.&nbsp;</p>
+<h2>Automation Parameters</h2>
+<p>Automation Parameters are global to an automation. They allow you to reference a value multiple times at multiple components of your workflow without explicitly defining it each time.&nbsp;</p>
+<p>You create and edit automation parameters in the Automation Parameters Editor, which you open from the automations toolbar.</p>
+<p><img src="images/1781279114681.jpg" alt="" /></p>
+<p>You may also open the editor to create Automation Parameters directly from parameter inputs.&nbsp;</p>
+<p><img src="images/1781279273378.jpg" alt="" /></p>
+<p>Every automation parameter begins with the <code>global.</code> prefix followed by the parameter name. When you reference this key, FME Flow will use the value saved to the parameter. For example, you create the SourceDataset_SHAPEFILE parameter that you will use in a source dataset parameter for a workspace. For the workspace source dataset parameter, you enter <code>global.SourceDataset_SHAPEFILE</code>, and the workspace will read from the file path value.&nbsp;</p>
+<p><img src="images/1781279359020.jpg" alt="" /></p>
+<p>Automation Parameters are reusable throughout an automation. You may reference them multiple times across multiple nodes. If the value changes, update it in the Automation Parameters Editor, and your workflow uses the new value anywhere it references the parameter. You do not have to update a value multiple times across your automation, which helps prevent errors if you forget to update a parameter.&nbsp;</p>
+<h2>Output Attributes</h2>
+<p>Automations function by passing JSON-formatted messages between components and nodes. When a trigger receives a message to kick off the automation, it passes the message to the next action, triggering it to run. Once the action completes, it passes another message to the following actions. While it is possible to parse key pieces of information from the entire JSON message, FME Flow makes this task easier by extracting key-value pairs from the JSON messages and creating attributes. In automations, you can link these attributes to parameter values in downstream actions to further control how they function based on information from upstream in the automation.&nbsp;</p>
+<p><img src="images/1753893137525.jpg" alt="" /></p>
+<p>Each trigger and action has pre-set Output Attributes, called Event Attributes, specific to its type. You may reference Output Attributes in action parameters downstream from the trigger or action that creates the attribute. Be cautious if multiple actions produce the same attribute values - FME Flow only stores one value per attribute, so the value from the second action will overwrite the value from the first. If you need values from multiple actions, create Custom Attributes and provide a unique key for each action. Custom Attributes are Output Attributes you define manually, meaning you make the attribute name and assign a value to it.&nbsp;</p>
+<p><img src="images/1781279578297.jpg" alt="" /></p>
+<h2 id="introduction">Exercise</h2>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /><br /><br /><span style="font-family: inherit; font-size: 1em;">This exercise uses the Incoming Building Footprints Automation from the previous exercise, </span><strong>Create a Directory Watch Trigger</strong><span style="font-family: inherit; font-size: 1em;">. You should complete the previous exercise before completing this exercise.</span></blockquote>
+</div>
+</div>
+</div>
+</div>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<p><img src="images/1753381053031.png" alt="" width="202" height="214" /></p>
+<p>Jennifer continues with her Incoming Building Footprints automation. So far, you've helped Jennifer trigger the automation when someone adds or updates files in the BuildingUpdates folder. Now, Jennifer needs to use a Filter messages action and a Run a Workspace action to process each shapefile and update the geodatabase.&nbsp;</p>
+<p>In this exercise, you will:&nbsp;</p>
+<ul>
+<li>Publish Jennifer's workspace that reads shapefiles and updates the geodatabase to FME Flow, and add it to the automation.</li>
+<li>Use a Filter messages action to filter the trigger output messages.&nbsp;</li>
+<li>Trigger the automation to process each shapefile of updates and update the geodatabase.&nbsp;</li>
+</ul>
+<h3>1) Open and Run Starting Workspace</h3>
+<ul>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AutomateWorkflowsWithFMEFlow/process-incoming-data.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\AutomateWorkflowsWithFMEFlow\process-incoming-data.fmw) in <strong>FME Workbench</strong>.&nbsp;</li>
+<li><strong>Run</strong> the workspace.&nbsp;</li>
+<li>Once the translation is complete, select the&nbsp;<strong>writer</strong> and then click the&nbsp;<strong>View Written Data</strong> icon.&nbsp;</li>
+</ul>
+<p><img src="images/1753389069768.jpg" alt="" width="835" height="407" /></p>
+<ul>
+<li>Observe the written data in the <strong>Data Preview</strong> window.&nbsp;</li>
+</ul>
+<p><img src="images/1753389113391.jpg" alt="" width="1094" height="501" /></p>
+<h3>2) Publish to FME Flow</h3>
+<p>The workspace processes the building updates as expected, so it is ready to deploy to FME Flow.</p>
+<ul>
+<li>Click&nbsp;<strong>Publish</strong> to open the publishing wizard.&nbsp;</li>
+</ul>
+<p><img src="images/1753389408458.jpg" alt="" /></p>
+<ul>
+<li>Ensure FME Workbench successfully connects to FME Flow.</li>
+<li>Select the <strong>Training</strong> repository.
+<ul>
+<li>If the Training repository does not exist, click New... to create it. She ensures FME Workbench successfully connects to FME Flow, creates the Training repository for the workspace, and clicks Next.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753389992729.jpg" alt="" width="538" height="538" /></p>
+<ul>
+<li>Register the workspace with the <strong>Job Submitter</strong> service and click <strong>Publish</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1753390248660.jpg" alt="" width="554" height="554" /></p>
+<ul>
+<li>Check the <strong>Translation Log</strong> to ensure FME published the workspace successfully.</li>
+<li>Navigate to <strong>FME Flow</strong>.&nbsp;</li>
+</ul>
+<h3>3) Upload Geodatabase</h3>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>If the buildingfootprints.gdb already exists in Resources &gt; Data &gt; Output, you may skip this step and move on to Step 4.&nbsp;</p>
+</blockquote>
+<p>When you ran the workspace on FME Workbench, FME wrote the destination geodatabase to the local computer. Jennifer wants others to be able to access the geodatabase containing all the building updates for their workflows on FME Flow.</p>
+<ul>
+<li>Open <strong>Resources &gt; Data &gt; Output</strong>.</li>
+<li>Click <strong>Upload</strong> and select <strong>Folder</strong>.&nbsp;&nbsp;</li>
+</ul>
+<p><img src="images/1753390982819.jpg" alt="" width="1116" height="340" /></p>
+<ul>
+<li>Navigate to <span class="c7 c10"><strong>C:\FMEData\Data\Engineering\BuildingFootprints\</strong> and select <strong>buildingfootprints.gdb</strong> to upload.&nbsp;</span></li>
+</ul>
+<p><span class="c7 c10"><img src="images/1753391047000.jpg" alt="" width="862" height="392" /></span></p>
+<p><span class="c7 c10"><img src="images/1753391133095.jpg" alt="" width="1121" height="296" /></span></p>
+<h3>4) Stop Automation</h3>
+<ul>
+<li>Navigate back to the <strong>Incoming Building Footprints </strong>automation.</li>
+<li>Click <strong>Stop Debug</strong>.
+<ul>
+<li>The Automation stops polling the BuildingUpdates folder for creations and modifications, and allows you to edit the nodes.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1781282786218.jpg" alt="" /></p>
+<h3>5) Filter Messages</h3>
+<ul>
+<li>Open the<strong> Log</strong> action details.
+<ul>
+<li>Either double-click the node or click the icon in the center to open the Log Details.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753383937085.jpg" alt="" width="797" height="453" /></p>
+<ul>
+<li>Change the&nbsp;<strong>Action</strong> to&nbsp;<strong>Filter messages</strong>.</li>
+<li>For the&nbsp;<strong>Attribute</strong> parameter, select&nbsp;<strong>File Path&nbsp;</strong>from the drop-down.&nbsp;</li>
+<li>Enter&nbsp;<strong>.shp</strong> for the&nbsp;<strong>Contains</strong> parameter.&nbsp;
+<ul>
+<li>FME Flow will filter the event file path for .shp files only. Since shapefiles contain four files, FME Flow sends four CREATE events from the trigger, and this workflow only requires one event to trigger for each shapefile.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Apply</strong> to update the action and close the Filter Details.&nbsp;</li>
+</ul>
+<p><img src="images/1782159691838.jpg" alt="" /></p>
+<h3>6) Add a Workspace Action</h3>
+<ul>
+<li>Attach an internal action to the Filter success port.</li>
+<li>Configure it to run the&nbsp;<strong>process-incoming-data.fmw&nbsp;</strong>workspace you published to the&nbsp;<strong>Training</strong> repository.&nbsp;</li>
+</ul>
+<p><img src="images/1782160051432.jpg" alt="" /></p>
+<p>Next, configure the workspace parameters.</p>
+<ul>
+<li>For <strong>Source Esri Shapefile(s)</strong>, deselect <strong>Use Default Value</strong>, then open the parameter drop-down, expand <strong>Directory</strong>, and select the <strong>File Path</strong> attribute.</li>
+</ul>
+<p><img src="images/1782160253605.jpg" alt="" /></p>
+<ul>
+<li>For the <strong>File Geodatabase</strong> parameter, also deselect the <strong>Use Default Value</strong> option. Then, click the ellipsis and navigate to the <strong>buildingfootprints.gdb</strong> in Resources.&nbsp;</li>
+</ul>
+<p><img src="images/1782162069130.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>Apply</strong> to save the workspace details and close the pane.&nbsp;</li>
+</ul>
+<p><img src="images/1782162158755.jpg" alt="" /></p>
+<h3>7) Start Automation</h3>
+<ul>
+<li><strong>Save</strong> the updated automation.&nbsp;</li>
+<li>Click <strong>Start</strong> to run the automation, this time in Production Mode.&nbsp;
+<ul>
+<li>You will likely receive a pop-up warning about running the automation in Production Mode. Click&nbsp;<strong>Start</strong> to continue.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753392210572.jpg" alt="" /></p>
+<p><img src="images/1782162234965.jpg" alt="" /></p>
+<h3>8) Test Automation</h3>
+<ul>
+<li>Go to&nbsp;<strong>Resources</strong> and open the&nbsp;<strong>BuildingUpdates</strong> folder.&nbsp;</li>
+<li>Upload another shapefile of updates. Click&nbsp;<strong>Upload </strong>and select&nbsp;<strong>Files</strong>. Select all four files that comprise a <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Engineering/BuildingFootprints.zip" target="_self">shapefile of updates</a> (C:\FMEData\Data\Engineering\BuildingFootprints).</li>
+</ul>
+<p><img src="images/1753392500632.jpg" alt="" width="1103" height="549" /></p>
+<ul>
+<li>Return to the automation and see that the message counts reflect the shapefile you uploaded, and that only one message passes the Filter action to the workspace.&nbsp;
+<ul>
+<li>If the event counts do not update automatically, click <strong>Refresh</strong> on the top toolbar.&nbsp;&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1753392698118.jpg" alt="" /></p>
+<h3>9) View Triggered Jobs</h3>
+<p>Now, check the job of the workspace that ran in the automation.&nbsp;</p>
+<ul>
+<li>Open the&nbsp;<strong>Menu&nbsp;</strong>and select&nbsp;<strong>View Triggered Jobs</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1753392808068.jpg" alt="" /></p>
+<p>The FME Flow Jobs page opens and shows the jobs completed by this automation. Notice whether your workspace ran successfully.&nbsp;&nbsp;</p>
+<p><img src="images/1782162399867.jpg" alt="" /></p>
+<h3>10) Optional: Inspect Output</h3>
+<ul>
+<li>Return to the&nbsp;<strong>buildingfootprints.gdb</strong> in&nbsp;<strong>Resources</strong>.&nbsp;</li>
+<li>Check that the timestamp was recently updated, which indicates that the workspace just updated the data.&nbsp;</li>
+<li>Click the box to select the geodatabase, then expand the&nbsp;<strong>Actions</strong> options, and select&nbsp;<strong>Download</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1753393362464.jpg" alt="" width="1115" height="372" /></p>
+<ul>
+<li>In the File Explorer, open the <strong>Downloads</strong> folder, then&nbsp;extract the zip file containing the geodatabase.&nbsp;</li>
+</ul>
+<p><img src="images/1753393496673.jpg" alt="" /></p>
+<ul>
+<li>Next, open <strong>FME Data Inspector</strong> and click <strong>Open Dataset</strong> from the Get Started section.</li>
+<li>For Format, select <strong>Esri Geodatabase (OpenFile Geodb)</strong> and then select the extracted geodatabase in Downloads.&nbsp;</li>
+</ul>
+<p><img src="images/1753393727210.jpg" alt="" width="918" height="294" /></p>
+<ul>
+<li>Click <strong>OK</strong>, and the data opens in Data Inspector.&nbsp;</li>
+</ul>
+<p><img src="images/1753393860614.jpg" alt="" width="1246" height="662" /></p>
+<div>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>The building footprints data you see will depend on which shapefiles you uploaded for processing.&nbsp;</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img4.423.Ex3.ViewOutputInDataInspector.png" target="_blank" rel="noreferrer noopener"><img class="image image-block image-center" src="images/Img4.423.Ex3.ViewOutputInDataInspector.png" alt="Inspect the output" /></a></p>
+</blockquote>
+<p>You've now completely automated the building updates workflow for Jennifer. When someone adds new shapefiles to the BuildingUpdates folder, the automation triggers and runs the workspace that updates the geodatabase with the latest data. This automation eliminates Jennifer's need to process the shapefiles manually and ensures that other users can access the most up-to-date data.&nbsp;</p>
+</div>
+</div>
+</div>
+</div>
+</div>

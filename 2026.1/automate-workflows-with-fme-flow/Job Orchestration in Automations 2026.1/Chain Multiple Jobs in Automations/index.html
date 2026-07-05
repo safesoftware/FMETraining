@@ -1,0 +1,400 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the benefits of using job chaining.</li>
+<li>Use the Filter Action to conditionally trigger a workspace to run.</li>
+<li>Chain multiple workspaces together in an automation.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the benefits of using job chaining.</li>
+<li>Use the Filter Action to conditionally trigger a workspace to run.</li>
+<li>Chain multiple workspaces together in an automation.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">ElectionVoting.gml</a> | C:\FMEData\Data\Elections\ElectionVoting.gml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="job-chains-and-automations">Job Chaining and Automations</h2>
+<p>In your workflows, you may want to run multiple workspaces and control their order. With FME Flow Automations, you can chain your workspaces to run one after another in sequence, or you may branch the workflow to run multiple workspaces simultaneously. You may also use logic to control your workflow based on a condition. FME Flow Automations are flexible, letting you place internal and external actions in any sequential order or parallel streams, so you can adapt an Automation however you may need.&nbsp;</p>
+<p>An advantage of authoring workspaces to run in sequence is compartmentalizing your workflows. Separating tasks into workspaces makes it easier to see where errors occur, and you can run other workspaces or send notifications if a workspace fails. If the inputs and outputs of the workspaces are independent, you may run the workspaces in parallel, whereby a failure in one workspace does not stop the other workspace from running.&nbsp;</p>
+<p><img src="images/1754489966068.jpg" alt="" width="792" height="411" /></p>
+<h3 id="run-jobs-in-sequence">Run Jobs in Sequence</h3>
+<p>To run actions in sequence, connect them one after the other.&nbsp;</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.019.Sequence.png" target="_blank" rel="noreferrer noopener"><img src="images/1754490052615.jpg" alt="" /></a></p>
+<p>In this example, Workspace B will only run after Workspace A runs and completes successfully. If Workspace A fails, Workspace B will not run. FME Flow will only use one engine in this example because only one translation is being processed at a time.&nbsp;</p>
+<p>You should run jobs in sequence if the source data for a workspace depends on the output data from another workspace, your workflow requires tasks to be completed in order, or specific tasks should only be carried out if another task completes successfully.&nbsp;</p>
+<h3 id="run-jobs-in-parallel">Run Jobs in Parallel</h3>
+<p>Connect actions to a common starting point to run them in parallel. When FME Flow passes a message to one action, it will also pass a message to the other action and process them simultaneously. The common starting point can be a trigger or another action.&nbsp;</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.020.Parallel.png" target="_blank" rel="noreferrer noopener"><img src="images/1754490602354.jpg" alt="" /></a></p>
+<p>In this example, the incoming message is sent to Workspace A and Workspace B simultaneously. As long as FME Flow has multiple engines available, the workspaces will run simultaneously and independently of each other. If only one FME Flow engine is available, one workspace will run to completion, and the second will run after. There's no guarantee which workspace will run first unless you have some advanced <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Engine-Management.htm">Engine Management</a> rules set up.&nbsp;</p>
+<p>You should run actions in parallel if you have multiple tasks to complete in response to the same input, either a trigger or action, and the workspaces are independent, meaning they do not depend on datasets from one another, nor the success or failure of each other.&nbsp;</p>
+<h2 id="conditional-processing">Conditional Processing</h2>
+<p>Conditional processing in Automations involves running workspaces or actions depending on a previous event or condition.&nbsp;</p>
+<p>You can use the Filter Messages action in Automations to test simple Boolean conditions, evaluating them as true or false. The Filter action can filter on values from previous actions within the Automation.</p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>To use the Filter on data within a workspace, you must use an Automations Writer to pass the data from the workspace to the Automation. We will cover the Automations Writer later in this course.&nbsp;</p>
+</blockquote>
+<p>The Filter Messages action has success and failure ports to route messages depending on whether the condition is true or false.&nbsp;</p>
+<p><img src="images/1754499945735.jpg" alt="" /></p>
+<p>In this example, Workspace A runs if the Filter condition evaluates to true, and Workspace B runs if the condition is false. In a single run of the Automation, only Workspace A or Workspace B runs, not both.&nbsp;</p>
+<p>The Filter action in Automations is somewhat limited in that it only supports simple conditions. You can use a Run a Workspace action with an Automations Writer to route data to various ports for more advanced filtering. You'll learn more about the Automations Writer later in this course.&nbsp;</p>
+<p><img src="images/1754594390842.jpg" alt="" /></p>
+<p>You may also wish to carry out certain translations in the unfortunate case that a job fails. To run a workspace in case of a workspace failure, you can attach Run a Workspace actions to the previous action failure port.&nbsp;</p>
+<p><img src="images/1754494442507.jpg" alt="" /></p>
+<p>In this example, Workspace B runs if Workspace A succeeds, while Workspace C runs if Workspace A fails.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media"><span style="font-size: 2.3125em;">Exercise</span></div>
+</div>
+</div>
+</div>
+<p><img src="images/1754409855160.png" alt="" width="273" height="290" /></p>
+<p>Sven, a planning analyst, is building an automation to update election voting location information. He has two workspaces: one that updates a SpatiaLite database with electoral divisions and voting places, and another that assigns voting division IDs to addresses. He runs these workspaces consecutively, in order, because the second workspace relies on data updates from the first.&nbsp;</p>
+<p>Since election data does not change often and elections do not occur frequently, Sven usually forgets to update the database manually. So, Sven will create an automation with a schedule trigger to run his workspaces in sequence and update the data yearly. The schedule trigger also allows him to manually trigger the automation if he needs to update data for a specific event.&nbsp;</p>
+<p>In this exercise, you will:&nbsp;</p>
+<ul>
+<li>Create an automation that runs workspaces sequentially.&nbsp;</li>
+<li>Run the automation on a schedule and send an email.&nbsp;</li>
+</ul>
+<h3>1) Create Automation</h3>
+<ul>
+<li>Open&nbsp;<strong>FME Flow</strong>, log in if needed, and navigate to&nbsp;<strong>Automations</strong>.&nbsp;</li>
+<li>Click&nbsp;<strong>Create</strong> to make a new automation.&nbsp;
+<ul>
+<li>The automation will begin with an unconfigured trigger on the canvas.&nbsp;</li>
+</ul>
+</li>
+<li><em>Optional:<strong>&nbsp;</strong></em>Your automation may have the Next Action guides enabled. To remove them, expand the Menu and select Hide Guides.&nbsp;</li>
+</ul>
+<p><img src="images/1782227611015.jpg" alt="" /></p>
+<h3>2) Add Schedule Trigger</h3>
+<ul>
+<li>Open the trigger details and select an <strong>FME Flow Schedule (initiated) </strong>trigger.</li>
+<li>Leave the&nbsp;<strong>Schedule Type</strong> as&nbsp;<strong>Basic</strong>.</li>
+<li>Set the <strong>Recurrence</strong> to&nbsp;<strong>Yearly&nbsp;</strong>on today's date.&nbsp;</li>
+<li>Ensure&nbsp;<strong>Does Not Expire</strong> is checked, then click <strong>Apply</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1782227706957.jpg" alt="" /></p>
+<h3>3) Add Run a Workspace Actions</h3>
+<ul>
+<li>Add a&nbsp;<strong>Run a Workspace</strong> action to the trigger's success port.&nbsp;</li>
+<li>Set it to run the&nbsp;<strong>update-voting-places.fmw</strong> workspace in the&nbsp;<strong>Elections</strong> repository.&nbsp;
+<ul>
+<li>This workspace has no parameters to configure.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Apply</strong> to save and close the action details.&nbsp;</li>
+</ul>
+<p><img src="images/1782230031964.jpg" alt="" /></p>
+<ul>
+<li>Add another&nbsp;<strong>Run a Workspace</strong> action to the update-voting-places success port.&nbsp;</li>
+<li>Set this action to run the&nbsp;<strong>divide-addresses-by-voting-division.fmw</strong> workspace.&nbsp;
+<ul>
+<li>Again, the workspace has no parameters to configure.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Apply</strong>.&nbsp;&nbsp;</li>
+</ul>
+<p><img src="images/1782230096479.jpg" alt="" /></p>
+<h3>4) Add Email Action</h3>
+<ul>
+<li>Add an&nbsp;<strong>External Action</strong> to the second workspace's success port.
+<ul>
+<li>You will use this action to send an alert each time the automation successfully runs the workspaces to update the election voting data.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1754411735092.jpg" alt="" /></p>
+<ul>
+<li>Open the <strong>External Action Details</strong> and select the <strong>Email (send) </strong>action.&nbsp;</li>
+</ul>
+<p><img src="images/1754063778382.jpg" alt="" width="568" height="382" /></p>
+<p>You will configure the action to use a Gmail account for the SMTP credentials.</p>
+<ul>
+<li>Select&nbsp;<strong>Gmail</strong>&nbsp;from the&nbsp;<strong>Load Template</strong>&nbsp;option.
+<ul>
+<li>This pre-populates some of the SMTP parameters specific to Gmail.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1754063938269.jpg" alt="" /></p>
+<ul>
+<li>Enter these values for the SMTP parameters:
+<ul>
+<li>SMTP Account:&nbsp;<strong>training.fmeflow@gmail.com</strong></li>
+<li>SMTP Password:&nbsp;<strong>wjdmzjdkujkzmplw</strong></li>
+<li>Connection Security:&nbsp;<strong>SSL/TLS</strong></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>This Gmail account password changes regularly. Please only use it for FME training purposes, or configure your SMTP account for the Email action.&nbsp;</p>
+</blockquote>
+<ul>
+<li>Enter your own email for the&nbsp;<strong>Email To</strong>&nbsp;parameter.&nbsp;</li>
+<li>Use&nbsp;<strong>training.fmeflow@gmail.com</strong>&nbsp;for the&nbsp;<strong>Email From&nbsp;</strong>parameter.&nbsp;</li>
+<li>For the&nbsp;<strong>Email Subject</strong>, use the drop-down menu to select the&nbsp;<strong>Automation Name</strong>.</li>
+</ul>
+<p><img src="images/1754412385576.jpg" alt="" /></p>
+<ul>
+<li>For the <strong>Email Body</strong>, use the drop-down to select the <strong>Text Editor</strong>.</li>
+<li>Configure a message to send using attributes on the left to customize it.&nbsp;</li>
+</ul>
+<p><img src="images/1754412547532.jpg" alt="" /></p>
+<ul>
+<li>Click&nbsp;<strong>Save</strong> to close the Text Editor.&nbsp;</li>
+<li>Once you fill out all the required parameters, click <strong>Validate</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1754412728684.jpg" alt="" /></p>
+<ul>
+<li>Scroll to the top of the Parameters section to see the validation result.
+<ul>
+<li>If validation fails with an Invalid Parameters error, confirm you have filled in all required fields. If you still encounter an error, see&nbsp;<a href="https://support.safe.com/hc/en-us/articles/25407557880205-FME-Flow-Troubleshooting-Email">FME Flow Troubleshooting: Email</a>.&nbsp;</li>
+</ul>
+</li>
+<li>If all the parameters are valid, click <strong>Apply</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1754412808056.jpg" alt="" /></p>
+<h3 id="6-save-and-start-automation">5) Start and Trigger Automation</h3>
+<ul>
+<li><strong>Save</strong> the automation as&nbsp;<em>Election Location Update<strong>.&nbsp;</strong></em></li>
+<li><strong>Start</strong> the automation.</li>
+</ul>
+<p><img src="images/1754412958818.jpg" alt="" /></p>
+<p>The automation will run only on the scheduled date and time, so you will trigger it manually to test it.</p>
+<ul>
+<li>Open the FME Flow Schedule Details and click <strong>Trigger</strong>.</li>
+</ul>
+<p><img src="images/1754413119335.jpg" alt="" width="1265" height="662" /></p>
+<h3 id="7-test-the-automation">6) Check Jobs</h3>
+<ul>
+<li>Open the automations&nbsp;<strong>Menu</strong>, then select&nbsp;<strong>View Triggered Jobs</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1754414703226.jpg" alt="" /></p>
+<ul>
+<li>Check the Jobs to ensure that both workspaces ran successfully.&nbsp;
+<ul>
+<li>The second workspace did not begin to process until the first workspace finished. This is expected as the second workspace updates the addresses with the latest voting division data from the first workspace.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1754415246047.jpg" alt="" /></p>
+<ul>
+<li>Check your email for an email in the format you configured with the Email external action.&nbsp;</li>
+</ul>
+<p><img src="images/1754417307698.jpg" alt="" width="741" height="172" /></p>
+<p>You've now chained multiple jobs in an automation, ensuring one job does not begin to process until after another job completes. You also sent an email notification to alert that the automation has been processed. This will save Sven time and ensure the election voting data is updated annually without any manual effort.&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Elections/ElectionVoting.gml" target="_blank" rel="noreferrer noopener">ElectionVoting.gml</a> | C:\FMEData\Data\Elections\ElectionVoting.gml</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2 id="job-chains-and-automations">Job Chaining and Automations</h2>
+<p>In your workflows, you may want to run multiple workspaces and control their order. With FME Flow Automations, you can chain your workspaces to run one after another in sequence, or you may branch the workflow to run multiple workspaces simultaneously. You may also use logic to control your workflow based on a condition. FME Flow Automations are flexible, letting you place internal and external actions in any sequential order or parallel streams, so you can adapt an Automation however you may need.&nbsp;</p>
+<p>An advantage of authoring workspaces to run in sequence is compartmentalizing your workflows. Separating tasks into workspaces makes it easier to see where errors occur, and you can run other workspaces or send notifications if a workspace fails. If the inputs and outputs of the workspaces are independent, you may run the workspaces in parallel, whereby a failure in one workspace does not stop the other workspace from running.&nbsp;</p>
+<p><img src="images/1754489966068.jpg" alt="" width="792" height="411" /></p>
+<h3 id="run-jobs-in-sequence">Run Jobs in Sequence</h3>
+<p>To run actions in sequence, connect them one after the other.&nbsp;</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.019.Sequence.png" target="_blank" rel="noreferrer noopener"><img src="images/1754490052615.jpg" alt="" /></a></p>
+<p>In this example, Workspace B will only run after Workspace A runs and completes successfully. If Workspace A fails, Workspace B will not run. FME Flow will only use one engine in this example because only one translation is being processed at a time.&nbsp;</p>
+<p>You should run jobs in sequence if the source data for a workspace depends on the output data from another workspace, your workflow requires tasks to be completed in order, or specific tasks should only be carried out if another task completes successfully.&nbsp;</p>
+<h3 id="run-jobs-in-parallel">Run Jobs in Parallel</h3>
+<p>Connect actions to a common starting point to run them in parallel. When FME Flow passes a message to one action, it will also pass a message to the other action and process them simultaneously. The common starting point can be a trigger or another action.&nbsp;</p>
+<p><a href="https://s3.amazonaws.com/gitbook/Server-Authoring-2020/ServerAuthoring4RealTime/Images/Img6.020.Parallel.png" target="_blank" rel="noreferrer noopener"><img src="images/1754490602354.jpg" alt="" /></a></p>
+<p>In this example, the incoming message is sent to Workspace A and Workspace B simultaneously. As long as FME Flow has multiple engines available, the workspaces will run simultaneously and independently of each other. If only one FME Flow engine is available, one workspace will run to completion, and the second will run after. There's no guarantee which workspace will run first unless you have some advanced <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Engine-Management.htm">Engine Management</a> rules set up.&nbsp;</p>
+<p>You should run actions in parallel if you have multiple tasks to complete in response to the same input, either a trigger or action, and the workspaces are independent, meaning they do not depend on datasets from one another, nor the success or failure of each other.&nbsp;</p>
+<h2 id="conditional-processing">Conditional Processing</h2>
+<p>Conditional processing in Automations involves running workspaces or actions depending on a previous event or condition.&nbsp;</p>
+<p>You can use the Filter Messages action in Automations to test simple Boolean conditions, evaluating them as true or false. The Filter action can filter on values from previous actions within the Automation.</p>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>To use the Filter on data within a workspace, you must use an Automations Writer to pass the data from the workspace to the Automation. We will cover the Automations Writer later in this course.&nbsp;</p>
+</blockquote>
+<p>The Filter Messages action has success and failure ports to route messages depending on whether the condition is true or false.&nbsp;</p>
+<p><img src="images/1754499945735.jpg" alt="" /></p>
+<p>In this example, Workspace A runs if the Filter condition evaluates to true, and Workspace B runs if the condition is false. In a single run of the Automation, only Workspace A or Workspace B runs, not both.&nbsp;</p>
+<p>The Filter action in Automations is somewhat limited in that it only supports simple conditions. You can use a Run a Workspace action with an Automations Writer to route data to various ports for more advanced filtering. You'll learn more about the Automations Writer later in this course.&nbsp;</p>
+<p><img src="images/1754594390842.jpg" alt="" /></p>
+<p>You may also wish to carry out certain translations in the unfortunate case that a job fails. To run a workspace in case of a workspace failure, you can attach Run a Workspace actions to the previous action failure port.&nbsp;</p>
+<p><img src="images/1754494442507.jpg" alt="" /></p>
+<p>In this example, Workspace B runs if Workspace A succeeds, while Workspace C runs if Workspace A fails.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media"><span style="font-size: 2.3125em;">Exercise</span></div>
+</div>
+</div>
+</div>
+<p><img src="images/1754409855160.png" alt="" width="273" height="290" /></p>
+<p>Sven, a planning analyst, is building an automation to update election voting location information. He has two workspaces: one that updates a SpatiaLite database with electoral divisions and voting places, and another that assigns voting division IDs to addresses. He runs these workspaces consecutively, in order, because the second workspace relies on data updates from the first.&nbsp;</p>
+<p>Since election data does not change often and elections do not occur frequently, Sven usually forgets to update the database manually. So, Sven will create an automation with a schedule trigger to run his workspaces in sequence and update the data yearly. The schedule trigger also allows him to manually trigger the automation if he needs to update data for a specific event.&nbsp;</p>
+<p>In this exercise, you will:&nbsp;</p>
+<ul>
+<li>Create an automation that runs workspaces sequentially.&nbsp;</li>
+<li>Run the automation on a schedule and send an email.&nbsp;</li>
+</ul>
+<h3>1) Create Automation</h3>
+<ul>
+<li>Open&nbsp;<strong>FME Flow</strong>, log in if needed, and navigate to&nbsp;<strong>Automations</strong>.&nbsp;</li>
+<li>Click&nbsp;<strong>Create</strong> to make a new automation.&nbsp;
+<ul>
+<li>The automation will begin with an unconfigured trigger on the canvas.&nbsp;</li>
+</ul>
+</li>
+<li><em>Optional:<strong>&nbsp;</strong></em>Your automation may have the Next Action guides enabled. To remove them, expand the Menu and select Hide Guides.&nbsp;</li>
+</ul>
+<p><img src="images/1782227611015.jpg" alt="" /></p>
+<h3>2) Add Schedule Trigger</h3>
+<ul>
+<li>Open the trigger details and select an <strong>FME Flow Schedule (initiated) </strong>trigger.</li>
+<li>Leave the&nbsp;<strong>Schedule Type</strong> as&nbsp;<strong>Basic</strong>.</li>
+<li>Set the <strong>Recurrence</strong> to&nbsp;<strong>Yearly&nbsp;</strong>on today's date.&nbsp;</li>
+<li>Ensure&nbsp;<strong>Does Not Expire</strong> is checked, then click <strong>Apply</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1782227706957.jpg" alt="" /></p>
+<h3>3) Add Run a Workspace Actions</h3>
+<ul>
+<li>Add a&nbsp;<strong>Run a Workspace</strong> action to the trigger's success port.&nbsp;</li>
+<li>Set it to run the&nbsp;<strong>update-voting-places.fmw</strong> workspace in the&nbsp;<strong>Elections</strong> repository.&nbsp;
+<ul>
+<li>This workspace has no parameters to configure.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Apply</strong> to save and close the action details.&nbsp;</li>
+</ul>
+<p><img src="images/1782230031964.jpg" alt="" /></p>
+<ul>
+<li>Add another&nbsp;<strong>Run a Workspace</strong> action to the update-voting-places success port.&nbsp;</li>
+<li>Set this action to run the&nbsp;<strong>divide-addresses-by-voting-division.fmw</strong> workspace.&nbsp;
+<ul>
+<li>Again, the workspace has no parameters to configure.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Apply</strong>.&nbsp;&nbsp;</li>
+</ul>
+<p><img src="images/1782230096479.jpg" alt="" /></p>
+<h3>4) Add Email Action</h3>
+<ul>
+<li>Add an&nbsp;<strong>External Action</strong> to the second workspace's success port.
+<ul>
+<li>You will use this action to send an alert each time the automation successfully runs the workspaces to update the election voting data.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1754411735092.jpg" alt="" /></p>
+<ul>
+<li>Open the <strong>External Action Details</strong> and select the <strong>Email (send) </strong>action.&nbsp;</li>
+</ul>
+<p><img src="images/1754063778382.jpg" alt="" width="568" height="382" /></p>
+<p>You will configure the action to use a Gmail account for the SMTP credentials.</p>
+<ul>
+<li>Select&nbsp;<strong>Gmail</strong>&nbsp;from the&nbsp;<strong>Load Template</strong>&nbsp;option.
+<ul>
+<li>This pre-populates some of the SMTP parameters specific to Gmail.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1754063938269.jpg" alt="" /></p>
+<ul>
+<li>Enter these values for the SMTP parameters:
+<ul>
+<li>SMTP Account:&nbsp;<strong>training.fmeflow@gmail.com</strong></li>
+<li>SMTP Password:&nbsp;<strong>wjdmzjdkujkzmplw</strong></li>
+<li>Connection Security:&nbsp;<strong>SSL/TLS</strong></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>This Gmail account password changes regularly. Please only use it for FME training purposes, or configure your SMTP account for the Email action.&nbsp;</p>
+</blockquote>
+<ul>
+<li>Enter your own email for the&nbsp;<strong>Email To</strong>&nbsp;parameter.&nbsp;</li>
+<li>Use&nbsp;<strong>training.fmeflow@gmail.com</strong>&nbsp;for the&nbsp;<strong>Email From&nbsp;</strong>parameter.&nbsp;</li>
+<li>For the&nbsp;<strong>Email Subject</strong>, use the drop-down menu to select the&nbsp;<strong>Automation Name</strong>.</li>
+</ul>
+<p><img src="images/1754412385576.jpg" alt="" /></p>
+<ul>
+<li>For the <strong>Email Body</strong>, use the drop-down to select the <strong>Text Editor</strong>.</li>
+<li>Configure a message to send using attributes on the left to customize it.&nbsp;</li>
+</ul>
+<p><img src="images/1754412547532.jpg" alt="" /></p>
+<ul>
+<li>Click&nbsp;<strong>Save</strong> to close the Text Editor.&nbsp;</li>
+<li>Once you fill out all the required parameters, click <strong>Validate</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1754412728684.jpg" alt="" /></p>
+<ul>
+<li>Scroll to the top of the Parameters section to see the validation result.
+<ul>
+<li>If validation fails with an Invalid Parameters error, confirm you have filled in all required fields. If you still encounter an error, see&nbsp;<a href="https://support.safe.com/hc/en-us/articles/25407557880205-FME-Flow-Troubleshooting-Email">FME Flow Troubleshooting: Email</a>.&nbsp;</li>
+</ul>
+</li>
+<li>If all the parameters are valid, click <strong>Apply</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1754412808056.jpg" alt="" /></p>
+<h3 id="6-save-and-start-automation">5) Start and Trigger Automation</h3>
+<ul>
+<li><strong>Save</strong> the automation as&nbsp;<em>Election Location Update<strong>.&nbsp;</strong></em></li>
+<li><strong>Start</strong> the automation.</li>
+</ul>
+<p><img src="images/1754412958818.jpg" alt="" /></p>
+<p>The automation will run only on the scheduled date and time, so you will trigger it manually to test it.</p>
+<ul>
+<li>Open the FME Flow Schedule Details and click <strong>Trigger</strong>.</li>
+</ul>
+<p><img src="images/1754413119335.jpg" alt="" width="1265" height="662" /></p>
+<h3 id="7-test-the-automation">6) Check Jobs</h3>
+<ul>
+<li>Open the automations&nbsp;<strong>Menu</strong>, then select&nbsp;<strong>View Triggered Jobs</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1754414703226.jpg" alt="" /></p>
+<ul>
+<li>Check the Jobs to ensure that both workspaces ran successfully.&nbsp;
+<ul>
+<li>The second workspace did not begin to process until the first workspace finished. This is expected as the second workspace updates the addresses with the latest voting division data from the first workspace.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1754415246047.jpg" alt="" /></p>
+<ul>
+<li>Check your email for an email in the format you configured with the Email external action.&nbsp;</li>
+</ul>
+<p><img src="images/1754417307698.jpg" alt="" width="741" height="172" /></p>
+<p>You've now chained multiple jobs in an automation, ensuring one job does not begin to process until after another job completes. You also sent an email notification to alert that the automation has been processed. This will save Sven time and ensure the election voting data is updated annually without any manual effort.&nbsp;</p>
+<p>&nbsp;</p>
