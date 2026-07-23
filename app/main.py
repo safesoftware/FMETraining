@@ -32,6 +32,7 @@ from app.routes import (
     health,
     index,
     lesson_content,
+    metrics,
     release_page,
     report,
     report_drafts,
@@ -238,6 +239,7 @@ def create_app() -> FastAPI:
     # don't 404 against the /artifacts mount (which only serves artifacts_root).
     fastapi_app.include_router(lesson_content.router)
     fastapi_app.include_router(runs.router)
+    fastapi_app.include_router(metrics.router)
     fastapi_app.include_router(skilljar.router)
     # release-sprint (feature/publish-in-app): stub routers wired once at the
     # foundation so the parallel WS agents never contend on main.py.

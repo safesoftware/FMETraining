@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Usage — FME Training Automation{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>Usage</h2>
+    <p>
+      How much the training-updates app is being used each release cycle.
+      <strong>Runs</strong> = update runs generated; <strong>runners</strong> =
+      distinct people who generated one. <strong>Opens</strong> = times a run's
+      report was opened; <strong>viewers</strong> = distinct people who opened
+      one; <strong>reports opened</strong> = distinct runs whose report was
+      opened. Report opens are captured even when the reviewer then edits
+      directly in Skilljar rather than accepting suggestions in-app.
+    </p>
+  </section>
+
+  <section class="usage-totals">
+    <ul class="usage-total-list">
+      <li><span class="usage-total-num">{{ report.total_runs }}</span> runs</li>
+      <li><span class="usage-total-num">{{ report.total_runners }}</span> distinct runners</li>
+      <li><span class="usage-total-num">{{ report.total_opens }}</span> report opens</li>
+      <li><span class="usage-total-num">{{ report.total_viewers }}</span> distinct viewers</li>
+    </ul>
+    <p class="usage-meta"><small>as of {{ report.generated_at.isoformat(timespec="seconds") }}</small></p>
+  </section>
+
+  {% if not report.versions %}
+    <section><p><em>No usage recorded yet. Runs appear here as soon as they are generated; report opens appear once someone opens a run's report.</em></p></section>
+  {% else %}
+    <section>
+      <table class="usage-table">
+        <thead>
+          <tr>
+            <th>Release cycle</th>
+            <th>Runs</th>
+            <th>Runners</th>
+            <th>Reports opened</th>
+            <th>Opens</th>
+            <th>Viewers</th>
+            <th>Last open</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in report.versions %}
+            <tr>
+              <td>{{ v.to_version or "(unspecified)" }}</td>
+              <td>{{ v.runs }}</td>
+              <td>{{ v.runners }}</td>
+              <td>{{ v.reports_opened }}</td>
+              <td>{{ v.opens }}</td>
+              <td>{{ v.viewers }}</td>
+              <td>{% if v.last_open %}{{ v.last_open.isoformat(timespec="seconds") }}{% else %}&mdash;{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endif %}
+{% endblock %}
