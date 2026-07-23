@@ -11,17 +11,52 @@ written to ``<artifacts_root>/<run_id>/report-<run_id>.html``.  The
 directory tree, so the canonical URL is
 ``/artifacts/<run_id>/report-<run_id>.html``.
 
-This module is intentionally minimal — no DB lookup, no auth gate, just a
-redirect.  Auth is enforced at the middleware level for /api/* paths; the
-/artifacts static files are public within the network (office-IP firewall
-is the perimeter).
+Auth: the whole app is default-deny behind ``AuthMiddleware`` (KNOW-2366),
+so an unauthenticated request to ``/report/{run_id}`` never reaches this
+handler -- it's bounced to the landing page first. By the time we run, the
+signed-in user is on ``request.state.user``.
+
+Usage metric (KNOW-2166): this is the one funnel every reviewer passes
+through to *read* a report (the ``/drafts`` "Open" links point here), so we
+record a ``report_views`` row per open -- who opened which run's report and
+when. The write is best-effort: recording a view must never block the
+redirect, mirroring the auth middleware's best-effort ``last_seen_at``
+update. This captures the "referring to the edits" behaviour even when the
+reviewer then edits directly in Skilljar rather than using the in-app
+accept/reject workflow.
 """
 from __future__ import annotations
+
+import logging
 
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 
+from app.auth.dependencies import get_user_or_none
+from app.db.engine import session_factory
+from app.models.report_views import ReportView
+
+_logger = logging.getLogger(__name__)
+
 router = APIRouter(tags=["report"])
+
+
+async def _record_view(run_id: str, user_id: int) -> None:
+    """Best-effort insert of a ``report_views`` row.
+
+    Any failure (DB down, unknown ``run_id`` violating the FK, etc.) is
+    swallowed with a warning so the report redirect always succeeds. Uses
+    the module-level ``session_factory`` (patchable in tests) rather than
+    ``Depends(get_session)`` so the redirect has no hard DB dependency.
+    """
+    try:
+        async with session_factory() as db:
+            db.add(ReportView(run_id=run_id, user_id=user_id))
+            await db.commit()
+    except Exception:  # pragma: no cover - defensive, exercised via patched factory
+        _logger.warning(
+            "failed to record report view for run %s", run_id, exc_info=True
+        )
 
 
 @router.get("/report/{run_id}", response_class=RedirectResponse)
@@ -34,7 +69,14 @@ async def redirect_to_report(run_id: str, request: Request) -> RedirectResponse:
     work without CORS plumbing. Any query string is forwarded (e.g.
     ``/report/{run_id}?tab=lesson-edits``) so callers can deep-link to a
     report tab without hand-building the per-run artifact path (KNOW-2355).
+
+    Before redirecting, records a best-effort ``report_views`` row for the
+    signed-in user (KNOW-2166 usage metric).
     """
+    user = get_user_or_none(request)
+    if user is not None:
+        await _record_view(run_id, user.id)
+
     target = f"/artifacts/{run_id}/report-{run_id}.html"
     if request.url.query:
         target += f"?{request.url.query}"
