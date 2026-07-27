@@ -35,6 +35,12 @@ except ImportError:
     print("Error: beautifulsoup4 is required. Run: pip install beautifulsoup4")
     sys.exit(1)
 
+from pipeline.content_source import (
+    ContentSource,
+    LessonContentNotFound,
+    build_content_source,
+)
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -312,34 +318,49 @@ def find_missed_screenshots(
 # Lesson analysis
 # ---------------------------------------------------------------------------
 
-def analyze_lesson(lesson: dict, source_version: str, target_version: str) -> dict:
-    """Analyze a single lesson entry from the edit-plans JSON."""
+def analyze_lesson(
+    lesson: dict,
+    source_version: str,
+    target_version: str,
+    source: ContentSource,
+) -> dict:
+    """Analyze a single lesson entry from the edit-plans JSON.
+
+    Source and target ("ground truth" human-edited) lesson HTML are both read
+    through ``source`` (a ContentSource — local or S3 mirror), so the harness no
+    longer depends on the local corpus that was removed in KNOW-2364. If the
+    source HTML is missing from the content source, we fall back to the
+    ``lesson_html`` embedded in the run artifact.
+    """
     lesson_id = lesson["lesson_id"]
     lesson_name = lesson["lesson_name"]
     course = lesson.get("course_canonical", "")
     learning_path = lesson.get("learning_path", "")
     lesson_dir = lesson["lesson_dir"]
 
-    source_path = BASE_DIR / lesson_dir / "index.html"
     target_dir = map_to_target(lesson_dir, source_version, target_version)
-    target_path = BASE_DIR / target_dir / "index.html"
 
-    # --- Load HTML ---
-    if not source_path.exists():
-        # Fall back to embedded HTML from the run artifact
+    # --- Load source HTML (content source, fall back to embedded artifact HTML) ---
+    try:
+        source_html = source.get_lesson_html(lesson_dir)
+    except LessonContentNotFound:
         source_html = lesson.get("lesson_html", "")
-    else:
-        source_html = source_path.read_text(encoding="utf-8")
 
-    target_exists = target_path.exists()
+    # --- Load target HTML (the human-edited ground truth) ---
+    try:
+        target_html = source.get_lesson_html(target_dir)
+        target_exists = True
+    except LessonContentNotFound:
+        target_html = ""
+        target_exists = False
 
     result = {
         "lesson_id": lesson_id,
         "lesson_name": lesson_name,
         "course": course,
         "learning_path": learning_path,
-        "source_path": str(source_path.relative_to(BASE_DIR)),
-        "target_path": str(target_path.relative_to(BASE_DIR)),
+        "source_path": f"{lesson_dir}/index.html",
+        "target_path": f"{target_dir}/index.html",
         "target_path_found": target_exists,
         "changes": [],
         "screenshot_updates": [],
@@ -384,8 +405,6 @@ def analyze_lesson(lesson: dict, source_version: str, target_version: str) -> di
             })
             result["summary"]["screenshot_not_updated"] += 1
         return result
-
-    target_html = target_path.read_text(encoding="utf-8")
 
     source_text = get_full_text(source_html)
     target_text = get_full_text(target_html)
@@ -605,7 +624,17 @@ def main():
     parser.add_argument("--source-version", default="2024.2", help="Source content version (default: 2024.2)")
     parser.add_argument("--target-version", default="2026.1", help="Target content version (default: 2026.1)")
     parser.add_argument("--no-detail", action="store_true", help="Skip per-change detail output")
+    parser.add_argument(
+        "--content-source",
+        default=None,
+        choices=["local", "s3mirror"],
+        help="Where to read source+target lesson HTML (default: config CONTENT_SOURCE). "
+        "Use s3mirror now that the local corpus is gone (KNOW-2364).",
+    )
     args = parser.parse_args()
+
+    source = build_content_source(source=args.content_source)
+    print(f"Content source: {type(source).__name__}")
 
     edit_plans_path = BASE_DIR / "artifacts" / f"edit-plans-{args.run_id}.json"
     if not edit_plans_path.exists():
@@ -623,7 +652,7 @@ def main():
     for i, lesson in enumerate(lessons, 1):
         sys.stdout.write(f"\r  [{i}/{len(lessons)}] {lesson['lesson_name'][:50]:<50}")
         sys.stdout.flush()
-        lessons_results.append(analyze_lesson(lesson, args.source_version, args.target_version))
+        lessons_results.append(analyze_lesson(lesson, args.source_version, args.target_version, source))
     print()
 
     overall = compute_overall(lessons_results)
