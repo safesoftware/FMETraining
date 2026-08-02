@@ -1,0 +1,219 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Publish an FME parameter inside a custom transformer.</li>
+<li>Create a new user parameter inside a custom transformer.</li>
+<li>Expose attributes inside a custom transformer.</li>
+<li>Use an exposed attribute inside a custom transformer.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-parameters-to-make-flexible-custom-transformers.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-use-parameters-to-make-flexible-custom-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-parameters-to-make-flexible-custom-transformers-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\exercise-use-parameters-to-make-flexible-custom-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>With our help, a colleague has created a custom transformer that calculates density for a particular area. However, we need to work on it further to make it more generic and to expand its capabilities.</p>
+<p>The workspace will handle schema properly because we used "Handle With Published Parameters" for the custom transformer's Attribute References parameter. So, to an extent, we don't have to worry - but there are improvements we can make.</p>
+<h2 id="1-start-workbench">1) Start Workbench</h2>
+<p>Open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/exercise-use-parameters-to-make-flexible-custom-transformers.fmw" target="_blank" rel="noreferrer noopener">starting workspace</a> in FME Workbench (2025.1 or later).</p>
+<h2 id="2-edit-custom-transformer-to-use-a-user-defined-output-attribute-name">2) Edit Custom Transformer to Use A User-Defined Output Attribute Name</h2>
+<p>Notice that there are currently two instances of the custom transformer. Both produce an attribute with the same name (<code>DensityResult</code>). It would be helpful if the user of the custom transformer could define the name of that attribute. Let's set up the transformer to allow that.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">This is why - so far - we've had the two transformers in parallel streams. If we had them in series in the same stream, then the results of the second custom transformer would overwrite the first results.</span></p>
+</blockquote>
+<p>Click the <strong>DensityEvaluator</strong> tab<strong>&nbsp;</strong>to switch the canvas to the custom transformer definition. Inspect the parameters for the&nbsp;<strong>ExpressionEvaluator</strong>. Click the drop-down arrow next to&nbsp;<strong>Result&nbsp;</strong>(<code>DensityResult</code>) and choose&nbsp;<strong>User Parameter&nbsp;</strong>&gt;&nbsp;<strong>Create User Parameter</strong>:</p>
+<p><img class="image image-block image-center" src="images/1724707728315.png" alt="Setting Result to a User Parameter" width="1005" height="220" /></p>
+<p>When prompted, click&nbsp;<strong>OK&nbsp;</strong>to accept the default settings. Return to the Main tab and check the parameters for each <strong>DensityEvaluator&nbsp;</strong>instance. There should be the option to set the name of the Result:</p>
+<p><img class="image image-block image-center" src="images/1724707735738.png" alt="Setting the name of the new attribute" width="538" height="290" /></p>
+<p>You can now move the instances so they are joined in sequence (rather than parallel) and change the two output attribute names from DensityResult to something more specific for this scenario (<code>PopulationDensity2001</code>&nbsp;and&nbsp;<code>PopulationDensity2011</code>):</p>
+<p><img class="image image-block image-center" src="images/1724707745685.png" alt="Configuring both custom transformers" width="324" height="283" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">At first glance, it might appear that we've reverted the custom transformer to where we started. To an extent, that's true. However, the point is that we've now got a solution that can work in other scenarios (i.e., where something other than population density is being calculated).</span></p>
+</blockquote>
+<h2 id="3-set-parameter-prompts">3) Set Parameter Prompts</h2>
+<p>Looking at the custom transformer parameters, we can also see that the prompt for the attribute to analyze is "TotalPopulation2001". This could be more generic.</p>
+<p>Return to the&nbsp;<strong>DensityEvaluator&nbsp;</strong>tab and double-click the Input object to open the <strong>Edit Transformer Input </strong>dialog. We'll add a <code>Population</code> attribute here, prompting the transformer user to choose an attribute to supply the population values.</p>
+<p>Click the <strong>Add </strong>button, then enter "Population" for the <strong>Name</strong>:</p>
+<p><img src="images/1724707754718.png" alt="Adding a Population attribute" width="837" height="357" /></p>
+<p>Click OK.</p>
+<p>Uncheck <strong>TotalPopulation2001 </strong>- we'll be using the new Population user parameter instead.</p>
+<p>Click OK.</p>
+<p>Now we have a new user parameter in the custom transformer, <code>POPULATION</code>. We need to ensure the ExpressionEvaluator uses it. Double-click the <strong>ExpressionEvaluator</strong> and change the <strong>Arithmetic Expression</strong> to:</p>
+<p><code>$(POPULATION)/@Value(NeighborhoodArea)</code></p>
+<p>The custom transformer will now use the user's chosen attribute as the population value.</p>
+<p>Return to the <strong>Main </strong>tab. The custom transformers will be invalid because you must supply a <strong>Population </strong>attribute. Choose <code>TotalPopulation2001 </code>and <code>TotalPopulation2011</code>, respectively.</p>
+<p>Run the workspace to verify that the output is still correct.</p>
+<h2 id="4-implement-units-selection">4) Implement Units Selection</h2>
+<p>Currently, this workspace calculates the number of items (in this exercise, persons) per square kilometer of land. This works for the original scenario. However, other uses of this transformer might find different units more useful.</p>
+<p>Therefore, we&rsquo;ll implement a parameter for users to be able to select their units of choice.</p>
+<p>In the&nbsp;<strong>DensityEvaluator&nbsp;</strong>tab, browse the&nbsp;<strong>Navigator&nbsp;</strong>window and right-click <strong>User Parameters</strong>. Select the&nbsp;<strong>Manage User Parameters</strong>&nbsp;option.</p>
+<p>Click the&nbsp;<strong>green plus icon</strong>&nbsp;to insert a new user parameter. Choose type&nbsp;<strong>Choice</strong>. Set the following parameters:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Parameter Identifier</strong></td>
+<td>DensityUnits</td>
+</tr>
+<tr>
+<td><strong>Prompt</strong></td>
+<td>Density Units:</td>
+</tr>
+<tr>
+<td><strong>Published</strong></td>
+<td>Checked</td>
+</tr>
+<tr>
+<td><strong>Required</strong></td>
+<td>Checked</td>
+</tr>
+<tr>
+<td><strong>Enable Attribute Assignment</strong></td>
+<td>Not Checked</td>
+</tr>
+<tr>
+<td><strong>Choice Configuration</strong></td>
+<td>Dropdown</td>
+</tr>
+</tbody>
+</table>
+<p>Make two entries into the&nbsp;<strong>Choice Configuration&nbsp;</strong>table:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Value</th>
+<th scope="col">Display Name</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>1</td>
+<td>Sq Meters</td>
+</tr>
+<tr>
+<td>0.000001</td>
+<td>Sq Kilometers</td>
+</tr>
+</tbody>
+</table>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">&nbsp;</div>
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>To save you counting, that's five zeros after the decimal place!</p>
+</blockquote>
+<p><span style="font-family: inherit; font-size: 1em;">Fill out the remainder of the dialog:</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Allow Choice Edit</strong></td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Default Value</strong></td>
+<td>Sq Kilometers</td>
+</tr>
+</tbody>
+</table>
+<p>Your final dialog should look like this:</p>
+<p><img class="image image-block image-center" src="images/1750957970797.png" alt="Configuring the DensityUnits parameter" width="419" height="540" /></p>
+<p>Then click&nbsp;<strong>OK&nbsp;</strong>to close this dialog and add the published parameter.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Feel free to add any other units that you want. The units for this coordinate system are in meters, which is why the value is 1. So, other units would need to be a fraction of that; for example, square miles would be 0.0000003861.</span></p>
+<p>When developing custom transformers, it's a good idea to think as generically as possible. This transformer assumes the input data will use meters as a unit. If you wanted to accept data with other units, you'd have to account for that in the transformer and user parameters.</p>
+</blockquote>
+<h2 id="5-implement-parameter">5) Implement Parameter</h2>
+<p>We&rsquo;ve defined a published parameter so the user can set the units, but we must use it in the custom transformer.</p>
+<p>Staying in the&nbsp;<strong>DensityEvaluator&nbsp;</strong>tab, inspect the parameters for the&nbsp;<strong>AreaCalculator&nbsp;</strong>transformer. For the&nbsp;<strong>Multiplier&nbsp;</strong>field, click the drop-down arrow and select the newly defined user parameter, DensityUnits:</p>
+<p><img class="image image-block image-center" src="images/1724707774781.png" alt="Choosing DensityUnits" width="708" height="331" /></p>
+<p>Back in the main canvas, the custom transformer now has a parameter for the end user to select the output density units:</p>
+<p><img class="image image-block image-center" src="images/1724707785547.png" alt="Choosing the value for DensityUnits" width="347" height="244" /></p>
+<p>Experiment by running the workspace using different units to prove the changes were correctly implemented. Notice that because Enable Attribute Assignment was set to "Off," the end-user cannot use an attribute to set the Density Units.</p>
+<h2 id="6-add-random-number-generator">6) Add RandomNumberGenerator</h2>
+<p>Although it&rsquo;s not needed for this population density calculation, another useful function for this transformer would be the ability to weight the density calculations. To set it up, follow the following steps.</p>
+<p>The weighting will come from an incoming attribute, which means we need to be able to handle this in the custom transformer&rsquo;s schema.</p>
+<p>Our source data has no fields we could reasonably use to weigh the output. Therefore, return to the <strong>Main&nbsp;</strong>canvas tab and add a&nbsp;<strong>RandomNumberGenerator&nbsp;</strong>transformer to generate a test attribute:</p>
+<p><img class="image image-block image-center" src="images/1724707794809.png" alt="Adding a RandomNumberGenerator" width="602" height="221" /></p>
+<p>Set the <strong>RandomNumberGenerator's </strong>parameters to:</p>
+<table class="featureTable sort_table">
+<tbody class="tbody">
+<tr>
+<td><strong>Minimum Value</strong></td>
+<td>0.1</td>
+</tr>
+<tr>
+<td><strong>Maximum Value</strong></td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>Decimal Places</strong></td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>Generated Number</strong></td>
+<td>WeightedAttribute</td>
+</tr>
+</tbody>
+</table>
+<p>Click OK.</p>
+<h2 id="7-expose-attribute-in-custom-transformer">7) Expose Attribute in Custom Transformer</h2>
+<p>Now we have an attribute we need to expose in the custom transformer in order to use it.</p>
+<p>Return to the&nbsp;<strong>DensityEvaluator</strong> tab, where the transformer is defined. Inspect the parameters for the&nbsp;<strong>Input&nbsp;</strong>port object. Put a checkmark against the&nbsp;<code>WeightingAttribute</code>&nbsp;attribute:</p>
+<p><img class="image image-block image-center" src="images/1724707802812.png" alt="Exposing WeightedAttribute" width="522" height="326" /></p>
+<p>This will cause the attribute to be exposed in the custom transformer definition.</p>
+<p>It will also create a user parameter. Locate the parameter in the <strong>Navigator&nbsp;</strong>window (it should be called&nbsp;<code>WEIGHTEDATTRIBUTE</code>), right-click on it, and choose <strong>Manage User Parameters</strong>.</p>
+<p>For WeightedAttribute, uncheck&nbsp;<strong>Required</strong>&nbsp;and clear the&nbsp;<strong>Default Value</strong>&nbsp;field, as this should not be compulsory (the user might not have an attribute to weight the results by):</p>
+<p><img class="image image-block image-center" src="images/1758132877956.png" alt="Configuring the WeightedAttribute user parameter." /></p>
+<p>Click <strong>OK</strong>.</p>
+<h2 id="8-duplicate-expression-evaluator">8) Duplicate ExpressionEvaluator</h2>
+<p>Now, we can use the attribute inside the custom transformer.</p>
+<p>Make a copy of the existing&nbsp;<strong>ExpressionEvaluator&nbsp;</strong>and connect it in parallel to the current one. Then put a&nbsp;<strong>Tester&nbsp;</strong>in beforehand where the&nbsp;<strong>Passed&nbsp;</strong>port goes to one&nbsp;<strong>ExpressionEvaluator&nbsp;</strong>and the&nbsp;<strong>Failed&nbsp;</strong>port goes to the other:</p>
+<p><img class="image image-block image-center" src="images/1724709898691.png" alt="Duplicated ExpressionEvaluators in parallel" width="807" height="138" /></p>
+<h2 id="9-set-up-tester">9) Set up Tester</h2>
+<p>Inspect the&nbsp;<strong>Tester&nbsp;</strong>parameters and make a test for&nbsp;<code>WeightedAttribute</code>&nbsp;&gt; 0</p>
+<p><img class="image image-block image-center" src="images/1724771787819.png" alt="Tester configuration" width="444" height="229" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Ensure you select the attribute, not the user parameter. You can tell which is which based on the icon:</p>
+<p><img src="images/1724772550448.png" alt="Choosing the attribute not user parameter" /></p>
+</blockquote>
+<p>Click OK.</p>
+<h2 id="10-adjust-equation">10) Adjust Equation</h2>
+<p>Now that the attribute is exposed in the custom transformer, we can use it in the equation to calculate density. Inspect the parameters for the <strong>ExpressionEvaluator&nbsp;</strong>transformer connected to the&nbsp;<strong>Tester's Passed</strong>&nbsp;port.</p>
+<p>Change the equation to:</p>
+<pre><code>($(POPULATION)*@Value(WeightedAttribute))/@Value(NeighborhoodArea)</code><br /><br /></pre>
+<p>To clarify, multiply the existing <span style="color: #7f0a0c; font-family: Consolas, Liberation Mono, Courier, monospace;"><span style="background-color: #b4d7ff;"><strong>Population</strong></span></span>&nbsp;attribute by the <code>WeightedAttribute</code>&nbsp;and place parentheses around that part of the expression.</p>
+<p><strong>Save&nbsp;</strong>the parameter changes and&nbsp;<strong>run&nbsp;</strong>the workspace (without providing weights) to check the result. It should be unchanged.</p>
+<p>Then, change the custom transformer parameters to use <code>WeightedAttribute</code>. Remember &ndash; the results will differ every time because we&rsquo;re generating the weighted attribute randomly at runtime!</p>
+<p>Experiment with selecting the weighted attribute in the main canvas and not selecting it. When no attribute is selected, then the features should pass through the Failed port, and no weighting is used in the calculation:</p>
+<p><img class="image image-block image-center" src="images/1724771795231.png" alt="Results without weighting" width="644" height="123" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">It may seem odd, especially to experienced users, that we use the attribute in the expression instead of the published parameter. But this is all part of how FME handles this behavior automatically. It prevents the author from needing to know about published parameters and how to use them, and it uses hidden functionality to replace the attribute with the published parameter wherever necessary.</span></p>
+</blockquote>

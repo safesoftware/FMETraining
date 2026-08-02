@@ -23,7 +23,7 @@
 <p><img src="images/1784582801626.png" alt="" /></p>
 <p>FME Flow can host multiple MCP servers from a single FME Flow instance. When you publish a workspace as an MCP tool, any MCP client can discover it and call it, then FME Flow executes the workspace and returns the relevant output. AI systems only see and access the tool, its description, and its inputs, without directly accessing all your data. FME Flow logs each tool call as a job, giving you a full audit trail of what was called, when, and what it returned.&nbsp;</p>
 <h2>Why Create an MCP Server?</h2>
-<p>If you already have hundreds of FME workflows and are already familiar with AI, you might be wondering: Why would I create an MCP server on FME Flow?</p>
+<p>If you already have hundreds of FME workflows and are already familiar with AI, you might be wondering: Why would I create an MCP server on FME Flow? Here are some reasons you may want to leverage MCP for new and existing workflows using FME:</p>
 <div>
 <style>
 details {
@@ -104,7 +104,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </blockquote>
 <p>Once you create your MCP server, FME Flow takes you to the Server Details tab. The URL is what you will give to the MCP client that connects to the server; however, clients may only successfully connect once the MCP server has been started.&nbsp;</p>
 <p><img src="images/1784915048051.jpg" alt="" width="1488" height="864" /></p>
-<p>Next, in order to make your MCP server discoverable to MCP clients, you need to start it. Once you start it, MCP clients will be able to successfully connect to and access your MCP server. Likewise, stopping an MCP server makes it unavailable to clients.&nbsp;</p>
+<p>Therefore, in order to make your MCP server discoverable to MCP clients, you need to start it. Once you start it, MCP clients will be able to successfully connect to and access your MCP server. Likewise, stopping an MCP server makes it unavailable to clients.&nbsp;</p>
 <h2>Adding MCP Tools</h2>
 <p>After you create your MCP server, the next step is to add tools for MCP clients to query and call to run. An MCP tool carries out a specific operation, which is running a workspace in the context of FME. Any workspace on FME Flow can be an MCP tool, allowing your existing workflows to become MCP tools, or you may build workspaces specifically for use with MCP.&nbsp;</p>
 <blockquote>
@@ -125,10 +125,9 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <p><img src="images/1784676226771.jpg" alt="" /></p>
 <p>Again, each user parameter description explains how an MCP client or AI model determines what information to provide to the MCP server when making the tool call.&nbsp;</p>
 <details open="open">
-<summary><strong>Writing Effective Descriptions for AI</strong></summary>
-<div>Tool descriptions, names, and parameter descriptions determine how MCP clients discover and understand what a tool does. These descriptions need to be clear and concise for the MCP client, usually an AI model, to understand what the tool does and what information it needs to provide to run successfully. Here are some tips:</div>
-<div><strong>Tool names</strong></div>
-<div>
+<summary><strong>Writing Effective MCP Descriptions for AI</strong></summary>
+<p>Tool descriptions, names, and parameter descriptions determine how MCP clients discover and understand what a tool does. These descriptions need to be clear and concise for the MCP client, usually an AI model, to understand what the tool does and what information it needs to provide to run successfully. Here are some tips:</p>
+<p><strong>Tool names</strong></p>
 <ul>
 <li>Use action-oriented names</li>
 <li>The name should hint at what the tool returns, not how it works internally&nbsp;
@@ -161,7 +160,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>Make it clear whether a parameter is required or optional, and the default value that is returned if an optional parameter is omitted</li>
 <li>If a parameter has constrained inputs, list examples or indicate where valid values can be found</li>
 </ul>
-</div>
+<p>Using AI to write your MCP names and descriptions is one of the easiest ways to ensure they're clear for another AI to understand. You can describe what the workflow is, describe the inputs and outputs, and provide any restrictions, and tell AI that you need to write the description for MCP and it will write it for you to copy. You should always double-check AI's work to make sure it's accurate too.&nbsp;&nbsp;</p>
 </details>
 <h2>Authenticating MCP on FME Flow</h2>
 <p>MCP Servers on FME Flow currently support OAuth 2.0 authentication. To use OAuth 2.0 authentication, your FME Flow security must have SAML enabled and configured with your SAML identity provider's roles and users. You may set an MCP server's security when you create it, or from the Server Details page for an existing MCP server.&nbsp;</p>
@@ -172,7 +171,11 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <p><img src="images/safe_note.png" alt="Note" /></p>
 <p>To use OAuth 2.0 authentication with MCP Servers, FME Flow needs to be configured with SAML authenitcation. For more information, see our article <a href="https://support.safe.com/hc/en-us/articles/25407741736333-Configuring-FME-Flow-for-SAML-Authentication" target="_self">Configuring FME Flow for SAML Authentication</a>.&nbsp;</p>
 </blockquote>
-<h2>Controlled AI Access</h2>
 <h2>Connect to your MCP Server</h2>
+<p>Once you build and start your server and add and publish some tools, you're ready to use MCP clients to connect to your MCP server. Oftentimes, the MCP client is an AI that will read and call tools from your MCP server; however, the MCP client could be another application, or even an FME workspace using the MCPCaller. The URL under the Server Details tab is the URL that MCP clients will use to connect to your server. For most clients, you'll need to open it's MCP connector settings, paste the URL into the appropriate location, provide any other specific configurations, and then you'll be able to use the client to call your MCP server on FME Flow and receive structured, consistent data back.&nbsp;</p>
 <p><img src="images/1784917576123.jpeg" alt="" width="1406" height="731" /></p>
+<p>Once you connect your MCP client to your MCP server, you're ready to make calls to tools on the MCP server, running workspaces behind the scenes to process your data. Once the tool executes, FME returns a response back to the client indicating it's success and any data you choose to expose with an MCP writer.&nbsp;</p>
+<h2>Controlled AI Access</h2>
+<p>With MCP on FME Flow, AI never gets direct access to your data. Instead, AI only has the ability to call the workspace tool and process the results you choose to return from the FME workspace. FME is the guarding layer that sits between AI and your data, controlling what AI can and cannot access, regardless of whether your data is in the cloud, on-premisises, or a hybrid.&nbsp;</p>
+<p><img src="images/1785275590766.jpg" alt="" /></p>
 <h2>Exercise</h2>

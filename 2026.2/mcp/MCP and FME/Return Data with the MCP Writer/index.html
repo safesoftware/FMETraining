@@ -1,7 +1,10 @@
 <h2 id="learning-objectives">Learning Objectives</h2>
 <p>After completing this lesson, you'll be able to:</p>
 <ul>
-<li>&nbsp;</li>
+<li>Use the MCP writer to return data from an MCP tool.</li>
+<li>Format data for output using an MCP writer.&nbsp;</li>
+<li>Publish a workspace with an MCP writer as an MCP tool.</li>
+<li>Call an MCP tool and receive information through an MCP writer response.&nbsp;</li>
 </ul>
 <p>In this lesson, you will:</p>
 <ul>
@@ -10,3 +13,33 @@
 <li>Complete the quiz at the end of this lesson.</li>
 <li>Click 'Next' to mark the lesson complete.</li>
 </ul>
+<h2>Resources</h2>
+<ul>
+<li>&nbsp;</li>
+</ul>
+<h2>MCP Tool Response</h2>
+<p>For each MCP tool call to an FME Flow MCP server, FME Flow returns the job status, whether the workspace succeeds or fails, back to the MCP client. This is useful for MCP tools that trigger an action such as writing data to a database, updating a file, or sending a notification, since the client only needs to know whether the operation completes. However, many MCP workflows need to return data to the requesting client to fully leverage MCP and FME workflows. The MCP writer communicates information from the FME workspace running as an MCP tool back to the MCP client that made the request.&nbsp;</p>
+<h2>MCP Writer</h2>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/mcp/mcp.htm" target="_self">MCP writer</a> allows you to send a structured MCP tool response from an FME workspace that an MCP client can consume directly.&nbsp;The MCP writer accumulates all features routed to it in the workspace into a JSON-RPC 2.0-formatted response document, which FME Flow routes to the calling MCP client. The output response conforms to the tool response format and requirements defined in the <a title="Opens Model Context Protocol Specification" href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools" target="_blank" rel="noopener">MCP Tools Specification</a>. From the MCP user's or client's perspective, calling an MCP tool and receiving a detailed response appears seamless, as the response is formatted in JSON in the background.&nbsp;</p>
+<p><img src="images/1785357812478.jpg" alt="" /></p>
+<p>The MCP writer currently supports returning text, image, and audio content as JSON for MCP tools. Each content type is represented as a separate feature type in the workspace, and you can include one or more content types in the same workspace depending on what the tool needs to return.</p>
+<p><strong>Text</strong> is the most common output type and is supported by every MCP client. Text content is passed to the writer as a plain string attribute, typically the result of a calculation, a formatted summary, a list of records, or any other text produced by the workspace. For data-heavy tools like counting features in an area or summarizing building plans, text is typically the right choice, and you simply build what you want to send as the MCP response using an AttributeCreator and route it to the writer feature type. For more complex responses, you can format details into a JSON object to pass back to the MCP client.&nbsp;</p>
+<p><img src="images/1785357830236.jpg" alt="" /></p>
+<p><strong>Image </strong>content allows a tool to return visual output, such as a generated map, chart, or spatial visualization, directly in the response. Image content is passed to the writer as Base64-encoded data along with a MIME type. To retrieve an image to return as an MCP response, use an AttributeFileReader to read the image file as Base64, then an AttributeCreator to add a mimeType attribute (for example, image/png). FME handles the encoding; the client receives the image directly in the response. Note that some MCP clients have file size limits, so large images may need to be resampled or compressed before being written.</p>
+<p><img src="images/1785358172375.png" alt="" /></p>
+<p><strong>Audio</strong> content works similarly to image &mdash; passed as Base64-encoded data with a MIME type (for example, audio/mpeg). This content type supports use cases where the tool output is an audio file or clip. Support for audio content varies by MCP client, so you should test the audio playback with your target MCP client, likely an AI model, before building a tool that uses audio output.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more resources on working with the different MCP writer content types, please check out these articles:</p>
+<ul>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/46676206740877-Returning-Text-Content-from-an-FME-MCP-Tool" target="_blank" rel="noopener">Returning Text Content from an FME MCP Tool</a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/46667236029837-Returning-Image-Content-from-an-FME-MCP-Tool" target="_blank" rel="noopener">Returning Image Content from an FME MCP Tool</a></li>
+</ul>
+</blockquote>
+<p>When you create an MCP tool on FME Flow using a workspace containing an MCP writer, FME Flow will display the MCP icon <img src="images/1785357535663.png" alt="" /> next to the workspace name. It signifies that the workspace has an MCP writer and will return additional information to the MCP client when the tool is called.&nbsp;</p>
+<h2>Interpreting Tool Results</h2>
+<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">Once FME Flow returns the tool result to the MCP client, the AI model is responsible for interpreting it; however, different AI agents may interpret the same result in different ways. A response that one model renders as a formatted table, another might display as plain text. An image that one client shows inline, another might describe in words.</p>
+<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">To help guide the AI toward a correct interpretation, the MCP writer supports optional annotation values, audience, and priority for each content type. The audience and priority values give the MCP client hints on how to handle the MCP response, such as how to display the content and its purpose. Again, whether an AI MCP client honors these values depends on the client itself, and you should test your intended AI client to understand and predict how it behaves.&nbsp;</p>
+<p class="font-claude-response-body break-words whitespace-normal" dir="ltr"><img src="images/1785357859079.jpg" alt="" width="1070" height="184" /></p>
+<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">And again, your tool description also helps the MCP client understand what to expect from the tool's output, its purpose, and how to best display the information back to the user. A tool description that specifies the format and structure of the output gives an AI model the context it needs to handle the response correctly and present it usefully. A vague description leaves the interpretation up to each AI model, which can produce inconsistent results across different clients, or even different sessions and requests with the same client.&nbsp;</p>
+<h2 class="font-claude-response-body break-words whitespace-normal" dir="ltr">Exercise</h2>
