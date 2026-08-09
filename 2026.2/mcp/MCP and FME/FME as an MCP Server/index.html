@@ -174,8 +174,284 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <h2>Connect to your MCP Server</h2>
 <p>Once you build and start your server and add and publish some tools, you're ready to use MCP clients to connect to your MCP server. Oftentimes, the MCP client is an AI that will read and call tools from your MCP server; however, the MCP client could be another application, or even an FME workspace using the MCPCaller. The URL under the Server Details tab is the URL that MCP clients will use to connect to your server. For most clients, you'll need to open it's MCP connector settings, paste the URL into the appropriate location, provide any other specific configurations, and then you'll be able to use the client to call your MCP server on FME Flow and receive structured, consistent data back.&nbsp;</p>
 <p><img src="images/1784917576123.jpeg" alt="" width="1406" height="731" /></p>
-<p>Once you connect your MCP client to your MCP server, you're ready to make calls to tools on the MCP server, running workspaces behind the scenes to process your data. Once the tool executes, FME returns a response back to the client indicating it's success and any data you choose to expose with an MCP writer.&nbsp;</p>
+<p>Once you connect your MCP client to your MCP server, you're ready to make calls to tools on the MCP server, running workspaces behind the scenes to process your data. Once the tool executes, FME returns a response back to the client indicating its success and any data you choose to expose with an MCP writer.&nbsp;</p>
 <h2>Controlled AI Access</h2>
-<p>With MCP on FME Flow, AI never gets direct access to your data. Instead, AI only has the ability to call the workspace tool and process the results you choose to return from the FME workspace. FME is the guarding layer that sits between AI and your data, controlling what AI can and cannot access, regardless of whether your data is in the cloud, on-premisises, or a hybrid.&nbsp;</p>
+<p>With MCP on FME Flow, AI never gets direct access to your data. Instead, AI only has the ability to call the workspace tool and process the results you choose to return from the FME workspace. FME is the guarding layer that sits between AI and your data, controlling what AI can and cannot access, regardless of whether your data is in the cloud, on-premises, or a hybrid.&nbsp;</p>
 <p><img src="images/1785275590766.jpg" alt="" /></p>
 <h2>Exercise</h2>
+<p><img src="images/1785860734333.png" alt="" width="270" height="286" /></p>
+<p>Frank has already built his first workspace to deploy as an MCP tool on an FME Flow MCP server. The workspace is quite simple; it takes user input for maintenance requests and logs the request to an Excel file in FME Flow Resources. Other workflows or automations can trigger to run based on an update to the file or use the file as source data. To get his MCP tool running, Frank needs to create and deploy an MCP server on FME Flow, then add his workspace as a tool and provide clear descriptions so an AI model may correctly call the tool from user input. Lastly, Frank wants to use an AI model in LM Studio as an MCP client to call his MCP tool. By using an AI model to process the user request, the user can input a string of text for the request, and the AI will assign the appropriate values to the input parameters for the MCP tool to run.&nbsp;</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Create an MCP server on FME Flow.</li>
+<li>Create an MCP tool with a workspace on FME Flow.&nbsp;</li>
+<li>Connect to your FME Flow MCP server from an AI model.&nbsp;</li>
+<li>Prompt an AI model to call an MCP tool to run on FME Flow.&nbsp;</li>
+</ul>
+<h3>1) Open and Log In to FME Flow</h3>
+<ul>
+<li>Navigate to <strong>FME Flow</strong> and log in.&nbsp;</li>
+</ul>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>How you log into FME Flow will depend on the FME Flow instance you are using.&nbsp;<br />If you are taking a Safe Software-hosted training course, you can access FME Flow at&nbsp;<a href="http://localhost/">http://localhost/fmeserver</a>.</p>
+<ul>
+<li>Username:&nbsp;<strong>admin</strong></li>
+<li>Password:&nbsp;<strong>FMElearnings</strong></li>
+</ul>
+<p>If you are not taking a Safe Software-hosted course, have just installed your FME Flow, and haven&rsquo;t logged in yet, you must use the default username/password, admin/admin.&nbsp;After entering the default username/password, FME Flow will prompt you to create a new password for the admin user account. Then log in using the username admin and your new password. Because this is a fresh install, you must also license FME Flow before continuing; see the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/Request_and_Install_a_License-Express-Windows.htm">FME Flow Licensing Walk-Through</a>&nbsp;for instructions.<br />If you are using FME Flow Hosted, see&nbsp;<a href="https://docs.safe.com/fme-flow-hosted/FME-Flow-Hosted/Content/About_Instances/Connect_to_Web_UI.htm">these instructions</a>.</p>
+</blockquote>
+<h3>2) Create a New MCP Server</h3>
+<p>To host Frank's MCP tool, you first need to create a new MCP server.&nbsp;</p>
+<ul>
+<li>Open&nbsp;<strong>MCP Servers</strong> from the side menu.</li>
+<li>Click&nbsp;<strong>Create</strong> to make a new one.&nbsp;</li>
+</ul>
+<p><img src="images/1785864106708.png" alt="" width="1174" height="440" /></p>
+<ul>
+<li>Give your MCP server a&nbsp;<strong>Title</strong>.&nbsp;
+<ul>
+<li>This MCP server will be used to access data and trigger workflows for utilities in the City of Vancouver.&nbsp;&nbsp;</li>
+</ul>
+</li>
+<li><strong>Name</strong> your server <strong>cov-utility-data</strong>.
+<ul>
+<li>Make sure to use this exact name for the server. We've already set LM Studio to connect to an MCP server with this name and URL.&nbsp;</li>
+<li>The&nbsp;<strong>URL</strong> will automatically update to reflect the name you enter.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1785864184230.png" alt="" width="585" height="343" /></p>
+<ul>
+<li>Provide a <strong>Description</strong> for your MCP server. You may copy and use the following description for your server or try creating your own.
+<ul>
+<li>Remember, the description needs to be clear and concise so MCP clients understand the purpose of your MCP server.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<pre class="language-markup"><code>This MCP server provides tools for accessing and managing Vancouver city utility and infrastructure data. It supports field operations, maintenance logging, and spatial data retrieval for municipal assets, including water, drainage, electrical, and street infrastructure. Use this server to log maintenance requests, retrieve asset records, filter and summarize city datasets, and export data for analysis. All data is sourced from the City of Vancouver open data and FME training datasets. Tools should be called in sequence where appropriate &mdash; for example, retrieve asset records before filtering or exporting them.</code></pre>
+<ul>
+<li>Under&nbsp;<strong>Security</strong>, set the&nbsp;<strong>Authentication Method</strong> to&nbsp;<strong>Unauthenticated</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1785864235359.png" alt="" width="582" height="158" /></p>
+<ul>
+<li>Click&nbsp;<strong>Create</strong>.&nbsp;
+<ul>
+<li>FME Flow opens the Server Details for your MCP server. Here, you would copy the URL to provide to MCP clients and start your MCP server so it is accessible to them. We don't have any tools for our MCP server yet, so we will return to this later.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1785863827951.png" alt="" width="1177" height="477" /></p>
+<h3>3) Create a Tool</h3>
+<p>Frank has already published the workspace to use as an MCP tool to FME Flow. The workspace is quite simple; it uses an AttributeManager to transfer inputs as user parameters to attributes, then writes the data to an Excel file in Resources with the maintenance request information.&nbsp;</p>
+<p><img src="images/1785864525969.png" alt="" width="606" height="177" /></p>
+<ul>
+<li>Click the&nbsp;<strong>Tools</strong> tab.</li>
+<li>Click&nbsp;<strong>Create</strong> to add a new tool.</li>
+</ul>
+<p><img src="images/1785864697362.png" alt="" width="366" height="289" /></p>
+<ul>
+<li><strong>Name</strong> your tool&nbsp;<strong>log-maintenance-request</strong> and optionally provide a Title too.</li>
+<li>Provide a&nbsp;<strong>Description</strong> for the tool. You can create your own description or copy the description below.</li>
+</ul>
+<pre class="language-markup"><code>Logs a maintenance request for a utility asset at a residential address in Vancouver. Call this when a field worker reports an issue at a specific address. Asset types include water meter, gas meter, power line, sewer connection, street light, water main, fire hydrant, and storm drain. No data is returned &mdash; the request is recorded in the MaintenanceRequests.xlsx file in Resources.</code></pre>
+<p><img src="images/1785865761945.png" alt="" width="820" height="539" /></p>
+<ul>
+<li>Scroll down to&nbsp;<strong>Job Settings</strong>.&nbsp;</li>
+<li>Select the&nbsp;<strong>MCP Training</strong> repository and the <strong>NewMaintenanceRequest.fmw</strong> workspace.&nbsp;
+<ul>
+<li>FME Flow will warn you that the workspace will only return the job status. You will learn about returning additional informaiton with an MCP Writer in the next exercise.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1785876673240.png" alt="" width="629" height="300" /></p>
+<ul>
+<li>Leave the job queue and expiry time settings set to inherit the MCP settings.&nbsp;</li>
+</ul>
+<h3>4) Add Parameter Descriptions</h3>
+<p>This workspace takes input about each maintenance request through parameters, and you will need to provide adequate descriptions for each parameter so the AI model knows what values to supply from the user request.&nbsp;</p>
+<ul>
+<li>Navigate to the&nbsp;<strong>Parameters</strong> tab.&nbsp;
+<ul>
+<li>FME Flow lists every user parameter. If the parameter has a default value set, it populates the value. Otherwise, you need to supply both parameter descriptions and default values.&nbsp;</li>
+</ul>
+</li>
+<li>For each parameter, enter the description and default value according to the table below.&nbsp;</li>
+</ul>
+<table style="border-collapse: collapse; width: 94.9839%;" border="1">
+<tbody>
+<tr>
+<td style="width: 13.4556%;"><span style="font-size: 12pt;"><strong>Parameter</strong></span></td>
+<td style="width: 70.8391%;"><span style="font-size: 12pt;"><strong>Description</strong></span></td>
+<td style="width: 15.7129%;"><span style="font-size: 12pt;"><strong>Default Value</strong></span></td>
+</tr>
+<tr>
+<td style="width: 13.4556%;"><span style="font-size: 12pt;">ADDRESS</span></td>
+<td style="width: 70.8391%;"><span style="font-size: 12pt;">The address where the issue is occurring and maintenance is to take place</span></td>
+<td style="width: 15.7129%;"><span style="font-size: 12pt;">123 Main St</span></td>
+</tr>
+<tr>
+<td style="width: 13.4556%;"><span style="font-size: 12pt;">ASSET_TYPE</span></td>
+<td style="width: 70.8391%;"><span style="font-size: 12pt;">The infrastructure asset that is affected. Asset types include water meter, gas meter, power line, sewer connection, street light, water main, fire hydrant, storm drain, and other.&nbsp;</span></td>
+<td style="width: 15.7129%;"><span style="font-size: 12pt;">Water Meter</span></td>
+</tr>
+<tr>
+<td style="width: 13.4556%;"><span style="font-size: 12pt;">ISSUE</span></td>
+<td style="width: 70.8391%;"><span style="font-size: 12pt;">Description of the issue occurring</span></td>
+<td style="width: 15.7129%;"><span style="font-size: 12pt;">Leaking water</span></td>
+</tr>
+<tr>
+<td style="width: 13.4556%;"><span style="font-size: 12pt;">PRIORITY</span></td>
+<td style="width: 70.8391%;"><span style="font-size: 12pt;">Priority ranking for the issue</span></td>
+<td style="width: 15.7129%;"><span style="font-size: 12pt;">High</span></td>
+</tr>
+<tr>
+<td style="width: 13.4556%;"><span style="font-size: 12pt;">REPORTED_BY</span></td>
+<td style="width: 70.8391%;"><span style="font-size: 12pt;">Name of whoever is reporting the issue</span></td>
+<td style="width: 15.7129%;"><span style="font-size: 12pt;">&lt;Enter your name&gt;</span></td>
+</tr>
+</tbody>
+</table>
+<h3>5) Create and Publish Tool</h3>
+<ul>
+<li>Click&nbsp;<strong>Create</strong>.&nbsp;
+<ul>
+<li>Your tool will appear in the Tools list in the Not Published section.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Publish</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1785878423777.png" alt="" width="1222" height="463" /></p>
+<p>Now, your tool will be available to any MCP client that connects to your MCP server.</p>
+<h3>6) Start MCP Server</h3>
+<p>For your MCP server and its tools to become available to MCP clients, you also need to start the server.&nbsp;</p>
+<ul>
+<li>Scroll up and click&nbsp;<strong>Start MCP Server</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1785951848922.png" alt="" width="1020" height="215" /></p>
+<h3>7) Connect to MCP Client</h3>
+<p>For this exercise, you will use LM Studio to connect to your MCP server and call your MCP tools.&nbsp;</p>
+<ul>
+<li>Navigate to&nbsp;<strong>LM Studio</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1785967463066.png" alt="" width="1100" height="1128" /></p>
+<p>We've already configured LM Studio to connect to your FME Flow MCP Server, as long as your MCP server URL is <code>http://localhost/fmemcp/cov-utility-data/mcp</code>.</p>
+<p>If you're interested in how we configured LM Studio to connect to this MCP server, expand the section below for the steps we completed.&nbsp;</p>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Connect LM Studio to MCP Server</strong></summary>
+<div>LM Studio's <a href="https://lmstudio.ai/docs/app/mcp" target="_blank" rel="noopener">Use MCP Servers</a> page provides directions on connecting to MCP servers in LM Studio.&nbsp;</div>
+<div>
+<p>Regardless of your MCP client, you will need to copy the URL from the Server Details tab.&nbsp;</p>
+<p><img src="images/1785955670745.png" alt="" width="427" height="228" /></p>
+</div>
+<div>To connect LM Studio to the FME Flow MCP server in this exercise, we configured the <strong>mcp.json</strong> document as follows.&nbsp;</div>
+<div>
+<pre class="language-markup"><code>{
+  "mcpServers": {
+    "cov-utility-data": {
+      "url": "http://localhost/fmemcp/cov-utility-data/mcp"
+    }
+  }
+}</code></pre>
+<p>To check or edit the mcp.json file, go to the <strong>Developer</strong> tab on the left side menu and then select&nbsp;<strong>mcp.json</strong>.&nbsp;</p>
+<p><img src="images/1785960109581.png" alt="" /></p>
+</div>
+</details>
+<ul>
+<li>Navigate to the&nbsp;<strong>Chats&nbsp;</strong>tab.</li>
+<li>Check the top bar for a model. If one is not loaded, select&nbsp;<strong>google/gemma-4-e4b</strong>.&nbsp;
+<ul>
+<li>It will take a few moments to load the model.</li>
+</ul>
+</li>
+<li>Select&nbsp;<strong>New Chat</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1786045804196.png" alt="" /></p>
+<ul>
+<li>Once a new chat session loads, open&nbsp;<strong>Integrations</strong> at the bottom of the message pane and ensure the&nbsp;<strong>cov-utility-data</strong> MCP server is enabled.&nbsp;
+<ul>
+<li>LM Studio should list the MCP server in the message box once you enable it.&nbsp;</li>
+<li>If the&nbsp;<strong>mcp/cov-utility-data</strong> option is missing from Integrations, check the mcp.json file following the instructions above.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1786053467867.png" alt="" /> &nbsp; <img src="images/1786053486059.png" alt="" /></p>
+<h3>8) Call MCP Tool</h3>
+<ul>
+<li>In the chat box, send a message to the AI model describing a maintenance request. You may enter your own request or copy the one below.</li>
+</ul>
+<pre class="language-markup"><code>Log a maintenance request for 78 Violet Street. The fire hydrant in the boulevard is leaking water. This is reported by &lt;Enter your name&gt; and severity is medium.</code></pre>
+<ul>
+<li>Send the message to the model.&nbsp;
+<ul>
+<li>The model should process your message and call the log-maintenance-request MCP tool.</li>
+<li>Results and response time will vary across different AI models. This model is running locally on the lab machine, which may cause some response time delays.&nbsp;</li>
+<li>If some information is missing from the required tool input, the AI model may ask you to confirm the missing values or use the default values. Again, results may differ across different AI models.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1786055157105.png" alt="" /></p>
+<h3>9) Check Tool Results</h3>
+<p>Each time an MCP tool is called, the tool runs a workspace, which is traceable as a normal FME Flow job.&nbsp;</p>
+<ul>
+<li>Navigate back to <strong>FME Flow</strong> and open <strong>Jobs</strong>.&nbsp;</li>
+<li>Under&nbsp;<strong>Completed</strong> jobs, you should see the NewMaintenanceRequest workspace ran, confirming you successfully called an MCP tool using the AI model as the MCP client.</li>
+</ul>
+<p><img src="images/1786055543881.png" alt="" width="1148" height="144" /></p>
+<ul>
+<li>You can also check that the workspace updated&nbsp;<strong>MaintenanceRequests.xlsx</strong> in <strong>Resources &gt; Data &gt; Output (C:\ProgramData\Safe Software\FMEFlow\resources\data\Output)</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1786057034372.png" alt="" /></p>
+<p>You've now created an MCP server hosted on FME Flow, added an MCP tool that logs a maintenance request, and used an MCP client to run your new MCP tool. Frank's next steps will be to add more tools and make the MCP server more capable and versatile.&nbsp;</p>
