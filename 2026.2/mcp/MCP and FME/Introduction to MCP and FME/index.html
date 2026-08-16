@@ -90,24 +90,24 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </details>
 <h2 id="learning-objectives">What is MCP?&nbsp;</h2>
 <p><span style="font-weight: 400;">MCP, or Model Context Protocol, is an open standard that gives applications a common way to discover and use tools from other systems. Instead of building a custom integration for every tool or service, MCP gives those systems a shared way to describe what they can do and how to call them.</span></p>
-<p><span style="font-weight: 400;">MCP is built around a simple client-server model. An <strong>MCP server</strong> is any system that exposes tools, advertises what it can do, and waits to be called. An <strong>MCP client</strong> is anything that connects to those servers, discovers the available tools, and decides which ones to use to complete a task. In most cases, the client is an AI agent or AI-powered application.</span></p>
+<p><span style="font-weight: 400;">MCP is built around a simple client-server model. An <strong>MCP server</strong> is any system that exposes tools, advertises what it can do, and waits for a client to call it. An <strong>MCP client</strong> is anything that connects to those servers, discovers the available tools, and decides which ones to use to complete a task. In most cases, the client is an AI agent or AI-powered application.</span></p>
 <p><span style="font-weight: 400;">Tools are the core of what MCP servers provide. Each tool represents a specific operation a client can invoke, such as retrieving data, running a calculation, or triggering a workflow. Tools have a name, a description of what they do, and a defined set of input parameters. This makes them self-describing, as a client can read a tool's definition and know exactly how to use it without any additional documentation. </span></p>
 <p><span style="font-weight: 400;">When a client connects to a server, it discovers the available tools along with their descriptions and the parameters each one accepts. The client, usually an AI model, then decides which tool to call, with what inputs, and receives a result back. This separation is what makes MCP powerful: servers don't need to know anything about the client, and clients don't need to know anything about how a tool works internally, just what it does and how to call it.</span></p>
 <p>In FME, MCP works in both directions. FME can act as a client using the MCPCaller transformer to call tools from external MCP servers, and FME Flow can act as a server by exposing workspaces as tools that any MCP-compatible client can discover and run.</p>
 <h2>Why FME + MCP?</h2>
-<p>AI models are very capable; the barrier to AI data integration and analysis isn't the model and its capabilities; it's actually data access. Critical data sits behind firewalls, locked in formats AI can't read, or buried in systems lacking an API. When an AI agent cannot reach the data it needs, it either fails or guesses. MCP is the standard that closes that gap, giving AI a consistent, secure way to call tools and retrieve data from the systems that hold it.&nbsp;</p>
+<p>AI models are very capable; the barrier to AI data integration and analysis isn't the model and its capabilities; it's actually data access. Critical data sits behind firewalls, hides in formats AI can't read, or gets buried in systems lacking an API. When an AI agent cannot reach the data it needs, it either fails or guesses. MCP is the standard that closes that gap, giving AI a consistent, secure way to call tools and retrieve data from the systems that hold it.&nbsp;</p>
 <p><img src="images/1785174834785.jpg" alt="" /></p>
 <p>Without FME, an AI agent requesting spatial or enterprise data often hits a wall:</p>
 <ul>
 <li>The data is behind a firewall or in a format the AI can't read.</li>
-<li>There's no API, or the existing one doesn't expose what's needed.</li>
+<li>There's no API, or the existing one doesn't expose what users need.</li>
 <li>A human has to step in manually to retrieve and prepare the data.&nbsp;</li>
 </ul>
-<p>With FME Flow acting as an MCP server, the same request looks different. The agent calls an FME MCP tool, FME runs the workspace against your actual systems, and returns a clean, structured result, without the AI ever accessing the data directly. Every call is logged, scoped to what you've exposed, and runs on infrastructure you control.&nbsp;</p>
+<p>With FME Flow acting as an MCP server, the same request looks different. The agent calls an FME MCP tool, FME runs the workspace against your actual systems, and returns a clean, structured result, without the AI ever accessing the data directly. FME Flow logs every call, scopes it to what you've exposed, and runs on infrastructure you control.&nbsp;</p>
 <p><img src="images/1785176119916.jpg" alt="" /></p>
 <p>FME brings support for 500+ formats, spatial processing, and the ability to build reliable, auditable data pipelines across any system to the MCP party. You build the MCP tool once, and it works with an MCP-compatible client. And MCP tools in FME are just workspaces, so your existing FME skills translate directly.&nbsp;</p>
 <p><img src="images/1785176719700.jpg" alt="" /></p>
-<p>If you've used FME's HTTPCaller to connect to API endpoints, you're already familiar with direct API integration. Understanding how MCP differs, and when you want to use MCP instead, helps you choose the right tool for the job. You may already have FME workspaces built to access your data and systems where you connect to API endpoints to send and receive data - you can expose these workspaces as MCP tools.&nbsp;</p>
+<p>If you've used FME's HTTPCaller to connect to API endpoints, you're already familiar with direct API integration. Understanding how MCP differs and when you want to use MCP instead helps you choose the right tool for the job. You may already have built FME workspaces to access your data and systems where you connect to API endpoints to send and receive data - you can expose these workspaces as MCP tools.&nbsp;</p>
 <table style="border-collapse: collapse; width: 100%;" border="1">
 <tbody>
 <tr>
@@ -118,37 +118,37 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </tr>
 <tr>
 <td style="width: 9.65556%;"><span style="font-size: 12pt;">What it is</span></td>
-<td style="width: 29.305%;"><span style="font-size: 12pt;">A custom request to a specific service endpoint - in FME, this is typically done using an HTTPCaller or OpenAPICaller</span></td>
+<td style="width: 29.305%;"><span style="font-size: 12pt;">A custom request to a specific service endpoint - in FME, you typically do this using an HTTPCaller or OpenAPICaller</span></td>
 <td style="width: 31.1129%;"><span style="font-size: 12pt;">An open standard for describing, discovering, and calling tools across any client and server - FME works on both sides as a client via the MCPCaller and as a server via FME Flow</span></td>
 <td style="width: 29.9266%;"><span style="font-size: 12pt;">A protocol for AI agents to coordinate and delegate tasks to other agents</span></td>
 </tr>
 <tr>
 <td style="width: 9.65556%;"><span style="font-size: 12pt;">Vendor flexibility&nbsp;</span></td>
-<td style="width: 29.305%;"><span style="font-size: 12pt;">None - tied to that service's API, each new service needs its own integration.</span></td>
-<td style="width: 31.1129%;"><span style="font-size: 12pt;">Any MCP client works with any MCP server - FME tools built once are accessible to any MCP-compatible client without rebuilding</span></td>
+<td style="width: 29.305%;"><span style="font-size: 12pt;">None - that service's API ties you to it; each new service needs its own integration.</span></td>
+<td style="width: 31.1129%;"><span style="font-size: 12pt;">Any MCP client works with any MCP server - FME tools you build once are accessible to any MCP-compatible client without rebuilding</span></td>
 <td style="width: 29.9266%;"><span style="font-size: 12pt;">Open standard, but adoption is still growing compared to MCP</span></td>
 </tr>
 <tr>
 <td style="width: 9.65556%;"><span style="font-size: 12pt;">Token overhead</span></td>
-<td style="width: 29.305%;"><span style="font-size: 12pt;">None to high - zero when the developer hardcodes the integration, but high when an AI is driving the call directly, as it needs the full API spec loaded into context; unstructured and inconsistent compared to MCP's compact tool schemas</span></td>
+<td style="width: 29.305%;"><span style="font-size: 12pt;">None to high - zero when the developer hardcodes the integration, but high when an AI is driving the call directly, as it needs to load the full API spec into context; unstructured and inconsistent compared to MCP's compact tool schemas</span></td>
 <td style="width: 31.1129%;"><span style="font-size: 12pt;">Medium - AI accesses tool information at runtime, using tokens for each request; FME reduces overall token usage by bundling complex data processing into single tool calls</span></td>
 <td style="width: 29.9266%;"><span style="font-size: 12pt;">High - each agent in the chain runs its own inference; costs multiply with chain depth</span></td>
 </tr>
 <tr>
 <td style="width: 9.65556%;"><span style="font-size: 12pt;">Reliability</span></td>
 <td style="width: 29.305%;"><span style="font-size: 12pt;">High - you can control the request exactly</span></td>
-<td style="width: 31.1129%;"><span style="font-size: 12pt;">High - when tools are well-described; FME workspaces are deterministic and return consistent, structured outputs, reducing the chance of ambiguous results or retries</span></td>
+<td style="width: 31.1129%;"><span style="font-size: 12pt;">High - when you describe tools well; FME workspaces are deterministic and return consistent, structured outputs, reducing the chance of ambiguous results or retries</span></td>
 <td style="width: 29.9266%;"><span style="font-size: 12pt;">Variable - open-ended agent communication has more failure modes and potential for misinterpretation</span></td>
 </tr>
 </tbody>
 </table>
 <p>You may also come across Agent-to-Agent (A2A) protocols in conversations about AI. These address a different problem: how agents coordinate and delegate work to one another, rather than accessing tools. A2A and MCP are complementary, as MCP provides the standard protocol for agents to interact with and process your data.&nbsp;</p>
 <h2><span style="font-weight: 400;">FME as an MCP Client</span></h2>
-<p class="font-claude-response-body break-words whitespace-normal">When FME acts as an MCP client, it uses the MCPCaller transformer to connect to external MCP servers from within a workspace. The MCPCaller can discover the tools a server exposes and call them directly, returning the results to the workspace &mdash; where the data can be processed, transformed, or written like any other FME data.</p>
+<p class="font-claude-response-body break-words whitespace-normal">When FME acts as an MCP client, it uses the MCPCaller transformer to connect to external MCP servers from within a workspace. The MCPCaller can discover the tools a server exposes and call them directly, returning the results to the workspace&mdash;where you can process, transform, or write the data like any other FME data.</p>
 <p class="font-claude-response-body break-words whitespace-normal"><span style="font-weight: 400;"><img src="images/1784148610942.png" alt="" /></span></p>
-<p class="font-claude-response-body break-words whitespace-normal">This means FME workspaces can integrate with the broader MCP ecosystem (including documentation systems, databases, APIs, and business applications) without building custom connectors for each. Any system that exposes an MCP server can be called from FME in the same consistent way.</p>
+<p class="font-claude-response-body break-words whitespace-normal">This means FME workspaces can integrate with the broader MCP ecosystem (including documentation systems, databases, APIs, and business applications) without building custom connectors for each. FME can call any system that exposes an MCP server in the same consistent way.</p>
 <h2><span style="font-weight: 400;">FME as an MCP Server</span></h2>
-<p class="font-claude-response-body break-words whitespace-normal">FME Flow can act as an MCP server by exposing FME workspaces as callable tools. When a workspace is registered as an MCP tool, any MCP-compatible client (an AI agent, LM Studio, Claude, or another application) can discover it and run it by sending the required inputs. The user parameters in the workspace become the tool's inputs, specifying what the client must provide when calling the tool. FME Flow handles execution, keeping AI away from direct access to your databases and systems.&nbsp;</p>
+<p class="font-claude-response-body break-words whitespace-normal">FME Flow can act as an MCP server by exposing FME workspaces as callable tools. When you register a workspace as an MCP tool, any MCP-compatible client (an AI agent, LM Studio, Claude, or another application) can discover it and run it by sending the required inputs. The user parameters in the workspace become the tool's inputs, specifying what the client must provide when calling the tool. FME Flow handles execution, keeping AI away from direct access to your databases and systems.&nbsp;</p>
 <p class="font-claude-response-body break-words whitespace-normal"><span style="font-weight: 400;"><img src="images/1784148675832.png" alt="" /></span></p>
 <p class="font-claude-response-body break-words whitespace-normal">This is what makes FME workflows available to AI-driven systems. Instead of manually running a workspace in FME Flow, an AI agent can find the tool, understand what it does from its description, decide when to use it, and call it as part of a larger task &mdash; all through the MCP standard.</p>
 <h2 class="font-claude-response-body break-words whitespace-normal">Exercise</h2>

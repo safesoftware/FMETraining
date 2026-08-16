@@ -15,19 +15,26 @@
 </ul>
 <h2>Resources</h2>
 <ul>
-<li>&nbsp;</li>
+<li>FME and MCP Strigo training lab with LM Studio
+<ul>
+<li>If you're taking a&nbsp;<strong>live, online</strong> training course, you will have access to the lab within the live event. Please do not request an on-demand lab unless you are working on the course materials outside of the live, online course time.&nbsp;</li>
+<li>If you're taking the course&nbsp;<strong>on-demand</strong>, please request an <a href="https://bluesky-safe-software.fmecloud.com/fmeserver/apps/mcp-and-fme" target="_self">MCP and FME on-demand lab</a> to work through the exercises.&nbsp;</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/CellSignalByNeighborhood.fmw">Starting workspace</a> | C:\FMEData\Workspaces\MCPandFME\CellSignalByNeighborhood.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/CellSignalByNeighborhood-complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\MCPandFME\CellSignalByNeighborhood-complete.fmw</li>
 </ul>
 <h2>MCP Tool Response</h2>
-<p>For each MCP tool call to an FME Flow MCP server, FME Flow returns the job status, whether the workspace succeeds or fails, back to the MCP client. This is useful for MCP tools that trigger an action such as writing data to a database, updating a file, or sending a notification, since the client only needs to know whether the operation completes. However, many MCP workflows need to return data to the requesting client to fully leverage MCP and FME workflows. The MCP writer communicates information from the FME workspace running as an MCP tool back to the MCP client that made the request.&nbsp;</p>
+<p>For each MCP tool call to an FME Flow MCP server, FME Flow returns the job status, whether the workspace succeeds or fails, back to the MCP client. This is useful for MCP tools that trigger an action such as writing data to a database, updating a file, or sending a notification, since the client only needs to know whether the operation completes. However, many MCP workflows need to return data to the requesting client to leverage MCP and FME workflows fully. The MCP writer communicates information from the FME workspace running as an MCP tool back to the MCP client that made the request.&nbsp;</p>
 <h2>MCP Writer</h2>
-<p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/mcp/mcp.htm" target="_self">MCP writer</a> allows you to send a structured MCP tool response from an FME workspace that an MCP client can consume directly.&nbsp;The MCP writer accumulates all features routed to it in the workspace into a JSON-RPC 2.0-formatted response document, which FME Flow routes to the calling MCP client. The output response conforms to the tool response format and requirements defined in the <a title="Opens Model Context Protocol Specification" href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools" target="_blank" rel="noopener">MCP Tools Specification</a>. From the MCP user's or client's perspective, calling an MCP tool and receiving a detailed response appears seamless, as the response is formatted in JSON in the background.&nbsp;</p>
+<p>The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/mcp/mcp.htm" target="_self">MCP writer</a> allows you to send a structured MCP tool response from an FME workspace that an MCP client can consume directly. The MCP writer accumulates all records you route to it in the workspace into a JSON-RPC 2.0-formatted response document, which FME Flow routes to the calling MCP client. The output response conforms to the tool response format and requirements the <a title="Opens Model Context Protocol Specification" href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools" target="_blank" rel="noopener">MCP Tools Specification</a> defines. From the MCP user's or client's perspective, calling an MCP tool and receiving a detailed response appears seamless because FME formats the response as JSON in the background.&nbsp;</p>
 <p><img src="images/1785357812478.jpg" alt="" /></p>
-<p>The MCP writer currently supports returning text, image, and audio content as JSON for MCP tools. Each content type is represented as a separate feature type in the workspace, and you can include one or more content types in the same workspace depending on what the tool needs to return.</p>
-<p><strong>Text</strong> is the most common output type and is supported by every MCP client. Text content is passed to the writer as a plain string attribute, typically the result of a calculation, a formatted summary, a list of records, or any other text produced by the workspace. For data-heavy tools like counting features in an area or summarizing building plans, text is typically the right choice, and you simply build what you want to send as the MCP response using an AttributeCreator and route it to the writer feature type. For more complex responses, you can format details into a JSON object to pass back to the MCP client.&nbsp;</p>
+<p>The MCP writer currently supports returning text, image, and audio content as JSON for MCP tools. Each content type appears as a separate feature type in the workspace, and you can include one or more content types in the same workspace depending on what the tool needs to return.</p>
+<p><strong>Text</strong> is the most common output type and is supported by every MCP client. You pass text content to the writer as a plain string attribute, typically the result of a calculation, a formatted summary, a list of records, or any other text the workspace produces. For data-heavy tools like counting features in an area or summarizing building plans, text is typically the right choice, and you build what you want to send as the MCP response using an AttributeCreator and route it to the writer feature type. For more complex responses, you can format details into a JSON object to pass back to the MCP client.&nbsp;</p>
 <p><img src="images/1785357830236.jpg" alt="" /></p>
-<p><strong>Image </strong>content allows a tool to return visual output, such as a generated map, chart, or spatial visualization, directly in the response. Image content is passed to the writer as Base64-encoded data along with a MIME type. To retrieve an image to return as an MCP response, use an AttributeFileReader to read the image file as Base64, then an AttributeCreator to add a mimeType attribute (for example, image/png). FME handles the encoding; the client receives the image directly in the response. Note that some MCP clients have file size limits, so large images may need to be resampled or compressed before being written.</p>
+<p><strong>Image </strong>content allows a tool to return visual output, such as a generated map, chart, or spatial visualization, directly in the response. You pass image content to the writer as Base64-encoded data along with a MIME type. To retrieve an image to return as an MCP response, use an AttributeFileReader to read the image file as Base64, then an AttributeCreator to add a mimeType attribute (for example, image/png). FME handles the encoding; the client receives the image directly in the response. Note that some MCP clients have file size limits, so you may need to resample or compress large images before writing them.</p>
 <p><img src="images/1785358172375.png" alt="" /></p>
-<p><strong>Audio</strong> content works similarly to image &mdash; passed as Base64-encoded data with a MIME type (for example, audio/mpeg). This content type supports use cases where the tool output is an audio file or clip. Support for audio content varies by MCP client, so you should test the audio playback with your target MCP client, likely an AI model, before building a tool that uses audio output.&nbsp;</p>
+<p><strong>Audio</strong> content works similarly to image &mdash; you pass it as Base64-encoded data with a MIME type (for example, audio/mpeg). This content type supports use cases where the tool output is an audio file or clip. Support for audio content varies by MCP client, so you should test the audio playback with your target MCP client, likely an AI model, before building a tool that uses audio output.&nbsp;</p>
 <blockquote>
 <p><img src="images/safe_note.png" alt="Note" /></p>
 <p>For more resources on working with the different MCP writer content types, please check out these articles:</p>
@@ -36,12 +43,143 @@
 <li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/46667236029837-Returning-Image-Content-from-an-FME-MCP-Tool" target="_blank" rel="noopener">Returning Image Content from an FME MCP Tool</a></li>
 </ul>
 </blockquote>
-<p>When you create an MCP tool on FME Flow using a workspace containing an MCP writer, FME Flow will display the MCP icon <img src="images/1785357535663.png" alt="" /> next to the workspace name. It signifies that the workspace has an MCP writer and will return additional information to the MCP client when the tool is called.&nbsp;</p>
+<p>When you create an MCP tool on FME Flow using a workspace containing an MCP writer, FME Flow will display the MCP icon <img src="images/1785357535663.png" alt="" /> next to the workspace name. It signifies that the workspace has an MCP writer and will return additional information to the MCP client when a client calls the tool.&nbsp;</p>
 <h2>Interpreting Tool Results</h2>
-<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">Once FME Flow returns the tool result to the MCP client, the AI model is responsible for interpreting it; however, different AI agents may interpret the same result in different ways. A response that one model renders as a formatted table, another might display as plain text. An image that one client shows inline, another might describe in words.</p>
-<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">To help guide the AI toward a correct interpretation, the MCP writer supports optional annotation values, audience, and priority for each content type. The audience and priority values give the MCP client hints on how to handle the MCP response, such as how to display the content and its purpose. Again, whether an AI MCP client honors these values depends on the client itself, and you should test your intended AI client to understand and predict how it behaves.&nbsp;</p>
+<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">Once FME Flow returns the tool result to the MCP client, the AI model interprets it; however, different AI agents may interpret the same result differently. A response that one model renders as a formatted table, another might display as plain text. An image that one client shows inline, another might describe in words.</p>
+<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">To help guide the AI toward a correct interpretation, the MCP writer supports optional annotation values, audience, and priority for each content type. The audience and priority values give the MCP client guidance on how to handle the MCP response, including how to display the content and its purpose. Again, whether an AI MCP client honors these values depends on the client itself, and you should test your intended AI client to understand and predict its behavior.&nbsp;</p>
 <p class="font-claude-response-body break-words whitespace-normal" dir="ltr"><img src="images/1785357859079.jpg" alt="" width="1070" height="184" /></p>
-<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">And again, your tool description also helps the MCP client understand what to expect from the tool's output, its purpose, and how to best display the information back to the user. A tool description that specifies the format and structure of the output gives an AI model the context it needs to handle the response correctly and present it usefully. A vague description leaves the interpretation up to each AI model, which can produce inconsistent results across different clients, or even different sessions and requests with the same client.&nbsp;</p>
+<p class="font-claude-response-body break-words whitespace-normal" dir="ltr">And again, your tool description helps the MCP client understand what to expect from the tool's output, its purpose, and how best to display the information to the user. A tool description that specifies the format and structure of the output gives an AI model the context it needs to handle the response correctly and present it usefully. A vague description leaves interpretation up to each AI model, which can produce inconsistent results across clients, or even across different sessions or requests within the same client.&nbsp;</p>
 <h2 class="font-claude-response-body break-words whitespace-normal" dir="ltr">Exercise</h2>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>This exercise continues where the&nbsp;<strong>FME as an MCP Server</strong>&nbsp;exercise left off. You should complete the previous exercise before continuing with this one.</p>
+</blockquote>
 <p><img src="images/1786126158460.png" alt="" width="270" height="286" /></p>
-<p>Frank&nbsp;</p>
+<p>Frank is creating a workspace for another MCP tool. This time, Frank needs to return some data when the tool is called, not just run the workspace and report completion status, so he will need to add an MCP writer to his workspace.&nbsp;Frank has already begun creating his workspace, which reads neighborhood boundaries for the City of Vancouver and cell signal data points, clips the points to the neighborhoods, and calculates summary statistics on cell signal quality for each neighborhood.&nbsp;</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Add an MCP writer to return data from the MCP tool to the MCP client.&nbsp;</li>
+<li>Create another tool for the cov-utility-data MCP server.</li>
+<li>Call an MCP tool that returns additional data to the MCP client.&nbsp;</li>
+</ul>
+<h3>1) Open and Run Starting Workspace</h3>
+<ul>
+<li>In <strong>FME Workbench</strong>, open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/CellSignalByNeighborhood.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\MCPandFME\CellSignalByNeighborhood.fmw).&nbsp;
+<ul>
+<li>Frank has already configured the workspace to read neighborhood and cell signal data and calculate statistics on cell signal quality for each neighborhood. The workspace has one user parameter that takes a neighborhood name as input for filtering.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1786383201238.png" alt="" width="1045" height="228" /></p>
+<ul>
+<li><strong>Run</strong> the workspace.&nbsp;<br />
+<ul>
+<li>This will generate data caches you can inspect to see how the workspace has functioned up to this point.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<h3>2) Add an Attribute Creator</h3>
+<ul>
+<li>Add an&nbsp;<strong>AttributeCreator&nbsp;</strong>and connect it to the&nbsp;<strong>StatisticsCalculator</strong>&nbsp;<strong>Summary</strong> port.</li>
+<li>Name the Output Attribute <strong>text</strong>.</li>
+<li>For the Value, use the drop-down arrow to select <strong>Text Editor</strong>, then use other attribute values to format a response. You may copy the text below and paste it into the Text Editor.&nbsp;
+<ul>
+<li>This will be the text sent to the MCP client when you call the tool.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<pre class="language-markup"><code>Cell signal quality summary for @Value(NeighborhoodName):
+@Value(Power.total_count) measurements found.
+Average signal power: @Value(Power.mean) (min:@Value(Power.min), max: @Value(Power.max))
+Average signal quality: @Value(Quality.mean) (min: @Value(Quality.min), max: @Value(Quality.max))</code></pre>
+<p><img src="images/1786391849372.png" alt="" /></p>
+<ul>
+<li>Click&nbsp;<strong>OK</strong>. &nbsp;</li>
+</ul>
+<h3>3) Add MCP Writer</h3>
+<ul>
+<li>Click <strong>Writer</strong> on the top toolbar to open the Add Writer options.</li>
+<li>For&nbsp;<strong>Format</strong>, select&nbsp;<strong>MCP (Model Context Protocol)</strong>.</li>
+<li>Set the&nbsp;<strong>Dataset</strong> to&nbsp;<strong>C:\FMEData\Output</strong>.&nbsp;</li>
+<li>Click&nbsp;<strong>OK</strong>.</li>
+</ul>
+<p><img src="images/1786393228439.png" alt="" /></p>
+<ul>
+<li>For <strong>Select Feature Types</strong>, select only the&nbsp;<strong>Text Content</strong> feature type.&nbsp;</li>
+<li>Click&nbsp;<strong>OK</strong> to finish adding the writer.</li>
+</ul>
+<p><img src="images/1786393272321.png" alt="" /></p>
+<ul>
+<li>Connect the&nbsp;<strong>Text Content</strong> writer feature type to the&nbsp;<strong>AttributeCreator's Output</strong> port.&nbsp;</li>
+<li><em>Optional</em>: Run the workspace to test it.&nbsp;<br />
+<ul>
+<li>FME will write the text output as JSON to C:\FMEData\Output\mcp_output.json.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1786393649334.png" alt="" /></p>
+<h3>4) Publish to FME Flow</h3>
+<ul>
+<li><strong>Publish</strong> the workspace to FME Flow.</li>
+<li>Name the workspace <strong>CellSignalByNeighborhood.fmw</strong> and store it in the&nbsp;<strong>MCP Training</strong> repository.&nbsp;</li>
+<li>Register the workspace with the&nbsp;<strong>Job Submitter</strong> service.&nbsp;</li>
+<li>Once you publish the workspace, navigate to&nbsp;<strong>FME Flow</strong>.&nbsp;</li>
+</ul>
+<h3>5) Create MCP Tool</h3>
+<ul>
+<li>Return to&nbsp;<strong>MCP Servers&nbsp;</strong>and open the&nbsp;<strong>cov-utility-data</strong> MCP server.&nbsp;</li>
+</ul>
+<p><img src="images/1786394213175.png" alt="" /></p>
+<ul>
+<li>Under the&nbsp;<strong>Tools</strong> tab, select&nbsp;<strong>Create</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1786394310309.png" alt="" /></p>
+<ul>
+<li><strong>Name</strong> the tool&nbsp;<strong>cell-signal-quality-by-neighborhood</strong> and optionally, give it a Title.&nbsp;</li>
+<li>Enter the following for the&nbsp;<strong>Description</strong>.</li>
+</ul>
+<pre class="language-markup"><code>Returns a summary of cell signal quality measurements for a specified Vancouver neighborhood. Use this tool when a field supervisor or planner needs to assess mobile connectivity across an entire neighborhood before dispatching crews. Provides average, minimum, and maximum signal power (dBm) and signal quality, plus total measurement count for the area. Signal power closer to 0 dBm indicates stronger signal; signal quality closer to 0 indicates less interference. Neighborhood names must match Vancouver city records exactly and are case-sensitive. Returns structured JSON with signal statistics.</code></pre>
+<p><img src="images/1786395411077.png" alt="" /></p>
+<ul>
+<li>Under&nbsp;<strong>Job Settings</strong>, select the workspace you just published to FME Flow. It should be <strong>CellSignalByNeighborhood.fmw</strong> in the&nbsp;<strong>MCP Training</strong> repository.&nbsp;</li>
+<li>Leave the MCP job settings to inherit the settings from the server level.&nbsp;</li>
+</ul>
+<p><img src="images/1786395370697.png" alt="" /></p>
+<h3>6) Add Parameter Description</h3>
+<ul>
+<li>Go to the&nbsp;<strong>Parameters&nbsp;</strong>tab for the MCP tool.&nbsp;
+<ul>
+<li>There will be two parameters, one for the Vancouver neighborhood and one for the output MCP writer dataset, which will be ignored when the workspace runs as an MCP tool.</li>
+</ul>
+</li>
+<li>For the&nbsp;<strong>NEIGHBORHOOD</strong> parameter, enter the following for its&nbsp;<strong>Description</strong>.&nbsp;
+<ul>
+<li>We list the specific neighborhoods in the dataset here to ensure the tool inputs only neighborhood names the workspace accepts.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<pre class="language-markup"><code>Name of the Vancouver neighborhood to summarize cell signal for. The neighborhood input must match exactly and is case-sensitive. The options for neighborhoods are: 'Downtown', 'Fairview', 'Kitsilano', 'Mount Pleasant', 'West End', 'Strathcona'.</code></pre>
+<ul>
+<li>Leave the&nbsp;<strong>Default Value</strong> set to&nbsp;<strong>Use Default</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1786398763939.png" alt="" /></p>
+<ul>
+<li>Leave the <strong>DestDataset_MCP</strong> parameter as its default too.
+<ul>
+<li>MCP on FME Flow does not support this output file parameter type. Instead, the MCP tool will return the information to the MCP client instead of writing the file.</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Create</strong> and&nbsp;<strong>Publish</strong>.
+<ul>
+<li>Your new tool should be listed in the published tools section.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1786400502247.png" alt="" /></p>
+<h3>7) Call MCP Tool</h3>
+<ul>
+<li>Navigate to&nbsp;<strong>LM Studio</strong>.&nbsp;</li>
+<li>In a chat with the&nbsp;<strong>cov-utility-mcp</strong> server enabled, ask a question that would call your new tool to run.&nbsp;</li>
+</ul>
+<p><img src="images/1786400977216.png" alt="" /></p>
+<p>You've now built an MCP tool that returns data or information from the workspace to the MCP tool using the MCP writer. You can control what information is sent back to the MCP client without granting it access to the entire dataset.&nbsp;</p>
