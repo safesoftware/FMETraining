@@ -1,0 +1,119 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain when parallel processing with custom transformers can be beneficial.</li>
+<li>Determine the maximum number of processes possible in your workspace.</li>
+<li>Use parameters to control parallel processing in your workspace.</li>
+<li>Use artificial groups to control parallel processing in your workspace.</li>
+</ul>
+<h2 id="parallel-processing">Parallel Processing</h2>
+<p>Parallel processing can improve performance on high-end machines by running multiple actions simultaneously as separate processes. A system architecture of multiple processors with multiple cores is helpful because the system can assign each process to a different core. With multiple processes running on multiple cores, the entire translation can run quicker than on a single core.</p>
+<h2 id="parallel-processing-and-fme">Parallel Processing and FME</h2>
+<p>Parallel processing in FME covers only a specific subsection of the workspace. You control where parallel processing occurs through custom transformers, a natural method of subdividing a large translation.</p>
+<p>Parallel processing runs on features grouped by attribute values, similar to Group-Based transformers. Custom transformers using parallel processing assign each group to a separate process.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use multiple engines on FME Flow to process multiple workspaces in parallel.&nbsp; For more information, see <a href="https://safe6501.zendesk.com/hc/en-us/articles/25407619100045-Job-Orchestration-with-Automations" target="_blank" rel="noopener">Job Orchestration with Automations</a>&nbsp;or&nbsp;<a href="https://safe6501.zendesk.com/hc/en-us/articles/25407757564045-Getting-Started-with-the-Split-Merge-Block" target="_blank" rel="noopener">Getting Started with the Split-Merge Block</a>.</span></p>
+</blockquote>
+<h2 id="activating-parallel-processing">Activating Parallel Processing</h2>
+<p>Each custom transformer has a set of parameters - located in the Navigator window - that relates explicitly to parallel processing. Here, you can determine the level of parallel processing and the Group By attribute that defines the parallel processing groups:</p>
+<p><img class="image image-block image-center" src="images/1752266868726.png" alt="Parallel Processing setting in the Navigator" width="340" height="308" /></p>
+<h2 id="parallel-processing-levels">Parallel Processing Levels</h2>
+<p>The parameter that controls parallel processing allows different levels of effort to be applied. Each level specifies the number of processes to run simultaneously relative to the number of cores available:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th rowspan="2" scope="col">Parameter</th>
+<th rowspan="2" scope="col">Processes</th>
+<th scope="col">2 Cores</th>
+<th scope="col">4 Cores</th>
+<th scope="col">8 Cores</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>No parallelism</td>
+<td>1 Process</td>
+<td>1 Process</td>
+<td>1 Process</td>
+<td>1 Process</td>
+</tr>
+<tr>
+<td>Minimal</td>
+<td>Cores / 2</td>
+<td>1 Process</td>
+<td>2 Processes</td>
+<td>4 Process</td>
+</tr>
+<tr>
+<td>Moderate</td>
+<td>Cores x 1</td>
+<td>2 Processes</td>
+<td>4 Processes</td>
+<td>8 Process</td>
+</tr>
+<tr>
+<td>Aggressive</td>
+<td>Cores x 1.5</td>
+<td>3 Processes</td>
+<td>6 Processes</td>
+<td>12 Process</td>
+</tr>
+<tr>
+<td>Extreme</td>
+<td>Cores x 2</td>
+<td>4 Processes</td>
+<td>8 Processes</td>
+<td>16 Process</td>
+</tr>
+</tbody>
+</table>
+<p>As mentioned above, minimal parallelism results in two simultaneous FME processes on a quad-core machine. Extreme parallelism would result in eight (assuming the workspace&nbsp;<em>has&nbsp;</em>eight tasks to process simultaneously).</p>
+<p>There is also a hard cap:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Process Cap</th>
+<th scope="col">2 Cores</th>
+<th scope="col">4 Cores</th>
+<th scope="col">8 Cores</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>16 processes</td>
+<td>Maximum 4 processes</td>
+<td>Max 8 processes</td>
+<td>Max 16 processes</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">These numbers - we should note - are the maximum number of processes&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">at any one time</strong><span style="font-family: inherit; font-size: 1em;">. It&rsquo;s possible to divide data into more groups and process them separately, but they won&rsquo;t coincide. For example, given a quad-core machine, moderate processing, and 20 groups of features, there will be a total of 20 processes, but only four will run at any one time. When one of the four finishes, a new one is started.</span></p>
+</blockquote>
+<h2 id="parallel-processing-groups">Parallel Processing Groups</h2>
+<p>The Parallel Process By parameter requires the author to select an attribute, and - as already covered - selecting attributes for a custom transformer parameter requires some consideration.</p>
+<p>In particular, you cannot simply pick an attribute to use for this parameter&rsquo;s value:</p>
+<p><img class="image image-block image-center" src="images/1725480876529.png" alt="FME_PROCESS_GROUP_BY cannot be set to an attribute" width="512" height="197" /></p>
+<p>Instead, you can publish this parameter (and one for Complete Groups mode) to make them available as one of the custom transformer parameters:</p>
+<p><img class="image image-block image-center" src="images/1725483377019.png" alt="Publishing this parameter makes parallel processing mode available in custom transformers" width="636" height="343" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Parallel processing is most effective in two specific scenarios. The first scenario involves a small number of groups, each with a large amount of processing. Parallel processing is less effective when there are many small groups. The second scenario involves many small tasks that the workspace is offloading elsewhere. For example, when the workspace passes features to a web service HTTPCaller transformer, it&rsquo;s most efficient to have FME fire off as many requests as it can as quickly as possible.</span></p>
+</blockquote>
+<h2 id="parallel-processing-and-custom-transformer-design">Parallel Processing and Custom Transformer Design</h2>
+<p>The keys to parallel processing are designing a custom transformer as a standalone subsection and defining the processing groups.</p>
+<p>The custom transformer splits features into groups, processes each as a separate action, and then combines them back into a single group on exit.</p>
+<p>It&rsquo;s essential to be aware that features in different groups cannot be related because each group is processed independently. If features are related and their results depend on each other, they must be in the same group.</p>
+<p>The easiest way to think of this is that the custom transformer is a Group-Based transformer. Because it is a wrapper for all the individual FME transformers in the definition, it allows them to operate in groups, even if they are Feature-Based.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learn more about&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Group_Based_Transformers.htm" target="_blank" rel="noopener">Group-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Feature_Based_Transformers.htm" target="_blank" rel="noopener">Feature-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;transformers.</span></p>
+</blockquote>
+<h2 id="creating-artificial-groups">Creating Artificial Groups</h2>
+<p>Sometimes, the incoming data is unrelated and must be split into arbitrary groups for processing. In these cases, where there is no identifier to define groups, one can be created manually by generating attributes with the ModuloCounter or RandomNumberGenerator transformers.</p>
+<p>For example, the author of the workspace below has many address features from which to create labels. To speed up the process, they activate parallel processing:</p>
+<p><img class="image image-block image-center" src="images/1725483239323.png" alt="Using parallel processing to speed use of a custom transformer" width="713" height="354" /></p>
+<p>They could group by&nbsp;<code>PostalCode</code>, but chose not to because all addresses fall inside only one of two postal codes. Therefore, they created an artificial group using ModuloCounter. Note that the Group By parameter in the custom transformer is set to the <code>_modulo_count</code>&nbsp;attribute.</p>
+<p>In such a scenario, it is best to create only one group per intended FME process. For example, a maximum of eight processes are permitted on a quad-core (four-core) computer with Extreme parallel processing. Therefore, as shown here, the optimum number of groups to use is also eight.</p>
