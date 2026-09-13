@@ -1,0 +1,165 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Identify null and missing attribute values.</li>
+<li>Set null and missing attribute values.</li>
+<li>Filter out null and missing attribute values from your data.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/handle-null-and-missing-values.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\handle-null-and-missing-values.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/handle-null-and-missing-values-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\handle-null-and-missing-values-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/handle-null-and-missing-values-advanced-complete.fmw" target="_self">Advanced complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\handle-null-and-missing-values-advanced-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noreferrer noopener">Parks.zip</a> (MapInfo TAB)
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<!-- [Image: persona portrait — developer to add] -->
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>Sven wants to publish an alphabetical list of city parks for his team. His workspace reads parks data from MapInfo and writes a Geodatabase dataset. The parks sort correctly by name, but the unnamed parks land at the top of the table, and Sven wants them written as nulls at the very end.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Identify missing and null attribute values in the source data.</li>
+<li>Use the NullAttributeMapper to map missing values and -9999 sentinels to a placeholder that sorts last.</li>
+<li>Map the placeholder values back to nulls before the writer receives them.</li>
+</ul>
+<h2 id="1-open-and-run-the-starting-workspace">1) Open and Run the Starting Workspace</h2>
+<p>Running the workspace first shows you the problem you need to solve. By default, FME sorts <code>&lt;null&gt;</code>, <code>&lt;missing&gt;</code>, and empty values to the top of a column, in both Data Preview column sorting and Sorter output. That default helps you spot them while inspecting data, but it works against you when they need to be written last.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.2 or later).</li>
+<li><strong>Open </strong>the starting workspace at C:\FMEData\Workspaces\AdvancedDataTransformation\handle-null-and-missing-values.fmw.</li>
+<li>Ensure <strong>Caching </strong>is enabled.</li>
+</ul>
+<p><img src="images/1781632492373.png" alt="Caching button enabled" /></p>
+<ul>
+<li><strong>Run </strong>the workspace.</li>
+<li>Inspect the source dataset as a table.
+<ul>
+<li>The data is ordered by <code>ParkId</code>, not <code>ParkName</code>.</li>
+<li>The <code>&lt;missing&gt;</code> values are scattered throughout the <code>ParkName</code> column.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724357260582.png" alt="Parks data with missing values scattered throughout" width="812" height="338" /></p>
+<h2 id="2-map-missing-values-to-a-placeholder">2) Map Missing Values to a Placeholder</h2>
+<p>You will fix this in two passes. In this first pass, you set the missing <code>ParkName</code> values to something that sorts to the bottom of an alphabetical list, and a later step maps them back to <code>&lt;null&gt;</code>.</p>
+<ul>
+<li>Add a <strong>NullAttributeMapper</strong> before the <strong>Sorter</strong>.</li>
+<li>Open the <strong>NullAttributeMapper</strong> parameters and fill in the form:
+<ul>
+<li><strong>Map</strong>: Selected Attributes</li>
+<li><strong>Selected Attributes</strong>: <code>ParkName</code></li>
+<li><strong>If Attribute Value Is</strong>: Missing (Selected Attributes Only)</li>
+<li><strong>Map To</strong>: New Value</li>
+<li><strong>New Value</strong>: <code>ZZZ</code></li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1785172624082.png" alt="Choosing the Selected Attributes in the NullAttributeMapper" width="483" height="92" /></p>
+<p><img class="image image-block image-center" src="images/1785172760538.png" alt="Mapping missing attribute values to a new value of ZZZ" width="483" height="175" /></p>
+<h2 id="3-map-the-placeholder-back-to-null">3) Map the Placeholder Back to Null</h2>
+<p>The second pass runs after the sort, so the parks are already in the right order by the time you restore the nulls.</p>
+<ul>
+<li>Add a second <strong>NullAttributeMapper</strong> after the <strong>Sorter</strong>.</li>
+<li>Open its parameters and fill in the form:
+<ul>
+<li><strong>Map</strong>: Selected Attributes</li>
+<li><strong>Selected Attributes</strong>: <code>ParkName</code></li>
+<li><strong>Or If Attribute Value Is</strong>: <code>ZZZ</code></li>
+<li><strong>Map To</strong>: Null
+<ul>
+<li>You could map them back to <code>&lt;missing&gt;</code> instead, because the Geodatabase writer writes those out as nulls. Null is the safer choice when you cannot rely on that writer behavior.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724357278124.png" alt="Mapping ZZZ to null" width="484" height="179" /></p>
+<h2 id="4-save-and-run-the-workspace">4) Save and Run the Workspace</h2>
+<p>This run confirms that both mappings work together. The parks should now sort by name with the unnamed parks at the end rather than the top.</p>
+<ul>
+<li><strong>Save </strong>the workspace, then <strong>run </strong>it.</li>
+<li>Inspect the output.
+<ul>
+<li>The data is sorted by <code>ParkName</code>, with all null values at the end of the dataset.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724357283941.png" alt="Resulting data with null values at the bottom" width="812" height="460" /></p>
+<h2 id="5-fix-refparkid-values">5) Fix RefParkId Values</h2>
+<p>Sven now wants the <code>RefParkId</code> field fixed as well. Many of its values are -9999, the MapInfo equivalent of nothing, and the Geodatabase should hold proper nulls instead. The fix is straightforward, so try working it out before you read the steps below.</p>
+<ul>
+<li>Open the parameters for the first <strong>NullAttributeMapper</strong> and update the following:
+<ul>
+<li><strong>Selected Attributes</strong>: add <code>RefParkId</code></li>
+<li><strong>Or If Attribute Value Is</strong>: <code>-9999</code></li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724357290138.png" alt="Mapping missing or -9999 values to ZZZ" width="529" height="255" /></p>
+<ul>
+<li>Open the parameters for the second <strong>NullAttributeMapper</strong>.</li>
+<li>In <strong>Selected Attributes</strong>, add <code>RefParkId</code>.</li>
+<li>Click <strong>OK</strong>.
+<ul>
+<li>The -9999 values now map to ZZZ alongside the missing <code>ParkName</code> values, and the second NullAttributeMapper turns both into true nulls.</li>
+</ul>
+</li>
+</ul>
+<h2 id="challenge">Challenge</h2>
+<p>The requirements have changed. Sven no longer wants the incomplete parks written to the main table at all. Any record where either <code>ParkName</code> or <code>RefParkId</code> is null should be filtered out and written to a separate feature type in the Geodatabase. Work through this challenge before you attempt the quiz question below, because you will need the result.</p>
+<p>In this challenge, you will:</p>
+<ul>
+<li>Test both <code>ParkName</code> and <code>RefParkId</code> for null values.</li>
+<li>Route the incomplete records to a separate feature type in the Geodatabase.</li>
+</ul>
+<details class="challenge-answer">
+<summary><strong>Challenge Answer:</strong> Open after attempting the challenge.</summary>
+<div>
+<ul>
+<li>Copy the existing writer feature type Parks and rename it NullParks.</li>
+<li>Add an <strong>AttributeFilter</strong> after the second <strong>NullAttributeMapper</strong>, so it evaluates the values after they have been mapped back to nulls.
+<ul>
+<li>You don't have to configure it; the default settings will work.</li>
+</ul>
+</li>
+<li>Connect the <strong>&lt;Null&gt; </strong>port to a new writer feature type NullParks.</li>
+<li>Connect the <strong>&lt;Unfiltered&gt; </strong>port to the original <strong>Parks</strong> feature type.</li>
+</ul>
+<p><strong>🔍 Check your results</strong></p>
+<p>Open the completed workspace: <strong><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/handle-null-and-missing-values-advanced-complete.fmw" target="_blank" rel="noopener">Advanced Complete Workspace</a></strong> (C:\FMEData\Workspaces\AdvancedDataTransformation\handle-null-and-missing-values-advanced-complete.fmw).</p>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+.challenge-answer summary::before{content:'';display:inline-block;width:32px;height:32px;flex-shrink:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232e7d32' d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E");background-size:32px;background-repeat:no-repeat;background-position:center;transition:transform 0.2s ease;}
+.challenge-answer[open] summary::before{transform:rotate(90deg);}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+.challenge-answer,.challenge-answer[open]{background-color:#E8F5E9;}
+.challenge-answer[open]{box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+.challenge-answer:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+</style>
+</div>

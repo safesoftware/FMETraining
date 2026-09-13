@@ -29,33 +29,33 @@
 <p><img src="images/1784222674542.png" alt="" /></p>
 <p>Within your FME workspace, the MCPCaller connects to an MCP server and issues a request. If the MCP server requires authentication, the MCPCaller uses a web connection to authorize access to the server. Each MCP server has a unique URL that you enter into the MCPCaller to connect to it. Using the URL, the MCPCaller connects and requests the MCP server when it runs. If the MCP server requires authentication, you may need to enable Override Server and enter the MCP server URL to override the URL you saved in the web connection. Every MCP server URL must support streamable HTTP transport.&nbsp;</p>
 <p><img src="images/1784225379635.jpg" alt="" /> <img src="images/1784225390695.jpg" alt="" /></p>
-<p>The MCPCaller can perform various types of requests to the MCP server, from inquiries to executions. There are options to list and interact with tools, resources, and prompts. Instead of building a custom connector for each external service, FME can connect to an MCP server, inspect the tools it exposes, and call them consistently. You can then parse, transform, write, route, or combine the result with other data using standard FME transformers.</p>
-<p>Depending on the MCP request method, the MCPCaller will require additional data to input along with the request to the MCP server. For example, the call tool method requires you to select the tool and provide additional input as JSON.&nbsp;&nbsp;</p>
+<p>The MCPCaller can perform various types of requests to the MCP server, from inquiries to executions. You can list and interact with tools, resources, and prompts. Instead of building a custom connector for each external service, FME can connect to an MCP server, inspect the tools it exposes, and call them consistently. You can then parse, transform, write, route, or combine the result with other data using standard FME transformers.</p>
+<p>Depending on the MCP request method, the MCPCaller will require additional input data along with the request to the MCP server. For example, the call tool method requires you to select the tool and provide additional input as JSON.&nbsp;&nbsp;</p>
 <p><img src="images/1784228807149.jpg" alt="" /></p>
-<p>The output from the MCPCaller will vary by method, although all communication between the MCP server and client uses JSON as the protocol standard. To return the raw JSON of the MCP response for that operation, enable the Include JSON Response option in the Advanced section. This may be useful for inspecting the full server response or accessing fields the transformer doesn't otherwise expose as attributes.&nbsp;</p>
+<p>The MCPCaller output varies by method, although all communication between the MCP server and client uses JSON as the protocol standard. To return the raw JSON of the MCP response for that operation, enable the Include JSON Response option in the Advanced section. This may be useful for inspecting the full server response or accessing fields the transformer doesn't otherwise expose as attributes.&nbsp;</p>
 <blockquote>
 <p><img src="images/safe_note.png" alt="Note" /></p>
 <p>The MCPCaller is an optional input transformer, meaning you don't need an input to run it. When you provide input records to the MCPCaller, it runs once per record received to the Input port. If you don't connect any input to the transformer, it will run only once. For more information on optional input transformers, see <a href="https://support.safe.com/hc/en-us/articles/40418951149069-Transformers-with-an-Optional-Input-Port" target="_self">Transformers with an Optional Input Port</a>.&nbsp;</p>
 </blockquote>
 <h2>List Tools</h2>
-<p>The List Tools request returns a list of all available MCP tools from the server. It is a discovery inquiry about the MCP server you are working with and is the best place to start when working with MCP. By running a List Tools request, you confirm that the MCPCaller can successfully connect to the server, and it returns the currently available tool names, descriptions, and schemas.</p>
-<p>List Tools does not require any additional input beyond setting the MCP server to query; however, the Advanced options allow you to control whether the MCPCaller returns each tool as an individual record or combines them into a single list.&nbsp;</p>
+<p>The List Tools request returns a list of all available MCP tools from the server. It is a discovery inquiry about the MCP server you are working with and is the best place to start when working with MCP. Running a List Tools request confirms that the MCPCaller can connect to the server and returns the currently available tool names, descriptions, and schemas.</p>
+<p>List Tools requires no additional input beyond setting the MCP server to query; however, the Advanced options let you control whether the MCPCaller returns each tool as an individual record or combines them into a single list.&nbsp;</p>
 <p><img src="images/1784231574798.jpg" alt="" /></p>
 <p>The output from the MCPCaller List Tools includes the tool name, title, description, and JSON schemas for input and output. The List Tools results allow you or an AI model to analyze which tool best performs the task you need and which inputs you require to run the tool.&nbsp;</p>
 <p><img src="images/1784232209936.jpg" alt="" /></p>
 <h2>Call Tool</h2>
-<p>The Call Tool method requests the MCP server to run the tool you specify. If the MCPCaller has multiple inputs, it will make multiple Call Tool requests, one for each input record. If you don't provide input to the MCPCaller, it will make the Call Tool request only once and output a single record.&nbsp;</p>
+<p>The Call Tool method requests the MCP server to run the tool you specify. If the MCPCaller has multiple inputs, it will make multiple Call Tool requests, one for each input record. If you don't provide input to the MCPCaller, it makes the Call Tool request only once and outputs a single record.&nbsp;</p>
 <p>Once you select the tool to call, the MCPCaller parameters update to show you the input JSON schema the tool expects, along with a Tool Input section to configure. The JSON input to a tool may come from an Attribute or Text, or from a File containing the input JSON. To customize the tool input from your data, reference attribute values in the JSON Text.&nbsp;</p>
 <p><img src="images/1784238703741.jpg" alt="" /></p>
 <p>The output from a Call Tool request creates a _data attribute containing the tool call's results in JSON. You can further parse the JSON into attributes with the JSONFragmenter to continue working with the MCP output in your workspace.&nbsp;</p>
 <p><img src="images/1784237987047.jpg" alt="" /></p>
 <h2>Exercise</h2>
 <p><img src="images/1785773187333.png" alt="" width="270" height="286" /></p>
-<p>To start working with MCP and FME, Frank is going to connect to an existing weather MCP server using the MCPCaller in FME Workbench. He's going to use the MCPCaller to discover what tools his MCP server provides, and also call a tool to return some weather data and information. Eventually, Frank can integrate this workspace alongside his future utility data MCP server to provide real-time weather metrics with some of the utility data workflows.&nbsp;</p>
+<p>To start working with MCP and FME, Frank will connect to an existing weather MCP server using the MCPCaller in FME Workbench. He'll use the MCPCaller to discover what tools his MCP server provides and call a tool to return weather data and information. Eventually, Frank can integrate this workspace alongside his future utility data MCP server to provide real-time weather metrics with some of the utility data workflows.&nbsp;</p>
 <p>In this exercise, you will:</p>
 <ul>
 <li>Connect to an MCP server and list its available tools with the MCPCaller transformer.</li>
-<li>Use an MCPCaller to call an MCP tool and return weather information.&nbsp;&nbsp;</li>
+<li>Use another MCPCaller to call an MCP tool and return weather information.&nbsp;&nbsp;</li>
 </ul>
 <h3>1) Open FME Workbench</h3>
 <ul>
@@ -64,7 +64,7 @@
 </ul>
 <p><img src="images/1785786131478.jpg" alt="" /></p>
 <h3>2) Add an MCPCaller to List Tools</h3>
-<p>Frank already has an external MCP server running and ready to connect to. It provides tools for weather information based on an input location, such as weather forecasting and air quality metrics. You will configure the MCPCaller to connect to this server.&nbsp;</p>
+<p>Frank already has an external MCP server running and ready to connect to. It provides weather information based on an input location, such as forecasts and air quality metrics. Configure the MCPCaller to connect to this server.&nbsp;</p>
 <ul>
 <li>Add an&nbsp;<strong>MCPCaller</strong> to the canvas and open its parameters.&nbsp;</li>
 <li>Leave the <strong>Credential Source</strong> set to <strong>None</strong>.&nbsp;</li>
@@ -75,7 +75,7 @@
 <ul>
 <li>Click&nbsp;<strong>OK</strong>.&nbsp;
 <ul>
-<li>Optionally, add a bookmark around the MCPCaller and title it&nbsp;<em>List Tools</em>. This will help keep track of what each MCPCaller transformer does in your workspace.&nbsp;</li>
+<li>Optionally, add a bookmark around the MCPCaller and title it&nbsp;<em>List Tools</em>. This helps you track what each MCPCaller transformer does in your workspace.&nbsp;</li>
 </ul>
 </li>
 <li><strong>Run</strong> the&nbsp;<strong>MCPCaller</strong> transformer.&nbsp;</li>
@@ -84,18 +84,23 @@
 <ul>
 <li>&nbsp;Inspect the data cache for the&nbsp;<strong>Output</strong> port.&nbsp;
 <ul>
-<li>There should be 17 available tools, and FME displays information as attributes for each tool. Aligning with MCP protocol, each tool provides its name, description, input schema, and expected output schema.&nbsp;</li>
+<li>There should be 17 available tools, and FME displays each tool's information as attributes. Aligning with MCP protocol, each tool provides its name, description, input schema, and expected output schema.&nbsp;</li>
 </ul>
 </li>
 </ul>
 <p><img src="images/1785788161191.jpg" alt="" /></p>
 <h3>3) Call a Tool</h3>
+<p>Now that you've used List Tools to see the available tools on the weather MCP server, you will use another MCPCaller to call a specific tool. The two MCPCallers are stand-alone for now; in the next exercise, you'll modify them to chain a dynamic tool call with AI.&nbsp;</p>
 <ul>
-<li>Add another <strong>MCPCaller</strong> to the canvas and open its parameters.&nbsp;</li>
+<li>Add another <strong>MCPCaller</strong> to the canvas and open its parameters.&nbsp;
+<ul>
+<li>Do not connect this MCPCaller to the first one. The MCPCallers are standalone for now.&nbsp;</li>
+</ul>
+</li>
 <li>Again, leave the <strong>Credential Source</strong> set to <strong>None </strong>and set the <strong>MCP Server URL</strong> to <code>http://weather-mcp:3000/mcp</code>.</li>
 <li>Set the <strong>MCP Method </strong>to&nbsp;<strong>Call Tool</strong>.&nbsp;
 <ul>
-<li>The Input Schema and Tool Input sections will appear. The Input Schema will display the tool's expected input as JSON, while the Tool Input is where you provide the JSON to send with the tool request.&nbsp;</li>
+<li>The Input Schema and Tool Input sections will appear. The Input Schema displays the tool's expected input as JSON, while Tool Input is where you provide the JSON to send with the tool request.&nbsp;</li>
 </ul>
 </li>
 <li>For the&nbsp;<strong>Tool Name</strong>, click the ellipses and select&nbsp;<strong>weather_forecast</strong>.
@@ -104,10 +109,10 @@
 </ul>
 </li>
 </ul>
-<p><img src="images/1785790352993.png" alt="" /></p>
+<p><img src="images/1785790352993.png" alt="" width="1150" height="485" /></p>
 <ul>
 <li>For&nbsp;<strong>JSON Text</strong>, use the drop-down arrow to select&nbsp;<strong>Open JSON Editor...</strong></li>
-<li>Copy the following JSON into the editor as input.&nbsp;</li>
+<li>Replace the current text in the editor with the following JSON.&nbsp;</li>
 </ul>
 <pre class="language-markup"><code>{
 	"current_weather": true,
@@ -120,6 +125,71 @@
 	"wind_speed_unit": "kmh"
 }
 </code></pre>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Copying and Pasting in Strigo Labs</strong></summary>
+<p>This course requires a lot of copying and pasting to avoid typing out JSON and descriptions. To copy and paste content into your Strigo lab:</p>
+<ul>
+<li>Copy the content from the FME Academy.</li>
+<li>Paste the content into the Strigo lab's clipboard.&nbsp;</li>
+<li>In the lab's virtual machine, paste (Ctrl + V) the content in the desired location.&nbsp;&nbsp;</li>
+</ul>
+<div><img src="images/1789138556254.png" alt="" /></div>
+<div>
+<p>If you're having trouble pasting into the Strigo lab, log into the FME Academy in a browser in the lab and copy (Ctrl + C) and paste (Ctrl + V) directly within the lab.&nbsp;</p>
+</div>
+</details>
 <ul>
 <li>Expand the&nbsp;<strong>Advanced</strong> section and set&nbsp;<strong>Include Response JSON</strong> to&nbsp;<strong>Yes</strong>.&nbsp;</li>
 </ul>
@@ -144,5 +214,5 @@
 </ul>
 </li>
 </ul>
-<p><img src="images/1785791758382.png" alt="" /></p>
+<p><img src="images/1785791758382.png" alt="" width="1500" height="579" /></p>
 <p>So far, you've successfully connected to the weather MCP server, viewed its available tools, and called a tool directly with the MCPCaller. In the next lesson, you'll build on this by using an OpenAIConnector to dynamically select and call MCP tools based on user input, rather than configuring each tool call manually.</p>

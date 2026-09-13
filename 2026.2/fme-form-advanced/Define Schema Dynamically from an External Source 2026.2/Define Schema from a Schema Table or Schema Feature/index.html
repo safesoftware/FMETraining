@@ -1,0 +1,211 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Set up a spreadsheet for use as a dynamic translation schema.</li>
+<li>Use the Schema (from Table) reader to read a schema from a spreadsheet.</li>
+<li>Use the Schema From Schema Feature schema source to use schema from a schema feature.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (it repeats what we cover in live training).</li>
+<li>Scroll down to read the activity instructions below and, if it has an exercise, follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/define-schema-from-a-schema-table-or-schema-feature.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\define-schema-from-a-schema-table-or-schema-feature.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/define-schema-from-a-schema-table-or-schema-feature-complete.fmw" target="_blank" rel="noreferrer noopener">Completed workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\define-schema-from-a-schema-table-or-schema-feature-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DesktopAdvanced/CommunityMapSchema.xlsx" target="_blank" rel="noreferrer noopener">CommunityMapSchema.xlsx</a>
+<ul>
+<li>C:\FMEData\Resources\DesktopAdvanced\CommunityMapSchema.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" target="_blank" rel="noreferrer noopener">Zoning.zip</a>
+<ul>
+<li>C:\FMEData\Data\Zoning\Zones.tab</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer's community map workspace now writes two tables, and the planning department has a third to add. Rather than editing the workspace every time a dataset appears, she wants the output schema defined in a spreadsheet the planning team can own themselves, without ever opening FME.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Define an output schema from an external table using a Schema (From Table) resource reader.</li>
+<li>Use a FeatureReader's schema feature to drive a dynamic writer.</li>
+</ul>
+<h2 id="1-open-the-workspace-and-inspect-the-schema-spreadsheet">1) Open the Workspace and Inspect the Schema Spreadsheet</h2>
+<p>The spreadsheet is the whole point of this exercise, so it is worth reading before touching the workspace. Each row is one attribute, and the columns say which table it belongs to and what type it is.</p>
+<ul>
+<li>Open <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DesktopAdvanced/CommunityMapSchema.xlsx" target="_blank" rel="noopener">CommunityMapSchema.xlsx</a>, or C:\FMEData\Resources\DesktopAdvanced\CommunityMapSchema.xlsx.
+<ul>
+<li>Without Excel, open it in the FME Data Inspector and switch to Table View.</li>
+<li>The table defines Firehalls, Parks, and Zones. Each attribute is its own row, carrying its type and order. The geometry type is defined only once per table.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723761279320.png" alt="Schema defined in an Excel table" width="574" height="269" /></p>
+<ul>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later and open the workspace from the previous lesson, or the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/define-schema-from-a-schema-table-or-schema-feature.fmw" target="_blank" rel="noopener">starting workspace</a>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723761356705.png" alt="Starting workspace" width="602" height="239" /></p>
+<h2 id="2-replace-the-resource-reader">2) Replace the Resource Reader</h2>
+<p>The spreadsheet takes over the job the community map geodatabase was doing, so the old resource reader goes and a new one takes its place. The format to pick is the one that trips people up.</p>
+<ul>
+<li>In the <strong>Navigator</strong>, right-click the <strong>CommunityMap resource reader</strong> and select <strong>Delete</strong>, then click <strong>Yes</strong> to confirm.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723761585101.png" alt="Removing the reader resource" width="1172" height="397" /></p>
+<ul>
+<li>Select <strong>Build &gt; Readers &gt; Add Reader as Resource</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader Format:</strong> Schema (From Table)</li>
+<li><strong>Reader Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DesktopAdvanced/CommunityMapSchema.xlsx" target="_blank" rel="noopener">CommunityMapSchema.xlsx download</a>, or C:\FMEData\Resources\DesktopAdvanced\CommunityMapSchema.xlsx</li>
+</ul>
+</li>
+<li>Click <strong>Parameters</strong>.</li>
+<li>nder <strong>Select Table</strong>, set <strong>Table Name</strong> to <strong>Sheet1</strong> if it is not already selected.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1758909676548.png" alt="Select Sheet1" width="512" height="317" /></p>
+<ul>
+<li>Match each field to the parameter it supplies, for example <strong>Feature Type</strong> to <strong>FeatureType</strong>.
+<ul>
+<li>The columns can be named anything. Here they match the parameter names to make the relationship obvious. Geometry Type and Attribute Sequence are optional.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723762059914.png" alt="Matching column names to their function" width="512" height="268" /></p>
+<ul>
+<li>Click <strong>OK</strong> twice.</li>
+</ul>
+<h2 id="3-set-the-writer-schema-sources">3) Set the Writer Schema Sources</h2>
+<p>The writer still points at the readers for its schema. Switching it to the spreadsheet is what puts the planning team in control of the output structure.</p>
+<ul>
+<li>Open the properties for the <strong>writer feature type</strong>.</li>
+<li>On the <strong>User Attributes tab</strong>, remove the <strong>LastUpdatedBy attribute</strong>.
+<ul>
+<li>The spreadsheet now defines it for every type, so it is no longer needed here.</li>
+</ul>
+</li>
+<li>On the <strong>Parameters tab</strong>, click the <strong>Schema Sources</strong> edit button, clear <strong>FireHalls</strong> and select <strong>CommunityMapSchema [SCHEMA_FROM_TABLE]</strong>.</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1758909835846.png" alt="Setting Schema Source to Schema From Table" width="378" height="188" /></p>
+<h2 id="4-add-the-zones-reader">4) Add the Zones Reader</h2>
+<p>The spreadsheet already describes a Zones table, but nothing is reading that data yet. This time it is a real reader, not a resource.</p>
+<ul>
+<li>Select <strong>Build &gt; Readers &gt; Add Reader</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader Format:</strong> MapInfo TAB (MITAB)</li>
+<li><strong>Reader Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" target="_blank" rel="noopener">Zoning.zip</a> download, or C:\FMEData\Data\Zoning\Zones.tab</li>
+</ul>
+</li>
+<li>Connect its <strong>reader feature type</strong> to the <strong>dynamic writer feature type</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723762212157.png" alt="Zoning reader feature type added" width="599" height="328" /></p>
+<h2 id="5-run-the-workspace">5) Run the Workspace</h2>
+<p>All three tables should now come out with the structure the spreadsheet describes. What they will not have is data in the new columns, and that gap is deliberate.</p>
+<ul>
+<li><strong>Save </strong>the workspace.</li>
+<li>Click <strong>Run</strong>.</li>
+<li>Inspect the output.
+<ul>
+<li>All three feature types are written, and their attribute schema matches the spreadsheet, LastUpdatedBy included.</li>
+<li>Every attribute defined only in the spreadsheet is empty, because nothing yet links the external schema to the incoming data. A SchemaMapper or SchemaScanner is what closes that gap.</li>
+<li>Selecting View Written Data opens the Select Dataset to View dialog. Specify the format and dataset to see the data. The Tips at the end of this exercise explain why FME asks.</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-read-data-with-a-featurereader">6) Read Data with a FeatureReader</h2>
+<p>A spreadsheet is one way to supply a schema. A FeatureReader is another, and it produces the schema and the data together, which is worth seeing side by side with what you just built.</p>
+<ul>
+<li>Add&nbsp;a <strong>FeatureReader.</strong><br />
+<ul>
+<li>As of FME 2025.2, the FeatureReader has an optional Initiator port, so you don't need to use a Creator with it.</li>
+</ul>
+</li>
+<li>Open the <strong>FeatureReader </strong>parameters.</li>
+<li>Configure the following parameters:
+<ul>
+<li><strong>Reader &gt; Format:</strong> Precisely MapInfo TAB (MITAB)</li>
+<li><strong>Reader &gt; Dataset:</strong> choose one:
+<ul>
+<li>https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip,https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip</li>
+<li>C:\FMEData\Data\Zoning\Zones.tab,C:\FMEData\Data\Parks\Parks.tab</li>
+<li>If you paste the paths in, delete the double quotation marks FME adds at each end or the reader errors.</li>
+</ul>
+</li>
+<li><strong>Output Ports:</strong> Single Output Port - &lt;Generic&gt;</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong> and click <strong>Run</strong>.
+<ul>
+<li>If you get an error, check your FeatureReader &gt; Reader &gt; Dataset path. It should match one of the options shown above and should not have double quotation marks.</li>
+<li>The &lt;Schema&gt; port carries two schema features, with unexposed attributes describing the schema.</li>
+<li>The &lt;Generic&gt; port carries every feature from both datasets, also with unexposed attributes, plus fme_feature_type naming the source table as Parks or Zones.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1788375481736.png" alt="FeatureReader" width="229" height="178" /></p>
+<h2 id="7-add-a-second-dynamic-writer">7) Add a Second Dynamic Writer</h2>
+<p>Those two ports are all a dynamic writer needs: one supplies the structure, the other the rows. Wiring both into one writer reproduces the source tables without a schema being defined anywhere in the workspace.</p>
+<ul>
+<li>Select <strong>Build &gt; Writers &gt; Add Writer</strong> and configure the following parameters:
+<ul>
+<li><strong>Writer Format:</strong> OGC GML (Geography Markup Language)</li>
+<li><strong>Writer Dataset:</strong> C:\FMEData\Output\Training\NewCommunityMapSchemaFeature.gml</li>
+<li><strong>Feature Type Definition:</strong> Dynamic (Advanced)</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>, move the new <strong>writer feature type</strong> beside the <strong>FeatureReader</strong>, and connect both the <strong>&lt;Schema&gt; port</strong> and the <strong>&lt;Generic&gt; port</strong> to it.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1788382942179.png" alt="Writer added" width="586" height="184" /></p>
+<ul>
+<li>Open the <strong>new writer feature type parameters</strong>, click the ellipsis beside <strong>Schema Sources</strong> and select only <strong>Schema From Schema Feature</strong>.
+<ul>
+<li>It already uses fme_feature_type to name the destination feature types, which is what you want. It is the schema source that needs changing.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong> twice.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1758910141564.png" alt="Changing Schema Source" /></p>
+<h2 id="8-re-run-the-entire-workspace">8) Re-Run the Entire Workspace</h2>
+<p>A partial run can let cached data reach the writer before the schema does, and the schema has to arrive first. Re-running everything is what guarantees the order.</p>
+<ul>
+<li>Select <strong>Run &gt; Rerun Entire Workspace</strong>.</li>
+<li>Inspect the output of the new <strong>&lt;Dynamic&gt; writer feature type</strong>.
+<ul>
+<li>Parks and Zoning are written to GML with their original schemas and values.</li>
+</ul>
+</li>
+</ul>
+<p>You have defined an output schema two different ways: from a spreadsheet the planning team maintains, and from a schema feature a FeatureReader produces at run time. Neither approach requires the workspace to know the structure of the data in advance.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>The schema feature route writes out anything a FeatureReader reads, without a SchemaMapper or SchemaScanner and without altering the underlying schema. It is limited to one output format here, but pairing it with a Generic writer or several writers handles more.</li>
+<li>Column names in a schema table are arbitrary. Matching them to the parameter names, as this spreadsheet does, just makes the mapping easier to read later.</li>
+<li>Selecting View Written Data on a dynamic or generic writer feature type usually opens the Select Dataset to View dialog, because FME does not know the format or path in advance. Specify the format and dataset to view the data. The same happens with a writer feature type fanout, where the output path depends on an attribute value FME only reads at run time.</li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

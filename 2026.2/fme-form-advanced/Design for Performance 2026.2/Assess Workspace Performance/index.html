@@ -1,0 +1,185 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Measure how long a workspace takes to read data.</li>
+<li>Measure how long a workspace takes to write data.</li>
+<li>Measure how long a workspace's transformers take to run.</li>
+<li>Discover the performance liabilities of data caching.</li>
+<li>Analyze the relative performance of different sections of a workspace.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/assess-workspace-performance.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\assess-workspace-performance.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/assess-workspace-performance-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\assess-workspace-performance-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Culture/PublicArt.xlsx" target="_blank" rel="noopener">PublicArt.xlsx</a>
+<ul>
+<li>C:\FMEData\Data\Culture\PublicArt.xlsx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noopener">Parks.tab</a>
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/Orthophotos.zip" target="_self">Orthophotos</a>
+<ul>
+<li>C:\FMEData\Data\Orthophotos</li>
+</ul>
+</li>
+</ul>
+<h2 id="assess-workspace-performance">Assess Workspace Performance</h2>
+<p>Assessing the performance of a workspace such as this:</p>
+<p><img class="image image-block image-center" src="images/1724954920488.png" alt="An example workspace to assess performance" width="844" height="245" /></p>
+<p>...requires a bit of time and attention, but knowing how a workspace performs helps to make informed decisions about how best to design (or redesign) it.</p>
+<p>When testing for performance, ensure that only one instance of FME is running and that all other non-essential programs are closed. You'll also need to turn off data caching, which can affect the results. Finally, you must turn on log timestamping under Utilities &gt; FME Options &gt; Translation &gt; Log Timestamp Information.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><strong>⭐ New for FME 2025.1:</strong> we've simplified the ability to write a CSV with some performance profiling information. You can access it under <strong>Run</strong> &gt; <strong>Enable Performance Profiling</strong>. After running, FME will write a CSV to the same directory as the workspace with some performance timing information. Note that it provides times at the <a href="https://docs.safe.com/fme/html/FME_FactFunc/index.html" target="_blank" rel="noopener">factory</a> level, making interpretation tricky. The method outlined in this lesson will be more useful in most cases.</p>
+</blockquote>
+<h2 id="assessing-reader-performance">Assessing Reader Performance</h2>
+<p>Improving a reader's efficiency requires estimating how well it works, yet it can take a lot of work to separate the reading speed in a workspace that also transforms data.</p>
+<p>The key message that signifies the reading is complete is &ldquo;Emptying Factory Pipeline.&rdquo; Here, for example, the reading of the data finished after 26.4 seconds of processing (of course, the actual elapsed time might be longer if FME was waiting for a database or the file system to respond):</p>
+<pre><code>2024-03-29 11:48:54|  26.4|  0.0|INFORM|Emptying factory pipeline</code><br /><br /></pre>
+<p>However, sometimes, that message can be misleading. FME processes the data at the same time it is reading it, so that it won't read an entire data set before processing. To avoid this confusion, disable all the transformers and run only the readers:</p>
+<p><img class="image image-block image-center" src="images/1724954955177.png" alt="Disabling transformers to measure reader performance" width="343" height="162" /></p>
+<p>With the transformers disabled, the message now appears much sooner:</p>
+<pre><code>2024-03-29 11:49:35|   1.2|  0.0|INFORM|Emptying factory pipeline</code><br /><br /></pre>
+<p>So, we can tell that reading the data only takes 1.2 seconds.</p>
+<h2 id="assessing-writer-performance">Assessing Writer Performance</h2>
+<p>As with readers, you can only improve a writer's performance if you can first assess how well it is already performing. However, assessing the writing speed has the same complexity as reading: FME starts writing data as soon as it becomes available and doesn&rsquo;t necessarily wait until processing is done.</p>
+<p>So, how can we assess writer performance? Assessing a writer is different from assessing a reader. If you isolate the writers by disabling everything else, there won't be any data to write!</p>
+<p>The easiest way is to disable the writer itself!</p>
+<p><img class="image image-block image-center" src="images/1724954992438.png" alt="Disabling writer feature type to measure writer performance" width="358" height="227" /></p>
+<p>If the original result was this:</p>
+<pre><code>2024-03-29 11:54:14|  26.5|  0.0|INFORM|Translation was SUCCESSFUL with 19 warning(s) (148 feature(s) output) 
+2024-03-29 11:54:14|  26.5|  0.0|INFORM|FME Session Duration: 26.7 seconds. (CPU: 22.5s user, 4.0s system)</code><br /><br /></pre>
+<p>...and with the writer disabled, it is now this:</p>
+<pre><code>2024-03-29 11:56:48|  26.6|  0.0|INFORM|Translation was SUCCESSFUL with 19 warning(s) (0 feature(s) output) 
+2024-03-29 11:56:48|  26.6|  0.0|INFORM|FME Session Duration: 26.6 seconds. (CPU: 22.1s user, 4.4s system)</code><br /><br /></pre>
+<p>...then we can easily calculate that the writing process is taking merely 0.1 seconds.</p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<blockquote>
+<p><span style="font-family: inherit; font-size: 1em;"><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Another method is a two-step process.</span></p>
+<p>First, add a Recorder as the final transformer to store the data in FFS format as it is about to be written. Then, run the workspace.</p>
+<p>Then, replace the Recorder with a Player transformer to re-read the preserved FFS data. Disable everything else up to that point and re-run the workspace.</p>
+<p>The data is played back into the workspace and written to the output, measuring writer performance.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="assessing-transformer-performance">Assessing Transformer Performance</h2>
+<p>Assessing the time taken in transformation requires a two-step process.</p>
+<p>First, disable writers and run the translation, taking note of the elapsed time:</p>
+<p><img class="image image-block image-center" src="images/1724955319549.png" alt="Disabling writer feature type to measure transformer performance" width="929" height="236" /></p>
+<p>Then disable the transformers, too, and rerun the workspace to calculate the time taken to read the data only:</p>
+<p><img class="image image-block image-center" src="images/1724955367950.png" alt="Disabling transformers to measure transformer performance" width="929" height="236" /></p>
+<p>The elapsed transformation time is the difference between the time spent reading the data and the time spent reading and transforming the data. In this case, 20.1 - 1.7 = 18.4 seconds spent transforming the data.</p>
+<p>It's important not to add an Inspector or Logger transformer to see what happens to the output. This will slow the translation down and give you a false measure. You must also be sure to disable the actual writer and not just the feature types or connections to them.</p>
+<p>The only writer helpful in this scenario is the Null format writer. This causes a writer to be present, but it does nothing except count features and discard them. The benefit is improved logging of record counts, but without any data having to be written.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Naturally, where a FeatureReader or FeatureWriter transformer is used, assessing reading and writing requires a different procedure:</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">It would be necessary to run the workspace twice, once with everything disabled after that point and once with everything disabled up to (and including) that point. Then, subtract the two run times to get the correct result.</span></p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>The provincial government has funded new public art for the city's parks. A colleague built a workspace to analyze how much art each park already has, and Jennifer wants to run a code review to confirm it is efficient and well designed. Her colleague's workspace reads public art, parks, and orthophoto data and writes the amount of art in each park.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Measure a workspace's total runtime with and without data caching.</li>
+<li>Isolate the reader, transformer, and writer stages by disabling parts of the workspace.</li>
+<li>Calculate how long each stage of the workspace takes.</li>
+</ul>
+<h2 id="1-open-and-run-the-starting-workspace">1) Open and Run the Starting Workspace</h2>
+<p>Reading from the web introduces variability that makes it hard to assess performance accurately, so this workspace uses local paths to C:\FMEData. Your colleague ran it with caching turned on and reported about twenty seconds, so you will start by reproducing that baseline.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.2 or later).</li>
+<li>Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/assess-workspace-performance.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\assess-workspace-performance.fmw).
+<ul>
+<li>If you do not have FMEData on your machine, download the source data from the Resources section above and point the workspace at your local files.</li>
+</ul>
+</li>
+<li>Run the workspace with data caching enabled and the default parameters.</li>
+<li>Note the total runtime.</li>
+</ul>
+<div>
+<pre><code>2025-07-10 15:40:11| &nbsp;15.4| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 9 warning(s) (70 feature(s) output)<br />2025-07-10 15:40:11| &nbsp;15.4| &nbsp;0.0|INFORM|FME Session Duration: 16.4 seconds. (CPU: 11.1s user, 4.3s system)<br />2025-07-10 15:40:11| &nbsp;15.4| &nbsp;0.0|INFORM|END - ProcessID: 35068, peak process memory usage: 574780 kB, current process memory usage: 156892 kB<br /></code><br /><br /></pre>
+</div>
+<h2 id="2-run-without-data-caching">2) Run Without Data Caching</h2>
+<p>Data caching helps while you author a workspace, but it costs time you would not pay in production. Turning it off shows what the workspace really costs when it runs for real.</p>
+<ul>
+<li>Turn off data caching.</li>
+</ul>
+<p><img src="images/1787083513454.png" alt="Caching disabled" /></p>
+<ul>
+<li>Confirm that the workspace has no Inspector or Logger transformers and that no parts are disabled.</li>
+<li>Run the workspace.</li>
+<li>Observe that the workspace runs considerably faster, perhaps in as little as five seconds.
+<ul>
+<li>In these examples, running without caching gives a 54% decrease in total runtime. The difference is even larger in a workspace processing large raster datasets.</li>
+<li>Caching should not be required in a production workspace, because the authoring and debugging phases of development are complete by then.</li>
+</ul>
+</li>
+</ul>
+<div>
+<pre><code>2025-07-10 15:39:19| &nbsp; 5.1| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 2 warning(s) (70 feature(s) output)<br />2025-07-10 15:39:19| &nbsp; 5.1| &nbsp;0.0|INFORM|FME Session Duration: 5.7 seconds. (CPU: 3.1s user, 2.0s system)<br />2025-07-10 15:39:19| &nbsp; 5.1| &nbsp;0.0|INFORM|END - ProcessID: 68592, peak process memory usage: 444516 kB, current process memory usage: 154644 kB<br /></code><br /><br /></pre>
+</div>
+<h2 id="3-assess-relative-performance">3) Assess Relative Performance</h2>
+<p>The workspace already runs quickly, but you can still measure how much of the runtime each section costs. Disabling parts of the workspace in stages separates reading from transforming from writing.</p>
+<ul>
+<li>Disable all components after the readers.</li>
+<li>Run the workspace, still without caching.</li>
+<li>Note the runtime.</li>
+</ul>
+<div>
+<pre><code>2025-07-10 15:38:27| &nbsp; 1.7| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 2 warning(s) (0 feature(s) output)<br />2025-07-10 15:38:27| &nbsp; 1.7| &nbsp;0.0|INFORM|FME Session Duration: 1.9 seconds. (CPU: 0.9s user, 0.8s system)<br />2025-07-10 15:38:27| &nbsp; 1.7| &nbsp;0.0|INFORM|END - ProcessID: 7236, peak process memory usage: 141920 kB, current process memory usage: 128364 kB<br /></code><br /><br /></pre>
+</div>
+<ul>
+<li>Enable all transformers, leaving only the writers disabled.</li>
+<li>Run the workspace.</li>
+<li>Note the runtime.</li>
+</ul>
+<div>
+<pre><code>2025-07-10 15:37:28| &nbsp; 1.9| &nbsp;0.0|INFORM|Translation was SUCCESSFUL with 2 warning(s) (0 feature(s) output)<br />2025-07-10 15:37:28| &nbsp; 1.9| &nbsp;0.0|INFORM|FME Session Duration: 2.3 seconds. (CPU: 1.1s user, 0.8s system)<br />2025-07-10 15:37:28| &nbsp; 1.9| &nbsp;0.0|INFORM|END - ProcessID: 63704, peak process memory usage: 173540 kB, current process memory usage: 152356 kB<br /></code><br /><br /></pre>
+</div>
+<ul>
+<li>Calculate the length of each stage of the workspace.
+<ul>
+<li>Reading data: the first partial run.</li>
+<li>Transforming data: the second partial run minus the first partial run.</li>
+<li>Writing data: the overall run minus the second partial run.</li>
+<li>You will need these answers for the quiz.</li>
+</ul>
+</li>
+</ul>

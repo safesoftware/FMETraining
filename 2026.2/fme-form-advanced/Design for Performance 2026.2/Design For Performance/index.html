@@ -1,0 +1,298 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Filter data earlier in your workspace for performance improvements.</li>
+<li>Remove excess feature types for performance improvements.</li>
+<li>Remove excess attributes and lists for performance improvements.</li>
+<li>Use error trapping to identify problems.</li>
+<li>Improve performance by collapsing bookmarks to prevent excess caching.</li>
+<li>Use workspace templates, including caches, to measure performance improvements.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/design-for-performance.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\design-for-performance.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/design-for-performance-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\design-for-performance-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_self">Addresses.gdb.zip</a> (Esri Geodatabase)
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Emergency/Crime.csv" target="_self">Crime.csv</a>
+<ul>
+<li>C:\FMEData\Data\Emergency\Crime.csv</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/leisure.osm" target="_self">leisure.osm</a>
+<ul>
+<li>C:\FMEData\Data\OpenStreetMap\leisure.osm</li>
+</ul>
+</li>
+</ul>
+<h2 id="designing-for-performance">Designing for Performance</h2>
+<p>Performance methodology is weak when a workspace's design causes the workspace to use more system resources (CPU and memory) than necessary. Performance methodology means setting up a workspace to run efficiently, saving you valuable time.</p>
+<h2 id="filtering-input">Filtering Input</h2>
+<p>A typical scenario in FME is to read data into a workspace and then filter out features (records) that are not required:</p>
+<p><img class="image image-block image-center" src="images/1724946541584.png" alt="Filtering data using the Tester" width="419" height="261" /></p>
+<p>However, when data is read and immediately discarded, the resources used to read that data are a direct performance loss.</p>
+<p>If data is filtered as it is read, rather than afterward, performance is much better, and many formats have parameters to do just that:</p>
+<p><img class="image image-block image-center" src="images/1724946601323.png" alt="Filtering using a WHERE clause on a reader feature type" width="552" height="334" /></p>
+<p>A &lsquo;WHERE Clause&rsquo; parameter applies the required filter directly to the Geodatabase reader. Only data that matches the where clause is read and enters the workspace.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can also use a FeatureReader or DatabaseQuerier to restrict your data on read, including with custom queries and/or spatial initiators.</p>
+</blockquote>
+<h2 id="excess-feature-types">Excess Feature Types</h2>
+<p>The schema of a source dataset is represented on the FME canvas by feature type objects:</p>
+<p><img class="image image-block image-center" src="images/1724946784044.png" alt="Unused reader feature types" width="359" height="264" /></p>
+<p>Not connecting a feature type to other objects in your workspace is equivalent to reading and discarding data and is detrimental to performance.</p>
+<p>When adding readers, FME prompts the user to select feature types to add to the translation. You should avoid adding feature types you don't need and remove ones already added but not connected. Excess feature types slow your work, clutter the canvas, and make maintaining a clean and tidy style harder.</p>
+<p>Every reader has a parameter (Parameters &gt; Features to Read &gt; Feature Types to Read) that controls which feature types are read when the workspace runs. You can quickly choose which feature types to use with this parameter. Note, however, that if you link this to a user parameter, the end user will decide. In that case, you should ensure that only the feature types are available to select. It is still good practice to find and disable or remove any feature types you don't currently need to use, but this parameter offers a shortcut that can also improve performance.</p>
+<p><span style="font-size: 2.3125em;">Excess Attributes and Lists</span></p>
+<p>Once data has been read into a workspace, you can still reduce its size to assist performance. For example, attributes not defined in the output schema are not necessary for a workspace, so you should remove them:</p>
+<p><img class="image image-block image-center" src="images/1724947486715.png" alt="Excess attributes" width="1090" height="500" /></p>
+<p>Here, a workspace author calculates the number of addresses in each city's postcode (CFSAUID). The address attributes are not required in the output schema but are copied onto the postcode features along with a list of addresses, and everything is carried through to the end of the workspace.</p>
+<p>In this scenario, the author should avoid the PointOnAreaOverlayer options for copying attributes and creating lists:</p>
+<p><img class="image image-block image-center" src="images/1724950858300.png" alt="Turning off parameters to generate attributes" width="550" height="315" /></p>
+<p>This step will reduce the memory required to run the translation without affecting its output.</p>
+<p><span style="font-family: inherit; font-size: 1em;">Lists are the worst attribute type to keep for no reason since they can have multiple values for each record. Parameters in many join transformers allow the author to generate only the list attributes required:</span></p>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1724950946444.png" alt="Generating lists" width="550" height="315" /></span></p>
+<h2 id="error-trapping">Error Trapping</h2>
+<p>Sometimes, scaling up/performance means using more datasets of varying types and quality. If you consider data quality, you can protect future performance.</p>
+<p>One way to design for future capabilities is by using error trapping.</p>
+<p>Error trapping is a way to design a workspace so that unexpected data does not cause the workspace to fail. The author attempts to foresee potential data problems and build methods to handle them.</p>
+<p>Error trapping can be as simple as adding a test or filter transformer to weed out bad features, or it can be more complex and include different ways to process data, depending on the circumstances.</p>
+<details class="tips-tricks">
+<summary><strong>Tips and Tricks</strong></summary>
+<div>
+<p><strong>Performance</strong></p>
+<p>You can refer to <a href="https://support.safe.com/hc/en-us/articles/25407794017933-Performance-Tuning-FME" target="_blank" rel="noopener">this tutorial series</a> for additional FME performance tips.</p>
+<p>Ask <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_blank" rel="noopener">AI Assist Chat</a> for help identifying and fixing performance issues. It knows the context of the objects on your canvas and can use it to help you identify inefficiencies.</p>
+<p><span style="font-family: inherit; font-size: 1em;"><strong>Error Trapping</strong></span></p>
+<p><span style="font-family: inherit; font-size: 1em;">The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/tester.htm" target="_blank" rel="noopener">Tester</a> transformer has an operator for testing whether an attribute has a value. </span><span style="font-family: inherit; font-size: 1em;">This is very useful for error trapping, as it tests whether an attribute has a value before using it as the source for a parameter.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use the&nbsp;</span><a style="font-family: inherit; font-size: 1em;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/logger.htm" target="_blank" rel="noopener">Logger</a><span style="font-family: inherit; font-size: 1em;"> transformer to issue Information, Warning, and Error messages to the log.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use the&nbsp;</span><a style="font-family: inherit; font-size: 1em;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/terminator.htm" target="_blank" rel="noopener">Terminator</a><span style="font-family: inherit; font-size: 1em;"> transformer to issue custom error messages, which is also helpful in building more extreme error-trapping logic into your workspaces or custom transformers. If a specific condition means the workspace should fail with an error, you can use a Terminator to catch those cases.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">For advanced use cases, you can use error trapping and attribute validation techniques to build a testing framework for your workspaces. You can learn more about testing frameworks from </span><a style="font-family: inherit; font-size: 1em;" href="https://fme.safe.com/blog/2020/01/fme-hub-highlight-fme-test-framework/" target="_blank" rel="noopener">this guest post on our blog</a><span style="font-family: inherit; font-size: 1em;">&nbsp;or by checking out the&nbsp;</span><a style="font-family: inherit; font-size: 1em;" href="https://www.veremes.com/en/products/rtest" target="_blank" rel="noopener">rTest for FME tool</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</div>
+</details>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+summary {
+  font-size: 18px;
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::marker {
+  display: none;
+}
+.tips-tricks summary::before {
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231565c0' d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E");
+  background-size: 32px;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.2s ease;
+}
+.tips-tricks[open] summary::before {
+  transform: rotate(90deg);
+}
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.tips-tricks {
+  background-color: #E3F2FD;
+}
+.tips-tricks[open] {
+  background-color: #E3F2FD;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+.tips-tricks:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<p>&nbsp;</p>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer wants to calculate the walkability of each address in Vancouver, a measure of how easy it is to reach local facilities on foot. Her workspace reads address, crime, and leisure data and writes a walkability score for each address. The workspace produces the right result, but it caches far more data than it needs, and she wants to improve its performance.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Measure how much data a workspace caches by saving a template with its data caches.</li>
+<li>Reduce the data the workspace carries by removing unnecessary attributes, lists, and feature types.</li>
+<li>Limit cache generation by collapsing a bookmark, then compare the new template size to the original.</li>
+</ul>
+<h2 id="1-open-and-run-the-starting-workspace">1) Open and Run the Starting Workspace</h2>
+<p>Running the workspace before you examine it gives you data caches to inspect as you work. The run takes a while, so start it now and read through the next step while it finishes.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.2 or later).</li>
+<li>Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/design-for-performance.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\design-for-performance.fmw).</li>
+<li>Click <strong>Run</strong>.</li>
+</ul>
+<h2 id="2-examine-the-workspace">2) Examine the Workspace</h2>
+<p>The workspace is unorganized, so it is easier to work through it in sections. A colleague modified it slightly, so it does not match the diagram exactly, but it is close enough to follow how it works.</p>
+<ul>
+<li>On the canvas, examine each numbered section of the workspace.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724952000526.png" alt="Starting workspace" width="1543" height="489" /></p>
+<ol>
+<li>PostalAddress and PostcodeBoundaries read from Addresses.gdb.</li>
+<li>Transformers clean up attributes from the PostalAddress feature type to create a separate Number and Street attribute. They then replace the last two digits of the Number with XX to create the attribute that will be the Join Key for joining the crime data.</li>
+<li>Crime reads from Crime.csv. This dataset stores the street number for each crime incident with XX as the last two digits to protect anonymity.</li>
+<li>The FeatureJoiner joins PostalAddress and the Crime data based on the Join Key attribute from section two and the Block attribute from Crime.</li>
+<li>These transformers give the crime Type attribute a number based on severity and then calculate the total CrimeValue for each address block. The CenterPointReplacer then extracts only one point if there are multiple crime incidents in the same location.</li>
+<li>The workspace reads the leisure OpenStreetMap file. It uses this data to measure the walking distance from addresses to pools.</li>
+<li>The NeighborFinder determines the pool closest to each address.</li>
+<li>The AttributeRenamer renames the _distance attribute from the NeighborFinder to PoolDistance.</li>
+<li>The Creator and the FeatureReader read a Planning Restrictions OGC Geopackage, including noise restriction areas from the NoiseControlAreas layer.</li>
+<li>The PointOnAreaOverlayer joins the point data containing the crime, distance to pool, and addresses with the NoiseControlAreas polygons. This joined data assigns the noise restrictions to any overlapping points. The AttributeValueMapper assigns each zone a score, creating the attribute NoiseZoneScore, which reflects that addresses in noise-restricted areas are more walkable.</li>
+</ol>
+<h2 id="3-measure-the-starting-cache-size">3) Measure the Starting Cache Size</h2>
+<p>Saving the workspace as a template with its data caches gives you a baseline measurement. After you make performance improvements, you will save a second template and compare the two file sizes to see how much you gained.</p>
+<ul>
+<li>Confirm that you have run the workspace and that data caches are present.</li>
+<li>On the menu bar, select <strong>File &gt; Save As Template</strong>.</li>
+<li>Save the template to any location you want.</li>
+<li>In the prompt, select <strong>Include Data Caches</strong>.
+<ul>
+<li>If you return to this project later or share it, the user can reopen the template with all the cached data ready to use.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724952495811.png" alt="Save as Template" width="536" height="461" /></p>
+<ul>
+<li>Note the size of the template file you just created.
+<ul>
+<li>The file is over 40 MB, which is fairly large for a template. A large template is not a problem in itself, but it does indicate that a lot of data is being cached and that this could affect the workspace's performance.</li>
+<li>Write the size down. You will need this value for a quiz question.</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-remove-unnecessary-attributes">4) Remove Unnecessary Attributes</h2>
+<p>How much memory each feature needs depends partly on how many attributes and lists it carries. Because this workspace has many attributes to remove and only a few to keep, you will use an AttributeKeeper.</p>
+<ul>
+<li>On the canvas, place an <strong>AttributeKeeper</strong> between the <strong>AttributeValueMapper_2</strong> and the <strong>ExpressionEvaluator</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724952835251.png" alt="Using an AttributeKeeper to remove unused attributes" width="676" height="176" /></p>
+<ul>
+<li>In the <strong>AttributeKeeper</strong> parameters, set <strong>Attributes to Keep</strong> to <strong>CrimeValue</strong>, <strong>NoiseZoneScore</strong>, and <strong>PoolDistance</strong>.</li>
+<li>Note the names of the attributes you are not keeping.
+<ul>
+<li>You might be able to remove some of them earlier in the workspace.</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-remove-lists">5) Remove Lists</h2>
+<p>The final output of the workspace is a single score, so the component attributes used to calculate that score are not needed. Lists are the worst attribute type to keep for no reason, because they hold multiple values for every record.</p>
+<ul>
+<li>If you inspect some features near the end of the workspace, you'll find many of them have a list attribute called CrimeList{}.
+<ul>
+<li>Carrying this list around is slowing down the workspace.</li>
+<li>We need to find where CrimeList{} is created so we can stop FME from creating it. It is not used by the workspace.</li>
+</ul>
+</li>
+<li>Press Ctrl+F and search for <code>CrimeList</code>.</li>
+<li>View the search results at the bottom of the <strong>Navigator </strong>window.
+<ul>
+<li>You should see that the Aggregator is creating CrimeList.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1787343261608.png" alt="Searching for CrimeList and finding it in the Aggregator" width="298" height="332" /></p>
+<ul>
+<li>Inspect a single record from the <strong>Aggregator's Output port cache.</strong></li>
+<li>Observe the record in the <strong>Record Information</strong> window.
+<ul>
+<li>The feature stores a lot of attributes like CrimeList{}.City and CrimeList{}.Block. These excess attributes clutter the display and make inspecting the output hard.</li>
+</ul>
+</li>
+<li>In the <strong>Aggregator</strong> parameters, turn off <strong>Generate List</strong>.
+<ul>
+<li>The AttributeKeeper you added removes CrimeList eventually, but most features processed between the Aggregator and the AttributeKeeper still carry those extra attributes, which slows the workspace down.</li>
+<li>Turning this parameter off makes many caches stale. You will re-run the workspace shortly to rebuild them.</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-remove-extra-feature-types">6) Remove Extra Feature Types</h2>
+<p>Reading data that the workspace never uses is another reason a workspace runs slowly. The original author left two feature types connected to nothing: PostcodeBoundaries from Addresses.gdb, and Parks from an earlier version that measured walking distance to parks instead of pools.</p>
+<ul>
+<li>On the canvas, delete the <strong>PostcodeBoundaries</strong> and <strong>Parks</strong> feature types.</li>
+<li>Click <strong>Yes</strong> on any warnings that appear.</li>
+</ul>
+<h2 id="7-collapse-the-bookmark">7) Collapse the Bookmark</h2>
+<p>Transformers whose output you never need to inspect still generate caches. Collapsing a bookmark hides the transformers inside it, so re-running the translation creates a single cache for the whole group instead of one per transformer.</p>
+<ul>
+<li>On the canvas, locate the bookmark around the transformers between the <strong>PostalAddress</strong> reader and the <strong>FeatureJoiner</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724953343245.png" alt="Collapsing this bookmark will reduce the number of feature caches generated" width="664" height="369" /></p>
+<ul>
+<li>Beside the bookmark name, click the <strong>collapse arrow</strong>.
+<ul>
+<li>When you re-run the translation, only the last transformer in the bookmark has a cache.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724953384019.png" alt="Clicking the arrow to collapse the bookmark" width="675" height="179" /></p>
+<h2 id="8-run-the-workspace-and-compare">8) Run the Workspace and Compare</h2>
+<p>Re-running the workspace rebuilds the caches with your changes in place. The collapsed bookmark produces one cache instead of five, and the AttributeKeeper drops the attributes the output does not need.</p>
+<ul>
+<li>On the canvas, right-click the <strong>ExpressionEvaluator</strong> and select <strong>Run To This</strong>, or click <strong>Run</strong>.</li>
+<li>On the menu bar, select <strong>File &gt; Save As Template</strong>.</li>
+<li>In the prompt, select <strong>Include Data Caches</strong>.</li>
+<li>Note the size of the new template file.
+<ul>
+<li>It is considerably smaller than the first template.</li>
+<li>Write the size down. You will need this value for a quiz question.</li>
+</ul>
+</li>
+</ul>

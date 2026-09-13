@@ -1,0 +1,215 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Define schema, and explain how the SchemaScanner works in dynamic workflows.</li>
+<li>Identify the scenarios where the SchemaScanner is useful.</li>
+<li>Use a SchemaScanner to pass a schema feature to a dynamic writer.</li>
+<li>Apply a schema dynamically and modify it at the same time.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Watch a demonstration video (it repeats what we cover in live training).</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the quiz at the end of this lesson.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/build-dynamic-workflows-with-the-schemascanner.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\build-dynamic-workflows-with-the-schemascanner.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/build-dynamic-workflows-with-the-schemascanner-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\build-dynamic-workflows-with-the-schemascanner-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Cedar%20Cottage.csv" target="_blank" rel="noreferrer noopener">Cedar Cottage.csv</a>
+<ul>
+<li>C:\FMEData\Resources\DynamicWorkflows\Data\Cedar Cottage.csv</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>With the SchemaScanner, you can easily extract and manipulate the schema of your datasets, tackling dynamic workspace issues such as schema standardization and&nbsp;<a href="https://fme.safe.com/webinars/database-tips-tricks-strategies-for-detecting-and-handling-schema-drift/" target="_blank" rel="noopener">schema drift</a>. How does it work? The SchemaScanner gives you a list attribute with attribute names and data types. Downstream in your workspace, you can use this list attribute to manipulate your schema and create flexible workflows. Instead of defining a fixed schema on your writers, you can use the schema from the list attribute to flexibly define the schema at runtime. Quality assurance and schema drift handling just got easier!</p>
+<h2 id="what-is-a-schema">What is a Schema?</h2>
+<p>A schema, sometimes referred to as the "data model," can be described as the structure of a dataset or, more accurately, a formal definition of a dataset&rsquo;s structure.</p>
+<p>Each dataset has its unique schema, which includes feature types, permitted geometries, user-defined attributes, and other rules that define or restrict its content. However, for most users, the most critical aspects of a schema are attribute names and data types.</p>
+<h2 id="using-the-schema-scanner">Using the SchemaScanner</h2>
+<p>The SchemaScanner processes features and retrieves their schema by scanning for the attribute name and its data type. It will either scan all features or just a specified number of them. There&rsquo;s also the option to exclude attributes using a Regular Expression to ensure a clean schema output.</p>
+<p>The resulting output is a new schema feature output via the &lt;Schema&gt; output port. This new feature is also assigned the special attribute and value fme_schema_handling = &lsquo;schema_only&rsquo;, which allows a dynamic writer to recognize it&nbsp;as a schema feature. If you wish to continue using the original input features, these are passed via the Output port.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For more technical information on the SchemaScanner, check out the&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/schemascanner.htm" target="_blank" rel="noopener">documentation</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<p><strong>Why you might want to use the SchemaScanner in your workspace:</strong></p>
+<ul>
+<li>You want to ensure your&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/workspaces_dynamic_about.htm" target="_blank" rel="noopener">dynamic writer</a>&nbsp;is receiving a valid schema</li>
+<li>You don&rsquo;t know the schema of incoming data and want to make sure it meets specific standards before being used in a dynamic writer</li>
+<li>You want to modify the schema before it reaches the writer</li>
+<li>You want to expose the schema for validation purposes (checking for schema drift)</li>
+</ul>
+<p><strong>Key things to remember:</strong></p>
+<ul>
+<li>When used in a dynamic workspace, schema features should be output from the SchemaScanner using the Output Schema Features Before Data parameter.</li>
+<li>Most schemas contain attributes you don&rsquo;t need in your final output dataset, so use the Ignore Attributes Containing parameter.</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>As we&rsquo;ve seen, dynamic workflows can obtain their schema from multiple locations.</p>
+<p>One of those locations is in the workspace itself, and the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/schemascanner.htm" target="_blank" rel="noopener">SchemaScanner</a>&nbsp;transformer is a key tool in making that happen.</p>
+<p>As the name suggests, the SchemaScanner scans incoming features and produces a schema. That schema can then be used in a dynamic writer and stored in a specific FME feature.</p>
+<p>The schema produced by this transformer may be different from the reader schema due to processes in the workspace, such as attribute renaming, removal, or addition.</p>
+<p>In this example workspace, attributes are being added and removed from the reader schema:</p>
+<p><img class="image image-block image-center" src="images/1724098560374.png" alt="Example SchemaScanner workspace" width="853" height="322" /></p>
+<p>The SchemaScanner generates a new schema for the output, assigns it a name, and passes it to a dynamic writer. Notice how the schema feature passes from the SchemaScanner's Schema output port to the same writer input port as incoming data. This is a somewhat unusual pattern in FME, so it's worth noting.</p>
+<p>The dynamic writer is set up to recognize incoming schema features and will make use of them:</p>
+<p><img class="image image-block image-center" src="images/1724098685280.png" alt="Example dynamic writer feature type using Schema from Schema Feature" width="569" height="418" /></p>
+<p>Notice how the Schema Source is set to &ldquo;Schema From Schema Features&rdquo; to inform the writer from where the schema is to be obtained. Also, notice the parameter that defines the name of the schema. This handles the situation where the same writer is fed multiple schema features.</p>
+<p>Now, FME will write the data to the output CSV dataset using the schema modified by the AttributeManager.</p>
+<p>A&nbsp;<strong>Schema Feature&nbsp;</strong>stores information about a schema that can be passed to a writer. The information is stored in a list attribute called&nbsp;<em>attribute{}.&nbsp;</em>It contains attribute names and data types, stored as&nbsp;<em>attribute{}.name&nbsp;</em>and&nbsp;<em>attribute{}.fme_data_type:</em></p>
+<p><img class="image image-block image-center" src="images/1724098774860.png" alt="Schema feature list attribute" width="511" height="298" /></p>
+<p>Schema features are generated by the SchemaScanner transformer, the FeatureReader transformer, the Schema (Any Format) reader, and even the AttributePivoter transformer!</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The schema generated by the FeatureReader is a copy of the dataset schema.</span></p>
+</blockquote>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>The schema generated by the SchemaScanner is FME&rsquo;s &ldquo;best guess.&rdquo;</p>
+<p>You should use the SchemaScanner to scan the schema in the middle of your workspace after you&rsquo;ve read and manipulated your data.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Going back to the SchemaScanner, let&rsquo;s look at the parameters:</p>
+<p><img class="image image-block image-center" src="images/1788461152954.png" alt="SchemaScanner parameters" width="500" height="719" /></p>
+<p>The important things to note here are:</p>
+<ul>
+<li>The transformer will output the schema feature before any data features. This is vital. The writer must receive the schema feature before any data features that use it.</li>
+<li>The transformer will exclude any attributes that contain fme_ or multi_from the schema. It will also not include format attributes. We don't need FME or format attributes in the output.</li>
+<li>The transformer will ignore attributes with empty (or null) values, i.e., excluded from the output schema, just as if they&rsquo;d been removed in the AttributeManager.</li>
+<li>The transformer detects dates in the incoming data. If this had not been set, it would interpret values such as 20220812 as numbers, not dates.</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer, a GIS Specialist, publishes a CSV of market opening hours. She wants the output to carry a single Hours column worked out from the Open and Close times, with those two source columns dropped. She does not want to redefine the writer schema by hand every time the source data changes.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Use a SchemaScanner to pass a modified schema to a dynamic writer.</li>
+<li>Set a dynamic writer to take its schema from a schema feature rather than from the reader.</li>
+</ul>
+<h2 id="1-generate-the-workspace">1) Generate the Workspace</h2>
+<p>Generating with Dynamic Schema gives you a schema-less translation to start from. Running it once before you change anything shows what the reader schema looks like on its own.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later.</li>
+<li>Select <strong>Build &gt; Generate Workspace</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader &gt; Format:</strong> CSV (Comma Separated Value)</li>
+<li><strong>Reader &gt; Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Cedar%20Cottage.csv" target="_blank" rel="noopener">Cedar Cottage.csv</a> download, or C:\FMEData\Resources\DynamicWorkflows\Data\Cedar Cottage.csv</li>
+<li><strong>Writer &gt; Format:</strong> CSV (Comma Separated Value)</li>
+<li><strong>Writer &gt; Dataset:</strong> C:\FMEData\Output\Training</li>
+<li><strong>Workflow Options:</strong> Dynamic Schema</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1788457770093.png" alt="Generate workspace dialog" width="429" height="410" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+<li>Click <strong>Run</strong> and inspect the output to see what the source data looks like.
+<ul>
+<li>Selecting View Written Data opens the Select Dataset to View dialog. Specify the format and dataset to see the data. The Tips at the end of this exercise explain why FME asks.</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-create-the-hours-attribute">2) Create the Hours Attribute</h2>
+<p>We will create a new attribute called Hours, a combination of the Open and Close attributes. But then we'll need to find a way to add that to the writer schema.</p>
+<ul>
+<li>Add an <strong>AttributeManager</strong> between the <strong>reader feature type</strong> and the <strong>writer feature type</strong>.</li>
+<li>Create a new attribute named <code>Hours</code> and open the <strong>Text Editor</strong> for its value.</li>
+<li>Enter <code>@Value(Open) - @Value(Close)</code>.</li>
+<li>Delete the <strong>Open attribute</strong> and the <strong>Close attribute</strong>.</li>
+<li>Move Hours <em>above</em> Open and Close, using the <strong>Up</strong> <strong>arrow</strong> to reorder.
+<ul>
+<li>If the deletions run first, Hours has nothing to work from and comes out empty.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1724093200877.png" alt="Calculating a new attribute Hours and removing Open and Close" width="757" height="291" /></p>
+<ul>
+<li><strong>Re-run </strong>the workspace.</li>
+<li>Inspect the <strong>AttributeManager's Output port</strong>. Observe it has the new <strong>Hours </strong>attribute.</li>
+<li>Inspect the output data. Observe it still carries the old schema without Hours and missing values for Open and Close. This is because its schema source is the reader. That is exactly the problem the SchemaScanner solves.</li>
+</ul>
+<h2 id="3-add-a-schemascanner">3) Add a SchemaScanner</h2>
+<p>The SchemaScanner reads the features as they are at that point in the workspace and builds a schema feature from them. Sending that schema feature to the writer alongside the data is what makes the output follow the changes you just made.</p>
+<ul>
+<li>Add a <strong>SchemaScanner</strong> after the <strong>AttributeManager</strong>.</li>
+<li>Connect both the <strong>Output port</strong> and the <strong>&lt;Schema&gt; port</strong> to the <strong>writer feature type</strong>.</li>
+<li>Open the <strong>SchemaScanner</strong> and confirm <strong>Output Schema Before Data Features</strong> is set to <strong>Yes</strong>.
+<ul>
+<li>The writer has to receive the schema feature before any data features that rely on it.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<h2 id="4-set-the-writer-schema-source">4) Set the Writer Schema Source</h2>
+<p>The writer still expects its schema from the reader. Pointing it at the schema feature instead is the step that hands control to the SchemaScanner.</p>
+<ul>
+<li>Open the parameters for the <strong>&lt;Dynamic&gt; CSV writer feature type</strong>.</li>
+<li>Click the ellipsis button beside <strong>Schema Sources</strong>, clear <strong>Cedar Cottage</strong> and select <strong>Schema From Schema Feature</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1724095106724.png" alt="Changing schema source to schema feature" width="536" height="384" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+<li>Set <strong>Schema Definition Name</strong> to <code>fme_feature_type_name</code>.
+<ul>
+<li>The SchemaScanner creates this attribute. Here it unhelpfully produces a file called CSV.csv. A static name would read better in this specific case, but where the input feature types carry real table names, fme_feature_type_name preserves them.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724095197182.png" alt="Setting Schema Defintion Name" /></p>
+<h2 id="5-run-the-workspace">5) Run the Workspace</h2>
+<p>The output should now match what the workspace produces rather than what it read, which is the whole point of scanning the schema mid-workflow.</p>
+<ul>
+<li>Confirm your workspace matches the layout below.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1724095277213.png" alt="Workspace" width="854" height="273" /></p>
+<ul>
+<li>Click <strong>Run</strong> and inspect the output.
+<ul>
+<li>Open and Close are gone, and an Hours attribute has taken their place.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1724095366259.png" alt="Workspace output" width="982" height="143" /></p>
+<p>You have built a workspace whose output schema follows the data as the workspace changes it, rather than mirroring the source. If the incoming data changes, FME writes whatever schema it receives, and as long as Open and Close are present it will keep producing Hours in their place.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>Schema features are produced by more than the SchemaScanner: the FeatureReader, the Schema (Any Format) reader and the AttributePivoter all emit them. The FeatureReader's is a copy of the dataset schema, while the SchemaScanner's is FME's best guess from the features it saw.</li>
+<li>You can choose where to scan the schema. Don't bother doing it right after reading, as you it would just reproduce the reader schema. It often makes sense to scan directly before writing.</li>
+<li>Selecting View Written Data on a dynamic or generic writer feature type usually opens the Select Dataset to View dialog, because FME does not know the format or path in advance. Specify the format and dataset to view the data. The same happens with a writer feature type fanout, where the output path depends on an attribute value FME only reads at run time.</li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

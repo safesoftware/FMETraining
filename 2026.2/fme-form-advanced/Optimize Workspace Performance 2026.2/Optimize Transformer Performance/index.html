@@ -1,0 +1,315 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Improve performance by upgrading transformers to their latest versions.</li>
+<li>Optimize performance using transformer order and filtering.</li>
+<li>Optimize performance using the Complete Groups parameter.</li>
+<li>Optimize performance using the Features First parameter.</li>
+<li>Optimize performance by removing unneeded attributes and geometry.</li>
+<li>Optimize performance using bulk mode.</li>
+<li>Improve performance by adjusting the order of readers in a workspace.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>We've updated this course, so the videos don't exactly match the lessons. However, we've included them for you to review, and we will update them in a future release.</p>
+</blockquote>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-transformer-performance.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-transformer-performance.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-transformer-performance-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-transformer-performance-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/Orthophotos.zip" target="_self">Orthophotos.zip</a> (GeoTIFF)
+<ul>
+<li>C:\FMEData\Data\Orthophotos.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_self">VancouverNeighborhoods.kml</a> (OGC / Google KML)
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2 id="optimizing-transformer-performance">Optimizing Transformer Performance</h2>
+<p>The key to improving transformer performance is reducing the memory used, particularly in group-based transformers. To do this, you can either reduce the amount of data entering a group-based transformer or use parameters that, in the right conditions, can reduce the need to store data in memory.</p>
+<h2 id="upgrade-transformers">Upgrade Transformers</h2>
+<p>One simple way to potentially get a "free" performance improvement is to upgrade your transformers.&nbsp;</p>
+<p>If your workspace has transformers that can be upgraded, you will see a section labeled "Upgradable Transformers" in the Navigator:</p>
+<p><img class="image image-block image-center" src="images/1725647014613.png" alt="Upgradable transformers" width="371" height="394" /></p>
+<p>You can then expand each transformer and right-click to select Upgrade transformer to upgrade them. A dialog will confirm your wish to proceed and inform you that the new version might introduce breaking changes. You should back up your workspace in case that happens:</p>
+<p><img src="images/1725647088536.png" alt="Upgrade Transformer dialog" /></p>
+<p>A dialog will then open to show the changes in the GUI to the transformer:</p>
+<p><img class="image image-block image-center" src="images/1725649064120.png" alt="Comparing transformer versions" width="749" height="404" /></p>
+<p>You can click the Show Changes button to get a written list of changes:</p>
+<p><img src="images/1725649130002.png" alt="Text change log" width="537" height="275" /></p>
+<p>Upgrading transformers only sometimes makes them operate faster, because some changes are functional or cosmetic, and an upgrade might slightly change their results. Therefore, upgrading all transformers is only advisable after checking what the upgrade involves.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can right-click Upgradable Transformers and choose Upgrade All Transformers. We only recommend this if you are an experienced FME user, as upgrading many transformers at once can make it harder to identify any problems introduced by the upgrade.</p>
+<p>You can also update by selection or transformer type. A confirmation dialog asks if you'd like to create a backup of your workspace before updating, and you&nbsp;can optionally generate a transformer upgrade report.</p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_With_Transformer_Versions.htm#Upgradin" target="_blank" rel="noopener">Learn more.</a></p>
+</blockquote>
+<h2 id="transformer-order-and-filtering">Transformer Order and Filtering</h2>
+<p>Although the order of transformers can sometimes vary without affecting the result, at other times, it is essential to get the correct order for performance reasons.</p>
+<p>FME will perform better when you minimize the data going into group-based transformers. One scenario is to put feature-based filter transformers <em>before</em> the group-based process, not after it. To show a counter-example, the author below filters data after statistics have been calculated:</p>
+<p><img class="image image-block image-center" src="images/1725649176986.png" alt="Filter before processing" width="565" height="143" /></p>
+<p>Filtering the data before calculating the statistics would be more sensible; otherwise, FME wastes time processing features that are eventually ignored.</p>
+<p>The best way to remember this is:&nbsp;<strong>Filter, Remove, Action!</strong></p>
+<p>In other words, filter first, then remove attributes, then act.</p>
+<h2 id="group-by-mode-parameter">Group By Mode Parameter</h2>
+<p>A standard parameter available in most group-based transformers is called "Complete Groups" and appears under Group Processing:</p>
+<p><img class="image image-block image-center" src="images/1712355017672.png" alt="Group By Mode options" width="499" height="148" /></p>
+<p>When set to When All Features Received, all the features are stored in memory until the transformer finishes processing. Then, groups are formed. The transformer is blocking data from proceeding.</p>
+<p>When the parameter is set to When Group Changes (Advanced), FME processes groups as they become available. That way, less data is stored in memory, and processing is more efficient.</p>
+<p>The condition for applying this parameter is that the groups of features are pre-sorted into their groups.</p>
+<p>For example, in the above screenshot, the user uses the ZoneCategory attribute as a group-by parameter (i.e., zones are dissolved together where they are in the same category). If the incoming data is sorted in order by ZoneCategory, then the user can set the Complete Groups parameter and allow FME to process the data more efficiently.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">When using Input Ordered By Group on a transformer with two (or more) input ports, you need to arrange data to arrive in group order (Port 1, Group A, Port 2, Group A, Port 1, Group B, Port 2, Group B, etc.). It's more than just a case of each data stream being ordered correctly; you need to alternate streams/ports for each group, which is challenging.</span></p>
+</blockquote>
+<h2 id="features-first-parameter">Features First Parameter</h2>
+<p>Besides the Complete Groups parameter, some transformers have unique parameters for performance improvements. Many of these specify one type of feature to arrive "first."</p>
+<p>For example, the PointOnAreaOverlayer transformer expects two sets of data: Points and Areas. By default, FME requires all incoming Points and Areas because it needs to be sure it has ALL of the Areas before processing any Points.</p>
+<p>But, if FME knows the Area features will arrive first (i.e., the first Point feature signifies the end of the Areas), then it doesn&rsquo;t need all Point features. It can process each one immediately because it knows there are no more Areas it could match against.</p>
+<p>The user specifies that this is true using the parameter Areas First:</p>
+<p><img class="image image-block image-center" src="images/1725649323276.png" alt="Areas First parameter" width="347" height="97" /></p>
+<p>But how does a user ensure the Area features arrive first? Well, like writers, you can change the order of readers in the Navigator so that the reader at the top of the list is read first.</p>
+<p>Changing the reader order doesn&rsquo;t improve performance&nbsp;<em>per se</em>, but it does let you apply performance-improving parameters like the above.</p>
+<h2 id="attributes-and-transformation">Attributes and Transformation</h2>
+<p>As mentioned&nbsp;earlier, reducing data helps performance by saving FME from either holding it in memory or caching it to a disk.</p>
+<p>However, reducing the number of features and the size of each feature helps.</p>
+<p>One aspect of this is attributes. Carrying attributes through a translation impacts performance, so if the attributes are not required in the output, it&rsquo;s best to remove them&nbsp;<em>as early as possible</em>&nbsp;in the translation.</p>
+<p>For example, when the reader and writer schemas look like this:</p>
+<p><img class="image image-block image-center" src="images/1725649404341.png" alt="Simplifying schema" width="471" height="327" /></p>
+<p>...it makes sense to remove excess attributes from the translation as soon as possible.</p>
+<p>There are two ways to remove attributes. Some reader formats (but not all) have a setting in the reader feature type to avoid reading excess attributes in the first place:</p>
+<p><img class="image image-block image-center" src="images/1725649460567.png" alt="Manually unexposing reader feature type attributes" width="552" height="377" /></p>
+<p>With that, you can ensure that&nbsp;<em>only</em> exposed attributes are read.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For database formats, FME won't read unexposing attributes on reader feature types, offering a performance improvement.</p>
+<p>For non-database formats, FME still reads the unexposed attributes, but it won't show them anywhere downstream and won't write them out. There is no direct performance benefit on reading, but it saves the performance cost of removing them and can clean up your attribute lists.</p>
+</blockquote>
+<p>The other way to remove attributes is by using a transformer (AttributeManager, AttributeRemover, or AttributeKeeper) directly after the source feature type:</p>
+<p><img class="image image-block image-center" src="images/1725649564898.png" alt="Removing unnecessary attributes with an AttributeManager" width="630" height="523" /></p>
+<p>This ensures that the extra attributes don't drain resources when processed by further transformers.</p>
+<h2 id="lists">Lists</h2>
+<p>One specific type of attribute to beware of is a&nbsp;<em>List</em>. In FME, a list can have multiple values, significantly draining resources.</p>
+<p>For example, if you use a DatabaseJoiner to join a feature to 1,000 records, the resulting list for that feature will have 1,000 sets of records. This is bad enough, but if you explode the list and keep all of the original attributes, there will be 1,000 features, each with its own attributes!</p>
+<p>In general, beware of unnecessarily creating lists and keeping them in a workspace beyond the point at which they are still used.</p>
+<h2 id="geometry-and-transformation">Geometry and Transformation</h2>
+<p>Like attributes, geometry can be removed from a feature, in this case, using the GeometryRemover transformer.</p>
+<p>Many FME users create translations that handle tabular &ndash; non-spatial &ndash; data. If you read a spatial dataset and write it in a tabular format, remove the geometry early in the workspace, just as you would an attribute.</p>
+<p>Another particular problem is carrying spatial data around as attributes. Spatial database formats, for example Oracle or GeoMedia, usually store geometry within a field in the database, such as GEOM. When FME reads the data, it converts the GEOM field into FME geometry and drops the field from the data.</p>
+<p>However, if you read a geometry table with a non-geometry reader, the translation could end up with the geometry stored as an FME attribute. A similar thing could happen when a workspace reads only one geometry column when multiple geometry tables exist.</p>
+<p>Geometry will create <em>substantial</em>&nbsp;and complex attributes, which take up a lot of resources. If you don&rsquo;t need them, then it&rsquo;s worth removing them.</p>
+<h2 id="bulk-mode-and-feature-tables">Bulk Mode and Feature Tables</h2>
+<p>FME's engine is gradually being updated to use a methodology we call&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noopener">bulk mode</a>&nbsp;(previously known as feature tables).</p>
+<p>It's not a tool designed for user control; instead, bulk mode is a new way to transport features through the workspace. Bulk mode substantially speeds up a workspace, its translations, and its transformations. If you see a log message about bulk mode (or sometimes feature tables), this technology is what it refers to.</p>
+<p>As more transformers support bulk mode, expect performance to improve. However, you must upgrade transformers to benefit from this change. Look for Upgradable Transformers in the Navigator window and use right-click &gt; Show Changes to find out if the upgrade includes bulk mode support:</p>
+<p><img class="image image-block image-center" src="images/1725649599838.png" alt="Showing Changes on an upgradable transformer" width="371" height="394" /></p>
+<div class="box message info">
+<div class="inner">
+<div class="bd">
+<div class="media">
+<div class="mediaBd">
+<div class="message-media-content">
+<p>However, this bulk mode support comes at a price: feature order is now maintained differently.</p>
+<p>For example, let's say we have features numbered 1 to 10 in that order. They enter a Tester. The test clauses are set up so that even numbers pass (emerge from the Passed port) and odd numbers fail (emerge from the Failed port).</p>
+<p>Without bulk mode, the features would emerge in the order 1 (Failed port), 2 (Passed port), 3 (Failed), 4 (Passed), 5 (Failed), and so on. In other words, they emerge in the same order they entered.</p>
+<p>With bulk mode, the output order is less certain. The output of each port will still be in order, but we can't say that each port will occur in order. For example, the output order might be 1 (Failed), 3 (Failed), 5 (Failed), 7 (Failed), 9 (Failed), 2 (Passed), 4 (Passed), 6 (Passed), and so on.</p>
+<p>In other words, with bulk mode, features emerge from each port in the same order, but one port may output all of its features (or a bulk subset of them) before the next port starts.</p>
+<p>If your workspace relies on a certain port order from the Tester, you should use the&nbsp;Advanced &gt; Preserve Feature Order parameter.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noopener">Learn more about bulk mode in the documentation.</a></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>For maximum performance, in an Arithmetic editor, use the functions <code>@add()</code>, <code>@multi()</code>, and <code>@div()</code> instead of using the equivalent operators (<code>+</code> <code>*</code> and <code>/</code>). These functions work at a lower, much faster level of processing. Plus, they have the bonus of handling nulls better.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer is finishing her code review of a colleague's public art workspace. The readers and writers are efficient now, but nobody has looked at the transformers: many are running old versions, and the bookmark that prepares data for the spreadsheet sorts the features before it filters them. Jennifer needs to work through them before the workspace goes into production.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Upgrade transformers to their current versions and enable bulk mode where feature order allows it.</li>
+<li>Reorder transformers so filtering and attribute removal happen before the work that depends on them.</li>
+<li>Apply performance parameters such as Areas First, using reader order to satisfy the condition they require.</li>
+</ul>
+<h2 id="1-open-and-run-the-starting-workspace">1) Open and Run the Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later.</li>
+<li>Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-transformer-performance.fmw" target="_blank" rel="noopener">starting workspace</a> from C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-transformer-performance.fmw.
+<ul>
+<li>This workspace already contains the reader and writer improvements from the previous two lessons, so the code review continues from where you left it.</li>
+</ul>
+</li>
+<li>Turn on <strong>Data Caching</strong>.</li>
+<li>Click <strong>Run</strong> and accept the default user parameter values.
+<ul>
+<li>Note the session duration and peak memory use at the end of the Translation log, so you have something to compare against.</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-upgrade-the-transformers">2) Upgrade the Transformers</h2>
+<p>Nine transformers in this workspace are running older versions. Upgrading can offer the closest thing to a free performance gain, because newer versions may add bulk mode support, but an upgrade can also change results, so it is worth reading what each one involves.</p>
+<ul>
+<li>In the <strong>Navigator</strong>, expand <strong>Upgradable Transformers</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1787784831273.png" alt="Upgradable transformers" width="396" height="331" /></p>
+<ul>
+<li>Right-click each entry in turn and select <strong>Upgrade Transformer</strong>.
+<ul>
+<li>Alternatively, you can right click Upgradeable Transformers and select Upgrade All Transformers, but this is only recommended for experienced users.</li>
+</ul>
+</li>
+<li>Click <strong>Upgrade</strong>.</li>
+</ul>
+<p><img src="images/1725657171921.png" alt="Upgrade warning" width="502" height="318" /></p>
+<ul>
+<li>Click <strong>Show Changes</strong> to read the written list of what the upgrade alters.
+<ul>
+<li>Some changes are functional or cosmetic rather than performance related, and a few can alter results, which is why upgrading everything unread is a habit worth avoiding. All four in this workspace are safe.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1711134862277.png" alt="Comparing transformer versions" width="707" height="404" /></p>
+<ul>
+<li>Upgrade the <strong>Clipper</strong> manually.
+<ul>
+<li>The Clipper needs a parameter adjustment as it upgrades, so it cannot be upgraded unattended.</li>
+</ul>
+</li>
+<li>On the <strong>Tester</strong>, under <strong>Advanced</strong>, set <strong>Preserve Feature Order</strong> to <strong>Per Output Port</strong>.
+<ul>
+<li>The Tester supports bulk mode, but the default Across Output Ports setting stops it using it. Nothing in this workspace depends on the order features leave the Tester, so releasing that guarantee is safe here and buys the performance back.</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-reorder-the-transformers">3) Reorder the Transformers</h2>
+<p>The Prepare Data for Excel Writer bookmark sorts the data before it filters out unwanted features and strips unwanted attributes. The sort is therefore doing work on features and attributes that are about to be discarded, which is the opposite of the order you want: filter, remove, act.</p>
+<ul>
+<li>On the canvas, locate the <strong>Prepare Data for Excel Writer bookmark</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725657537421.png" alt="Prepare Data for Excel Writer bookmark" width="384" height="221" /></p>
+<ul>
+<li>Move the <strong>Sorter</strong> after the <strong>AttributeRenamer</strong>.
+<ul>
+<li>The Sorter is now flagged as incomplete. The AttributeRenamer has renamed _overlaps to ArtWorks, so the attribute the Sorter was sorting on no longer exists at that point.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725657585618.png" alt="Moving Sorter to the end" width="384" height="221" /></p>
+<ul>
+<li>On the <strong>Sorter</strong>, change the first sorting attribute to <strong>ArtWorks</strong>.</li>
+<li>Decide whether the <strong>Tester</strong> and the <strong>DuplicateFilter</strong> could move earlier in the workspace, and note your answer for the quiz.
+<ul>
+<li>The AttributeRenamer cannot move, because renaming _overlaps can only happen at this point. Removing attributes, on the other hand, could happen much earlier.</li>
+</ul>
+</li>
+<li>Delete the existing <strong>AttributeRemover</strong>.</li>
+<li>Add an <strong>AttributeRemover</strong> after each reader whose attributes can be reduced, and remove the attributes the workspace does not need.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725657705589.png" alt="Adding AttributeRemovers" width="453" height="717" /></p>
+<ul>
+<li>Confirm you have not removed anything the workspace needs.
+<ul>
+<li>A downstream transformer or writer feature type flagged as incomplete, with a red port on the expanded writer feature type, means an attribute you removed was still in use.</li>
+<li>The fme_feature_type attribute used on the GeoTIFF writer is not required.</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-set-the-transformer-performance-parameters">4) Set the Transformer Performance Parameters</h2>
+<p>The Clipper and the PointOnAreaOverlayer each offer a parameter that lets FME release features as they arrive instead of holding all of them in memory. Both are only safe when one set of features is guaranteed to arrive first, and that is a condition you have to create rather than assume. Group Processing does not apply to either one here, because neither uses a Group By.</p>
+<ul>
+<li>On the <strong>PointOnAreaOverlayer</strong>, set <strong>Areas First</strong> to <strong>Yes</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725657953527.png" alt="Setting Clipper Type and Areas First parameters for performance improvements" width="906" height="276" /></p>
+<ul>
+<li>Re-run the entire workspace.
+<ul>
+<li>Every area feature leaves through the &lt;Rejected&gt; port. They are rejected precisely because they did not arrive first, which is the parameter telling you its condition is not met.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725658245131.png" alt="PointOnAreaOverlayer rejected features" width="224" height="288" /></p>
+<ul>
+<li>In the <strong>Navigator</strong>, drag the <strong>Parks reader</strong> to the top of the reader list.
+<ul>
+<li>The MapInfo park features were being read after the Excel records, which is why the areas were not first.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725658300421.gif" alt="Changing reader order" width="344" height="296" /></p>
+<ul>
+<li>Re-run the entire workspace.
+<ul>
+<li>The park features now arrive first and this part of the workspace runs more efficiently.</li>
+</ul>
+</li>
+<li>Inspect the <strong>Clipper</strong> to work out whether its clipper features arrive first, so that <strong>Clippers Arrive First</strong> can be set to <strong>Yes (Advanced)</strong>.</li>
+</ul>
+<h2 id="5-re-run-the-workspace-with-caching-off">5) Re-Run the Workspace with Caching Off</h2>
+<p>Data caching changes the timings you see, so the honest before-and-after comparison is a full run with it turned off. Expect the difference to be modest on data this small.</p>
+<ul>
+<li>Turn off <strong>Data Caching</strong>.</li>
+<li>Re-run the entire workspace.</li>
+<li>Confirm the Translation log shows a shorter session duration and lower peak memory than the figures you noted in step 1.</li>
+<li><strong>Save </strong>the workspace.</li>
+</ul>
+<p>You have upgraded the transformers, moved filtering and attribute removal ahead of the work that depends on them, and enabled parameters that let FME release features early instead of holding them. The overall gain is slight at this data volume, but the workspace is better designed and will scale further than the one you started with.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>You can right-click Upgradable Transformers and choose Upgrade All Transformers, and you can also update by selection or by transformer type. While you are still learning FME, upgrading one at a time makes it far easier to tell which upgrade caused a problem.</li>
+<li>If the features arriving at the Sorter were already grouped by one attribute, you could group by that attribute and sort by another for a further gain. That does not apply to this workspace.</li>
+<li>Instead of adding an AttributeRemover after the Excel reader, you can stop the attributes being read at all. Open the reader feature type, set Attributes to Read to Exposed Attributes, and clear Name and Title. Database formats honour this and skip the columns entirely.</li>
+<li>In an Arithmetic editor, the functions @add(), @multi(), and @div() run at a lower and much faster level than the equivalent operators, and they handle nulls better.</li>
+</ul>
+</div>
+</details>
+<p>&nbsp;</p>
+<details class="additional-resources">
+<summary><strong>Additional Resources</strong></summary>
+<div>
+<ul>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/tester.htm" target="_blank" rel="noopener">Tester transformer documentation</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_With_Transformer_Versions.htm#Upgradin" target="_blank" rel="noopener">Working with transformer versions</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Improving-Performance-Bulk-Mode.htm" target="_blank" rel="noopener">Improving performance with bulk mode</a></li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

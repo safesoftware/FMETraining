@@ -1,0 +1,174 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Learn how adding additional input files affects dynamic workflows.</li>
+<li>Use writer feature type and SchemaScanner parameters to create a dynamic fanout.</li>
+<li>Set the SchemaScanner Missing/Null/Empty Attributes parameter to control how empty attributes are handled when creating dynamic schemas.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (it repeats what we cover in live training).</li>
+<li>Scroll down to read the activity instructions below and, if it has an exercise, follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/build-dynamic-workflows-with-a-multi-dataset-schemascanner.fmw" target="_blank" rel="noreferrer noopener">Starting workspace</a>
+<ul>
+<li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\build-dynamic-workflows-with-a-multi-dataset-schemascanner.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/build-dynamic-workflows-with-a-multi-dataset-schemascanner-complete.fmw" target="_blank" rel="noreferrer noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\build-dynamic-workflows-with-a-multi-dataset-schemascanner-complete.fmw&nbsp;</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Vancouver%20Farmers%20Markets.csv" target="_blank" rel="noreferrer noopener">Vancouver Farmers Markets.csv</a>
+<ul>
+<li>C:\FMEData\Resources\DynamicWorkflows\Data\Vancouver Farmers Markets.csv</li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>At a basic level, the SchemaScanner is fairly simple to operate. However, more complex scenarios involve how the different parameters are used and the exact values of the&nbsp;incoming data.</p>
+<p>The Missing/Null/Empty Attributes parameter controls the schema when incoming data is without values:</p>
+<p><img src="images/1724099121487.png" alt="Missing/Null/Empty Attributes parameter" width="546" height="155" /></p>
+<p>However, this only applies to data where the entire dataset is without a particular attribute value. In this dataset, for example, every value for MarketType is null. MergedAddress also has null values, but not for every record:</p>
+<p><img src="images/1724099313276.png" alt="Attributes without some values or all values" width="556" height="292" /></p>
+<p>Given the above parameters, the output schema will not contain the MarketType field because it has no values:</p>
+<p><img src="images/1724099427655.png" alt="Attribute without any values removed from schema feature" width="453" height="240" /></p>
+<p>However, MergedAddress&nbsp;<em>is&nbsp;</em>included because some records still have values.</p>
+<p>Now, say, for example, that we wanted to include MarketType in the output even though there are no values. There are two alternatives to the Ignore option:</p>
+<p><img src="images/1724099526859.png" alt="Other options for Missing/Null/Empty Attributes" width="537" height="203" /></p>
+<p>Because there are no data values, the SchemaScanner cannot scan the data to guess the data type. Instead, it can either use a default data type (a varchar of unknown length) or trace back through the workspace to find any clues to the data type.</p>
+<p>In this case, the reader feature type has that information:</p>
+<p><img src="images/1724099922368.png" alt="Reader feature type attributes" width="552" height="318" /></p>
+<p>&hellip;so the SchemaScanner will use that and create an output schema where MarketType = varchar(21).</p>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer's market workspace now writes whatever schema it produces rather than the one it read, but it still covers a single market. She wants to bring the Vancouver farmers market data in alongside it, and give each day of the week its own output file with a schema that fits that day's data.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Read two CSV datasets through one dynamic reader.</li>
+<li>Split the output into one file per day using an attribute as the file name.</li>
+<li>Use Group Processing on the SchemaScanner to give each output its own schema.</li>
+</ul>
+<h2 id="1-open-the-workspace">1) Open the Workspace</h2>
+<p>You can carry on from the previous exercise or start fresh. Either way, the second dataset can be brought in two ways, and it is worth knowing both: adding a reader is the obvious route, while pointing the existing dynamic reader at more files takes advantage of the fact that it does not care about schema.</p>
+<ul>
+<li>Continue with the workspace from the previous exercise, or open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/build-dynamic-workflows-with-a-multi-dataset-schemascanner.fmw" target="_blank" rel="noopener">starting workspace</a> in <strong>FME Workbench</strong> 2026.2 or later.</li>
+<li>Choose a method to add the Vancouver Farmers Markets CSV, keeping the existing Cedar Cottage data.
+<ul>
+<li>The data can be <a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/DynamicWorkflows/Data/Vancouver%20Farmers%20Markets.csv" target="_self">downloaded</a> or accessed locally: C:\FMEData\Resources\DynamicWorkflows\Data\Vancouver Farmers Markets.csv.</li>
+</ul>
+</li>
+</ul>
+<h3>Method #1: A New Reader</h3>
+<ul>
+<li>Add the Vancouver Farmers Markets CSV using <strong>Build </strong>&gt; <strong>Readers </strong>&gt; <strong>Add Reader</strong>, or drag the CSV file onto the canvas.</li>
+<li><strong>Connect </strong>the <strong>new feature type </strong>to the <strong>AttributeManager input port</strong>.</li>
+</ul>
+<h3>Method #2: Extend the Existing Reader</h3>
+<ul>
+<li>Double-click the <strong>Navigator</strong> &gt; <strong>Cedar%20Cottage CSV2 reader </strong>&gt; <strong>Source CSV parameter</strong>.</li>
+<li>Click the <strong>drop-down arrow </strong>and choose <strong>Select Multiple Folders/Files</strong>.</li>
+<li>Click <strong>Add Files </strong>and choose the <strong>Vancouver Farmers Markets CSV</strong>.
+<ul>
+<li>The existing reader is dynamic, so no new feature type is needed.</li>
+</ul>
+</li>
+<li>Click <strong>OK </strong>twice.</li>
+</ul>
+<p class="image image-block image-center"><img src="https://support.safe.com/hc/article_attachments/25409047492493" alt="Adding a new CSV" width="800" height="282" /></p>
+<h2 id="2-run-the-workspace">2) Run the Workspace</h2>
+<p>The two datasets do not share a schema, which is the point. Seeing how the SchemaScanner reconciles them explains what it does when features disagree about which attributes exist.</p>
+<ul>
+<li>Click <strong>Run</strong> and inspect the output.
+<ul>
+<li>You should have 23 total features.&nbsp;</li>
+<li>The Vancouver farmers market records have no MarketType value, so those come through as null. The data also carries an extra Offerings attribute that Cedar Cottage does not have.</li>
+<li>FME wrote both attributes anyway. The SchemaScanner builds an inclusive schema: if even one feature has an attribute, it goes in.</li>
+<li>Selecting View Written Data opens the Select Dataset to View dialog. Specify the format and dataset to see the data. The Tips at the end of this exercise explain why FME asks.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724100185585.png" alt="Market Type is null or Offerings is null" width="901" height="441" /></p>
+<h2 id="3-split-the-output-by-day">3) Split the Output by Day</h2>
+<p>One file per market day is more useful than one combined file. Setting the file name from an attribute is what splits the output, and it also sets up the schema problem the next step solves.</p>
+<ul>
+<li>Open the parameters for the <strong>writer feature type</strong>.</li>
+<li>Click the drop-down arrow beside <strong>CSV File Name</strong> and change it from <strong>fme_feature_type</strong> to the <strong>Day attribute</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724100816669.png" alt="Setting CSV File Name to Day" width="905" height="421" /></p>
+<ul>
+<li><strong>Re-run</strong> the workspace and inspect the outputs.
+<ul>
+<li>In the Saturday and Sunday files some fields hold nulls, but the fields still exist because not every record is null.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724101548618.png" alt="Missing values - Saturday Offerings" width="901" height="221" /></p>
+<ul>
+<li>Open the Wednesday and Thursday files.
+<ul>
+<li>Some fields there are entirely null, and the fields still exist. There is only one output schema and every output dataset uses it.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724101656149.png" alt="Entirely null value for Offerings on Wednesdays" width="894" height="106" /></p>
+<h2 id="4-group-the-schemascanner-by-day">4) Group the SchemaScanner by Day</h2>
+<p>Grouping makes the SchemaScanner emit one schema feature per group instead of one for everything. That is what lets each day's file describe only the attributes that day actually has.</p>
+<ul>
+<li>Open the <strong>SchemaScanner</strong>, enable <strong>Group Processing</strong>, and set <strong>Group By</strong> to the <strong>Day attribute</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724101726334.png" alt="SchemaScanner with a Group By on Day" width="470" height="207" /></p>
+<ul>
+<li><strong>Re-run</strong> the workspace.
+<ul>
+<li>There are now four schema features, one per day. The fme_feature_type_name attribute, which names the schema, is what distinguishes them.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724101885316.png" alt="Four schema features" width="627" height="206" /></p>
+<ul>
+<li>Inspect the Wednesday output.
+<ul>
+<li>Wednesday was missing Offerings entirely, so that attribute is now absent from its file. Each dataset has its own schema, and the SchemaScanner is still set to ignore missing, null and empty attributes.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724101984783.png" alt="Wednesday CSV doesn't have Offerings attribute because it has no values" /></p>
+<h2 id="5-include-empty-attributes">5) Include Empty Attributes</h2>
+<p>Ignoring empty attributes is not always what you want. Interpreting the upstream schema keeps them, and FME works out the data type from wherever it can find it earlier in the workspace.</p>
+<ul>
+<li>Open the <strong>SchemaScanner</strong> and change <strong>Missing/Null/Empty Attributes</strong> from <strong>Ignore</strong> to <strong>Interpret Upstream Schema (Advanced)</strong>.</li>
+<li><strong>Re-run</strong> the workspace and inspect the schema feature for Thursday.
+<ul>
+<li>Thursday now carries a MarketType attribute even though every value is empty, typed as fme_varchar(21) because FME could read that from the reader schema.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1724102093794.png" alt="MarketType included with a derived type" width="433" height="240" /></p>
+<p>You have combined two datasets with different schemas through one dynamic reader, split the output by day, and given each day its own schema. Switching between ignoring and interpreting empty attributes controls whether a column survives into an output that has no values for it.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>The Missing/Null/Empty Attributes parameter only acts when an attribute is empty across the whole group. An attribute that is null for some records and populated for others is always kept.</li>
+<li>When there are no values at all, the SchemaScanner cannot infer a type by scanning. Its two alternatives to Ignore are a default varchar of unknown length, or tracing back upstream for a better answer.</li>
+<li>Selecting View Written Data on a dynamic or generic writer feature type usually opens the Select Dataset to View dialog, because FME does not know the format or path in advance. Specify the format and dataset to view the data. The same happens with a writer feature type fanout, where the output path depends on an attribute value FME only reads at run time.</li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

@@ -1,0 +1,245 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Add a Generic writer to a workspace.</li>
+<li>Set the initial format of a Generic writer.</li>
+<li>Create a Choice parameter that prompts for a writer format.</li>
+<li>Use a Choice parameter for the Generic writer output format.</li>
+<li>Use a feature type fanout on fme_feature_type to return features to their original layer.</li>
+<li>Use a .zip extension to create zipped output datasets.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (it repeats what we cover in live training).</li>
+<li>Scroll down to read the activity instructions below and, if it has an exercise, follow the steps in your lab.</li>
+<li>Complete the exercise by following the steps.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">Community Map File Geodatabase</a>
+<ul>
+<li>If your computer has FMEData, the file path is C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/let-the-user-choose-the-output-format-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedReadingAndWriting\let-the-user-choose-the-output-format-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>Sven is regularly asked to convert the community map into whatever format a colleague needs. He wants to hand that job back to them: one workspace that reads the community map, lets whoever runs it pick the output format, and returns the result as a single zipped folder.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Configure a Generic writer whose output format is chosen at run time.</li>
+<li>Create a Choice user parameter that restricts the format list to a chosen few.</li>
+<li>Fan out on fme_feature_type so features return to their original tables.</li>
+</ul>
+<h2 id="1-create-the-workspace-and-add-the-reader">1) Create the Workspace and Add the Reader</h2>
+<p>This workspace is built from scratch rather than opened from a starting file. Reading the geodatabase as a single merged feature type keeps the canvas compact, and it lets whoever runs the workspace choose which tables to read.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later with an empty canvas.</li>
+<li>Select <strong>Build &gt; Readers &gt; Add Reader</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader Format:</strong> Esri Geodatabase (OpenFile Geodb)</li>
+<li><strong>Reader Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">Community Map File Geodatabase</a> download, or C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+<li><strong>Workflow Options:</strong> Single Merged Feature Type</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1788210686046.png" alt="Adding a geodatabase reader" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<h2 id="2-add-the-generic-writer">2) Add the Generic Writer</h2>
+<p>The Generic writer does not commit to a format when you add it. You still give it a starting format so the writer has something to work with, and the end user replaces that choice at runtime.</p>
+<ul>
+<li>Select <strong>Build &gt; Writers &gt; Add Writer</strong> and configure the following parameters:
+<ul>
+<li><strong>Writer Format:</strong> Generic (Any Format)</li>
+<li><strong>Writer Dataset:</strong> C:\FMEData\Output\Training</li>
+<li><strong>Parameters &gt; Output Format:</strong> Esri Shapefile</li>
+<li><strong>Feature Type Definition:</strong> Automatic</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1788211502936.png" alt="Adding a Generic writer" width="849" height="296" /></p>
+<ul>
+<li>Click <strong>OK</strong>.
+<ul>
+<li>The Feature Type Properties dialog opens on its own.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong> to accept the new feature type.</li>
+<li>Connect the <strong>writer feature type</strong> to the <strong>source feature type</strong>.
+<ul>
+<li>The attribute schema updates to match the reader feature type as soon as you make the connection.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723483206124.png" alt="Attributes update when using Automatic mode" width="561" height="190" /></p>
+<h2 id="3-review-the-user-parameters">3) Review the User Parameters</h2>
+<p>Adding the reader and the writer created several user parameters automatically. Two are worth keeping, one is unnecessary, and one offers the end user far more choice than they need.</p>
+<ul>
+<li>In the <strong>Navigator</strong>, expand <strong>User Parameters</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1788211583966.png" alt="Automatically-created User Parameters" width="856" height="104" /></p>
+<ul>
+<li>Delete the <strong>SourceDataset_OPENFILEGDB parameter</strong>.
+<ul>
+<li>This translation always reads the same dataset, so nothing needs to change it at run time.</li>
+</ul>
+</li>
+<li>Keep the <strong>Feature Types to Read parameter</strong> and the <strong>Destination Dataset parameter</strong>.
+<ul>
+<li>Feature Types to Read is what prompts the user to pick which tables to read from the source geodatabase.</li>
+</ul>
+</li>
+<li>Double-click the <strong>Output Format parameter</strong> as though you were setting a value.
+<ul>
+<li>The More Formats... option opens the complete FME format list. That is more choice than the end user needs, so you will replace this parameter with a restricted one.</li>
+</ul>
+</li>
+<li>Click <strong>Cancel</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723483450853.png" alt="Setting the Output Format parameter" width="436" height="259" /></p>
+<ul>
+<li>Delete the <strong>Output Format parameter</strong>.</li>
+</ul>
+<h2 id="4-add-a-choice-user-parameter">4) Add a Choice User Parameter</h2>
+<p>A Choice parameter offers a short list of formats instead of the full catalogue. The value FME stores is the format shortname the Generic writer needs, while the display text is what the end user reads.</p>
+<ul>
+<li>In the <strong>Navigator</strong>, right-click <strong>User Parameters</strong> and select <strong>Manage User Parameters</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1723484469035.png" alt="Manage User Parameters" /></p>
+<ul>
+<li>Click the <strong>Plus button</strong> and add a <strong>Choice parameter</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1723484545068.png" alt="Adding a Choice parameter" /></p>
+<ul>
+<li>Configure the following parameters:
+<ul>
+<li><strong>Parameter Identifier:</strong> <code>OutputFormat</code></li>
+<li><strong>Label:</strong> <code>Select Output Format:</code></li>
+<li><strong>Required:</strong> Checked</li>
+<li><strong>Show Label</strong>: Checked</li>
+<li><strong>Visibility:</strong> Always Show</li>
+</ul>
+</li>
+<li>In the <strong>Choice Configuration group</strong>, click <strong>Import</strong> and select <strong>Writer Formats</strong>.
+<ul>
+<li>You may have to scroll down to see the <strong>Import </strong>button.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1723484681929.png" alt="Import Writer Formats" /></p>
+<ul>
+<li>Select a handful of common spatial formats, such as <strong>Esri Shapefile</strong>, <strong>AutoCAD DWG</strong>, <strong>OGC GML</strong> and <strong>MapInfo TAB</strong>, then click <strong>OK</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1723484971631.png" alt="Choice Configuration table" /></p>
+<ul>
+<li>Set <strong>Default Value </strong>to Esri Shapefile.
+<ul>
+<li>It's at the bottom of the dialog.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong> until every dialog is closed.
+<ul>
+<li>The Value column holds the FME format shortname, which is what the Generic writer needs in order to run. The Display column is the human-readable name the end user picks from. Importing the formats saves looking each shortname up by hand.</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-link-the-parameter-to-the-writer">5) Link the Parameter to the Writer</h2>
+<p>The new parameter exists, but nothing uses it yet. Linking it to the writer's own Output Format parameter is what actually puts the end user in control of the format.</p>
+<ul>
+<li>In the <strong>Navigator</strong>, expand the parameters for the <strong>Generic writer</strong>.</li>
+<li>Right-click the <strong>Output Format parameter</strong> and select <strong>Link to User Parameter</strong>.</li>
+<li>Select <strong>OutputFormat</strong> and click <strong>OK</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723485789867.png" alt="Linking Generic Writer to the new OutputFormat user parameter with restricted choices" width="835" height="258" /></p>
+<ul>
+<li>Confirm the <strong>Output Format prompt</strong> now offers only the formats you chose.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723485808142.png" alt="Using the restricted options for Output Format" width="450" height="251" /></p>
+<h2 id="6-set-a-fanout-on-fme-feature-type">6) Set a Fanout on fme_feature_type</h2>
+<p>Everything currently writes to a single output feature type. Fanning out on fme_feature_type sends each feature back to a table named after the one it came from, which is what makes the output look like the source.</p>
+<ul>
+<li>Open the properties for the <strong>writer feature type</strong>.</li>
+<li>Click the drop-down arrow to the right of the <strong>Feature Type Name parameter</strong>, click <strong>Attributes</strong>, and select <strong>fme_feature_type</strong>.
+<ul>
+<li>The writer now creates one output feature type for each unique value of fme_feature_type.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1788211707227.png" alt="Setting feature type name using fme_feature_type" width="552" height="156" /></p>
+<ul>
+<li>Click the <strong>User Attributes tab</strong>.</li>
+<li>Change <strong>Attribute Definition</strong> from Automatic to Manual.</li>
+<li>Set <strong>Spatial Definition</strong> &gt; <strong>Geometry Type</strong> to fme_any.</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1788211951575.png" alt="Changing geometry handling to avoid a bug in 25.1" width="552" height="423" /></p>
+<h2 id="7-save-and-run-the-workspace">7) Save and Run the Workspace</h2>
+<p>Running with prompting turned on is what exercises everything you just built: the table picker, the restricted format list and the fanout.</p>
+<ul>
+<li><strong>Save </strong>the workspace.</li>
+<li>Click <strong>Run &gt; Rerun Entire Workspace</strong> with <strong>Prompt for Parameters</strong> enabled.
+<ul>
+<li>It's a good idea to rerun the entire workspace when you have user parameters impacting readers to ensure you are prompted for their values.</li>
+</ul>
+</li>
+<li>Select some source tables to read, including <strong>GarbageSchedule</strong> and at least one other.</li>
+<li>For <strong>Destination Generic (Any Format) Folder</strong>, set an output folder such as C:\FMEData\Output\Training and add <code>\CommunityMapping.zip</code> to the end of it.
+<ul>
+<li>Ending the path with a .zip name makes FME create a zipped file rather than a loose folder.</li>
+</ul>
+</li>
+<li>Set <strong>Esri Shapefile</strong> as the format to write.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723486242625.png" alt="Setting the Destination parameter to write a zipped file" width="628" height="279" /></p>
+<ul>
+<li>Click <strong>Run</strong>.</li>
+<li>Examine the output folder.
+<ul>
+<li>FME created a zipped folder holding each selected table in Shapefile format. You can open the ZIP file directly or extract it.</li>
+<li>Selecting View Written Data opens the Select Dataset to View dialog. Specify the format and dataset to see the data. The Tips at the end of this exercise explain why FME asks.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723486171611.png" alt="Selected tables have been written to Shapefile format" width="458" height="310" /></p>
+<p>You have built a workspace that reads a geodatabase, lets whoever runs it choose from a short list of output formats, returns each table to its own layer, and delivers the result as a single zipped file. Publishing it to FME Flow would give users those same choices through a browser.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>Notice that FME put the geometry type into the output file names. Shapefile cannot hold more than one geometry type in a single .shp file, so FME separates them, sending linear features to a file ending in _line and points to one ending in _point.</li>
+<li>Every Shapefile in the output carries all of the source tables' attributes, because the single merged feature type gives every feature the same schema. Avoiding that requires a dynamic translation.</li>
+<li>If you are not yet comfortable with user parameters, <a href="https://academy.safe.com/create-flexible-workspaces-with-parameters" target="_blank" rel="noopener">Create Flexible Workspaces with Parameters</a> covers them from the beginning.</li>
+<li>Selecting View Written Data on a dynamic or generic writer feature type usually opens the Select Dataset to View dialog, because FME does not know the format or path in advance. Specify the format and dataset to view the data. The same happens with a writer feature type fanout, where the output path depends on an attribute value FME only reads at run time.</li>
+</ul>
+</div>
+</details>
+<p>&nbsp;</p>
+<details class="additional-resources">
+<summary><strong>Additional Resources</strong></summary>
+<div>
+<ul>
+<li><a href="https://academy.safe.com/read-from-and-write-to-multiple-locations" target="_blank" rel="noopener">Read From and Write To Multiple Locations</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/adding_a_parameter.htm" target="_blank" rel="noopener">Creating and Modifying User Parameters</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/generic/generic.htm" target="_blank" rel="noopener">Generic (Any Format) Reader/Writer documentation</a></li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

@@ -1,0 +1,202 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain custom transformer versions.</li>
+<li>Create a new custom transformer version.</li>
+<li>Edit a specific custom transformer version.</li>
+<li>Explain the relationship between custom transformer versions and FME versions.</li>
+<li>Update a custom transformer version.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/use-versioning-with-custom-transformers.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\use-versioning-with-custom-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/use-versioning-with-custom-transformers-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\use-versioning-with-custom-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/AverageLengthCalculator.fmx" target="_blank" rel="noreferrer noopener">AverageLengthCalculator custom transformer</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\AverageLengthCalculator.fmx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Transportation/Cycling.zip" target="_self">Bike routes dataset</a>
+<ul>
+<li>C:\FMEData\Data\Transportation\Cycling.zip</li>
+</ul>
+</li>
+</ul>
+<h2 id="custom-transformer-versioning">Custom Transformer Versioning</h2>
+<p>FME allows tracking versions for external file definitions of custom transformers (linked transformers). Users can save a new version when they edit a custom transformer definition.</p>
+<p>In that way, a single FMX file can contain multiple versions of the same custom transformer.</p>
+<p>Versioning allows the author of a custom transformer to revert to a previous definition if needed. It also allows users to create a different definition for each version of FME. The custom transformer remains backward-compatible with older FME versions but has enhanced functionality in newer versions.</p>
+<h2 id="creating-a-versioned-custom-transformer">Creating a Versioned Custom Transformer</h2>
+<p>After editing an&nbsp;<em>unversioned</em> custom transformer, clicking the Save button issues the following prompt:</p>
+<p><img class="image image-block image-center" src="images/1724781208412.png" alt="Save Transformer prompt" width="502" height="179" /></p>
+<p>The two versioning options are to&nbsp;<strong>Overwrite</strong>&nbsp;the existing version or create a&nbsp;<strong>New Version</strong>.</p>
+<p>Essentially, the prompt asks whether to activate versioning. Clicking New Version versions the transformer and saves the edits as version 2. Note that creating a new version does not create a separate FMX file; instead, it creates a different version of the transformer within the same FMX file.</p>
+<p>The title bar in Workbench illustrates the version number of a custom transformer file:</p>
+<p><img class="image image-block image-center" src="images/1724781217466.png" alt="Checking the version in the Workbench window title" width="703" height="113" /></p>
+<p>The transformer remains unversioned if you choose Overwrite in the Save Transformer dialog.</p>
+<h2 id="editing-a-specific-transformer-version">Editing a Specific Transformer Version</h2>
+<p>Opening a&nbsp;<em>versioned</em>&nbsp;custom transformer in Workbench issues the following prompt:</p>
+<p><img class="image image-block image-center" src="images/1724781229252.png" alt="Select Transformer Version prompt" width="386" height="200" /></p>
+<p>This prompt asks which version you wish to edit or whether you want to start with a new version. You can:</p>
+<ul>
+<li>Create a new version to edit</li>
+<li>Continue making edits to the existing version</li>
+<li>Make edits to an older version (particularly useful when you can only use that version with an older FME release)</li>
+</ul>
+<p>It&rsquo;s essential to know that this dialog is the only way to create a new version. Clicking the save button only saves updates to the currently open version. To create a new version, you must close and reopen the file, causing the Select Transformer Version dialog to appear.</p>
+<h2 id="transformer-and-fme-versions">Transformer and FME Versions</h2>
+<p>Each version of a custom transformer is associated with a particular FME version. You can choose to make edits to a transformer created in an older version of FME, but you will receive a warning message:</p>
+<p><img class="image image-block image-center" src="images/1724781238989.png" alt="Transformer From Older FME warning" width="502" height="179" /></p>
+<p>Here, a user created version 1 with FME 2020, and the author is attempting to edit it in FME 2022. Should they proceed, version 1 of the transformer will no longer be valid for use in FME 2020.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Sometimes, you can get confused about these dialogs (well, I can), so let me set you straight:</p>
+<p>When you first export a custom transformer, you don&rsquo;t get the Select Version dialog (because the transformer is still unversioned). You also don&rsquo;t get the Save Version dialog (because why create a new version when you just exported this transformer?)</p>
+<p>When you open the definition (FMX file) the next time, you again don&rsquo;t get the Select Version dialog (because it is still unversioned). But you will get the Save Version dialog when you save the changes, allowing you to make the transformer version.</p>
+<p>From that point on, you&rsquo;ll always get the Select Version dialog when you open the FMX file (because the transformer is now versioned), but for the same reason, you&rsquo;ll never get the Save Version dialog when you save edits.</p>
+</blockquote>
+<h2 id="updating-a-transformer-version">Updating a Transformer Version</h2>
+<p>Suppose you turn on the option to display the transformer version (Utilities &gt; FME Options &gt; Workbench &gt; Transformers &gt; Display transformer version). In that case, each linked custom transformer displays its version number in the summary annotation:</p>
+<p><img class="image image-block image-center" src="images/1724781247490.png" alt="Viewing transformer version in Attached Annotation" width="256" height="214" /></p>
+<p>When FME detects that a new version is available (i.e., the author has made edits and saved them as a new version) and that this version is compatible with the current FME version, then an option appears on the context menu to allow an update:</p>
+<p><img class="image image-block image-center" src="images/1724781256110.png" alt="Upgrading a custom transformer to the latest version" width="483" height="390" /></p>
+<p>Choosing to upgrade means the transformer becomes linked to the latest version, and the summary annotation updates to reflect the change.</p>
+<p>You can also upgrade eligible custom transformers in the Navigator, just like you upgrade FME transformers when moving to a new FME version. Custom transformers will appear under Upgradable Transformers, just like regular transformers. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_With_Transformer_Versions.htm" target="_blank" rel="noopener">You can learn more about upgrading FME transformers in the documentation</a>.</p>
+<p><img class="image image-block image-center" src="images/1724781264614.png" alt="Upgrading a custom transformer via the Navigator" width="376" height="233" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>You can upgrade multiple transformers simultaneously. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/Working_With_Transformer_Versions.htm#UpgradingMultipleTransformers" target="_self">Learn more</a>.</p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>Sven has a working AverageLengthCalculator custom transformer, and he wants to use versioning so that every workspace using it can pick up his improvements. His workspace reads bike routes data and writes average route lengths. Before he shares the transformer with his team, he wants to add geometry filtering as a second version.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Display the version number of a linked custom transformer in Workbench.</li>
+<li>Create a second version of a custom transformer by editing and saving its FMX definition.</li>
+<li>Upgrade a custom transformer instance in a workspace to the latest version.</li>
+</ul>
+<h2 id="1-open-starting-workspace">1) Open Starting Workspace</h2>
+<p>You will work in two Workbench sessions throughout this exercise, one for the workspace and one for the custom transformer definition. Keep both open so you can move between them.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.2 or later).</li>
+<li>Open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/use-versioning-with-custom-transformers.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\AdvancedDataTransformation\use-versioning-with-custom-transformers.fmw).</li>
+<li>In a second <strong>FME Workbench</strong> session, open AverageLengthCalculator.fmx from the location you saved it.
+<ul>
+<li>On Windows, the default location is C:\Users\YourUserName\Documents\FME\Transformers.</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-display-transformer-versions">2) Display Transformer Versions</h2>
+<p>Workbench can show the version number of every linked custom transformer in its summary annotation. With this option on, you can confirm which version an instance uses before and after you upgrade it.</p>
+<ul>
+<li>On the menu bar, select <strong>Utilities &gt; FME Options</strong>.</li>
+<li>In <strong>FME Options</strong>, select <strong>Workbench</strong>.</li>
+<li>Expand <strong>Transformer Options</strong>.</li>
+<li>Select <strong>Display transformer version</strong>.</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782012389.png" alt="Checking display transformer version" width="698" height="305" /></p>
+<p>REDO</p>
+<h2 id="3-add-the-custom-transformer">3) Add the Custom Transformer</h2>
+<p>A new instance of the AverageLengthCalculator links to the definition in the FMX file. Confirming which version it starts at makes the upgrade you do later easy to spot.</p>
+<ul>
+<li>In the Workbench session where the workspace is open, use <strong>Quick Add</strong> or the <strong>Transformer Gallery</strong> to add an <strong>AverageLengthCalculator </strong>after the <strong>LineCombiner</strong>.
+<ul>
+<li>The instance is linked by default, which is what you want here.</li>
+</ul>
+</li>
+<li>Hover the cursor over the <strong>AverageLengthCalculator</strong>.
+<ul>
+<li>The pop-up text shows Version 1.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782022902.png" alt="Checking the version of a custom transformer in a tooltip" width="512" height="85" /></p>
+<h2 id="5-create-a-new-transformer-version">4) Create a New Transformer Version</h2>
+<p>Let's make a real improvement to the transformer and save a new version. Filtering by geometry keeps the transformer from measuring the length of point features and other non-linear geometries.</p>
+<ul>
+<li>In the FMX editing session, add a <strong>GeometryFilter</strong> in front of the <strong>LengthCalculator</strong>.</li>
+<li>In the <strong>GeometryFilter</strong> parameters, set up the following:
+<ul>
+<li><strong>Mode</strong>: Detailed</li>
+<li><strong>Output Ports</strong>: IFMELine and IFMEArc, both found under IFMECurve &gt; IFMESegment</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782037194.png" alt="Filter by IFMEArc and IFMELine" width="454" height="267" /></p>
+<ul>
+<li>Connect the <strong>IFME</strong><strong>Line</strong> and <strong>IFME</strong><strong>Arc</strong> ports to the <strong>LengthCalculator</strong>.</li>
+<li>On the canvas, right-click and select <strong>Insert Transformer Output</strong>.</li>
+<li>Name the new output port <strong>&lt;Rejected&gt;</strong>.</li>
+<li>Connect the <strong>&lt;Unfiltered&gt;</strong> port to <strong>&lt;Rejected&gt;</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782049729.png" alt="Adding a &lt;Rejected&gt; port" width="639" height="150" /></p>
+<ul>
+<li>Click <strong>Save</strong>.</li>
+<li>In the <strong>Save Transformer</strong> dialog, click <strong>New Version</strong>.
+<ul>
+<li>If the Save Transformer dialog does not appear, you did not close the first editing session. Undo your changes back to the original definition, without the GeometryFilter and the &lt;Rejected&gt; output port, and save again. Then close the FMX file, reopen it, and redo your changes. FME prompts you to create a new version this time.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782063703.png" alt="Save Transformer prompt" width="502" height="179" /></p>
+<ul>
+<li>In the Workbench title bar, verify that it says Version 2.</li>
+</ul>
+<h2 id="6-upgrade-the-transformer-in-the-workspace">5) Upgrade the Transformer in the Workspace</h2>
+<p>The workspace still holds the version 1 instance you placed earlier. Refreshing the Transformer Gallery lets FME find the new definition so you can upgrade that instance.</p>
+<ul>
+<li>Return to the Workbench session where the workspace is open.</li>
+<li>On the <strong>Transformer Gallery</strong>, click the <strong>Refresh</strong> icon.
+<ul>
+<li>FME scans all custom transformers and finds the new version you just created.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782077265.png" alt="Refreshing the Transformer Gallery" width="261" height="227" /></p>
+<ul>
+<li>On the canvas, right-click the <strong>AverageLengthCalculator</strong> and select <strong>Upgrade To Latest Version</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782090939.png" alt="Upgrading a custom transformer to the latest version" width="511" height="238" /></p>
+<ul>
+<li>Observe that the <strong>AverageLengthCalculator</strong> now has a <strong>&lt;Rejected&gt;</strong> port, indicating a successful upgrade.</li>
+<li>Hover the cursor over the <strong>AverageLengthCalculator</strong>.
+<ul>
+<li>The pop-up text shows Version 2.</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>Now that you have this custom transformer, you have several options for sharing it:
+<ul>
+<li>Put the FMX file in a shared folder, then have other users point their FME at that folder with Utilities &gt; FME Options &gt; Default Paths.</li>
+<li>Send the FMX file to other users, for example by email, and have them install it on their machines. They can install it by double-clicking the file or by saving it to their default FME resource folder.</li>
+<li>Publish the transformer to FME Flow or the FME Hub for you and others to use there.</li>
+</ul>
+</li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

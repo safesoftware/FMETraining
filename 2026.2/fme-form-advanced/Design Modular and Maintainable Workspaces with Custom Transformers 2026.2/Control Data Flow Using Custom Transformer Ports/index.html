@@ -1,0 +1,149 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Use multiple instances of a custom transformer.</li>
+<li>Make a custom transformer generic for use anywhere.</li>
+<li>Rename input and output ports in a custom transformer.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/control-data-flow-using-custom-transformer-ports.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\control-data-flow-using-custom-transformer-ports.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/control-data-flow-using-custom-transformer-ports-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\control-data-flow-using-custom-transformer-ports-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_blank" rel="noreferrer noopener">VancouverNeighborhoods.kml</a>
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2 id="custom-transformer-input-output-ports">Custom Transformer Input/Output Ports</h2>
+<p>Like a normal FME transformer, a custom transformer has several input and output ports:</p>
+<p><img class="image image-block image-center" src="images/1724696677777.png" alt="Custom transformer input and output ports" width="334" height="107" /></p>
+<p>These input and output ports are defined by input/output objects in the custom transformer definition itself:</p>
+<p><img class="image image-block image-center" src="images/1724696687682.png" alt="Ports defined by input and output objects in the custom transformer" width="757" height="264" /></p>
+<h2 id="renaming-ports">Renaming Ports</h2>
+<p>You can rename these input/output objects. These changes will appear when you view the custom transformer on the canvas. You can double-click the object, choose Rename from the context menu, or press F2 to rename the object.</p>
+<p>For example, here, the user pressed F2 and renamed the input port from StringConcatenator_Input to simply Input:</p>
+<p><img class="image image-block image-center" src="images/1724696695919.png" alt="Renaming a custom transformer port" /></p>
+<p>Renaming the input and output ports helps make the custom transformer's intentions more explicit; for instance, it helps the user understand what data type is required as input.</p>
+<p>For example, after editing, the transformer might look like this:</p>
+<p><img class="image image-block image-center" src="images/1724696808148.png" alt="A custom transformer with edited ports" width="249" height="77" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Here, the user renamed the input port to Input. Renaming it to "Strings," "Lines," or "Raster" (for example) would help guide other transformer users as to what data is required.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">However, they renamed the output port to illustrate the emerging data type.</span></p>
+</blockquote>
+<h2 id="adding-or-removing-ports">Adding or Removing Ports</h2>
+<p>Besides renaming ports, adding new ports to a custom transformer is possible.</p>
+<p>To do so, select Insert Transformer Input (or Output) from either the menubar or the canvas context (right-click) menu:</p>
+<p><img class="image image-block image-center" src="images/1724696862198.png" alt="Adding input ports" width="609" height="343" /></p>
+<p>For example, here, a user has ports to handle two streams of input data and two streams of output (one port for the required output, another that handles rejected records:</p>
+<p><img class="image image-block image-center" src="images/1724696880626.png" alt="Custom transformer with two streams of input and output data" width="775" height="346" /></p>
+<p>This means that each instance of the custom transformer has two input and two output ports:</p>
+<p><img class="image image-block image-center" src="images/1724696906748.png" alt="Edited custom transformer with two input and output ports" width="286" height="126" /></p>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>In the last exercise, Sven turned a colleague&rsquo;s population density workspace into a custom transformer called DensityEvaluator. His workspace reads Vancouver neighborhood boundary data and writes population density values for 2001 and 2011. Sven wants to use that one custom transformer for both years and make its output naming generic, so any project can reuse it.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Duplicate a custom transformer and run two instances in parallel.</li>
+<li>Edit the custom transformer definition so both instances output a generic attribute name.</li>
+<li>Rename the custom transformer's input and output ports.</li>
+</ul>
+<h2 id="1-open-starting-workspace">1) Open Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.2 or later).</li>
+<li>Open your starting workspace at C:\FMEData\Workspaces\AdvancedDataTransformation\control-data-flow-using-custom-transformer-ports.fmw.</li>
+</ul>
+<h2 id="2-duplicate-custom-transformer">2) Duplicate Custom Transformer</h2>
+<p>The workspace started with two ExpressionEvaluators and now has one ExpressionEvaluator and one custom transformer. You will replace that remaining ExpressionEvaluator with a second instance of the DensityEvaluator.</p>
+<ul>
+<li>On the canvas, select <strong>ExpressionEvaluator_2011</strong> and press Delete.</li>
+<li>Select the <strong>DensityEvaluator</strong> and press Ctrl+D, or right-click and choose <strong>Duplicate</strong>.
+<ul>
+<li>Duplicating has the same effect as placing a new instance, but it is quicker. Quick Add and the Transformer Gallery are equally valid ways to add another instance.</li>
+</ul>
+</li>
+<li>Connect the second <strong>DensityEvaluator</strong> into the workflow in parallel, not in series.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724705253522.png" alt="Two DensityEvaluators in parallel" width="843" height="211" /></p>
+<h2 id="3-set-custom-transformer-parameters">3) Set Custom Transformer Parameters</h2>
+<p>The second instance still points at the 2001 population attribute it inherited from the first. Changing it to the 2011 attribute is what makes the two instances calculate different years.</p>
+<ul>
+<li>Open the <strong>DensityEvaluator_2</strong> parameters.</li>
+<li>Set the population parameter to <strong>TotalPopulation2011</strong>.
+<ul>
+<li>The first instance keeps TotalPopulation2001.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724705360219.png" alt="Choosing an attribute as a parameter for the DensityEvaluator" width="349" height="189" /></p>
+<h2 id="4-run-the-workspace">4) Run the Workspace</h2>
+<p>This run confirms whether both instances process the data correctly. It also surfaces a naming problem that you will fix in the next step.</p>
+<ul>
+<li>Run the workspace.</li>
+<li>Inspect the output.
+<ul>
+<li>The density values differ between the two instances, which confirms each one processed a different year.</li>
+<li>Both instances write their result to an attribute called <code>PopulationDensity2001</code>, regardless of the data being processed. Making that name generic is the next improvement.</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-edit-custom-transformer">5) Edit Custom Transformer</h2>
+<p>Editing the definition changes every instance at once, which is the main payoff of building a custom transformer. Renaming the transformer and its result attribute drops the hard-coded 2001 from both instances.</p>
+<ul>
+<li>Click the <strong>DensityEvaluator</strong> tab.</li>
+<li>Open the <strong>ExpressionEvaluator_2001</strong> parameters and update the following:
+<ul>
+<li><strong>Transformer Name</strong>: ExpressionEvaluator
+<ul>
+<li>The transformer now processes more than just 2001 data.</li>
+</ul>
+</li>
+<li><strong>Result</strong>: DensityResult</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724705426527.png" alt="Configuring the ExpressionEvaluator" width="843" height="276" /></p>
+<ul>
+<li>Rerun the workspace, starting from at least the custom transformer.
+<ul>
+<li>Both instances now output the <code>DensityResult</code> attribute, so one edit fixed both of them.</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-rename-ports">6) Rename Ports</h2>
+<p>The port names still carry the AreaCalculator prefix from the transformers you selected when you built the definition. Clear port names tell anyone using the DensityEvaluator what kind of data each port expects.</p>
+<ul>
+<li>In the <strong>DensityEvaluator</strong> tab, click the cogwheel icon on the input port object, currently labeled AreaCalculator_Input.</li>
+<li>Change <strong>Transformer Input Name</strong> to <strong>Input</strong>.</li>
+<li>Click the cogwheel icon on the output port object.</li>
+<li>Change <strong>Transformer Output Name</strong> to <strong>Output</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724705475061.png" alt="Changing transformer port names" width="936" height="211" /></p>
+<ul>
+<li>Click the <strong>Main</strong> tab.
+<ul>
+<li>The renamed ports appear on both DensityEvaluator instances.</li>
+</ul>
+</li>
+<li>Resize the transformers to fit their new names.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724705582854.png" alt="Edited custom transformers" width="776" height="221" /></p>
+<h2 id="7-save-and-run-the-workspace">7) Save and Run the Workspace</h2>
+<p>Both instances now share one generic output attribute, so the only difference between them should be the density values they calculate. That is the payoff of editing the definition once instead of configuring each instance separately.</p>
+<ul>
+<li>Save the workspace.</li>
+<li>Run the workspace.</li>
+<li>In the output, compare the results from both <strong>DensityEvaluator</strong> instances.</li>
+<li>Observe that the density values differ between the two instances, because each one processes a different year.</li>
+<li>Observe that both instances write to the same <code>DensityResult</code> attribute, regardless of the year they process.</li>
+</ul>
+<p><img src="images/1785519506429.png" alt="Different DensityResult values in each cache" width="309" height="116" /></p>

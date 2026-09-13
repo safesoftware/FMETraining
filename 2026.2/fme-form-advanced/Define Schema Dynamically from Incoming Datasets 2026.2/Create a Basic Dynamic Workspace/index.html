@@ -1,0 +1,168 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Create a dynamic translation by setting Workflow Options in the Generate Workspace dialog.</li>
+<li>Explain the relationship between dynamic reading and merging feature types.</li>
+<li>Explain the difference between Automatic and Dynamic Feature Type Definition Mode on writer feature types.</li>
+<li>Use a dynamic workspace to write any source schema to a new dataset.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Watch a demonstration video (it repeats what we cover in live training).</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the quiz at the end of this lesson.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="creating-a-dynamic-translation">Creating a Dynamic Translation</h2>
+<p>When you create a workspace using the Generate Workspace dialog (Build &gt; Generate Workspace), there are two Workflow Options: <strong>Static Schema</strong>&nbsp;and&nbsp;<strong>Dynamic Schema</strong>.</p>
+<p><img class="image image-block image-center" src="images/1758829596986.png" alt="Dynamic Schema Workflow Option" width="543" height="507" /></p>
+<p>The default option is the static schema, which assumes a fixed schema that FME knows before running the workspace. The Dynamic Schema option creates a schema-less workspace with dynamic readers and writers.</p>
+<p>It is, however, possible to create a workspace where only the readers or writers are dynamic.</p>
+<h2 id="dynamic-reader-only">Dynamic Reader Only</h2>
+<p>The Add Reader dialog has similar options for static and dynamic; however, in this case, they are labeled to reflect what they do: they create&nbsp;<em>Individual Feature Types</em>&nbsp;or a&nbsp;<em>Single Merged Feature Type</em>:</p>
+<p><img class="image image-block image-center" src="images/1758829665995.png" alt="Single Merged Feature Type option" width="514" height="81" /></p>
+<p>A dynamic reader is similar to setting the&nbsp;<a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/!FeatureTypeProperties/Merging_Feature_Types.htm" target="_blank" rel="noopener">Merge Feature Type option</a> on reader feature types.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Note, however, that if you add an individual feature type and then check Merge Feature Type, that feature type will still use the individual feature type's original schema. If the other feature types have different attributes, they will be read but unexposed in the resulting features.</span></p>
+</blockquote>
+<h2 id="dynamic-writer-only">Dynamic Writer Only</h2>
+<p>The Add Writer dialog has options that let you define feature types and their attributes. The most commonly used ones are Manual and Automatic. There is also an option that adds a writer in Dynamic mode:</p>
+<p><img class="image image-block image-center" src="images/1723489871052.png" alt="Dynamic Feature Type Definition mode" width="464" height="320" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Let's clarify Automatic vs. Dynamic. Automatic attributes take their definition from whatever is connected to them. If the Source Dataset parameter is changed, that change has no effect.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">Dynamic attributes are different. If the Source Dataset parameter is changed, the attribute definition comes from whatever source data gets read, regardless of what is connected to it.</span></p>
+</blockquote>
+<h2 id="what-does-a-dynamic-workspace-look-like">What Does a Dynamic Workspace Look Like?</h2>
+<p>Both dynamic readers and dynamic writers each have a single Feature Type, regardless of the schema of the reader datasets:</p>
+<p><img class="image image-block image-center" src="images/1723489900548.png" alt="A dynamic workspace" width="498" height="107" /></p>
+<p>Notice that there is only one feature type, regardless of whether the data comprises several layers or tables.</p>
+<p>Also, notice that the sole reader Feature Type is named&nbsp;<strong>&lt;All&gt;</strong>&nbsp;(which provides a clue to what is happening here) and that the sole writer Feature Type is named&nbsp;<strong>&lt;Dynamic&gt;</strong>.</p>
+<p>FME reads all source data through a single feature type when the workspace runs. On the writer side, although there is only one output type, FME dynamically divides the layers back into their component layers, keeping their original attributes and geometry type.</p>
+<p>With this workspace, you can switch the source dataset to anything (in the correct format), and the output will be a mirror image. You don't need to worry about unexpected input or unsupported geometry types. Plus, if you used the Generic Reader/Writer, it could read any dataset in any format and create a duplicate output in the format of your choice!</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/create-a-basic-dynamic-workspace-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>If your computer has FMEData, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\create-a-basic-dynamic-workspace-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">CommunityMap.gdb.zip</a>
+<ul>
+<li>C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip" target="_blank" rel="noopener">Addresses.zip</a>
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>Sven built a workspace in an earlier course that lets colleagues translate the community map into a format of their choice. It works, but every output dataset carries all of the source table's attributes, and it only ever handles that one geodatabase. He wants a version that accepts any source geodatabase and reproduces its schema exactly.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Generate a dynamic workspace by setting Workflow Options to Dynamic Schema.</li>
+<li>Write any source geodatabase to a chosen format while preserving its original schema.</li>
+</ul>
+<h2 id="1-generate-the-workspace">1) Generate the Workspace</h2>
+<p>Generate Workspace builds the whole translation in one dialog. The Dynamic Schema option is the part that matters here: it is what lets the workspace carry any source schema through to the output.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later.</li>
+<li>Select <strong>Build &gt; Generate Workspace</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader Format:</strong> Esri Geodatabase (OpenFile Geodb)</li>
+<li><strong>Reader Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">CommunityMap.gdb.zip</a> download, or C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+<li><strong>Writer Format:</strong> Generic (Any Format)</li>
+<li><strong>Writer Dataset:</strong> C:\FMEData\Output\Training</li>
+<li><strong>Writer &gt; Parameters &gt; Output Format:</strong> Esri Shapefile</li>
+<li><strong>Workflow Options:</strong> Dynamic Schema</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1788297829327.png" alt="Generate Workspace dialog configured for a dynamic translation" width="429" height="410" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<h2 id="2-inspect-the-workspace">2) Inspect the Workspace</h2>
+<p>A dynamic workspace looks much smaller than a static one, because a single pair of feature types stands in for every table in the source. Recognising that shape is what tells you the translation is genuinely schema-less.</p>
+<ul>
+<li>Confirm there is one reader feature type and one writer feature type.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1723493269682.png" alt="Generated workspace" width="511" height="107" /></p>
+<ul>
+<li>Expand the <strong>reader feature type</strong> using its right-pointing arrow.
+<ul>
+<li>The reader feature type lists its attributes. The writer feature type does not, and is labelled &lt;Dynamic&gt; instead.</li>
+</ul>
+</li>
+<li>In the <strong>Navigator</strong>, under <strong>User Parameters</strong>, confirm that FME created the <strong>Feature Types to Read user parameter</strong> and the <strong>Output Format user parameter</strong>.
+<ul>
+<li>These are the same two user parameters you met in Let the User Choose the Output Format. If you want, you can repeat the steps to restrict the user's options for the output format list, but it is not required.</li>
+<li>Leave the SourceDataset_FILEGDB parameter in place. You need it in step 4.</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-run-the-workspace">3) Run the Workspace</h2>
+<p>This first run proves the workspace reproduces the community map faithfully. The output should come back in the format you pick, with the source schema intact.</p>
+<ul>
+<li>Click <strong>Run</strong> with <strong>Prompt for Parameters</strong> enabled.</li>
+<li>Select any source tables under <strong>Feature Types to Read</strong> and set any <strong>Output Format</strong>.
+<ul>
+<li>Some formats produce nonsensical output if the list has not been restricted. That is expected here.</li>
+</ul>
+</li>
+<li>Confirm the output is in the format you chose and preserves the original schema.
+<ul>
+<li>Selecting View Written Data opens the Select Dataset to View dialog. Specify the format and dataset to see the data. The Tips at the end of this exercise explain why FME asks.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1723493577958.png" alt="Filling out Select Dataset to View" /></p>
+<h2 id="4-re-run-with-a-different-source">4) Re-Run with a Different Source</h2>
+<p>The real test of a dynamic workspace is pointing it at data it has never seen. Swapping the geodatabase without touching the canvas is the whole point of the design.</p>
+<ul>
+<li>Select <strong>Rerun Entire Workspace</strong> (Shift+F5).
+<ul>
+<li>Run Workspace (F5) reuses cached data and does not prompt for the source File Geodatabase parameter. If that prompt is missing, you used Run Workspace by mistake.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1758830010254.png" alt="Rerun Entire Workspace option" /></p>
+<ul>
+<li>For the <strong>File Geodatabase parameter</strong>, enter the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses.zip" target="_blank" rel="noopener">Addresses.zip</a> download, or browse to C:\FMEData\Data\Addresses\Addresses.gdb.</li>
+<li>Clear the <strong>Feature Types to Read parameter</strong>.</li>
+<li>Click <strong>Run</strong>.</li>
+<li>Inspect the output.
+<ul>
+<li>The workspace wrote the address data instead of the community mapping data. The output feature types, PostalAddress and PostcodeBoundaries, match the source, and so do their attributes.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1758830210360.png" alt="Address data" /></p>
+<p>You have built a workspace that accepts any source geodatabase and reproduces its feature types, attributes and geometry in the output, without defining a single schema on the canvas. Swapping the source dataset is now the only change needed to process different data.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>Pair a dynamic workspace with a Generic reader and writer and it will read any dataset in any supported format and reproduce it in the format of your choice.</li>
+<li>The reader feature type is named &lt;All&gt; and the writer feature type &lt;Dynamic&gt;. Those names are a quick way to tell at a glance that a workspace is schema-less.</li>
+<li>Selecting View Written Data on a dynamic or generic writer feature type usually opens the Select Dataset to View dialog, because FME does not know the format or path in advance. Specify the format and dataset to view the data. The same happens with a writer feature type fanout, where the output path depends on an attribute value FME only reads at run time.</li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

@@ -1,0 +1,351 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the advantages of querying a database with the DatabaseQuerier instead of a reader.</li>
+<li>Use a reader feature type WHERE clause to avoid reading unnecessary data.</li>
+<li>Use the DatabaseQuerier in Run Once and Input Driven modes to push work into the database.</li>
+<li>Optimize database writing performance using the Features Per Bulk Write parameter.</li>
+<li>Optimize database writing performance using the Features Per Transaction parameter.</li>
+<li>Optimize database writing performance when working with indexes.</li>
+<li>Optimize database writing performance using table creation.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>We've updated this course, so the videos don't exactly match the lessons. However, we've included them for you to review, and we will update them in a future release.</p>
+</blockquote>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-database-performance-postgis.fmw" target="_blank" rel="noopener">Starting workspace (PostGIS)</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-database-performance-postgis.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-database-performance-postgis-complete.fmw" target="_blank" rel="noopener">Complete workspace (PostGIS)</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-database-performance-postgis-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-database-performance-geodatabase.fmw" target="_blank" rel="noopener">Starting workspace (Esri Geodatabase)</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-database-performance-geodatabase.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-database-performance-geodatabase-complete.fmw" target="_blank" rel="noopener">Complete workspace (Esri Geodatabase)</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-database-performance-geodatabase-complete.fmw</li>
+</ul>
+</li>
+</ul>
+<h2 id="database-optimization">Database Optimization</h2>
+<p>FME can only be as fast as the database it reads from or writes to. This section will help FME increase its efficiency when working with databases.</p>
+<h2 id="database-reading">Database Reading</h2>
+<p>Reading and filtering data (querying) from a database is nearly always faster when you can use the native functionality of the database. The previously introduced search envelopes and WHERE clauses techniques can drastically improve your database reading performance.</p>
+<h2 id="database-transformers">The DatabaseQuerier</h2>
+<p>Besides readers, transformers can also be used to query database data. The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasequerier.htm" target="_blank" rel="noopener">DatabaseQuerier</a> transformer is the best option. This transformer unifies querying across SQL and NoSQL databases, replacing the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlexecutor.htm" target="_blank" rel="noopener">SQLExecutor</a> and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sqlcreator.htm" target="_blank" rel="noopener">SQLCreator</a>, allowing you to execute complex queries in a single, configurable tool.</p>
+<p>The DatabaseQuerier has two modes:</p>
+<ul>
+<li><strong>Run Once</strong>: runs a single query that generates features.
+<ul>
+<li>When set to this mode, the transformer does not have an input port.</li>
+</ul>
+</li>
+<li><strong>Input Driven</strong>: runs a query for each incoming feature.
+<ul>
+<li>When set to this mode, the transformer has an Initiator input port like a FeatureReader. It will make one query per input feature.</li>
+</ul>
+</li>
+</ul>
+<p>Here is an example of the Run Once configuration, where the &nbsp;DatabaseQuerier reads the park features in the Downtown neighborhood from a PostGIS table.</p>
+<p><img class="image image-block image-center" src="images/1755277800215.png" alt="DatabaseQuerier's Run Once mode" width="505" height="477" /></p>
+<p>It's using this Query:</p>
+<p><code>SELECT * FROM "public"."Parks"</code><br /><code>WHERE "NeighborhoodName" = "Downtown"</code></p>
+<p>And here is an example of the Input Driven configuration, where the DatabaseQuerier makes a query to the database for every Neighborhood feature:</p>
+<p><img src="images/1755278363275.png" alt="DatabaseQuerier's Input Driven mode" width="501" height="512" /></p>
+<p>It's using this Query, which makes use of the incoming features' attribute NeighborhoodName:</p>
+<p><code>SELECT * FROM "public"."Parks"</code><br /><code>WHERE "NeighborhoodName" = '@Value(NeighborhoodName)'</code></p>
+<p>The output from the&nbsp;DatabaseQuerier is an entirely new feature. The <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasejoiner.htm" target="_blank" rel="noopener">DatabaseJoiner</a> transformer is more appropriate if you want to retrieve attributes to attach to the incoming feature.</p>
+<p>If you don&rsquo;t want to write SQL or another query language, use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/featurereader.htm" target="_blank" rel="noopener">FeatureReader</a> transformer to conduct similar input-driven reading. However, the FeatureReader operates more generically and is therefore slower.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Use the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_blank" rel="noopener">AI Assist</a> button in compatible transformers to help you craft SQL statements.</p>
+</blockquote>
+<p><strong>Exposing Attributes from the Query</strong></p>
+<p>You might notice that your attributes are unexposed when using the DatabaseQuerier. That's because FME doesn't know the attribute names and types before the query is executed at run time. You can define these by clicking the ellipsis button next to Attributes to Expose:</p>
+<p><img src="images/1755278725964.png" alt="Attributes to Expose" /></p>
+<p>However, it can be tedious to manually type them all in. Instead, we recommend using the Populate from Query... button:</p>
+<p><img src="images/1755278783953.png" alt="Populate from Query button" /></p>
+<p>This button lets you re-use your query and FME will automatically identify which attributes to expose based on the results. Even if you don't want to expose all the attributes, it's often faster to add them all and remove the ones you don't want, rather than manually typing each one in.</p>
+<h2 id="letting-the-database-do-the-work">Letting the Database Do the Work</h2>
+<p>So far, we've used the DatabaseQuerier to fetch rows from a single table. Its real performance advantage appears when you let the database do work that FME would otherwise do with transformers.</p>
+<p>Consider a workspace that needs the parks in every neighborhood. A common approach is to read the whole Neighborhoods table and the whole Parks table, then join or overlay them in FME. That reads every row of both tables across the network, even when only a handful are relevant.</p>
+<p>Instead, you can read the Neighborhoods table with a DatabaseQuerier in <strong>Run Once</strong> mode:</p>
+<p><code>SELECT "NeighborhoodName", "geom" FROM "public"."Neighborhoods"</code></p>
+<p>Then send those features into a second DatabaseQuerier in <strong>Input Driven</strong> mode, which runs one query per neighborhood:</p>
+<p><code>SELECT * FROM "public"."Parks"</code><br /><code>WHERE "NeighborhoodName" = '@Value(NeighborhoodName)'</code></p>
+<p>Three things make this faster than reading both tables in full:</p>
+<ul>
+<li>Only the columns you name in the SELECT list travel across the network. Selecting two columns instead of thirty is a real saving on a wide table.</li>
+<li>The WHERE clause runs inside the database, where it can use an index. FME never sees the rows that don't match.</li>
+<li>Aggregation, sorting, and joining can all be pushed into the SQL statement. A GROUP BY that returns 20 summary rows is far cheaper than reading 200,000 rows into FME and using a StatisticsCalculator.</li>
+</ul>
+<p>For example, this single Run Once query replaces a reader, a Sorter, and a StatisticsCalculator:</p>
+<p><code>SELECT "NeighborhoodName", COUNT(*) AS "ParkCount"</code><br /><code>FROM "public"."Parks"</code><br /><code>GROUP BY "NeighborhoodName"</code><br /><code>ORDER BY "NeighborhoodName"</code></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Input Driven mode is not automatically faster. It makes one round trip to the database per incoming feature, so ten thousand initiator features mean ten thousand queries. Input Driven mode wins when the number of initiator features is small and each query is selective. When the initiator count is large, a single Run Once query that returns everything at once is usually quicker.</p>
+</blockquote>
+<p>Two parameters are worth knowing when you use Input Driven mode:</p>
+<ul>
+<li><strong>Combine Attributes</strong> controls whether the initiator feature's attributes, the result's attributes, or both end up on the output feature, and which wins a name conflict.</li>
+<li>The <strong>Initiator</strong> output port emits the original incoming features, each carrying a <code>_matched_records</code> attribute that counts the rows its query returned. Connecting this port is a quick way to find initiators that matched nothing.</li>
+</ul>
+<p>Queries that fail are output through the <strong>&lt;Rejected&gt;</strong> port with a <code>_reader_error</code> attribute explaining why, so it is worth connecting that port while you are developing a query.</p>
+<h2 id="database-writing">Database Writing</h2>
+<p>Whereas the performance of reading from a database mainly depends on the database setup itself, many FME parameters can help fine-tune the overall performance when writing to a database.</p>
+<p>Remember that writing to a database incurs network overhead. There has to be a balance between various factors:</p>
+<ol>
+<li>The amount of data and the number of requests being sent (network traffic)</li>
+<li>The amount of data stored by FME awaiting transfer to the database (FME performance)</li>
+<li>The amount of data stored in the database awaiting committal (database performance)</li>
+<li>The risk of losing uncommitted data</li>
+</ol>
+<p>Each database writer has a set of parameters for handling these components. Not every format supports these, but the two most common parameters are&nbsp;<em>Features Per Transaction</em>&nbsp;and&nbsp;<em>Features Per Bulk Write</em>.</p>
+<h2 id="features-per-bulk-write">Features Per Bulk Write</h2>
+<p>The Features Per Bulk Write parameter controls the second factor in the list (the amount of data stored by FME awaiting transfer to the database).</p>
+<p>A numeric value defines the parameter. Features sent to an FME database writer get cached in memory until the number of features specified by this parameter is reached. Only then will they be sent to the database. This is also known as <em>chunk size</em>.</p>
+<p>This parameter balances network traffic with FME performance. A higher number means FME caches more features (using more system resources) but makes fewer requests to the database (and, therefore, causes less network traffic).</p>
+<p>A lower number means FME caches less data, but more requests are made to the database.</p>
+<p>Features Per Bulk Write must also be considered against the value of Features Per Transaction.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">For an example of this parameter, refer to the documentation on&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/oracle_database/oracle_database_writer.htm#" target="_blank" rel="noopener">Bulk Write Size for the Oracle writer</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="features-per-transaction">Features Per Transaction</h2>
+<p>Features Per Transaction (sometimes called Transaction Interval) controls the third factor in the list (the amount of data stored in the database awaiting committal).</p>
+<p>This, too, is defined by a numeric value. Features sent to the database by FME are cached in the database's memory. When the number of features specified by this parameter is reached, FME sends the command to commit them.</p>
+<p>Each commit delays the writing process, so setting this parameter must balance the translation speed (set a higher number) against the risk that a translation may fail and features must be rolled back (set a lower number).</p>
+<p><strong>Features Per Transaction Examples</strong></p>
+<p>If Features Per Transaction is set to 1, every feature is committed individually. If the process fails, only the last feature will be lost from the database. The cost for this reduced risk is a matching reduction in performance.</p>
+<p>If Features Per Transaction is set to a very high value (more than the number of features being written), then only one commit takes place. If the process fails, all features submitted to the database will be lost. The benefit of this increased risk is a matching increase in performance.</p>
+<h2 id="features-per-transaction-and-bulk-writes">Features Per Transaction and Bulk Writes</h2>
+<p>An interaction between these two parameters&nbsp;controls where features are cached.</p>
+<p>If Features Per Transaction is less than or equal to Features Per Bulk Write, then FME caches several features and sends them to the database, immediately committing them.</p>
+<p>If Features Per Transaction is greater than Features Per Bulk Write, then FME sends features to the database, which will be cached until the transaction commit total is reached.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">The Transaction and Chunk parameters can differ from format to format, so please review the </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/Format-List-All.htm" target="_blank" rel="noopener">format documentation</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="writing-and-database-indexing">Writing and Database Indexing</h2>
+<p>Whereas indexes can improve performance for reading data, they can cause a significant reduction in writing speed.</p>
+<p>That&rsquo;s because the database automatically updates the index with every written feature. This occurs on a per-feature basis, regardless of commit intervals.</p>
+<p>To remedy this, it&rsquo;s suggested that you drop (delete) indexes before bulk-inserting data into a database table. You can do this directly on the database, or from FME using a transformer that runs SQL statements, such as the DatabaseQuerier.</p>
+<h2 id="writing-and-table-creation">Writing and Table Creation</h2>
+<p>A writer feature type also has options to truncate or drop tables when writing to them:</p>
+<p><img class="image image-block image-center" src="images/1725660370542.png" alt="Database writer feature type Table Handling parameter." width="574" height="208" /></p>
+<p>As with the above, dropping a table is more efficient than truncating it because the drop action also removes the indexes.</p>
+<p>For similar reasons, you may want to turn off networking connectivity when writing data to a Geodatabase geometric network.</p>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer needs to speed up the city's garbage collection lookup. Members of the public call to ask which day their garbage is collected, and her team answers by entering an address ID into a workspace hosted on FME Flow. The lookup returns the right answer but takes longer than it should, because the workspace reads the whole postal address table and then discards almost all of it.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Filter data at the source using a reader feature type WHERE clause.</li>
+<li>Replace a database reader with a DatabaseQuerier in Run Once mode.</li>
+<li>Query a related table with a DatabaseQuerier in Input Driven mode.</li>
+</ul>
+<h2 id="1-create-a-database-connection">1) Create a Database Connection</h2>
+<p>This exercise runs against either a PostGIS database hosted on Amazon RDS or an Esri Geodatabase, and both are available to you without an extra licence. Only the PostGIS route needs a connection set up first, so how you start depends on which one you choose.</p>
+<ul>
+<li>Choose the format you will work in.
+<ul>
+<li>Safe Software-hosted training course: skip to step 2. The FME Training PostGIS Database connection already exists on your training machine.</li>
+<li>Esri Geodatabase: skip to step 2. No connection is required.</li>
+<li>PostGIS: continue with this step.</li>
+</ul>
+</li>
+<li>In a web browser, open the <a href="http://fme.ly/database" target="_blank" rel="noopener">FME training database parameters page</a>.</li>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later.</li>
+<li>Select <strong>Tools &gt; FME Options</strong>.</li>
+<li>Click <strong>Database Connections</strong>, then click <strong>[+]</strong>.</li>
+<li>In the <strong>Add Database Connection dialog</strong>, enter the parameters shown on the web page.</li>
+<li>Name the connection <code>FME Training PostGIS Database</code>.
+<ul>
+<li>Using this exact name means the connection matches the one the starting workspace expects.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1711392546135.png" alt="Adding the FME Training Database Connection" width="342" height="324" /></p>
+<ul>
+<li>Click <strong>Save</strong>, then click <strong>OK</strong>.</li>
+</ul>
+<h2 id="2-open-and-run-the-starting-workspace">2) Open and Run the Starting Workspace</h2>
+<p>Running the workspace before you change anything gives you the baseline to measure against. A published parameter accepts an address ID, the postal address table is read and filtered against it, the chosen address is overlaid against garbage zones, and the result is written as an HTML page.</p>
+<ul>
+<li>Open the starting workspace for the format you chose.
+<ul>
+<li>PostGIS: open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-database-performance-postgis.fmw" target="_blank" rel="noopener">starting workspace (PostGIS)</a> from C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-database-performance-postgis.fmw.</li>
+<li>Esri Geodatabase: open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-database-performance-geodatabase.fmw" target="_blank" rel="noopener">starting workspace (Esri Geodatabase)</a> from C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-database-performance-geodatabase.fmw.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725660737323.png" alt="Starting workspace" width="1074" height="292" /></p>
+<ul>
+<li>Click <strong>Run</strong>, using Prompt Mode so you are asked for an address ID.
+<ul>
+<li>Enter 127209 for PostGIS, or 6135 for Esri Geodatabase.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1711147555365.png" alt="Example output" width="680" height="324" /></p>
+<ul>
+<li>Note the session duration and peak memory at the end of the Translation log.
+<ul>
+<li>The Geodatabase is the quicker of the two because it reads from your file system rather than a remote database.</li>
+</ul>
+</li>
+</ul>
+<p><strong>PostGIS</strong></p>
+<pre><code>INFORM|FME Session Duration: 4.9 seconds. (CPU: 0.4s user, 0.0s system)
+INFORM|END - ProcessID: 32380, peak process memory usage: 166800 kB, current process memory usage: 115728 kB</code></pre>
+<p>&nbsp;</p>
+<p><strong>Esri Geodatabase</strong></p>
+<pre><code>INFORM|FME Session Duration: 4.2 seconds. (CPU: 0.6s user, 0.2s system)
+INFORM|END - ProcessID: 31808, peak process memory usage: 167356 kB, current process memory usage: 111968 kB</code><br /><br /></pre>
+<h2 id="3-set-up-the-where-clause">3) Set Up the WHERE Clause</h2>
+<p>Neither PostGIS nor Esri Geodatabase offers a WHERE clause on the reader itself, but both offer one on the reader feature type. Filtering there means the database returns the single row you asked for instead of the whole table.</p>
+<ul>
+<li>Open the <strong>PostalAddress reader feature type</strong>.</li>
+<li>In the <strong>WHERE Clause parameter</strong>, enter the clause for your format.
+<ul>
+<li>PostGIS: enter <code>"AddressId" = $(AddressID)</code>. Note the lowercase "d" in the "Id" part of the field name.</li>
+<li>Esri Geodatabase: enter <code>OBJECTID = $(AddressID)</code>.</li>
+<li>The two formats differ in how they use quotes, so the clauses are not interchangeable.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725660965506.png" alt="WHERE Clause" width="552" height="391" /></p>
+<h2 id="4-delete-the-tester">4) Delete the Tester</h2>
+<p>The Tester was doing the filtering the WHERE clause now performs inside the database, so it has no work left to do.</p>
+<ul>
+<li>Delete the <strong>Tester</strong>.
+<ul>
+<li>Collapsing the bookmark and then deleting the bookmark removes both the bookmark and the transformer in one step.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1711147696146.png" alt="Collapsed bookmark" width="315" height="80" /></p>
+<h2 id="5-re-run-the-workspace">5) Re-Run the Workspace</h2>
+<p>With the filter pushed into the database, FME now reads one feature instead of the entire postal address table. The saving shows up in time rather than memory.</p>
+<ul>
+<li>Click <strong>Run</strong> and enter the same address ID.</li>
+<li>Confirm the session duration has dropped by roughly half.</li>
+</ul>
+<p><strong>PostGIS</strong></p>
+<pre><code>INFORM|FME Session Duration: 2 seconds. (CPU: 0.3s user, 0.0s system)
+INFORM|END - ProcessID: 32740, peak process memory usage: 125512 kB, current process memory usage: 113872 kB</code></pre>
+<p>&nbsp;</p>
+<p><strong>Esri Geodatabase</strong></p>
+<pre><code>INFORM|FME Session Duration: 2.3 seconds. (CPU: 0.1s user, 0.0s system)
+INFORM|END - ProcessID: 25568, peak process memory usage: 119420 kB, current process memory usage: 109508 kB<br /></code></pre>
+<h2 id="6-replace-the-reader-with-a-databasequerier">6) Replace the Reader with a DatabaseQuerier</h2>
+<p>A reader with a WHERE clause and a DatabaseQuerier reach the same result on a query this simple, so expect similar timings here. The reason to learn the DatabaseQuerier is what happens when the query stops being simple, which is where writing SQL directly starts to pay. This step and the next are PostGIS only.</p>
+<ul>
+<li>Add a <strong>DatabaseQuerier</strong> to the canvas, above the PostGIS reader.</li>
+</ul>
+<p><img class="image image-block" src="images/1755290916343.png" alt="Added a DatabaseQuerier" width="260" height="339" /></p>
+<ul>
+<li>Open the <strong>DatabaseQuerier</strong> and configure the following parameters:
+<ul>
+<li><strong>Format:</strong> PostGIS</li>
+<li><strong>Connection:</strong> FME Training PostGIS Database</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block" src="images/1755291001499.png" alt="DatabaseQuerier parameters" width="431" height="368" /></p>
+<ul>
+<li>Click the ellipsis next to <strong>Query</strong> and enter:</li>
+</ul>
+<pre><code>SELECT * FROM "public"."PostalAddress"
+WHERE "AddressId" = $(AddressID)<br /><br /></code></pre>
+<ul>
+<li>Click <strong>OK</strong>.
+<ul>
+<li>The Run button in the Query editor cannot test this statement, because the statement contains a user parameter. You have to run the workspace instead.</li>
+</ul>
+</li>
+<li>Click the ellipsis next to <strong>Attributes to Expose</strong>, then click <strong>Populate from Query</strong>.</li>
+</ul>
+<p><img class="image image-block" src="images/1755291626807.png" alt="Populating Attributes to Expose from an SQL statement" width="761" height="368" /></p>
+<ul>
+<li>Remove the WHERE clause from the statement, so it reads:</li>
+</ul>
+<pre><code>SELECT * FROM "public"."PostalAddress"</code><br /><br /></pre>
+<ul>
+<li>Click <strong>OK</strong> twice.
+<ul>
+<li>FME does not know the attribute names and types until the query runs, which is why they start unexposed. Populating from the query saves typing them by hand, and the WHERE clause has to go because of the user parameter inside it.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block" src="images/1755291706958.png" alt="Attributes to Expose" width="271" height="241" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+<li>Connect the <strong>Result port</strong> to the <strong>PointOnAreaOverlayer Point port</strong>.</li>
+<li>Disable the <strong>PostGIS reader feature type</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1755291754129.png" alt="Using a DatabaseQuerier instead of a reader" width="700" height="379" /></p>
+<ul>
+<li>Click <strong>Run</strong>.
+<ul>
+<li>Performance is close to the reader with its WHERE clause, as expected.</li>
+</ul>
+</li>
+</ul>
+<pre><code>INFORM|FME Session Duration: 2.2 seconds. (CPU: 0.2s user, 0.1s system)
+INFORM|END - ProcessID: 27756, peak process memory usage: 128100 kB, current process memory usage: 116328 kB<br /></code></pre>
+<ul>
+<li><strong>Save </strong>the workspace.</li>
+</ul>
+<p>You have moved the filtering into the database twice over, first with a reader WHERE clause and then with a DatabaseQuerier. The lookup now reads a single address row instead of an entire table.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>Use the AI Assist button in compatible transformers to help you craft SQL statements.</li>
+<li>Even when you do not want every column exposed, Populate from Query is usually faster than typing names by hand. Add them all, then remove the ones you do not need.</li>
+<li>The DatabaseQuerier outputs an entirely new feature. When you want to attach queried attributes to an incoming feature instead, the DatabaseJoiner is the better fit.</li>
+</ul>
+</div>
+</details>
+<p>&nbsp;</p>
+<details class="additional-resources">
+<summary><strong>Additional Resources</strong></summary>
+<div>
+<ul>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407644839693-Tutorial-Let-the-Database-Do-the-Work" target="_blank" rel="noopener">Tutorial series: Let the Database Do the Work</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasequerier.htm" target="_blank" rel="noopener">DatabaseQuerier transformer documentation</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/databasejoiner.htm" target="_blank" rel="noopener">DatabaseJoiner transformer documentation</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/!Transformer_Parameters/AI-Assist.htm" target="_blank" rel="noopener">AI Assist in transformer parameters</a></li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

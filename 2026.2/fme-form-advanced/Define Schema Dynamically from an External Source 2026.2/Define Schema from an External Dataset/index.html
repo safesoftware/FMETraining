@@ -1,0 +1,180 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Create a dynamic workspace with multiple readers.</li>
+<li>Add a Resource Reader.</li>
+<li>Change the source of a dynamic workspace schema.</li>
+<li>Add and remove hard-coded attributes in a dynamic workspace.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (it repeats what we cover in live training).</li>
+<li>Scroll down to read the activity instructions below and, if it has an exercise, follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedReadingAndWriting/define-schema-from-an-external-dataset-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>If your computer has&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData.zip" target="_blank" rel="noreferrer noopener">FMEData</a> or you are taking a Safe Software training course, the file path is C:\FMEData\Workspaces\AdvancedReadingAndWriting\define-schema-from-an-external-dataset-complete.fmw<br /></li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Emergency/FireHalls.gml" target="_blank" rel="noreferrer noopener">FireHalls.gml</a>
+<ul>
+<li>C:\FMEData\Data\Emergency\FireHalls.gml</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_self">Parks.zip</a> (MITAB)<br />
+<ul>
+<li>C:\FMEData\Data\Parks\Parks.tab</li>
+</ul>
+</li>
+</ul>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer, a GIS Specialist, is rebuilding the city's community mapping dataset in GML. Two sources feed it: fire halls, which are entirely new, and city parks, which already existed in the old geodatabase as points rather than polygons. She wants the parks to keep the schema they had in that geodatabase rather than inherit the one that comes with the MapInfo data.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Use a resource reader to supply a writer schema from a dataset the workspace never reads.</li>
+<li>Adjust a dynamic writer's schema by removing and adding attributes.</li>
+</ul>
+<h2 id="1-generate-the-workspace">1) Generate the Workspace</h2>
+<p>The fire halls are the new data, so they start the workspace. Choosing Dynamic Schema is what lets the writer take its schema from somewhere other than the dataset being read.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later.</li>
+<li>Select <strong>Build &gt; Generate Workspace</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader Format:</strong> OGC GML (Geography Markup Language)</li>
+<li><strong>Reader Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Emergency/FireHalls.gml" target="_blank" rel="noopener">FireHalls.gml</a> download, or C:\FMEData\Data\Emergency\FireHalls.gml</li>
+<li><strong>Writer Format:</strong> OGC GML (Geography Markup Language)</li>
+<li><strong>Writer Dataset:</strong> C:\FMEData\Output\Training\NewCommunityMap.gml</li>
+<li><strong>Workflow Options:</strong> Dynamic Schema</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1758907037413.png" alt="Generating a dynamic workspace" width="507" height="410" /></p>
+<h2 id="2-add-the-parks-reader">2) Add the Parks Reader</h2>
+<p>The parks are the second source. Reading them as a single merged feature type keeps that side of the workspace schema-less, which matters because their schema is about to come from somewhere else entirely.</p>
+<ul>
+<li>Select <strong>Build &gt; Readers &gt; Add Reader</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader Format:</strong> MapInfo TAB (MITAB)</li>
+<li><strong>Reader Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Parks.zip" target="_blank" rel="noopener">Parks.zip</a> download, or C:\FMEData\Data\Parks\Parks.tab</li>
+<li><strong>Workflow Options:</strong> Single Merged Feature Type</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/1758907146541.png" alt="Adding a MapInfo TAB reader" width="487" height="262" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+<li>Connect the new <strong>reader feature type</strong> to the existing <strong>writer feature type</strong>.</li>
+<li>Add an <strong>annotation</strong> to the reader feature types so they are easier to tell apart.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723657302396.png" alt="New reader feature type attached" width="604" height="234" /></p>
+<ul>
+<li>Turn on <strong>Data Caching</strong> and click <strong>Run</strong>.</li>
+<li>Inspect both source datasets in<strong>Data Preview</strong> to see what you are working with.</li>
+</ul>
+<h2 id="3-add-the-community-map-as-a-resource-reader">3) Add the Community Map as a Resource Reader</h2>
+<p>The fire halls have no history in the old geodatabase, but the parks do, and the brief is to reuse that schema. A resource reader makes a dataset's schema available to the workspace without reading any of its data.</p>
+<ul>
+<li>Select <strong>Build &gt; Readers &gt; Add Reader as Resource</strong> and configure the following parameters:
+<ul>
+<li><strong>Reader Format:</strong> Esri Geodatabase (OpenFile Geodb)</li>
+<li><strong>Reader Dataset:</strong> the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/CommunityMapping/CommunityMap.gdb.zip" target="_blank" rel="noopener">CommunityMap.gdb.zip</a> download, or C:\FMEData\Data\CommunityMapping\CommunityMap.gdb</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img src="images/55.png" alt="File geodatabase reader as a resource" width="429" height="200" /></p>
+<ul>
+<li>Click <strong>OK</strong>.
+<ul>
+<li>If you are offered a choice between Individual Feature Types and Single Merged Feature Type, you picked Add Reader rather than Add Reader as Resource. Cancel and choose the other menu entry.</li>
+</ul>
+</li>
+<li>Observe that the <strong>Navigator </strong>now lists the geodatabase under<strong> Workspace Resources</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1788373234403.png" alt="Geodatabase Resource Reader" width="395" height="84" /></p>
+<h2 id="4-point-the-writer-at-the-resource-schema">4) Point the Writer at the Resource Schema</h2>
+<p>The writer will use whichever schema sources you tick. Selecting the community map for the parks, while leaving the MapInfo parks unticked, is what swaps one schema for the other.</p>
+<ul>
+<li>Open the properties for the <strong>writer feature type</strong>.</li>
+<li>Click the <strong>Schema Sources</strong> browse button, and select <strong>CommunityMap</strong> and <strong>FireHalls</strong> while leaving <strong>Parks</strong> cleared.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723659138555.png" alt="Setting CommunityMap as the schema source" width="953" height="349" /></p>
+<ul>
+<li>Review the remaining dynamic parameters and click <strong>OK</strong>.
+<ul>
+<li>The output mixes points and polygons, which some formats would need a Geometry setting for. GML handles both, so the User Attributes tab has no Spatial Definition section at all here.</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-run-the-workspace">5) Run the Workspace</h2>
+<p>This run shows whether the parks really did pick up the geodatabase schema. It also exposes an attribute you didn't ask for.</p>
+<ul>
+<li>Save the workspace, then select <strong>Run &gt; Rerun Entire Workspace</strong>.</li>
+<li>Inspect the output.
+<ul>
+<li>There are two layers, fire halls and parks. The parks carry the community map schema, including ParkName, ParkAddress and ParkURL, even though there is no matching data to fill them yet.</li>
+<li>They also carry OBJECTID, which came along from the geodatabase and is not wanted.</li>
+<li>Selecting View Written Data opens the Select Dataset to View dialog. Specify the format and dataset to see the data. The Tips at the end of this exercise explain why FME asks.</li>
+</ul>
+</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723659207930.png" alt="Inspecting the output and noting missing attribute values" width="709" height="324" /></p>
+<h2 id="6-remove-objectid">6) Remove OBJECTID</h2>
+<p>Attributes inherited from a resource reader can be dropped at the writer. OBJECTID has to be typed in by hand.</p>
+<ul>
+<li>Open the <strong>writer feature type</strong> properties again.</li>
+<li>Click <strong>Attributes to Remove</strong> and type <code>OBJECTID</code> into the first row.
+<ul>
+<li>It is not in the drop-down list because it comes from a resource reader rather than a real one.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong> to close that dialog, leaving the feature type dialog open.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723659315544.png" alt="Removing OBJECTID" width="801" height="189" /></p>
+<h2 id="7-add-the-lastupdatedby-attribute">7) Add the LastUpdatedBy Attribute</h2>
+<p>A late request: every table in the output needs a LastUpdatedBy column. Adding it by hand alongside a dynamic definition shows the two can coexist.</p>
+<ul>
+<li>Click the <strong>User Attributes tab</strong> and add an attribute named <code>LastUpdatedBy</code> as a 30-character string.
+<ul>
+<li>The attribute definition mode stays Dynamic. It does not need changing.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<p class="image image-block image-center"><img class="image image-block image-center" src="images/1723659352669.png" alt="Adding the LastUpdatedBy attribute" width="552" height="349" /></p>
+<h2 id="8-re-run-the-workspace">8) Re-Run the Workspace</h2>
+<p>The final check is that both edits took effect on both layers, not just the one that came from the geodatabase.</p>
+<ul>
+<li>Save the workspace and re-run it.</li>
+<li>Inspect the output.
+<ul>
+<li>OBJECTID is gone. LastUpdatedBy appears on both Parks and FireHalls, with no value yet. A later lesson fills it in.</li>
+</ul>
+</li>
+</ul>
+<p>You have built a workspace whose writer takes its schema from a dataset it never reads, then trimmed and extended that schema at the writer. This is how you keep a new dataset consistent with an existing one without copying its structure into the workspace by hand.</p>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>A resource reader contributes a schema, not data. That is why its attributes cannot be picked from a drop-down and why nothing from the geodatabase appears in the output rows.</li>
+<li>If the Add Reader dialog offers Individual Feature Types or Single Merged Feature Type, you are adding a real reader. A resource reader never asks that question.</li>
+<li>Selecting View Written Data on a dynamic or generic writer feature type usually opens the Select Dataset to View dialog, because FME does not know the format or path in advance. Specify the format and dataset to view the data. The same happens with a writer feature type fanout, where the output path depends on an attribute value FME only reads at run time.</li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>

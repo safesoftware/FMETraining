@@ -1,0 +1,355 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain when parallel processing with custom transformers can be beneficial.</li>
+<li>Determine the maximum number of processes possible in your workspace.</li>
+<li>Use parameters to control parallel processing in your workspace.</li>
+<li>Use artificial groups to control parallel processing in your workspace.</li>
+<li>Assess a workspace&rsquo;s potential for parallel processing.</li>
+<li>Select an attribute (or substring) suitable for grouping data.</li>
+<li>Create and use parallel processing in a custom transformer.</li>
+<li>Read data inside a parallel process.</li>
+<li>Confirm with the Task Manager that FME is launching worker processes.</li>
+<li>Experiment with different settings to produce a more efficient result.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/create-a-custom-transformer-for-parallel-processing.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\create-a-custom-transformer-for-parallel-processing.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/create-a-custom-transformer-for-parallel-processing-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\create-a-custom-transformer-for-parallel-processing-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Addresses/Addresses.gdb.zip" target="_blank" rel="noreferrer noopener">Addresses.gdb</a>
+<ul>
+<li>C:\FMEData\Data\Addresses\Addresses.gdb.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/OpenStreetMap/building.osm" target="_blank" rel="noreferrer noopener">building.osm</a>
+<ul>
+<li>C:\FMEData\Data\OpenStreetMap\building.osm</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" target="_blank" rel="noopener">Zones.tab</a>
+<ul>
+<li>C:\FMEData\Data\Zoning.zip</li>
+</ul>
+</li>
+</ul>
+<h2 id="parallel-processing">Parallel Processing</h2>
+<p>Parallel processing can improve performance on high-end machines by running multiple actions simultaneously as separate processes. A system architecture of multiple processors with multiple cores is helpful because the system can assign each process to a different core. With multiple processes running on multiple cores, the entire translation can run quicker than on a single core.</p>
+<h2 id="parallel-processing-and-fme">Parallel Processing and FME</h2>
+<p>Parallel processing in FME covers only a specific subsection of the workspace. You control where parallel processing occurs through custom transformers, a natural method of subdividing a large translation.</p>
+<p>Parallel processing runs on features grouped by attribute values, similar to Group-Based transformers. Custom transformers using parallel processing assign each group to a separate process.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">You can use multiple engines on FME Flow to process multiple workspaces in parallel.&nbsp; For more information, see <a href="https://support.safe.com/hc/en-us/articles/25407619100045-Job-Orchestration-with-Automations" target="_blank" rel="noopener">Job Orchestration with Automations</a>&nbsp;or&nbsp;<a href="https://support.safe.com/hc/en-us/articles/25407757564045-Getting-Started-with-the-Split-Merge-Block" target="_blank" rel="noopener">Getting Started with the Split-Merge Block</a>.</span></p>
+</blockquote>
+<h2 id="activating-parallel-processing">Activating Parallel Processing</h2>
+<p>Each custom transformer has a set of parameters - located in the Navigator window - that relate explicitly to parallel processing. Here, you can determine the level of parallel processing and the Group By attribute that defines the parallel processing groups:</p>
+<p><img class="image image-block image-center" src="images/1752266868726.png" alt="Parallel Processing setting in the Navigator" width="340" height="308" /></p>
+<h2 id="parallel-processing-levels">Parallel Processing Levels</h2>
+<p>The parameter that controls parallel processing allows different levels of effort to be applied. Each level specifies the number of processes to run simultaneously relative to the number of cores available:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th rowspan="2" scope="col">Parameter</th>
+<th rowspan="2" scope="col">Processes</th>
+<th scope="col">2 Cores</th>
+<th scope="col">4 Cores</th>
+<th scope="col">8 Cores</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>No parallelism</td>
+<td>1 Process</td>
+<td>1 Process</td>
+<td>1 Process</td>
+<td>1 Process</td>
+</tr>
+<tr>
+<td>Minimal</td>
+<td>Cores / 2</td>
+<td>1 Process</td>
+<td>2 Processes</td>
+<td>4 Process</td>
+</tr>
+<tr>
+<td>Moderate</td>
+<td>Cores x 1</td>
+<td>2 Processes</td>
+<td>4 Processes</td>
+<td>8 Process</td>
+</tr>
+<tr>
+<td>Aggressive</td>
+<td>Cores x 1.5</td>
+<td>3 Processes</td>
+<td>6 Processes</td>
+<td>12 Process</td>
+</tr>
+<tr>
+<td>Extreme</td>
+<td>Cores x 2</td>
+<td>4 Processes</td>
+<td>8 Processes</td>
+<td>16 Process</td>
+</tr>
+</tbody>
+</table>
+<p>As mentioned above, minimal parallelism results in two simultaneous FME processes on a quad-core machine. Extreme parallelism would result in eight (assuming the workspace&nbsp;<em>has&nbsp;</em>eight tasks to process simultaneously).</p>
+<p>There is also a hard cap:</p>
+<table class="featureTable sort_table">
+<thead class="thead sorted">
+<tr>
+<th scope="col">Process Cap</th>
+<th scope="col">2 Cores</th>
+<th scope="col">4 Cores</th>
+<th scope="col">8 Cores</th>
+</tr>
+</thead>
+<tbody class="tbody">
+<tr>
+<td>16 processes</td>
+<td>Maximum 4 processes</td>
+<td>Max 8 processes</td>
+<td>Max 16 processes</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">These numbers - we should note - are the maximum number of processes&nbsp;</span><strong style="font-family: inherit; font-size: 1em;">at any one time</strong><span style="font-family: inherit; font-size: 1em;">. It&rsquo;s possible to divide data into more groups and process them separately, but they won&rsquo;t coincide. For example, given a quad-core machine, moderate processing, and 20 groups of features, there will be a total of 20 processes, but only four will run at any one time. When one of the four finishes, a new one is started.</span></p>
+</blockquote>
+<h2 id="parallel-processing-groups">Parallel Processing Groups</h2>
+<p>The Parallel Process By parameter requires the author to select an attribute, and - as already covered - selecting attributes for a custom transformer parameter requires some consideration.</p>
+<p>In particular, you cannot simply pick an attribute to use for this parameter&rsquo;s value:</p>
+<p><img class="image image-block image-center" src="images/1725480876529.png" alt="FME_PROCESS_GROUP_BY cannot be set to an attribute" width="512" height="197" /></p>
+<p>Instead, you can publish this parameter (and one for Complete Groups mode) to make them available as one of the custom transformer parameters:</p>
+<p><img class="image image-block image-center" src="images/1725483377019.png" alt="Publishing this parameter makes parallel processing mode available in custom transformers" width="636" height="343" /></p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Parallel processing is most effective in two specific scenarios. The first scenario involves a small number of groups, each with a large amount of processing. Parallel processing is less effective when there are many small groups. The second scenario involves many small tasks that the workspace is offloading elsewhere. For example, when the workspace passes features to a web service HTTPCaller transformer, it&rsquo;s most efficient to have FME fire off as many requests as it can as quickly as possible.</span></p>
+</blockquote>
+<h2 id="parallel-processing-and-custom-transformer-design">Parallel Processing and Custom Transformer Design</h2>
+<p>The keys to parallel processing are designing a custom transformer as a standalone subsection and defining the processing groups.</p>
+<p>The custom transformer splits features into groups, processes each as a separate action, and then combines them back into a single group on exit.</p>
+<p>It&rsquo;s essential to be aware that features in different groups cannot be related because each group is processed independently. If features are related and their results depend on each other, they must be in the same group.</p>
+<p>The easiest way to think of this is that the custom transformer is a Group-Based transformer. Because it is a wrapper for all the individual FME transformers in the definition, it allows them to operate in groups, even if they are Feature-Based.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Learn more about&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Group_Based_Transformers.htm" target="_blank" rel="noopener">Group-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;and&nbsp;</span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Feature_Based_Transformers.htm" target="_blank" rel="noopener">Feature-Based</a><span style="font-family: inherit; font-size: 1em;">&nbsp;transformers.</span></p>
+</blockquote>
+<h2 id="creating-artificial-groups">Creating Artificial Groups</h2>
+<p>Sometimes, the incoming data is unrelated and must be split into arbitrary groups for processing. In these cases, where there is no identifier to define groups, one can be created manually by generating attributes with the ModuloCounter or RandomNumberGenerator transformers.</p>
+<p>For example, the author of the workspace below has many address features from which to create labels. To speed up the process, they activate parallel processing:</p>
+<p><img class="image image-block image-center" src="images/1725483239323.png" alt="Using parallel processing to speed use of a custom transformer" width="713" height="354" /></p>
+<p>They could group by&nbsp;<code>PostalCode</code>, but chose not to because all addresses fall inside only one of two postal codes. Therefore, they created an artificial group using ModuloCounter. Note that the Group By parameter in the custom transformer is set to the <code>_modulo_count</code>&nbsp;attribute.</p>
+<p>In such a scenario, it is best to create only one group per intended FME process. For example, a maximum of eight processes are permitted on a quad-core (four-core) computer with Extreme parallel processing. Therefore, as shown here, the optimum number of groups to use is also eight.</p>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>The City wants to incorporate OpenStreetMap data into its spatial datasets and open data portals, and buildings are the first dataset under consideration. Jennifer's colleague has already built a workspace that reads OpenStreetMap building data and writes validation results for each building. Jennifer wants to find out whether parallel processing can make it run more efficiently.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Create a custom transformer from a section of an existing workspace.</li>
+<li>Configure parallel processing with a grouping attribute and a processing level.</li>
+<li>Move a reader inside the custom transformer so each process reads its own data.</li>
+<li>Compare runtimes across processing levels and group counts.</li>
+</ul>
+<h2 id="1-open-and-run-the-starting-workspace">1) Open and Run the Starting Workspace</h2>
+<p>This workspace validates OpenStreetMap building data against several city datasets. Running it with caching turned on lets you record the baseline record counts, so you can confirm later that your changes do not alter the results.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.2 or later).</li>
+<li>Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/create-a-custom-transformer-for-parallel-processing.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\UseDataIntegrationBestPractices\create-a-custom-transformer-for-parallel-processing.fmw).</li>
+<li>Observe that the workspace reads OpenStreetMap building data and then performs three validation tasks.
+<ul>
+<li>It overlays the buildings with the city address database to see if each one has a matching address.</li>
+<li>It tests the building geometry with a GeometryValidator.</li>
+<li>It overlays the buildings against the city zoning data to see if they fall properly inside a single zone.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725484107806.png" alt="Starting workspace" width="1543" height="344" /></p>
+<ul>
+<li>Turn on data caching.</li>
+<li>Run the workspace.</li>
+<li>Inspect the data at each step to become familiar with what the workspace does.</li>
+<li>Note the record counts.
+<ul>
+<li>You will compare against these later to be sure that the changes you make do not affect the results.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725484177572.png" alt="Starting feature counts" width="545" height="424" /></p>
+<h2 id="2-create-the-custom-transformer">2) Create the Custom Transformer</h2>
+<p>The workspace does not take long to run, but a custom transformer with parallel processing might still improve performance. Parallel processing needs an attribute to group features by, and because OpenStreetMap is crowdsourced, few of its own attributes carry reliable values.</p>
+<ul>
+<li>Inspect the source OSM data in the <strong>building reader feature type data cache</strong>.
+<ul>
+<li>Notice that very few values exist for any attribute.</li>
+</ul>
+</li>
+<li>Observe that an early step in the workspace copies address records onto each building, including the <code>POSTALCODE</code> attribute.
+<ul>
+<li>Because the address data is a city government dataset, you can treat it as definitive and trust its contents.</li>
+<li>Postcodes, or at least their first three characters, are an excellent way to divide data into groups.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725484253605.png" alt="POSTALCODE attribute" width="245" height="526" /></p>
+<ul>
+<li>On the canvas, select all objects after the <strong>PointOnAreaOverlayer</strong>, where <code>POSTALCODE</code> is obtained, but before the final writer feature type.
+<ul>
+<li>The selection includes the reader feature type for the MapInfo TAB reader and the junction just before the writer feature type.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725484319579.png" alt="Selecting transformers to create a custom transformer" width="1543" height="433" /></p>
+<ul>
+<li>Press Ctrl+T.</li>
+<li>Fill in the form:
+<ul>
+<li><strong>Name</strong>: BuildingValidator</li>
+<li><strong>Attribute References</strong>: Handle with User Parameters</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-create-the-grouping-attribute">3) Create the Grouping Attribute</h2>
+<p>The custom transformer opens in its own tab, where you can check that it holds what you expect. Before parallel processing can split the work, you need an attribute that divides the buildings into a sensible number of groups.</p>
+<ul>
+<li>In the <strong>BuildingValidator</strong> tab, inspect the contents of the custom transformer.
+<ul>
+<li>The reader feature type does not appear in the definition. FME pipes it in through a separate input port instead, because readers cannot sit inside a custom transformer.</li>
+<li>You may have to move some objects around. The SpatialRelator_Supplier input port in particular might overlap other objects.</li>
+<li>Leave the reader as it is for now. You will reconsider it once parallel processing is running.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725484442993.png" alt="Note that the reader is not present in the custom transformer definition" width="1543" height="311" /></p>
+<ul>
+<li>On the main workspace canvas, place a <strong>SubstringExtractor</strong> between the <strong>PointOnAreaOverlayer</strong> and the <strong>BuildingValidator</strong>.</li>
+<li>In the <strong>SubstringExtractor</strong> parameters, extract characters 0 to 2 of the <strong>POSTALCODE</strong> attribute.
+<ul>
+<li>A full postcode such as V3E1J4 is too precise and would group building by building. The first three characters, V3E, are far more suitable.</li>
+<li>The transformer counts characters from zero, so 0 to 2 gives you the first three characters.</li>
+</ul>
+</li>
+<li>Set <strong>Result</strong> to a new attribute called <strong>PostcodePrefix</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725484653863.png" alt="Setting SubstringExtractor parameters" width="961" height="309" /></p>
+<h2 id="4-turn-on-parallel-processing">4) Turn On Parallel Processing</h2>
+<p>Parallel processing takes two settings in two different places. The level lives in the custom transformer definition and controls how many processes run at once, while Group By lives on the instance in the main workspace and decides which features go to each process.</p>
+<ul>
+<li>In the <strong>BuildingValidator</strong> tab, open the <strong>Navigator</strong>.</li>
+<li>In the <strong>Navigator</strong>, double-click <strong>Transformer Parameters &gt; Data Processing &gt; Parallel Processing Level</strong>.</li>
+<li>Set the level to <strong>Moderate</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1752266743255.png" alt="Setting Parallel Processing parameter in the Navigator" width="444" height="334" /></p>
+<ul>
+<li>On the main canvas, open the parameters for the <strong>BuildingValidator</strong>.</li>
+<li>Set <strong>Group By</strong> to the <strong>PostcodePrefix</strong> attribute.
+<ul>
+<li>If you do not have a PostcodePrefix attribute, go back and check that you completed the SubstringExtractor steps above.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725484851826.png" alt="Setting the Group By for parallel processing" width="574" height="245" /></p>
+<h2 id="5-run-the-workspace">5) Run the Workspace</h2>
+<p>Data caching and breakpoints both stop parallel processing from working, so you have to turn them off before this run. The results will not match your baseline counts, and working out why is the point of this step.</p>
+<ul>
+<li>Disable data caching.</li>
+<li>Turn off <strong>Stop at Breakpoints</strong> if it is enabled.
+<ul>
+<li>If you run this with either data caching or breakpoints enabled, parallel processing will not work.</li>
+</ul>
+</li>
+<li>Run the workspace.
+<ul>
+<li>The Translation log shows several processes starting and stopping.</li>
+</ul>
+</li>
+<li><em>Optional</em> Open the<strong> task or process manager</strong> for your system and look for multiple FME processes.
+<ul>
+<li>On Windows, look for fmeworker.exe in the Details tab of Task Manager. There should be one process per group, though they can appear and disappear quite quickly.</li>
+<li>Some processes related to FME Flow may also be present if you have it installed and active.</li>
+</ul>
+</li>
+<li>Inspect the output dataset.
+<ul>
+<li>The custom transformer shows no record counts, because it is in parallel processing mode.</li>
+<li>It may be easier to inspect this sort of thing in the Data Inspector rather than Data Preview.</li>
+</ul>
+</li>
+<li>In the output, count the features whose <code>_ValidationZones</code> attribute is set to Unzoned Building.
+<ul>
+<li>You can do this using a Filter or by sorting and selecting records in Table View.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725485096345.png" alt="Filtering to test for unzoned buildings in Data Inspector" width="1272" height="310" /></p>
+<ul>
+<li>Observe that there are far more unzoned buildings than before, 4,712 against the 250 you saw on the first run.
+<ul>
+<li>The problem is the MapInfo TAB reader that reads the zoning data. You are processing in groups of postal codes, but the zoning data has no postcode prefix attribute.</li>
+<li>One solution is to assign a postcode to each zone feature. Another is to give each parallel process its own set of zoning data, which is what you will do next.</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-replace-the-reader-with-a-featurereader">6) Replace the Reader with a FeatureReader</h2>
+<p>Moving the zoning data inside the custom transformer means every parallel process reads its own copy, so no process is missing the zones it needs. A FeatureReader can sit inside a definition where a reader feature type cannot.</p>
+<ul>
+<li>In the main tab, delete the <strong>Zones</strong> feature type.</li>
+<li>Click <strong>Yes</strong> when FME prompts you to remove the MapInfo reader.</li>
+<li>In the <strong>BuildingValidator</strong> tab, add a <strong>Creator</strong> and a <strong>FeatureReader</strong>, and connect them.</li>
+<li>In the <strong>FeatureReader</strong> parameters, set it up to read the <a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Zoning.zip" target="_blank" rel="noopener">Zoning dataset</a> from C:\FMEData\Data\Zoning\Zones.tab.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725574481384.png" alt="Configuring FeatureReader" width="859" height="262" /></p>
+<ul>
+<li>Connect the <strong>Zones</strong> output from the <strong>FeatureReader</strong> into the <strong>Supplier</strong> port on the <strong>SpatialRelator</strong>.</li>
+<li>Delete the <strong>SpatialRelator_Supplier</strong> input object.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725574541648.png" alt="Replacing Input port with FeatureReader" width="605" height="389" /></p>
+<ul>
+<li>Run the workspace.</li>
+<li>In the output, verify that 250 features have a <code>_ValidationZones</code> value of Unzoned building and 218 have a value of Overlapping zones building.
+<ul>
+<li>The workspace now produces the correct results using parallel processing.</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-assess-parallel-processing">7) Assess Parallel Processing</h2>
+<p>The workspace already ran fast before you started, so the need for parallel processing was low from the outset. Parallel processing repays careful consideration and benchmarking, and this step is where you decide whether the setup was worth it.</p>
+<ul>
+<li>Consider the cost of the choices you made.
+<ul>
+<li>Three characters of postcode gave 17 groups. That is not unreasonable, but FME had to start 17 separate processes, and starting processes takes time.</li>
+<li>Moderate processing runs only one process per core. Your machine might handle more.</li>
+<li>Because the FeatureReader sits inside the transformer definition, every process reads the zoning data separately. Consider whether that overhead is too significant, and whether the Geodatabase reader should move inside as well.</li>
+</ul>
+</li>
+<li><em>Optional</em> Set <strong>Parallel Processing Level</strong> to <strong>Aggressive</strong> and run the workspace again.
+<ul>
+<li>Notice whether it runs any quicker than Moderate. If it does not, consider why.</li>
+</ul>
+</li>
+<li><em>Optional</em> Change the <strong>SubstringExtractor</strong> to extract characters 0 to 1, then run the workspace again.
+<ul>
+<li>This produces only 4 groups instead of 17. Notice whether that is faster.</li>
+</ul>
+</li>
+</ul>

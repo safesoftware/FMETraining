@@ -1,0 +1,134 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Optimize your file system for writer performance.</li>
+<li>Optimize your database writing for writer performance.</li>
+<li>Improve performance by adjusting the order of writers in a workspace.</li>
+</ul>
+<h2><span style="font-weight: 400;">Instructions</span></h2>
+<p><span style="font-weight: 400;">In this lesson, you will:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Scroll down to read the text below.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Complete the exercise by following the steps.</span></li>
+<li><span style="font-weight: 400;">Complete the Quiz toward the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;"><em>Optional</em>: Let us know if you found this lesson relevant to your role by filling out the survey at the bottom of the page.</span></li>
+<li style="font-weight: 400;" aria-level="1"><span style="font-weight: 400;">Click 'Next' to mark the lesson complete.</span></li>
+</ul>
+<blockquote>
+<p><strong><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></strong></p>
+<p>We've updated this course, so the videos don't exactly match the lessons. However, we've included them for you to review, and we will update them in a future release.</p>
+</blockquote>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-writer-performance.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-writer-performance.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-writer-performance-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-writer-performance-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/Orthophotos.zip" target="_self">Orthophotos.zip</a> (GeoTIFF)
+<ul>
+<li>C:\FMEData\Data\Orthophotos.zip</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Boundaries/VancouverNeighborhoods.kml" target="_self">VancouverNeighborhoods.kml</a> (OGC / Google KML)
+<ul>
+<li>C:\FMEData\Data\Boundaries\VancouverNeighborhoods.kml</li>
+</ul>
+</li>
+</ul>
+<h2 id="optimizing-writer-performance">Optimizing Writer Performance</h2>
+<p>There are various ways to speed up writing data. Compared to reading, tuning the underlying systems is a more critical improvement; the number of features is less significant, as it's much harder to write extra data unintentionally.</p>
+<h2 id="file-system-improvements">File System Improvements</h2>
+<p>If you are writing to a file system, make sure the disk is fast and responsive &ndash; use solid-state drives &ndash; and that the operating system is not busy writing other files simultaneously, as the latter could cause a significant bottleneck.</p>
+<p>Also, check if you are using RAID; some configurations need multiple writes and can slow down a translation.</p>
+<h2 id="database-improvements">Database Improvements</h2>
+<p>Existing indexes and joins can slow the process down if you are writing to a database. In many cases, it's quicker to drop an index, write the data, and recreate it.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">More information on database performance with FME comes in the later lesson, Optimize Database Performance.</span></p>
+</blockquote>
+<h2 id="multiple-writers">Multiple Writers</h2>
+<p>The most important technique for improving writer performance involves the scenario where a workspace has multiple writers. In short, you must ensure that the writer receiving the most data is written first.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">While record counts entering writer feature types are an approximation of the size of your data, the </span><strong style="font-family: inherit; font-size: 1em;">size of features can vary wildly</strong><span style="font-family: inherit; font-size: 1em;">. Compare a feature with a single short integer attribute and no geometry to a feature with a large satellite image or one with hundreds of complex attributes or list attributes. To determine an optimal writer order, you should take the size of features into account as well.</span></p>
+<p>The reasoning is that the first writer in a workspace starts to write data as soon as it is received. Other writers cache theirs until they are ready to start writing. Therefore, if the workspace writes the largest amount of data immediately, it won't have to store as much data in a cache. This can improve performance tremendously, mainly when the translation is unbalanced; for example, one million features go to one writer, and only ten go to another.</p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" style="color: #6f6f6f;" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Think of it as an airport. Loading the busiest flights first is more efficient because it empties the terminal waiting areas quickly. For more information, see </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://fme.safe.com/blog/2010/06/fmeevangelist64-2/" target="_blank" rel="noopener">this blog post</a><span style="font-family: inherit; font-size: 1em;">.</span></p>
+</blockquote>
+<h2 id="setting-writer-order">Setting Writer Order</h2>
+<p>There are two ways to affect the writing order.</p>
+<p>Firstly, each writer is listed in the Navigator window in Workbench and can be re-ordered by moving them up and down in the list in the Navigator window:</p>
+<p><img class="image image-block image-center" src="images/1725644367673.gif" alt="Reordering writers for improved performance" width="352" height="298" /></p>
+<p>The first writer in the list will write first. Therefore, it should be the one to receive the most data.</p>
+<p>The second method is to use a workspace parameter called Order Writers By:</p>
+<p><img class="image image-block image-center" src="images/1758147488938.png" alt="Changing workspace parameter Order Writers By" width="714" height="241" /></p>
+<p>If you set this parameter to <em>Position in Workbench Navigator,</em> the order of writers defined in the Navigator takes priority. If you set it to <em>First Feature Written, t</em>he writer receiving the first feature will be the first to start writing data.</p>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block image-center" src="images/61-c-9821-d-6-d-20-43-cf-b-43-a-dddfd-2-de-566-b.png" alt="Jennifer" width="256" height="256" /></p>
+<p>Jennifer is continuing her code review of a colleague's public art workspace. The workspace writes to two destinations, a GeoTIFF writer and an Excel writer, and the much smaller spreadsheet is currently written first. Jennifer needs to find out whether that order is costing the workspace memory.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Reorder a workspace's writers so the writer receiving the most data writes first.</li>
+<li>Compare run time and memory use before and after the change.</li>
+</ul>
+<h2 id="1-open-and-run-the-starting-workspace">1) Open and Run the Starting Workspace</h2>
+<ul>
+<li>Start <strong>FME Workbench</strong> 2026.2 or later.</li>
+<li>Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/UseDataIntegrationBestPractices/optimize-writer-performance.fmw" target="_blank" rel="noopener">starting workspace</a> from C:\FMEData\Workspaces\UseDataIntegrationBestPractices\optimize-writer-performance.fmw.</li>
+<li>Turn on <strong>Data Caching</strong>.</li>
+<li>Click <strong>Run</strong> and accept the default user parameter values.
+<ul>
+<li>Note the session duration and peak memory use at the end of the Translation log, so you have something to compare against.</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-reorder-the-writers">2) Reorder the Writers</h2>
+<p>The spreadsheet is written first, so the much larger GeoTIFF files sit in a cache waiting their turn. Writing the largest output first lets FME start writing it as soon as features arrive and hold far less in memory.</p>
+<ul>
+<li>In the <strong>Navigator</strong>, drag the <strong>GeoTIFF writer</strong> above the <strong>Excel writer</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1725656956268.gif" alt="Changing writer order" width="306" height="314" /></p>
+<ul>
+<li>Click <strong>Run</strong>.
+<ul>
+<li>The workspace was not slow to begin with, so expect a small gain. It should now run slightly faster and use less memory than the figures you noted in step 1.</li>
+</ul>
+</li>
+<li><strong>Save </strong>the workspace.</li>
+</ul>
+<p>You have put the writer that receives the most data first, so the largest output is written as it arrives rather than cached until the smaller one finishes. The next lesson, Optimize Transformer Performance, continues this code review from the point you have reached.</p>
+<h2 id="optional-challenge-empty-the-spreadsheet-instead-of-recreating-it">3) Empty the Spreadsheet Instead of Recreating It</h2>
+<p>The Excel writer currently deletes and recreates the whole spreadsheet on every run. Emptying the existing sheet instead can be very marginally quicker, and the same question matters a great deal more when the destination is an indexed database table. Change the workspace so it empties the existing sheet rather than recreating the file, then run it again and compare.</p>
+<p>Two parameters control this, and they sit at different levels. The first is on the writer itself, the second on the writer feature type.</p>
+<ul>
+<li>In the <strong>Navigator</strong>, set <strong>Neighborhoods [XLSXW] </strong>&gt; <strong>Parameters </strong>&gt; <strong>Overwrite Existing File</strong> to <strong>No</strong>.</li>
+<li>On the <strong>NeighborhoodName XLSXW writer feature type</strong>, set <strong>Drop/Truncate </strong>&gt; <strong>Truncate Existing Sheet/Named Range</strong> to <strong>Yes</strong>.</li>
+</ul>
+<p><img src="images/1725657035704.png" alt="Setting Truncate Existing Sheet/Named Range to Yes" width="568" height="483" /></p>
+<p>The improvement here is unlikely to be dramatic. The point is the habit: when you review a workspace for performance, ask whether each destination is being rebuilt from scratch when it could be reused.</p>
+<ul>
+<li><strong>Save </strong>your workspace.</li>
+</ul>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+.challenge-answer summary::before{content:'';display:inline-block;width:32px;height:32px;flex-shrink:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232e7d32' d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E");background-size:32px;background-repeat:no-repeat;background-position:center;transition:transform 0.2s ease;}
+.challenge-answer[open] summary::before{transform:rotate(90deg);}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+.challenge-answer,.challenge-answer[open]{background-color:#E8F5E9;}
+.challenge-answer[open]{box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+.challenge-answer:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+</style>
+</div>

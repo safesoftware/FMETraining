@@ -1,0 +1,327 @@
+<p><span style="color: #222222; font-size: 2.3125em; font-family: inherit;">Learning Objectives</span></p>
+<p>After completing this lesson, you&rsquo;ll be able to:</p>
+<ul>
+<li>Explain the difference between embedded and linked custom transformers.</li>
+<li>Choose an embedded or linked custom transformer based on your needs.</li>
+<li>Create a linked custom transformer.</li>
+<li>Change custom transformer modes.</li>
+<li>Export a custom transformer.</li>
+<li>Delete an embedded custom transformer.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/build-a-shared-library-of-custom-transformers.fmw" target="_blank" rel="noopener">Starting workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\build-a-shared-library-of-custom-transformers.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/build-a-shared-library-of-custom-transformers-complete.fmw" target="_blank" rel="noopener">Complete workspace</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\build-a-shared-library-of-custom-transformers-complete.fmw</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/AverageLengthCalculator.fmx" target="_blank" rel="noreferrer noopener">AverageLengthCalculator custom transformer</a>
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\AverageLengthCalculator.fmx</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Data/Transportation/Cycling.zip" target="_self">Bike routes dataset</a>
+<ul>
+<li>C:\FMEData\Data\Transportation\Cycling.zip</li>
+</ul>
+</li>
+</ul>
+<h2 id="custom-transformer-types">Custom Transformer Types</h2>
+<p>There are two types of custom transformers.</p>
+<p>Workspaces store the definition of&nbsp;<strong>embedded</strong> transformers in the workspace itself. Each instance of the custom transformer refers to that embedded definition. Only the workspace with the embedded transformer has access to that custom transformer.</p>
+<p>A&nbsp;<strong>linked</strong> transformer has its definition stored outside the workspace in a separate file. Each instance of a linked transformer relies on that external definition. Any workspace can have access to that custom transformer.</p>
+<p>On a workspace canvas, embedded transformers are identified by their green color, while linked transformers are colored teal:</p>
+<p><img class="image image-block image-center" src="images/1724780291221.png" alt="Embedded versus linked custom transformers" width="831" height="146" /></p>
+<h2 id="linked-vs-embedded-transformers">Linked vs. Embedded Transformers</h2>
+<p>Both types of transformers can be used in an FME workspace, and each type has various advantages and disadvantages.</p>
+<p><strong>Embedded Transformers</strong></p>
+<p>Embedded transformers are easier to manage, need no external files, and store their definition directly in the workspace. They are handy for tidying a workspace and employing advanced functionality like parallel processing.</p>
+<p>However, sharing and reusing content is more complex with an embedded transformer. You can only easily share the custom transformer with other users if you give them a copy of the same workspace. Additionally, it takes work to maintain a consistent definition among several users.</p>
+<p><strong>Linked Transformers</strong></p>
+<p>Linked transformers are a little more complicated to manage. They exist as a file (.fmx) outside of the workspace, which is less convenient, and when used to employ advanced functionality such as loops, they can be more complex.</p>
+<p>However, a linked custom transformer is a little easier to edit (you open the .fmx file rather than the .fmw file) and is much easier to share among users. The file can be given to any FME author, and any number of authors can point their workspace to the same custom transformer file.</p>
+<p>Sharing the same file is useful because any changes to the definition automatically propagate to all workspaces that use it.</p>
+<p>Like embedded transformers, linked transformers appear in the transformer gallery and Quick Add dialog. Also, notice that they have a special icon to signify that you are about to use a linked version rather than the embedded version:<br /><br /><img class="image image-block image-center" src="images/1724780299280.png" alt="Linked transformer in the Transformer Gallery" width="250" height="399" /></p>
+<h2 id="creating-a-linked-custom-transformer">Creating a Linked Custom Transformer</h2>
+<p>All custom transformers start with an embedded definition. To create an external definition, export the custom transformer using the Export as Custom Transformer option on the menu bar:</p>
+<p><img class="image image-block image-center" src="images/1724780306285.png" alt="Creating a linked custom transformer via File &gt; Export As Custom Transformer..." width="301" height="324" /></p>
+<p>At this point, a dialog opens in which you can confirm the transformer name and category, plus some other parameters, including the save location:</p>
+<p><img class="image image-block image-center" src="images/1724780315724.png" alt="Export as Custom Transformer dialog" width="452" height="307" /></p>
+<p>Name and category are straightforward, so let&rsquo;s look at other options.</p>
+<p><strong>Insert Mode</strong></p>
+<p>We know that the definition of a custom transformer can be stored either in a workspace (embedded) or in a separate file (linked). Therefore, each instance of a custom transformer points to an embedded or linked definition.</p>
+<p>But it&rsquo;s important to know that each instance can change its definition source. For example, you can switch an instance of a custom transformer linked to a file definition to embedded (in which case the external definition gets embedded into the workspace).</p>
+<p>Likewise, you can switch an instance that points to an embedded definition to point to an external file.</p>
+<p>As the author of a custom transformer, I might want to control the initial state when I place an instance. The <strong>Insert Mode&nbsp;</strong>parameter controls this behavior.</p>
+<p>There are four different modes:</p>
+<p><img class="image image-block image-center" src="images/1724780324971.png" alt="Transformer Insert Modes" width="452" height="219" /></p>
+<p>Let&rsquo;s say I export my custom transformer with Insert Mode set to one of the&nbsp;<strong>Embedded</strong>&nbsp;choices. An FMX file now stores the definition, and FME will recognize it as an available transformer. But when a user places a new instance in their workspace (say with Quick Add or the Transformer Gallery), the definition of the custom transformer is copied from the FMX file and embedded into the workspace.</p>
+<p>If I choose&nbsp;<em>Embedded By Default</em>, although each transformer instance starts as Embedded, the user can switch the instance to &ldquo;Linked&rdquo; at any point.</p>
+<p>If I choose&nbsp;<em>Embedded Always, each</em>&nbsp;transformer instance starts as embedded and must stay that way. A user cannot switch it to Linked at a later point.</p>
+<p>Similarly, I could export my custom transformer in&nbsp;<strong>Linked</strong> mode. When a user places a new instance, the transformer's definition remains in my FMX file, with the instance linked.</p>
+<p>If I choose&nbsp;<em>Linked By Default</em>, each instance of the transformer starts as Linked but can be switched to Embedded at any time.</p>
+<p>If I choose&nbsp;<em>Linked Always</em>, each instance starts as Linked and stays that way. It cannot be switched to Embedded at a later point.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">If you are the author of a custom transformer and want to share it with other authors, you should pay attention to Insert Mode. It gives you control over how they will use that transformer.</span></p>
+</blockquote>
+<p><strong>Which Mode to Use</strong></p>
+<p><strong>Embedded Always</strong> is a good choice when the person using the transformer is less experienced with FME; it&rsquo;s easier to manage, and if they make changes, they won&rsquo;t affect other people. Embedded is also a good choice when you intend for individuals to use the custom transformer (i.e., not sharing it as a group).</p>
+<p><strong>Linked Always</strong> is a good choice when you intend to have users share the custom transformer. Because it is linked, the users will always receive updates if the transformer definition is changed, and because the definition is shared, it becomes a standard applied to all users.</p>
+<p>You should only use a &ldquo;By Default&rdquo; setting and allow type switching when you trust the end-user is experienced in FME and can understand the consequences.</p>
+<p><strong>Password</strong></p>
+<p>The password field allows you to password-protect the custom transformer. This setting makes it impervious to edits from unauthorized persons. Additionally, the contents are (very mildly) encrypted, so unauthorized users cannot copy them by opening the source file in a text editor.</p>
+<p>This setting allows authors to make transformers available for purchase without fear of copying or editing their work. Of course, it&rsquo;s essential not to forget or lose the password yourself if you wish to make edits!</p>
+<p><strong>Save Location</strong></p>
+<p>FME has a specific installation folder where it saves custom transformer files. If you save custom transformers in this folder, you can find them in Workbench and use them like any other transformer. If you save transformers elsewhere, you won&rsquo;t be able to find them in Workbench unless you add the path under Utilities &gt; FME Options &gt; Default Paths.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Default Paths are a handy feature. <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Form/Workbench/options_default_paths.htm" target="_self">See the documentation for more information</a>.</p>
+</blockquote>
+<p><strong>Editing a Linked Custom Transformer</strong></p>
+<p>When you click the OK button on the Export as Custom Transformer dialog, FME exports the transformer to a separate (.fmx) file. You can then edit that file immediately inside a new instance of FME Workbench.</p>
+<p>Essentially, editing a custom transformer works like editing a workspace: you open the file in FME Workbench and edit as required.</p>
+<p>Remember that any changes you make will affect each instance of the Custom Transformer linked to this file.</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Searching for bugs in an embedded custom transformer before exporting it is best. Tools such as Data Caching and Run with Breakpoints do not work inside exported transformers.</span></p>
+</blockquote>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p>Another way to explain the options is to think of custom transformers like a recipe.&nbsp;</p>
+<ul>
+<li>An embedded custom transformer is like... a recipe on the back of a napkin.</li>
+<li>A linked custom transformer saved to your operating system user profile is like... your personal recipe book.</li>
+<li>A linked custom transformer saved to a shared folder is like... a recipe book used by all chefs in your kitchen, or a corporate restaurant recipe book used by all franchises.</li>
+<li>A custom transformer published to the FME Hub is like... a recipe in a published cookbook you can buy at a bookstore.</li>
+</ul>
+</blockquote>
+<h2>Custom Transformers on FME Flow</h2>
+<p>When publishing a workspace that uses custom transformers to FME Flow, you must publish the custom transformer with the workspace.</p>
+<p>You have two general options for how you'd like to share the transformer once it's on FME Flow:</p>
+<p><strong>Upload to Repository</strong></p>
+<p>You can publish the custom transformer to the repository, and users who have repository access can access it. Other workspaces can use them by manually setting their source parameters.</p>
+<p><strong>Upload to a shared resource folder.</strong></p>
+<p>If you upload your custom transformer to the FME Flow shared resource folder, you make it accessible to all other workspaces run from FME Flow from any repository. For workspaces to use them, you have to upload resources to the applicable subdirectory under Engine. For example, you must upload custom transformers to the Engine &gt; Transformers folder.</p>
+<p>The shared resource folder is generally a better option if you want your custom transformer to be widely available.</p>
+<h2>Best Practice Recommendations</h2>
+<p>Here is what we recommend:</p>
+<ul>
+<li>Embedded custom transformers should only be used when that functionality is not required in other workspaces.
+<ul>
+<li>Use these when you need to repeat steps within a single workspace.</li>
+</ul>
+</li>
+<li>Linked custom transformers with versioning stored on shared paths should be used for all reused functionality.
+<ul>
+<li>If your organization has multiple FME versions in use (including between Form and Flow), keep in mind that if you create a linked transformer with a newer version of FME, you could break compatibility with older versions.</li>
+<li>Therefore, your organization could benefit from developing an internal policy for FME version and custom transformers. A stricter policy would be to use the minimum FME version possible, with all used transformers fully updated. A laxer policy would be to avoid using beta releases.</li>
+</ul>
+</li>
+</ul>
+<h2 id="switching-custom-transformer-types">Switching Custom Transformer Types</h2>
+<p>The action is very straightforward when the Insert Mode of a custom transformer allows type switching. Right-click on the instance and choose the required type:</p>
+<p><img class="image image-block image-center" src="images/1724780332507.png" alt="Right-click &gt; Link for custom transformers" width="442" height="238" /></p>
+<p>In the above screenshot, the user is switching from Embedded to Linked. Of course, switching to Linked requires the custom transformer to be exported already.</p>
+<p>When you switch from embedded to linked, the embedded definition is closed. The transformer instance then points to the linked definition.</p>
+<p>When you switch from linked to embedded, the contents of the FMX file are copied and embedded in the workspace. The transformer instance then points to the embedded definition.</p>
+<p>If there is more than one instance of the Custom Transformer, FME asks whether you want to switch all of them:</p>
+<p><img class="image image-block image-center" src="images/1724780341928.png" alt="Multiple Transformers Found warning" width="354" height="147" /></p>
+<p>The usual answer is yes because having the same embedded and linked transformer could be confusing! If you answer no, please remember that the transformer you clicked on will be linked (but none of the other instances will).</p>
+<blockquote>
+<p><img class="img mtm" role="presentation" src="images/safe_note.png" alt="Note" /></p>
+<p><span style="font-family: inherit; font-size: 1em;">Switching from Embedded to Linked only works if you have not modified the embedded transformer.</span></p>
+<p><span style="font-family: inherit; font-size: 1em;">In other words, if you embed a linked transformer and then make changes to the embedded definition, you won&rsquo;t be able to revert to the linked version.</span></p>
+</blockquote>
+<h2 id="exercise">Exercise</h2>
+<p><img class="image image-block" src="images/sven.png" alt="Sven" width="256" height="256" /></p>
+<p>Sven has several workspaces that need to calculate the average length of linear features. He wants to package that calculation into a linked custom transformer he can use in all of them. His starting workspace reads bike routes data and writes the average length of those routes.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Build an embedded custom transformer that calculates the average length of linear features.</li>
+<li>Export that definition to a linked .fmx file and control how new instances behave.</li>
+<li>Switch an instance between linked and embedded, then delete the embedded definition.</li>
+</ul>
+<h2 id="1-open-starting-workspace">1) Open Starting Workspace</h2>
+<p>Your starting workspace already reads bike routes data and does some minor processing to get it into a reasonable state for the custom transformer. The custom transformer you build should work on any linear data, not just this dataset.</p>
+<ul>
+<li>Start <strong>FME Workbench</strong> (2026.2 or later).</li>
+<li>Open your <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/AdvancedDataTransformation/build-a-shared-library-of-custom-transformers.fmw" target="_blank" rel="noopener">starting workspace</a>.
+<ul>
+<li>C:\FMEData\Workspaces\AdvancedDataTransformation\build-a-shared-library-of-custom-transformers.fmw</li>
+</ul>
+</li>
+<li><em>Optional</em>: Run the workspace and examine the output to see what data you are working with.</li>
+</ul>
+<h2 id="2-add-lengthcalculator-and-statisticscalculator">2) Add LengthCalculator and StatisticsCalculator</h2>
+<p>The contents of your custom transformer stay relatively straightforward. You&rsquo;ll start with just two transformers and turn them into the custom transformer in the next step.</p>
+<ul>
+<li>On the canvas, add a <strong>LengthCalculator</strong> and a <strong>StatisticsCalculator</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724781944377.png" alt="Adding a LengthCalculator and StatisticsCalculator to the Canvas" width="921" height="183" /></p>
+<h2 id="3-create-custom-transformer">3) Create Custom Transformer</h2>
+<p>Every custom transformer starts as an embedded definition, so that is what you create first. You&rsquo;ll export it to a linked definition later in this exercise.</p>
+<ul>
+<li>Select the two transformers you just placed.</li>
+<li>Right-click one of them and choose <strong>Create Custom Transformer</strong>.</li>
+<li>In the <strong>Create Custom Transformer</strong> dialog, fill in the form:
+<ul>
+<li><strong>Name</strong>: AverageLengthCalculator</li>
+<li><strong>Category</strong>: Calculated Values and Spatial Analysis</li>
+<li><strong>Attribute References</strong>: Handle With User Parameters
+<ul>
+<li>There aren&rsquo;t any references to handle yet.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1750976483681.png" alt="Filling out the Create Custom Transformer dialog" width="467" height="442" /></p>
+<h2 id="4-edit-custom-transformer">4) Edit Custom Transformer</h2>
+<p>Your new custom transformer needs working ports and parameters before it will calculate anything. You&rsquo;ll rename the input port, add an output port, and set up the statistic you want.</p>
+<ul>
+<li>On the <strong>AverageLengthCalculator</strong> tab, right-click the input port and rename it to <strong>Lines</strong>.
+<ul>
+<li>The name communicates what geometry your transformer expects.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1730935775199.png" alt="Right-click LengthCalculator_Input and Rename it to Lines" width="547" height="236" /></p>
+<ul>
+<li>On the canvas, right-click and choose <strong>Insert Transformer Output</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1730935925530.png" alt="Insert Transformer Output" width="283" height="339" /></p>
+<ul>
+<li>Name it <strong>Output</strong>.</li>
+<li>On the <strong>StatisticsCalculator</strong>, connect the <strong>Complete</strong> port to <strong>Output</strong>.</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724781965628.png" alt="New ports" width="801" height="111" /></p>
+<ul>
+<li>On the <strong>StatisticsCalculator</strong>, set the following parameters:
+<ul>
+<li><strong>Attribute</strong> (first row): _length</li>
+<li><strong>Mean</strong>: checked</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724781972502.png" alt="Filling out the StatisticsCalculator" width="763" height="429" /></p>
+<ul>
+<li>Click <strong>OK</strong>.
+<ul>
+<li>The StatisticsCalculator now outputs an attribute called <code>_length.mean</code>.</li>
+</ul>
+</li>
+<li>Add an <strong>AttributeRenamer</strong> and set the following parameters:
+<ul>
+<li><strong>Old Attribute</strong>: _length.mean</li>
+<li><strong>New Attribute</strong>: <code>AverageLength</code></li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724781984243.png" alt="Filling out the AttributeRenamer" width="427" height="346" /></p>
+<h2 id="5-run-the-workspace">5) Run the Workspace</h2>
+<p>Running the workspace confirms your custom transformer returns a single average length for the whole dataset.</p>
+<ul>
+<li>Run the workspace.</li>
+<li>Inspect the output and note the <code>AverageLength</code> value.
+<ul>
+<li>You&rsquo;ll need this value for the quiz.</li>
+<li>If your AverageLengthCalculator outputs only one record, you still have the StatisticsCalculator Summary port connected. Connect the Complete port instead.</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-export-custom-transformer">6) Export Custom Transformer</h2>
+<p>Exporting writes the embedded definition to an .fmx file so any workspace can link to it. The insert mode you pick controls whether each new instance starts out linked or embedded.</p>
+<ul>
+<li>Return to the <strong>AverageLengthCalculator</strong> tab.</li>
+<li>On the menu bar, select <strong>File &gt; Export as Custom Transformer</strong>.</li>
+<li>In the <strong>Export as Custom Transformer</strong> dialog, fill in the form:
+<ul>
+<li><strong>Insert Mode</strong>: Linked by Default</li>
+<li><strong>Save Location</strong>: the default folder for custom transformers, &lt;user&gt;\Documents\FME\Transformers on Windows</li>
+<li>Click <strong>OK</strong>.
+<ul>
+<li>FME saves the custom transformer as AverageLengthCalculator.fmx and opens that file in a new instance of FME Workbench.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1750976675044.png" alt="Filling out the dialog to export the custom transformer" width="452" height="307" /></p>
+<h2 id="7-switch-between-linked-and-embedded">7) Switch Between Linked and Embedded</h2>
+<p>Back in your original workspace, the transformer instance now points to the linked definition you just exported. You&rsquo;ll switch it to embedded and find out why that switch only goes one way once you edit the embedded copy.</p>
+<ul>
+<li>Return to the instance of FME Workbench where your original workspace is open.</li>
+<li>Observe that the <strong>AverageLengthCalculator</strong> changes color to show it is now linked.
+<ul>
+<li>It is linked because you chose Linked By Default as the insert mode.</li>
+</ul>
+</li>
+</ul>
+<p><img class="image image-block image-center" src="images/1724782004734.png" alt="Workspace with linked transformer" width="809" height="131" /></p>
+<ul>
+<li>Right-click the <strong>AverageLengthCalculator</strong> and choose <strong>Embed</strong>.
+<ul>
+<li>Now the transformer definition is embedded in the workspace directly.</li>
+</ul>
+</li>
+<li>To switch back, right-click and choose <strong>Link</strong>.
+<ul>
+<li>This switches the transformer definition so it uses the externally-saved definition.</li>
+</ul>
+</li>
+<li>Finally, switch it back to Embedded by right-clicking once more and selecting <strong>Embed</strong>.
+<ul>
+<li>In a real scenario, the choice depends on whether you plan to share the transformer.</li>
+</ul>
+</li>
+<li>Right-click the <strong>AverageLengthCalculator</strong> and choose <strong>Edit Embedded Transformer</strong>.</li>
+<li>Make any change to the definition.</li>
+<li>Return to the <strong>Main</strong> tab.</li>
+<li>Right-click the&nbsp;<strong>AverageLengthCalculator.</strong></li>
+<li>Observe that there is no <strong>Link </strong>option.
+<ul>
+<li>You can no longer switch back to linked mode, because the two definitions now differ.</li>
+</ul>
+</li>
+</ul>
+<h2 id="8-delete-the-embedded-transformer">8) Delete the Embedded Transformer</h2>
+<p>Deleting an instance does not necessarily delete its definition. This last step shows you where an unused embedded definition can hide.</p>
+<ul>
+<li>On the canvas, right-click the <strong>AverageLengthCalculator</strong> and choose <strong>Delete</strong>.
+<ul>
+<li>FME asks whether you want to delete the definition as well.</li>
+</ul>
+</li>
+<li>Click <strong>Yes</strong>.
+<ul>
+<li>Clicking Yes removes the definition from the workspace. Clicking No would leave the definition in the workspace even though nothing uses it, and you would find it listed in the Embedded Transformers section of the Transformer Gallery.</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<details class="tips">
+<summary><strong>Tips</strong></summary>
+<div>
+<ul>
+<li>When FME asks whether to delete the definition, keep it (click No) if you plan to use the custom transformer again later, and remove it (click Yes) once you decide you no longer need it.</li>
+</ul>
+</div>
+</details>
+<div>
+<style>
+details{background-color:#F4F3ED;color:#333;padding:14px;margin-bottom:10px;border-radius:4px;cursor:pointer;transition:box-shadow 0.2s ease,transform 0.2s ease;}
+details:hover{box-shadow:8px 8px 16px rgba(0,0,0,0.15);transform:translateY(-1px);}
+summary{font-size:18px;outline:none;user-select:none;padding:5px 0;list-style:none;display:flex;align-items:center;gap:10px;}
+summary::-webkit-details-marker,summary::marker{display:none;}
+details[open]{background-color:#F4F3ED;box-shadow:8px 8px 16px rgba(0,0,0,0.2);}
+details div{padding:10px 10px 10px 12px;margin-top:10px;font-size:16px;line-height:1.5;}
+</style>
+</div>
