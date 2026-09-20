@@ -1,3 +1,44 @@
+<div>
+<style>
+.sj-cb{position:relative;margin:1em 0;}
+.sj-cb pre{background:#f7f7f5;border:1px solid #ecece8;border-radius:4px;margin:0;padding:14px 84px 14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:13px;line-height:1.55;color:#24292e;white-space:pre-wrap !important;overflow-wrap:break-word !important;word-break:break-word !important;overflow-x:visible !important;max-width:100%;box-sizing:border-box;tab-size:2;}
+.sj-cb pre code{font:inherit;background:none;padding:0;border:0;white-space:inherit;color:inherit;}
+.sj-cb-btn{position:absolute;top:8px;right:8px;z-index:2;padding:4px 10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.4;font-weight:500;color:#57534e;background:#fff;border:1px solid #dcdcd6;border-radius:4px;cursor:pointer;opacity:.85;transition:opacity .12s ease,background .12s ease;}
+.sj-cb-btn:hover{opacity:1;background:#f0f0ec;}
+.sj-cb-btn:focus-visible{outline:2px solid #2f6fd0;outline-offset:1px;opacity:1;}
+.sj-cb-btn[data-done]{color:#1a7f37;border-color:#b7dfc0;background:#f0fbf2;opacity:1;}
+@media (max-width:600px){.sj-cb pre{padding:40px 14px 14px;font-size:12px;}.sj-cb-btn{top:6px;right:6px;}}
+@media print{.sj-cb-btn{display:none;}}
+</style>
+</div>
+<p>
+<script>
+(function(){
+  if(window.__sjCodeBlocks)return; window.__sjCodeBlocks=true;
+  function textOf(p){var t=p.innerText||p.textContent||'';return t.replace(/^[ \t]*\r?\n/,'').replace(/(?:\r?\n[ \t]*)+$/,'');}
+  function flash(b,ok){b.textContent=ok?'Copied!':'Press Ctrl+C';b.setAttribute('data-done','');setTimeout(function(){b.textContent='Copy';b.removeAttribute('data-done');},1800);}
+  function legacy(b,t){var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(a);flash(b,ok);}
+  function copy(b,p){var t=textOf(p);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){flash(b,true);},function(){legacy(b,t);});}else{legacy(b,t);}}
+  function upgrade(pre){
+    if(!pre||pre.nodeType!==1||pre.tagName!=='PRE')return;
+    if(pre.getAttribute('data-sj-wired'))return;
+    if(pre.closest&&pre.closest('.sj-cb-skip'))return;
+    pre.setAttribute('data-sj-wired','1');
+    var w=pre.parentNode;
+    if(!w||!w.classList||!w.classList.contains('sj-cb')){w=document.createElement('div');w.className='sj-cb';pre.parentNode.insertBefore(w,pre);w.appendChild(pre);}
+    var b=w.querySelector('.sj-cb-btn');
+    if(!b){b=document.createElement('button');b.type='button';b.className='sj-cb-btn';b.setAttribute('aria-label','Copy code to clipboard');w.insertBefore(b,w.firstChild);}
+    b.textContent='Copy';
+    b.addEventListener('click',function(){copy(b,pre);});
+  }
+  function scan(r){var l=(r||document).querySelectorAll('pre');for(var i=0;i<l.length;i++)upgrade(l[i]);}
+  function init(){scan(document);
+    if(window.MutationObserver){new MutationObserver(function(m){for(var i=0;i<m.length;i++){var a=m[i].addedNodes;for(var j=0;j<a.length;j++){var n=a[j];if(n.nodeType!==1)continue;if(n.tagName==='PRE')upgrade(n);else scan(n);}}}).observe(document.body,{childList:true,subtree:true});}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</p>
 <h2 id="learning-objectives">Learning Objectives</h2>
 <p>After completing this lesson, you'll be able to:</p>
 <ul>
@@ -55,13 +96,13 @@
 <p>The easiest method to take user input to control how the workspace runs is with user parameters.&nbsp;</p>
 <ul>
 <li>In the&nbsp;<strong>Navigator</strong>, right-click&nbsp;<strong>User Parameters</strong> and select&nbsp;<strong>Manage User Parameters</strong>.</li>
-<li>Add a new <strong>Text</strong> parameter.&nbsp;<br />
+<li>Click the <strong>green + icon </strong>to add a new <strong>Text</strong> parameter.&nbsp;</li>
+</ul>
+<p><img src="images/1789417369065.png" alt="" /></p>
 <ul>
 <li>Set the&nbsp;<strong>Parameter Identifier</strong>&nbsp;to&nbsp;<strong>USER_REQUEST&nbsp;</strong>and the&nbsp;<strong>Label</strong> to&nbsp;<strong>Prompt to Weather MCP Server</strong>.</li>
 <li>Use the&nbsp;<strong>Layout</strong> drop-down to select <strong>Single-Row Input with Popup Editor</strong>.</li>
 <li>Optionally, provide a default value like:</li>
-</ul>
-</li>
 </ul>
 <pre class="language-markup"><code>Get the current weather forecast for Vancouver</code></pre>
 <ul>
@@ -98,7 +139,28 @@
 <li>Click <strong style="font-family: inherit; font-size: 1em;">OK</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
 </ul>
 <p><img src="images/1785792670499.png" alt="" width="546" height="375" /></p>
-<h3>5) Add and Configure OpenAIConnector&nbsp;</h3>
+<h3>5) Run and Save</h3>
+<ul>
+<li><strong>Run</strong> the workspace to the AttributeCreator, including the List Tools MCPCaller.
+<ul>
+<li>FME will prompt you for the input user request parameter. Leave it as the default. Click Run.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1789419303766.png" alt="" /></p>
+<ul>
+<li>Inspect the AttributeCreator's output.
+<ul>
+<li>Notice FME populates the three attributes with their referenced values.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1789419425433.png" alt="" /></p>
+<ul>
+<li><strong>Save</strong> your in-progress workspace. You can save your workspace to C://FMEData/Workspaces/MCPandFME.&nbsp;</li>
+</ul>
+<p><img src="images/1789419545533.png" alt="" /></p>
+<h3>6) Add and Configure OpenAIConnector&nbsp;</h3>
 <p>After the AttributeCreator, use an OpenAIConnector to have an AI model analyze the available MCP tools and select the best one for the user's input request.&nbsp;</p>
 <ul>
 <li>Add an&nbsp;<strong>OpenAIConnector</strong> after the&nbsp;<strong>AttributeCreator</strong>. Open its parameters.</li>
@@ -228,17 +290,25 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>Click <strong>OK</strong>.&nbsp;</li>
 </ul>
 <p><img src="images/1785856769185.png" alt="" width="1042" height="419" /></p>
-<h3>6) Add a JSONFlattener</h3>
+<ul>
+<li><em>Optional: </em><strong>Run</strong> the OpenAIConnector and inspect the data cache in Data Preview.&nbsp;</li>
+<li><em>Optional:</em><strong> Save</strong> your workspace.&nbsp;</li>
+</ul>
+<h3>7) Add a JSONFlattener</h3>
 <p>To send output from the OpenAIConnector as attributes to the Call Tool MCPCaller, you need to parse the output JSON into attributes.</p>
 <ul>
 <li>Add a&nbsp;<strong>JSONFlattener</strong> and connect it to the OpenAIConnector&nbsp;<strong>Output</strong> port. Open its parameters.&nbsp;</li>
 <li>Leave the&nbsp;<strong>Input Source</strong> as&nbsp;<strong>JSON Document</strong> and set it to&nbsp;<strong>_output_text</strong>.&nbsp;</li>
 <li>Change&nbsp;<strong>Recursively Flatten Objects/Arrays</strong> to&nbsp;<strong>No</strong>.&nbsp;</li>
 <li>Click the ellipses for&nbsp;<strong>Attributes to Expose</strong> and add <strong>tool_name</strong> and&nbsp;<strong>tool_input</strong> as the attributes.</li>
-<li>Click&nbsp;<strong>OK</strong> twice to close the JSONFlattener parameters.&nbsp;</li>
 </ul>
 <p><img src="images/1785855843020.png" alt="" width="808" height="428" /></p>
-<h3>7) Edit the Call Tool MCPCaller</h3>
+<ul>
+<li>Click&nbsp;<strong>OK</strong> twice to close the JSONFlattener parameters.&nbsp;</li>
+<li><em>Optional: </em><strong>Run</strong> to the JSONFlattener and inspect the exposed attributes in <strong>Data Preview</strong>. In the next exercise, the MCPCaller will take these exposed attributes as input.&nbsp;</li>
+<li><em>Optional: </em><strong>Save</strong> your workspace.&nbsp;</li>
+</ul>
+<h3>8) Edit the Call Tool MCPCaller</h3>
 <p>Now, reference the tool_name and tool_input attributes with output from the OpenAIConnector to the MCPCaller that calls the MCP tools.&nbsp;</p>
 <ul>
 <li>Move the <strong>Call Tool MCPCaller</strong> and connect its Input to the <strong>JSONFlattener's Output</strong> port.</li>
@@ -253,7 +323,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>The Input Schema will now be blank, as the MCPCaller doesn't know which tool it will be calling.&nbsp;</li>
 </ul>
 </li>
-<li>Under Tool Input, set the&nbsp;<strong>JSON Text</strong> to the&nbsp;<strong>tool_input</strong> parameter.
+<li>Under Tool Input, set the&nbsp;<strong>JSON Text</strong> to the&nbsp;<strong>tool_input</strong> attribute.
 <ul>
 <li>Again, use the drop-down options and select the tool_input attribute value.&nbsp;</li>
 </ul>
@@ -263,7 +333,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <ul>
 <li>Click&nbsp;<strong>OK</strong> to close the window.&nbsp;</li>
 </ul>
-<h3>8) Add a JSONFragmenter</h3>
+<h3>9) Add a JSONFragmenter</h3>
 <p>The MCPCaller will return structured JSON containing the MCP tool's response. To extract specific values into attributes, you need to parse the JSON.</p>
 <ul>
 <li>Connect a&nbsp;<strong>JSONFragmenter</strong> to the Call Tool MCPCaller's <strong>Output</strong> port. Open its parameters.&nbsp;</li>
@@ -276,7 +346,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>Click <strong>OK</strong>.</li>
 </ul>
 <p><img src="images/1785794396736.png" alt="" width="489" height="537" /></p>
-<h3>9) Run the Workspace</h3>
+<h3>10) Run the Workspace</h3>
 <ul>
 <li><strong>Run</strong> the entire workspace. FME will prompt you for the user request to the MCP server.
 <ul>
@@ -286,8 +356,9 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </li>
 <li>Inspect output caches throughout your workspace to see how FME handles the request, input, and resulting data through the two MCP calls and the AI connector.&nbsp;Specifically, look at the&nbsp;<strong>JSONFragmenter's cache</strong> and the&nbsp;<strong>_ json_response</strong> attribute that contains the weather MCP response information.&nbsp;
 <ul>
-<li>To continue working with the data, you will need to do additional JSON extraction to get the weather information as FME attributes.&nbsp;</li>
+<li>To continue working with the data, you will need to do additional JSON extraction to get the weather information as FME attributes.</li>
 </ul>
 </li>
+<li><strong>Save</strong>&nbsp;your final workspace.&nbsp;</li>
 </ul>
 <p>You've successfully connected to Frank's weather MCP server, listed the server's available MCP tools, and called tools, both statically and dynamically. Throughout this exercise, you used FME as an MCP client, connecting to the MCP server and calling tools and receiving MCP responses.&nbsp;</p>

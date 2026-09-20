@@ -1,3 +1,44 @@
+<div>
+<style>
+.sj-cb{position:relative;margin:1em 0;}
+.sj-cb pre{background:#f7f7f5;border:1px solid #ecece8;border-radius:4px;margin:0;padding:14px 84px 14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:13px;line-height:1.55;color:#24292e;white-space:pre-wrap !important;overflow-wrap:break-word !important;word-break:break-word !important;overflow-x:visible !important;max-width:100%;box-sizing:border-box;tab-size:2;}
+.sj-cb pre code{font:inherit;background:none;padding:0;border:0;white-space:inherit;color:inherit;}
+.sj-cb-btn{position:absolute;top:8px;right:8px;z-index:2;padding:4px 10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.4;font-weight:500;color:#57534e;background:#fff;border:1px solid #dcdcd6;border-radius:4px;cursor:pointer;opacity:.85;transition:opacity .12s ease,background .12s ease;}
+.sj-cb-btn:hover{opacity:1;background:#f0f0ec;}
+.sj-cb-btn:focus-visible{outline:2px solid #2f6fd0;outline-offset:1px;opacity:1;}
+.sj-cb-btn[data-done]{color:#1a7f37;border-color:#b7dfc0;background:#f0fbf2;opacity:1;}
+@media (max-width:600px){.sj-cb pre{padding:40px 14px 14px;font-size:12px;}.sj-cb-btn{top:6px;right:6px;}}
+@media print{.sj-cb-btn{display:none;}}
+</style>
+</div>
+<p>
+<script>
+(function(){
+  if(window.__sjCodeBlocks)return; window.__sjCodeBlocks=true;
+  function textOf(p){var t=p.innerText||p.textContent||'';return t.replace(/^[ \t]*\r?\n/,'').replace(/(?:\r?\n[ \t]*)+$/,'');}
+  function flash(b,ok){b.textContent=ok?'Copied!':'Press Ctrl+C';b.setAttribute('data-done','');setTimeout(function(){b.textContent='Copy';b.removeAttribute('data-done');},1800);}
+  function legacy(b,t){var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(a);flash(b,ok);}
+  function copy(b,p){var t=textOf(p);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){flash(b,true);},function(){legacy(b,t);});}else{legacy(b,t);}}
+  function upgrade(pre){
+    if(!pre||pre.nodeType!==1||pre.tagName!=='PRE')return;
+    if(pre.getAttribute('data-sj-wired'))return;
+    if(pre.closest&&pre.closest('.sj-cb-skip'))return;
+    pre.setAttribute('data-sj-wired','1');
+    var w=pre.parentNode;
+    if(!w||!w.classList||!w.classList.contains('sj-cb')){w=document.createElement('div');w.className='sj-cb';pre.parentNode.insertBefore(w,pre);w.appendChild(pre);}
+    var b=w.querySelector('.sj-cb-btn');
+    if(!b){b=document.createElement('button');b.type='button';b.className='sj-cb-btn';b.setAttribute('aria-label','Copy code to clipboard');w.insertBefore(b,w.firstChild);}
+    b.textContent='Copy';
+    b.addEventListener('click',function(){copy(b,pre);});
+  }
+  function scan(r){var l=(r||document).querySelectorAll('pre');for(var i=0;i<l.length;i++)upgrade(l[i]);}
+  function init(){scan(document);
+    if(window.MutationObserver){new MutationObserver(function(m){for(var i=0;i<m.length;i++){var a=m[i].addedNodes;for(var j=0;j<a.length;j++){var n=a[j];if(n.nodeType!==1)continue;if(n.tagName==='PRE')upgrade(n);else scan(n);}}}).observe(document.body,{childList:true,subtree:true});}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</p>
 <h2 id="learning-objectives">Learning Objectives</h2>
 <p>After completing this lesson, you'll be able to:</p>
 <ul>
@@ -129,7 +170,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <p>The remaining settings on this page let you adjust specific job queue and expiry times for this tool.</p>
 <blockquote>
 <p><img src="images/safe_note.png" alt="Note" /></p>
-<p>You might notice that some workspaces have this icon <img src="images/1784756479852.png" alt="" width="30" height="30" /> next to them - it symbolizes a workspace that contains an MCP writer. Adding an MCP writer to your workspace allows the tool to return content to the MCP client. Without an MCP writer, FME Flow's MCP server only returns job status information. We will explore adding an MCP writer to a workspace in the next lesson.&nbsp;</p>
+<p>You might notice that some workspaces have this icon <img src="images/1784756479852.png" alt="" width="30" height="30" /> next to them - it symbolizes a workspace that contains an MCP writer. Adding an MCP writer to your workspace allows the tool to return content to the MCP client. Without an MCP writer, FME Flow's MCP server simply runs the workspace and returns job status information. We will explore adding an MCP writer to a workspace in the next lesson.&nbsp;</p>
 </blockquote>
 <p>Before finalizing your tool, you also need to provide descriptions for any workspace user parameters in the Parameters tab.&nbsp;User parameters in your workspace become tool parameters that take input to control how the MCP tool runs, exactly the same way user parameters take input from end-users to workspaces.&nbsp;</p>
 <p><img src="images/1784676226771.jpg" alt="" /></p>
@@ -171,6 +212,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>If a parameter has constrained inputs, list examples or indicate where you can find valid values</li>
 </ul>
 <p>Using AI to write your MCP names and descriptions is one of the easiest ways to ensure they're clear for another AI to understand. You can describe what the workflow is, describe the inputs and outputs, provide any restrictions, and tell AI that you need to write the description for MCP, and it will write it for you to copy. You should always double-check AI's work to make sure it's accurate too.&nbsp;&nbsp;</p>
+<p>For more on writing effective descriptions for using MCP with AI, check out our <a href="https://youtu.be/B1i8dmcqdOM?si=8S8t6HAlbz4e5raW" target="_blank" rel="noopener">TGIF: Thank Goodness It's FME video</a> on the topic.&nbsp;</p>
 </details>
 <h2>Authenticating MCP on FME Flow</h2>
 <p>MCP Servers on FME Flow currently support OAuth 2.0 authentication. To use OAuth 2.0 authentication, your FME Flow security must have SAML enabled and configured with your SAML identity provider's roles and users. You may set an MCP server's security when you create it, or from the Server Details page for an existing MCP server.&nbsp;</p>
@@ -179,7 +221,8 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <p><img src="images/1784581733476.jpg" alt="" /></p>
 <blockquote>
 <p><img src="images/safe_note.png" alt="Note" /></p>
-<p>To use OAuth 2.0 authentication with MCP Servers, you need to configure FME Flow with SAML authentication. For more information, see our article <a href="https://support.safe.com/hc/en-us/articles/25407741736333-Configuring-FME-Flow-for-SAML-Authentication" target="_self">Configuring FME Flow for SAML Authentication</a>.&nbsp;</p>
+<p>Here's a tutorial on <a href="https://support.safe.com/hc/en-us/articles/48750630455309-Tutorial-Setting-Up-OAuth-2-0-Authentication-for-FME-Flow-MCP-Servers" target="_blank" rel="noopener">Setting Up OAuth 2.0 Authentication for FME Flow MCP Servers</a>.&nbsp;</p>
+<p>Additionally, to use OAuth 2.0 authentication with MCP Servers, you need to configure FME Flow with SAML authentication. For more information, see our article <a href="https://support.safe.com/hc/en-us/articles/25407741736333-Configuring-FME-Flow-for-SAML-Authentication" target="_self">Configuring FME Flow for SAML Authentication</a>.&nbsp;</p>
 </blockquote>
 <h2>Connect to your MCP Server</h2>
 <p>Once you build and start your server and add and publish some tools, you're ready to use MCP clients to connect to your MCP server. Often, the MCP client is an AI that reads and calls tools from your MCP server; however, the MCP client could be another application, or even an FME workspace using the MCPCaller. The URL under the Server Details tab is the URL that MCP clients will use to connect to your server. For most clients, open the MCP connector settings, paste the URL in the appropriate location, add any other required configurations, and then use the client to call your MCP server on FME Flow and receive structured, consistent data back.&nbsp;</p>
@@ -188,15 +231,28 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <h2>Controlled AI Access</h2>
 <p>With MCP on FME Flow, AI never gets direct access to your data. Instead, AI only has the ability to call the workspace tool and process the results you choose to return from the FME workspace. FME is the guarding layer between AI and your data, controlling what AI can and cannot access, whether your data is in the cloud, on-premises, or hybrid.&nbsp;</p>
 <p><img src="images/1785275590766.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on MCP servers on FME Flow, check out these resources:</p>
+<p>&nbsp;</p>
+<ul>
+<li>TGIF: Thank Goodness It's FME <a href="https://youtu.be/1Wehoftaf4A?si=6_H7gRZAzAx_ExLH" target="_blank" rel="noopener">MCP Server for FME Flow</a> video</li>
+<li>Support's Favourite Features: <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://youtu.be/ilNkPpKF8v8?si=xhk5OgbWBlfGnCyM" target="_blank" rel="noopener">FME Flow MCP Server</a><span style="font-family: inherit; font-size: 1em; color: #222222;"> video</span></li>
+<li>FME Feature Demos: <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://youtu.be/rUi_Zz-h7vM?si=aerISx3tKf0iThco" target="_blank" rel="noopener">MCP Resources</a><span style="font-family: inherit; font-size: 1em; color: #222222;"> video</span></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://youtu.be/wBDgRJsPVwk?si=cVvq8l6OoJbpZ0cF" target="_blank" rel="noopener">Chaining Custom MCP Tools with AI Clients</a><span style="font-family: inherit; font-size: 1em; color: #222222;"> webinar demo</span></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://fme.safe.com/guides/spatial-computing/mcp-server-geospatial/" target="_self">MCP Server Geospatial: Tutorial &amp; Implementation</a><span style="font-family: inherit; font-size: 1em; color: #222222;"> article</span></li>
+<li>TGIF: Thank Goodness It's FME <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://youtu.be/DK4OtaQkPng?si=v7Kg20h5KYCdI1OK" target="_blank" rel="noopener">Databricks Agent - Databricks MCP Demo</a><span style="font-family: inherit; font-size: 1em; color: #222222;"> video</span></li>
+</ul>
+</blockquote>
 <h2>Exercise</h2>
 <p><img src="images/1785860734333.png" alt="" width="270" height="286" /></p>
-<p>Frank has already built his first workspace to deploy as an MCP tool on an FME Flow MCP server. The workspace is quite simple; it takes user input for maintenance requests and logs the request to an Excel file in FME Flow Resources. Other workflows or automations can trigger based on a file update, or the file can serve as source data. To get his MCP tool running, Frank needs to create and deploy an MCP server on FME Flow, then add his workspace as a tool and provide clear descriptions so an AI model may correctly call the tool from user input. Lastly, Frank wants to use an AI model in LM Studio as an MCP client to call his MCP tool. By using an AI model to process the user request, the user can input a string of text for the request, and the AI will assign the appropriate values to the input parameters for the MCP tool to run.&nbsp;</p>
+<p>Frank has already built his first workspace to deploy as an MCP tool on an FME Flow MCP server. The workspace is quite simple; it takes user input for maintenance requests and logs the request to an Excel file in FME Flow Resources. Other workflows or automations can trigger based on a file update, or the file can serve as source data. To get his MCP tool running, Frank needs to create and deploy an MCP server on FME Flow, then add his workspace as a tool and provide clear descriptions so an AI model may correctly call the tool from user input. Lastly, Frank wants to use an AI model (in LM Studio for this exercise) as an MCP client to call his MCP tool. By using an AI model to process the user request, the user can input a string of text for the request, and the AI will assign the appropriate values to the input parameters for the MCP tool to run.&nbsp;</p>
 <p>In this exercise, you will:</p>
 <ul>
 <li>Create an MCP server on FME Flow.</li>
 <li>Create an MCP tool with a workspace on FME Flow.&nbsp;</li>
-<li>Connect to your FME Flow MCP server from an AI model.&nbsp;</li>
-<li>Prompt an AI model to call an MCP tool to run on FME Flow.&nbsp;</li>
+<li>Connect to your FME Flow MCP server from an MCP client.&nbsp;</li>
+<li>Prompt an AI model in LM Studio to call an MCP tool to run on FME Flow.&nbsp;</li>
 </ul>
 <h3>1) Open and Log In to FME Flow</h3>
 <ul>
@@ -378,14 +434,14 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>Your tool will appear in the Tools list in the Not Published section.&nbsp;</li>
 </ul>
 </li>
-<li>Click&nbsp;<strong>Publish</strong>.&nbsp;</li>
+<li>Click&nbsp;<strong>Publish</strong>. FME Flow will prompt you to confirm you want to publish your tool, click <span style="font-weight: 400;"><strong>Save &amp; Publish</strong>.</span></li>
 </ul>
 <p><img src="images/1785878423777.png" alt="" width="1222" height="463" /></p>
 <p>Your tool is now available to any MCP client that successfully connects to your MCP server.</p>
 <h3>6) Start MCP Server</h3>
-<p>For your MCP server and its tools to become available to MCP clients, you also need to start the server.&nbsp;</p>
+<p>To make your MCP server and its tools available to MCP clients, you also need to start the server.&nbsp;</p>
 <ul>
-<li>Scroll up and click&nbsp;<strong>Start MCP Server</strong>.&nbsp;</li>
+<li>Scroll up and click&nbsp;<strong>Start MCP Server</strong>. FME Flow will ask if you're sure you want to start the server. Click <strong>Start Server</strong>.</li>
 </ul>
 <p><img src="images/1785951848922.png" alt="" width="1020" height="215" /></p>
 <h3>7) Connect to MCP Client</h3>
@@ -393,7 +449,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <ul>
 <li>Open <strong>LM Studio</strong>.&nbsp;</li>
 </ul>
-<p><img src="images/1785967463066.png" alt="" width="1100" height="1128" /></p>
+<p><img src="images/1789494615412.png" alt="" width="1069" height="862" /></p>
 <p>We've already configured LM Studio to connect to your FME Flow MCP Server, as long as your MCP server URL is <code>http://localhost/fmemcp/cov-utility-data/mcp</code>.</p>
 <p>If you're interested in how we configured LM Studio to connect to this MCP server, expand the section below for the steps we completed.&nbsp;</p>
 <div>
@@ -469,24 +525,31 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </div>
 </details>
 <ul>
-<li>Navigate to the&nbsp;<strong>Chats&nbsp;</strong>tab.</li>
-<li>Check the top bar for a model. If one is not loaded, select&nbsp;<strong>google/gemma-4-e4b</strong>.&nbsp;
+<li>Navigate to the&nbsp;<strong>Chats&nbsp;</strong>tab.
 <ul>
-<li>It will take a few moments to load the model.</li>
+<li>LM Studio should open to a new Unnamed Chat.&nbsp;</li>
 </ul>
 </li>
-<li>Select&nbsp;<strong>New Chat</strong>.&nbsp;</li>
+<li>Check in the message box for the <strong>gemma-4-e4b</strong> model.&nbsp;
+<ul>
+<li>If it's not selected, use the drop-down to select it. It will take a few moments to load.</li>
 </ul>
-<p><img src="images/1786045804196.png" alt="" /></p>
+</li>
+</ul>
+<p><img src="images/1789503402631.png" alt="" /></p>
 <ul>
-<li>Once a new chat session loads, open&nbsp;<strong>Integrations</strong> at the bottom of the message pane and ensure the&nbsp;<strong>cov-utility-data</strong> MCP server is enabled.&nbsp;
+<li>Next, check the message box for the <strong>cov-utility-data</strong> MCP server.&nbsp;&nbsp;</li>
+</ul>
+<p><img src="images/1789503867959.png" alt="" /></p>
 <ul>
-<li>LM Studio should list the MCP server in the message box once you enable it.&nbsp;</li>
+<li style="list-style-type: none;">
+<ul>
+<li>If the&nbsp;<strong>cov-utility-data</strong> MCP server is not listed in the message box, open&nbsp;<strong>Integrations&nbsp;</strong>and ensure the&nbsp;<strong>cov-utility-data</strong> MCP server is enabled.&nbsp;</li>
 <li>If the&nbsp;<strong>mcp/cov-utility-data</strong> option is missing from Integrations, check the mcp.json file following the instructions above.&nbsp;</li>
 </ul>
 </li>
 </ul>
-<p><img src="images/1786053467867.png" alt="" /> &nbsp; <img src="images/1786053486059.png" alt="" /></p>
+<p>&nbsp; <img src="images/1789504060216.png" alt="" /></p>
 <h3>8) Call MCP Tool</h3>
 <ul>
 <li>In the chat box, send a message to the AI model describing a maintenance request. You may enter your own request or copy the one below.</li>
@@ -495,7 +558,8 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <ul>
 <li>Send the message to the model.&nbsp;
 <ul>
-<li>The model should process your message and call the log-maintenance-request MCP tool.</li>
+<li>The model should process your message and call the log-maintenance-request MCP tool. You can watch the model's thought process as it analyses your request, selects which MCP tool to use, and populates the input parameters for the MCP tool.&nbsp;</li>
+<li>If the model asks you whether to call the log-maintenance-request tool, click&nbsp;<strong>Proceed</strong>.&nbsp;</li>
 <li>Results and response time will vary across different AI models. This model is running locally on the lab machine, which may cause some response time delays.&nbsp;</li>
 <li>If some information is missing from the required tool input, the AI model may ask you to confirm the missing values or use the default values. Again, results may differ across different AI models.&nbsp;</li>
 </ul>
@@ -503,9 +567,9 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </ul>
 <p><img src="images/1786055157105.png" alt="" /></p>
 <h3>9) Check Tool Results</h3>
-<p>Each time you call an MCP tool, the tool runs a workspace, which is traceable as a normal FME Flow job.&nbsp;</p>
+<p>Each time you call an MCP tool, the tool runs a workspace, which you can trace like a normal FME Flow job.&nbsp;</p>
 <ul>
-<li>Navigate back to <strong>FME Flow</strong> and open <strong>Jobs</strong>.&nbsp;</li>
+<li>Navigate back to <strong>FME Flow</strong> in Firefox and open <strong>Jobs</strong>.&nbsp;</li>
 <li>Under&nbsp;<strong>Completed</strong> jobs, you should see the NewMaintenanceRequest workspace ran, confirming you successfully called an MCP tool using the AI model as the MCP client.</li>
 </ul>
 <p><img src="images/1786055543881.png" alt="" width="1148" height="144" /></p>

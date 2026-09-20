@@ -1,3 +1,44 @@
+<div>
+<style>
+.sj-cb{position:relative;margin:1em 0;}
+.sj-cb pre{background:#f7f7f5;border:1px solid #ecece8;border-radius:4px;margin:0;padding:14px 84px 14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:13px;line-height:1.55;color:#24292e;white-space:pre-wrap !important;overflow-wrap:break-word !important;word-break:break-word !important;overflow-x:visible !important;max-width:100%;box-sizing:border-box;tab-size:2;}
+.sj-cb pre code{font:inherit;background:none;padding:0;border:0;white-space:inherit;color:inherit;}
+.sj-cb-btn{position:absolute;top:8px;right:8px;z-index:2;padding:4px 10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.4;font-weight:500;color:#57534e;background:#fff;border:1px solid #dcdcd6;border-radius:4px;cursor:pointer;opacity:.85;transition:opacity .12s ease,background .12s ease;}
+.sj-cb-btn:hover{opacity:1;background:#f0f0ec;}
+.sj-cb-btn:focus-visible{outline:2px solid #2f6fd0;outline-offset:1px;opacity:1;}
+.sj-cb-btn[data-done]{color:#1a7f37;border-color:#b7dfc0;background:#f0fbf2;opacity:1;}
+@media (max-width:600px){.sj-cb pre{padding:40px 14px 14px;font-size:12px;}.sj-cb-btn{top:6px;right:6px;}}
+@media print{.sj-cb-btn{display:none;}}
+</style>
+</div>
+<p>
+<script>
+(function(){
+  if(window.__sjCodeBlocks)return; window.__sjCodeBlocks=true;
+  function textOf(p){return p.innerText||p.textContent||'';}
+  function flash(b,ok){b.textContent=ok?'Copied!':'Press Ctrl+C';b.setAttribute('data-done','');setTimeout(function(){b.textContent='Copy';b.removeAttribute('data-done');},1800);}
+  function legacy(b,t){var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(a);flash(b,ok);}
+  function copy(b,p){var t=textOf(p);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){flash(b,true);},function(){legacy(b,t);});}else{legacy(b,t);}}
+  function upgrade(pre){
+    if(!pre||pre.nodeType!==1||pre.tagName!=='PRE')return;
+    if(pre.getAttribute('data-sj-wired'))return;
+    if(pre.closest&&pre.closest('.sj-cb-skip'))return;
+    pre.setAttribute('data-sj-wired','1');
+    var w=pre.parentNode;
+    if(!w||!w.classList||!w.classList.contains('sj-cb')){w=document.createElement('div');w.className='sj-cb';pre.parentNode.insertBefore(w,pre);w.appendChild(pre);}
+    var b=w.querySelector('.sj-cb-btn');
+    if(!b){b=document.createElement('button');b.type='button';b.className='sj-cb-btn';b.setAttribute('aria-label','Copy code to clipboard');w.insertBefore(b,w.firstChild);}
+    b.textContent='Copy';
+    b.addEventListener('click',function(){copy(b,pre);});
+  }
+  function scan(r){var l=(r||document).querySelectorAll('pre');for(var i=0;i<l.length;i++)upgrade(l[i]);}
+  function init(){scan(document);
+    if(window.MutationObserver){new MutationObserver(function(m){for(var i=0;i<m.length;i++){var a=m[i].addedNodes;for(var j=0;j<a.length;j++){var n=a[j];if(n.nodeType!==1)continue;if(n.tagName==='PRE')upgrade(n);else scan(n);}}}).observe(document.body,{childList:true,subtree:true});}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</p>
 <h2 id="learning-objectives">Learning Objectives</h2>
 <p>After completing this lesson, you'll be able to:</p>
 <ul>
@@ -41,7 +82,7 @@
 <p>The List Tools request returns a list of all available MCP tools from the server. It is a discovery inquiry about the MCP server you are working with and is the best place to start when working with MCP. Running a List Tools request confirms that the MCPCaller can connect to the server and returns the currently available tool names, descriptions, and schemas.</p>
 <p>List Tools requires no additional input beyond setting the MCP server to query; however, the Advanced options let you control whether the MCPCaller returns each tool as an individual record or combines them into a single list.&nbsp;</p>
 <p><img src="images/1784231574798.jpg" alt="" /></p>
-<p>The output from the MCPCaller List Tools includes the tool name, title, description, and JSON schemas for input and output. The List Tools results allow you or an AI model to analyze which tool best performs the task you need and which inputs you require to run the tool.&nbsp;</p>
+<p>The output from the MCPCaller List Tools includes the tool name, title, description, and JSON schemas for input and output. You may send the List Tools results to an AI Connector transformer or local AI model to analyze which tool best performs the task you need and which inputs you require to run the tool.&nbsp;</p>
 <p><img src="images/1784232209936.jpg" alt="" /></p>
 <h2>Call Tool</h2>
 <p>The Call Tool method requests the MCP server to run the tool you specify. If the MCPCaller has multiple inputs, it will make multiple Call Tool requests, one for each input record. If you don't provide input to the MCPCaller, it makes the Call Tool request only once and outputs a single record.&nbsp;</p>
@@ -49,9 +90,19 @@
 <p><img src="images/1784238703741.jpg" alt="" /></p>
 <p>The output from a Call Tool request creates a _data attribute containing the tool call's results in JSON. You can further parse the JSON into attributes with the JSONFragmenter to continue working with the MCP output in your workspace.&nbsp;</p>
 <p><img src="images/1784237987047.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on working with JSON in FME, check out these resources:</p>
+<ul>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407515641997-Tutorial-Getting-Started-with-JSON" target="_blank" rel="noopener">Tutorial: Getting Started with JSON </a></li>
+<li><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://support.safe.com/hc/en-us/articles/25407515351949-Transforming-JSON-using-the-JSONExtractor-JSONFlattener-and-JSONFragmenter" target="_blank" rel="noopener">Transforming JSON using the JSONExtractor, JSONFlattener, and JSONFragmenter</a></li>
+</ul>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>To see a complete MCPCaller workflow integration with ArcGIS, check out our TGIF: Thank Goodness It's FME video on <a href="https://youtu.be/JNryZU6Xl-8?si=R2gbP3ouVxdqCluV" target="_blank" rel="noopener">Bringing ArcGIS Tools into FME with the MCPCaller</a>.</p>
+</blockquote>
 <h2>Exercise</h2>
 <p><img src="images/1785773187333.png" alt="" width="270" height="286" /></p>
-<p>To start working with MCP and FME, Frank will connect to an existing weather MCP server using the MCPCaller in FME Workbench. He'll use the MCPCaller to discover what tools his MCP server provides and call a tool to return weather data and information. Eventually, Frank can integrate this workspace alongside his future utility data MCP server to provide real-time weather metrics with some of the utility data workflows.&nbsp;</p>
+<p>To start working with MCP and FME, Frank will connect to an existing weather MCP server using the MCPCaller in FME Workbench. He'll use the MCPCaller to discover what tools his MCP server provides using List Tools, then use another MCPCaller to manually call a tool to return weather data and information. Frank won't connect these MCPCallers, as he's just exploring each call individually. In the next lesson, he'll build on these with an AI model that chooses the right tool based on user input.</p>
 <p>In this exercise, you will:</p>
 <ul>
 <li>Connect to an MCP server and list its available tools with the MCPCaller transformer.</li>
@@ -111,10 +162,11 @@
 </ul>
 <p><img src="images/1785790352993.png" alt="" width="1150" height="485" /></p>
 <ul>
-<li>For&nbsp;<strong>JSON Text</strong>, use the drop-down arrow to select&nbsp;<strong>Open JSON Editor...</strong></li>
+<li>Scroll down to the&nbsp;<strong>Tool Input</strong> section. For&nbsp;<strong>JSON Text</strong>, use the drop-down arrow to select <strong>Open JSON Editor...</strong></li>
 <li>Replace the current text in the editor with the following JSON.&nbsp;</li>
 </ul>
-<pre class="language-markup"><code>{
+<div class="sj-cb"><button class="sj-cb-btn" type="button" aria-label="Copy code to clipboard">JS off</button>
+<pre class="language-markup" data-sj-cb="1"><code>{
 	"current_weather": true,
 	"forecast_days": 7,
 	"latitude": 49.2827,
@@ -123,8 +175,8 @@
 	"temperature_unit": "celsius",
 	"timezone": "America/Vancouver",
 	"wind_speed_unit": "kmh"
-}
-</code></pre>
+}</code></pre>
+</div>
 <div>
 <style>
 details {
@@ -215,4 +267,14 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </li>
 </ul>
 <p><img src="images/1785791758382.png" alt="" width="1500" height="579" /></p>
+<h3>4) Save Workspace</h3>
+<ul>
+<li><strong>Save</strong> your in-progress workspace.
+<ul>
+<li>You can save your workspace to C://FMEData/Workspaces/MCPandFME.&nbsp;</li>
+<li>You will continue with this workspace in the next exercise.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1789419545533.png" alt="" /></p>
 <p>So far, you've successfully connected to the weather MCP server, viewed its available tools, and called a tool directly with the MCPCaller. In the next lesson, you'll build on this by using an OpenAIConnector to dynamically select and call MCP tools based on user input, rather than configuring each tool call manually.</p>

@@ -1,3 +1,44 @@
+<div>
+<style>
+.sj-cb{position:relative;margin:1em 0;}
+.sj-cb pre{background:#f7f7f5;border:1px solid #ecece8;border-radius:4px;margin:0;padding:14px 84px 14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:13px;line-height:1.55;color:#24292e;white-space:pre-wrap !important;overflow-wrap:break-word !important;word-break:break-word !important;overflow-x:visible !important;max-width:100%;box-sizing:border-box;tab-size:2;}
+.sj-cb pre code{font:inherit;background:none;padding:0;border:0;white-space:inherit;color:inherit;}
+.sj-cb-btn{position:absolute;top:8px;right:8px;z-index:2;padding:4px 10px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.4;font-weight:500;color:#57534e;background:#fff;border:1px solid #dcdcd6;border-radius:4px;cursor:pointer;opacity:.85;transition:opacity .12s ease,background .12s ease;}
+.sj-cb-btn:hover{opacity:1;background:#f0f0ec;}
+.sj-cb-btn:focus-visible{outline:2px solid #2f6fd0;outline-offset:1px;opacity:1;}
+.sj-cb-btn[data-done]{color:#1a7f37;border-color:#b7dfc0;background:#f0fbf2;opacity:1;}
+@media (max-width:600px){.sj-cb pre{padding:40px 14px 14px;font-size:12px;}.sj-cb-btn{top:6px;right:6px;}}
+@media print{.sj-cb-btn{display:none;}}
+</style>
+</div>
+<p>
+<script>
+(function(){
+  if(window.__sjCodeBlocks)return; window.__sjCodeBlocks=true;
+  function textOf(p){var t=p.innerText||p.textContent||'';return t.replace(/^[ \t]*\r?\n/,'').replace(/(?:\r?\n[ \t]*)+$/,'');}
+  function flash(b,ok){b.textContent=ok?'Copied!':'Press Ctrl+C';b.setAttribute('data-done','');setTimeout(function(){b.textContent='Copy';b.removeAttribute('data-done');},1800);}
+  function legacy(b,t){var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(a);flash(b,ok);}
+  function copy(b,p){var t=textOf(p);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){flash(b,true);},function(){legacy(b,t);});}else{legacy(b,t);}}
+  function upgrade(pre){
+    if(!pre||pre.nodeType!==1||pre.tagName!=='PRE')return;
+    if(pre.getAttribute('data-sj-wired'))return;
+    if(pre.closest&&pre.closest('.sj-cb-skip'))return;
+    pre.setAttribute('data-sj-wired','1');
+    var w=pre.parentNode;
+    if(!w||!w.classList||!w.classList.contains('sj-cb')){w=document.createElement('div');w.className='sj-cb';pre.parentNode.insertBefore(w,pre);w.appendChild(pre);}
+    var b=w.querySelector('.sj-cb-btn');
+    if(!b){b=document.createElement('button');b.type='button';b.className='sj-cb-btn';b.setAttribute('aria-label','Copy code to clipboard');w.insertBefore(b,w.firstChild);}
+    b.textContent='Copy';
+    b.addEventListener('click',function(){copy(b,pre);});
+  }
+  function scan(r){var l=(r||document).querySelectorAll('pre');for(var i=0;i<l.length;i++)upgrade(l[i]);}
+  function init(){scan(document);
+    if(window.MutationObserver){new MutationObserver(function(m){for(var i=0;i<m.length;i++){var a=m[i].addedNodes;for(var j=0;j<a.length;j++){var n=a[j];if(n.nodeType!==1)continue;if(n.tagName==='PRE')upgrade(n);else scan(n);}}}).observe(document.body,{childList:true,subtree:true});}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</p>
 <h2 id="learning-objectives">Learning Objectives</h2>
 <p>After completing this lesson, you'll be able to:</p>
 <ul>
@@ -178,7 +219,7 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>Connect the&nbsp;<strong>Text Content</strong> writer feature type to the&nbsp;<strong>AttributeCreator's Output</strong> port.&nbsp;</li>
 <li><em>Optional</em>: Run the workspace to test it.&nbsp;<br />
 <ul>
-<li>FME will write the text output as JSON to C:\FMEData\Output\mcp_output.json.</li>
+<li>FME will write the text output as JSON to C:\FMEData\Output\mcp_output.json. This JSON file is for testing the output that would be sent to the MCP client when this workspace runs as part of an MCP tool request. The text output is in the JSON, and MCP clients interpret it to extract the text content. <span style="font-weight: 400;">Once published to Flow, it will not write JSON here; instead, it will pass it to the client.</span></li>
 </ul>
 </li>
 </ul>
@@ -244,7 +285,11 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <h3>7) Call MCP Tool</h3>
 <ul>
 <li>Navigate to&nbsp;<strong>LM Studio</strong>.&nbsp;</li>
-<li>In a chat with the&nbsp;<strong>cov-utility-mcp</strong> server enabled, ask a question that would call your new tool to run.&nbsp;</li>
+<li>In a chat with the&nbsp;<strong>cov-utility-data</strong>&nbsp;server enabled, ask a question that would call your new tool to run.&nbsp;</li>
 </ul>
 <p><img src="images/1786400977216.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>This request may take a long time to run in LM Studio. This is due to the small size of the AI model we're using in LM Studio for training. Better AI models will run faster and process requests more accurately. You can inspect FME Flow's Jobs page, like in the last exercise, to see how long it took FME to process the workspace as part of the MCP tool.&nbsp;</p>
+</blockquote>
 <p>You've now built an MCP tool that returns data or information from the workspace to the MCP tool using the MCP writer. You can control what information is sent back to the MCP client without granting it access to the entire dataset.&nbsp;</p>

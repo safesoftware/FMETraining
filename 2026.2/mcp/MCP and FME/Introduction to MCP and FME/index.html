@@ -181,6 +181,10 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 </tbody>
 </table>
 <p>You may also come across Agent-to-Agent (A2A) protocols in conversations about AI. These address a different problem: how agents coordinate and delegate work to one another, rather than accessing tools. A2A and MCP complement each other, as MCP provides the standard protocol for agents to interact with and process your data.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For a better understanding of when to use MCP, check out our <a href="https://fme.safe.com/guides/ai-agent-architecture/model-context-protocol-use-cases/" target="_blank" rel="noopener">Model Context Protocol Use Cases</a> article.</p>
+</blockquote>
 <h2><span style="font-weight: 400;">FME as an MCP Client</span></h2>
 <p class="font-claude-response-body break-words whitespace-normal">When FME acts as an MCP client, it uses the MCPCaller transformer to connect to external MCP servers from within a workspace. The MCPCaller can discover the tools a server exposes and call them directly, returning the results to the workspace&mdash;where you can process, transform, or write the data like any other FME data.</p>
 <p class="font-claude-response-body break-words whitespace-normal"><span style="font-weight: 400;"><img src="images/1784148610942.png" alt="" /></span></p>
@@ -189,8 +193,12 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <p class="font-claude-response-body break-words whitespace-normal">FME Flow can act as an MCP server by exposing FME workspaces as callable tools. When you register a workspace as an MCP tool, any MCP-compatible client (Claude, ChatGPT, LM Studio, another AI agent, or another non-AI application) can discover it and run it by sending the required inputs. The workspace's user parameters become the tool's inputs, specifying what the client must provide when calling the tool. FME Flow handles execution, keeping AI from directly accessing your databases and systems.&nbsp;</p>
 <p class="font-claude-response-body break-words whitespace-normal"><span style="font-weight: 400;"><img src="images/1784148675832.png" alt="" /></span></p>
 <p class="font-claude-response-body break-words whitespace-normal">This is what makes FME workflows available to AI-driven systems. Instead of manually running a workspace in FME Flow, an AI agent can find the tool, understand what it does from its description, decide when to use it, and call it as part of a larger task &mdash; all through the MCP standard.</p>
-<h2 class="font-claude-response-body break-words whitespace-normal">Exercise</h2>
+<h2 class="font-claude-response-body break-words whitespace-normal">Course Scenario</h2>
 <p><img src="images/1785772555750.png" alt="" width="270" height="286" /></p>
-<p>Frank is a GIS administrator for the City of Vancouver; he also administers the city's FME Flow. Frank frequently encounters requests for city data workflows to support routine operations from many departments. Frank frequently receives requests for workflows to support the city's utilities operations, ranging from supplying critical data to processing public requests for action. To more easily support these workflows and requests, while keeping important and confidential city data safe and secure, Frank is working to deploy an MCP server using FME. Frank's MCP server will support new and existing utility data workflows and extend the city's workflows to an easily accessible chat window.&nbsp;</p>
-<p>Throughout this course, you will build a City of Vancouver utility data MCP server on FME Flow. The server will expose city data as callable tools that report cell signal quality in each neighborhood, public trees near addresses, and submit infrastructure maintenance requests. You will use an AI model in LM Studio to query the server for this information and run the workflows without accessing the underlying data directly. Before you begin on FME Flow, you will also use the MCPCaller transformer to connect FME to an external weather MCP server, eventually combining live weather data with the city utility data.&nbsp;</p>
-<p>Before you start the exercises, answer the following questions based on what you've learned about MCP and FME in this lesson.&nbsp;</p>
+<p>Frank is a GIS administrator for the City of Vancouver and manages the city's FME Flow. City departments regularly request workflows from him to supply critical utility data and process public infrastructure requests. Frank wants to deploy an MCP server on FME Flow to support these workflows while keeping city data secure and accessible through a chat interface.</p>
+<p>In this course, you will:</p>
+<ul>
+<li>Connect FME to an external weather MCP server using the MCPCaller transformer.</li>
+<li>Build an MCP server on FME Flow that exposes utility data tools for cell signal quality, public trees, and infrastructure maintenance requests.</li>
+<li>Query your MCP server using an AI model in LM Studio.</li>
+</ul>
