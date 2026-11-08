@@ -1,0 +1,354 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Describe what dynamic parameters change about an app at runtime.</li>
+<li>Distinguish the different methods for populating workspace app parameters.</li>
+<li>Read a parameter configuration and identify which part of the JSON produces which part of the form.</li>
+<li>Configure an app to load its parameter configuration from a JSON file in Resources.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Describe what dynamic parameters change about an app at runtime.</li>
+<li>Distinguish the different methods for populating workspace app parameters.</li>
+<li>Read a parameter configuration and identify which part of the JSON produces which part of the form.</li>
+<li>Configure an app to load its parameter configuration from a JSON file in Resources.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TrafficEvents.fmw" target="_self">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TrafficEvents.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/CreateDataIntegrationApps/traffic_parameters.json" target="_blank" rel="noopener">traffic_parameters.json</a> | C:\FMEData\Resources\CreateDataIntegrationApps\traffic_parameters.json</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Dynamic Parameters</h2>
+<p>So far, the user parameters you have used in the training are&nbsp;<strong>static</strong>, meaning the parameter settings, including choice options and default values, are set when you create the workspace and workspace app.&nbsp;FME Flow workspace apps also support <strong>dynamic </strong>parameters, where you can set user parameter settings and default values that differ and are set dynamically when the app loads or from an external source. Dynamic parameters add flexible app configurations and give users the most up-to-date parameter data when they access your app. By dynamically configuring the parameters from an external source, one app can serve multiple audiences, and parameter choices and defaults can be maintained by whoever owns the data rather than workspace authors. For the person using the app, this shows up as a shorter, more accurate form: a preset default is one less decision they have to make, and a choice list built from current data means they cannot pick an option that no longer returns anything.&nbsp;</p>
+<p>Dynamic parameters let a JSON schema dynamically change default values or available choice options for user parameters at runtime. The app author is responsible for linking the JSON schema to an app when creating the app, using the Dynamic Parameter Configuration section. The workspace app may load the JSON schema at launch from an external source, or directly from the URL the app launches with.&nbsp;</p>
+<p><img src="images/1792360876617.png" alt="" /></p>
+<h2>URL-Based Configuration</h2>
+<p>This option uses the app URL to pass URL-encoded JSON parameter configurations when launching the app. The URL must supply the configuration for the allowed parameters through a query string parameter named dynamicParameterData.</p>
+<p>URL-based configuration is most useful for bookmarking app configurations, chaining workspace apps together, or loading app defaults when launching the app from an external application.&nbsp;</p>
+<p><img src="images/1792360890618.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>We will return to cover URL-based dynamic parameter configurations in the Set Parameters with Query Strings lesson.&nbsp;</p>
+</blockquote>
+<h2>Configuration Loading at Launch</h2>
+<p>This option enables FME Flow workspace apps to pull dynamic parameter data from external sources when the app loads. As of FME 2026.1, workspace apps support loading the JSON schema for parameter configurations from:&nbsp;</p>
+<ul>
+<li><strong>Resource:</strong> a JSON file stored in FME Flow Resources.&nbsp;</li>
+<li><strong>Workspace:</strong> a workspace that returns the required JSON.&nbsp;</li>
+<li><strong>URL:</strong> a web address that links to the JSON, such as an external web service or <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Data-Virtualization.htm" target="_blank" rel="noopener">Data Virtualization</a><span style="font-family: inherit; font-size: 1em;"> endpoint.</span>&nbsp;</li>
+</ul>
+<p>To configure these, the app author selects the data source and provides the URL, Resources file, or workspace that sources the JSON. When the app loads, it reads the JSON schema and populates the parameter options or default values accordingly.&nbsp;</p>
+<p><img src="images/1792425811862.png" alt="" /></p>
+<p>Loading app parameter configurations at app launch lets you link multiple FME workflows and control parameter options or values. For example, you may have an FME Flow automation that triggers in response to an external event and writes a dynamic parameter configuration based on the event to a JSON file in Resources.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>The workspace that pulls the dynamic parameter configuration is different from the workspace the app runs in, so you will use two workspaces to configure a workspace app that launches with dynamic parameters from a workspace. The next lesson, Populate App Parameters from a Workspace, will cover how to use a workspace to supply dynamic parameters to an app.&nbsp;</p>
+</blockquote>
+<p>To confirm whether your parameter configuration will work, you can test and preview the parameter source while building your workspace app. Test displays the parameter configuration the data source currently returns, and Preview shows the parameters as they would appear in the app.&nbsp;</p>
+<p><img src="images/1792363249801.png" alt="" /></p>
+<h2>Dynamic Parameter JSON Configuration</h2>
+<p>The JSON array for dynamic parameter configuration contains one object per parameter you want to control. Each object names the parameter and then sets its default value, its choices, or both:</p>
+<pre><code>[
+  {
+    "name" : "date",
+    "defaultValue" : "20260519"
+  },
+  {
+    "name" : "event_type",
+    "defaultValue" : "HAZARD",
+    "choices" : [
+      { "display" : "Hazard",      "value" : "HAZARD" },
+      { "display" : "Ice Covered", "value" : "ICE_COVERED" }
+    ]
+  }
+]</code></pre>
+<p>The <code>name</code> has to match the parameter's identifier in the workspace, or FME ignores the object and the configuration. The <code>display</code> is what the user sees and <code>value</code> is what the workspace receives, similar to creating options for the user parameter manually. Any parameter the JSON doesn't mention keeps whatever the workspace already set for the parameter.</p>
+<p>Whether the source is a URL, Resource file, or workspace, the JSON schema must follow this structure to successfully populate the parameters dynamically. To help with the JSON schema, the dynamic parameters guide explains the schema and generates starting JSON arrays for each source type.&nbsp;</p>
+<p><img src="images/1792362613851.png" alt="" width="979" height="822" /></p>
+<p>&nbsp;</p>
+<h2>Exercise</h2>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer, a GIS Specialist, has created a workspace app that maps traffic events and alerts in British Columbia using <a href="https://api.open511.gov.bc.ca/help" target="_blank" rel="noopener">DriveBC's Open511 API</a>. You may filter the events by date, event type, and region. Currently, the app uses choice options Jennifer set up when she created the workspace. However, Jennifer's list of choice options doesn't include all the values you can filter for using the API. Rather than editing the workspace each time the API's options change, she wants the choice list to come from a JSON file she or a colleague can edit and update.</p>
+<p><img src="images/1791490750615.png" alt="" /></p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Configure dynamic parameters for a workspace app.</li>
+<li>Load that configuration from a JSON file in Resources.</li>
+<li>Run the workspace app with and without dynamic parameter configurations.</li>
+</ul>
+<h3>1) Run Workspace App</h3>
+<p>Jennifer has already created the workspace app in FME Flow. It uses the data streaming service and displays the web map of filtered traffic events directly in the browser.</p>
+<ul>
+<li>Navigate to&nbsp;<strong>FME Flow</strong> and open&nbsp;<strong>Flow Apps</strong>.<strong>&nbsp;</strong></li>
+<li>Under the&nbsp;<strong>Workspace Apps</strong> tab, find the&nbsp;<strong>BCTrafficEvents</strong> app and click the icon in the <strong>View</strong> column to open the app.&nbsp;</li>
+</ul>
+<p><img src="images/1791482939826.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The app loads in another browser tab.</li>
+</ul>
+</li>
+<li>Interact with the parameters to see the event-filtering options.&nbsp;
+<ul>
+<li>The Filter by Date parameter uses a calendar to select a date.&nbsp;The Filter by Event Type only lists four possible traffic events to filter by.&nbsp;The Filter by Region includes the Lower Mainland, Rocky Mountain, and Vancouver Island districts.&nbsp;</li>
+<li>The current options in the app don't fully capture the available event types and regions available through the Open511 API.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791483266255.png" alt="" /></p>
+<h3>2) Inspect Configuration JSON File</h3>
+<p>The JSON file with new parameter configurations is already on FME Flow for the workspace app to reference.&nbsp;</p>
+<ul>
+<li>Close the app tab and return to the FME Flow tab.</li>
+<li>Open <strong>Resources</strong> and browse to the <strong>Data </strong>folder.</li>
+<li>Open the&nbsp;<strong>Configurations</strong> folder.&nbsp;</li>
+</ul>
+<p><img src="images/1791484129542.png" alt="" /></p>
+<ul>
+<li>Click the <strong>traffic_parameters.json</strong> file in that folder.</li>
+</ul>
+<p><img src="images/1792179739695.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The JSON file lists a default date value, different choice options for the traffic event type, and additional districts in BC to filter events.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1792433432747.png" alt="" /></p>
+<h3>3) Enable and Configure Dynamic App Parameters</h3>
+<ul>
+<li>Return to <strong>Flow Apps&nbsp;</strong>and the&nbsp;<strong>Workspace Apps</strong> tab.&nbsp;</li>
+<li>Click on the&nbsp;<strong>BCTrafficEvents</strong> app to edit it.&nbsp;</li>
+</ul>
+<p><img src="images/1791485144498.png" alt="" /></p>
+<ul>
+<li>Scroll down and expand&nbsp;<strong>Dynamic Parameter Configuration</strong>.</li>
+<li>Toggle on the&nbsp;<strong>Enable Dynamic Parameters</strong> option.&nbsp;</li>
+</ul>
+<p><img src="images/1791485268068.png" alt="" /></p>
+<ul>
+<li>Under&nbsp;<strong>App Launch Settings</strong>, toggle on <strong>Enable Configuration Loading at Launch</strong>.&nbsp;</li>
+<li>Set the&nbsp;<strong>Data Source</strong> to&nbsp;<strong>Resource</strong>.&nbsp;</li>
+<li>For <strong>Resource</strong>, click <strong>Browse Resources</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1791486016912.png" alt="" /></p>
+<ul>
+<li>Select the <strong>traffic_parameters.json</strong> file in&nbsp;<strong>Resources/Data/Configurations</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1793392991438.png" alt="" /></p>
+<ul>
+<li><em>Optional</em>: Click&nbsp;<strong>Test</strong> to see that FME Flow successfully loads the parameter configurations from the JSON file. You can also&nbsp;<strong>Preview</strong> how the parameters look and behave as user parameters in the FME Flow interface.&nbsp;</li>
+</ul>
+<p><img src="images/1792433866076.png" alt="" width="920" height="703" /></p>
+<ul>
+<li>Scroll to the bottom of the page and click&nbsp;<strong>Save</strong>.&nbsp;</li>
+</ul>
+<h3>4)&nbsp;Run the App</h3>
+<ul>
+<li>Click&nbsp;<strong>View App</strong> to reopen the app.
+<ul>
+<li>If you still have the app open from step 1, refresh the browser tab.&nbsp;</li>
+<li>When the app loads, the default date matches the date set in the JSON file, and the event type and region parameters display all the options through the Open511 API.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791487896043.png" alt="" /></p>
+<ul>
+<li>Select <strong>today's date</strong>, some event types and regions, then <strong>Run</strong> the app.&nbsp;
+<ul>
+<li>If the date you select is too old, the workspace will error.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791487960663.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The app uses the data streaming service and outputs an HTML report with an interactive map to select road alert records and view more information.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791488090214.png" alt="" /></p>
+<p>Jennifer's app can now supply default values and parameter choices from a JSON file, and they update as the file changes.&nbsp;</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TrafficEvents.fmw" target="_self">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TrafficEvents.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/CreateDataIntegrationApps/traffic_parameters.json" target="_blank" rel="noopener">traffic_parameters.json</a> | C:\FMEData\Resources\CreateDataIntegrationApps\traffic_parameters.json</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Dynamic Parameters</h2>
+<p>So far, the user parameters you have used in the training are&nbsp;<strong>static</strong>, meaning the parameter settings, including choice options and default values, are set when you create the workspace and workspace app.&nbsp;FME Flow workspace apps also support <strong>dynamic </strong>parameters, where you can set user parameter settings and default values that differ and are set dynamically when the app loads or from an external source. Dynamic parameters add flexible app configurations and give users the most up-to-date parameter data when they access your app. By dynamically configuring the parameters from an external source, one app can serve multiple audiences, and parameter choices and defaults can be maintained by whoever owns the data rather than workspace authors. For the person using the app, this shows up as a shorter, more accurate form: a preset default is one less decision they have to make, and a choice list built from current data means they cannot pick an option that no longer returns anything.&nbsp;</p>
+<p>Dynamic parameters let a JSON schema dynamically change default values or available choice options for user parameters at runtime. The app author is responsible for linking the JSON schema to an app when creating the app, using the Dynamic Parameter Configuration section. The workspace app may load the JSON schema at launch from an external source, or directly from the URL the app launches with.&nbsp;</p>
+<p><img src="images/1792360876617.png" alt="" /></p>
+<h2>URL-Based Configuration</h2>
+<p>This option uses the app URL to pass URL-encoded JSON parameter configurations when launching the app. The URL must supply the configuration for the allowed parameters through a query string parameter named dynamicParameterData.</p>
+<p>URL-based configuration is most useful for bookmarking app configurations, chaining workspace apps together, or loading app defaults when launching the app from an external application.&nbsp;</p>
+<p><img src="images/1792360890618.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>We will return to cover URL-based dynamic parameter configurations in the Set Parameters with Query Strings lesson.&nbsp;</p>
+</blockquote>
+<h2>Configuration Loading at Launch</h2>
+<p>This option enables FME Flow workspace apps to pull dynamic parameter data from external sources when the app loads. As of FME 2026.1, workspace apps support loading the JSON schema for parameter configurations from:&nbsp;</p>
+<ul>
+<li><strong>Resource:</strong> a JSON file stored in FME Flow Resources.&nbsp;</li>
+<li><strong>Workspace:</strong> a workspace that returns the required JSON.&nbsp;</li>
+<li><strong>URL:</strong> a web address that links to the JSON, such as an external web service or <a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Data-Virtualization.htm" target="_blank" rel="noopener">Data Virtualization</a><span style="font-family: inherit; font-size: 1em;"> endpoint.</span>&nbsp;</li>
+</ul>
+<p>To configure these, the app author selects the data source and provides the URL, Resources file, or workspace that sources the JSON. When the app loads, it reads the JSON schema and populates the parameter options or default values accordingly.&nbsp;</p>
+<p><img src="images/1792425811862.png" alt="" /></p>
+<p>Loading app parameter configurations at app launch lets you link multiple FME workflows and control parameter options or values. For example, you may have an FME Flow automation that triggers in response to an external event and writes a dynamic parameter configuration based on the event to a JSON file in Resources.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>The workspace that pulls the dynamic parameter configuration is different from the workspace the app runs in, so you will use two workspaces to configure a workspace app that launches with dynamic parameters from a workspace. The next lesson, Populate App Parameters from a Workspace, will cover how to use a workspace to supply dynamic parameters to an app.&nbsp;</p>
+</blockquote>
+<p>To confirm whether your parameter configuration will work, you can test and preview the parameter source while building your workspace app. Test displays the parameter configuration the data source currently returns, and Preview shows the parameters as they would appear in the app.&nbsp;</p>
+<p><img src="images/1792363249801.png" alt="" /></p>
+<h2>Dynamic Parameter JSON Configuration</h2>
+<p>The JSON array for dynamic parameter configuration contains one object per parameter you want to control. Each object names the parameter and then sets its default value, its choices, or both:</p>
+<pre><code>[
+  {
+    "name" : "date",
+    "defaultValue" : "20260519"
+  },
+  {
+    "name" : "event_type",
+    "defaultValue" : "HAZARD",
+    "choices" : [
+      { "display" : "Hazard",      "value" : "HAZARD" },
+      { "display" : "Ice Covered", "value" : "ICE_COVERED" }
+    ]
+  }
+]</code></pre>
+<p>The <code>name</code> has to match the parameter's identifier in the workspace, or FME ignores the object and the configuration. The <code>display</code> is what the user sees and <code>value</code> is what the workspace receives, similar to creating options for the user parameter manually. Any parameter the JSON doesn't mention keeps whatever the workspace already set for the parameter.</p>
+<p>Whether the source is a URL, Resource file, or workspace, the JSON schema must follow this structure to successfully populate the parameters dynamically. To help with the JSON schema, the dynamic parameters guide explains the schema and generates starting JSON arrays for each source type.&nbsp;</p>
+<p><img src="images/1792362613851.png" alt="" width="979" height="822" /></p>
+<p>&nbsp;</p>
+<h2>Exercise</h2>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer, a GIS Specialist, has created a workspace app that maps traffic events and alerts in British Columbia using <a href="https://api.open511.gov.bc.ca/help" target="_blank" rel="noopener">DriveBC's Open511 API</a>. You may filter the events by date, event type, and region. Currently, the app uses choice options Jennifer set up when she created the workspace. However, Jennifer's list of choice options doesn't include all the values you can filter for using the API. Rather than editing the workspace each time the API's options change, she wants the choice list to come from a JSON file she or a colleague can edit and update.</p>
+<p><img src="images/1791490750615.png" alt="" /></p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Configure dynamic parameters for a workspace app.</li>
+<li>Load that configuration from a JSON file in Resources.</li>
+<li>Run the workspace app with and without dynamic parameter configurations.</li>
+</ul>
+<h3>1) Run Workspace App</h3>
+<p>Jennifer has already created the workspace app in FME Flow. It uses the data streaming service and displays the web map of filtered traffic events directly in the browser.</p>
+<ul>
+<li>Navigate to&nbsp;<strong>FME Flow</strong> and open&nbsp;<strong>Flow Apps</strong>.<strong>&nbsp;</strong></li>
+<li>Under the&nbsp;<strong>Workspace Apps</strong> tab, find the&nbsp;<strong>BCTrafficEvents</strong> app and click the icon in the <strong>View</strong> column to open the app.&nbsp;</li>
+</ul>
+<p><img src="images/1791482939826.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The app loads in another browser tab.</li>
+</ul>
+</li>
+<li>Interact with the parameters to see the event-filtering options.&nbsp;
+<ul>
+<li>The Filter by Date parameter uses a calendar to select a date.&nbsp;The Filter by Event Type only lists four possible traffic events to filter by.&nbsp;The Filter by Region includes the Lower Mainland, Rocky Mountain, and Vancouver Island districts.&nbsp;</li>
+<li>The current options in the app don't fully capture the available event types and regions available through the Open511 API.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791483266255.png" alt="" /></p>
+<h3>2) Inspect Configuration JSON File</h3>
+<p>The JSON file with new parameter configurations is already on FME Flow for the workspace app to reference.&nbsp;</p>
+<ul>
+<li>Close the app tab and return to the FME Flow tab.</li>
+<li>Open <strong>Resources</strong> and browse to the <strong>Data </strong>folder.</li>
+<li>Open the&nbsp;<strong>Configurations</strong> folder.&nbsp;</li>
+</ul>
+<p><img src="images/1791484129542.png" alt="" /></p>
+<ul>
+<li>Click the <strong>traffic_parameters.json</strong> file in that folder.</li>
+</ul>
+<p><img src="images/1792179739695.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The JSON file lists a default date value, different choice options for the traffic event type, and additional districts in BC to filter events.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1792433432747.png" alt="" /></p>
+<h3>3) Enable and Configure Dynamic App Parameters</h3>
+<ul>
+<li>Return to <strong>Flow Apps&nbsp;</strong>and the&nbsp;<strong>Workspace Apps</strong> tab.&nbsp;</li>
+<li>Click on the&nbsp;<strong>BCTrafficEvents</strong> app to edit it.&nbsp;</li>
+</ul>
+<p><img src="images/1791485144498.png" alt="" /></p>
+<ul>
+<li>Scroll down and expand&nbsp;<strong>Dynamic Parameter Configuration</strong>.</li>
+<li>Toggle on the&nbsp;<strong>Enable Dynamic Parameters</strong> option.&nbsp;</li>
+</ul>
+<p><img src="images/1791485268068.png" alt="" /></p>
+<ul>
+<li>Under&nbsp;<strong>App Launch Settings</strong>, toggle on <strong>Enable Configuration Loading at Launch</strong>.&nbsp;</li>
+<li>Set the&nbsp;<strong>Data Source</strong> to&nbsp;<strong>Resource</strong>.&nbsp;</li>
+<li>For <strong>Resource</strong>, click <strong>Browse Resources</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1791486016912.png" alt="" /></p>
+<ul>
+<li>Select the <strong>traffic_parameters.json</strong> file in&nbsp;<strong>Resources/Data/Configurations</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1793392991438.png" alt="" /></p>
+<ul>
+<li><em>Optional</em>: Click&nbsp;<strong>Test</strong> to see that FME Flow successfully loads the parameter configurations from the JSON file. You can also&nbsp;<strong>Preview</strong> how the parameters look and behave as user parameters in the FME Flow interface.&nbsp;</li>
+</ul>
+<p><img src="images/1792433866076.png" alt="" width="920" height="703" /></p>
+<ul>
+<li>Scroll to the bottom of the page and click&nbsp;<strong>Save</strong>.&nbsp;</li>
+</ul>
+<h3>4)&nbsp;Run the App</h3>
+<ul>
+<li>Click&nbsp;<strong>View App</strong> to reopen the app.
+<ul>
+<li>If you still have the app open from step 1, refresh the browser tab.&nbsp;</li>
+<li>When the app loads, the default date matches the date set in the JSON file, and the event type and region parameters display all the options through the Open511 API.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791487896043.png" alt="" /></p>
+<ul>
+<li>Select <strong>today's date</strong>, some event types and regions, then <strong>Run</strong> the app.&nbsp;
+<ul>
+<li>If the date you select is too old, the workspace will error.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791487960663.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The app uses the data streaming service and outputs an HTML report with an interactive map to select road alert records and view more information.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1791488090214.png" alt="" /></p>
+<p>Jennifer's app can now supply default values and parameter choices from a JSON file, and they update as the file changes.&nbsp;</p>

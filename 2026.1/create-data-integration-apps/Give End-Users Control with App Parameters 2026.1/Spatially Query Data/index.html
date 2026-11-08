@@ -1,0 +1,522 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Create a Geometry parameter to take spatial input from an App.</li>
+<li>Implement the Geometry parameter in a self-serve data download workflow.&nbsp;</li>
+<li>Use a Geometry parameter as an end-user on FME Flow.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Create a Geometry parameter to take spatial input from an App.</li>
+<li>Implement the Geometry parameter in a self-serve data download workflow.&nbsp;</li>
+<li>Use a Geometry parameter as an end-user on FME Flow.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution-complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution-complete.fmw</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2>Input Geometry to Workspaces</h2>
+<p>From a workspace app interface, users can input geometry into workspaces for processing using parameters. Users can upload datasets through a File/Folder/URL parameter that the workspace processes, or you can configure a spatial parameter to accept input in GeoJSON or XML format.&nbsp;</p>
+<p>With a File/Folder/URL parameter, your workspace must use a Reader or FeatureReader to read the input data before transforming it. In most scenarios, you will clip, join, or merge another dataset to the user's data.&nbsp;</p>
+<p><img src="images/1790732313587.png" alt="" /> &nbsp; &nbsp; &nbsp; &nbsp;<img src="images/1790732422694.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more training on inputting source datasets to workspaces through parameters, please see the Input Source Data at Runtime lesson in <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/manage-fme-flow-data-and-connections-2025-0" target="_blank" rel="noopener">Manage FME Flow Data and Connections</a>.&nbsp;</p>
+</blockquote>
+<p>If you have the user input geometry through a spatial Define Geometry parameter, the easiest method to transform the GeoJSON or XML into a geometric feature is to use a GeometryReplacer.</p>
+<p><img src="images/1790732531860.png" alt="" /> &nbsp; &nbsp; &nbsp; &nbsp;<img src="images/1760796947741.png" alt="" width="494" height="314" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more training on creating the Define Geometry parameter to use on FME Flow, please see the Get Geometry Input from Users lesson in <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters</a>.&nbsp;</p>
+</blockquote>
+<h2>Define Geometry Parameter Interactive Web Map</h2>
+<p>When you run a workspace with a Define Geometry parameter, the parameter enables an interactive web map in FME Flow that lets you draw a point, line, or area of interest to input into the workspace. The map icon next to the parameter opens the interactive web map.&nbsp;</p>
+<p><img src="images/1760797121945.png" alt="" /></p>
+<p>From the web map, you can only input the geometry types set up in the user parameter in the workspace, which you select from the top, then draw or choose the location on the map.&nbsp;</p>
+<p><img src="images/1760797765102.gif" alt="" /></p>
+<p>You may collapse the pop-up map by clicking <img src="images/1749246774235.jpg" alt="" /> and expand the menu in the inline map<img src="images/1749246807780.jpg" alt="" />for the option to pop it out into its own window.&nbsp;</p>
+<p><img src="images/1760797856812.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on the Define Geometry parameter and setting custom basemaps for the web map in FME Flow, please see <a href="https://support.safe.com/hc/en-us/articles/25407744364941-Using-the-Geometry-Parameter#:~:text=In%20FME%20Flow,%20go%20to,tile%20column,%20row%20and%20matrix" target="_blank" rel="noopener">Using the Geometry Parameter</a>.</p>
+</blockquote>
+<h2>Exercise</h2>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer, a GIS Specialist, wants to give transit data to colleagues who only ever need one neighborhood at a time. Her workspace already lets the app user pick layers, an output format, and a coordinate system, but it always returns the whole city. She needs a spatial geometry parameter that lets the app user draw the area they need data for.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Create a Define Geometry user parameter and link it to a GeometryReplacer.</li>
+<li>Test the workspace, publish it, and build an app that clips output to an area the user draws.</li>
+</ul>
+<h3>1) Open the Starting Workspace</h3>
+<ul>
+<li>Open <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution.fmw" target="_blank" rel="noopener">TransitDataDistribution.fmw</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution.fmw) in <strong>FME Workbench</strong>.</li>
+</ul>
+<p>The workspace begins by creating geometry and reprojecting it. The FeatureReader reads in the transit data from Transit.gdb, then a Clipper clips it to the input geometry. If the output format is OGC KML, the workspace styles each feature type before writing it to the file.&nbsp;</p>
+<p><img src="images/1760626983624.jpg" alt="" /></p>
+<h3>2) Inspect the Existing Parameters</h3>
+<ul>
+<li>In the <strong>Navigator</strong>, right-click <strong>User Parameters</strong> and select <strong>Manage User Parameters</strong>.
+<ul>
+<li>The workspace already has three user parameters:&nbsp;the layers to download from the transit data, the output data format, and the output coordinate system.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1760638741913.jpg" alt="" /></p>
+<h3>3) Create the Geometry Parameter</h3>
+<ul>
+<li>Click the <strong>green + icon</strong> and select <strong>Spatial</strong> to <strong>Define </strong><strong>Geometry</strong>.</li>
+<li>Configure the following parameters:
+<ul>
+<li><strong>Parameter Identifier:</strong> <code>GEOM</code></li>
+<li><strong>Label:</strong> <code>Area of Interest</code></li>
+<li><strong>Required:</strong> Selected</li>
+<li><strong>Show Label:&nbsp;</strong>Selected</li>
+<li><strong>Visibility:</strong> Always Show</li>
+<li><strong>Geometry Encoding:&nbsp;</strong>GeoJSON</li>
+<li><strong>Geometry Types:</strong> Polygon, Box</li>
+<li><strong>Specify initial bounds for map display:</strong> Selected</li>
+<li><strong>Top:</strong> <code>49.2548</code></li>
+<li><strong>Left:</strong> <code>-123.244</code></li>
+<li><strong>Bottom:</strong> <code>49.3034</code></li>
+<li><strong>Right:</strong> <code>-123.071</code>
+<ul>
+<li>These bounds frame Vancouver, BC, which is where the transit data is.</li>
+</ul>
+</li>
+<li><strong>Value Assignment &gt; Hide Parameter Menu Button:</strong> Selected</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790734126127.png" alt="" /></p>
+<ul>
+<li>On the left panel, reorder the parameters so Area of Interest is second, after Layers to Download.</li>
+<li>Click <strong>OK</strong> to close the <strong>User Parameter Manager</strong>.</li>
+</ul>
+<h3>4) Link the Geometry Parameter</h3>
+<ul>
+<li>Double-click the <strong>GeometryReplacer </strong>transformer.</li>
+<li>From the <strong>Geometry Source </strong>drop-down, select the <strong>GEOM </strong>parameter under <strong>User Parameters</strong>.</li>
+</ul>
+<p><img src="images/1760640506291.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<h3>5) Run the Workspace</h3>
+<ul>
+<li>Click <strong>Run</strong> in the top toolbar.
+<ul>
+<li>FME prompts you to configure the four user parameters.</li>
+</ul>
+</li>
+<li>For&nbsp;<strong>Layers to Download</strong>, select one or multiple layers.&nbsp;</li>
+<li>For the&nbsp;<strong>Area of Interest</strong>, paste the following JSON into the parameter:&nbsp;</li>
+</ul>
+<pre class="language-markup"><code>{"type":"Polygon","coordinates":[[[-123.116202,49.275826],[-123.116202,49.280585],[-123.10479,49.280585],[-123.10479,49.275826],[-123.116202,49.275826]]]}</code></pre>
+<ul>
+<li>Set the&nbsp;<strong>Output Format</strong> to&nbsp;<strong>Esri Shapefile</strong>, and&nbsp;<strong>Output Coordinate System</strong> to <strong>WGS84 Lat/Longs [LL-WGS84]</strong>.&nbsp;</li>
+<li>Deselect the&nbsp;<strong>Save As Parameter Default Values </strong>option, then click <strong>Run</strong>.
+<ul>
+<li>This leaves the default parameter values blank for the end user in the app.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1760640815945.jpg" alt="" /></p>
+<ul>
+<li><em>Optional: </em>Inspect the output in C:\FMEData\Output and confirm the correct layers were written in the correct format.</li>
+</ul>
+<h3>6) Publish to FME Flow</h3>
+<ul>
+<li><strong>Publish</strong> the workspace as <strong>TransitDataDistribution.fmw</strong> to the <strong>Training</strong> repository.</li>
+<li>Register it with the <strong>Data Download</strong>, <strong>Data Streaming</strong>, and <strong>Job Submitter</strong> services.</li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>After you build your workflows in FME Workbench, transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, complete all steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong>&nbsp;to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the&nbsp;<strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<h3>7) Create the Workspace App</h3>
+<ul>
+<li>Navigate to <strong>FME Flow.</strong></li>
+<li>Open <strong>Flow Apps</strong>, select the <strong>Workspace Apps </strong>tab, and click <strong>Create</strong>.</li>
+<li>Enter a <strong>Name</strong>, a <strong>Title</strong>, and a <strong>Description</strong>, then configure the following parameters:
+<ul>
+<li><strong>Repository:</strong> Training</li>
+<li><strong>Workspace:</strong> TransitDataDistribution.fmw</li>
+<li><strong>Service:</strong> Data Download</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790735481662.png" alt="" /></p>
+<ul>
+<li>Expand <strong>Parameter Defaults</strong> and confirm all four parameters are listed, including the new Area of Interest parameter.</li>
+<li>Leave all other settings at their default value and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790735633253.png" alt="" /></p>
+<p><img src="images/1790735667878.png" alt="" /></p>
+<h3>8) Run the Workspace App</h3>
+<ul>
+<li>Click <strong>View App</strong> to open it.</li>
+<li>Select the transit layers you want to download.&nbsp;</li>
+<li>Click the <strong>map icon </strong>to open the <strong>Area of Interest</strong> interactive web map.</li>
+</ul>
+<p><img src="images/1760643086429.jpg" alt="" /></p>
+<ul>
+<li>Click the rectangle or polygon icon, then click on the map to draw the area, then click<strong> Confirm</strong>.&nbsp;
+<ul>
+<li>FME adds the geometry area as GeoJSON to the parameter input.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1760643047788.gif" alt="" /></p>
+<ul>
+<li>Select an <strong>Output Format</strong> and <strong>Output</strong> <strong>Coordinate System</strong>, then click <strong>Run</strong>.</li>
+</ul>
+<p><img src="images/1760643297867.jpg" alt="" /></p>
+<ul>
+<li>Click the <strong>Data Download URL</strong> to download the data.</li>
+</ul>
+<p><img src="images/1790736509679.png" alt="" /></p>
+<ul>
+<li>Use <strong>FME Data Inspector</strong> to confirm the data covers only the area you drew, in the layers and coordinate system you chose.</li>
+</ul>
+<p><img src="images/1760643607250.jpg" alt="" /></p>
+<p>You have successfully built another self-serve web app, adding the ability to clip output data to a specific area of interest by linking user-input geometry to the workspace.&nbsp;</p>
+<!-- END: Reusable Custom Expandable Section -->
+<p>&nbsp;</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution-complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution-complete.fmw</li>
+</ul>
+<!-- The script tag should live in the head of your page if at all possible -->
+<p>
+<script type="text/javascript" src="https://play.vidyard.com/embed/v4.js"></script>
+</p>
+<!-- Put this wherever you would like your player to appear -->
+<h2>Input Geometry to Workspaces</h2>
+<p>From a workspace app interface, users can input geometry into workspaces for processing using parameters. Users can upload datasets through a File/Folder/URL parameter that the workspace processes, or you can configure a spatial parameter to accept input in GeoJSON or XML format.&nbsp;</p>
+<p>With a File/Folder/URL parameter, your workspace must use a Reader or FeatureReader to read the input data before transforming it. In most scenarios, you will clip, join, or merge another dataset to the user's data.&nbsp;</p>
+<p><img src="images/1790732313587.png" alt="" /> &nbsp; &nbsp; &nbsp; &nbsp;<img src="images/1790732422694.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more training on inputting source datasets to workspaces through parameters, please see the Input Source Data at Runtime lesson in <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/manage-fme-flow-data-and-connections-2025-0" target="_blank" rel="noopener">Manage FME Flow Data and Connections</a>.&nbsp;</p>
+</blockquote>
+<p>If you have the user input geometry through a spatial Define Geometry parameter, the easiest method to transform the GeoJSON or XML into a geometric feature is to use a GeometryReplacer.</p>
+<p><img src="images/1790732531860.png" alt="" /> &nbsp; &nbsp; &nbsp; &nbsp;<img src="images/1760796947741.png" alt="" width="494" height="314" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more training on creating the Define Geometry parameter to use on FME Flow, please see the Get Geometry Input from Users lesson in <a href="https://academy.safe.com/path/deploy-workflows-with-fme-flow/build-self-serve-workflows-with-parameters-2025-0" target="_blank" rel="noopener">Build Self-Serve Workflows with Parameters</a>.&nbsp;</p>
+</blockquote>
+<h2>Define Geometry Parameter Interactive Web Map</h2>
+<p>When you run a workspace with a Define Geometry parameter, the parameter enables an interactive web map in FME Flow that lets you draw a point, line, or area of interest to input into the workspace. The map icon next to the parameter opens the interactive web map.&nbsp;</p>
+<p><img src="images/1760797121945.png" alt="" /></p>
+<p>From the web map, you can only input the geometry types set up in the user parameter in the workspace, which you select from the top, then draw or choose the location on the map.&nbsp;</p>
+<p><img src="images/1760797765102.gif" alt="" /></p>
+<p>You may collapse the pop-up map by clicking <img src="images/1749246774235.jpg" alt="" /> and expand the menu in the inline map<img src="images/1749246807780.jpg" alt="" />for the option to pop it out into its own window.&nbsp;</p>
+<p><img src="images/1760797856812.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on the Define Geometry parameter and setting custom basemaps for the web map in FME Flow, please see <a href="https://support.safe.com/hc/en-us/articles/25407744364941-Using-the-Geometry-Parameter#:~:text=In%20FME%20Flow,%20go%20to,tile%20column,%20row%20and%20matrix" target="_blank" rel="noopener">Using the Geometry Parameter</a>.</p>
+</blockquote>
+<h2>Exercise</h2>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer, a GIS Specialist, wants to give transit data to colleagues who only ever need one neighborhood at a time. Her workspace already lets the app user pick layers, an output format, and a coordinate system, but it always returns the whole city. She needs a spatial geometry parameter that lets the app user draw the area they need data for.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Create a Define Geometry user parameter and link it to a GeometryReplacer.</li>
+<li>Test the workspace, publish it, and build an app that clips output to an area the user draws.</li>
+</ul>
+<h3>1) Open the Starting Workspace</h3>
+<ul>
+<li>Open <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TransitDataDistribution.fmw" target="_blank" rel="noopener">TransitDataDistribution.fmw</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\TransitDataDistribution.fmw) in <strong>FME Workbench</strong>.</li>
+</ul>
+<p>The workspace begins by creating geometry and reprojecting it. The FeatureReader reads in the transit data from Transit.gdb, then a Clipper clips it to the input geometry. If the output format is OGC KML, the workspace styles each feature type before writing it to the file.&nbsp;</p>
+<p><img src="images/1760626983624.jpg" alt="" /></p>
+<h3>2) Inspect the Existing Parameters</h3>
+<ul>
+<li>In the <strong>Navigator</strong>, right-click <strong>User Parameters</strong> and select <strong>Manage User Parameters</strong>.
+<ul>
+<li>The workspace already has three user parameters:&nbsp;the layers to download from the transit data, the output data format, and the output coordinate system.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1760638741913.jpg" alt="" /></p>
+<h3>3) Create the Geometry Parameter</h3>
+<ul>
+<li>Click the <strong>green + icon</strong> and select <strong>Spatial</strong> to <strong>Define </strong><strong>Geometry</strong>.</li>
+<li>Configure the following parameters:
+<ul>
+<li><strong>Parameter Identifier:</strong> <code>GEOM</code></li>
+<li><strong>Label:</strong> <code>Area of Interest</code></li>
+<li><strong>Required:</strong> Selected</li>
+<li><strong>Show Label:&nbsp;</strong>Selected</li>
+<li><strong>Visibility:</strong> Always Show</li>
+<li><strong>Geometry Encoding:&nbsp;</strong>GeoJSON</li>
+<li><strong>Geometry Types:</strong> Polygon, Box</li>
+<li><strong>Specify initial bounds for map display:</strong> Selected</li>
+<li><strong>Top:</strong> <code>49.2548</code></li>
+<li><strong>Left:</strong> <code>-123.244</code></li>
+<li><strong>Bottom:</strong> <code>49.3034</code></li>
+<li><strong>Right:</strong> <code>-123.071</code>
+<ul>
+<li>These bounds frame Vancouver, BC, which is where the transit data is.</li>
+</ul>
+</li>
+<li><strong>Value Assignment &gt; Hide Parameter Menu Button:</strong> Selected</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790734126127.png" alt="" /></p>
+<ul>
+<li>On the left panel, reorder the parameters so Area of Interest is second, after Layers to Download.</li>
+<li>Click <strong>OK</strong> to close the <strong>User Parameter Manager</strong>.</li>
+</ul>
+<h3>4) Link the Geometry Parameter</h3>
+<ul>
+<li>Double-click the <strong>GeometryReplacer </strong>transformer.</li>
+<li>From the <strong>Geometry Source </strong>drop-down, select the <strong>GEOM </strong>parameter under <strong>User Parameters</strong>.</li>
+</ul>
+<p><img src="images/1760640506291.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<h3>5) Run the Workspace</h3>
+<ul>
+<li>Click <strong>Run</strong> in the top toolbar.
+<ul>
+<li>FME prompts you to configure the four user parameters.</li>
+</ul>
+</li>
+<li>For&nbsp;<strong>Layers to Download</strong>, select one or multiple layers.&nbsp;</li>
+<li>For the&nbsp;<strong>Area of Interest</strong>, paste the following JSON into the parameter:&nbsp;</li>
+</ul>
+<pre class="language-markup"><code>{"type":"Polygon","coordinates":[[[-123.116202,49.275826],[-123.116202,49.280585],[-123.10479,49.280585],[-123.10479,49.275826],[-123.116202,49.275826]]]}</code></pre>
+<ul>
+<li>Set the&nbsp;<strong>Output Format</strong> to&nbsp;<strong>Esri Shapefile</strong>, and&nbsp;<strong>Output Coordinate System</strong> to <strong>WGS84 Lat/Longs [LL-WGS84]</strong>.&nbsp;</li>
+<li>Deselect the&nbsp;<strong>Save As Parameter Default Values </strong>option, then click <strong>Run</strong>.
+<ul>
+<li>This leaves the default parameter values blank for the end user in the app.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1760640815945.jpg" alt="" /></p>
+<ul>
+<li><em>Optional: </em>Inspect the output in C:\FMEData\Output and confirm the correct layers were written in the correct format.</li>
+</ul>
+<h3>6) Publish to FME Flow</h3>
+<ul>
+<li><strong>Publish</strong> the workspace as <strong>TransitDataDistribution.fmw</strong> to the <strong>Training</strong> repository.</li>
+<li>Register it with the <strong>Data Download</strong>, <strong>Data Streaming</strong>, and <strong>Job Submitter</strong> services.</li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>After you build your workflows in FME Workbench, transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, complete all steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong>&nbsp;to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the&nbsp;<strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<h3>7) Create the Workspace App</h3>
+<ul>
+<li>Navigate to <strong>FME Flow.</strong></li>
+<li>Open <strong>Flow Apps</strong>, select the <strong>Workspace Apps </strong>tab, and click <strong>Create</strong>.</li>
+<li>Enter a <strong>Name</strong>, a <strong>Title</strong>, and a <strong>Description</strong>, then configure the following parameters:
+<ul>
+<li><strong>Repository:</strong> Training</li>
+<li><strong>Workspace:</strong> TransitDataDistribution.fmw</li>
+<li><strong>Service:</strong> Data Download</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790735481662.png" alt="" /></p>
+<ul>
+<li>Expand <strong>Parameter Defaults</strong> and confirm all four parameters are listed, including the new Area of Interest parameter.</li>
+<li>Leave all other settings at their default value and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790735633253.png" alt="" /></p>
+<p><img src="images/1790735667878.png" alt="" /></p>
+<h3>8) Run the Workspace App</h3>
+<ul>
+<li>Click <strong>View App</strong> to open it.</li>
+<li>Select the transit layers you want to download.&nbsp;</li>
+<li>Click the <strong>map icon </strong>to open the <strong>Area of Interest</strong> interactive web map.</li>
+</ul>
+<p><img src="images/1760643086429.jpg" alt="" /></p>
+<ul>
+<li>Click the rectangle or polygon icon, then click on the map to draw the area, then click<strong> Confirm</strong>.&nbsp;
+<ul>
+<li>FME adds the geometry area as GeoJSON to the parameter input.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1760643047788.gif" alt="" /></p>
+<ul>
+<li>Select an <strong>Output Format</strong> and <strong>Output</strong> <strong>Coordinate System</strong>, then click <strong>Run</strong>.</li>
+</ul>
+<p><img src="images/1760643297867.jpg" alt="" /></p>
+<ul>
+<li>Click the <strong>Data Download URL</strong> to download the data.</li>
+</ul>
+<p><img src="images/1790736509679.png" alt="" /></p>
+<ul>
+<li>Use <strong>FME Data Inspector</strong> to confirm the data covers only the area you drew, in the layers and coordinate system you chose.</li>
+</ul>
+<p><img src="images/1760643607250.jpg" alt="" /></p>
+<p>You have successfully built another self-serve web app, adding the ability to clip output data to a specific area of interest by linking user-input geometry to the workspace.&nbsp;</p>
+<!-- END: Reusable Custom Expandable Section -->
+<p>&nbsp;</p>

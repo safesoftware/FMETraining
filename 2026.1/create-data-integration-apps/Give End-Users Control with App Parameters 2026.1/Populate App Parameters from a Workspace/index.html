@@ -1,0 +1,330 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Explain when a workspace is a better configuration source than a static file.</li>
+<li>Format a parameter configuration so FME Flow accepts it, including choice lists.</li>
+<li>Configure and use a JSON writer to supply dynamic app parameter configurations.</li>
+<li>Point an app at that workspace and confirm the parameters populate at launch.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Explain when a workspace is a better configuration source than a static file.</li>
+<li>Format a parameter configuration so FME Flow accepts it, including choice lists.</li>
+<li>Configure and use a JSON writer to supply dynamic app parameter configurations.</li>
+<li>Point an app at that workspace and confirm the parameters populate at launch.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TrafficDynamicParameters.fmw" target="_self">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TrafficDynamicParameters.fmw</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Using a Workspace to Populate Parameters</h2>
+<p>When you populate parameters at the time of app launch, the JSON file you reference in Resources or with a URL may be stale or static. When your app uses a workspace to populate the parameters, the workspace runs as soon as the app URL loads to generate the JSON configuration and immediately populate the parameters with the data. The choices and default values are set when the workspace app loads, not set beforehand and stored in a file. Workspaces are useful to dynamically populate parameters as simple as setting the current date and time as the default value, or as complex as pulling active choice values from another web service API.&nbsp;</p>
+<p><img src="images/1792531938877.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>A configuration workspace runs every time someone loads the workspace app. It's best to keep it as simple as possible so it runs and populates the parameters quickly. Reading a large dataset to build a short choice list will make the app slow to appear.</p>
+</blockquote>
+<h2>Building the JSON Configuration</h2>
+<p>To successfully populate parameters dynamically with a workspace, the workspace must output a JSON array with one object per parameter. The simplest way is to use a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/json/JSON_writer.htm" target="_blank" rel="noopener">JSON (JavaScript Object Notation)</a> writer that returns the JSON configuration.</p>
+<pre><code>[
+  {
+    "name" : "date",
+    "defaultValue" : "20260519"
+  },
+  {
+    "name" : "region",
+    "defaultValue" : "",
+    "choices" : [
+      { "display" : "Lower Mainland District",  "value" : "drivebc.ca/1" },
+      { "display" : "Vancouver Island District", "value" : "drivebc.ca/2" }
+    ]
+  }
+]</code></pre>
+<ul>
+<li><code><strong>name</strong></code> must match the parameter's identifier in the workspace exactly, including its case.</li>
+<li><code><strong>defaultValue</strong></code> is the starting default value the app loads with. The app user may leave the value or change it, just like any other user parameter. An empty string, as <code>region</code> uses above, starts the parameter unset so the user has to choose.&nbsp;</li>
+<li><code><strong>choices</strong></code> replaces the parameter's list of options. Each entry pairs a&nbsp;<code>display</code>, which the user reads, with a <code>value</code>, which the workspace receives.</li>
+</ul>
+<p>A parameter that accepts more than one value (like a choice to select multiple values) takes a JSON array as its <code>defaultValue</code>, so <code>["HAZARD", "ICE_COVERED"]</code> pre-selects two options.</p>
+<p>For <code>choices</code>, the parameter's configuration must be an array of objects. To do this, you need to build a list for the attribute to carry <code>choices{}.display</code> and <code>choices{}.value</code>. The JSON writer bridges that with its Nested Output parameter, which is on by default: attribute names written in list notation become nested arrays and objects in the output. A feature carrying a list&nbsp;is therefore written as the <code>choices</code> array shown above.</p>
+<p>If you leave a parameter out of the JSON array, or the name does not match exactly, the parameter keeps whatever the workspace already set as its default value and choice options.&nbsp;</p>
+<p>The workspace that produces the JSON should begin by reading the source data to populate parameters, then build the parameter configurations, and write out the JSON.&nbsp;</p>
+<p><img src="images/1792601269742.png" alt="" /></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">First, reduce your source data to one feature per distinct value</span><span style="font-family: inherit; font-size: 1em;">.</span><span style="font-family: inherit; font-size: 1em;"> A choice list is short, and the data behind it rarely is. The </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sampler.htm" target="_blank" rel="noopener">Sampler</a><span style="font-family: inherit; font-size: 1em;">, </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/duplicatefilter.htm" target="_blank" rel="noopener">DuplicateFilter,</a><span style="font-family: inherit; font-size: 1em;"> and </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/aggregator.htm" target="_blank" rel="noopener">Aggregator</a><span style="font-family: inherit; font-size: 1em;"> can reduce and summarize your data.</span></li>
+<li>For a choice parameter configuration, build the choice array with the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/listbuilder.htm" target="_blank" rel="noopener">ListBuilder</a>. You must create a choice array in the final JSON output. Notice the <code><strong>choices</strong></code> for the <code>region</code> parameter above has two options that you would need to generate as a list.</li>
+</ul>
+<p><img src="images/1792601441938.png" alt="" /></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Create the </span><code>name</code><span style="font-family: inherit; font-size: 1em;"> attribute, along with any default value.</span><span style="font-family: inherit; font-size: 1em;"> It designates which parameter each object modifies, so it has to exist as an attribute by the time the feature reaches the writer. The AttributeCreator is the easiest option for this.</span></li>
+</ul>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1792601604290.png" alt="" /></span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Lastly, set the JSON writer up specifically for dynamic parameter configurations. Under </span><span style="font-family: inherit; font-size: 1em;">Parameters</span><span style="font-family: inherit; font-size: 1em;">, disable </span><span style="font-family: inherit; font-size: 1em;">Write Feature Type Key</span><span style="font-family: inherit; font-size: 1em;"> and </span><span style="font-family: inherit; font-size: 1em;">Write Geometry</span><span style="font-family: inherit; font-size: 1em;">. Left on, each object gains a </span><code>json_featuretype</code><span style="font-family: inherit; font-size: 1em;"> and a </span><code>json_geometry</code><span style="font-family: inherit; font-size: 1em;"> key, and FME Flow reads only </span><code>name</code><span style="font-family: inherit; font-size: 1em;">, </span><code>defaultValue</code><span style="font-family: inherit; font-size: 1em;"> and </span><code>choices</code><span style="font-family: inherit; font-size: 1em;">. The writer's feature type name and output file name make no difference, because FME Flow reads what the workspace returns rather than a file on disk.&nbsp;</span></li>
+</ul>
+<p><img src="images/1792454175765.png" alt="" /></p>
+<p>You may test your JSON output from FME Workbench by entering the JSON into the Dynamic Parameter Configuration on FME Flow.&nbsp;</p>
+<h2>Using the Workspace on FME Flow</h2>
+<p>Like any other workspace, the configuration workspace has to be published to FME Flow before an app can run it. It has no special status there. It is an ordinary workspace whose output happens to be the JSON structure FME Flow expects, so it can live in any repository and use any service &mdash; FME Flow runs it and reads its output directly, without going through a service endpoint.</p>
+<p>To point an app at it, edit the app and expand <strong>Dynamic Parameter Configuration</strong>. With <strong>Enable Dynamic Parameters</strong> on, go to <strong>App Launch Settings</strong> and turn on <strong>Enable Configuration Loading at Launch</strong>, then set <strong>Data Source</strong> to <strong>Workspace</strong>. Select the <strong>Repository</strong> and the <strong>Workspace</strong> that returns the configuration, and click <strong>Test</strong> to see the configuration FME Flow reads back before you save.&nbsp;</p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>In FME Flow 2025.2, you must publish the parameter data source workspace in the same repository as the workspace app's workspace and use the Data Streaming service. In 2026.1+, dynamic parameters support workspaces in any repository using any service.</p>
+</blockquote>
+<div>
+<style>
+details.fme-accordion-resources { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+details.fme-accordion-resources:hover { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15); transform: translateY(-1px); }
+details.fme-accordion-resources[open] { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2); }
+details.fme-accordion-resources > summary::-webkit-details-marker { display: none; }
+details.fme-accordion-resources > summary::marker { content: ''; }
+details.fme-accordion-resources > summary::before { content: ''; flex-shrink: 0; width: 32px; height: 32px; background-color: #F55215; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; transition: transform 0.2s ease; }
+details.fme-accordion-resources[open] > summary::before { transform: rotate(90deg); }
+details.fme-accordion-resources > summary:focus-visible { outline: 2px solid #000 !important; outline-offset: 2px !important; }
+details.fme-accordion-resources > :last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { details.fme-accordion-resources, details.fme-accordion-resources > summary::before { transition: none; transform: none; } }
+</style>
+</div>
+<details class="fme-accordion-resources" style="background-color: #fde3d9 !important; color: #333; padding: 14px; margin: 24px 0; border-radius: 4px;" open="open">
+<summary style="display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 18px; font-weight: bold; color: #333 !important; list-style: none; cursor: pointer; user-select: none;">Additional Resources</summary>
+<ul style="font-size: 16px; line-height: 1.5; margin-top: 10px; margin-bottom: 0;">
+<ul style="font-size: 16px; line-height: 1.5; margin-top: 10px; margin-bottom: 0;">
+<ul>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407515641997-Tutorial-Getting-Started-with-JSON" target="_blank" rel="noopener">Tutorial: Getting Started with JSON</a></li>
+<li><a href="https://academy.safe.com/path/fme-form-intermediate/work-with-multiple-data-models-using-lists" target="_blank" rel="noopener">Work with Multiple Data Models Using Lists</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/listbuilder.htm" target="_blank" rel="noopener">ListBuilder</a></li>
+<li><a href="Dynamic%20Parameter%20Configurations%20in%20FME%20Flow%20Apps" target="_blank" rel="noopener">Dynamic Parameter Configurations in FME Flow Apps</a></li>
+</ul>
+</ul>
+</ul>
+</details>
+<h2>Exercise</h2>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>The content used in this lesson builds on the previous lesson. To do this exercise, you will need to continue with your workspace app from the exercise in Configure Dynamic App Parameters after you test a workspace that supplies dynamic parameter configuration.&nbsp;</p>
+</blockquote>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer's alerts app now reads its choices from a JSON file stored in Resources. The JSON file added all possible traffic event types and regions; however, the date is static. This means the user must manually change the date to today's date each time they run the app. The app also lists all potential event types, not only those that actively exist. To pull today's date and active event types dynamically when the app launches, Jennifer would like to use a workspace to populate the parameters. She's already built the workspace that produces the JSON configuration and published it to FME Flow. You will run this workspace to inspect the JSON it produces, then edit the BCTrafficEvents app to use the workspace to supply and populate the parameters dynamically.&nbsp;</p>
+<p>To view the workspace, open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TrafficDynamicParameters.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\TrafficDynamicParameters.fmw) in FME Workbench. The workspace queries the API for the regions and event types parameters and supplies today's date as the default value for the date parameter. The workspace formats the JSON array and outputs the JSON file.&nbsp;</p>
+<p><img src="images/1792529272325.png" alt="" /></p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Run a configuration workspace on FME Flow and read the JSON it returns.</li>
+<li>Update your workspace app to pull the parameters from a workspace instead of a file.</li>
+<li>Run and test that your workspace app successfully populates the parameters dynamically.&nbsp;</li>
+</ul>
+<h3>1) Run the Configuration Workspace on FME Flow</h3>
+<ul>
+<li>Open&nbsp;<strong>FME Flow</strong> and the&nbsp;<strong>Run Workspace</strong> page.</li>
+<li><span style="margin: 0px; padding: 0px;">Select the&nbsp;<strong>Training</strong>&nbsp;repository,&nbsp;<strong>the TrafficDynamicParameters.fmw</strong>&nbsp;workspace, and the&nbsp;<strong>Data Streaming&nbsp;</strong>service.</span></li>
+</ul>
+<p><span style="margin: 0px; padding: 0px;"><img src="images/1792529365103.png" alt="" /></span></p>
+<ul>
+<li><strong>Run</strong> the workspace.&nbsp;
+<ul>
+<li>Data Streaming returns the workspace's output straight to the browser, so the JSON appears on the page. This is exactly what the app reads when it launches.&nbsp;</li>
+<li>There is one object per parameter: a <code>defaultValue</code> of today's date, and <code>choices</code> arrays for the event types and regions, each pairing a <code>display</code> with a <code>value</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1792529399158.png" alt="" /></p>
+<h3>2) Edit Workspace App</h3>
+<ul>
+<li>Return to <strong>Flow Apps</strong> and edit the&nbsp;<strong>BCTrafficEvents</strong> app.</li>
+<li>Scroll down to the <strong>Dynamic Parameter Configuration</strong>.&nbsp;</li>
+<li>Change the&nbsp;<strong>Data Source&nbsp;</strong>from Resource to&nbsp;<strong>Workspace</strong>.&nbsp;</li>
+<li>Select the&nbsp;<strong>Training</strong> repository and the <strong>TrafficDynamicParameters.fmw</strong> workspace.&nbsp;</li>
+</ul>
+<p><img src="images/1792454926131.png" alt="" /></p>
+<ul>
+<li>Click <strong>Test</strong>.<br />
+<ul>
+<li>The Test Results should show 3 parameter configurations successfully loaded from the workspace.&nbsp;&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1792529475891.png" alt="" /></p>
+<ul>
+<li><em>Optional</em>: Click&nbsp;<strong>Preview</strong> to see how the parameters will behave in the FME Flow workspace app interface.&nbsp;</li>
+<li>Click <strong>Save</strong>.</li>
+</ul>
+<h3>3) Confirm the App Computes Its Choices</h3>
+<ul>
+<li>After the app saves, click <strong>View App</strong> to open the app.
+<ul>
+<li>It will take a moment for the app to load; the delay is the dynamic parameters workspace populating the app parameters.</li>
+<li>Once it loads, the date should default to today, and the choices should populate.&nbsp;</li>
+</ul>
+</li>
+<li>Make a selection and click&nbsp;<strong>Run</strong> to run the app.&nbsp;</li>
+</ul>
+<p>An app can now compute its own defaults and choices at launch, so the parameter default values and options stay current without anyone maintaining a file.</p>
+<p>&nbsp;</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TrafficDynamicParameters.fmw" target="_self">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\TrafficDynamicParameters.fmw</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Using a Workspace to Populate Parameters</h2>
+<p>When you populate parameters at the time of app launch, the JSON file you reference in Resources or with a URL may be stale or static. When your app uses a workspace to populate the parameters, the workspace runs as soon as the app URL loads to generate the JSON configuration and immediately populate the parameters with the data. The choices and default values are set when the workspace app loads, not set beforehand and stored in a file. Workspaces are useful to dynamically populate parameters as simple as setting the current date and time as the default value, or as complex as pulling active choice values from another web service API.&nbsp;</p>
+<p><img src="images/1792531938877.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>A configuration workspace runs every time someone loads the workspace app. It's best to keep it as simple as possible so it runs and populates the parameters quickly. Reading a large dataset to build a short choice list will make the app slow to appear.</p>
+</blockquote>
+<h2>Building the JSON Configuration</h2>
+<p>To successfully populate parameters dynamically with a workspace, the workspace must output a JSON array with one object per parameter. The simplest way is to use a <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-ReadersWriters/json/JSON_writer.htm" target="_blank" rel="noopener">JSON (JavaScript Object Notation)</a> writer that returns the JSON configuration.</p>
+<pre><code>[
+  {
+    "name" : "date",
+    "defaultValue" : "20260519"
+  },
+  {
+    "name" : "region",
+    "defaultValue" : "",
+    "choices" : [
+      { "display" : "Lower Mainland District",  "value" : "drivebc.ca/1" },
+      { "display" : "Vancouver Island District", "value" : "drivebc.ca/2" }
+    ]
+  }
+]</code></pre>
+<ul>
+<li><code><strong>name</strong></code> must match the parameter's identifier in the workspace exactly, including its case.</li>
+<li><code><strong>defaultValue</strong></code> is the starting default value the app loads with. The app user may leave the value or change it, just like any other user parameter. An empty string, as <code>region</code> uses above, starts the parameter unset so the user has to choose.&nbsp;</li>
+<li><code><strong>choices</strong></code> replaces the parameter's list of options. Each entry pairs a&nbsp;<code>display</code>, which the user reads, with a <code>value</code>, which the workspace receives.</li>
+</ul>
+<p>A parameter that accepts more than one value (like a choice to select multiple values) takes a JSON array as its <code>defaultValue</code>, so <code>["HAZARD", "ICE_COVERED"]</code> pre-selects two options.</p>
+<p>For <code>choices</code>, the parameter's configuration must be an array of objects. To do this, you need to build a list for the attribute to carry <code>choices{}.display</code> and <code>choices{}.value</code>. The JSON writer bridges that with its Nested Output parameter, which is on by default: attribute names written in list notation become nested arrays and objects in the output. A feature carrying a list&nbsp;is therefore written as the <code>choices</code> array shown above.</p>
+<p>If you leave a parameter out of the JSON array, or the name does not match exactly, the parameter keeps whatever the workspace already set as its default value and choice options.&nbsp;</p>
+<p>The workspace that produces the JSON should begin by reading the source data to populate parameters, then build the parameter configurations, and write out the JSON.&nbsp;</p>
+<p><img src="images/1792601269742.png" alt="" /></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">First, reduce your source data to one feature per distinct value</span><span style="font-family: inherit; font-size: 1em;">.</span><span style="font-family: inherit; font-size: 1em;"> A choice list is short, and the data behind it rarely is. The </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/sampler.htm" target="_blank" rel="noopener">Sampler</a><span style="font-family: inherit; font-size: 1em;">, </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/duplicatefilter.htm" target="_blank" rel="noopener">DuplicateFilter,</a><span style="font-family: inherit; font-size: 1em;"> and </span><a style="font-family: inherit; font-size: 1em; background-color: #ffffff;" href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/aggregator.htm" target="_blank" rel="noopener">Aggregator</a><span style="font-family: inherit; font-size: 1em;"> can reduce and summarize your data.</span></li>
+<li>For a choice parameter configuration, build the choice array with the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/listbuilder.htm" target="_blank" rel="noopener">ListBuilder</a>. You must create a choice array in the final JSON output. Notice the <code><strong>choices</strong></code> for the <code>region</code> parameter above has two options that you would need to generate as a list.</li>
+</ul>
+<p><img src="images/1792601441938.png" alt="" /></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Create the </span><code>name</code><span style="font-family: inherit; font-size: 1em;"> attribute, along with any default value.</span><span style="font-family: inherit; font-size: 1em;"> It designates which parameter each object modifies, so it has to exist as an attribute by the time the feature reaches the writer. The AttributeCreator is the easiest option for this.</span></li>
+</ul>
+<p><span style="font-family: inherit; font-size: 1em;"><img src="images/1792601604290.png" alt="" /></span></p>
+<ul>
+<li><span style="font-family: inherit; font-size: 1em;">Lastly, set the JSON writer up specifically for dynamic parameter configurations. Under </span><span style="font-family: inherit; font-size: 1em;">Parameters</span><span style="font-family: inherit; font-size: 1em;">, disable </span><span style="font-family: inherit; font-size: 1em;">Write Feature Type Key</span><span style="font-family: inherit; font-size: 1em;"> and </span><span style="font-family: inherit; font-size: 1em;">Write Geometry</span><span style="font-family: inherit; font-size: 1em;">. Left on, each object gains a </span><code>json_featuretype</code><span style="font-family: inherit; font-size: 1em;"> and a </span><code>json_geometry</code><span style="font-family: inherit; font-size: 1em;"> key, and FME Flow reads only </span><code>name</code><span style="font-family: inherit; font-size: 1em;">, </span><code>defaultValue</code><span style="font-family: inherit; font-size: 1em;"> and </span><code>choices</code><span style="font-family: inherit; font-size: 1em;">. The writer's feature type name and output file name make no difference, because FME Flow reads what the workspace returns rather than a file on disk.&nbsp;</span></li>
+</ul>
+<p><img src="images/1792454175765.png" alt="" /></p>
+<p>You may test your JSON output from FME Workbench by entering the JSON into the Dynamic Parameter Configuration on FME Flow.&nbsp;</p>
+<h2>Using the Workspace on FME Flow</h2>
+<p>Like any other workspace, the configuration workspace has to be published to FME Flow before an app can run it. It has no special status there. It is an ordinary workspace whose output happens to be the JSON structure FME Flow expects, so it can live in any repository and use any service &mdash; FME Flow runs it and reads its output directly, without going through a service endpoint.</p>
+<p>To point an app at it, edit the app and expand <strong>Dynamic Parameter Configuration</strong>. With <strong>Enable Dynamic Parameters</strong> on, go to <strong>App Launch Settings</strong> and turn on <strong>Enable Configuration Loading at Launch</strong>, then set <strong>Data Source</strong> to <strong>Workspace</strong>. Select the <strong>Repository</strong> and the <strong>Workspace</strong> that returns the configuration, and click <strong>Test</strong> to see the configuration FME Flow reads back before you save.&nbsp;</p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>In FME Flow 2025.2, you must publish the parameter data source workspace in the same repository as the workspace app's workspace and use the Data Streaming service. In 2026.1+, dynamic parameters support workspaces in any repository using any service.</p>
+</blockquote>
+<div>
+<style>
+details.fme-accordion-resources { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+details.fme-accordion-resources:hover { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15); transform: translateY(-1px); }
+details.fme-accordion-resources[open] { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2); }
+details.fme-accordion-resources > summary::-webkit-details-marker { display: none; }
+details.fme-accordion-resources > summary::marker { content: ''; }
+details.fme-accordion-resources > summary::before { content: ''; flex-shrink: 0; width: 32px; height: 32px; background-color: #F55215; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; transition: transform 0.2s ease; }
+details.fme-accordion-resources[open] > summary::before { transform: rotate(90deg); }
+details.fme-accordion-resources > summary:focus-visible { outline: 2px solid #000 !important; outline-offset: 2px !important; }
+details.fme-accordion-resources > :last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { details.fme-accordion-resources, details.fme-accordion-resources > summary::before { transition: none; transform: none; } }
+</style>
+</div>
+<details class="fme-accordion-resources" style="background-color: #fde3d9 !important; color: #333; padding: 14px; margin: 24px 0; border-radius: 4px;" open="open">
+<summary style="display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 18px; font-weight: bold; color: #333 !important; list-style: none; cursor: pointer; user-select: none;">Additional Resources</summary>
+<ul style="font-size: 16px; line-height: 1.5; margin-top: 10px; margin-bottom: 0;">
+<ul style="font-size: 16px; line-height: 1.5; margin-top: 10px; margin-bottom: 0;">
+<ul>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407515641997-Tutorial-Getting-Started-with-JSON" target="_blank" rel="noopener">Tutorial: Getting Started with JSON</a></li>
+<li><a href="https://academy.safe.com/path/fme-form-intermediate/work-with-multiple-data-models-using-lists" target="_blank" rel="noopener">Work with Multiple Data Models Using Lists</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/listbuilder.htm" target="_blank" rel="noopener">ListBuilder</a></li>
+<li><a href="Dynamic%20Parameter%20Configurations%20in%20FME%20Flow%20Apps" target="_blank" rel="noopener">Dynamic Parameter Configurations in FME Flow Apps</a></li>
+</ul>
+</ul>
+</ul>
+</details>
+<h2>Exercise</h2>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>The content used in this lesson builds on the previous lesson. To do this exercise, you will need to continue with your workspace app from the exercise in Configure Dynamic App Parameters after you test a workspace that supplies dynamic parameter configuration.&nbsp;</p>
+</blockquote>
+<p><img src="images/1748034089619.png" width="238" height="252" /></p>
+<p>Jennifer's alerts app now reads its choices from a JSON file stored in Resources. The JSON file added all possible traffic event types and regions; however, the date is static. This means the user must manually change the date to today's date each time they run the app. The app also lists all potential event types, not only those that actively exist. To pull today's date and active event types dynamically when the app launches, Jennifer would like to use a workspace to populate the parameters. She's already built the workspace that produces the JSON configuration and published it to FME Flow. You will run this workspace to inspect the JSON it produces, then edit the BCTrafficEvents app to use the workspace to supply and populate the parameters dynamically.&nbsp;</p>
+<p>To view the workspace, open the&nbsp;<a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/TrafficDynamicParameters.fmw" target="_self">starting workspace</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\TrafficDynamicParameters.fmw) in FME Workbench. The workspace queries the API for the regions and event types parameters and supplies today's date as the default value for the date parameter. The workspace formats the JSON array and outputs the JSON file.&nbsp;</p>
+<p><img src="images/1792529272325.png" alt="" /></p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Run a configuration workspace on FME Flow and read the JSON it returns.</li>
+<li>Update your workspace app to pull the parameters from a workspace instead of a file.</li>
+<li>Run and test that your workspace app successfully populates the parameters dynamically.&nbsp;</li>
+</ul>
+<h3>1) Run the Configuration Workspace on FME Flow</h3>
+<ul>
+<li>Open&nbsp;<strong>FME Flow</strong> and the&nbsp;<strong>Run Workspace</strong> page.</li>
+<li><span style="margin: 0px; padding: 0px;">Select the&nbsp;<strong>Training</strong>&nbsp;repository,&nbsp;<strong>the TrafficDynamicParameters.fmw</strong>&nbsp;workspace, and the&nbsp;<strong>Data Streaming&nbsp;</strong>service.</span></li>
+</ul>
+<p><span style="margin: 0px; padding: 0px;"><img src="images/1792529365103.png" alt="" /></span></p>
+<ul>
+<li><strong>Run</strong> the workspace.&nbsp;
+<ul>
+<li>Data Streaming returns the workspace's output straight to the browser, so the JSON appears on the page. This is exactly what the app reads when it launches.&nbsp;</li>
+<li>There is one object per parameter: a <code>defaultValue</code> of today's date, and <code>choices</code> arrays for the event types and regions, each pairing a <code>display</code> with a <code>value</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1792529399158.png" alt="" /></p>
+<h3>2) Edit Workspace App</h3>
+<ul>
+<li>Return to <strong>Flow Apps</strong> and edit the&nbsp;<strong>BCTrafficEvents</strong> app.</li>
+<li>Scroll down to the <strong>Dynamic Parameter Configuration</strong>.&nbsp;</li>
+<li>Change the&nbsp;<strong>Data Source&nbsp;</strong>from Resource to&nbsp;<strong>Workspace</strong>.&nbsp;</li>
+<li>Select the&nbsp;<strong>Training</strong> repository and the <strong>TrafficDynamicParameters.fmw</strong> workspace.&nbsp;</li>
+</ul>
+<p><img src="images/1792454926131.png" alt="" /></p>
+<ul>
+<li>Click <strong>Test</strong>.<br />
+<ul>
+<li>The Test Results should show 3 parameter configurations successfully loaded from the workspace.&nbsp;&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1792529475891.png" alt="" /></p>
+<ul>
+<li><em>Optional</em>: Click&nbsp;<strong>Preview</strong> to see how the parameters will behave in the FME Flow workspace app interface.&nbsp;</li>
+<li>Click <strong>Save</strong>.</li>
+</ul>
+<h3>3) Confirm the App Computes Its Choices</h3>
+<ul>
+<li>After the app saves, click <strong>View App</strong> to open the app.
+<ul>
+<li>It will take a moment for the app to load; the delay is the dynamic parameters workspace populating the app parameters.</li>
+<li>Once it loads, the date should default to today, and the choices should populate.&nbsp;</li>
+</ul>
+</li>
+<li>Make a selection and click&nbsp;<strong>Run</strong> to run the app.&nbsp;</li>
+</ul>
+<p>An app can now compute its own defaults and choices at launch, so the parameter default values and options stay current without anyone maintaining a file.</p>
+<p>&nbsp;</p>

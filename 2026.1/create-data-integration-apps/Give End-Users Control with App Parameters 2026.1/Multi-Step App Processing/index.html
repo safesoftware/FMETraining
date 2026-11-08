@@ -1,0 +1,656 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Compare the FME Flow features that link workspaces and apps together.</li>
+<li>Describe when a Webhook URL is the right tool and when an app URL is the better one.</li>
+<li>Build a link that passes an app user's parameter value to a second app.</li>
+<li>Chain a Data Streaming app to a Data Download app so users preview data before downloading it.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Compare the FME Flow features that link workspaces and apps together.</li>
+<li>Describe when a Webhook URL is the right tool and when an app URL is the better one.</li>
+<li>Build a link that passes an app user's parameter value to a second app.</li>
+<li>Chain a Data Streaming app to a Data Download app so users preview data before downloading it.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/FoodVendorBusinesses.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\FoodVendorBusinesses.fmw</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a> for directions to import the project to your own FME Flow.&nbsp;<span style="background-color: #d3d3d3; color: #333333;">&nbsp;</span></p>
+<h2>Advanced Workspace Processing with Flow Apps</h2>
+<p>Currently, FME Flow limits workspace apps to one workspace and one service at a time. In specific scenarios, you may want to run a workspace app with multiple services, run multiple workspaces in sequence, or conditionally run other FME workflows depending on results from your app. FME Flow offers numerous features that let you link workspaces and apps for seamless processing.&nbsp;</p>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 20%;"><strong>Feature</strong></td>
+<td style="width: 38%;"><strong>Common Functions</strong></td>
+<td style="width: 42%;"><strong>How to set it up</strong></td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Workspace-Apps.htm" target="_blank" rel="noopener">Linked Workspace Apps</a></p>
+</td>
+<td style="width: 38%;">
+<p>Run one workspace through two services by chaining two apps.</p>
+<p>Pass the values a user entered in one app straight into the next, through the app URL.</p>
+</td>
+<td style="width: 42%;">
+<p>On the receiving app, turn on Enable Dynamic Parameters and Enable URL-Based Configuration, and list what the URL may set under Allowed Parameters.</p>
+<p>Turn on Run Immediately so it runs without a second form.</p>
+<p>Build the link in the first workspace's output, with the value URL-encoded.</p>
+</td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automation-Apps.htm" target="_blank" rel="noopener">Automation Apps</a></p>
+</td>
+<td style="width: 38%;">
+<p>Run multiple workspaces in sequence or in parallel.</p>
+<p>Run workspaces conditionally based on results or data from previous workspaces or app inputs.</p>
+<p>Trigger additional workflows with FME Flow System Events and Topics external actions.</p>
+</td>
+<td style="width: 42%;">
+<p>Build an automation that starts with a <strong>Manual Trigger</strong> &mdash; an automation without one cannot be run from an app.</p>
+<p>Create the app from Flow Apps &gt; Automation Apps tab.</p>
+<p>See <a href="https://academy.safe.com/path/automate-workflows-with-fme-flow/job-orchestration-in-automations" target="_blank" rel="noopener">Job Orchestration in Automations</a> or <a href="https://academy.safe.com/path/create-data-integration-apps/create-no-code-web-apps" target="_blank" rel="noopener">Create No-Code Web Apps</a> for training content on how to create automation apps.</p>
+</td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/DevelopersGuide/REST-API-Method-Reference.htm" target="_blank" rel="noopener">FME Flow REST API</a></p>
+</td>
+<td style="width: 38%;">
+<p>Make API calls to FME Flow to retrieve data and information.</p>
+<p>Trigger and run FME workflows from external applications or from workspaces.</p>
+<p>Link within workspace apps to run other workflows or send data to FME Flow.</p>
+</td>
+<td style="width: 42%;">
+<p>Find the endpoint in the REST API documentation at <code>/fmeapiv4/docs/index.html</code> on your FME Flow.</p>
+<p>Call it from the workspace with an<strong> HTTPCaller or OpenAPICaller</strong>, referencing a user parameter for anything the app user chooses.</p>
+</td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Run-Workspace.htm" target="_blank" rel="noopener">Webhook URLs</a></p>
+</td>
+<td style="width: 38%;">
+<p>Run workspaces programmatically from third-party applications, web browsers, or other workspaces.</p>
+<p>Link from workspace app results to run a second workspace with app user inputs, or with a different service than the app.</p>
+</td>
+<td style="width: 42%;">
+<p>Configure the workspace on the Run Workspace page, then open Workspace Actions and select Create Webhook.</p>
+<p>Set the parameters the webhook will run with, then click Create.</p>
+<p>Copy the URL and its token straight away &mdash; it is shown only once.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2>Triggering Workflows with the FME Flow REST API</h2>
+<p>You can use the FME Flow REST API to run or enable additional workflows on FME Flow from within a workspace that is running as an app. First, locate the API endpoint you wish to use in the FME Flow REST API documentation, which you can find at http://&lt;your FME Flow host&gt;/fmeapiv4/docs/index.html. For example, to enable or disable a schedule on your FME Flow from a workspace app, you would use the PUT /schedules/{id}/enabled endpoint.&nbsp;</p>
+<p><img src="images/1761170659306.jpg" alt="" /></p>
+<p>The endpoint takes a single parameter: the schedule ID. You can configure your workspace to enable or disable a single schedule, or use a user parameter to select which schedule to enable or disable in your FME Flow. Create a Choice parameter to select the schedule name, and have it reference the ID.&nbsp;</p>
+<p><img src="images/1761171242539.jpg" alt="" /></p>
+<p>Then, reference the parameter from the transformer that makes the API request in your workspace. The most common transformers for this purpose are the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/httpcaller.htm?" target="_blank" rel="noopener">HTTPCaller</a> and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/openapicaller.htm?" target="_blank" rel="noopener">OpenAPICaller</a>.&nbsp;</p>
+<p><img src="images/1761171437174.jpg" alt="" /></p>
+<p>From a workspace app, the user sees only the schedule names in the Choice parameter. When they run the app, the workspace calls FME Flow to enable or disable the selected schedule.&nbsp;</p>
+<p><img src="images/1761171687296.jpg" alt="" /></p>
+<h2>Webhook URLs to Run Workspaces</h2>
+<p>A Webhook URL runs a workspace directly, without an app in front of it. You configure the workspace on the Run Workspace page, then open <strong>Workspace Actions</strong> and select <strong>Create Webhook</strong>&nbsp;instead of clicking Run.</p>
+<p><img src="images/1792605287814.png" alt="" /></p>
+<p>FME Flow prompts you to configure the webhook and its parameters. When you change a parameter, the URL updates to reflect it. You can always use the parameters to run the workspace set here, or you may alter the URL directly and use the webhook URL to run the workspace with different parameter selections.&nbsp;</p>
+<p>FME Flow shows two URLs: one with an authorization header and one with a query string, along with a token that grants permission to run the workspace. This is your only chance to download that information, so copy it before you leave the page.</p>
+<p><img src="images/1792605441802.png" alt="" /></p>
+<p>Because a webhook runs a workspace rather than an app, it is the right tool when no app is involved at all: a third-party system, a scheduled script, or another workspace that needs to start this one. Its parameter values are fixed when you create it, so each distinct set of values is a separate webhook.</p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>For linking one app to another, an app URL is usually the better choice. A webhook fixes its parameters when you create it and carries a token; an app URL takes its values at the moment it is opened, and what it may set is governed by Allowed Parameters.</p>
+</blockquote>
+<h2>Exercise</h2>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>The content used in this lesson builds on the previous lesson. To do this exercise, continue with your workspace app from the exercise in Set Parameters with Query Strings.&nbsp;</p>
+</blockquote>
+<p><img src="images/1760653697280.png" alt="" width="261" height="277" /></p>
+<p>Frank, a GIS Administrator, has a download app that takes a neighborhood from its URL. Colleagues still ask for the wrong neighborhood, download the data, and then ask again. He wants them to see the licenses first and download only once they know what they want, which means reaching two transformation services from one FME Flow workflow.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Build a link in an HTML report that passes the user's parameter choice to the data download app you built in the previous exercise.</li>
+<li>Use the data streaming service to create a preview app that streams the report to the browser.</li>
+<li>Run both apps as a single workflow.</li>
+</ul>
+<h3>1) Open Starting Workspace</h3>
+<ul>
+<li>Open <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/FoodVendorBusinesses.fmw" target="_blank" rel="noopener">DataPreview_FoodVendorBusinesses.fmw</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\DataPreview_FoodVendorBusinesses.fmw) in <strong>FME Workbench</strong>.
+<ul>
+<li>The workspace reads Food Vendors and Business Licenses, joins them on the Business Name attribute, filters the vendors by a neighborhood set with a user parameter, then writes an Excel sheet and an HTML report with the data. It also takes the neighborhood user parameter value and encodes it to link in the app URL from the previous exercise.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790790864490.png" alt="" /></p>
+<ul>
+<li><strong>Run</strong> the workspace and confirm the <strong>TextEncoder</strong> produces a <strong>neighborhood</strong> attribute.
+<ul>
+<li>That attribute is what the link uses, so <code>West End</code> reaches the download app as <code>West%20End</code> rather than as an invalid URL.</li>
+</ul>
+</li>
+</ul>
+<h3>2) Add App URL to HTMLReportGenerator</h3>
+<ul>
+<li>Double-click the <strong>HTMLReportGenerator&nbsp;</strong>to open its parameters.&nbsp;</li>
+<li>Under&nbsp;<strong>Page Contents</strong>, open the&nbsp;<strong>Custom HTML</strong>. Scroll down to the bottom of the HTML. On line 62, you will see <code>&lt;your app URL&gt;</code>.</li>
+</ul>
+<p><img src="images/1790794097215.png" alt="" /></p>
+<ul>
+<li>Select <code>&lt;your app URL&gt;</code>.</li>
+</ul>
+<p><img src="images/1790794537422.png" alt="" />&nbsp;</p>
+<ul>
+<li>Paste the query string URL of the data download app you created in the previous lesson over it.
+<ul>
+<li>You can return to FME Flow in the browser and copy the URL from the Dynamic Parameters guide.&nbsp;</li>
+<li>Your URL should be something like&nbsp;<code>http://localhost/fmeserver/apps/vendor-businesses-data-download?dynamicParameterData=%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22West%20End%22%7D%5D</code></li>
+<li>Line 62 will become long and include the URL in quotes.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<pre class="language-markup"><code>&lt;p&gt;&lt;a href="http://localhost/fmeserver/apps/vendor-businesses-data-download?dynamicParameterData=%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22West%20End%22%7D%5D"&gt;Download Excel Sheet&lt;/a&gt;&lt;/p&gt;</code></pre>
+<ul>
+<li>Scroll to the right to see the default value setting near the end of the URL. Select the default neighborhood name.&nbsp;</li>
+<li>Expand&nbsp;<strong>FME Feature Attributes</strong> and double-click the&nbsp;<strong>neighborhood</strong> attribute to replace the neighborhood name with the attribute.&nbsp;</li>
+</ul>
+<p><img src="images/1790795279437.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>Your URL will become&nbsp;<code>http://localhost/fmeserver/apps/vendor-businesses-data-download?dynamicParameterData=%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22@Value(neighborhood)%22%7D%5D</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790795484928.png" alt="" /></p>
+<ul>
+<li>Click <strong>OK</strong> to close the HTMLReportGenerator.</li>
+</ul>
+<h3>3) Publish the Workspace with Both Services</h3>
+<ul>
+<li><strong>Publish</strong> the workspace to FME Flow.</li>
+<li>Keep the workspace named <strong>DataPreview_</strong><strong>FoodVendorBusinesses.fmw</strong> in the <strong>Training</strong> repository.</li>
+<li>Select the <strong>Data Streaming, Data Download,&nbsp;</strong>and <strong>Job Submitter</strong> services.&nbsp;</li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>Once you build your workflows in FME Workbench, you need to transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, you need to complete all the steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong>&nbsp;to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the&nbsp;<strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<h3>4) Create Workspace App</h3>
+<ul>
+<li>Navigate to <strong>FME Flow</strong> and create a new workspace app.&nbsp;</li>
+<li>Enter a <strong>Name</strong>, a <strong>Title,</strong> and a <strong>Description</strong>, then configure the following parameters:
+<ul>
+<li><strong>Repository:</strong> Training</li>
+<li><strong>Workspace:</strong> DataPreview_FoodVendorBusinesses.fmw</li>
+<li><strong>Service:</strong> Data Streaming</li>
+<li><strong>App Security:</strong> Public</li>
+</ul>
+</li>
+<li>Scroll down and&nbsp;<strong>Create</strong> the app.</li>
+</ul>
+<h3>5) Test Data Preview and Download Apps</h3>
+<ul>
+<li>From the <strong>Workspace App Created</strong> page, click <strong>View App</strong> to open it.</li>
+<li>Select a neighborhood from the drop-down, and click <strong>Run</strong>.</li>
+</ul>
+<p><img src="images/1790796711783.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The data streaming service produces a table of the data as an HTML page directly in the browser.</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Download Excel Sheet</strong> to trigger the data download app you built in the previous exercise to run.&nbsp;</li>
+</ul>
+<p><img src="images/1790796908411.png" alt="" />&nbsp;</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The download app opens with the neighborhood already applied and runs without showing a form, because Run Immediately is on.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790796977935.png" alt="" /></p>
+<ul>
+<li>Download the data, extract the zip folder, and use FME Data Inspector to check that the downloaded data matches the preview.&nbsp;</li>
+<li>Return to the data preview app, choose a different neighborhood, and run the workflow again, confirming the link follows your new choice.</li>
+</ul>
+<p>You've now built two FME Flow apps, one to preview the data, and one to download the data immediately. You can use multiple FME Flow transformation services from a single workspace app form with a one-button click from the data streaming output HTML. This workflow will help Frank save time fulfilling food vendor business license data, while allowing his colleagues to make selections and preview their data before downloading it.&nbsp;</p>
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/FoodVendorBusinesses.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\FoodVendorBusinesses.fmw</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a> for directions to import the project to your own FME Flow.&nbsp;<span style="background-color: #d3d3d3; color: #333333;">&nbsp;</span></p>
+<h2>Advanced Workspace Processing with Flow Apps</h2>
+<p>Currently, FME Flow limits workspace apps to one workspace and one service at a time. In specific scenarios, you may want to run a workspace app with multiple services, run multiple workspaces in sequence, or conditionally run other FME workflows depending on results from your app. FME Flow offers numerous features that let you link workspaces and apps for seamless processing.&nbsp;</p>
+<table style="border-collapse: collapse; width: 100%;" border="1">
+<tbody>
+<tr>
+<td style="width: 20%;"><strong>Feature</strong></td>
+<td style="width: 38%;"><strong>Common Functions</strong></td>
+<td style="width: 42%;"><strong>How to set it up</strong></td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Workspace-Apps.htm" target="_blank" rel="noopener">Linked Workspace Apps</a></p>
+</td>
+<td style="width: 38%;">
+<p>Run one workspace through two services by chaining two apps.</p>
+<p>Pass the values a user entered in one app straight into the next, through the app URL.</p>
+</td>
+<td style="width: 42%;">
+<p>On the receiving app, turn on Enable Dynamic Parameters and Enable URL-Based Configuration, and list what the URL may set under Allowed Parameters.</p>
+<p>Turn on Run Immediately so it runs without a second form.</p>
+<p>Build the link in the first workspace's output, with the value URL-encoded.</p>
+</td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automation-Apps.htm" target="_blank" rel="noopener">Automation Apps</a></p>
+</td>
+<td style="width: 38%;">
+<p>Run multiple workspaces in sequence or in parallel.</p>
+<p>Run workspaces conditionally based on results or data from previous workspaces or app inputs.</p>
+<p>Trigger additional workflows with FME Flow System Events and Topics external actions.</p>
+</td>
+<td style="width: 42%;">
+<p>Build an automation that starts with a <strong>Manual Trigger</strong> &mdash; an automation without one cannot be run from an app.</p>
+<p>Create the app from Flow Apps &gt; Automation Apps tab.</p>
+<p>See <a href="https://academy.safe.com/path/automate-workflows-with-fme-flow/job-orchestration-in-automations" target="_blank" rel="noopener">Job Orchestration in Automations</a> or <a href="https://academy.safe.com/path/create-data-integration-apps/create-no-code-web-apps" target="_blank" rel="noopener">Create No-Code Web Apps</a> for training content on how to create automation apps.</p>
+</td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/DevelopersGuide/REST-API-Method-Reference.htm" target="_blank" rel="noopener">FME Flow REST API</a></p>
+</td>
+<td style="width: 38%;">
+<p>Make API calls to FME Flow to retrieve data and information.</p>
+<p>Trigger and run FME workflows from external applications or from workspaces.</p>
+<p>Link within workspace apps to run other workflows or send data to FME Flow.</p>
+</td>
+<td style="width: 42%;">
+<p>Find the endpoint in the REST API documentation at <code>/fmeapiv4/docs/index.html</code> on your FME Flow.</p>
+<p>Call it from the workspace with an<strong> HTTPCaller or OpenAPICaller</strong>, referencing a user parameter for anything the app user chooses.</p>
+</td>
+</tr>
+<tr>
+<td style="width: 20%;">
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Run-Workspace.htm" target="_blank" rel="noopener">Webhook URLs</a></p>
+</td>
+<td style="width: 38%;">
+<p>Run workspaces programmatically from third-party applications, web browsers, or other workspaces.</p>
+<p>Link from workspace app results to run a second workspace with app user inputs, or with a different service than the app.</p>
+</td>
+<td style="width: 42%;">
+<p>Configure the workspace on the Run Workspace page, then open Workspace Actions and select Create Webhook.</p>
+<p>Set the parameters the webhook will run with, then click Create.</p>
+<p>Copy the URL and its token straight away &mdash; it is shown only once.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2>Triggering Workflows with the FME Flow REST API</h2>
+<p>You can use the FME Flow REST API to run or enable additional workflows on FME Flow from within a workspace that is running as an app. First, locate the API endpoint you wish to use in the FME Flow REST API documentation, which you can find at http://&lt;your FME Flow host&gt;/fmeapiv4/docs/index.html. For example, to enable or disable a schedule on your FME Flow from a workspace app, you would use the PUT /schedules/{id}/enabled endpoint.&nbsp;</p>
+<p><img src="images/1761170659306.jpg" alt="" /></p>
+<p>The endpoint takes a single parameter: the schedule ID. You can configure your workspace to enable or disable a single schedule, or use a user parameter to select which schedule to enable or disable in your FME Flow. Create a Choice parameter to select the schedule name, and have it reference the ID.&nbsp;</p>
+<p><img src="images/1761171242539.jpg" alt="" /></p>
+<p>Then, reference the parameter from the transformer that makes the API request in your workspace. The most common transformers for this purpose are the <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/httpcaller.htm?" target="_blank" rel="noopener">HTTPCaller</a> and <a href="https://docs.safe.com/fme/html/FME-Form-Documentation/FME-Transformers/Transformers/openapicaller.htm?" target="_blank" rel="noopener">OpenAPICaller</a>.&nbsp;</p>
+<p><img src="images/1761171437174.jpg" alt="" /></p>
+<p>From a workspace app, the user sees only the schedule names in the Choice parameter. When they run the app, the workspace calls FME Flow to enable or disable the selected schedule.&nbsp;</p>
+<p><img src="images/1761171687296.jpg" alt="" /></p>
+<h2>Webhook URLs to Run Workspaces</h2>
+<p>A Webhook URL runs a workspace directly, without an app in front of it. You configure the workspace on the Run Workspace page, then open <strong>Workspace Actions</strong> and select <strong>Create Webhook</strong>&nbsp;instead of clicking Run.</p>
+<p><img src="images/1792605287814.png" alt="" /></p>
+<p>FME Flow prompts you to configure the webhook and its parameters. When you change a parameter, the URL updates to reflect it. You can always use the parameters to run the workspace set here, or you may alter the URL directly and use the webhook URL to run the workspace with different parameter selections.&nbsp;</p>
+<p>FME Flow shows two URLs: one with an authorization header and one with a query string, along with a token that grants permission to run the workspace. This is your only chance to download that information, so copy it before you leave the page.</p>
+<p><img src="images/1792605441802.png" alt="" /></p>
+<p>Because a webhook runs a workspace rather than an app, it is the right tool when no app is involved at all: a third-party system, a scheduled script, or another workspace that needs to start this one. Its parameter values are fixed when you create it, so each distinct set of values is a separate webhook.</p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>For linking one app to another, an app URL is usually the better choice. A webhook fixes its parameters when you create it and carries a token; an app URL takes its values at the moment it is opened, and what it may set is governed by Allowed Parameters.</p>
+</blockquote>
+<h2>Exercise</h2>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>The content used in this lesson builds on the previous lesson. To do this exercise, continue with your workspace app from the exercise in Set Parameters with Query Strings.&nbsp;</p>
+</blockquote>
+<p><img src="images/1760653697280.png" alt="" width="261" height="277" /></p>
+<p>Frank, a GIS Administrator, has a download app that takes a neighborhood from its URL. Colleagues still ask for the wrong neighborhood, download the data, and then ask again. He wants them to see the licenses first and download only once they know what they want, which means reaching two transformation services from one FME Flow workflow.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Build a link in an HTML report that passes the user's parameter choice to the data download app you built in the previous exercise.</li>
+<li>Use the data streaming service to create a preview app that streams the report to the browser.</li>
+<li>Run both apps as a single workflow.</li>
+</ul>
+<h3>1) Open Starting Workspace</h3>
+<ul>
+<li>Open <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/FoodVendorBusinesses.fmw" target="_blank" rel="noopener">DataPreview_FoodVendorBusinesses.fmw</a> (C:\FMEData\Workspaces\CreateDataIntegrationApps\DataPreview_FoodVendorBusinesses.fmw) in <strong>FME Workbench</strong>.
+<ul>
+<li>The workspace reads Food Vendors and Business Licenses, joins them on the Business Name attribute, filters the vendors by a neighborhood set with a user parameter, then writes an Excel sheet and an HTML report with the data. It also takes the neighborhood user parameter value and encodes it to link in the app URL from the previous exercise.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790790864490.png" alt="" /></p>
+<ul>
+<li><strong>Run</strong> the workspace and confirm the <strong>TextEncoder</strong> produces a <strong>neighborhood</strong> attribute.
+<ul>
+<li>That attribute is what the link uses, so <code>West End</code> reaches the download app as <code>West%20End</code> rather than as an invalid URL.</li>
+</ul>
+</li>
+</ul>
+<h3>2) Add App URL to HTMLReportGenerator</h3>
+<ul>
+<li>Double-click the <strong>HTMLReportGenerator&nbsp;</strong>to open its parameters.&nbsp;</li>
+<li>Under&nbsp;<strong>Page Contents</strong>, open the&nbsp;<strong>Custom HTML</strong>. Scroll down to the bottom of the HTML. On line 62, you will see <code>&lt;your app URL&gt;</code>.</li>
+</ul>
+<p><img src="images/1790794097215.png" alt="" /></p>
+<ul>
+<li>Select <code>&lt;your app URL&gt;</code>.</li>
+</ul>
+<p><img src="images/1790794537422.png" alt="" />&nbsp;</p>
+<ul>
+<li>Paste the query string URL of the data download app you created in the previous lesson over it.
+<ul>
+<li>You can return to FME Flow in the browser and copy the URL from the Dynamic Parameters guide.&nbsp;</li>
+<li>Your URL should be something like&nbsp;<code>http://localhost/fmeserver/apps/vendor-businesses-data-download?dynamicParameterData=%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22West%20End%22%7D%5D</code></li>
+<li>Line 62 will become long and include the URL in quotes.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<pre class="language-markup"><code>&lt;p&gt;&lt;a href="http://localhost/fmeserver/apps/vendor-businesses-data-download?dynamicParameterData=%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22West%20End%22%7D%5D"&gt;Download Excel Sheet&lt;/a&gt;&lt;/p&gt;</code></pre>
+<ul>
+<li>Scroll to the right to see the default value setting near the end of the URL. Select the default neighborhood name.&nbsp;</li>
+<li>Expand&nbsp;<strong>FME Feature Attributes</strong> and double-click the&nbsp;<strong>neighborhood</strong> attribute to replace the neighborhood name with the attribute.&nbsp;</li>
+</ul>
+<p><img src="images/1790795279437.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>Your URL will become&nbsp;<code>http://localhost/fmeserver/apps/vendor-businesses-data-download?dynamicParameterData=%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22@Value(neighborhood)%22%7D%5D</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790795484928.png" alt="" /></p>
+<ul>
+<li>Click <strong>OK</strong> to close the HTMLReportGenerator.</li>
+</ul>
+<h3>3) Publish the Workspace with Both Services</h3>
+<ul>
+<li><strong>Publish</strong> the workspace to FME Flow.</li>
+<li>Keep the workspace named <strong>DataPreview_</strong><strong>FoodVendorBusinesses.fmw</strong> in the <strong>Training</strong> repository.</li>
+<li>Select the <strong>Data Streaming, Data Download,&nbsp;</strong>and <strong>Job Submitter</strong> services.&nbsp;</li>
+</ul>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Publish to FME Flow</strong></summary>
+<div>
+<div>Once you build your workflows in FME Workbench, you need to transfer them to FME Flow through the publishing process. To publish a workspace to FME Flow, you need to complete all the steps in the publishing wizard.&nbsp;&nbsp;</div>
+<div>1. Click&nbsp;<strong>Publish&nbsp;</strong>in the&nbsp;<strong>FME Flow Connection</strong>&nbsp;toolbar. The publishing wizard window will open.</div>
+<div><img src="images/1748285818571.jpg" alt="" /></div>
+<div><img src="images/1748286554734.jpg" alt="" width="566" height="588" /></div>
+<div>2. Confirm your&nbsp;<strong>FME Flow Connection</strong>&nbsp;lists the correct connection and successfully connects to your FME Flow.</div>
+<div>3. Select a&nbsp;<strong>repository</strong>&nbsp;to house the workspace on FME Flow from the drop-down options. To create a new repository, click New and enter its details.&nbsp;</div>
+<div>4. Optionally, you may&nbsp;<strong>Upload data files</strong>&nbsp;to publish the workspace's source data files to FME Flow along with the workspace. You can control which files to upload from the&nbsp;<strong>Select Files...</strong>&nbsp;option.&nbsp;</div>
+<div>5. Click&nbsp;<strong>Next</strong>&nbsp;to move on to the next step.</div>
+<div>6. If your workspace uses any connections, the&nbsp;<strong>Upload Connections</strong>&nbsp;section will appear. You can select whether to publish the connections to FME Flow.&nbsp;</div>
+<div><img src="images/1748286904132.jpg" alt="" width="605" height="423" /></div>
+<div>7.&nbsp;<strong>Register Services</strong>&nbsp;is the last publishing step. Select the transformation services you want your workspace to be able to use on FME Flow.&nbsp;</div>
+<div><img src="images/1748286987767.jpg" alt="" /></div>
+<div>8. Click&nbsp;<strong>Publish</strong>.&nbsp;</div>
+<div>9. The translation log generates a summary of publishing and provides a direct link to open the workspace on FME Flow.&nbsp;</div>
+<div><img src="images/1748366315558.jpg" alt="" width="732" height="382" /></div>
+<div>For more information on the FME Flow services and publishing to FME Flow, see&nbsp;<a href="https://academy.safe.com/deploy-workspaces-on-fme-flow-2025-0" target="_blank" rel="noopener">Deploy Workspaces on FME Flow</a>.&nbsp;</div>
+</div>
+</details>
+<h3>4) Create Workspace App</h3>
+<ul>
+<li>Navigate to <strong>FME Flow</strong> and create a new workspace app.&nbsp;</li>
+<li>Enter a <strong>Name</strong>, a <strong>Title,</strong> and a <strong>Description</strong>, then configure the following parameters:
+<ul>
+<li><strong>Repository:</strong> Training</li>
+<li><strong>Workspace:</strong> DataPreview_FoodVendorBusinesses.fmw</li>
+<li><strong>Service:</strong> Data Streaming</li>
+<li><strong>App Security:</strong> Public</li>
+</ul>
+</li>
+<li>Scroll down and&nbsp;<strong>Create</strong> the app.</li>
+</ul>
+<h3>5) Test Data Preview and Download Apps</h3>
+<ul>
+<li>From the <strong>Workspace App Created</strong> page, click <strong>View App</strong> to open it.</li>
+<li>Select a neighborhood from the drop-down, and click <strong>Run</strong>.</li>
+</ul>
+<p><img src="images/1790796711783.png" alt="" /></p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The data streaming service produces a table of the data as an HTML page directly in the browser.</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Download Excel Sheet</strong> to trigger the data download app you built in the previous exercise to run.&nbsp;</li>
+</ul>
+<p><img src="images/1790796908411.png" alt="" />&nbsp;</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li>The download app opens with the neighborhood already applied and runs without showing a form, because Run Immediately is on.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790796977935.png" alt="" /></p>
+<ul>
+<li>Download the data, extract the zip folder, and use FME Data Inspector to check that the downloaded data matches the preview.&nbsp;</li>
+<li>Return to the data preview app, choose a different neighborhood, and run the workflow again, confirming the link follows your new choice.</li>
+</ul>
+<p>You've now built two FME Flow apps, one to preview the data, and one to download the data immediately. You can use multiple FME Flow transformation services from a single workspace app form with a one-button click from the data streaming output HTML. This workflow will help Frank save time fulfilling food vendor business license data, while allowing his colleagues to make selections and preview their data before downloading it.&nbsp;</p>
+<div>
+<style>
+  .custom-details {
+    background-color: #07D7FF; /* safe blue */
+    color: #333;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .custom-details summary {
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    user-select: none;
+    padding: 5px 0;
+  }
+
+  .custom-details[open] {
+    background-color: #d3d3d3; /* grey */
+  }
+
+  .custom-details div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+</div>

@@ -1,0 +1,554 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Explain how an app URL carries parameter values into an app.</li>
+<li>Restrict which parameters a URL is allowed to set.</li>
+<li>Generate a configuration URL and confirm the app launches with those values.</li>
+<li>Configure an app to run as soon as its URL is opened, without showing a form.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Explain how an app URL carries parameter values into an app.</li>
+<li>Restrict which parameters a URL is allowed to set.</li>
+<li>Generate a configuration URL and confirm the app launches with those values.</li>
+<li>Configure an app to run as soon as its URL is opened, without showing a form.</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/FoodVendorBusinesses.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\FoodVendorBusinesses.fmw</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Setting Parameters with Query Strings</h2>
+<p>In the last two lessons, the workspace app fetched its parameter configuration when it opened, either from a JSON file in Resources or from a workspace that generated the JSON. Query strings work the other way around: whoever opens the app supplies the configuration in the URL they open it with. The app doesn't look anywhere for its configuration, so FME Flow doesn't need to maintain anything between runs.</p>
+<p>The configuration itself is the same JSON array you have been working with: one object per parameter, each with a <code>name</code> and a <code>defaultValue</code>, <code>choices</code>, or both. The only difference is how it reaches the app. Instead of FME Flow reading the JSON from a source, the JSON is URL-encoded and added to the end of the app's URL. Because the configuration lives in the link, one app can launch with different default values depending on which link someone opened, and you can create those links by hand or have another application build them.</p>
+<p>This makes an app usable as a destination rather than a starting point. For example, your asset management system raises a work order for a maintenance zone and emails the crew a link to your export app with the zone already encoded into it. They click it, and the app opens scoped to exactly that job. One app serves every work order, and you never edit it when you add a new zone. Query strings are the right choice when the values depend on who is opening the app or why: bookmarked or shared configurations, links in emails and reports, apps chained together, and apps launched from an external system that already knows the values.</p>
+<p>They are a poor fit when every user should see the same configuration, when the values must be live, when the configuration is large, or when the values shouldn't be visible, since anyone with the link can read it in the address bar. In those cases, use one of the configuration loading methods from the previous lessons:</p>
+<table style="border-collapse: collapse; width: 100%;" border="1" cellpadding="6">
+<thead>
+<tr>
+<th>Method</th>
+<th>Where the JSON comes from</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resource file</td>
+<td>A JSON file in FME Flow Resources</td>
+<td>A shared configuration that changes occasionally</td>
+</tr>
+<tr>
+<td>Workspace</td>
+<td>A workspace that runs when the app opens</td>
+<td>Live values, such as today's date or current choices from an API</td>
+</tr>
+<tr>
+<td>URL (data source)</td>
+<td>A web service or Data Virtualization endpoint that returns the JSON</td>
+<td>A configuration maintained by another system</td>
+</tr>
+<tr>
+<td>Query string</td>
+<td>The URL used to open the app</td>
+<td>Per-link values: bookmarks, shared links, chained apps, external launches</td>
+</tr>
+</tbody>
+</table>
+<h2>Enabling URL-Based Configuration</h2>
+<p>An app only reads a configuration from its URL once you allow it to. Set up URL-based configuration in the app's Dynamic Parameter Configuration section by turning on Enable Dynamic Parameters, then Enable URL-Based Configuration. You don't need Enable Configuration Loading at Launch for query strings; that option is only for the Resource, Workspace, and URL data sources from the previous lessons. Once URL-based configuration is on, the Allowed Parameters list appears, where you choose the user parameters a URL is allowed to set. The app applies these settings only after you save them.</p>
+<p><img src="images/1792607856154.png" alt="" /></p>
+<p>Choose the Allowed Parameters carefully. Anyone who can read a URL can also edit it, and this list is the only thing standing between a hand-edited link and the rest of the workspace. Add only the parameters a link genuinely needs to set. For example, if your app filters by neighborhood and writes to a fixed output folder, allow the neighborhood parameter and nothing else. A parameter that is not on the list is ignored rather than rejected: a URL that tries to set one still opens the app, using the default the app already had, so test the behavior you expect rather than assuming an error will tell you something went wrong.</p>
+<p>A query string sets the default values and choices the app opens with, and the user can still change them on the form before clicking Run. If the link should do its job without any input, the Run Immediately option under Customize can be turned on as well. The app then runs as soon as its URL is opened, with no form in between, making it closer to an endpoint: a single link that does one job with the values it was given.</p>
+<p><img src="images/run%20immediately.1793987827407.png" alt="" /></p>
+<h2>Building the Query String</h2>
+<p>A query string is the part of a URL after the question mark. It carries named values to the page being opened. A workspace app reads its configuration from a query string parameter named <code>dynamicParameterData</code>, and the value of that parameter is your URL-encoded JSON configuration:</p>
+<pre><code>https://&lt;FME Flow hostname&gt;/fmeserver/apps/&lt;app-name&gt;?dynamicParameterData=&lt;URL-encoded JSON&gt;</code></pre>
+<p>The first part is the app's normal URL, the same one View App opens. The <code>?</code> starts the query string, and <code>dynamicParameterData=</code> names the parameter the app reads, typed exactly as shown. Everything after the equals sign is the configuration. This is different from the <code>name=value</code> pairs you may have seen in other URLs: instead of one pair per parameter, a single value holds the whole configuration, so anything a JSON configuration can do to a parameter, including replacing an entire choice list, a URL can do too.</p>
+<p>JSON contains characters that have special meaning in a URL or aren't allowed in one at all, so the configuration has to be URL-encoded. Encoding replaces each of these characters with a percent sign and a two-character code, so the browser passes the JSON to the app unchanged. For example, this configuration:</p>
+<pre><code>[{"name":"NEIGHBORHOOD","defaultValue":"Fairview"}]</code></pre>
+<p>becomes this query string value:</p>
+<pre><code>%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22Fairview%22%7D%5D</code></pre>
+<table style="border-collapse: collapse;" border="1" cellpadding="6">
+<thead>
+<tr>
+<th>Character</th>
+<th>Encoded</th>
+<th>Character</th>
+<th>Encoded</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[</code></td>
+<td><code>%5B</code></td>
+<td><code>]</code></td>
+<td><code>%5D</code></td>
+</tr>
+<tr>
+<td><code>{</code></td>
+<td><code>%7B</code></td>
+<td><code>}</code></td>
+<td><code>%7D</code></td>
+</tr>
+<tr>
+<td><code>"</code></td>
+<td><code>%22</code></td>
+<td><code>:</code></td>
+<td><code>%3A</code></td>
+</tr>
+<tr>
+<td><code>,</code></td>
+<td><code>%2C</code></td>
+<td>space</td>
+<td><code>%20</code></td>
+</tr>
+</tbody>
+</table>
+<p>Letters and numbers are not encoded, so you can still read the parameter names and values in the URL. Each value sits between a pair of <code>%22</code> codes, which makes it practical to edit a URL by hand: replacing <code>Fairview</code> with <code>Downtown</code> above gives you a link for a different neighborhood.</p>
+<p>The values need encoding, as does the punctuation. A space is not valid in a URL, so Mount Pleasant has to travel as <code>Mount%20Pleasant</code>. Removing the space instead is a common mistake, and the app will run with a value that matches nothing and return an empty result rather than an error. It also helps to write the JSON on a single line, because every newline and indent space survives encoding as three characters: the single-line example above encodes to 81 characters, while the same configuration indented over six lines encodes to 138. Parameters that accept more than one value work the same way they do in a file or workspace configuration, taking a JSON array such as <code>"defaultValue":["HAZARD","ICE_COVERED"]</code>.</p>
+<p>You can build and encode a configuration entirely outside FME Flow with any JSON editor and URL encoder, and an external application can do the same programmatically, for example with JavaScript's <code>encodeURIComponent()</code> or Python's <code>urllib.parse.quote()</code>. That is how a system generates a different link for every record without anyone touching the app.</p>
+<h2>Generating the URL with the Dynamic Parameters Guide</h2>
+<p>You don't have to write or encode the configuration by hand. The dynamic parameters guide, opened with View Guide in the app's Dynamic Parameter Configuration section, takes you from parameters to a finished link in one place. Its three tabs follow the order you work in.</p>
+<p><img src="images/1792362613851.png" alt="" width="979" height="822" /></p>
+<p>The Schema Guide tab references the JSON structure with an example, and it's where to check when you are unsure how to write a configuration for a particular parameter type. The Generate Configuration tab writes a starting configuration from the app you are editing, so you begin from valid JSON rather than a blank page. When you select the parameters to configure (for a query string, only those on your Allowed Parameters list), the Schema Sample fills with their current Parameter Defaults. You can edit the values or add choices there, use Test to confirm FME Flow reads the configuration as you expect, and use Preview to see the parameters as they will appear in the app. The finished JSON can be copied or downloaded as a file.</p>
+<p>The Generate URL Config tab turns that configuration into a link. When you paste the JSON into the Parameter Configuration Schema box and generate the URL, FME Flow encodes the JSON and adds it to the app's URL as the <code>dynamicParameterData</code> value, ready to open or copy and share.</p>
+<p><img src="images/generate%20url%202.1793987865095.png" alt="" /></p>
+<p>The usual approach is to generate one URL with the guide, then edit the values directly in that URL whenever you need another link. Once the app is set up, you don't need to make further changes to create new links.</p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>The Generate URL Config tab only works once Enable URL-Based Configuration is on. A generated URL only works after the app has been saved, so if the values don't appear when you open the link, save the app and try again.</p>
+</blockquote>
+<div>
+<style>
+details.fme-accordion-resources { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+details.fme-accordion-resources:hover { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15); transform: translateY(-1px); }
+details.fme-accordion-resources[open] { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2); }
+details.fme-accordion-resources > summary::-webkit-details-marker { display: none; }
+details.fme-accordion-resources > summary::marker { content: ''; }
+details.fme-accordion-resources > summary::before { content: ''; flex-shrink: 0; width: 32px; height: 32px; background-color: #F55215; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; transition: transform 0.2s ease; }
+details.fme-accordion-resources[open] > summary::before { transform: rotate(90deg); }
+details.fme-accordion-resources > summary:focus-visible { outline: 2px solid #000 !important; outline-offset: 2px !important; }
+details.fme-accordion-resources > :last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { details.fme-accordion-resources, details.fme-accordion-resources > summary::before { transition: none; transform: none; } }
+</style>
+</div>
+<details class="fme-accordion-resources" style="background-color: #fde3d9 !important; color: #333; padding: 14px; margin: 24px 0; border-radius: 4px;" open="open">
+<summary style="display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 18px; font-weight: bold; color: #333 !important; list-style: none; cursor: pointer; user-select: none;">Additional Resources</summary>
+<ul style="font-size: 16px; line-height: 1.5; margin-top: 10px; margin-bottom: 0;">
+<li><a href="https://support.safe.com/hc/en-us/articles/40509829569805-Dynamic-Parameter-Configurations-in-FME-Flow-Apps" target="_blank" rel="noopener">Dynamic Parameter Configurations in FME Flow Apps</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Workspace-Apps.htm" target="_blank" rel="noopener">FME Flow Documentation: Workspace Apps</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407515641997-Tutorial-Getting-Started-with-JSON" target="_blank" rel="noopener">Tutorial: Getting Started with JSON</a></li>
+</ul>
+</details>
+<h2>Exercise</h2>
+<p><img src="images/1760653697280.png" alt="" width="261" height="277" /></p>
+<p>Frank, a GIS Administrator, frequently receives repeated requests for food vendor business license data. He frequently queries the data to extract the data for a specific neighborhood his colleagues request.&nbsp; He wants a link he can send that delivers exactly that neighborhood's data, with nothing for the recipient to fill in.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Create a data download app that accepts parameter values from its URL.</li>
+<li>Restrict which parameters that URL is allowed to set.</li>
+<li>Generate a configuration URL and run the app from it immediately.</li>
+<li>Confirm that a parameter outside the allowed list is ignored.</li>
+</ul>
+<h3>1) Create Workspace App</h3>
+<ul>
+<li>Navigate to&nbsp;<strong>FME Flow</strong> and open <strong>Flow Apps</strong>.</li>
+<li>Ensure you're on the <strong>Workspace Apps </strong>tab, and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790783252743.png" alt="" /></p>
+<ul>
+<li>Enter a <strong>Name</strong>, a <strong>Title</strong> and a <strong>Description</strong>, then configure the following parameters:
+<ul>
+<li><strong>Repository:</strong> Training</li>
+<li><strong>Workspace:</strong> FoodVendorBusinesses.fmw</li>
+<li><strong>Service:</strong> Data Download&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><strong><img src="images/1790783406468.png" alt="" /></strong></p>
+<ul>
+<li>Leave the <strong>App</strong> <strong>Security </strong>set to&nbsp;<strong>Public</strong>.</li>
+</ul>
+<h3>2) Allow the Neighborhood Parameter from the URL</h3>
+<ul>
+<li>In&nbsp;<strong>Parameter Defaults</strong>, you'll notice this workspace only takes one parameter as input: the choice of a neighborhood to deliver the license data within.&nbsp;</li>
+<li>Set&nbsp;<strong>Downtown</strong> as the default for the&nbsp;<strong>Select a Neighborhood</strong> parameter.</li>
+</ul>
+<p><img src="images/1790784059838.png" alt="" /></p>
+<ul>
+<li>Scroll to <strong>Dynamic Parameter Configuration</strong> and expand the section.</li>
+<li>Toggle on&nbsp;<strong>Enable Dynamic Parameters</strong>.</li>
+</ul>
+<p><img src="images/1790783656415.png" alt="" />&nbsp;</p>
+<ul>
+<li>Toggle on&nbsp;<strong>Enable URL-Based Configuration</strong>.</li>
+<li>Select the&nbsp;<strong>NEIGHBORHOOD</strong> parameter for the&nbsp;<strong>Allowed Parameters</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1790783806136.png" alt="" /></p>
+<h3>3) Generate a Configuration URL</h3>
+<ul>
+<li>Click&nbsp;<strong>View Guide</strong> to open a guide on configuring dynamic parameters.</li>
+</ul>
+<p><img src="images/1790784958669.png" alt="" /></p>
+<ul>
+<li>Select the&nbsp;<strong>Generate URL Config</strong> tab.</li>
+<li>Paste the following JSON schema into the <strong style="font-family: inherit; font-size: 1em;">Parameter Configuration Schema</strong><span style="font-family: inherit; font-size: 1em;">.&nbsp;</span></li>
+</ul>
+<pre class="language-markup"><code>[{"name":"NEIGHBORHOOD","defaultValue":"Fairview"}]</code></pre>
+<p><img src="images/1790787332187.png" alt="" /></p>
+<ul>
+<li>Click&nbsp;<strong>Generate URL</strong>.&nbsp;
+<ul>
+<li>FME Flow generates a sample URL that will run your app. It won't be valid until you create and save your app, though.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Copy URL</strong>.&nbsp;
+<ul>
+<li>If you're worried about losing this URL, you can open Notepad and paste it there to keep until you're ready to run and load your app. You will also need it for the next exercise, Multi-Step App Processing.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790787600314.png" alt="" /></p>
+<ul>
+<li><strong>Close</strong> the Dynamic Parameters window.&nbsp;</li>
+</ul>
+<h3>4) Set the App to Run Immediately</h3>
+<ul>
+<li>Expand the <strong>Customize</strong> section</li>
+<li>Scroll down and toggle on <strong>Run Immediately</strong>.
+<ul>
+<li>This setting ensures the app runs the moment its URL is loaded, rather than showing a form with values already supplied.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790783960564.png" alt="" /></p>
+<ul>
+<li>Click <strong>Create</strong>.
+<ul>
+<li>FME Flow will load the Workspace App Saved page. This time we won't view the app from this URL, and we will use the URL you copied in the previous step.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<h3>5) Open the URL and Download</h3>
+<ul>
+<li>Open a new browser tab and paste the URL you copied in Step 4.&nbsp;
+<ul>
+<li>You'll see the default value is Fairview, along with the URL encoding.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790788110014.png" alt="" /></p>
+<ul>
+<li>Before you hit Enter to navigate to the URL, you can change the neighborhood parameter to another value, like <strong>Downtown</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1790788280009.png" alt="" /></p>
+<ul>
+<li>If you want to use Mount Pleasant or West End for the neighborhood, you will need to include the space encoding.
+<ul>
+<li>For Mount Pleasant, replace the text with <code>Mount%20Pleasant</code>.</li>
+<li>For West End, replace the text with&nbsp;<code>West%20End</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790788545409.png" alt="" /></p>
+<ul>
+<li>Hit&nbsp;<strong>Enter</strong> or&nbsp;<strong>Return</strong> to submit the URL.&nbsp;
+<ul>
+<li>The FME Flow app should immediately run without prompting you to configure the parameter and click Run.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790788696506.png" alt="" /></p>
+<ul>
+<li>Once the translation completes, FME presents you with the <strong>Data Download URL</strong>.
+<ul>
+<li>If there's no Data Download URL, you likely entered the default parameter value incorrectly. Try again by pasting the original URL you copied.&nbsp;</li>
+</ul>
+</li>
+<li>Click the URL to download the data.</li>
+</ul>
+<p><img src="images/1790788907910.png" alt="" /></p>
+<ul>
+<li>Extract the data and use <strong>FME Data Inspector&nbsp;</strong>to validate that the output data contains only food vendor business licenses from the neighborhood you entered in the URL.&nbsp;</li>
+</ul>
+<p><img src="images/1790789230963.png" alt="" /></p>
+<p>You've now used query string parameters to set parameter default values from the app URL, then triggered the app to run immediately without needing to enter parameter values or click Run. Frank can now share links with the parameter value set for the neighborhood his colleagues request, saving them both time.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/CreateDataIntegrationApps/FoodVendorBusinesses.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\CreateDataIntegrationApps\FoodVendorBusinesses.fmw</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a>&nbsp;for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Setting Parameters with Query Strings</h2>
+<p>In the last two lessons, the workspace app fetched its parameter configuration when it opened, either from a JSON file in Resources or from a workspace that generated the JSON. Query strings work the other way around: whoever opens the app supplies the configuration in the URL they open it with. The app doesn't look anywhere for its configuration, so FME Flow doesn't need to maintain anything between runs.</p>
+<p>The configuration itself is the same JSON array you have been working with: one object per parameter, each with a <code>name</code> and a <code>defaultValue</code>, <code>choices</code>, or both. The only difference is how it reaches the app. Instead of FME Flow reading the JSON from a source, the JSON is URL-encoded and added to the end of the app's URL. Because the configuration lives in the link, one app can launch with different default values depending on which link someone opened, and you can create those links by hand or have another application build them.</p>
+<p>This makes an app usable as a destination rather than a starting point. For example, your asset management system raises a work order for a maintenance zone and emails the crew a link to your export app with the zone already encoded into it. They click it, and the app opens scoped to exactly that job. One app serves every work order, and you never edit it when you add a new zone. Query strings are the right choice when the values depend on who is opening the app or why: bookmarked or shared configurations, links in emails and reports, apps chained together, and apps launched from an external system that already knows the values.</p>
+<p>They are a poor fit when every user should see the same configuration, when the values must be live, when the configuration is large, or when the values shouldn't be visible, since anyone with the link can read it in the address bar. In those cases, use one of the configuration loading methods from the previous lessons:</p>
+<table style="border-collapse: collapse; width: 100%;" border="1" cellpadding="6">
+<thead>
+<tr>
+<th>Method</th>
+<th>Where the JSON comes from</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resource file</td>
+<td>A JSON file in FME Flow Resources</td>
+<td>A shared configuration that changes occasionally</td>
+</tr>
+<tr>
+<td>Workspace</td>
+<td>A workspace that runs when the app opens</td>
+<td>Live values, such as today's date or current choices from an API</td>
+</tr>
+<tr>
+<td>URL (data source)</td>
+<td>A web service or Data Virtualization endpoint that returns the JSON</td>
+<td>A configuration maintained by another system</td>
+</tr>
+<tr>
+<td>Query string</td>
+<td>The URL used to open the app</td>
+<td>Per-link values: bookmarks, shared links, chained apps, external launches</td>
+</tr>
+</tbody>
+</table>
+<h2>Enabling URL-Based Configuration</h2>
+<p>An app only reads a configuration from its URL once you allow it to. Set up URL-based configuration in the app's Dynamic Parameter Configuration section by turning on Enable Dynamic Parameters, then Enable URL-Based Configuration. You don't need Enable Configuration Loading at Launch for query strings; that option is only for the Resource, Workspace, and URL data sources from the previous lessons. Once URL-based configuration is on, the Allowed Parameters list appears, where you choose the user parameters a URL is allowed to set. The app applies these settings only after you save them.</p>
+<p><img src="images/1792607856154.png" alt="" /></p>
+<p>Choose the Allowed Parameters carefully. Anyone who can read a URL can also edit it, and this list is the only thing standing between a hand-edited link and the rest of the workspace. Add only the parameters a link genuinely needs to set. For example, if your app filters by neighborhood and writes to a fixed output folder, allow the neighborhood parameter and nothing else. A parameter that is not on the list is ignored rather than rejected: a URL that tries to set one still opens the app, using the default the app already had, so test the behavior you expect rather than assuming an error will tell you something went wrong.</p>
+<p>A query string sets the default values and choices the app opens with, and the user can still change them on the form before clicking Run. If the link should do its job without any input, the Run Immediately option under Customize can be turned on as well. The app then runs as soon as its URL is opened, with no form in between, making it closer to an endpoint: a single link that does one job with the values it was given.</p>
+<p><img src="images/run%20immediately.1793987827407.png" alt="" /></p>
+<h2>Building the Query String</h2>
+<p>A query string is the part of a URL after the question mark. It carries named values to the page being opened. A workspace app reads its configuration from a query string parameter named <code>dynamicParameterData</code>, and the value of that parameter is your URL-encoded JSON configuration:</p>
+<pre><code>https://&lt;FME Flow hostname&gt;/fmeserver/apps/&lt;app-name&gt;?dynamicParameterData=&lt;URL-encoded JSON&gt;</code></pre>
+<p>The first part is the app's normal URL, the same one View App opens. The <code>?</code> starts the query string, and <code>dynamicParameterData=</code> names the parameter the app reads, typed exactly as shown. Everything after the equals sign is the configuration. This is different from the <code>name=value</code> pairs you may have seen in other URLs: instead of one pair per parameter, a single value holds the whole configuration, so anything a JSON configuration can do to a parameter, including replacing an entire choice list, a URL can do too.</p>
+<p>JSON contains characters that have special meaning in a URL or aren't allowed in one at all, so the configuration has to be URL-encoded. Encoding replaces each of these characters with a percent sign and a two-character code, so the browser passes the JSON to the app unchanged. For example, this configuration:</p>
+<pre><code>[{"name":"NEIGHBORHOOD","defaultValue":"Fairview"}]</code></pre>
+<p>becomes this query string value:</p>
+<pre><code>%5B%7B%22name%22%3A%22NEIGHBORHOOD%22%2C%22defaultValue%22%3A%22Fairview%22%7D%5D</code></pre>
+<table style="border-collapse: collapse;" border="1" cellpadding="6">
+<thead>
+<tr>
+<th>Character</th>
+<th>Encoded</th>
+<th>Character</th>
+<th>Encoded</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[</code></td>
+<td><code>%5B</code></td>
+<td><code>]</code></td>
+<td><code>%5D</code></td>
+</tr>
+<tr>
+<td><code>{</code></td>
+<td><code>%7B</code></td>
+<td><code>}</code></td>
+<td><code>%7D</code></td>
+</tr>
+<tr>
+<td><code>"</code></td>
+<td><code>%22</code></td>
+<td><code>:</code></td>
+<td><code>%3A</code></td>
+</tr>
+<tr>
+<td><code>,</code></td>
+<td><code>%2C</code></td>
+<td>space</td>
+<td><code>%20</code></td>
+</tr>
+</tbody>
+</table>
+<p>Letters and numbers are not encoded, so you can still read the parameter names and values in the URL. Each value sits between a pair of <code>%22</code> codes, which makes it practical to edit a URL by hand: replacing <code>Fairview</code> with <code>Downtown</code> above gives you a link for a different neighborhood.</p>
+<p>The values need encoding, as does the punctuation. A space is not valid in a URL, so Mount Pleasant has to travel as <code>Mount%20Pleasant</code>. Removing the space instead is a common mistake, and the app will run with a value that matches nothing and return an empty result rather than an error. It also helps to write the JSON on a single line, because every newline and indent space survives encoding as three characters: the single-line example above encodes to 81 characters, while the same configuration indented over six lines encodes to 138. Parameters that accept more than one value work the same way they do in a file or workspace configuration, taking a JSON array such as <code>"defaultValue":["HAZARD","ICE_COVERED"]</code>.</p>
+<p>You can build and encode a configuration entirely outside FME Flow with any JSON editor and URL encoder, and an external application can do the same programmatically, for example with JavaScript's <code>encodeURIComponent()</code> or Python's <code>urllib.parse.quote()</code>. That is how a system generates a different link for every record without anyone touching the app.</p>
+<h2>Generating the URL with the Dynamic Parameters Guide</h2>
+<p>You don't have to write or encode the configuration by hand. The dynamic parameters guide, opened with View Guide in the app's Dynamic Parameter Configuration section, takes you from parameters to a finished link in one place. Its three tabs follow the order you work in.</p>
+<p><img src="images/1792362613851.png" alt="" width="979" height="822" /></p>
+<p>The Schema Guide tab references the JSON structure with an example, and it's where to check when you are unsure how to write a configuration for a particular parameter type. The Generate Configuration tab writes a starting configuration from the app you are editing, so you begin from valid JSON rather than a blank page. When you select the parameters to configure (for a query string, only those on your Allowed Parameters list), the Schema Sample fills with their current Parameter Defaults. You can edit the values or add choices there, use Test to confirm FME Flow reads the configuration as you expect, and use Preview to see the parameters as they will appear in the app. The finished JSON can be copied or downloaded as a file.</p>
+<p>The Generate URL Config tab turns that configuration into a link. When you paste the JSON into the Parameter Configuration Schema box and generate the URL, FME Flow encodes the JSON and adds it to the app's URL as the <code>dynamicParameterData</code> value, ready to open or copy and share.</p>
+<p><img src="images/generate%20url%202.1793987865095.png" alt="" /></p>
+<p>The usual approach is to generate one URL with the guide, then edit the values directly in that URL whenever you need another link. Once the app is set up, you don't need to make further changes to create new links.</p>
+<blockquote>
+<p><img src="images/1760042700791.png" alt="Note" /></p>
+<p>The Generate URL Config tab only works once Enable URL-Based Configuration is on. A generated URL only works after the app has been saved, so if the values don't appear when you open the link, save the app and try again.</p>
+</blockquote>
+<div>
+<style>
+details.fme-accordion-resources { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+details.fme-accordion-resources:hover { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15); transform: translateY(-1px); }
+details.fme-accordion-resources[open] { box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2); }
+details.fme-accordion-resources > summary::-webkit-details-marker { display: none; }
+details.fme-accordion-resources > summary::marker { content: ''; }
+details.fme-accordion-resources > summary::before { content: ''; flex-shrink: 0; width: 32px; height: 32px; background-color: #F55215; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5a1 1 0 0 1 1.6-.8l8 6.5a1 1 0 0 1 0 1.6l-8 6.5A1 1 0 0 1 8 18.5v-13z'/%3E%3C/svg%3E") center / 32px no-repeat; transition: transform 0.2s ease; }
+details.fme-accordion-resources[open] > summary::before { transform: rotate(90deg); }
+details.fme-accordion-resources > summary:focus-visible { outline: 2px solid #000 !important; outline-offset: 2px !important; }
+details.fme-accordion-resources > :last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { details.fme-accordion-resources, details.fme-accordion-resources > summary::before { transition: none; transform: none; } }
+</style>
+</div>
+<details class="fme-accordion-resources" style="background-color: #fde3d9 !important; color: #333; padding: 14px; margin: 24px 0; border-radius: 4px;" open="open">
+<summary style="display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 18px; font-weight: bold; color: #333 !important; list-style: none; cursor: pointer; user-select: none;">Additional Resources</summary>
+<ul style="font-size: 16px; line-height: 1.5; margin-top: 10px; margin-bottom: 0;">
+<li><a href="https://support.safe.com/hc/en-us/articles/40509829569805-Dynamic-Parameter-Configurations-in-FME-Flow-Apps" target="_blank" rel="noopener">Dynamic Parameter Configurations in FME Flow Apps</a></li>
+<li><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Workspace-Apps.htm" target="_blank" rel="noopener">FME Flow Documentation: Workspace Apps</a></li>
+<li><a href="https://support.safe.com/hc/en-us/articles/25407515641997-Tutorial-Getting-Started-with-JSON" target="_blank" rel="noopener">Tutorial: Getting Started with JSON</a></li>
+</ul>
+</details>
+<h2>Exercise</h2>
+<p><img src="images/1760653697280.png" alt="" width="261" height="277" /></p>
+<p>Frank, a GIS Administrator, frequently receives repeated requests for food vendor business license data. He frequently queries the data to extract the data for a specific neighborhood his colleagues request.&nbsp; He wants a link he can send that delivers exactly that neighborhood's data, with nothing for the recipient to fill in.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Create a data download app that accepts parameter values from its URL.</li>
+<li>Restrict which parameters that URL is allowed to set.</li>
+<li>Generate a configuration URL and run the app from it immediately.</li>
+<li>Confirm that a parameter outside the allowed list is ignored.</li>
+</ul>
+<h3>1) Create Workspace App</h3>
+<ul>
+<li>Navigate to&nbsp;<strong>FME Flow</strong> and open <strong>Flow Apps</strong>.</li>
+<li>Ensure you're on the <strong>Workspace Apps </strong>tab, and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790783252743.png" alt="" /></p>
+<ul>
+<li>Enter a <strong>Name</strong>, a <strong>Title</strong> and a <strong>Description</strong>, then configure the following parameters:
+<ul>
+<li><strong>Repository:</strong> Training</li>
+<li><strong>Workspace:</strong> FoodVendorBusinesses.fmw</li>
+<li><strong>Service:</strong> Data Download&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><strong><img src="images/1790783406468.png" alt="" /></strong></p>
+<ul>
+<li>Leave the <strong>App</strong> <strong>Security </strong>set to&nbsp;<strong>Public</strong>.</li>
+</ul>
+<h3>2) Allow the Neighborhood Parameter from the URL</h3>
+<ul>
+<li>In&nbsp;<strong>Parameter Defaults</strong>, you'll notice this workspace only takes one parameter as input: the choice of a neighborhood to deliver the license data within.&nbsp;</li>
+<li>Set&nbsp;<strong>Downtown</strong> as the default for the&nbsp;<strong>Select a Neighborhood</strong> parameter.</li>
+</ul>
+<p><img src="images/1790784059838.png" alt="" /></p>
+<ul>
+<li>Scroll to <strong>Dynamic Parameter Configuration</strong> and expand the section.</li>
+<li>Toggle on&nbsp;<strong>Enable Dynamic Parameters</strong>.</li>
+</ul>
+<p><img src="images/1790783656415.png" alt="" />&nbsp;</p>
+<ul>
+<li>Toggle on&nbsp;<strong>Enable URL-Based Configuration</strong>.</li>
+<li>Select the&nbsp;<strong>NEIGHBORHOOD</strong> parameter for the&nbsp;<strong>Allowed Parameters</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1790783806136.png" alt="" /></p>
+<h3>3) Generate a Configuration URL</h3>
+<ul>
+<li>Click&nbsp;<strong>View Guide</strong> to open a guide on configuring dynamic parameters.</li>
+</ul>
+<p><img src="images/1790784958669.png" alt="" /></p>
+<ul>
+<li>Select the&nbsp;<strong>Generate URL Config</strong> tab.</li>
+<li>Paste the following JSON schema into the <strong style="font-family: inherit; font-size: 1em;">Parameter Configuration Schema</strong><span style="font-family: inherit; font-size: 1em;">.&nbsp;</span></li>
+</ul>
+<pre class="language-markup"><code>[{"name":"NEIGHBORHOOD","defaultValue":"Fairview"}]</code></pre>
+<p><img src="images/1790787332187.png" alt="" /></p>
+<ul>
+<li>Click&nbsp;<strong>Generate URL</strong>.&nbsp;
+<ul>
+<li>FME Flow generates a sample URL that will run your app. It won't be valid until you create and save your app, though.&nbsp;</li>
+</ul>
+</li>
+<li>Click&nbsp;<strong>Copy URL</strong>.&nbsp;
+<ul>
+<li>If you're worried about losing this URL, you can open Notepad and paste it there to keep until you're ready to run and load your app. You will also need it for the next exercise, Multi-Step App Processing.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790787600314.png" alt="" /></p>
+<ul>
+<li><strong>Close</strong> the Dynamic Parameters window.&nbsp;</li>
+</ul>
+<h3>4) Set the App to Run Immediately</h3>
+<ul>
+<li>Expand the <strong>Customize</strong> section</li>
+<li>Scroll down and toggle on <strong>Run Immediately</strong>.
+<ul>
+<li>This setting ensures the app runs the moment its URL is loaded, rather than showing a form with values already supplied.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790783960564.png" alt="" /></p>
+<ul>
+<li>Click <strong>Create</strong>.
+<ul>
+<li>FME Flow will load the Workspace App Saved page. This time we won't view the app from this URL, and we will use the URL you copied in the previous step.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<h3>5) Open the URL and Download</h3>
+<ul>
+<li>Open a new browser tab and paste the URL you copied in Step 4.&nbsp;
+<ul>
+<li>You'll see the default value is Fairview, along with the URL encoding.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790788110014.png" alt="" /></p>
+<ul>
+<li>Before you hit Enter to navigate to the URL, you can change the neighborhood parameter to another value, like <strong>Downtown</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1790788280009.png" alt="" /></p>
+<ul>
+<li>If you want to use Mount Pleasant or West End for the neighborhood, you will need to include the space encoding.
+<ul>
+<li>For Mount Pleasant, replace the text with <code>Mount%20Pleasant</code>.</li>
+<li>For West End, replace the text with&nbsp;<code>West%20End</code>.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790788545409.png" alt="" /></p>
+<ul>
+<li>Hit&nbsp;<strong>Enter</strong> or&nbsp;<strong>Return</strong> to submit the URL.&nbsp;
+<ul>
+<li>The FME Flow app should immediately run without prompting you to configure the parameter and click Run.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790788696506.png" alt="" /></p>
+<ul>
+<li>Once the translation completes, FME presents you with the <strong>Data Download URL</strong>.
+<ul>
+<li>If there's no Data Download URL, you likely entered the default parameter value incorrectly. Try again by pasting the original URL you copied.&nbsp;</li>
+</ul>
+</li>
+<li>Click the URL to download the data.</li>
+</ul>
+<p><img src="images/1790788907910.png" alt="" /></p>
+<ul>
+<li>Extract the data and use <strong>FME Data Inspector&nbsp;</strong>to validate that the output data contains only food vendor business licenses from the neighborhood you entered in the URL.&nbsp;</li>
+</ul>
+<p><img src="images/1790789230963.png" alt="" /></p>
+<p>You've now used query string parameters to set parameter default values from the app URL, then triggered the app to run immediately without needing to enter parameter values or click Run. Frank can now share links with the parameter value set for the neighborhood his colleagues request, saving them both time.</p>

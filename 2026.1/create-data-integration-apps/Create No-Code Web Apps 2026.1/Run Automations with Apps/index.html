@@ -1,0 +1,320 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p><span style="font-weight: 400;">After completing this lesson, you'll be able to:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1">Create an automation app to trigger and run an automation.&nbsp;</li>
+<li style="font-weight: 400;" aria-level="1">Understand the requirements to use an automation in an automation app.&nbsp;</li>
+<li style="font-weight: 400;" aria-level="1">Understand how FME Flow takes input from automation apps to automations.&nbsp;</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p><span style="font-weight: 400;">After completing this lesson, you'll be able to:</span></p>
+<ul>
+<li style="font-weight: 400;" aria-level="1">Create an automation app to trigger and run an automation.&nbsp;</li>
+<li style="font-weight: 400;" aria-level="1">Understand the requirements to use an automation in an automation app.&nbsp;</li>
+<li style="font-weight: 400;" aria-level="1">Understand how FME Flow takes input from automation apps to automations.&nbsp;</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a> for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Automations&nbsp;</h2>
+<p>An automation is a workflow that reacts to an event (a <strong>trigger</strong>) and then performs one or more <strong>actions</strong>. Triggers respond to events such as updated files, webhooks, or scheduled times, and send a message to trigger downstream actions. Actions often include running one or more FME workspaces, sending emails, writing files, or branching based on results. You connect these steps on a canvas so the process runs the same way every time.</p>
+<p><img src="images/1759337170598.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>This course focuses specifically on Flow apps. For more training on automations, see the <a href="https://academy.safe.com/path/automate-workflows-with-fme-flow" target="_blank" rel="noopener">Automate Workflows with FME Flow</a> learning path.&nbsp;</p>
+</blockquote>
+<h2>Automation Apps</h2>
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automation-Apps.htm" target="_blank" rel="noopener">Automation apps</a> let you trigger an automation through an app. Like other Flow apps, you access and share automation apps with URLs that FME Flow generates once you build your app. By sharing app URLs, users may access FME Automations functionality through a simple form without requiring any FME knowledge or expertise. Automation apps let you enter parameters to control how the automation runs. When you run an automation app, FME Flow will display a message on the app page if the automation is successfully triggered.&nbsp;</p>
+<p><img src="images/1759520270346.jpg" alt="" /></p>
+<p>Creating an automation app is very similar to creating a workspace app; you fill out a form to set app details and select the automation you want to run from the app.&nbsp;</p>
+<p><img src="images/1790456062816.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>In FME 2026.1, there is currently a bug where the Create Automation App pages display all automations in the automation field, not just automations that use a manual trigger. If you select an automation without a manual trigger, it will throw an error at runtime.&nbsp;</p>
+</blockquote>
+<p>Once you select an automation, the Parameters section appears, where you can configure default values for the app. These parameters link to the automation's manual parameters. You also have the same customization options, where you may tailor your app to your organization's branding with colors, logos, banners, and images.&nbsp;&nbsp;</p>
+<p><img src="images/1759520573525.jpg" alt="" /></p>
+<p>Similar to workspace apps, automation apps will include Resource Permissions and Connection Permissions if your automation uses resources or connections. You will need to give the app permission to use them so your automation app functions successfully.&nbsp;</p>
+<p>Once you finalize your app, FME Flow generates a URL you can use to access it. You can copy the URL to share it, view the app immediately in another browser tab, or return to editing the app. FME Flow also summarizes the users and roles that can access the automation app.&nbsp;&nbsp;</p>
+<p><img src="images/1790613916030.png" alt="" /></p>
+<h2>Manual Triggers and Parameters</h2>
+<p>To use an automation in an automation app, your automation must use a <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-Triggers/Trigger-Manual.htm">Manual Trigger</a>. Manual triggers do not respond to external events; instead, they trigger automations on demand. Automation apps send messages to manual triggers to kick off the automation.&nbsp;</p>
+<p><img src="images/1754430629477.jpg" alt="" /></p>
+<p>The only parameter to configure for a manual trigger is the Prompt for JSON on Trigger option. This option allows you to enter JSON input into automation when you manually trigger it from the Automations canvas. It is usually unnecessary for automations you plan to trigger through automation apps.&nbsp;</p>
+<p><img src="images/1754596197967.jpg" /></p>
+<p>Manual triggers have unique output attributes called manual parameters. Manual parameters are customizable attributes that you create to take input into your automation. To add and edit manual parameters for an automation, you must open the Manual Trigger Details. In the Output Attributes tab, you'll see Manual Parameters nested under Success.&nbsp;</p>
+<p><img src="images/1754494947662.jpg" alt="" /></p>
+<p>You click Manage to open the Manual Parameters Editor, where you create manual parameters. Like user parameters in FME Workbench, you can add many input types to your automation, depending on your workflow.&nbsp;</p>
+<p><img src="images/1754494789334.jpg" alt="" /></p>
+<p>The Manual Parameters Editor displays the parameter list on the left and individual parameter properties on the right.&nbsp;</p>
+<p><img src="images/1754495612478.jpg" alt="" width="1021" height="613" /></p>
+<p>When you create an automation app, these parameters appear on the app's web page for users to enter values.</p>
+<p><img src="images/1754497795867.jpg" alt="" /></p>
+<p>To use the input values in your automation, you reference manual parameters in downstream actions like any other output attributes and automation parameters. All Manual Parameters begin with the prefix <code>manual.</code></p>
+<p><img src="images/1754495773483.jpg" alt="" /></p>
+<h2>Automation App Permissions</h2>
+<p>Automation app permissions work differently from other Flow apps. Because automations are complex, app users must log into FME Flow to run an automation app and trigger an automation. When you build your automation app, you select which users and roles in FME Flow can access your app.&nbsp;</p>
+<p><img src="images/1790614381404.png" alt="" /></p>
+<p>When you create an automation app, FME Flow generates the app URL and shows you its App Access information, which summarizes who can reach the app. Authorized FME Flow users open that URL, sign in, and run the automation. If users don't have access to the automation app, FME Flow prevents them from opening it and alerts them that they don't have permission to access the app.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on user permissions in FME Flow, see <a href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/AccessControl.htm" target="_blank" rel="noopener">Role and User-based Access Control</a>.&nbsp;</p>
+</blockquote>
+<h2>Exercise</h2>
+<p><img src="images/1759177782559.png" alt="" width="251" height="266" /></p>
+<p>Sven, a Planning Analyst, needs to warn residents whose addresses fall near upcoming infrastructure work. His automation clips residential addresses to an area he supplies, builds a notification based on the project type, and emails the resulting list. He wants to trigger it without opening FME Flow each time, and to let his colleagues run it too.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Review the manual parameters an automation exposes to an app.</li>
+<li>Create an automation app and grant a role access to it.</li>
+<li>Run the automation app and confirm it triggers the automation.</li>
+</ul>
+<h3>1) Review the Automation</h3>
+<p>An automation app can only trigger an automation that starts with a manual trigger, and the manual trigger's parameters become the fields the app user fills in. Knowing which parameters exist tells you what the app will look like before you build it.</p>
+<ul>
+<li>On FME Flow, open <strong>Automations</strong> and click the <strong>City Project Notifications automation</strong>.</li>
+</ul>
+<p><img src="images/1790607820427.png" alt="" /></p>
+<ul>
+<li>Click the <strong>Manual Trigger icon</strong>, then click <strong>Output Attributes</strong> and expand <strong>Success</strong> and <strong>Manual Parameters</strong>.
+<ul>
+<li>These parameters are what the app presents to users.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759260462726.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>Cancel</strong> to close the details, then start the automation.
+<ul>
+<li>An automation must be running before an app can trigger it.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790610197634.png" alt="" /></p>
+<p><img src="images/1790610243049.png" alt="" /></p>
+<h3>2) Create the Automation App</h3>
+<ul>
+<li>Open <strong>Flow Apps</strong>, select the <strong>Automation Apps tab</strong>, and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790610830201.png" alt="" /></p>
+<ul>
+<li>Enter a <strong>Name</strong>, a <strong>Title</strong>, and a <strong>Description</strong>, then select the <strong>City Project Notifications automation</strong>.</li>
+</ul>
+<p><img src="images/1790610954541.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>In FME 2026.1, a bug currently causes the Create Automation App pages to display all automations in the automation field, not just automations that use a manual trigger. If you select an automation without a manual trigger, it will throw an error at runtime.&nbsp;</p>
+</blockquote>
+<ul>
+<li>From the <strong>Allowed Roles drop-down</strong>, add the fmeauthor role.</li>
+</ul>
+<p><img src="images/1790612853792.png" alt="" /></p>
+<ul>
+<li>Expand <strong>Parameters</strong> and leave every default unset.
+<ul>
+<li>These are the manual parameters you reviewed in the manual trigger.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759262247511.jpg" alt="" /></p>
+<ul>
+<li>Scroll to the bottom of the page and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790613049459.png" alt="" /></p>
+<h3>3) Open the Automation App</h3>
+<p>As with a workspace app, creating the app produces the URL you share.</p>
+<ul>
+<li>Click <strong>View App</strong>&nbsp;to open it in a new tab.</li>
+</ul>
+<p><img src="images/1790613136032.png" alt="" /></p>
+<p><img src="images/1790613223596.png" alt="" /></p>
+<h3>4) Run the Automation App</h3>
+<p>The app presents the manual parameters as ordinary form fields, including a map for the geometry parameter, so the person running it needs to know nothing about the automation behind it.</p>
+<ul>
+<li>Click the <strong>map icon</strong> to open the web map, choose a geometry shape, draw the affected area, and click <strong>Confirm</strong>.</li>
+</ul>
+<p><img src="images/1759263463433.jpg" alt="" /></p>
+<ul>
+<li>Select the project type and enter your email address.</li>
+</ul>
+<p><img src="images/1759263590870.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>Run</strong>.
+<ul>
+<li>FME Flow confirms it has triggered the automation.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759263684416.jpg" alt="" /></p>
+<ul>
+<li>Check your email for the list of addresses to notify.
+<ul>
+<li>If you don't receive the email to your inbox, check your email spam folder as well. You can also confirm the email sent in the&nbsp;<strong>action_email.log</strong> file in Resources/Logs/automations/current.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759263802178.jpg" alt="" /></p>
+<p>You have built an automation app that takes user input through a manual trigger, runs two workspaces, and emails a result, all from a single URL.</p>
+<p>&nbsp;</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--starting-project.fsproject">Starting project</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--starting-project.fsproject</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Resources/FlowAuthoring/fme-flow-authoring--key.jceks">Encryption key</a>&nbsp;| C:\FMEData\Resources\FlowAuthoring\fme-flow-authoring--key.jceks</li>
+</ul>
+<p>If you're taking a live Safe Software-hosted training course or using an on-demand lab for this course, we've already imported the content for this lesson into your FME Flow.<br />If you're completing this lesson with your own FME Flow, you must import the starting project with the content into your FME Flow. <br />See&nbsp;<a href="https://academy.safe.com/page/fme-flow-starting-project">FME Flow Authoring: Instructions to Import the Starting Project</a> for directions to import the project to your own FME Flow.&nbsp;</p>
+<h2>Automations&nbsp;</h2>
+<p>An automation is a workflow that reacts to an event (a <strong>trigger</strong>) and then performs one or more <strong>actions</strong>. Triggers respond to events such as updated files, webhooks, or scheduled times, and send a message to trigger downstream actions. Actions often include running one or more FME workspaces, sending emails, writing files, or branching based on results. You connect these steps on a canvas so the process runs the same way every time.</p>
+<p><img src="images/1759337170598.jpg" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>This course focuses specifically on Flow apps. For more training on automations, see the <a href="https://academy.safe.com/path/automate-workflows-with-fme-flow" target="_blank" rel="noopener">Automate Workflows with FME Flow</a> learning path.&nbsp;</p>
+</blockquote>
+<h2>Automation Apps</h2>
+<p><a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automation-Apps.htm" target="_blank" rel="noopener">Automation apps</a> let you trigger an automation through an app. Like other Flow apps, you access and share automation apps with URLs that FME Flow generates once you build your app. By sharing app URLs, users may access FME Automations functionality through a simple form without requiring any FME knowledge or expertise. Automation apps let you enter parameters to control how the automation runs. When you run an automation app, FME Flow will display a message on the app page if the automation is successfully triggered.&nbsp;</p>
+<p><img src="images/1759520270346.jpg" alt="" /></p>
+<p>Creating an automation app is very similar to creating a workspace app; you fill out a form to set app details and select the automation you want to run from the app.&nbsp;</p>
+<p><img src="images/1790456062816.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>In FME 2026.1, there is currently a bug where the Create Automation App pages display all automations in the automation field, not just automations that use a manual trigger. If you select an automation without a manual trigger, it will throw an error at runtime.&nbsp;</p>
+</blockquote>
+<p>Once you select an automation, the Parameters section appears, where you can configure default values for the app. These parameters link to the automation's manual parameters. You also have the same customization options, where you may tailor your app to your organization's branding with colors, logos, banners, and images.&nbsp;&nbsp;</p>
+<p><img src="images/1759520573525.jpg" alt="" /></p>
+<p>Similar to workspace apps, automation apps will include Resource Permissions and Connection Permissions if your automation uses resources or connections. You will need to give the app permission to use them so your automation app functions successfully.&nbsp;</p>
+<p>Once you finalize your app, FME Flow generates a URL you can use to access it. You can copy the URL to share it, view the app immediately in another browser tab, or return to editing the app. FME Flow also summarizes the users and roles that can access the automation app.&nbsp;&nbsp;</p>
+<p><img src="images/1790613916030.png" alt="" /></p>
+<h2>Manual Triggers and Parameters</h2>
+<p>To use an automation in an automation app, your automation must use a <a href="https://docs.safe.com/fme/html/FME-Flow/WebUI/Automations-Triggers/Trigger-Manual.htm">Manual Trigger</a>. Manual triggers do not respond to external events; instead, they trigger automations on demand. Automation apps send messages to manual triggers to kick off the automation.&nbsp;</p>
+<p><img src="images/1754430629477.jpg" alt="" /></p>
+<p>The only parameter to configure for a manual trigger is the Prompt for JSON on Trigger option. This option allows you to enter JSON input into automation when you manually trigger it from the Automations canvas. It is usually unnecessary for automations you plan to trigger through automation apps.&nbsp;</p>
+<p><img src="images/1754596197967.jpg" /></p>
+<p>Manual triggers have unique output attributes called manual parameters. Manual parameters are customizable attributes that you create to take input into your automation. To add and edit manual parameters for an automation, you must open the Manual Trigger Details. In the Output Attributes tab, you'll see Manual Parameters nested under Success.&nbsp;</p>
+<p><img src="images/1754494947662.jpg" alt="" /></p>
+<p>You click Manage to open the Manual Parameters Editor, where you create manual parameters. Like user parameters in FME Workbench, you can add many input types to your automation, depending on your workflow.&nbsp;</p>
+<p><img src="images/1754494789334.jpg" alt="" /></p>
+<p>The Manual Parameters Editor displays the parameter list on the left and individual parameter properties on the right.&nbsp;</p>
+<p><img src="images/1754495612478.jpg" alt="" width="1021" height="613" /></p>
+<p>When you create an automation app, these parameters appear on the app's web page for users to enter values.</p>
+<p><img src="images/1754497795867.jpg" alt="" /></p>
+<p>To use the input values in your automation, you reference manual parameters in downstream actions like any other output attributes and automation parameters. All Manual Parameters begin with the prefix <code>manual.</code></p>
+<p><img src="images/1754495773483.jpg" alt="" /></p>
+<h2>Automation App Permissions</h2>
+<p>Automation app permissions work differently from other Flow apps. Because automations are complex, app users must log into FME Flow to run an automation app and trigger an automation. When you build your automation app, you select which users and roles in FME Flow can access your app.&nbsp;</p>
+<p><img src="images/1790614381404.png" alt="" /></p>
+<p>When you create an automation app, FME Flow generates the app URL and shows you its App Access information, which summarizes who can reach the app. Authorized FME Flow users open that URL, sign in, and run the automation. If users don't have access to the automation app, FME Flow prevents them from opening it and alerts them that they don't have permission to access the app.&nbsp;</p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>For more information on user permissions in FME Flow, see <a href="https://docs.safe.com/fme/html/FME-Flow/AdminGuide/AccessControl.htm" target="_blank" rel="noopener">Role and User-based Access Control</a>.&nbsp;</p>
+</blockquote>
+<h2>Exercise</h2>
+<p><img src="images/1759177782559.png" alt="" width="251" height="266" /></p>
+<p>Sven, a Planning Analyst, needs to warn residents whose addresses fall near upcoming infrastructure work. His automation clips residential addresses to an area he supplies, builds a notification based on the project type, and emails the resulting list. He wants to trigger it without opening FME Flow each time, and to let his colleagues run it too.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Review the manual parameters an automation exposes to an app.</li>
+<li>Create an automation app and grant a role access to it.</li>
+<li>Run the automation app and confirm it triggers the automation.</li>
+</ul>
+<h3>1) Review the Automation</h3>
+<p>An automation app can only trigger an automation that starts with a manual trigger, and the manual trigger's parameters become the fields the app user fills in. Knowing which parameters exist tells you what the app will look like before you build it.</p>
+<ul>
+<li>On FME Flow, open <strong>Automations</strong> and click the <strong>City Project Notifications automation</strong>.</li>
+</ul>
+<p><img src="images/1790607820427.png" alt="" /></p>
+<ul>
+<li>Click the <strong>Manual Trigger icon</strong>, then click <strong>Output Attributes</strong> and expand <strong>Success</strong> and <strong>Manual Parameters</strong>.
+<ul>
+<li>These parameters are what the app presents to users.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759260462726.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>Cancel</strong> to close the details, then start the automation.
+<ul>
+<li>An automation must be running before an app can trigger it.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1790610197634.png" alt="" /></p>
+<p><img src="images/1790610243049.png" alt="" /></p>
+<h3>2) Create the Automation App</h3>
+<ul>
+<li>Open <strong>Flow Apps</strong>, select the <strong>Automation Apps tab</strong>, and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790610830201.png" alt="" /></p>
+<ul>
+<li>Enter a <strong>Name</strong>, a <strong>Title</strong>, and a <strong>Description</strong>, then select the <strong>City Project Notifications automation</strong>.</li>
+</ul>
+<p><img src="images/1790610954541.png" alt="" /></p>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>In FME 2026.1, a bug currently causes the Create Automation App pages to display all automations in the automation field, not just automations that use a manual trigger. If you select an automation without a manual trigger, it will throw an error at runtime.&nbsp;</p>
+</blockquote>
+<ul>
+<li>From the <strong>Allowed Roles drop-down</strong>, add the fmeauthor role.</li>
+</ul>
+<p><img src="images/1790612853792.png" alt="" /></p>
+<ul>
+<li>Expand <strong>Parameters</strong> and leave every default unset.
+<ul>
+<li>These are the manual parameters you reviewed in the manual trigger.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759262247511.jpg" alt="" /></p>
+<ul>
+<li>Scroll to the bottom of the page and click <strong>Create</strong>.</li>
+</ul>
+<p><img src="images/1790613049459.png" alt="" /></p>
+<h3>3) Open the Automation App</h3>
+<p>As with a workspace app, creating the app produces the URL you share.</p>
+<ul>
+<li>Click <strong>View App</strong>&nbsp;to open it in a new tab.</li>
+</ul>
+<p><img src="images/1790613136032.png" alt="" /></p>
+<p><img src="images/1790613223596.png" alt="" /></p>
+<h3>4) Run the Automation App</h3>
+<p>The app presents the manual parameters as ordinary form fields, including a map for the geometry parameter, so the person running it needs to know nothing about the automation behind it.</p>
+<ul>
+<li>Click the <strong>map icon</strong> to open the web map, choose a geometry shape, draw the affected area, and click <strong>Confirm</strong>.</li>
+</ul>
+<p><img src="images/1759263463433.jpg" alt="" /></p>
+<ul>
+<li>Select the project type and enter your email address.</li>
+</ul>
+<p><img src="images/1759263590870.jpg" alt="" /></p>
+<ul>
+<li>Click <strong>Run</strong>.
+<ul>
+<li>FME Flow confirms it has triggered the automation.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759263684416.jpg" alt="" /></p>
+<ul>
+<li>Check your email for the list of addresses to notify.
+<ul>
+<li>If you don't receive the email to your inbox, check your email spam folder as well. You can also confirm the email sent in the&nbsp;<strong>action_email.log</strong> file in Resources/Logs/automations/current.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1759263802178.jpg" alt="" /></p>
+<p>You have built an automation app that takes user input through a manual trigger, runs two workspaces, and emails a result, all from a single URL.</p>
+<p>&nbsp;</p>
