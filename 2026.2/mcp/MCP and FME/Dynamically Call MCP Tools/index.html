@@ -1,9 +1,10 @@
 <h2 id="learning-objectives">Learning Objectives</h2>
 <p>After completing this lesson, you'll be able to:</p>
 <ul>
-<li>Use an AI connector to analyze all MCP tools on a server.&nbsp;</li>
-<li>Format MCP tool input using AI.&nbsp;</li>
-<li>Dynamically select and call an MCP tool with an AI connector.&nbsp;</li>
+<li>Describe how a dynamic MCP workflow passes an AI connector's tool selection to an MCPCaller.&nbsp;</li>
+<li>Call an MCP tool dynamically using attributes from an AI connector.&nbsp;</li>
+<li>Describe the structure of an MCP tool's JSON response.&nbsp;</li>
+<li>Extract an MCP tool's output from its JSON response.&nbsp;</li>
 </ul>
 <p>In this lesson, you will:</p>
 <ul>
@@ -20,292 +21,81 @@
 <li>If you're taking the course&nbsp;<strong>on-demand</strong>, please request an <a href="https://bluesky-safe-software.fmecloud.com/fmeserver/apps/mcp-and-fme" target="_self">MCP and FME on-demand lab</a> to work through the exercises.&nbsp;</li>
 </ul>
 </li>
-<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/DynamicWeatherMCPCaller-start.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\MCPandFME\DynamicWeatherMCPCaller-start.fmw</li>
-<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/DynamicWeatherMCPCaller-complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\MCPandFME\DynamicWeatherMCPCaller-complete.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/UseAIToSelectMCPTools-complete.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\MCPandFME\UseAIToSelectMCPTools-complete.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/DynamicallyCallMCPTools-complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\MCPandFME\DynamicallyCallMCPTools-complete.fmw</li>
 </ul>
-<h2>Dynamic Tool Selection with AI</h2>
-<p>MCP tool definitions intentionally give AI models readable, consistent information. Each tool has a name, natural language description, and a structured input schema, all of which an AI needs to understand what a tool does and how to use it. Instead of hardcoding which tool to call, your workspace can let an AI model decide at runtime using user input data and a list of available MCP tools.&nbsp;</p>
-<p>First, an MCPCaller uses List Tools to retrieve the full set of tools available on an MCP server. An AI connector takes the tool list and any other data as input, evaluates the data and tool list to select the most appropriate tool to call, then outputs the selected tool and any structured input for the MCP tool call. Next, a second MCPCaller uses Call Tool to execute the right tool, passing in the inputs from the AI output. The second MCPCaller returns a structured output that the rest of the workspace can continue processing.&nbsp;</p>
+<h2>Dynamic Tool Calls</h2>
+<p>In the previous lesson, an AI connector analyzed the List Tools response and selected a tool for the user's request. To complete the workflow, a second MCPCaller uses Call Tool to execute that tool, passing in the tool name and inputs from the AI output. The second MCPCaller returns a structured output that the rest of the workspace can continue processing.&nbsp;</p>
+<p>Together, the full workflow looks like this: an MCPCaller lists the tools, an AI connector selects the tool and formats its input, and a second MCPCaller calls the selected tool.</p>
 <p><img src="images/1784568874838.jpg" alt="" width="1332" height="658" /></p>
-<p>This approach means the workspace doesn't need an MCPCaller for each MCP tool, and you don't need to update it each time a new tool is added to the MCP server. AI enhances the workflow by dynamically discovering and evaluating tools, making it adaptable as the MCP server evolves.&nbsp;</p>
+<p>This approach means the workspace doesn't need an MCPCaller for each MCP tool, and you don't need to update it each time a new tool is added to the MCP server or a tool's inputs change. AI enhances the workflow by dynamically discovering and evaluating tools, making it adaptable as the MCP server evolves.&nbsp;</p>
+<h2>The MCP Tool Response</h2>
+<p>When an MCP server runs a tool, it returns a result in JSON. With Include Response JSON enabled, the MCPCaller stores this result in the _json_response attribute. The result follows the structure the MCP specification defines:</p>
+<ul>
+<li><strong>content</strong> is an array of content items. Each item has a <strong>type</strong>, such as text, and the data for that type. A text item stores the tool's output in its <strong>text</strong> property.</li>
+<li><strong>isError</strong> is true when the tool ran but reported an error, for example because the input didn't match what the tool expects.</li>
+</ul>
+<p>Many tools return their data as JSON written inside the text property. Parsing the response is a two-stage process: first, extract the text from the content array, then parse that text as JSON to get the individual values. FME's JSON transformers, such as the JSONFragmenter, JSONFlattener, and JSONExtractor, handle both stages.</p>
+<p>The content array has the same shape for every tool, but the JSON inside the text depends on which tool was called. Two tools on the same server can return completely different fields, so a dynamic workflow has to handle more than one response structure.</p>
 <h2>Exercise</h2>
 <blockquote>
 <p><img src="images/safe_note.png" alt="Note" /></p>
-<p>This exercise continues where the&nbsp;<strong>FME as an MCP Client</strong>&nbsp;exercise left off. You should complete the previous exercise before continuing with this one.</p>
+<p>This exercise continues where the&nbsp;<strong>Use AI to Select MCP Tools</strong>&nbsp;exercise left off. You should complete the previous exercise before continuing with this one.</p>
 </blockquote>
 <p><img src="images/1785773187333.png" alt="" width="270" height="286" /></p>
-<p>Frank has already used FME's MCPCaller to connect to an MCP server, list its available tools, and call a tool. However, instead of hardcoding tool calls into an MCPCaller, which requires multiple MCPCallers, he will use AI to analyze a user prompt and dynamically select and call an MCP tool in his workspace. Eventually, Frank can integrate this workspace with his future utility data MCP server to provide real-time weather metrics alongside some utility data workflows.&nbsp;</p>
+<p>Frank, a GIS Administrator, has a workspace in which an AI connector selects a weather MCP tool and formats its input from a user's request. He now needs a single MCPCaller to call whichever tool the AI selects and return the weather data, so the workspace keeps working as tools are added to the server. Eventually, Frank can integrate this workspace with his future utility data MCP server to provide real-time weather metrics alongside some utility data workflows.</p>
 <p>In this exercise, you will:</p>
 <ul>
-<li>Use an OpenAIConnector to analyze a list of MCP tools and select the most appropriate one based on user input.&nbsp;</li>
-<li>Use AI to format tool input dynamically for different MCP tools.&nbsp;</li>
-<li>Call an MCP tool based on AI output and tool selection.&nbsp;</li>
+<li>Configure the Call Tool MCPCaller to call the tool selected by an AI connector.&nbsp;</li>
+<li>Parse the MCP tool's JSON response with a JSONFragmenter.&nbsp;</li>
+<li>Run the dynamic workflow and inspect how FME passes data between the MCP calls and the AI connector.&nbsp;</li>
 </ul>
 <h3>1) Open Starting Workspace</h3>
 <ul>
-<li>Continue with your workspace in FME Workbench 2026.2 or newer.&nbsp;
+<li>Continue with your workspace from the Use AI to Select MCP Tools exercise in FME Workbench 2026.2 or newer.&nbsp;
 <ul>
-<li>It already contains the two MCPCallers you built in the previous lesson: one to List Tools, and one to Call Tool.&nbsp;</li>
-<li>If you do not have your workspace from the previous exercise, you can open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/DynamicWeatherMCPCaller-start.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\MCPandFME\DynamicWeatherMCPCaller-start.fmw).&nbsp;</li>
+<li>If you do not have your workspace from the previous exercise, you can open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/UseAIToSelectMCPTools-complete.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\MCPandFME\UseAIToSelectMCPTools-complete.fmw).&nbsp;</li>
 </ul>
 </li>
 </ul>
-<p><img src="images/1786558078448.jpg" alt="" /></p>
-<h3>2) Create User Parameter</h3>
-<p>The easiest method to take user input to control how the workspace runs is with user parameters.&nbsp;</p>
+<h3>2) Edit the Call Tool MCPCaller</h3>
+<p>The Call Tool MCPCaller takes the tool_name and tool_input attributes from the OpenAIConnector output in place of a hardcoded tool.&nbsp;</p>
 <ul>
-<li>In the&nbsp;<strong>Navigator</strong>, right-click&nbsp;<strong>User Parameters</strong> and select&nbsp;<strong>Manage User Parameters</strong>.</li>
-<li>Click the <strong>green + icon </strong>to add a new <strong>Text</strong> parameter.&nbsp;</li>
-</ul>
-<p><img src="images/1789417369065.png" alt="" /></p>
-<ul>
-<li>Set the&nbsp;<strong>Parameter Identifier</strong>&nbsp;to&nbsp;<strong>USER_REQUEST&nbsp;</strong>and the&nbsp;<strong>Label</strong> to&nbsp;<strong>Prompt to Weather MCP Server</strong>.</li>
-<li>Use the&nbsp;<strong>Layout</strong> drop-down to select <strong>Single-Row Input with Popup Editor</strong>.</li>
-<li>Optionally, provide a default value like:</li>
-</ul>
-<pre class="fme-codeblock"><code>Get the current weather forecast for Vancouver</code></pre>
-<ul>
-<li>Click <strong>OK</strong> to close the window.&nbsp;</li>
-</ul>
-<p><img src="images/1785791946025.png" alt="" width="844" height="667" /></p>
-<h3>3) Edit the List Tools MCPCaller</h3>
-<p>For the dynamic tool selection workflow, you want the List Tools MCPCaller to return only one record with information about all the tools. With individual records for each tool, a downstream AI connector can only analyze one tool at a time.&nbsp;</p>
-<ul>
-<li>Open the List Tools MCPCaller parameters.&nbsp;</li>
-<li>Expand the&nbsp;<strong>Advanced</strong> section, set the&nbsp;<strong>Output Grouping</strong> to&nbsp;<strong>Single Feature with List</strong>, and the&nbsp;<strong>Include Response JSON</strong> to&nbsp;<strong>Yes</strong>.&nbsp;</li>
-</ul>
-<p><img src="images/1785792187410.png" alt="" width="364" height="126" /></p>
-<ul>
-<li>Click <strong>OK</strong>.&nbsp;
-<ul>
-<li>The transformer's caches will become stale and change color from green to yellow.&nbsp;</li>
-</ul>
-</li>
-</ul>
-<h3>4) Add an AttributeCreator</h3>
-<ul>
-<li>Add an&nbsp;<strong>AttributeCreator</strong> and connect it to the List Tools MCPCaller&nbsp;<strong>Output</strong> port.&nbsp;</li>
-</ul>
-<p><img src="images/1785792522786.png" alt="" width="373" height="150" /></p>
-<ul>
-<li>Open its parameters and configure attributes for the user's request, today's date, and the list of tools returned by the MCP server.&nbsp;
-<ul>
-<li>In the first row's Output Attribute column, enter&nbsp;<strong>user_request</strong>. For Value, use the drop-down options to select <strong>User Parameter</strong>, then choose <strong>USER_REQUEST</strong>.&nbsp;</li>
-<li>For the second row, name the Output Attribute&nbsp;<strong>today</strong>. For Value, use the Text Editor from the drop-down options to enter <code>@DateTimeFormat(@CurrentDateTime(),%Y-%m-%d)</code>.</li>
-<li>In the third row, name the attribute&nbsp;<strong>all_mcp_tools</strong>, and link the Value to the&nbsp;<strong>_json_response</strong> attribute, found under Attributes in the drop-down options.</li>
-</ul>
-</li>
-<li>Click <strong style="font-family: inherit; font-size: 1em;">OK</strong><span style="font-family: inherit; font-size: 1em;">.</span></li>
-</ul>
-<p><img src="images/1785792670499.png" alt="" width="546" height="375" /></p>
-<h3>5) Run and Save</h3>
-<ul>
-<li><strong>Run</strong> the workspace to the AttributeCreator, including the List Tools MCPCaller.
-<ul>
-<li>FME will prompt you for the input user request parameter. Leave it as the default. Click Run.&nbsp;</li>
-</ul>
-</li>
-</ul>
-<p><img src="images/1789419303766.png" alt="" /></p>
-<ul>
-<li>Inspect the AttributeCreator's output.
-<ul>
-<li>Notice FME populates the three attributes with their referenced values.&nbsp;</li>
-</ul>
-</li>
-</ul>
-<p><img src="images/1789419425433.png" alt="" /></p>
-<ul>
-<li><strong>Save</strong> your in-progress workspace. You can save your workspace to C://FMEData/Workspaces/MCPandFME.&nbsp;</li>
-</ul>
-<p><img src="images/1789419545533.png" alt="" /></p>
-<h3>6) Add and Configure OpenAIConnector&nbsp;</h3>
-<p>After the AttributeCreator, use an OpenAIConnector to have an AI model analyze the available MCP tools and select the best one for the user's input request.&nbsp;</p>
-<ul>
-<li>Add an&nbsp;<strong>OpenAIConnector</strong> after the&nbsp;<strong>AttributeCreator</strong>. Open its parameters.</li>
-<li>For the account, select the&nbsp;<strong>Training OpenAI (safe.openai)&nbsp;</strong>web connection.</li>
-<li>Leave the&nbsp;<strong>Action</strong> set as&nbsp;<strong>Create Response</strong>.&nbsp;</li>
-<li>For the&nbsp;<strong>Model</strong>, leave it set to <strong>chat-latest</strong>.</li>
-<li>For <strong>User Prompt</strong>, open the&nbsp;<strong>Text Editor</strong> and enter the following prompt.
-<ul>
-<li>It references the user_request, today, and all_mcp_tools attributes and instructs the model to analyze the user request and select the tool.&nbsp;</li>
-</ul>
-</li>
-</ul>
-<pre class="fme-codeblock"><code>You are selecting a weather MCP tool based on a user request.
-
-Available tools, including descriptions and input schemas:
-@Value(all_mcp_tools)
-
-User request:
-@Value(user_request)
-
-Your task:
-Select the most appropriate weather tool and construct the tool_input that matches the selected tool's input schema exactly.
-
-Rules:
-- You MUST select tool_name exactly from the provided tool list.
-- You MUST provide a tool_input that matches the input schema of the selected tool.
-- Do not rename tools or invent new ones.
-- Vancouver coordinates are latitude: 49.2827, longitude: -123.1207, timezone: "America/Vancouver".
-- Use these coordinates for any location-based tool unless the user specifies a different location.
-- If you do not know the geographic coordinates from the place name from the user request, estimate the coordinates from your knowledge to format the tool input.
-- For weather_archive, today's date is @Value(today) &mdash; use a reasonable past date range.
-- Do not use the geocoding tool. 
-
-
-Schema rules:
-- tool_input must strictly follow the input schema of the selected tool.
-- Preserve object structure and nesting exactly.
-- Include all required fields.
-- Do not add fields not defined in the schema.</code></pre>
-<p><img src="images/1785855240069.png" alt="" width="473" height="436" /></p>
-<div>
-<style>
-details {
-  background-color: #F4F3ED;
-  color: #333;
-  padding: 14px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-details:hover {
-  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-summary {
-  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
-  outline: none;
-  user-select: none;
-  padding: 5px 0;
-}
-
-details[open] {
-  background-color: #F4F3ED;
-  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-details div {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 12px;
-  margin-top: 10px;
-  font-size: 16px; /* Normal paragraph size */
-  line-height: 1.5; /* Increased spacing for readability */
-}
-.highlighted-details {
-  background-color: #F4F3ED; /* safe blue */
-}
-
-.highlighted-details[open] {
-  background-color: #F4F3ED; /* grey */
-box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.highlighted-details:hover {
-  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-</style>
-</div>
-<details>
-<summary><strong>Copying and Pasting in Strigo Labs</strong></summary>
-<p>This course requires a lot of copying and pasting to avoid typing out JSON and descriptions. To copy and paste content into your Strigo lab:</p>
-<ul>
-<li>Copy the content from the FME Academy.</li>
-<li>Paste the content into the Strigo lab's clipboard.&nbsp;</li>
-<li>In the lab's virtual machine, paste (Ctrl + V) the content in the desired location.&nbsp;&nbsp;</li>
-</ul>
-<div><img src="images/1789138556254.png" alt="" /></div>
-<div>
-<p>If you're having trouble pasting into the Strigo lab, log into the FME Academy in a browser in the lab and copy (Ctrl + C) and paste (Ctrl + V) directly within the lab.&nbsp;</p>
-</div>
-</details>
-<ul>
-<li>Enable the&nbsp;<strong>Structured Output</strong> option.&nbsp;</li>
-<li>Set the&nbsp;<strong>Schema Name</strong> to&nbsp;<strong>tool_selection</strong>.</li>
-<li>For&nbsp;<strong>JSON Schema</strong>, paste the following JSON into the editor.&nbsp;</li>
-</ul>
-<pre class="fme-codeblock"><code>{
-  "type": "object",
-  "properties": {
-    "tool_name": {
-      "type": "string"
-    },
-    "tool_input": {
-      "type": "object",
-      "additionalProperties": true
-    }
-  },
-  "required": ["tool_name", "tool_input"],
-  "additionalProperties": false
-}</code></pre>
-<ul>
-<li>Under&nbsp;<strong>Advanced</strong>, make sure&nbsp;<strong>Include Response JSON</strong> is set to&nbsp;<strong>Yes</strong>.&nbsp;</li>
-<li>Click <strong>OK</strong>.&nbsp;</li>
-</ul>
-<p><img src="images/1785856769185.png" alt="" width="1042" height="419" /></p>
-<ul>
-<li><em>Optional: </em><strong>Run</strong> the OpenAIConnector and inspect the data cache in Data Preview.&nbsp;</li>
-<li><em>Optional:</em><strong> Save</strong> your workspace.&nbsp;</li>
-</ul>
-<h3>7) Add a JSONFlattener</h3>
-<p>To send output from the OpenAIConnector as attributes to the Call Tool MCPCaller, you need to parse the output JSON into attributes.</p>
-<ul>
-<li>Add a&nbsp;<strong>JSONFlattener</strong> and connect it to the OpenAIConnector&nbsp;<strong>Output</strong> port. Open its parameters.&nbsp;</li>
-<li>Leave the&nbsp;<strong>Input Source</strong> as&nbsp;<strong>JSON Document</strong> and set it to&nbsp;<strong>_output_text</strong>.&nbsp;</li>
-<li>Change&nbsp;<strong>Recursively Flatten Objects/Arrays</strong> to&nbsp;<strong>No</strong>.&nbsp;</li>
-<li>Click the ellipses for&nbsp;<strong>Attributes to Expose</strong> and add <strong>tool_name</strong> and&nbsp;<strong>tool_input</strong> as the attributes.</li>
-</ul>
-<p><img src="images/1785855843020.png" alt="" width="808" height="428" /></p>
-<ul>
-<li>Click&nbsp;<strong>OK</strong> twice to close the JSONFlattener parameters.&nbsp;</li>
-<li><em>Optional: </em><strong>Run</strong> to the JSONFlattener and inspect the exposed attributes in <strong>Data Preview</strong>. In the next exercise, the MCPCaller will take these exposed attributes as input.&nbsp;</li>
-<li><em>Optional: </em><strong>Save</strong> your workspace.&nbsp;</li>
-</ul>
-<h3>8) Edit the Call Tool MCPCaller</h3>
-<p>Now, reference the tool_name and tool_input attributes with output from the OpenAIConnector to the MCPCaller that calls the MCP tools.&nbsp;</p>
-<ul>
-<li>Move the <strong>Call Tool MCPCaller</strong> and connect its Input to the <strong>JSONFlattener's Output</strong> port.</li>
-<li>Open the MCPCaller's parameters.&nbsp;</li>
+<li>Move the <strong>Call Tool MCPCaller</strong> and connect its <strong>Input port</strong> to the <strong>JSONFlattener Output port</strong>.&nbsp;</li>
 </ul>
 <p><img src="images/1785793676440.png" alt="" width="952" height="176" /></p>
 <ul>
-<li>Replace the <strong>Tool Name</strong> with the&nbsp;<strong>tool_name</strong> attribute.&nbsp;
+<li>Open the <strong>MCPCaller</strong> parameters.</li>
+<li>From the <strong>Tool Name</strong> drop-down, select the <strong>tool_name attribute</strong>.&nbsp;
 <ul>
-<li>Use the drop-down to select the tool_name attribute value.&nbsp;</li>
 <li>You will receive an error stating "Error extracting input schema: Can not parse the given JSON." Click OK. You receive this because you no longer hardcode the tool into the transformer, and the MCPCaller can't read the input schema in advance.&nbsp;</li>
 <li>The Input Schema will now be blank, as the MCPCaller doesn't know which tool it will be calling.&nbsp;</li>
 </ul>
 </li>
-<li>Under Tool Input, set the&nbsp;<strong>JSON Text</strong> to the&nbsp;<strong>tool_input</strong> attribute.
-<ul>
-<li>Again, use the drop-down options and select the tool_input attribute value.&nbsp;</li>
-</ul>
-</li>
+<li>Under <strong>Tool Input</strong>, from the <strong>JSON Text</strong> drop-down, select the <strong>tool_input attribute</strong>.</li>
 </ul>
 <p><img src="images/1785794158172.png" alt="" width="567" height="660" /></p>
 <ul>
-<li>Click&nbsp;<strong>OK</strong> to close the window.&nbsp;</li>
+<li>Click&nbsp;<strong>OK</strong>.&nbsp;</li>
 </ul>
-<h3>9) Add a JSONFragmenter</h3>
-<p>The MCPCaller will return structured JSON containing the MCP tool's response. To extract specific values into attributes, you need to parse the JSON.</p>
+<h3>3) Add a JSONFragmenter</h3>
+<p>The MCPCaller returns structured JSON containing the MCP tool's response. To extract specific values into attributes, you need to parse the JSON.</p>
 <ul>
-<li>Connect a&nbsp;<strong>JSONFragmenter</strong> to the Call Tool MCPCaller's <strong>Output</strong> port. Open its parameters.&nbsp;</li>
-<li>Set the&nbsp;<strong>JSON Attribute</strong> to&nbsp;<strong>_json_response</strong>.</li>
-<li>For the&nbsp;<strong>JSON Query</strong>, enter <code>json["content"][0]["text"]</code>.
+<li>Connect a&nbsp;<strong>JSONFragmenter</strong> to the <strong>Call Tool MCPCaller Output port</strong>. Open its parameters.&nbsp;</li>
+<li>Configure the following parameters:
 <ul>
-<li>This won't parse everything into individual attributes, but it will give you a start, and you'll be able to see the response weather data as JSON easily.&nbsp;</li>
+<li><strong>JSON Attribute:</strong> _json_response</li>
+<li><strong>JSON Query:</strong> <code>json["content"][0]["text"]</code>
+<ul>
+<li>This query extracts the text of the first content item. It won't parse everything into individual attributes, but it gives you a start, and you'll be able to see the response weather data as JSON easily.&nbsp;</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Click <strong>OK</strong>.</li>
 </ul>
 <p><img src="images/1785794396736.png" alt="" width="489" height="537" /></p>
-<h3>10) Run the Workspace</h3>
+<h3>4) Run the Workspace</h3>
 <ul>
 <li><strong>Run</strong> the entire workspace. FME will prompt you for the user request to the MCP server.
 <ul>
@@ -313,11 +103,20 @@ box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
 <li>If you choose to provide a different query, make sure it fits the context of the weather MCP server's tools.&nbsp;</li>
 </ul>
 </li>
-<li>Inspect output caches throughout your workspace to see how FME handles the request, input, and resulting data through the two MCP calls and the AI connector.&nbsp;Specifically, look at the&nbsp;<strong>JSONFragmenter's cache</strong> and the&nbsp;<strong>_ json_response</strong> attribute that contains the weather MCP response information.&nbsp;
+<li>Inspect output caches throughout your workspace to see how FME handles the request, input, and resulting data through the two MCP calls and the AI connector.</li>
+<li>Inspect the <strong>JSONFragmenter</strong> cache and the <strong>_json_response attribute</strong>, which contains the weather MCP response information.&nbsp;
 <ul>
 <li>To continue working with the data, you will need to do additional JSON extraction to get the weather information as FME attributes.</li>
 </ul>
 </li>
-<li><strong>Save</strong>&nbsp;your final workspace.&nbsp;</li>
+<li><strong>Save</strong> your final workspace.&nbsp;</li>
 </ul>
-<p>You've successfully connected to Frank's weather MCP server, listed the server's available MCP tools, and called tools, both statically and dynamically. Throughout this exercise, you used FME as an MCP client, connecting to the MCP server and calling tools and receiving MCP responses.&nbsp;</p>
+<p>You've connected to the weather MCP server, listed the server's available MCP tools, and called tools, both statically and dynamically. Throughout these exercises, you used FME as an MCP client, connecting to the MCP server, calling tools, and receiving MCP responses.&nbsp;</p>
+<details class="fme-accordion-tips">
+<summary>Tips and Tricks: Dynamically Use the JSON Response in Your Workspace</summary>
+<ul>
+<li>To turn one tool's JSON response into attributes, add a JSONFlattener after the JSONFragmenter, set its JSON Document to _json_response, and add the attributes you need under Attributes to Expose. For a forecast request, these include current.temperature_2m and current_units.temperature_2m.</li>
+<li>Attributes to Expose is set when you build the workspace, so the exposed attributes only match responses from tools that return them. Each MCP tool returns a different structure, so this approach isn't dynamic.</li>
+<li>To build the schema at run time from whatever attributes a response contains, use the SchemaScanner. It is covered in <a href="https://academy.safe.com/construct-schema-dynamically-with-the-schemascanner" target="_blank" rel="noopener">Construct Schema Dynamically with the SchemaScanner</a>, part of the FME Form Advanced learning path.</li>
+</ul>
+</details>

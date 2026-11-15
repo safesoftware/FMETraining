@@ -1,0 +1,316 @@
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>After completing this lesson, you'll be able to:</p>
+<ul>
+<li>Describe how FME's AI connectors connect workspaces to AI models.&nbsp;</li>
+<li>Write prompts that pass FME attribute values to an AI model.&nbsp;</li>
+<li>Use structured output and a JSON schema to return predictable AI responses.&nbsp;</li>
+<li>Use an AI connector to analyze a List Tools response and select an MCP tool for a user request.&nbsp;</li>
+</ul>
+<p>In this lesson, you will:</p>
+<ul>
+<li><em>Optional: </em>Watch a demonstration video (if you have not attended the live training).</li>
+<li>Scroll down to read the activity instructions below and follow the steps in your lab.</li>
+<li>Complete the quiz at the end of this lesson.</li>
+<li>Click 'Next' to mark the lesson complete.</li>
+</ul>
+<h2>Resources</h2>
+<ul>
+<li>FME and MCP Strigo training lab with Weather MCP server
+<ul>
+<li>If you're taking a&nbsp;<strong>live, online</strong> training course, you will have access to the lab within the live event. Please do not request an on-demand lab unless you are working on the course materials outside of the live, online course time.&nbsp;</li>
+<li>If you're taking the course&nbsp;<strong>on-demand</strong>, please request an <a href="https://bluesky-safe-software.fmecloud.com/fmeserver/apps/mcp-and-fme" target="_self">MCP and FME on-demand lab</a> to work through the exercises.&nbsp;</li>
+</ul>
+</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/FMEAsAnMCPClient-complete.fmw" target="_blank" rel="noopener">Starting workspace</a> | C:\FMEData\Workspaces\MCPandFME\FMEAsAnMCPClient-complete.fmw</li>
+<li><a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/UseAIToSelectMCPTools-complete.fmw" target="_blank" rel="noopener">Complete workspace</a> | C:\FMEData\Workspaces\MCPandFME\UseAIToSelectMCPTools-complete.fmw</li>
+</ul>
+<h2>AI Connectors in FME</h2>
+<p>FME connects workspaces to AI models through AI connector transformers. Each connector sends a request to an AI service and adds the model's response to the feature as attributes, so you can use AI in the middle of a workspace like any other transformer. The <strong>OpenAIConnector</strong>, used in this course, connects to OpenAI and to OpenAI-compatible services, such as Azure OpenAI and locally hosted models like Ollama. Connectors for other AI providers are available on <a href="https://hub.safe.com/" target="_blank" rel="noopener">FME Hub</a>, and they follow the same pattern.&nbsp;</p>
+<p>The AI connector transformers share a common pattern of parameters you must configure to use them:</p>
+<ul>
+<li><strong>Account:</strong> A web connection stores the service endpoint and credentials, such as an API key, so they aren't saved in the workspace.&nbsp;</li>
+<li><strong>Action:</strong> The type of request to send.
+<ul>
+<li>The OpenAIConnector offers Create Response, Create Image, Edit Image, and Create Embedding.&nbsp;</li>
+</ul>
+</li>
+<li><strong>Model:</strong> The AI model that answers the request. Different models trade off cost, speed, and reasoning ability.</li>
+<li><strong>Input-driven requests:</strong> When features enter the connector, it sends one request per feature and adds the response to that feature. This is why the data an AI model needs to compare, such as a full list of MCP tools, must arrive on a single feature.</li>
+</ul>
+<h3>Prompts</h3>
+<p>The Create Response action takes two kinds of prompts:</p>
+<ul>
+<li><strong>System Instructions</strong> set the model's role, rules, and constraints. They apply to every request, for example, "You are selecting an MCP tool. Only select tools from the provided list."</li>
+<li><strong>User Prompt</strong> is the specific request to answer. It can reference attribute values with <code>@Value()</code>, so each feature sends its own data to the model.</li>
+</ul>
+<p>Effective prompts for workflow automation are explicit. State the task, give the model all the data it needs, list the rules it must follow (including what it must not do, such as inventing tool names), and describe the exact output you expect. Clear rules make the model's answers more consistent from run to run. In the exercise, the rules and the data are both in the User Prompt so you can see the whole request in one place.</p>
+<h3>Structured Output</h3>
+<p>By default, a model answers in free text, which may be difficult to integrate into your workspace consistently. When you enable <strong>Structured Output</strong> and provide a <strong>JSON Schema</strong>, the OpenAIConnector requires the response to match that schema exactly. The response always contains the properties and types you define as JSON, so downstream transformers can rely on it.</p>
+<p>The Create Response action adds these attributes to each feature:</p>
+<ul>
+<li><strong>_output_text</strong> holds the model's answer. With structured output, this is JSON text that matches your schema, ready to parse with a JSONFlattener, JSONExtractor, or JSONFragmenter.</li>
+<li><strong>_json_response</strong> holds the full API response, including the model used and token counts. It's added only when <strong>Include Response JSON</strong> in the Advanced section is set to <strong>Yes</strong>.</li>
+<li><strong>_response_id</strong>, <strong>_model</strong>, <strong>_status</strong>, <strong>_input_tokens</strong>, and <strong>_output_tokens</strong> describe the request, which helps with troubleshooting and tracking cost.</li>
+</ul>
+<p>Advanced options, such as <strong>Temperature</strong>, control how varied the model's answers are. Lower values give more predictable responses.</p>
+<h2>Use AI to Select an MCP Tool</h2>
+<p>MCP tool definitions intentionally give AI models readable, consistent information. Each tool has a name, natural language description, and a structured input schema, all of which an AI needs to understand what a tool does and how to use it. Instead of hardcoding which tool to call, your workspace can let an AI model decide at runtime using user input data and a list of available MCP tools.&nbsp;</p>
+<p>An MCPCaller uses List Tools to retrieve the full set of tools available on an MCP server. An AI connector takes the tool list and the user's request as input, evaluates them to select the most appropriate tool, then outputs the selected tool name and the structured input for that tool, using structured output so the result is always in the same shape. In the next lesson, you will pass this output to a second MCPCaller that calls the selected tool.</p>
+<p><img src="images/1784568874838.jpg" alt="" width="1332" height="658" /></p>
+<h2>Exercise</h2>
+<blockquote>
+<p><img src="images/safe_note.png" alt="Note" /></p>
+<p>This exercise continues where the&nbsp;<strong>FME as an MCP Client</strong>&nbsp;exercise left off. You should complete the previous exercise before continuing with this one.</p>
+</blockquote>
+<p><img src="images/1785773187333.png" alt="" width="270" height="286" /></p>
+<p>Frank, a GIS Administrator, has already used FME's MCPCaller in the FME as an MCP Client exercise to connect to a weather MCP server, list its available tools, and call a tool. Instead of hardcoding a tool into an MCPCaller for every kind of request, he wants an AI model to read the server's tool list and choose the right tool for a user's request. The AI must also format the input that the selected tool expects.</p>
+<p>In this exercise, you will:</p>
+<ul>
+<li>Create a user parameter that captures a user's request to the weather MCP server.&nbsp;</li>
+<li>Prepare the MCP tool list and the user's request as attributes for an AI connector.&nbsp;</li>
+<li>Configure an OpenAIConnector with a prompt and structured output to select an MCP tool and format its input.&nbsp;</li>
+<li>Parse the AI response into tool name and tool input attributes, and inspect the tool the AI selected.&nbsp;</li>
+</ul>
+<h3>1) Open Starting Workspace</h3>
+<ul>
+<li>Continue with your workspace in FME Workbench 2026.2 or newer.&nbsp;
+<ul>
+<li>It already contains the two MCPCallers you built in the previous lesson: one to List Tools, and one to Call Tool.&nbsp;</li>
+<li>If you do not have your workspace from the previous exercise, you can open the <a href="https://s3.amazonaws.com/FMEData/FMEData/Workspaces/MCPandFME/FMEAsAnMCPClient-complete.fmw" target="_blank" rel="noopener">starting workspace</a> (C:\FMEData\Workspaces\MCPandFME\FMEAsAnMCPClient-complete.fmw).&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1786558078448.jpg" alt="" /></p>
+<h3>2) Create User Parameter</h3>
+<p>The easiest method to take user input to control how the workspace runs is with user parameters.&nbsp;</p>
+<ul>
+<li>In the&nbsp;<strong>Navigator</strong>, right-click&nbsp;<strong>User Parameters</strong> and select&nbsp;<strong>Manage User Parameters</strong>.</li>
+<li>Click the <strong>green + icon </strong>to add a new <strong>Text</strong> parameter.&nbsp;</li>
+</ul>
+<p><img src="images/1789417369065.png" alt="" /></p>
+<ul>
+<li>Set the&nbsp;<strong>Parameter Identifier</strong>&nbsp;to&nbsp;<strong>USER_REQUEST&nbsp;</strong>and the&nbsp;<strong>Label</strong> to&nbsp;<strong>Prompt to Weather MCP Server</strong>.</li>
+<li>Use the&nbsp;<strong>Layout</strong> drop-down to select <strong>Single-Row Input with Popup Editor</strong>.</li>
+<li>Optionally, provide a default value like:</li>
+</ul>
+<pre class="fme-codeblock"><code>Get the current weather forecast for Vancouver</code></pre>
+<ul>
+<li>Click <strong>OK</strong> to close the window.&nbsp;</li>
+</ul>
+<p><img src="images/1785791946025.png" alt="" width="844" height="667" /></p>
+<h3>3) Edit the List Tools MCPCaller</h3>
+<p>For the dynamic tool selection workflow, you want the List Tools MCPCaller to return only one record with information about all the tools. With individual records for each tool, a downstream AI connector can only analyze one tool at a time.&nbsp;</p>
+<ul>
+<li>Open the <strong>List Tools MCPCaller</strong> parameters.&nbsp;</li>
+<li>Expand the&nbsp;<strong>Advanced</strong> section, set the&nbsp;<strong>Output Grouping</strong> to&nbsp;<strong>Single Feature with List</strong>, and the&nbsp;<strong>Include Response JSON</strong> to&nbsp;<strong>Yes</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1785792187410.png" alt="" width="364" height="126" /></p>
+<ul>
+<li>Click <strong>OK</strong>.&nbsp;
+<ul>
+<li>The transformer's caches will become stale and change color from green to yellow.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<h3>4) Add an AttributeCreator</h3>
+<ul>
+<li>Add an&nbsp;<strong>AttributeCreator</strong> and connect it to the <strong>List Tools MCPCaller Output port</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1785792522786.png" alt="" width="373" height="150" /></p>
+<ul>
+<li>Open its parameters and configure attributes for the user's request, today's date, and the list of tools returned by the MCP server.&nbsp;
+<ul>
+<li>In the first row's Output Attribute column, enter&nbsp;<strong>user_request</strong>. For Value, use the drop-down options to select <strong>User Parameter</strong>, then choose <strong>USER_REQUEST</strong>.&nbsp;</li>
+<li>For the second row, name the Output Attribute&nbsp;<strong>today</strong>. For Value, use the Text Editor from the drop-down options to enter <code>@DateTimeFormat(@CurrentDateTime(),%Y-%m-%d)</code>.</li>
+<li>In the third row, name the attribute&nbsp;<strong>all_mcp_tools</strong>, and link the Value to the&nbsp;<strong>_json_response</strong> attribute, found under Attributes in the drop-down options.</li>
+</ul>
+</li>
+<li>Click <strong>OK</strong>.</li>
+</ul>
+<p><img src="images/1785792670499.png" alt="" width="546" height="375" /></p>
+<h3>5) Run and Save</h3>
+<ul>
+<li><strong>Run</strong> the workspace to the <strong>AttributeCreator</strong>, including the List Tools MCPCaller.
+<ul>
+<li>FME will prompt you for the input user request parameter. Leave it as the default. Click Run.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1789419303766.png" alt="" /></p>
+<ul>
+<li>Inspect the <strong>AttributeCreator</strong> output.
+<ul>
+<li>FME populates the three attributes with their referenced values.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/1789419425433.png" alt="" /></p>
+<ul>
+<li><strong>Save</strong> your in-progress workspace.</li>
+</ul>
+<p><img src="images/1789419545533.png" alt="" /></p>
+<h3>6) Add and Configure OpenAIConnector&nbsp;</h3>
+<p>The OpenAIConnector analyzes the available MCP tools and selects the best one for the user's request.&nbsp;</p>
+<ul>
+<li>Add an&nbsp;<strong>OpenAIConnector</strong> after the&nbsp;<strong>AttributeCreator</strong>. Open its parameters.</li>
+<li>For the account, select the&nbsp;<strong>Training OpenAI (safe.openai)&nbsp;</strong>web connection.</li>
+<li>Leave the&nbsp;<strong>Action</strong> set as&nbsp;<strong>Create Response</strong>.&nbsp;</li>
+<li>For the&nbsp;<strong>Model</strong>, leave it set to <strong>chat-latest</strong>.</li>
+<li>For <strong>User Prompt</strong>, open the&nbsp;<strong>Text Editor</strong> and enter the following prompt.
+<ul>
+<li>It references the user_request, today, and all_mcp_tools attributes and instructs the model to analyze the user request and select the tool.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<pre class="fme-codeblock"><code>You are selecting a weather MCP tool based on a user request.
+
+Available tools, including descriptions and input schemas:
+@Value(all_mcp_tools)
+
+User request:
+@Value(user_request)
+
+Your task:
+Select the most appropriate weather tool and construct the tool_input that matches the selected tool's input schema exactly.
+
+Rules:
+- You MUST select tool_name exactly from the provided tool list.
+- You MUST provide a tool_input that matches the input schema of the selected tool.
+- Do not rename tools or invent new ones.
+- Vancouver coordinates are latitude: 49.2827, longitude: -123.1207, timezone: "America/Vancouver".
+- Use these coordinates for any location-based tool unless the user specifies a different location.
+- If you do not know the geographic coordinates from the place name from the user request, estimate the coordinates from your knowledge to format the tool input.
+- For weather_archive, today's date is @Value(today) &mdash; use a reasonable past date range.
+- Do not use the geocoding tool. 
+
+
+Schema rules:
+- tool_input must strictly follow the input schema of the selected tool.
+- Preserve object structure and nesting exactly.
+- Include all required fields.
+- Do not add fields not defined in the schema.</code></pre>
+<p><img src="images/1785855240069.png" alt="" width="473" height="436" /></p>
+<div>
+<style>
+details {
+  background-color: #F4F3ED;
+  color: #333;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+summary {
+  font-size: 18px; /* Slightly smaller than your paragraph (usually ~16-20px) */
+  outline: none;
+  user-select: none;
+  padding: 5px 0;
+}
+
+details[open] {
+  background-color: #F4F3ED;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+details div {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-top: 10px;
+  font-size: 16px; /* Normal paragraph size */
+  line-height: 1.5; /* Increased spacing for readability */
+}
+.highlighted-details {
+  background-color: #F4F3ED; /* safe blue */
+}
+
+.highlighted-details[open] {
+  background-color: #F4F3ED; /* grey */
+box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.highlighted-details:hover {
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+</style>
+</div>
+<details>
+<summary><strong>Copying and Pasting in Strigo Labs</strong></summary>
+<p>This course requires a lot of copying and pasting to avoid typing out JSON and descriptions. To copy and paste content into your Strigo lab:</p>
+<ul>
+<li>Copy the content from the FME Academy.</li>
+<li>Paste the content into the Strigo lab's clipboard.&nbsp;</li>
+<li>In the lab's virtual machine, paste (Ctrl + V) the content in the desired location.&nbsp;&nbsp;</li>
+</ul>
+<div><img src="images/1789138556254.png" alt="" /></div>
+<div>
+<p>If you're having trouble pasting into the Strigo lab, log into the FME Academy in a browser in the lab and copy (Ctrl + C) and paste (Ctrl + V) directly within the lab.&nbsp;</p>
+</div>
+</details>
+<ul>
+<li>Enable the&nbsp;<strong>Structured Output</strong> option.&nbsp;</li>
+<li>Set the&nbsp;<strong>Schema Name</strong> to&nbsp;<strong>tool_selection</strong>.</li>
+<li>For&nbsp;<strong>JSON Schema</strong>, paste the following JSON into the editor.&nbsp;</li>
+</ul>
+<pre class="fme-codeblock"><code>{
+  "type": "object",
+  "properties": {
+    "tool_name": {
+      "type": "string"
+    },
+    "tool_input": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": ["tool_name", "tool_input"],
+  "additionalProperties": false
+}</code></pre>
+<ul>
+<li>Under&nbsp;<strong>Advanced</strong>, make sure&nbsp;<strong>Include Response JSON</strong> is set to&nbsp;<strong>Yes</strong>.&nbsp;</li>
+</ul>
+<p><img src="images/1785856769185.png" alt="" width="1042" height="419" /></p>
+<ul>
+<li>Click <strong>OK</strong>.&nbsp;</li>
+<li><strong>Run</strong> the OpenAIConnector and inspect the data cache in Data Preview.&nbsp;</li>
+<li><strong>Save</strong> your workspace.&nbsp;</li>
+</ul>
+<h3>7) Add a JSONFlattener</h3>
+<p>To send output from the OpenAIConnector as attributes to the Call Tool MCPCaller, you need to parse the output JSON into attributes.</p>
+<ul>
+<li>Add a&nbsp;<strong>JSONFlattener</strong> and connect it to the <strong>OpenAIConnector Output port</strong>. Open its parameters.&nbsp;</li>
+<li>Leave the&nbsp;<strong>Input Source</strong> as&nbsp;<strong>JSON Document</strong> and set it to the <strong>_output_text </strong>attribute.&nbsp;</li>
+<li>Change&nbsp;<strong>Recursively Flatten Objects/Arrays</strong> to&nbsp;<strong>No</strong>.&nbsp;</li>
+<li>Click the ellipses for&nbsp;<strong>Attributes to Expose</strong> and add <strong>tool_name</strong> and&nbsp;<strong>tool_input</strong> as attributes.</li>
+</ul>
+<p><img src="images/1785855843020.png" alt="" width="808" height="428" /></p>
+<ul>
+<li>Click&nbsp;<strong>OK</strong> to close the window.&nbsp;</li>
+</ul>
+<h3>8) Test the Tool Selection</h3>
+<p>The tool_name and tool_input attributes show which tool the AI selected and the input it formatted for that tool. In the next lesson, the Call Tool MCPCaller will take these exposed attributes as input.</p>
+<ul>
+<li><strong>Run</strong> the workspace to the <strong>JSONFlattener</strong>. Leave the user request as the default.</li>
+<li>In <strong>Data Preview</strong>, inspect the <strong>tool_name attribute</strong> and the <strong>tool_input attribute</strong>.
+<ul>
+<li>tool_name is the MCP tool the AI selected as most appropriate for your request, and tool_input follows the input JSON schema the tool requires.</li>
+</ul>
+</li>
+</ul>
+<p><img src="images/data%20preview.1794249288663.png" alt="" /></p>
+<ul>
+<li><strong>Save</strong> your workspace.&nbsp;
+<ul>
+<li>You will continue with it in the next exercise.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p>You have built an AI-driven tool selector that reads the weather MCP server's tool list and returns the tool and input that match a user's request.</p>
