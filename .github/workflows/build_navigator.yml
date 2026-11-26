@@ -1,0 +1,87 @@
+# Builds the FME Academy Backup Navigator after each S3 sync and uploads it to s3://safeskilljar/navigator/
+name: Build Academy Navigator
+
+on:
+  workflow_run:
+    workflows: ["Sync Entire S3 Bucket to Repo"]
+    types: [completed]
+  workflow_dispatch:
+
+# never run two at once; both this and the sync push to main
+concurrency:
+  group: academy-navigator
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # commit navigator/academy-map.json
+  id-token: write   # OIDC to assume the AWS upload role
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: navigator   # holds the secrets; restrict this environment to the main branch
+    env:
+      # Sign in to AWS with the upload role once it exists (IS-22901); until then, with access keys.
+      # Secrets can't be tested in `if:` directly, so record which one is set.
+      USE_AWS_ROLE: ${{ secrets.AWS_NAVIGATOR_ROLE_ARN != '' }}
+    steps:
+      - name: Checkout (navigator folder only)
+        uses: actions/checkout@v4   # pin to a commit SHA
+        with:
+          ref: main
+          sparse-checkout: |
+            navigator
+            .github
+          sparse-checkout-cone-mode: true
+
+      - name: List lesson backups in S3 (anonymous)
+        run: python3 -I navigator/list_s3.py "$RUNNER_TEMP/s3_lessons.json"
+
+      - name: Fetch Academy structure from Skilljar
+        env:
+          SKILLJAR_API_KEY: ${{ secrets.SKILLJAR_API_KEY }}
+        run: python3 -I navigator/fetch_skilljar.py "$RUNNER_TEMP/skilljar_snapshot.json"
+
+      - name: Merge into academy-map.json
+        run: |
+          python3 -I navigator/build_map.py \
+            "$RUNNER_TEMP/skilljar_snapshot.json" \
+            "$RUNNER_TEMP/s3_lessons.json" \
+            navigator/academy-map.json \
+            navigator/academy-map.json \
+            navigator/config.json
+
+      - name: Build page
+        run: python3 -I navigator/build_page.py navigator/academy-map.json navigator/template.html "$RUNNER_TEMP/index.html"
+
+      - name: Configure AWS (upload role)
+        if: env.USE_AWS_ROLE == 'true'
+        uses: aws-actions/configure-aws-credentials@v4   # pin to a commit SHA
+        with:
+          role-to-assume: ${{ secrets.AWS_NAVIGATOR_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Configure AWS (access keys, until the upload role exists)
+        if: env.USE_AWS_ROLE != 'true'
+        uses: aws-actions/configure-aws-credentials@v4   # pin to a commit SHA
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp "$RUNNER_TEMP/index.html" s3://safeskilljar/navigator/index.html \
+            --content-type "text/html; charset=utf-8" --cache-control "max-age=300"
+          aws s3 cp navigator/academy-map.json s3://safeskilljar/navigator/academy-map.json \
+            --content-type "application/json" --cache-control "max-age=300"
+
+      - name: Commit academy-map.json (keeps history of removed paths)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898599+github-actions[bot]@users.noreply.github.com"
+          git add navigator/academy-map.json
+          if git diff --cached --quiet; then echo "No structure changes."; exit 0; fi
+          git commit -m "Update Academy navigator map"
+          git pull --rebase origin main
+          git push origin HEAD:main
