@@ -40,9 +40,12 @@ learning path → course → lesson (in Academy order), with every older version
   Credentials). `fetch_skilljar.py` uses the documented v1 API (https://api.skilljar.com/docs/) with
   HTTP Basic auth: key as username, blank password. The starting `academy-map.json` was built through
   the Skilljar connector (v2); if v1 IDs differ, entries still match by path slug and course/lesson title.
-- IAM role for GitHub OIDC limited to `s3:PutObject` on `safeskilljar/navigator/*`, with its ARN in
-  the `AWS_NAVIGATOR_ROLE_ARN` secret and the key in `SKILLJAR_API_KEY`, both in a GitHub
-  Environment named `navigator` restricted to `main`.
+- AWS upload credentials, as secrets in the GitHub Environment `navigator` (restricted to `main`),
+  alongside `SKILLJAR_API_KEY`. The workflow uses whichever is set:
+  - **Preferred:** `AWS_NAVIGATOR_ROLE_ARN`, an IAM role for GitHub OIDC limited to `s3:PutObject` on
+    `safeskilljar/navigator/*` (requested in IS-22901). When this secret exists it is used.
+  - **Interim:** `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Once the role is in place, delete
+    these two secrets and deactivate the key in IAM.
 
 ## Notes
 

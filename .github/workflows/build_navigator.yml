@@ -20,6 +20,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: navigator   # holds the secrets; restrict this environment to the main branch
+    env:
+      # Sign in to AWS with the upload role once it exists (IS-22901); until then, with access keys.
+      # Secrets can't be tested in `if:` directly, so record which one is set.
+      USE_AWS_ROLE: ${{ secrets.AWS_NAVIGATOR_ROLE_ARN != '' }}
     steps:
       - name: Checkout (navigator folder only)
         uses: actions/checkout@v4   # pin to a commit SHA
@@ -51,9 +55,18 @@ jobs:
         run: python3 -I navigator/build_page.py navigator/academy-map.json navigator/template.html "$RUNNER_TEMP/index.html"
 
       - name: Configure AWS (upload role)
+        if: env.USE_AWS_ROLE == 'true'
         uses: aws-actions/configure-aws-credentials@v4   # pin to a commit SHA
         with:
           role-to-assume: ${{ secrets.AWS_NAVIGATOR_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Configure AWS (access keys, until the upload role exists)
+        if: env.USE_AWS_ROLE != 'true'
+        uses: aws-actions/configure-aws-credentials@v4   # pin to a commit SHA
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
       - name: Upload to S3
