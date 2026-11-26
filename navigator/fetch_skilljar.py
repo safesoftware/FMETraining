@@ -117,6 +117,7 @@ def main(out_path):
 
     pub_courses = paged(f"/v1/domains/{d}/published-courses")
     pc_by_course = {pc["course"]["id"]: pc for pc in pub_courses if pc.get("course")}
+    pc_by_id = {pc["id"]: pc for pc in pub_courses}
 
     lessons_cache = {}
 
@@ -136,19 +137,41 @@ def main(out_path):
                 "is_hidden": pc.get("hidden"), "lesson_count": summary.get("lesson_count"),
                 "lessons": lessons(cid)}
 
+    def item_course(it):
+        """A domain path item is {id, order, published_course}; resolve it to the course summary."""
+        ref = it.get("published_course")
+        pc = pc_by_id.get(ref.get("id") if isinstance(ref, dict) else ref)
+        if pc and pc.get("course"):
+            return pc["course"]
+        return it.get("course")  # shape of /v1/paths/{id}/path-items, just in case
+
     out_paths, in_paths = [], set()
+    expected = resolved = unresolved = 0
     for pp in paged(f"/v1/domains/{d}/published-paths"):
-        items = paged(f"/v1/domains/{d}/published-paths/{pp['id']}/path-items")
-        courses = []
-        for i, it in enumerate(items):  # already in the path's configured order
-            if not it.get("course"):
-                continue
-            in_paths.add(it["course"]["id"])
-            courses.append(course_entry(it["course"], order=(i + 1) * 10, slug=it.get("slug")))
         path = pp.get("path") or {}
+        items = paged(f"/v1/domains/{d}/published-paths/{pp['id']}/path-items")
+        items.sort(key=lambda it: it.get("order") if it.get("order") is not None else 0)
+        expected += len(items)
+        courses = []
+        for i, it in enumerate(items):
+            summary = item_course(it)
+            if not summary:
+                unresolved += 1
+                continue
+            in_paths.add(summary["id"])
+            order = it.get("order") if it.get("order") is not None else (i + 1) * 10
+            courses.append(course_entry(summary, order=order))
+        resolved += len(courses)
         out_paths.append({"published_path_id": pp["id"], "path_id": path.get("id"), "slug": pp.get("slug"),
                           "title": path.get("title"), "is_hidden": pp.get("hidden"), "domain_id": DOMAIN,
                           "courses": courses})
+
+    # Guard: if path items exist but none resolve to a course, the API shape has changed. Stop here,
+    # rather than write a snapshot that would mark every course in every path as removed.
+    if expected and not resolved:
+        raise SystemExit(f"None of the {expected} path items resolved to a course; check the path-items response shape")
+    if unresolved:
+        print(f"  {unresolved} of {expected} path items did not resolve to a published course", flush=True)
 
     unlinked = [course_entry(pc["course"], slug=pc.get("slug"))
                 for cid, pc in pc_by_course.items() if cid not in in_paths]
