@@ -6,7 +6,7 @@ This repository contains an archive of Safe Software's training content, includi
 2. Content for the original FME Academy online learning platform (2020-2022)
 3. Content from the [relaunched FME Academy](https://academy.safe.com/) online learning platform (2023-present)
 
-The relaunched FME Academy content is also [available on S3](https://safeskilljar.s3.us-west-2.amazonaws.com/index.html).
+The relaunched FME Academy content is also [available on S3](https://safeskilljar.s3.us-west-2.amazonaws.com/index.html). To browse it by learning path, course and lesson, in Academy order and with older versions of each lesson, use the [FME Academy Backup Navigator](https://safeskilljar.s3.us-west-2.amazonaws.com/navigator/index.html).
 
 This training material can be reused and adapted under our [Terms of Use](https://engage.safe.com/legal/terms-and-conditions/fme-training/) and [License](LICENSE.md).
 
@@ -58,3 +58,4 @@ Other branches contain annual release versions of archived training manuals buil
 Any issues or questions can be directed to train@safe.com or by opening a GitHub Issue.
 
 ![S3 Sync Status](https://github.com/safesoftware/FMETraining/actions/workflows/sync_s3.yml/badge.svg)
+![Academy Navigator Status](https://github.com/safesoftware/FMETraining/actions/workflows/build_navigator.yml/badge.svg)
