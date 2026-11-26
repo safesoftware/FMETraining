@@ -140,11 +140,21 @@ def build_course(course, copies, academy_url, no_backup_titles=()):
     }
 
 
-def merge_removed(new_items, old_items, key):
+def same(a, b, key, alt):
+    """Same item if the IDs match, or (when IDs differ between API versions) the slug/title matches."""
+    if a.get(key) is not None and a.get(key) == b.get(key):
+        return True
+    return bool(a.get(alt)) and norm(a.get(alt) or "") == norm(b.get(alt) or "")
+
+
+def find(items, old, key, alt):
+    return next((i for i in items if same(i, old, key, alt)), None)
+
+
+def merge_removed(new_items, old_items, key, alt):
     """Append items from the previous map that are missing now, marked removed."""
-    have = {i[key] for i in new_items}
     for old in old_items or []:
-        if old.get(key) is not None and old[key] not in have:
+        if find(new_items, old, key, alt) is None:
             old = dict(old)
             old["status"] = "removed"
             new_items.append(old)
@@ -223,19 +233,18 @@ def main(snapshot_p, s3_p, prev_p, out_p, config_p="config.json"):
     ]
 
     # keep what the previous map knew about but Skilljar no longer returns
-    prev_paths = {p["path_id"]: p for p in prev.get("paths", [])}
+    prev_paths = prev.get("paths", [])
     for p in out_paths:
-        old = prev_paths.get(p["path_id"])
+        old = find(prev_paths, p, "path_id", "slug")
         p["first_seen"] = (old or {}).get("first_seen", now[:10])
         if old:
-            merge_removed(p["courses"], old.get("courses"), "course_id")
-            old_courses = {c["course_id"]: c for c in old.get("courses", [])}
+            merge_removed(p["courses"], old.get("courses"), "course_id", "title")
             for c in p["courses"]:
-                if c["status"] == "live" and c["course_id"] in old_courses:
-                    merge_removed(c["lessons"], old_courses[c["course_id"]].get("lessons"), "lesson_id")
-    live_ids = {p["path_id"] for p in out_paths}
-    for pid, old in prev_paths.items():
-        if pid not in live_ids:
+                oc = find(old.get("courses", []), c, "course_id", "title") if c["status"] == "live" else None
+                if oc:
+                    merge_removed(c["lessons"], oc.get("lessons"), "lesson_id", "title")
+    for old in prev_paths:
+        if find(out_paths, old, "path_id", "slug") is None:
             old = dict(old)
             old["status"] = "removed"
             out_paths.append(old)

@@ -36,9 +36,10 @@ learning path → course → lesson (in Academy order), with every older version
 
 ## Still to confirm before going live
 
-- Skilljar API base URL and auth scheme for a server key (`fetch_skilljar.py` defaults to
-  `https://api.skilljar.com/v2` with Basic auth; set `SKILLJAR_AUTH=bearer` if needed). The prototype
-  snapshot was collected through the Skilljar connector, not this script.
+- A **read-only Skilljar v1 API key** (Skilljar dashboard: Organization settings, then API
+  Credentials). `fetch_skilljar.py` uses the documented v1 API (https://api.skilljar.com/docs/) with
+  HTTP Basic auth: key as username, blank password. The starting `academy-map.json` was built through
+  the Skilljar connector (v2); if v1 IDs differ, entries still match by path slug and course/lesson title.
 - IAM role for GitHub OIDC limited to `s3:PutObject` on `safeskilljar/navigator/*`, with its ARN in
   the `AWS_NAVIGATOR_ROLE_ARN` secret and the key in `SKILLJAR_API_KEY`, both in a GitHub
   Environment named `navigator` restricted to `main`.
