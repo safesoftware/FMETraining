@@ -39,21 +39,39 @@ KEY = os.environ.get("SKILLJAR_API_KEY")
 CALLS = 0
 
 
-def get(url, tries=5):
+TIMEOUT = float(os.environ.get("SKILLJAR_TIMEOUT", "60"))
+PAUSE = float(os.environ.get("SKILLJAR_PAUSE", "0.25"))  # seconds between calls, to be gentle on the API
+RETRIES = 6
+
+
+def get(url):
+    """GET a JSON page, retrying rate limits, server errors and dropped or timed-out connections."""
     global CALLS
     token = base64.b64encode(f"{KEY}:".encode()).decode()
-    for attempt in range(tries):
+    where = urllib.parse.urlsplit(url).path
+    for attempt in range(RETRIES):
+        if CALLS:
+            time.sleep(PAUSE)
         req = urllib.request.Request(url, headers={"Authorization": f"Basic {token}", "Accept": "application/json"})
+        wait = min(2 ** attempt * 2, 60)
         try:
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
                 CALLS += 1
                 return json.loads(r.read())
         except urllib.error.HTTPError as e:
-            if e.code in (429, 500, 502, 503, 504) and attempt < tries - 1:
-                time.sleep(int(e.headers.get("Retry-After") or 2 ** attempt))
-                continue
-            # status and path only: never echo the response body
-            raise SystemExit(f"Skilljar API error {e.code} for {urllib.parse.urlsplit(url).path}")
+            if e.code not in (429, 500, 502, 503, 504) or attempt == RETRIES - 1:
+                # status and path only: never echo the response body
+                raise SystemExit(f"Skilljar API error {e.code} for {where}")
+            wait = int(e.headers.get("Retry-After") or wait)
+            reason = f"HTTP {e.code}"
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            # network trouble: TLS handshake timeouts, resets, dropped connections, truncated bodies
+            if attempt == RETRIES - 1:
+                raise SystemExit(f"Skilljar API unreachable for {where} after {RETRIES} tries: "
+                                 f"{type(getattr(e, 'reason', e)).__name__}")
+            reason = type(getattr(e, "reason", e)).__name__
+        print(f"  retrying {where} in {wait}s ({reason})", flush=True)
+        time.sleep(wait)
 
 
 def paged(path, **params):
@@ -65,8 +83,6 @@ def paged(path, **params):
         body = get(url)
         out += body.get("results", [])
         url = body.get("next")
-        if url:
-            time.sleep(0.2)
     return out
 
 
