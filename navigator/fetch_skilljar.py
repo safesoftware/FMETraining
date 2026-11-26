@@ -23,54 +23,78 @@ Output schema:
    "unlinked_courses": [...same course shape...]}
 """
 import base64
+import http.client
 import json
 import os
 import sys
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
 BASE = os.environ.get("SKILLJAR_API_BASE", "https://api.skilljar.com").rstrip("/")
 DOMAIN = os.environ.get("SKILLJAR_DOMAIN", "academy.safe.com")
 KEY = os.environ.get("SKILLJAR_API_KEY")
-CALLS = 0
-
-
-TIMEOUT = float(os.environ.get("SKILLJAR_TIMEOUT", "60"))
-PAUSE = float(os.environ.get("SKILLJAR_PAUSE", "0.25"))  # seconds between calls, to be gentle on the API
+TIMEOUT = float(os.environ.get("SKILLJAR_TIMEOUT", "20"))  # per request; a hung request is retried
+PAUSE = float(os.environ.get("SKILLJAR_PAUSE", "0.25"))    # seconds between calls, to be gentle on the API
 RETRIES = 6
+CALLS = 0
+_BASE = urllib.parse.urlsplit(BASE)
+_conn = None
+
+
+def connection():
+    """One kept-alive connection for all calls, so there's one TLS handshake instead of ~300."""
+    global _conn
+    if _conn is None:
+        cls = http.client.HTTPSConnection if _BASE.scheme == "https" else http.client.HTTPConnection
+        _conn = cls(_BASE.hostname, _BASE.port, timeout=TIMEOUT)
+    return _conn
+
+
+def drop_connection():
+    global _conn
+    if _conn is not None:
+        _conn.close()
+    _conn = None
 
 
 def get(url):
     """GET a JSON page, retrying rate limits, server errors and dropped or timed-out connections."""
     global CALLS
+    u = urllib.parse.urlsplit(url)
+    if (u.scheme, u.netloc) != (_BASE.scheme, _BASE.netloc):
+        # never send the API key to another host, e.g. via an unexpected `next` link
+        raise SystemExit(f"Refusing to call a different host: {u.netloc}")
+    target = u.path + (f"?{u.query}" if u.query else "")
     token = base64.b64encode(f"{KEY}:".encode()).decode()
-    where = urllib.parse.urlsplit(url).path
+    headers = {"Authorization": f"Basic {token}", "Accept": "application/json", "Connection": "keep-alive"}
     for attempt in range(RETRIES):
         if CALLS:
             time.sleep(PAUSE)
-        req = urllib.request.Request(url, headers={"Authorization": f"Basic {token}", "Accept": "application/json"})
         wait = min(2 ** attempt * 2, 60)
         try:
-            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+            conn = connection()
+            conn.request("GET", target, headers=headers)
+            resp = conn.getresponse()
+            body = resp.read()
+            if resp.will_close:
+                drop_connection()
+            if resp.status == 200:
                 CALLS += 1
-                return json.loads(r.read())
-        except urllib.error.HTTPError as e:
-            if e.code not in (429, 500, 502, 503, 504) or attempt == RETRIES - 1:
+                return json.loads(body)
+            if resp.status not in (429, 500, 502, 503, 504) or attempt == RETRIES - 1:
                 # status and path only: never echo the response body
-                raise SystemExit(f"Skilljar API error {e.code} for {where}")
-            wait = int(e.headers.get("Retry-After") or wait)
-            reason = f"HTTP {e.code}"
-        except (urllib.error.URLError, OSError, ValueError) as e:
-            # network trouble: TLS handshake timeouts, resets, dropped connections, truncated bodies
+                raise SystemExit(f"Skilljar API error {resp.status} for {u.path}")
+            wait = int(resp.getheader("Retry-After") or wait)
+            reason = f"HTTP {resp.status}"
+        except (OSError, http.client.HTTPException, ValueError) as e:
+            # network trouble: TLS handshake or read timeouts, resets, dropped connections, truncated bodies
+            drop_connection()
             if attempt == RETRIES - 1:
-                raise SystemExit(f"Skilljar API unreachable for {where} after {RETRIES} tries: "
-                                 f"{type(getattr(e, 'reason', e)).__name__}")
-            reason = type(getattr(e, "reason", e)).__name__
-        print(f"  retrying {where} in {wait}s ({reason})", flush=True)
+                raise SystemExit(f"Skilljar API unreachable for {u.path} after {RETRIES} tries: {type(e).__name__}")
+            reason = type(e).__name__
+        print(f"  retrying {u.path} in {wait}s ({reason})", flush=True)
         time.sleep(wait)
 
 
