@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FME Academy Backup Navigator</title>
+<style>
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --surface-2: #f0f2f5; --text: #1b1f24; --muted: #5b6470;
+  --border: #dde1e6; --accent: #0b6bcb; --accent-soft: #e3effb; --warn: #9a5b00; --warn-soft: #fff3df;
+  --removed: #a4262c; --removed-soft: #fde7e9; --chip: #eef1f4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111418; --surface: #1a1f25; --surface-2: #222830; --text: #e6e9ed; --muted: #9aa4b0;
+    --border: #2d343d; --accent: #6cb2ff; --accent-soft: #17304a; --warn: #f0b45a; --warn-soft: #3a2a12;
+    --removed: #ff8a8f; --removed-soft: #3d1a1d; --chip: #262d36;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111418; --surface: #1a1f25; --surface-2: #222830; --text: #e6e9ed; --muted: #9aa4b0;
+  --border: #2d343d; --accent: #6cb2ff; --accent-soft: #17304a; --warn: #f0b45a; --warn-soft: #3a2a12;
+  --removed: #ff8a8f; --removed-soft: #3d1a1d; --chip: #262d36;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 16px 12px; position: sticky; top: 0; z-index: 2; }
+.wrap { max-width: 1100px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+.sub { color: var(--muted); font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+input[type=search] { flex: 1 1 260px; min-width: 0; padding: 8px 12px; font: inherit; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--surface-2); color: var(--text); }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.tabs button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); cursor: pointer; }
+.tabs button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff; }
+label.opt { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+main { padding: 16px; }
+section > h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 20px 0 8px; }
+.intro { color: var(--muted); font-size: 13px; margin: -4px 0 10px; }
+details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin: 8px 0; }
+details details { background: var(--surface-2); border-radius: 8px; margin: 6px 0; }
+summary { cursor: pointer; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "▸"; color: var(--muted); width: 12px; flex: none; }
+details[open] > summary::before { content: "▾"; }
+.inner { padding: 0 14px 10px 34px; }
+.ptitle { font-weight: 600; flex: 0 1 auto; min-width: 0; max-width: calc(100% - 24px); }
+@media (max-width: 640px) { header { position: static; } .inner { padding-left: 14px; } }
+.meta { color: var(--muted); font-size: 13px; }
+.chip { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--chip); color: var(--muted); white-space: nowrap; }
+.chip.cur { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.chip.removed { background: var(--removed-soft); color: var(--removed); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+a.chip:hover { text-decoration: none; filter: brightness(.95); }
+ol.lessons { margin: 4px 0 6px; padding-left: 22px; }
+ol.lessons li { padding: 3px 0; }
+.lrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.older { display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: baseline; }
+.nocopy { color: var(--muted); }
+.extra { margin-top: 6px; font-size: 13px; }
+.extra summary { padding: 4px 0; font-size: 13px; color: var(--muted); }
+.extra ul { margin: 0; padding-left: 20px; }
+.empty { color: var(--muted); padding: 24px 0; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); margin-top: 6px; }
+.stats b { color: var(--text); }
+mark { background: #ffe58f; color: inherit; border-radius: 2px; }
+.hide { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>FME Academy Backup Navigator</h1>
+    <div class="sub" id="sub"></div>
+    <div class="stats" id="stats"></div>
+    <div class="controls">
+      <input type="search" id="q" placeholder="Search lessons, courses and paths…" aria-label="Search">
+      <div class="tabs" id="tabs" role="group" aria-label="Show"></div>
+      <label class="opt"><input type="checkbox" id="showMissing"> Show lessons with no backup</label>
+    </div>
+  </div>
+</header>
+<main><div class="wrap" id="root"></div></main>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+(function () {
+  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const root = document.getElementById('root');
+  const el = (tag, attrs, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v; else n.setAttribute(k, v);
+    }
+    for (const k of kids.flat(Infinity)) if (k != null) n.append(k.nodeType ? k : document.createTextNode(k));
+    return n;
+  };
+  const link = (href, text, cls) => href ? el('a', { href, target: '_blank', rel: 'noopener', class: cls }, text) : el('span', { class: cls }, text);
+  const fmtDate = s => s ? new Date(s).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '?';
+  const st = DATA.stats;
+
+  document.getElementById('sub').textContent =
+    `Backups of every FME Academy lesson on S3, grouped by learning path, course and version. Updated ${fmtDate(DATA.generated_at)}.`;
+  document.getElementById('stats').append(...[
+    el('span', {}, el('b', {}, String(st.paths_current)), ' current paths'),
+    el('span', {}, el('b', {}, String(st.paths_versioned)), ' archived path versions'),
+    st.paths_removed ? el('span', {}, el('b', {}, String(st.paths_removed)), ' removed from Academy') : null,
+    el('span', {}, el('b', {}, String(st.s3_copies - st.s3_punctuation_duplicates_collapsed)), ' lesson backups'),
+    st.lessons_missing_copy ? el('span', {}, el('b', {}, String(st.lessons_missing_copy)), ' lessons with no backup') : null,
+  ].filter(Boolean));
+
+  // ---- render ---------------------------------------------------------------
+  function lessonItem(l) {
+    const [cur, ...older] = l.copies || [];
+    const kids = [];
+    if (cur) kids.push(link(cur.url, l.title), el('a', { class: 'chip cur', href: cur.url, target: '_blank', rel: 'noopener', title: 'Latest backup' }, cur.version));
+    else kids.push(el('span', { class: 'nocopy' }, l.title), el('span', { class: l.expects_copy ? 'chip warn' : 'chip' }, l.expects_copy ? 'no backup' : (l.type || '').toLowerCase()));
+    if (l.status === 'removed') kids.push(el('span', { class: 'chip removed' }, 'removed from course'));
+    if (older.length) kids.push(el('span', { class: 'older' }, el('span', { class: 'meta' }, 'older:'),
+      older.map(c => el('a', { class: 'chip', href: c.url, target: '_blank', rel: 'noopener' }, c.version))));
+    const li = el('li', { 'data-text': (l.title || '').toLowerCase(), 'data-missing': cur ? null : '1' }, el('div', { class: 'lrow' }, kids));
+    return li;
+  }
+
+  function extras(list, label) {
+    if (!list || !list.length) return null;
+    return el('details', { class: 'extra' }, el('summary', {}, `${label} (${list.length})`),
+      el('ul', {}, list.map(x => el('li', { 'data-text': x.title.toLowerCase() },
+        x.copies ? [x.title, ' ', x.copies.map(c => el('a', { class: 'chip', href: c.url, target: '_blank', rel: 'noopener' }, c.version))]
+                 : link(x.url, x.title)))));
+  }
+
+  function course(c, idx) {
+    const content = (c.lessons || []).filter(l => l.expects_copy !== false);
+    const n = content.length;
+    const backed = content.filter(l => l.copies && l.copies.length).length;
+    const sum = el('summary', {},
+      el('span', { class: 'ptitle' }, `${idx != null ? idx + 1 + '. ' : ''}${c.title}`),
+      c.versions && c.versions.length ? el('span', { class: 'chip cur' }, c.versions[0]) : null,
+      n ? el('span', { class: backed < n ? 'chip warn' : 'meta' }, `${backed}/${n} lessons backed up`) : null,
+      c.status === 'removed' ? el('span', { class: 'chip removed' }, 'removed from path') : null,
+      c.url ? link(c.url, 'Academy ↗', 'meta') : null);
+    const body = el('div', { class: 'inner' },
+      el('ol', { class: 'lessons' }, (c.lessons || []).map(lessonItem)),
+      extras(c.other_backups, 'Backups of lessons no longer in this course'));
+    return el('details', { 'data-text': c.title.toLowerCase() }, sum, body);
+  }
+
+  function path(p) {
+    const sum = el('summary', {},
+      el('span', { class: 'ptitle' }, p.title),
+      p.version ? el('span', { class: 'chip' }, p.version) : null,
+      el('span', { class: 'meta' }, `${p.courses.length} courses`),
+      p.status === 'removed' ? el('span', { class: 'chip removed' }, 'removed from Academy') : null,
+      link(p.url, 'Academy ↗', 'meta'));
+    return el('details', { 'data-text': p.title.toLowerCase(), class: 'path' }, sum,
+      el('div', { class: 'inner' }, p.courses.map((c, i) => course(c, i))));
+  }
+
+  const SECTIONS = [
+    { id: 'current', label: 'Current paths', intro: 'Learning paths live on academy.safe.com now. Each lesson links to its latest backup; older versions are listed beside it.',
+      items: () => DATA.paths.filter(p => p.kind === 'current' && p.status === 'live').map(path) },
+    { id: 'versioned', label: 'Archived path versions', intro: 'Earlier versioned learning paths (one path per FME release), grouped by path.',
+      items: () => {
+        const groups = {};
+        DATA.paths.filter(p => p.kind === 'versioned' && p.status === 'live').forEach(p => (groups[p.base_slug] ||= []).push(p));
+        return Object.values(groups).map(ps => ps.length === 1 ? path(ps[0]) :
+          el('details', { 'data-text': ps[0].title.toLowerCase(), class: 'path' },
+            el('summary', {}, el('span', { class: 'ptitle' }, ps[0].title.replace(/\s+\d{4}\.\d+$/, '')),
+              el('span', { class: 'meta' }, `${ps.length} versions: ${ps.map(p => p.version).join(', ')}`)),
+            el('div', { class: 'inner' }, ps.map(path))));
+      } },
+    { id: 'removed', label: 'Removed from Academy', intro: 'Paths that were once on academy.safe.com and have since been removed. Their last known structure is kept here.',
+      items: () => DATA.paths.filter(p => p.status === 'removed').map(path) },
+    { id: 'standalone', label: 'Standalone courses', intro: 'Courses that are not part of any learning path, such as live online courses.',
+      items: () => (DATA.standalone_courses || []).map(c => course(c)) },
+    { id: 'unmatched', label: 'Unmatched backups', intro: 'Backups on S3 that do not match any current or archived course (clones, tests, retired courses). Grouped by folder.',
+      items: () => {
+        const byFolder = {};
+        DATA.unmatched.forEach(u => (byFolder[`${u.version} / ${u.path_folder}`] ||= []).push(u));
+        return Object.entries(byFolder).map(([k, us]) => el('details', { 'data-text': k.toLowerCase(), class: 'path' },
+          el('summary', {}, el('span', { class: 'ptitle' }, k), el('span', { class: 'meta' }, `${us.length} course folders`)),
+          el('div', { class: 'inner' }, us.map(u => el('details', { 'data-text': u.course_folder.toLowerCase() },
+            el('summary', {}, el('span', { class: 'ptitle' }, u.course_folder), el('span', { class: 'meta' }, `${u.lessons.length} lessons`)),
+            el('div', { class: 'inner' }, el('ul', { class: 'lessons' }, u.lessons.map(l => el('li', { 'data-text': l.title.toLowerCase() }, link(l.url, l.title))))))))));
+      } },
+  ];
+
+  const tabs = document.getElementById('tabs');
+  const active = new Set(['current', 'versioned', 'removed', 'standalone']);
+  const sectionEls = {};
+  SECTIONS.forEach(s => {
+    const items = s.items();
+    const sec = el('section', { id: 'sec-' + s.id }, el('h2', {}, `${s.label} (${items.length})`), el('p', { class: 'intro' }, s.intro), items);
+    if (!items.length) sec.classList.add('hide');
+    sectionEls[s.id] = { sec, n: items.length };
+    root.append(sec);
+    if (!items.length) return;
+    const b = el('button', { type: 'button', 'aria-pressed': String(active.has(s.id)) }, s.label);
+    b.onclick = () => { active.has(s.id) ? active.delete(s.id) : active.add(s.id); b.setAttribute('aria-pressed', String(active.has(s.id))); apply(); };
+    tabs.append(b);
+  });
+  const empty = el('div', { class: 'empty hide' }, 'Nothing matches.');
+  root.append(empty);
+
+  // ---- filter ---------------------------------------------------------------
+  const q = document.getElementById('q');
+  const showMissing = document.getElementById('showMissing');
+  let t;
+  q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(apply, 120); });
+  showMissing.addEventListener('change', apply);
+
+  function apply() {
+    const term = q.value.trim().toLowerCase();
+    let any = false;
+    for (const [id, { sec, n }] of Object.entries(sectionEls)) {
+      const on = active.has(id) && n > 0;
+      sec.classList.toggle('hide', !on);
+      if (!on) continue;
+      // leaves first, then containers: a container is shown if it matches or any descendant does
+      sec.querySelectorAll('li').forEach(li => {
+        const hideMissing = li.dataset.missing && !showMissing.checked;
+        const match = !term || li.dataset.text.includes(term);
+        li.classList.toggle('hide', !!hideMissing || !match);
+        li.dataset.hit = (!hideMissing && term && li.dataset.text.includes(term)) ? '1' : '';
+      });
+      const dets = [...sec.querySelectorAll('details')].reverse();
+      dets.forEach(d => {
+        if (d.classList.contains('extra')) { d.open = !!term && !!d.querySelector('li[data-hit="1"]'); return; }
+        const selfHit = term && d.dataset.text && d.dataset.text.includes(term);
+        const childHit = term && d.querySelector('li[data-hit="1"], details[data-hit="1"]');
+        d.dataset.hit = (selfHit || childHit) ? '1' : '';
+        if (term) {
+          d.classList.toggle('hide', !(selfHit || childHit) && !d.parentElement.closest('details[data-self="1"]'));
+          d.dataset.self = selfHit ? '1' : '';
+          d.open = !!childHit;
+        } else { d.classList.remove('hide'); d.dataset.self = ''; }
+      });
+      // if a container matched by name, show all its children
+      if (term) sec.querySelectorAll('details[data-self="1"]').forEach(d => d.querySelectorAll('.hide').forEach(x => {
+        if (x.tagName === 'LI' && x.dataset.missing && !showMissing.checked) return; x.classList.remove('hide'); }));
+      const visible = [...sec.children].some(c => c.tagName === 'DETAILS' && !c.classList.contains('hide'));
+      if (term && !visible) sec.classList.add('hide'); else any = true;
+    }
+    empty.classList.toggle('hide', any);
+  }
+  apply();
+})();
+</script>
+</body>
+</html>
